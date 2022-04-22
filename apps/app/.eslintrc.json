@@ -21,7 +21,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "armonik-admin-gui",
+            "prefix": "app",
             "style": "kebab-case"
           }
         ]
