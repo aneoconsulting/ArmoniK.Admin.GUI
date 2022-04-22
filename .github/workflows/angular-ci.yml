@@ -47,8 +47,6 @@ jobs:
       matrix:
         command:
           - lint app
-          - lint ui
-          - test ui
     steps:
       - name: Restore setup
         uses: actions/cache@v2
