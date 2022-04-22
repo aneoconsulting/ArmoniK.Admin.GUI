@@ -9,5 +9,10 @@ import { Message } from '@armonik.admin.gui/api-interfaces';
 })
 export class AppComponent {
   hello$ = this.http.get<Message>('/api/hello');
+
+  links = [
+    { path: '/dashboard', label: 'Dashboard' },
+    { path: '/sessions', label: 'Sessions' },
+  ];
   constructor(private http: HttpClient) {}
 }
