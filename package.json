@@ -10,7 +10,9 @@
     "test": "nx test",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
-    "format": "prettier --write ."
+    "format:api": "prettier --write apps/api/**/*.{ts,js,json,md}",
+    "format:app": "prettier --write apps/app/**/*.{ts,js,json,md}",
+    "format:libs": "prettier --write libs/**/*.{ts,js,json,md}"
   },
   "private": true,
   "dependencies": {
