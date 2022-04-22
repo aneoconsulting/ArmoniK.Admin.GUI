@@ -47,7 +47,6 @@ jobs:
       matrix:
         command:
           - lint app
-          - lint api
           - lint ui
           - test ui
     steps:
