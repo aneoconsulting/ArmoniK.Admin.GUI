@@ -6,7 +6,6 @@ import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SessionsComponent } from './modules/sessions/sessions.component';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
-import { AppComponent } from '../../app.component';
 
 @NgModule({
   declarations: [PagesComponent],
@@ -27,6 +26,5 @@ import { AppComponent } from '../../app.component';
       },
     ]),
   ],
-  // exports: [RouterModule],
 })
 export class PagesModule {}
