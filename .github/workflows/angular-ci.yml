@@ -62,4 +62,4 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Run ${{ matrix.command }}
-        run: ng ${{ matrix.command }}
+        run: npx -y nx ${{ matrix.command }}
