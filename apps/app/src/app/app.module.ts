@@ -17,8 +17,8 @@ import { PagesModule } from './modules/pages/pages.module';
     RouterModule.forRoot([
       { path: '*', children: [{ path: '*', component: PagesComponent }] },
     ]),
-    PagesModule,
     UiModule,
+    PagesModule,
     ClarityModule,
   ],
   declarations: [AppComponent],

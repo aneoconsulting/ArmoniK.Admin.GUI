@@ -1,5 +1,5 @@
 export * from './lib/ui.module';
 
-export * from './lib/header/header.component';
+export * from './lib/header/';
 
-export * from './lib/sidenav/sidenav.component';
+export * from './lib/sidenav/';
