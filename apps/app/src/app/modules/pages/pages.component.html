@@ -1,0 +1,24 @@
+<main class="main-container">
+  <ui-header>
+    <a [routerLink]="['/']" branding>
+      <span class="title">Admin HarmoniK</span>
+    </a></ui-header
+  >
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
+    <ui-sidenav>
+      <a
+        *ngFor="let link of links"
+        [routerLink]="[link.path]"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link"
+      >
+        {{ link.label }}
+      </a>
+    </ui-sidenav>
+  </div>
+</main>
