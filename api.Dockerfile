@@ -4,11 +4,14 @@ ARG configuration=production
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY package*.json ./
+COPY decorate-angular-cli.js ./
 
 RUN npm install
-
 RUN npm install -g nx
+
+COPY . .
+
 RUN nx build api --prod
 
 FROM node:16.14.2-alpine as production
