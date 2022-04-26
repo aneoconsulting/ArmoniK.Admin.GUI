@@ -52,17 +52,6 @@ jobs:
           username: dhaneo1
           password: ${{ secrets.DOCKER_HUB_TOKEN  }}
 
-      - name: Build and export to Docker
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          load: true
-          tags: ${{ steps.meta.outputs.tags }}
-          file: ${{ matrix.dockerfile.file }}
-      - name: Test
-        run: |
-          docker run --rm ${{ steps.meta.outputs.tags }}
-
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
