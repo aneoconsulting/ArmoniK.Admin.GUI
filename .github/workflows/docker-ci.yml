@@ -58,6 +58,7 @@ jobs:
           context: .
           load: true
           tags: ${{ steps.meta.outputs.tags }}
+          file: ${{ matrix.dockerfile.file }}
       - name: Test
         run: |
           docker run --rm ${{ steps.meta.outputs.tags }}
