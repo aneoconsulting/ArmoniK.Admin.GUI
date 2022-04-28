@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package ArmoniK.api.grpc.v1;
+
+service Submitter {
+	rpc CountTasks (TaskFilter) returns (Count);
+}
+
+message TaskFilter {
+	message IdsRequest {
+		repeated string ids = 1;
+	}
+	oneof Ids {
+		IdsRequest task = 3;
+	}
+  message StatusesRequest {
+		repeated TaskStatus Statuses = 1;
+	}
+	oneof Statuses {
+		StatusesRequest included = 4;
+	}
+}
+
+message StatusCount{
+	TaskStatus status =1;
+	int32 count =2;
+}
+
+message Count {
+	repeated StatusCount values = 1;
+}
+
+enum TaskStatus
+{
+  TASK_STATUS_UNSPECIFIED = 0;
+  TASK_STATUS_CREATING = 1;
+  TASK_STATUS_SUBMITTED = 2;
+  TASK_STATUS_DISPATCHED = 3;
+  TASK_STATUS_PROCESSING = 10;
+  TASK_STATUS_PROCESSED = 11;
+  TASK_STATUS_COMPLETED = 4;
+  TASK_STATUS_ERROR = 5;
+  TASK_STATUS_FAILED = 6;
+  TASK_STATUS_TIMEOUT = 7;
+  TASK_STATUS_CANCELING = 8;
+  TASK_STATUS_CANCELED = 9;
+}

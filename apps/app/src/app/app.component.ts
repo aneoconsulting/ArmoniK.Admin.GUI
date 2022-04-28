@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Message } from '@armonik.admin.gui/api-interfaces';
+import { Message } from '@armonik.admin.gui/interfaces';
 
 @Component({
   selector: 'app-root',

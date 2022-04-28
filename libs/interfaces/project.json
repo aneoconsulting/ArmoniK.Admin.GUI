@@ -1,13 +1,13 @@
 {
-  "root": "libs/api-interfaces",
-  "sourceRoot": "libs/api-interfaces/src",
+  "root": "libs/interfaces",
+  "sourceRoot": "libs/interfaces/src",
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/api-interfaces/**/*.ts"]
+        "lintFilePatterns": ["libs/interfaces/**/*.ts"]
       }
     }
   },
