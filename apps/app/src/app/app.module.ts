@@ -15,7 +15,11 @@ import { PagesModule } from './modules/pages/pages.module';
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: '*', children: [{ path: '*', component: PagesComponent }] },
+      {
+        path: '*',
+        component: AppComponent,
+        children: [{ path: '*', component: PagesComponent }],
+      },
     ]),
     UiModule,
     PagesModule,

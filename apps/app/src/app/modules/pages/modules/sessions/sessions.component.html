@@ -1,1 +1,17 @@
-<p>sessions works!</p>
+<section>
+  <h1>Toutes les sessions</h1>
+
+  <clr-datagrid>
+    <clr-dg-column>Session ID</clr-dg-column>
+
+    <clr-dg-row *ngFor="let session of sessions">
+      <clr-dg-cell>
+        <a [routerLink]="[session.id]" class="block">
+          {{ session.id }}
+        </a>
+      </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer> {{ sessions.length }} sessions </clr-dg-footer>
+  </clr-datagrid>
+</section>
