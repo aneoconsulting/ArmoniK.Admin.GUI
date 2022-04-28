@@ -33,6 +33,5 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
       },
     ]),
   ],
-  exports: [RouterModule],
 })
 export class PagesModule {}
