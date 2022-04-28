@@ -1,0 +1,36 @@
+.flex {
+  display: flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot-success {
+  background-color: hsl(93, 67%, 38%);
+  box-shadow: 0 0 0 3px hsl(93, 100%, 16%);
+}
+
+.dot-warn {
+  background-color: hsl(33, 100%, 50%);
+  box-shadow: 0 0 0 3px hsl(33, 100%, 16%);
+}
+
+.dot-error {
+  background-color: hsl(0, 100%, 50%);
+  box-shadow: 0 0 0 3px hsl(0, 100%, 16%);
+}

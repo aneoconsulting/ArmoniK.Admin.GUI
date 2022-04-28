@@ -1,0 +1,13 @@
+<article class="card">
+  <div class="card-block">
+    <h3 class="card-title flex flex-row justify-between items-center">
+      <ng-content select="[title]"></ng-content>
+      <span *ngIf="dotColor" [class]="getDotClass()"></span>
+    </h3>
+  </div>
+  <div class="card-footer">
+    <a class="btn btn-sm btn-primary">
+      <ng-content select="[link]"></ng-content>
+    </a>
+  </div>
+</article>

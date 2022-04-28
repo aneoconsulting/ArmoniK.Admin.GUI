@@ -6,6 +6,7 @@ import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SessionsComponent } from './modules/sessions/sessions.component';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [PagesComponent],
@@ -13,6 +14,7 @@ import { ClarityModule } from '@clr/angular';
     CommonModule,
     ClarityModule,
     UiModule,
+    DashboardModule,
     RouterModule.forRoot([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
