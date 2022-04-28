@@ -1,14 +1,21 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Message } from '@armonik.admin.gui/api-interfaces';
-
+import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  hello$ = this.http.get<Message>('/api/hello');
+export class AppComponent implements OnInit {
+  param = { value: 'world' };
 
-  constructor(private http: HttpClient) {}
+  languages: any;
+
+  lang: string | undefined;
+
+  constructor(private translateService: TranslateService) {}
+
+  ngOnInit(): void {
+    this.lang = this.translateService.getBrowserLang();
+    this.languages = this.translateService.getLangs();
+  }
 }
