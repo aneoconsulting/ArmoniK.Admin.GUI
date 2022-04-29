@@ -17,14 +17,14 @@ type Language = {
 export class TranslationService {
   constructor(private translateService: TranslateService) {}
 
-  languages: Language[] = [
+  private languages: Language[] = [
     { code: LanguageCode.EN, name: 'en' },
     { code: LanguageCode.FR, name: 'fr' },
   ];
 
-  storageKey = 'lang';
+  private storageKey = 'lang';
 
-  currentLanguage = LanguageCode.EN;
+  private currentLanguage = LanguageCode.EN;
 
   initLanguage() {
     this.currentLanguage =
@@ -40,7 +40,11 @@ export class TranslationService {
     this.setLanguageToStorage(this.currentLanguage);
   }
 
-  getLanguage() {
+  getLanguages() {
+    return this.languages;
+  }
+
+  getCurrantLanguage() {
     return this.currentLanguage;
   }
 

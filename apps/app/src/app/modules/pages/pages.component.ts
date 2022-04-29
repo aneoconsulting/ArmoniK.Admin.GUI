@@ -18,7 +18,7 @@ export class PagesComponent {
   constructor(private translationService: TranslationService) {}
 
   public get languages() {
-    return this.translationService.languages;
+    return this.translationService.getLanguages();
   }
 
   public changeLanguage(lang: LanguageCode) {
