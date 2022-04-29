@@ -14,7 +14,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     CommonModule,
     ClarityModule,
     UiModule,
-    DashboardModule,
+    // DashboardModule,
     RouterModule.forRoot([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
