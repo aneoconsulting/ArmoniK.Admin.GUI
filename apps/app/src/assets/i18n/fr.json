@@ -1,3 +1,6 @@
 {
-  "HELLO": "bonjour {{value}}"
+  "sidenav": {
+    "dashboard": "Tableau de bord",
+    "sessions": "Sessions"
+  }
 }

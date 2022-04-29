@@ -1,21 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from './modules/services/languageService/language.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  param = { value: 'world' };
-
-  languages: any;
-
-  lang: string | undefined;
-
-  constructor(private translateService: TranslateService) {}
+  constructor(private languageService: LanguageService) {}
 
   ngOnInit(): void {
-    this.lang = this.translateService.getBrowserLang();
-    this.languages = this.translateService.getLangs();
+    this.languageService.initLanguage();
   }
 }

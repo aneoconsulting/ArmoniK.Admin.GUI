@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import {
+  LanguageCode,
+  LanguageService,
+} from '../services/languageService/language.service';
 
 @Component({
   selector: 'app-pages',
@@ -7,7 +11,13 @@ import { Component } from '@angular/core';
 })
 export class PagesComponent {
   links = [
-    { path: 'dashboard', label: 'Dashboard' },
-    { path: 'sessions', label: 'Sessions' },
+    { path: 'dashboard', label: 'sidenav.dashboard' },
+    { path: 'sessions', label: 'sidenav.sessions' },
   ];
+
+  constructor(public languageService: LanguageService) {}
+
+  public changeLanguage(lang: LanguageCode) {
+    this.languageService.setLanguage(lang);
+  }
 }

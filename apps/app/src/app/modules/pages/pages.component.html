@@ -2,8 +2,21 @@
   <ui-header>
     <a [routerLink]="['/']" branding>
       <span class="title">Admin HarmoniK</span>
-    </a></ui-header
-  >
+    </a>
+
+    <ul
+      actions
+      class="list-unstyled"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+    >
+      <li *ngFor="let language of languageService.languages">
+        <button class="btn btn-link" (click)="changeLanguage(language.code)">
+          {{ language.name | uppercase }}
+        </button>
+      </li>
+    </ul>
+  </ui-header>
   <div class="content-container">
     <div class="content-area">
       <router-outlet></router-outlet>
@@ -17,7 +30,7 @@
         [routerLinkActiveOptions]="{ exact: true }"
         class="nav-link"
       >
-        {{ link.label }}
+        {{ link.label | translate }}
       </a>
     </ui-sidenav>
   </div>

@@ -1,3 +1,6 @@
 {
-  "HELLO": "hello {{value}}"
+  "sidenav": {
+    "dashboard": "Dashboard",
+    "sessions": "Sessions"
+  }
 }

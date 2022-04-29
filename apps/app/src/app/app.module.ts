@@ -14,6 +14,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { PagesComponent } from './modules/pages/pages.component';
 import { PagesModule } from './modules/pages/pages.module';
+import { LanguageService } from './modules/services/languageService/language.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -26,7 +27,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     HttpClientModule,
     TranslateModule.forRoot({
-      defaultLanguage: 'en',
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
@@ -40,7 +40,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PagesModule,
     ClarityModule,
   ],
-  providers: [TranslateService],
+  providers: [LanguageService],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
