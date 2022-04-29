@@ -1,12 +1,17 @@
-name: ci angular
+name: ci libs ui
 on:
   push:
     branches-ignore:
       - "main"
+    paths:
+      - "libs/ui/**"
   pull_request:
     branches:
       - "main"
       - "develop"
+    paths:
+      - "libs/ui/**"
+
 env:
   NODE_VERSION: 16
 jobs:
@@ -46,7 +51,8 @@ jobs:
     strategy:
       matrix:
         command:
-          - lint app
+          - lint ui
+          - test ui
     steps:
       - name: Restore setup
         uses: actions/cache@v2
