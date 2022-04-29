@@ -4,10 +4,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CardComponent } from './card.component';
 
 @Component({
-  template: `<app-pages-dashboard-cards-card>
+  template: `<ui-card>
     <span title>title</span>
     <span link>link</span>
-  </app-pages-dashboard-cards-card>`,
+  </ui-card>`,
 })
 class TestHostComponent {}
 

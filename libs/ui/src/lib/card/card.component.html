@@ -1,6 +1,6 @@
 <article class="card">
   <div class="card-block">
-    <h3 class="card-title flex flex-row justify-between items-center">
+    <h3 class="card-title" fxLayout="row" fxLayoutAlign="space-between center">
       <ng-content select="[title]"></ng-content>
       <span *ngIf="dotColor" [class]="getDotClass()"></span>
     </h3>
