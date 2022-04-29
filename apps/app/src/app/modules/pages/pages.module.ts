@@ -4,15 +4,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LanguageService } from '../services/languageService/language.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslationService } from '../core/services/translation/translation.service';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SessionsComponent } from './modules/sessions/sessions.component';
 import { PagesComponent } from './pages.component';
 
 @NgModule({
   declarations: [PagesComponent],
-  providers: [LanguageService],
+  providers: [TranslationService],
   imports: [
     CommonModule,
     ClarityModule,

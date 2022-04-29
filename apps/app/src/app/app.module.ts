@@ -5,16 +5,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
-import {
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
+import { TranslationService } from './modules/core/services/translation/translation.service';
 import { PagesComponent } from './modules/pages/pages.component';
 import { PagesModule } from './modules/pages/pages.module';
-import { LanguageService } from './modules/services/languageService/language.service';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -40,8 +36,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     PagesModule,
     ClarityModule,
   ],
-  providers: [LanguageService],
+  providers: [],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private translationService: TranslationService) {
+    this.translationService.initLanguage();
+  }
+}

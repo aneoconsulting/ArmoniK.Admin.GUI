@@ -14,7 +14,7 @@ type Language = {
 @Injectable({
   providedIn: 'root',
 })
-export class LanguageService {
+export class TranslationService {
   constructor(private translateService: TranslateService) {}
 
   languages: Language[] = [

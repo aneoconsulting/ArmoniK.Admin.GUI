@@ -1,7 +1,7 @@
 <main class="main-container">
   <ui-header>
     <a [routerLink]="['/']" branding>
-      <span class="title">Admin HarmoniK</span>
+      <span class="title">Admin ArmoniK</span>
     </a>
 
     <ul
@@ -10,7 +10,7 @@
       fxLayout="row"
       fxLayoutAlign="center center"
     >
-      <li *ngFor="let language of languageService.languages">
+      <li *ngFor="let language of languages">
         <button class="btn btn-link" (click)="changeLanguage(language.code)">
           {{ language.name | uppercase }}
         </button>

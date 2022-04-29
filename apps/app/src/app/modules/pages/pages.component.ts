@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import {
   LanguageCode,
-  LanguageService,
-} from '../services/languageService/language.service';
+  TranslationService,
+} from '../core/services/translation/translation.service';
 
 @Component({
   selector: 'app-pages',
@@ -15,9 +15,13 @@ export class PagesComponent {
     { path: 'sessions', label: 'sidenav.sessions' },
   ];
 
-  constructor(public languageService: LanguageService) {}
+  constructor(private translationService: TranslationService) {}
+
+  public get languages() {
+    return this.translationService.languages;
+  }
 
   public changeLanguage(lang: LanguageCode) {
-    this.languageService.setLanguage(lang);
+    this.translationService.setLanguage(lang);
   }
 }
