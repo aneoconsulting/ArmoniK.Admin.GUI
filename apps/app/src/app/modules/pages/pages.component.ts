@@ -1,27 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, LOCALE_ID, Inject } from '@angular/core';
+import { LocaleId } from '../core/providers/locale.provider';
 import {
   LanguageCode,
   TranslationService,
-} from '../core/services/translation/translation.service';
-
+} from '../core/services/translation.service';
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html',
   styleUrls: ['./pages.component.scss'],
 })
 export class PagesComponent {
+  now = Date.now();
+
   links = [
     { path: 'dashboard', label: 'sidenav.dashboard' },
     { path: 'sessions', label: 'sidenav.sessions' },
   ];
 
-  constructor(private translationService: TranslationService) {}
+  constructor(
+    // @Inject(LOCALE_ID) public localeId: LocaleId,
+    private translationService: TranslationService
+  ) {}
 
   public get languages() {
-    return this.translationService.getLanguages();
+    return this.translationService.locales;
   }
 
   public changeLanguage(lang: LanguageCode) {
-    this.translationService.setLanguage(lang);
+    this.translationService.setLocale(lang);
   }
 }

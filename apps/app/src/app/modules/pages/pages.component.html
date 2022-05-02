@@ -1,9 +1,13 @@
 <main class="main-container">
   <ui-header>
     <a [routerLink]="['/']" branding>
-      <span class="title">Admin ArmoniK</span>
-    </a>
+      <span class="title"
+        >Admin ArmoniK
+        <!-- <span>{{ localeId }}</span> -->
 
+        <div>{{ now | date }}</div>
+      </span>
+    </a>
     <ul
       actions
       class="list-unstyled"

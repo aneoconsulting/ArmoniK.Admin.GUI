@@ -1,4 +1,6 @@
+import { registerLocaleData } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import localeFr from '@angular/common/locales/fr';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,9 +10,11 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
-import { TranslationService } from './modules/core/services/translation/translation.service';
+import { LocaleProvider } from './modules/core/providers/locale.provider';
 import { PagesComponent } from './modules/pages/pages.component';
 import { PagesModule } from './modules/pages/pages.module';
+
+registerLocaleData(localeFr, 'fr');
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -36,12 +40,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     PagesModule,
     ClarityModule,
   ],
-  providers: [],
+  providers: [LocaleProvider],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
-export class AppModule {
-  constructor(private translationService: TranslationService) {
-    this.translationService.initLanguage();
-  }
-}
+export class AppModule {}

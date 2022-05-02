@@ -5,20 +5,21 @@ import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { TranslationService } from '../core/services/translation/translation.service';
+import { LocaleProvider } from '../core/providers/locale.provider';
+import { TranslationService } from '../core/services/translation.service';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SessionsComponent } from './modules/sessions/sessions.component';
 import { PagesComponent } from './pages.component';
 
 @NgModule({
   declarations: [PagesComponent],
-  providers: [TranslationService],
+  providers: [TranslationService, LocaleProvider],
   imports: [
     CommonModule,
     ClarityModule,
     UiModule,
     FlexLayoutModule,
-    TranslateModule,
+    TranslateModule.forChild(),
     RouterModule.forRoot([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
