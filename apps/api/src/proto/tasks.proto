@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "pagination.proto";
+import "sessions.proto";
 
 package Armonik.api.grpc.v1;
 
@@ -44,7 +45,7 @@ message CountTasksResponse {
 // Object for tasks
 message Task {
   fixed64 id = 1;
-  fixed64 session_id = 2;
+  Session.id session_id = 2;
   TaskStatus status = 3;
   string created_at = 4;
   string updated_at = 5;

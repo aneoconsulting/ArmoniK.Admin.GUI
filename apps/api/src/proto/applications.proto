@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "pagination.proto";
+
+package Arminik.api.grpc.v1;
+
+service applications {
+  rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
+
+  rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
+}
+
+message GetApplicationRequest {
+  Application.id application_id = 1;
+}
+
+message GetApplicationResponse {
+  Application application = 1;
+}
+
+message GetApplicationsRequest {
+  optional Application.id per_page = 1;
+  optional Application.id page = 2;
+  optional string order_by = 3;
+  optional string order = 4;
+}
+
+message GetApplicationsResponse {
+  PaginationMeta meta = 1;
+  SessionList data = 2;
+}
+
+// Object for the application
+message Application {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message ApplicationList {
+  repeated Application applications = 1;
+}

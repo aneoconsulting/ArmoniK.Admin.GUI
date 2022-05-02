@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "pagination.proto";
+import "applications.proto";
 
 package Armonik.api.grpc.v1;
 
@@ -30,7 +31,7 @@ message GetSessionsRequest {
   optional string order_by = 3;
   optional string order = 4;
   optional Session.user_id user_id = 5;
-  optional Session.applicant_id applicant_id = 6;
+  optional Session.application_id application_id = 6;
   optional Session.status status = 7;
 }
 
@@ -57,7 +58,7 @@ message ReOpenSessionResponse {
 
 message CountSessionsRequest {
   optional Session.user_id user_id = 1;
-  optional Session.applicant_id applicant_id = 2;
+  optional Session.application_id application_id = 2;
   optional Session.status status = 3;
 }
 
@@ -69,8 +70,8 @@ message CountSessionsResponse {
 message Session {
   fixed64 id = 1;
   int32 user_id = 2;
-  uint64 application_id = 3;
-  uint32 status = 3;
+  Application.id application_id = 3;
+  string closed_at = 4;
   string created_at = 4;
   string updated_at = 5;
 }
