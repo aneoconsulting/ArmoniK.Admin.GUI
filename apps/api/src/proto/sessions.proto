@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "pagination.proto";
+
 package Armonik.api.grpc.v1;
 
 service sessions {
@@ -10,6 +12,8 @@ service sessions {
   rpc CloseSession(CloseSessionRequest) returns (CloseSessionResponse) {}
 
   rpc ReOpenSession(ReOpenSessionRequest) returns (ReOpenSessionResponse) {}
+
+  rpc CountSessions(CountSessionsRequest) returns (CountSessionsResponse) {}
 }
 
 message GetSessionRequest {
@@ -21,12 +25,18 @@ message GetSessionResponse {
 }
 
 message GetSessionsRequest {
-  Session.id limit = 1;
-  Session.id offset = 2;
+  optional Session.id per_page = 1;
+  optional Session.id page = 2;
+  optional string order_by = 3;
+  optional string order = 4;
+  optional Session.user_id user_id = 5;
+  optional Session.applicant_id applicant_id = 6;
+  optional Session.status status = 7;
 }
 
 message GetSessionsResponse {
-  SessionList sessions = 1;
+  PaginationMeta meta = 1;
+  SessionList data = 2;
 }
 
 message CloseSessionRequest {
@@ -43,6 +53,16 @@ message ReOpenSessionRequest {
 
 message ReOpenSessionResponse {
   bool success = 1;
+}
+
+message CountSessionsRequest {
+  optional Session.user_id user_id = 1;
+  optional Session.applicant_id applicant_id = 2;
+  optional Session.status status = 3;
+}
+
+message CountSessionsResponse {
+  Session.id count = 1;
 }
 
 // Object for the Session

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package Armonik.api.grpc.v1;
+
+message PaginationMeta {
+  fixed64 total = 1;
+  fixed64 per_page = 2;
+  fixed64 current_page = 3;
+  fixed64 last_page = 4;
+  fixed64 current_page = 5;
+}
