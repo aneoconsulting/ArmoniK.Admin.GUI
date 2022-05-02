@@ -13,7 +13,7 @@ service sessions {
 }
 
 message GetSessionRequest {
-  string session_id = 1;
+  Session.id id = 1;
 }
 
 message GetSessionResponse {
@@ -21,8 +21,8 @@ message GetSessionResponse {
 }
 
 message GetSessionsRequest {
-  int32 limit = 1;
-  int32 offset = 2;
+  Session.id limit = 1;
+  Session.id offset = 2;
 }
 
 message GetSessionsResponse {
@@ -30,7 +30,7 @@ message GetSessionsResponse {
 }
 
 message CloseSessionRequest {
-  string session_id = 1;
+  Session.id id = 1;
 }
 
 message CloseSessionResponse {
@@ -38,7 +38,7 @@ message CloseSessionResponse {
 }
 
 message ReOpenSessionRequest {
-  string session_id = 1;
+  Session.id id = 1;
 }
 
 message ReOpenSessionResponse {

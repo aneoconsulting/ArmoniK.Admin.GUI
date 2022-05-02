@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package Armonik.api.grpc.v1;
+
+service tasks {
+  rpc GetTask(GetTaskRequest) returns (GetTaskResponse) {}
+
+  rpc GetTasks(GetTasksRequest) returns (GetTasksResponse) {}
+
+  rpc CountTasks(CountTasksRequest) returns (CountTasksResponse) {}
+}
+
+message GetTaskRequest {
+  Task.id id = 1;
+}
+
+message GetTaskResponse {
+  Task task = 1;
+}
+
+message GetTasksRequest {
+  Task.id id = 1;
+}
+
+message GetTasksResponse {
+  TasksList tasks = 1;
+}
+
+message CountTasksRequest {
+  optional Task.status status = 1;
+}
+
+// Object for tasks
+message Task {
+  fixed64 id = 1;
+  fixed64 session_id = 2;
+  TaskStatus status = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message TasksList {
+  repeated Task tasks = 1;
+}
+
+message TaskStatus {
+  enum Status {
+    TASK_STATUS_UNSPECIFIED = 0;
+    TASK_STATUS_CREATING = 1;
+    TASK_STATUS_SUBMITTED = 2;
+    TASK_STATUS_DISPATCHED = 3;
+    TASK_STATUS_PROCESSING = 10;
+    TASK_STATUS_PROCESSED = 11;
+    TASK_STATUS_COMPLETED = 4;
+    TASK_STATUS_ERROR = 5;
+    TASK_STATUS_FAILED = 6;
+    TASK_STATUS_TIMEOUT = 7;
+    TASK_STATUS_CANCELING = 8;
+    TASK_STATUS_CANCELED = 9;
+  }
+  Status value = 1;
+}
