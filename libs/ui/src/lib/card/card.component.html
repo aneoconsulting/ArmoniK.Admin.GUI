@@ -2,7 +2,7 @@
   <div class="card-block">
     <h3 class="card-title" fxLayout="row" fxLayoutAlign="space-between center">
       <ng-content select="[title]"></ng-content>
-      <span *ngIf="dot" class="dot" [ngStyle]="dotColor"></span>
+      <span *ngIf="dot" [ngClass]="dotClass"></span>
     </h3>
   </div>
   <footer class="card-footer">

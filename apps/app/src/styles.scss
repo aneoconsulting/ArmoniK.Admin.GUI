@@ -1,12 +1,2 @@
 /* You can add global styles to this file, and also import other style files */
-:root {
-  // Success
-  --green-500: 93, 67%, 38%;
-  --green-900: 93, 100%, 16%;
-  // Warn
-  --warn-500: 48, 94%, 57%;
-  --warn-900: 38, 100%, 28%;
-  // Danger
-  --danger-500: 0, 100%, 50%;
-  --danger-900: 9, 100%, 20%;
-}
+@import './colors';

@@ -6,13 +6,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./card.component.scss'],
 })
 export class CardComponent {
-  @Input() dot?: { base: string; dark: string };
+  @Input() dot?: 'success' | 'warn' | 'danger';
 
-  get dotColor() {
-    if (!this.dot) return {};
-    return {
-      'background-color': 'hsl(' + this.dot.base + ')',
-      color: 'hsl(' + this.dot.dark + ')',
-    };
+  get dotClass() {
+    return `dot dot-${this.dot}`;
   }
 }
