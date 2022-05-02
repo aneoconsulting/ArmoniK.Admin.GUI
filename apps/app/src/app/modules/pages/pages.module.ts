@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PagesComponent } from './pages.component';
 import { RouterModule } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SessionsComponent } from './modules/sessions/sessions.component';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
