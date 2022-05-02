@@ -1,4 +1,4 @@
-export enum TaskStatus {
+export enum TaskStatusEnum {
   TASK_STATUS_UNSPECIFIED = 0,
   TASK_STATUS_CREATING = 1,
   TASK_STATUS_SUBMITTED = 2,

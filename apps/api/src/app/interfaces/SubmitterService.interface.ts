@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import { TaskStatus } from '@armonik.admin.gui/interfaces';
+import { TaskStatusEnum } from '@armonik.admin.gui/interfaces';
 
 export type StatusCount = {
-  status: TaskStatus;
+  status: TaskStatusEnum;
   count: number;
 };
 
