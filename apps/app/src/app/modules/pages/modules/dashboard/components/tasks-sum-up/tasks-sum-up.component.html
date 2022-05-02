@@ -1,18 +1,18 @@
 <section class="clr-row">
   <div class="clr-col-lg-4 clr-col-12">
-    <ui-card [dotColor]="'success'">
+    <ui-card [dot]="{ base: 'var(--green-500)', dark: 'var(--green-900)' }">
       <span title> XX tâches complétées </span>
       <span link> En savoir plus </span>
     </ui-card>
   </div>
   <div class="clr-col-lg-4 clr-col-12">
-    <ui-card [dotColor]="'warn'">
+    <ui-card [dot]="{ base: 'var(--warn-500)', dark: 'var(--warn-900)' }">
       <span title> XX tâches en cours </span>
       <span link> En savoir plus </span>
     </ui-card>
   </div>
   <div class="clr-col-lg-4 clr-col-12">
-    <ui-card [dotColor]="'error'">
+    <ui-card [dot]="{ base: 'var(--danger-500)', dark: 'var(--danger-900)' }">
       <span title> XX tâches en erreur </span>
       <span link> En savoir plus </span>
     </ui-card>
