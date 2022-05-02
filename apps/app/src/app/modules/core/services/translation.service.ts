@@ -42,10 +42,10 @@ export class TranslationService {
   /**
    * Default language provided by the storage, by the navigator or by the application
    */
-  initLocale(localeId: string) {
+  initLocale(localeId: LanguageCode) {
     const defaultLocaleId =
-      this.getLanguageFromStorage() ||
-      this.getLanguageFromNavigator() ||
+      this.checkLanguage(this.getLanguageFromStorage()) ||
+      this.checkLanguage(this.getLanguageFromNavigator()) ||
       localeId;
     this.setDefaultLocale(defaultLocaleId);
     this.translateService.use(defaultLocaleId);
@@ -89,10 +89,17 @@ export class TranslationService {
   }
 
   private getLanguageFromStorage() {
-    return localStorage.getItem(this.storageKey) as LanguageCode | undefined;
+    return localStorage.getItem(this.storageKey) as string | undefined;
   }
 
   private getLanguageFromNavigator() {
-    return this.translateService.getBrowserLang();
+    return this.translateService.getBrowserLang() as string | undefined;
+  }
+
+  private checkLanguage(lang: string | undefined) {
+    if (!lang) {
+      return;
+    }
+    return this.languages.find((l) => l.code === lang)?.code;
   }
 }

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { TranslationService } from './modules/core/services/translation.service';
+import {
+  LanguageCode,
+  TranslationService,
+} from './modules/core/services/translation.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +11,6 @@ import { TranslationService } from './modules/core/services/translation.service'
 })
 export class AppComponent {
   constructor(private translationService: TranslationService) {
-    this.translationService.initLocale('en');
+    this.translationService.initLocale(LanguageCode.EN);
   }
 }
