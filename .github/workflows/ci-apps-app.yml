@@ -4,13 +4,13 @@ on:
     branches-ignore:
       - "main"
     paths:
-      - "appps/app/**"
+      - "apps/app/**"
   pull_request:
     branches:
       - "main"
       - "develop"
     paths:
-      - "appps/app/**"
+      - "apps/app/**"
 
 env:
   NODE_VERSION: 16
