@@ -2,10 +2,10 @@
   <ui-header>
     <a [routerLink]="['/']" branding>
       <span class="title"
-        >Admin ArmoniK
-        <!-- <span>{{ localeId }}</span> -->
-
-        <div>{{ now | date }}</div>
+        >Admin ArmoniK -
+        <span class="">
+          {{ now | date: 'short' }}
+        </span>
       </span>
     </a>
     <ul
@@ -26,7 +26,7 @@
       <router-outlet></router-outlet>
     </div>
 
-    <ui-sidenav>
+    <ui-sidenav fxLayout="column" fxLayoutAlign="between">
       <a
         *ngFor="let link of links"
         [routerLink]="[link.path]"
