@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { TitleService } from '../../../core/title.service';
 
 @Component({
   selector: 'app-pages-sessions',
@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent {
-  constructor(private titleService: Title) {
+  constructor(private titleService: TitleService) {
     this.titleService.setTitle('Sessions');
   }
 }
