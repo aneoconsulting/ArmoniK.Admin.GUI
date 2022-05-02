@@ -3,9 +3,9 @@
   height: 12px;
   border-radius: 50%;
 
-  $types: ('success', 'warn', 'danger');
+  $dotTypes: ('success', 'warn', 'danger');
 
-  @each $type in $types {
+  @each $type in $dotTypes {
     &-#{$type} {
       box-shadow: 0 0 0 3px var(--#{$type}-900);
       background-color: var(--#{$type}-500);
