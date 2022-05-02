@@ -13,7 +13,7 @@ import { ClarityModule } from '@clr/angular';
     CommonModule,
     ClarityModule,
     UiModule,
-    RouterModule.forRoot([
+    RouterModule.forChild([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
         path: 'admin',

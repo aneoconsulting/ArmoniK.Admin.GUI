@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { AppComponent } from './app.component';
-import { PagesComponent } from './modules/pages/pages.component';
 import { PagesModule } from './modules/pages/pages.module';
 
 @NgModule({
@@ -15,7 +14,11 @@ import { PagesModule } from './modules/pages/pages.module';
     BrowserAnimationsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: '*', children: [{ path: '*', component: PagesComponent }] },
+      {
+        path: '*',
+        loadChildren: () =>
+          import('./modules/pages/pages.module').then((m) => m.PagesModule),
+      },
     ]),
     UiModule,
     PagesModule,
