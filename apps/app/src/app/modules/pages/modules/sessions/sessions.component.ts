@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 
+type Session = {
+  id: number;
+};
+
 @Component({
   selector: 'app-pages-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent {
-  sessions = [
+  sessions: Session[] = [
     {
       id: 1,
     },
@@ -23,4 +27,8 @@ export class SessionsComponent {
       id: 5,
     },
   ];
+
+  identifySession(_: number, session: Session) {
+    return session.id;
+  }
 }

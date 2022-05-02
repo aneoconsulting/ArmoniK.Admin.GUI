@@ -4,7 +4,7 @@
   <clr-datagrid>
     <clr-dg-column>Session ID</clr-dg-column>
 
-    <clr-dg-row *ngFor="let session of sessions">
+    <clr-dg-row *ngFor="let session of sessions; trackBy: identifySession">
       <clr-dg-cell>
         <a [routerLink]="[session.id]" class="block">
           {{ session.id }}
