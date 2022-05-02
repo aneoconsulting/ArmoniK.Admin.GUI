@@ -1,5 +1,5 @@
-import { Component, LOCALE_ID, Inject } from '@angular/core';
-import { LocaleId } from '../core/providers/locale.provider';
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import {
   LanguageCode,
   TranslationService,
@@ -13,13 +13,16 @@ export class PagesComponent {
   now = Date.now();
 
   links = [
-    { path: 'dashboard', label: 'sidenav.dashboard' },
-    { path: 'sessions', label: 'sidenav.sessions' },
+    {
+      path: 'dashboard',
+      label: this.translateService.get('sidenav.dashboard'),
+    },
+    { path: 'sessions', label: this.translateService.get('sidenav.sessions') },
   ];
 
   constructor(
-    // @Inject(LOCALE_ID) public localeId: LocaleId,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private translateService: TranslateService
   ) {}
 
   public get languages() {

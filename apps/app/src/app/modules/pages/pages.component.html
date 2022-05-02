@@ -34,7 +34,7 @@
         [routerLinkActiveOptions]="{ exact: true }"
         class="nav-link"
       >
-        {{ link.label | translate }}
+        {{ link.label | async }}
       </a>
     </ui-sidenav>
   </div>
