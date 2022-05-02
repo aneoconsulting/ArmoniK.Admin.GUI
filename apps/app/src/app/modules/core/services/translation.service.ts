@@ -52,7 +52,7 @@ export class TranslationService {
     this.subscribeToLangChange();
   }
 
-  setDefaultLocale(localeId: string) {
+  setDefaultLocale(localeId: LanguageCode) {
     this.translateService.setDefaultLang(localeId);
   }
 
