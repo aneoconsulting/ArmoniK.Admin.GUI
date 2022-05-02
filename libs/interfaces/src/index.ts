@@ -1,1 +1,1 @@
-export * from './lib/TasksStatus';
+export * from './lib/tasks-status.enum';
