@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package Armonik.api.grpc.v1;
+
+service sessions {
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {}
+
+  rpc GetSessions(GetSessionsRequest) returns (GetSessionsResponse) {}
+
+  rpc CloseSession(CloseSessionRequest) returns (CloseSessionResponse) {}
+
+  rpc ReOpenSession(ReOpenSessionRequest) returns (ReOpenSessionResponse) {}
+}
+
+message GetSessionRequest {
+  string session_id = 1;
+}
+
+message GetSessionResponse {
+  Session session = 1;
+}
+
+message GetSessionsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message GetSessionsResponse {
+  SessionList sessions = 1;
+}
+
+message CloseSessionRequest {
+  string session_id = 1;
+}
+
+message CloseSessionResponse {
+  bool success = 1;
+}
+
+message ReOpenSessionRequest {
+  string session_id = 1;
+}
+
+message ReOpenSessionResponse {
+  bool success = 1;
+}
+
+// Object for the Session
+message Session {
+  fixed64 id = 1;
+  int32 user_id = 2;
+  uint64 application_id = 3;
+  uint32 status = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message SessionList {
+  repeated Session sessions = 1;
+}
