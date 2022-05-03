@@ -8,7 +8,7 @@ export enum LanguageCode {
   FR = 'fr',
 }
 
-type Language = {
+export type Language = {
   code: LanguageCode;
   name: string;
 };

@@ -1,9 +1,15 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  Language,
   LanguageCode,
   TranslationService,
 } from '../core/services/translation.service';
+
+type Link = {
+  path: string;
+  label: string;
+};
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html',
@@ -12,7 +18,7 @@ import {
 export class PagesComponent {
   now = Date.now();
 
-  links = [
+  links: Link[] = [
     {
       path: 'dashboard',
       label: this.translateService.instant('sidenav.dashboard'),
@@ -34,5 +40,13 @@ export class PagesComponent {
 
   public changeLanguage(lang: LanguageCode) {
     this.translationService.setLocale(lang);
+  }
+
+  public trackByLabel(_: number, item: Link) {
+    return item.label;
+  }
+
+  public trackByLanguageName(_: number, item: Language) {
+    return item.name;
   }
 }

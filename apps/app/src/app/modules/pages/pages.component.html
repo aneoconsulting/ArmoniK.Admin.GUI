@@ -14,7 +14,7 @@
       fxLayout="row"
       fxLayoutAlign="center center"
     >
-      <li *ngFor="let language of languages">
+      <li *ngFor="let language of languages; trackBy: trackByLanguageName">
         <button class="btn btn-link" (click)="changeLanguage(language.code)">
           {{ language.name | uppercase }}
         </button>
@@ -28,7 +28,7 @@
 
     <ui-sidenav fxLayout="column" fxLayoutAlign="between">
       <a
-        *ngFor="let link of links"
+        *ngFor="let link of links; trackBy: trackByLabel"
         [routerLink]="[link.path]"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
