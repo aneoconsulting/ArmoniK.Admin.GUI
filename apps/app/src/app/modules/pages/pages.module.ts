@@ -4,7 +4,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { LocaleProvider } from '../core/providers/locale.provider';
 import { TranslationService } from '../core/services/translation.service';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
@@ -19,7 +18,6 @@ import { PagesComponent } from './pages.component';
     ClarityModule,
     UiModule,
     FlexLayoutModule,
-    TranslateModule.forChild(),
     RouterModule.forRoot([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {

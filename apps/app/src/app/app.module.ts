@@ -18,6 +18,7 @@ import {
   LanguageCode,
   TranslationService,
 } from './modules/core/services/translation.service';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 registerLocaleData(localeFr, 'fr');
 registerLocaleData(localeEn, 'en');
