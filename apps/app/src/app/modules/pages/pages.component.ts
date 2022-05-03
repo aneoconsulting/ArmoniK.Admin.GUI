@@ -15,9 +15,12 @@ export class PagesComponent {
   links = [
     {
       path: 'dashboard',
-      label: this.translateService.get('sidenav.dashboard'),
+      label: this.translateService.instant('sidenav.dashboard'),
     },
-    { path: 'sessions', label: this.translateService.get('sidenav.sessions') },
+    {
+      path: 'sessions',
+      label: this.translateService.instant('sidenav.sessions'),
+    },
   ];
 
   constructor(
