@@ -1,7 +1,7 @@
 <main class="main-container">
   <ui-header>
-    <a [routerLink]="['/']" branding>
-      <span class="title">Admin HarmoniK</span>
+    <a routerLink="/" branding>
+      <span class="title">Admin Armonik</span>
     </a></ui-header
   >
   <div class="content-container">
@@ -12,13 +12,11 @@
     <ui-sidenav>
       <a
         *ngFor="let link of links"
-        [routerLink]="[link.path]"
+        clrVerticalNavLink
+        [routerLink]="link.path"
         routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
+        >{{ link.label }}</a
       >
-        {{ link.label }}
-      </a>
     </ui-sidenav>
   </div>
 </main>
