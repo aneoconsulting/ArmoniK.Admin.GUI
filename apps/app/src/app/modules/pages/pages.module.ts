@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PagesComponent } from './pages.component';
+import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { PagesComponent } from './pages.component';
 
 @NgModule({
   declarations: [PagesComponent],
@@ -14,6 +15,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     ClarityModule,
     UiModule,
     DashboardModule,
+    FlexLayoutModule,
     RouterModule.forChild([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {

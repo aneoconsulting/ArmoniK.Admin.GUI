@@ -1,24 +1,39 @@
 <main class="main-container">
   <ui-header>
-    <a [routerLink]="['/']" branding>
-      <span class="title">Admin HarmoniK</span>
-    </a></ui-header
-  >
+    <a routerLink="/" branding>
+      <span class="title"
+        >Admin ArmoniK -
+        <span class="">
+          {{ now | date: 'short' }}
+        </span>
+      </span>
+    </a>
+    <ul
+      actions
+      class="list-unstyled"
+      fxLayout="row"
+      fxLayoutAlign="center center"
+    >
+      <li *ngFor="let language of languages; trackBy: trackByLanguageName">
+        <button class="btn btn-link" (click)="changeLanguage(language.code)">
+          {{ language.name | uppercase }}
+        </button>
+      </li>
+    </ul>
+  </ui-header>
   <div class="content-container">
-    <div class="content-area">
-      <router-outlet></router-outlet>
-    </div>
-
     <ui-sidenav>
       <a
         *ngFor="let link of links"
-        [routerLink]="[link.path]"
+        clrVerticalNavLink
+        [routerLink]="link.path"
         routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
+        >{{ link.label }}</a
       >
-        {{ link.label }}
-      </a>
     </ui-sidenav>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </main>
