@@ -27,6 +27,10 @@ export class PagesComponent {
       path: 'sessions',
       label: this.translateService.instant('sidenav.sessions'),
     },
+    {
+      path: 'tasks',
+      label: this.translateService.instant('sidenav.tasks'),
+    },
   ];
 
   constructor(

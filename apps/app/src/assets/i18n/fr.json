@@ -1,6 +1,10 @@
 {
   "sidenav": {
     "dashboard": "Tableau de bord",
-    "sessions": "Sessions"
+    "sessions": "Sessions",
+    "tasks": "Tâches"
+  },
+  "tasks": {
+    "title": "Tâches"
   }
 }

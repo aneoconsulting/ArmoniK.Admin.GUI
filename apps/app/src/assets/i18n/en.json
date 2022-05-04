@@ -1,6 +1,10 @@
 {
   "sidenav": {
     "dashboard": "Dashboard",
-    "sessions": "Sessions"
+    "sessions": "Sessions",
+    "tasks": "Tasks"
+  },
+  "tasks": {
+    "title": "Tasks"
   }
 }
