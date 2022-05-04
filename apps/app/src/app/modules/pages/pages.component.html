@@ -22,11 +22,7 @@
     </ul>
   </ui-header>
   <div class="content-container">
-    <div class="content-area">
-      <router-outlet></router-outlet>
-    </div>
-
-    <ui-sidenav fxLayout="column" fxLayoutAlign="between">
+    <ui-sidenav>
       <a
         *ngFor="let link of links"
         clrVerticalNavLink
@@ -35,5 +31,9 @@
         >{{ link.label }}</a
       >
     </ui-sidenav>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </main>
