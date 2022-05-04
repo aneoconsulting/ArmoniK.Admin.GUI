@@ -12,13 +12,11 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { LocaleProvider } from './modules/core/providers/locale.provider';
-import { PagesComponent } from './modules/pages/pages.component';
 import { PagesModule } from './modules/pages/pages.module';
 import {
   LanguageCode,
   TranslationService,
 } from './modules/core/services/translation.service';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 registerLocaleData(localeFr, 'fr');
 registerLocaleData(localeEn, 'en');
@@ -41,7 +39,11 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     RouterModule.forRoot([
-      { path: '*', children: [{ path: '*', component: PagesComponent }] },
+      {
+        path: '*',
+        loadChildren: () =>
+          import('./modules/pages/pages.module').then((m) => m.PagesModule),
+      },
     ]),
     UiModule,
     PagesModule,

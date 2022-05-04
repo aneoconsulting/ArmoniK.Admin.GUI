@@ -15,7 +15,7 @@ import { PagesComponent } from './pages.component';
     ClarityModule,
     UiModule,
     FlexLayoutModule,
-    RouterModule.forRoot([
+    RouterModule.forChild([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
         path: 'admin',
