@@ -4,12 +4,14 @@ import { SessionsComponent } from './sessions.component';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import * as Components from './components';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [SessionsComponent],
   imports: [
     CommonModule,
     ClarityModule,
+    TranslateModule,
     RouterModule.forChild([
       {
         path: '',

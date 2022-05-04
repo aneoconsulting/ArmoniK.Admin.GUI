@@ -2,5 +2,13 @@
   "sidenav": {
     "dashboard": "Tableau de bord",
     "sessions": "Sessions"
+  },
+  "sessions": {
+    "session": "session",
+    "sessions": "sessions",
+    "title": "Toutes les sessions",
+    "table": {
+      "id": "Session ID"
+    }
   }
 }

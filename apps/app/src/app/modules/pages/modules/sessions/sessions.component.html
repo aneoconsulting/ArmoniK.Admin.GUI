@@ -1,8 +1,8 @@
 <section>
-  <h1>Toutes les sessions</h1>
+  <h1>{{ 'sessions.title' | translate }}</h1>
 
   <clr-datagrid>
-    <clr-dg-column>Session ID</clr-dg-column>
+    <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: identifySession">
       <clr-dg-cell>
@@ -12,6 +12,12 @@
       </clr-dg-cell>
     </clr-dg-row>
 
-    <clr-dg-footer> {{ sessions.length }} sessions </clr-dg-footer>
+    <clr-dg-footer>
+      {{ sessions.length }}
+      {{
+        (sessions.length > 1 ? 'sessions.sessions' : 'sessions.session')
+          | translate
+      }}
+    </clr-dg-footer>
   </clr-datagrid>
 </section>
