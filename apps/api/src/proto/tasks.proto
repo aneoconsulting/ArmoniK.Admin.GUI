@@ -22,14 +22,17 @@ message GetTaskResponse {
 }
 
 message GetTasksRequest {
+  // TODO: mettre une abstraction
   optional Task.id per_page = 1;
   optional Task.id page = 2;
   optional string order_by = 3;
   optional string order = 4;
+  // TODO: ajouter un filtre
   optional Task.status status = 5;
 }
 
 message GetTasksResponse {
+  // TODO: Transformer en pagination
   PaginationMeta meta = 1;
   TasksList data = 2;
 }
@@ -44,6 +47,7 @@ message CountTasksResponse {
 
 // Object for tasks
 message Task {
+  // TODO: id est une string
   fixed64 id = 1;
   Session.id session_id = 2;
   TaskStatus status = 3;

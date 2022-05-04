@@ -26,16 +26,19 @@ message GetSessionResponse {
 }
 
 message GetSessionsRequest {
+  // TODO: Abstratire dans un message pagination
   optional Session.id per_page = 1;
   optional Session.id page = 2;
   optional string order_by = 3;
   optional string order = 4;
+  // TODO: Mettre dans un SessionFilter
   optional Session.user_id user_id = 5;
   optional Session.application_id application_id = 6;
   optional Session.status status = 7;
 }
 
 message GetSessionsResponse {
+  // TODO: Renommer en pagination
   PaginationMeta meta = 1;
   SessionList data = 2;
 }
@@ -45,6 +48,7 @@ message CloseSessionRequest {
 }
 
 message CloseSessionResponse {
+  // TODO: Faire une enum pour les status
   bool success = 1;
 }
 
@@ -57,6 +61,7 @@ message ReOpenSessionResponse {
 }
 
 message CountSessionsRequest {
+  // TODO: Sessio filter
   optional Session.user_id user_id = 1;
   optional Session.application_id application_id = 2;
   optional Session.status status = 3;
@@ -68,8 +73,10 @@ message CountSessionsResponse {
 
 // Object for the Session
 message Session {
+  // TODO: id est un string
   fixed64 id = 1;
   int32 user_id = 2;
+  // TODO: Avoir l'application en entier pour pouvoir afficher le nom
   Application.id application_id = 3;
   string closed_at = 4;
   string created_at = 4;

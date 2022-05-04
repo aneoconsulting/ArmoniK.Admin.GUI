@@ -10,6 +10,7 @@ service applications {
   rpc GetApplications(GetApplicationsRequest) returns (GetApplicationsResponse) {}
 }
 
+// Voir si on ne peut pas ne pas faire d'encapsulation (Marie préfère pour avoir des choses cohérents)
 message GetApplicationRequest {
   Application.id application_id = 1;
 }
@@ -18,11 +19,15 @@ message GetApplicationResponse {
   Application application = 1;
 }
 
+// TODO: Filtrer par user_id (réutiliser ceux du repo Proto ?)
 message GetApplicationsRequest {
+  // TODO: Il faut faire une pagination
+  // C'est une application id parce que tu peux avoir un per_page de 1
   optional Application.id per_page = 1;
   optional Application.id page = 2;
-  optional string order_by = 3;
-  optional string order = 4;
+  // TODO: Mettre les order_by et les order sur tout
+  // optional string order_by = 3;
+  // optional string order = 4;
 }
 
 message GetApplicationsResponse {
@@ -31,7 +36,9 @@ message GetApplicationsResponse {
 }
 
 // Object for the application
+// TODO: Il faut changer le type de l'id, c'est un string
 message Application {
+  // TODO: Version et Hash
   uint64 id = 1;
   string name = 2;
   string description = 3;
