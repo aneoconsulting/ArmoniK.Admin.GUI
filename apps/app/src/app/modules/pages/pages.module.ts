@@ -24,6 +24,13 @@ import { PagesComponent } from './pages.component';
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           { path: 'sessions', component: SessionsComponent },
           { path: 'dashboard', component: DashboardComponent },
+          {
+            path: 'applications',
+            loadChildren: () =>
+              import('./modules/applications/applications.module').then(
+                (m) => m.ApplicationsModule
+              ),
+          },
         ],
       },
     ]),
