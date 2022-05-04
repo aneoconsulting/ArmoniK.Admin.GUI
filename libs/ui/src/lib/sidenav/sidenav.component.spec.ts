@@ -16,7 +16,6 @@ describe('SidenavComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SidenavComponent, TestHostComponent],
-      imports: [ClarityModule],
     }).compileComponents();
   });
 
