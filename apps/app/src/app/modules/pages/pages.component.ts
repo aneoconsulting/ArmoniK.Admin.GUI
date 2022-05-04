@@ -42,11 +42,11 @@ export class PagesComponent {
     this.translationService.setLocale(lang);
   }
 
-  public trackByLabel(_: number, item: Link) {
+  public trackByLabel(_: number, item: Link): string {
     return item.label;
   }
 
-  public trackByLanguageName(_: number, item: Language) {
+  public trackByLanguageName(_: number, item: Language): string {
     return item.name;
   }
 }

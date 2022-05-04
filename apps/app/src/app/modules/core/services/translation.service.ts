@@ -33,7 +33,7 @@ export class TranslationService {
     // If adding a new language, don't forget to add it to the translation files and to register locale data
   ];
 
-  get locales() {
+  get locales(): Language[] {
     return this.languages;
   }
 
@@ -42,7 +42,7 @@ export class TranslationService {
   /**
    * Default language provided by the storage, by the navigator or by the application
    */
-  initLocale(localeId: LanguageCode) {
+  initLocale(localeId: LanguageCode): void {
     const defaultLocaleId =
       this.checkLanguage(this.getLanguageFromStorage()) ||
       this.checkLanguage(this.getLanguageFromNavigator()) ||
@@ -52,20 +52,20 @@ export class TranslationService {
     this.subscribeToLangChange();
   }
 
-  setDefaultLocale(localeId: LanguageCode) {
+  setDefaultLocale(localeId: LanguageCode): void {
     this.translateService.setDefaultLang(localeId);
   }
 
-  setLocale(localeId: LanguageCode) {
+  setLocale(localeId: LanguageCode): void {
     this.translateService.use(localeId);
     this.setLanguageToStorage(localeId);
   }
 
-  get currentLocale() {
+  get currentLocale(): string {
     return this.translateService.currentLang;
   }
 
-  private subscribeToLangChange() {
+  private subscribeToLangChange(): void {
     this.translateService.onLangChange.subscribe(async () => {
       // Store current strategy to restore it later
       const { shouldReuseRoute } = this.router.routeReuseStrategy;
@@ -80,23 +80,23 @@ export class TranslationService {
     });
   }
 
-  private setRouteReuse(reuse: ShouldReuseRoute) {
+  private setRouteReuse(reuse: ShouldReuseRoute): void {
     this.router.routeReuseStrategy.shouldReuseRoute = reuse;
   }
 
-  private setLanguageToStorage(lang: LanguageCode) {
+  private setLanguageToStorage(lang: LanguageCode): void {
     localStorage.setItem(this.storageKey, lang);
   }
 
-  private getLanguageFromStorage() {
+  private getLanguageFromStorage(): string | undefined {
     return localStorage.getItem(this.storageKey) as string | undefined;
   }
 
-  private getLanguageFromNavigator() {
+  private getLanguageFromNavigator(): string | undefined {
     return this.translateService.getBrowserLang() as string | undefined;
   }
 
-  private checkLanguage(lang: string | undefined) {
+  private checkLanguage(lang: string | undefined): LanguageCode | undefined {
     if (!lang) {
       return;
     }
