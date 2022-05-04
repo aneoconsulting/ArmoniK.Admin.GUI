@@ -1,6 +1,6 @@
 <main class="main-container">
   <ui-header>
-    <a [routerLink]="['/']" branding>
+    <a routerLink="/" branding>
       <span class="title"
         >Admin ArmoniK -
         <span class="">
@@ -22,20 +22,18 @@
     </ul>
   </ui-header>
   <div class="content-container">
+    <ui-sidenav>
+      <a
+        *ngFor="let link of links"
+        clrVerticalNavLink
+        [routerLink]="link.path"
+        routerLinkActive="active"
+        >{{ link.label }}</a
+      >
+    </ui-sidenav>
+
     <div class="content-area">
       <router-outlet></router-outlet>
     </div>
-
-    <ui-sidenav fxLayout="column" fxLayoutAlign="between">
-      <a
-        *ngFor="let link of links; trackBy: trackByLabel"
-        [routerLink]="[link.path]"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="nav-link"
-      >
-        {{ link.label }}
-      </a>
-    </ui-sidenav>
   </div>
 </main>
