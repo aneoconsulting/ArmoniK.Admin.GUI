@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PagesComponent } from './pages.component';
+import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
-import { SessionsComponent } from './modules/sessions/sessions.component';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
+import { SessionsComponent } from './modules/sessions/sessions.component';
+import { PagesComponent } from './pages.component';
 
 @NgModule({
   declarations: [PagesComponent],
@@ -12,6 +13,7 @@ import { ClarityModule } from '@clr/angular';
     CommonModule,
     ClarityModule,
     UiModule,
+    FlexLayoutModule,
     RouterModule.forRoot([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
