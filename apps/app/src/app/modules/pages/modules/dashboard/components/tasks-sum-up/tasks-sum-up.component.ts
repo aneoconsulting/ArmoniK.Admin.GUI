@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './tasks-sum-up.component.html',
   styleUrls: ['./tasks-sum-up.component.scss'],
 })
-export class TasksSumUpComponent {}
+export class TasksSumUpComponent {
+  param = { value: 15 };
+}

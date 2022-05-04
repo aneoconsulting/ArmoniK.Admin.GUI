@@ -7,9 +7,9 @@
   "dashboard": {
     "title": "Dashboard",
     "tasks": {
-      "completed": "Tasks completed",
-      "in-progress": "Tasks in progress",
-      "error": "Tasks in error"
+      "completed": "{{value}} tasks completed",
+      "in-progress": "{{value}} tasks in progress",
+      "error": "{{value}} tasks in error"
     }
   }
 }
