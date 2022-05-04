@@ -28,7 +28,7 @@ export class SessionsComponent {
     },
   ];
 
-  identifySession(_: number, session: Session) {
+  trackBySession(_: number, session: Session): number {
     return session.id;
   }
 }

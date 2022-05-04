@@ -4,7 +4,7 @@
   <clr-datagrid>
     <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
 
-    <clr-dg-row *ngFor="let session of sessions; trackBy: identifySession">
+    <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
       <clr-dg-cell>
         <a [routerLink]="[session.id]" class="block">
           {{ session.id }}
