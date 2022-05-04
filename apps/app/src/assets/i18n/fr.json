@@ -1,6 +1,15 @@
 {
+  "more-info": "En savoir plus",
   "sidenav": {
     "dashboard": "Tableau de bord",
     "sessions": "Sessions"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "tasks": {
+      "completed": "Tâches terminées",
+      "in-progress": "Tâches en cours",
+      "error": "Tâches en erreur"
+    }
   }
 }
