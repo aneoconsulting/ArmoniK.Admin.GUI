@@ -23,5 +23,6 @@ import { TranslateModule } from '@ngx-translate/core';
       },
     ]),
   ],
+  exports: [CommonModule, ClarityModule],
 })
 export class SessionsModule {}

@@ -1,19 +1,28 @@
+import { APP_BASE_HREF } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterModule } from '@angular/router';
+import { ClarityModule } from '@clr/angular';
+import { SessionDetailComponent } from './session-detail.component';
 
-import { ShowComponent } from './show.component';
-
-describe('ShowComponent', () => {
-  let component: ShowComponent;
-  let fixture: ComponentFixture<ShowComponent>;
+describe('SessionDetailComponent', () => {
+  let component: SessionDetailComponent;
+  let fixture: ComponentFixture<SessionDetailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ShowComponent],
+      declarations: [SessionDetailComponent],
+      imports: [RouterModule.forRoot([])],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ShowComponent);
+    fixture = TestBed.createComponent(SessionDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
