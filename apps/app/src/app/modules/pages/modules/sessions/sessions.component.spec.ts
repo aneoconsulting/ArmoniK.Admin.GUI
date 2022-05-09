@@ -1,10 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { SessionsComponent } from './sessions.component';
-import { SessionsModule } from './sessions.module';
 
 describe('SessionsComponent', () => {
   let component: SessionsComponent;
@@ -13,7 +10,7 @@ describe('SessionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SessionsComponent],
-      imports: [TranslateModule.forRoot(), SessionsModule],
+      imports: [TranslateModule.forRoot()],
     }).compileComponents();
   });
 
