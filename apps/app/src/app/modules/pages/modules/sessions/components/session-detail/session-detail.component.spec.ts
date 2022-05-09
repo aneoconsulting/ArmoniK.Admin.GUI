@@ -1,7 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { ClarityModule } from '@clr/angular';
 import { SessionDetailComponent } from './session-detail.component';
 
 describe('SessionDetailComponent', () => {
