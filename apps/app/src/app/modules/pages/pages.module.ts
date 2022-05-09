@@ -4,7 +4,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { SessionsComponent } from './modules/sessions/sessions.component';
 import { PagesComponent } from './pages.component';
 
@@ -23,7 +22,13 @@ import { PagesComponent } from './pages.component';
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           { path: 'sessions', component: SessionsComponent },
-          { path: 'dashboard', component: DashboardComponent },
+          {
+            path: 'dashboard',
+            loadChildren: () =>
+              import('./modules/dashboard/dashboard.module').then(
+                (m) => m.DashboardModule
+              ),
+          },
         ],
       },
     ]),

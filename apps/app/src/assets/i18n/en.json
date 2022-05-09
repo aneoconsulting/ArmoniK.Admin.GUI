@@ -1,6 +1,15 @@
 {
+  "more-info": "More info",
   "sidenav": {
     "dashboard": "Dashboard",
     "sessions": "Sessions"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "tasks": {
+      "completed": "{{value}} tasks completed",
+      "in-progress": "{{value}} tasks in progress",
+      "error": "{{value}} tasks in error"
+    }
   }
 }
