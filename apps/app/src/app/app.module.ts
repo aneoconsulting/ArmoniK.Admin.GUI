@@ -4,13 +4,11 @@ import localeEn from '@angular/common/locales/en';
 import localeFr from '@angular/common/locales/fr';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { LocaleProvider } from './modules/core/providers';
-import { TitleService } from './modules/core/services';
 import { LanguageCode, TranslationService } from './modules/core/services/';
 
 registerLocaleData(localeFr, 'fr');
@@ -24,7 +22,6 @@ export function HttpLoaderFactory(http: HttpClient) {
 @NgModule({
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -41,7 +38,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     ]),
   ],
-  providers: [LocaleProvider, TitleService],
+  providers: [LocaleProvider],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })

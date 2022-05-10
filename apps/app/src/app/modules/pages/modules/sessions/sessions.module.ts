@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import * as Components from './components';
 import { TranslateModule } from '@ngx-translate/core';
+import '@clr/icons';
+import '@clr/icons/shapes/essential-shapes';
 
 @NgModule({
   declarations: [SessionsComponent],
