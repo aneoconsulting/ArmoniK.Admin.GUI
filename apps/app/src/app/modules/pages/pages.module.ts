@@ -21,6 +21,11 @@ import { PagesComponent } from './pages.component';
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           {
+            path: 'tasks',
+            loadChildren: () =>
+              import('./modules/tasks/tasks.module').then((m) => m.TasksModule),
+          },
+          {
             path: 'applications',
             loadChildren: () =>
               import('./modules/applications/applications.module').then(

@@ -12,18 +12,23 @@ export class SessionsComponent {
   sessions: Session[] = [
     {
       id: 1,
+      closed: false,
     },
     {
       id: 2,
+      closed: false,
     },
     {
       id: 3,
+      closed: false,
     },
     {
       id: 4,
+      closed: true,
     },
     {
       id: 5,
+      closed: false,
     },
   ];
 

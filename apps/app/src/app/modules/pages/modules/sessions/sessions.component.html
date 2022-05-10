@@ -3,12 +3,35 @@
 
   <clr-datagrid>
     <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.table.actions.title' | translate }}
+    </clr-dg-column>
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
-      <clr-dg-cell>
-        <a [routerLink]="[session.id]" class="block">
-          {{ session.id }}
+      <clr-dg-cell class="custom-cell">
+        <a [routerLink]="[session.id]" class="custom-link">
+          <span>
+            {{ session.id }}
+          </span>
         </a>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <button
+          *ngIf="session.closed"
+          type="button"
+          class="btn btn-icon"
+          [title]="'sessions.table.actions.open' | translate"
+        >
+          <clr-icon shape="refresh"></clr-icon>
+        </button>
+        <button
+          *ngIf="!session.closed"
+          type="button"
+          class="btn btn-icon btn-danger-outline"
+          [title]="'sessions.table.actions.close' | translate"
+        >
+          <clr-icon shape="times"></clr-icon>
+        </button>
       </clr-dg-cell>
     </clr-dg-row>
 

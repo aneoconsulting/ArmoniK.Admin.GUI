@@ -3,7 +3,11 @@
   "sidenav": {
     "dashboard": "Dashboard",
     "sessions": "Sessions",
+    "tasks": "Tasks",
     "applications": "Applications"
+  },
+  "tasks": {
+    "title": "Tasks"
   },
   "applications": {
     "title": "Applications"
@@ -13,7 +17,12 @@
     "sessions": "{{value}} sessions",
     "title": "All sessions",
     "table": {
-      "id": "Session ID"
+      "id": "Session ID",
+      "actions": {
+        "title": "Actions",
+        "open": "Open",
+        "close": "Close"
+      }
     }
   },
   "dashboard": {
