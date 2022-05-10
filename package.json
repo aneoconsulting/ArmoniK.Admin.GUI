@@ -27,6 +27,7 @@
     "@angular/platform-browser-dynamic": "~13.3.0",
     "@angular/router": "~13.3.0",
     "@clr/angular": "^13.2.1",
+    "@clr/icons": "^13.0.2",
     "@clr/ui": "^13.2.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
