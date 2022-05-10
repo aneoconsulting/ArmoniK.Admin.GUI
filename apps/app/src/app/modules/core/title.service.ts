@@ -8,6 +8,6 @@ export class TitleService {
   constructor(private titleService: Title) {}
 
   setTitle(newTitle: string) {
-    this.titleService.setTitle(newTitle + ' | Admin Armonik');
+    this.titleService.setTitle(newTitle + ' | Armonik');
   }
 }
