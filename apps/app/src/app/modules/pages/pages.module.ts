@@ -26,6 +26,13 @@ import { PagesComponent } from './pages.component';
               import('./modules/tasks/tasks.module').then((m) => m.TasksModule),
           },
           {
+            path: 'applications',
+            loadChildren: () =>
+              import('./modules/applications/applications.module').then(
+                (m) => m.ApplicationsModule
+              ),
+          },
+          {
             path: 'sessions',
             loadChildren: () =>
               import('./modules/sessions/sessions.module').then(
