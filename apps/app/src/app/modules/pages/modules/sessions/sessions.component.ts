@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
-
-type Session = {
-  id: number;
-};
+import { Session } from '../../../core/entities';
 
 @Component({
   selector: 'app-pages-sessions',

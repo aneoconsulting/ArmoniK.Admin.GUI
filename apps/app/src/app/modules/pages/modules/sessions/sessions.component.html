@@ -13,10 +13,9 @@
     </clr-dg-row>
 
     <clr-dg-footer>
-      {{ sessions.length }}
       {{
         (sessions.length > 1 ? 'sessions.sessions' : 'sessions.session')
-          | translate
+          | translate: { value: sessions.length }
       }}
     </clr-dg-footer>
   </clr-datagrid>
