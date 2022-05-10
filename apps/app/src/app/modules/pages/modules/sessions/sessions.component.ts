@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Session } from '../../../core/entities';
+import { TitleService } from '../../../core/services/title.service';
 
 @Component({
   selector: 'app-pages-sessions',
@@ -24,6 +25,10 @@ export class SessionsComponent {
       id: 5,
     },
   ];
+
+  constructor(private titleService: TitleService) {
+    this.titleService.setTitle('Sessions');
+  }
 
   trackBySession(_: number, session: Session): number {
     return session.id;
