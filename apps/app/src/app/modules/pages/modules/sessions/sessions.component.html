@@ -3,7 +3,9 @@
 
   <clr-datagrid>
     <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column> {{ 'sessions.table.actions' | translate }} </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.table.actions.title' | translate }}
+    </clr-dg-column>
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
       <clr-dg-cell class="custom-cell">
@@ -18,7 +20,7 @@
           *ngIf="session.closed"
           type="button"
           class="btn btn-icon"
-          aria-label="home"
+          [title]="'sessions.table.actions.open' | translate"
         >
           <clr-icon shape="refresh"></clr-icon>
         </button>
@@ -26,7 +28,7 @@
           *ngIf="!session.closed"
           type="button"
           class="btn btn-icon btn-danger-outline"
-          aria-label="home"
+          [title]="'sessions.table.actions.close' | translate"
         >
           <clr-icon shape="times"></clr-icon>
         </button>

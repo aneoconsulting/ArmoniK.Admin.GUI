@@ -14,7 +14,11 @@
     "title": "Toutes les sessions",
     "table": {
       "id": "Session ID",
-      "actions": "Actions"
+      "actions": {
+        "title": "Actions",
+        "open": "Ouvrir",
+        "close": "Fermer"
+      }
     }
   },
   "dashboard": {
