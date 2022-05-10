@@ -3,7 +3,11 @@
   "sidenav": {
     "dashboard": "Tableau de bord",
     "sessions": "Sessions",
+    "tasks": "Tâches",
     "applications": "Applications"
+  },
+  "tasks": {
+    "title": "Tâches"
   },
   "applications": {
     "title": "Applications"
