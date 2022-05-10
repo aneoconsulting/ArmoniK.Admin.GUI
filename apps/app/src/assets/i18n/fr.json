@@ -4,6 +4,14 @@
     "dashboard": "Tableau de bord",
     "sessions": "Sessions"
   },
+  "sessions": {
+    "session": "{{value}} session",
+    "sessions": "{{value}} sessions",
+    "title": "Toutes les sessions",
+    "table": {
+      "id": "Session ID"
+    }
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "tasks": {

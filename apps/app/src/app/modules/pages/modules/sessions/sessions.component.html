@@ -1,1 +1,22 @@
-<p>sessions works!</p>
+<section>
+  <h1>{{ 'sessions.title' | translate }}</h1>
+
+  <clr-datagrid>
+    <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
+
+    <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
+      <clr-dg-cell>
+        <a [routerLink]="[session.id]" class="block">
+          {{ session.id }}
+        </a>
+      </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      {{
+        (sessions.length > 1 ? 'sessions.sessions' : 'sessions.session')
+          | translate: { value: sessions.length }
+      }}
+    </clr-dg-footer>
+  </clr-datagrid>
+</section>

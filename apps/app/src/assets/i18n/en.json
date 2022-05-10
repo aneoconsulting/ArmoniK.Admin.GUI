@@ -4,6 +4,14 @@
     "dashboard": "Dashboard",
     "sessions": "Sessions"
   },
+  "sessions": {
+    "session": "{{value}} session",
+    "sessions": "{{value}} sessions",
+    "title": "All sessions",
+    "table": {
+      "id": "Session ID"
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
     "tasks": {

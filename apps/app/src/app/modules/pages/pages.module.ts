@@ -4,7 +4,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
-import { SessionsComponent } from './modules/sessions/sessions.component';
 import { PagesComponent } from './pages.component';
 
 @NgModule({
@@ -21,7 +20,13 @@ import { PagesComponent } from './pages.component';
         component: PagesComponent,
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          { path: 'sessions', component: SessionsComponent },
+          {
+            path: 'sessions',
+            loadChildren: () =>
+              import('./modules/sessions/sessions.module').then(
+                (m) => m.SessionsModule
+              ),
+          },
           {
             path: 'dashboard',
             loadChildren: () =>
