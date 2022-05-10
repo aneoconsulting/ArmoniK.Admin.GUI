@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { UiModule } from '@armonik.admin.gui/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { TasksSumUpComponent } from './tasks-sum-up.component';
@@ -12,7 +11,7 @@ describe('TasksSumUpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TasksSumUpComponent],
-      imports: [UiModule, RouterModule, TranslateModule.forRoot()],
+      imports: [RouterModule, TranslateModule.forRoot()],
     }).compileComponents();
   });
 

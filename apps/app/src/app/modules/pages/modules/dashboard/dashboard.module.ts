@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardComponent } from './dashboard.component';
-import * as Components from './components';
-import { UiModule } from '@armonik.admin.gui/ui';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { UiModule } from '@armonik.admin.gui/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { TitleService } from '../../../core/services';
+import * as Components from './components';
+import { DashboardComponent } from './dashboard.component';
 
 @NgModule({
   declarations: [DashboardComponent, Components.TasksSumUpComponent],
@@ -14,5 +15,6 @@ import { TranslateModule } from '@ngx-translate/core';
     UiModule,
     RouterModule.forChild([{ path: '', component: DashboardComponent }]),
   ],
+  providers: [TitleService],
 })
 export class DashboardModule {}

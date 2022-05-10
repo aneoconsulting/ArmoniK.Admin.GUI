@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
+import localeFr from '@angular/common/locales/fr';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,12 +11,10 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
-import { LocaleProvider } from './modules/core/providers/locale.provider';
+import { LocaleProvider } from './modules/core/providers';
+import { TitleService } from './modules/core/services';
+import { LanguageCode, TranslationService } from './modules/core/services/';
 import { PagesModule } from './modules/pages/pages.module';
-import {
-  LanguageCode,
-  TranslationService,
-} from './modules/core/services/translation.service';
 
 registerLocaleData(localeFr, 'fr');
 registerLocaleData(localeEn, 'en');
@@ -49,7 +47,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     PagesModule,
     ClarityModule,
   ],
-  providers: [LocaleProvider],
+  providers: [LocaleProvider, TitleService],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
