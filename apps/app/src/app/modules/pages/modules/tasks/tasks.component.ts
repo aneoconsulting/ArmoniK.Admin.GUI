@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { TitleService } from '../../../core/services';
 
 @Component({
@@ -7,7 +8,10 @@ import { TitleService } from '../../../core/services';
   styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent {
-  constructor(private titleService: TitleService) {
-    this.titleService.setTitle('Tasks');
+  constructor(
+    private titleService: TitleService,
+    private translateService: TranslateService
+  ) {
+    this.titleService.setTitle(this.translateService.instant('tasks.title'));
   }
 }
