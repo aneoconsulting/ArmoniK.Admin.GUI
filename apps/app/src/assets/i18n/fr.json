@@ -13,7 +13,8 @@
     "sessions": "{{value}} sessions",
     "title": "Toutes les sessions",
     "table": {
-      "id": "Session ID"
+      "id": "Session ID",
+      "actions": "Actions"
     }
   },
   "dashboard": {
