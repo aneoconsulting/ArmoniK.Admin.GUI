@@ -1,1 +1,1 @@
-export * from './Session.entity';
+export * from './sessions.entity';
