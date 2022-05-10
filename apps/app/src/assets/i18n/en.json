@@ -2,7 +2,11 @@
   "more-info": "More info",
   "sidenav": {
     "dashboard": "Dashboard",
-    "sessions": "Sessions"
+    "sessions": "Sessions",
+    "applications": "Applications"
+  },
+  "applications": {
+    "title": "Applications"
   },
   "sessions": {
     "session": "{{value}} session",
