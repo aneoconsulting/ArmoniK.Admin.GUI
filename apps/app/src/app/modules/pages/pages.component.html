@@ -22,7 +22,7 @@
     </ul>
   </ui-header>
   <div class="content-container">
-    <ui-sidenav>
+    <clr-vertical-nav [clr-nav-level]="1">
       <a
         *ngFor="let link of links"
         clrVerticalNavLink
@@ -30,7 +30,7 @@
         routerLinkActive="active"
         >{{ link.label }}</a
       >
-    </ui-sidenav>
+    </clr-vertical-nav>
 
     <div class="content-area">
       <router-outlet></router-outlet>
