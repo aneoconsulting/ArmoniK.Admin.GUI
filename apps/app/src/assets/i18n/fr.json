@@ -1,4 +1,5 @@
 {
+  "more-info": "En savoir plus",
   "sidenav": {
     "dashboard": "Tableau de bord",
     "sessions": "Sessions",
@@ -6,5 +7,21 @@
   },
   "tasks": {
     "title": "Tâches"
+  },
+  "sessions": {
+    "session": "{{value}} session",
+    "sessions": "{{value}} sessions",
+    "title": "Toutes les sessions",
+    "table": {
+      "id": "Session ID"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "tasks": {
+      "completed": "{{value}} tâches terminées",
+      "in-progress": "{{value}} tâches en cours",
+      "error": "{{value}} tâches en erreur"
+    }
   }
 }
