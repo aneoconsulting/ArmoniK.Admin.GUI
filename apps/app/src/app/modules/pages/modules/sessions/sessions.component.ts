@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Session } from '../../../core/entities';
 import { TitleService } from '../../../core/services/title.service';
 
@@ -31,8 +32,11 @@ export class SessionsComponent {
     },
   ];
 
-  constructor(private titleService: TitleService) {
-    this.titleService.setTitle('Sessions');
+  constructor(
+    private titleService: TitleService,
+    private translateService: TranslateService
+  ) {
+    this.titleService.setTitle(this.translateService.instant('sessions.title'));
   }
 
   trackBySession(_: number, session: Session): number {
