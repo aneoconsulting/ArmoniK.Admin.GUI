@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TitleService } from '../../../core/title.service';
+import { TitleService } from '../../../core/services/';
 
 @Component({
   selector: 'app-pages-dashboard',
