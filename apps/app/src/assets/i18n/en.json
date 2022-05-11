@@ -20,7 +20,7 @@
       "id": "Session ID",
       "actions": {
         "title": "Actions",
-        "open": "Open",
+        "reopen": "Reopen",
         "close": "Close"
       }
     }

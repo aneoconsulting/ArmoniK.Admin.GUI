@@ -16,22 +16,12 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
-        <button
-          *ngIf="session.closed"
-          type="button"
-          class="btn btn-icon"
-          [title]="'sessions.table.actions.open' | translate"
-        >
-          <clr-icon shape="refresh"></clr-icon>
-        </button>
-        <button
-          *ngIf="!session.closed"
-          type="button"
-          class="btn btn-icon btn-danger-outline"
-          [title]="'sessions.table.actions.close' | translate"
-        >
-          <clr-icon shape="times"></clr-icon>
-        </button>
+        <app-pages-sessions-session-action
+          [id]="session.id"
+          [closed]="session.closed"
+          [title]="getSessionActionTitle(session)"
+          (data)="onSessionAction($event)"
+        ></app-pages-sessions-session-action>
       </clr-dg-cell>
     </clr-dg-row>
 

@@ -7,7 +7,7 @@ import * as Components from './components';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [SessionsComponent],
+  declarations: [SessionsComponent, Components.SessionActionComponent],
   imports: [
     CommonModule,
     ClarityModule,

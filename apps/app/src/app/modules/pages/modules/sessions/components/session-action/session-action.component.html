@@ -1,0 +1,11 @@
+<button
+  (click)="onClick()"
+  [clrLoading]="clickButtonState"
+  type="button"
+  class="btn btn-icon"
+  [ngClass]="{ 'btn-danger-outline': !closed }"
+  [title]="title | translate"
+>
+  <clr-icon *ngIf="!closed" shape="times"></clr-icon>
+  <clr-icon *ngIf="closed" shape="refresh"></clr-icon>
+</button>
