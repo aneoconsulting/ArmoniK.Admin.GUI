@@ -10,7 +10,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { LocaleProvider } from './modules/core/providers';
-import { TitleService } from './modules/core/services';
 import { LanguageCode, TranslationService } from './modules/core/services/';
 
 registerLocaleData(localeFr, 'fr');
@@ -41,7 +40,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     ]),
   ],
-  providers: [LocaleProvider, TitleService],
+  providers: [LocaleProvider],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
