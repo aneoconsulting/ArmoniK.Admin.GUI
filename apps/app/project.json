@@ -20,7 +20,7 @@
           "node_modules/@clr/ui/clr-ui-dark.min.css",
           "apps/app/src/styles.scss"
         ],
-        "scripts": ["node_modules/@clr/icons/clr-icons-lite.min.js"]
+        "scripts": []
       },
       "configurations": {
         "production": {
