@@ -18,19 +18,21 @@
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
       <clr-dg-cell class="custom-cell">
-        <a [routerLink]="[session.id]" class="custom-link">
+        <a [routerLink]="[session.id]">
           <span>
             {{ session.id }}
           </span>
         </a>
       </clr-dg-cell>
-      <clr-dg-cell>
-        {{
-          (session.closed
-            ? 'sessions.table.status.closed'
-            : 'sessions.table.status.opened'
-          ) | translate
-        }}
+      <clr-dg-cell class="custom-cell">
+        <span>
+          {{
+            (session.closed
+              ? 'sessions.table.status.closed'
+              : 'sessions.table.status.opened'
+            ) | translate
+          }}
+        </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <app-pages-sessions-session-action
