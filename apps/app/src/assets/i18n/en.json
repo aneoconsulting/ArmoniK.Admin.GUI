@@ -18,6 +18,11 @@
     "title": "All sessions",
     "table": {
       "id": "Session ID",
+      "status": {
+        "title": "Status",
+        "closed": "Closed",
+        "opened": "Open"
+      },
       "placeholder": "No sessions found",
       "actions": {
         "title": "Actions",

@@ -6,6 +6,9 @@
       {{ 'sessions.table.id' | translate }}
     </clr-dg-column>
     <clr-dg-column>
+      {{ 'sessions.table.status.title' | translate }}
+    </clr-dg-column>
+    <clr-dg-column>
       {{ 'sessions.table.actions.title' | translate }}
     </clr-dg-column>
 
@@ -20,6 +23,14 @@
             {{ session.id }}
           </span>
         </a>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        {{
+          (session.closed
+            ? 'sessions.table.status.closed'
+            : 'sessions.table.status.opened'
+          ) | translate
+        }}
       </clr-dg-cell>
       <clr-dg-cell>
         <app-pages-sessions-session-action
