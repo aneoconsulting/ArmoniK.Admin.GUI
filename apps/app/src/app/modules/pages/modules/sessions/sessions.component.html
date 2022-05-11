@@ -1,11 +1,17 @@
 <section>
   <h1>{{ 'sessions.title' | translate }}</h1>
 
-  <clr-datagrid>
-    <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
+  <clr-datagrid [clrDgLoading]="loading">
+    <clr-dg-column>
+      {{ 'sessions.table.id' | translate }}
+    </clr-dg-column>
     <clr-dg-column>
       {{ 'sessions.table.actions.title' | translate }}
     </clr-dg-column>
+
+    <clr-dg-placeholder>
+      {{ 'sessions.table.placeholder' | translate }}
+    </clr-dg-placeholder>
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
       <clr-dg-cell class="custom-cell">

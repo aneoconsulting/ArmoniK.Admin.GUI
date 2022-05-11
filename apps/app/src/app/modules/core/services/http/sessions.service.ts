@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Session } from '@armonik.admin.gui/armonik-typing';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs';
 import { ErrorsService } from './errors.service';
 
@@ -11,15 +13,23 @@ export class SessionsService {
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {}
 
-  close(id: string) {
+  getSessions(): Observable<Session[]> {
     return this.http
-      .post(`${this.url}/${id}/close`, null)
-      .pipe(catchError(this.errorsService.handleError('close', [])));
+      .get<Session[]>(this.url)
+      .pipe(
+        catchError(this.errorsService.handleError<Session[]>('getSessions'))
+      );
   }
 
-  reopen(id: string) {
+  close(id: Session['id']): Observable<Session> {
     return this.http
-      .post(`${this.url}/${id}/reopen`, null)
-      .pipe(catchError(this.errorsService.handleError('reopen', [])));
+      .post<Session>(`${this.url}/${id}/close`, null)
+      .pipe(catchError(this.errorsService.handleError<Session>('close')));
+  }
+
+  reopen(id: Session['id']): Observable<Session> {
+    return this.http
+      .post<Session>(`${this.url}/${id}/reopen`, null)
+      .pipe(catchError(this.errorsService.handleError<Session>('reopen')));
   }
 }

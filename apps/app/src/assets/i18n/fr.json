@@ -18,6 +18,7 @@
     "title": "Toutes les sessions",
     "table": {
       "id": "Session ID",
+      "placeholder": "Aucune session trouvée",
       "actions": {
         "title": "Actions",
         "reopen": "Rouvrir",
