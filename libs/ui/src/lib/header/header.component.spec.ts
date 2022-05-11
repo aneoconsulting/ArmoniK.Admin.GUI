@@ -31,11 +31,6 @@ describe('HeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have be a header', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('header')).toBeTruthy();
-  });
-
   it('should have a class "branding"', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.branding')).toBeTruthy();
