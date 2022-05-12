@@ -13,23 +13,21 @@ export class SessionsService {
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {}
 
-  getSessions(): Observable<Session[]> {
+  index(): Observable<Session[]> {
     return this.http
       .get<Session[]>(this.url)
-      .pipe(
-        catchError(this.errorsService.handleError<Session[]>('getSessions'))
-      );
+      .pipe(catchError(this.errorsService.handleError<Session[]>('index')));
   }
 
   close(id: Session['id']): Observable<Session> {
     return this.http
       .post<Session>(`${this.url}/${id}/close`, null)
-      .pipe(catchError(this.errorsService.handleError<Session>('close')));
+      .pipe(catchError(this.errorsService.handleError<Session>('close', id)));
   }
 
   reopen(id: Session['id']): Observable<Session> {
     return this.http
       .post<Session>(`${this.url}/${id}/reopen`, null)
-      .pipe(catchError(this.errorsService.handleError<Session>('reopen')));
+      .pipe(catchError(this.errorsService.handleError<Session>('reopen', id)));
   }
 }

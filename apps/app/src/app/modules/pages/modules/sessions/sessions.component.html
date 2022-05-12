@@ -1,6 +1,10 @@
 <section>
   <h1>{{ 'sessions.title' | translate }}</h1>
 
+  <app-pages-sessions-session-errors
+    [errors]="errors"
+  ></app-pages-sessions-session-errors>
+
   <clr-datagrid [clrDgLoading]="loading">
     <clr-dg-column>
       {{ 'sessions.table.id' | translate }}
@@ -39,7 +43,8 @@
           [id]="session.id"
           [closed]="session.closed"
           [title]="getSessionActionTitle(session)"
-          (data)="onSessionAction($event)"
+          (receivedData)="onSessionAction($event)"
+          (receivedError)="onSessionActionError($event)"
         ></app-pages-sessions-session-action>
       </clr-dg-cell>
     </clr-dg-row>

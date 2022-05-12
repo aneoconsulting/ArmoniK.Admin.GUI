@@ -16,6 +16,10 @@
     "session": "{{value}} session",
     "sessions": "{{value}} sessions",
     "title": "All sessions",
+    "errors": {
+      "404": "Session {{value}} not found - operation '{{name}}'",
+      "504": "Impossible to contact the server - operation '{{name}}'"
+    },
     "table": {
       "id": "Session ID",
       "status": {

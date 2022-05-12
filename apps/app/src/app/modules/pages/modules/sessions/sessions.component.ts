@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SessionsService } from '../../../core/services/http/sessions.service';
 import { TitleService } from '../../../core/services/title.service';
-import { Session } from '@armonik.admin.gui/armonik-typing';
+import { AppError, Session } from '@armonik.admin.gui/armonik-typing';
 
 @Component({
   selector: 'app-pages-sessions',
@@ -11,6 +11,7 @@ import { Session } from '@armonik.admin.gui/armonik-typing';
 })
 export class SessionsComponent implements OnInit {
   sessions: Session[] = [];
+  errors: AppError[] = [];
   loading = true;
 
   constructor(
@@ -22,8 +23,9 @@ export class SessionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sessionsService.getSessions().subscribe({
-      error: () => {
+    this.sessionsService.index().subscribe({
+      error: (error: AppError) => {
+        this.errors.push(error);
         this.loading = false;
       },
       next: (sessions) => {
@@ -49,5 +51,9 @@ export class SessionsComponent implements OnInit {
       if (session.id === data.id) return data;
       return session;
     });
+  }
+
+  onSessionActionError(error: AppError): void {
+    this.errors.push(error);
   }
 }

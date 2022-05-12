@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
@@ -5,11 +6,15 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ErrorsService {
-  public handleError<T>(operation = 'operation') {
-    return (error: any): Observable<T> => {
-      return throwError(
-        () => new Error(`${operation} failed: ${error.message}`)
-      );
+  public handleError<T>(operation: string, id: string | undefined = undefined) {
+    return (error: HttpErrorResponse): Observable<T> => {
+      return throwError(() => {
+        return {
+          status: error.status,
+          operation: operation,
+          id: id,
+        };
+      });
     };
   }
 }

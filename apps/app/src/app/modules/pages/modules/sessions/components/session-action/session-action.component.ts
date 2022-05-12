@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Session } from '@armonik.admin.gui/armonik-typing';
+import { AppError, Session } from '@armonik.admin.gui/armonik-typing';
 import { ClrLoadingState } from '@clr/angular';
 import { Observable } from 'rxjs';
 import { SessionsService } from '../../../../../core/services/http';
@@ -14,7 +14,8 @@ export class SessionActionComponent {
   @Input() closed?: boolean;
   @Input() title = '';
 
-  @Output() data = new EventEmitter<Session>();
+  @Output() receivedData = new EventEmitter<Session>();
+  @Output() receivedError = new EventEmitter<AppError>();
 
   private serviceCall?: Observable<Session>;
 
@@ -22,12 +23,13 @@ export class SessionActionComponent {
 
   constructor(private sessionsService: SessionsService) {}
 
-  private onError(): void {
+  private onError(error: AppError): void {
+    this.receivedError.emit(error);
     this.clickButtonState = ClrLoadingState.ERROR;
   }
 
   private onNext(data: Session): void {
-    this.data.emit(data);
+    this.receivedData.emit(data);
     this.clickButtonState = ClrLoadingState.SUCCESS;
   }
 

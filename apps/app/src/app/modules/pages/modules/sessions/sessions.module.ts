@@ -9,7 +9,11 @@ import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
 
 @NgModule({
-  declarations: [SessionsComponent, Components.SessionActionComponent],
+  declarations: [
+    SessionsComponent,
+    Components.SessionActionComponent,
+    Components.SessionErrorsComponent,
+  ],
   imports: [
     CommonModule,
     ClarityModule,
