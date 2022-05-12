@@ -5,14 +5,22 @@ import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { PagesComponent } from './pages.component';
+import * as components from './components';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+
+import '@clr/icons';
+import '@clr/icons/shapes/essential-shapes';
 
 @NgModule({
-  declarations: [PagesComponent],
+  declarations: [PagesComponent, components.PagesApplicationsComponent],
   imports: [
     CommonModule,
     ClarityModule,
     UiModule,
     FlexLayoutModule,
+    FormsModule,
+    TranslateModule.forChild(),
     RouterModule.forChild([
       { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {

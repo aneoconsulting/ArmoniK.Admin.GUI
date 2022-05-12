@@ -1,0 +1,45 @@
+<div class="subnav">
+  <ul class="nav">
+    <li
+      class="nav-item"
+      *ngFor="
+        let application of currentApplications;
+        trackBy: trackByApplication
+      "
+    >
+      <a class="nav-link active" aria-current="page">{{ application.id }}</a>
+      <!-- TODO: Add a cross to close the item (and emit an event) -->
+    </li>
+    <li>
+      <button
+        class="btn btn-sm btn-icon"
+        (click)="addApplication()"
+        [title]="'applications.add.title'"
+      >
+        <clr-icon shape="plus" size="24"></clr-icon>
+      </button>
+    </li>
+    <!-- TODO: Add a button to add an application (using a modal and a liste) -->
+  </ul>
+</div>
+
+<!-- TODO: Add in a child component -->
+<clr-modal [(clrModalOpen)]="opened" clrModalSize="md">
+  <h3 class="modal-title">{{ 'applications.add.modal.title' | translate }}</h3>
+  <div class="modal-body">
+    <select clrSelect name="options" [(ngModel)]="selectedApplication">
+      <!-- options are applications -->
+      <option *ngFor="let application of applications" [value]="application.id">
+        {{ application.id }}
+      </option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="opened = false">
+      {{ 'applications.add.modal.cancel' | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="validate()">
+      {{ 'applications.add.modal.validate' | translate }}
+    </button>
+  </div>
+</clr-modal>

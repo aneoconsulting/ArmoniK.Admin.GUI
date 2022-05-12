@@ -21,6 +21,12 @@
       </li>
     </ul>
   </ui-header>
+
+  <app-pages-applications
+    [currentApplications]="currentApplications"
+    (receivedApplication)="onReceivedApplication($event)"
+  ></app-pages-applications>
+
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
       <a
