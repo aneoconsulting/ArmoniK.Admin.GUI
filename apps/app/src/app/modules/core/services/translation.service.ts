@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { noop } from 'rxjs';
+import { LangChangeEvent } from '@ngx-translate/core';
 
 export enum LanguageCode {
   EN = 'en',
@@ -48,8 +49,9 @@ export class TranslationService {
       this.checkLanguage(this.getLanguageFromNavigator()) ||
       localeId;
     this.setDefaultLocale(defaultLocaleId);
-    this.translateService.use(defaultLocaleId);
-    this.subscribeToLangChange();
+    this.translateService.use(defaultLocaleId).subscribe(() => {
+      this.subscribeToLangChange();
+    });
   }
 
   setDefaultLocale(localeId: LanguageCode): void {
