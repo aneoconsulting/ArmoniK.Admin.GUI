@@ -6,9 +6,18 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
 })
 export class AppSettingsService {
   currentApplications: Application[] = [];
+  activeApplication: Application | null = null;
 
   constructor() {
     this.loadCurrentApplications();
+  }
+
+  setActiveApplication(application: Application): void {
+    if (!this.ifAlreadySet(application)) {
+      this.currentApplications.push(application);
+      this.saveCurrentApplications();
+    }
+    this.activeApplication = application;
   }
 
   addCurrentApplication(application: Application): void {

@@ -49,7 +49,7 @@ export class TranslationService {
       localeId;
     this.setDefaultLocale(defaultLocaleId);
     this.translateService.use(defaultLocaleId);
-    this.subscribeToLangChange();
+    // this.subscribeToLangChange();
   }
 
   setDefaultLocale(localeId: LanguageCode): void {

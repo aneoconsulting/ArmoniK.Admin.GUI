@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Application } from '@armonik.admin.gui/armonik-typing';
 import { TranslateService } from '@ngx-translate/core';
-import { TitleService } from '../../../core/services/';
+import { AppSettingsService, TitleService } from '../../../core/services/';
 
 @Component({
   selector: 'app-pages-dashboard',
@@ -10,10 +11,15 @@ import { TitleService } from '../../../core/services/';
 export class DashboardComponent {
   constructor(
     private titleService: TitleService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private appSettingsService: AppSettingsService
   ) {
     this.titleService.setTitle(
       this.translateService.instant('dashboard.title')
     );
+  }
+
+  get activeApplication(): Application | null {
+    return this.appSettingsService.activeApplication;
   }
 }

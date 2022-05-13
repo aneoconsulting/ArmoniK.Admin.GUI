@@ -12,6 +12,7 @@ import * as components from './components';
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
 import { AppSettingsService } from '../core/services';
+import { ApplicationsService } from '../core/services/http';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,6 @@ import { AppSettingsService } from '../core/services';
       },
     ]),
   ],
-  providers: [AppSettingsService],
+  providers: [AppSettingsService, ApplicationsService],
 })
 export class PagesModule {}

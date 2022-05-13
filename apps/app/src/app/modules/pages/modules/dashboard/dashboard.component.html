@@ -1,3 +1,6 @@
-<h1>{{ 'dashboard.title' | translate }}</h1>
+<h1>
+  {{ 'dashboard.title' | translate }}
+  {{ activeApplication ? '- ' + activeApplication.id : '' }}
+</h1>
 
 <app-pages-dashboard-tasks-sum-up></app-pages-dashboard-tasks-sum-up>

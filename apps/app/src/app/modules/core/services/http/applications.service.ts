@@ -17,4 +17,10 @@ export class ApplicationsService {
       .get<Application[]>(this.url)
       .pipe(catchError(this.errorsService.handleError<Application[]>('index')));
   }
+
+  show(id: string): Observable<Application> {
+    return this.http
+      .get<Application>(`${this.url}/${id}`)
+      .pipe(catchError(this.errorsService.handleError<Application>('show')));
+  }
 }
