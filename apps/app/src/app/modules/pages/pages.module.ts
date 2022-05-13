@@ -27,9 +27,8 @@ import { AppSettingsService } from '../core/services';
     FormsModule,
     TranslateModule.forChild(),
     RouterModule.forChild([
-      { path: '', redirectTo: 'admin', pathMatch: 'full' },
       {
-        path: 'admin',
+        path: '',
         component: PagesComponent,
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

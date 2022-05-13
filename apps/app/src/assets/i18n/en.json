@@ -11,6 +11,7 @@
   },
   "applications": {
     "title": "Applications",
+    "all": "All applications",
     "remove": {
       "title": "Remove application"
     },
@@ -18,6 +19,7 @@
       "title": "Add application",
       "modal": {
         "title": "Add application",
+        "label": "Choose an application",
         "cancel": "Cancel",
         "validate": "Submit"
       }

@@ -33,8 +33,14 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     RouterModule.forRoot([
+      { path: '', redirectTo: 'admin/all', pathMatch: 'full' },
       {
-        path: '',
+        path: 'admin/all',
+        loadChildren: () =>
+          import('./modules/pages/pages.module').then((m) => m.PagesModule),
+      },
+      {
+        path: 'admin/:application',
         loadChildren: () =>
           import('./modules/pages/pages.module').then((m) => m.PagesModule),
       },
