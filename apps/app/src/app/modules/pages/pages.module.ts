@@ -5,15 +5,20 @@ import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { PagesComponent } from './pages.component';
-import * as components from './components';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import * as components from './components';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
+import { AppSettingsService } from '../core/services';
 
 @NgModule({
-  declarations: [PagesComponent, components.PagesApplicationsComponent],
+  declarations: [
+    PagesComponent,
+    components.PagesApplicationsComponent,
+    components.PagesApplicationsModalComponent,
+  ],
   imports: [
     CommonModule,
     ClarityModule,
@@ -58,5 +63,6 @@ import '@clr/icons/shapes/essential-shapes';
       },
     ]),
   ],
+  providers: [AppSettingsService],
 })
 export class PagesModule {}

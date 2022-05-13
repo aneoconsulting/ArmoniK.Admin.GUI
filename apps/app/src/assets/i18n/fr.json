@@ -10,7 +10,18 @@
     "title": "Tâches"
   },
   "applications": {
-    "title": "Applications"
+    "title": "Applications",
+    "remove": {
+      "title": "Supprimer l'application"
+    },
+    "add": {
+      "title": "Ajouter une application",
+      "modal": {
+        "title": "Ajouter une application",
+        "cancel": "Annuler",
+        "validate": "Ajouter"
+      }
+    }
   },
   "sessions": {
     "session": "{{value}} session",

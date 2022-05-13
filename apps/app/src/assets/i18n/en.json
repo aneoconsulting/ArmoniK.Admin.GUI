@@ -10,7 +10,18 @@
     "title": "Tasks"
   },
   "applications": {
-    "title": "Applications"
+    "title": "Applications",
+    "remove": {
+      "title": "Remove application"
+    },
+    "add": {
+      "title": "Add application",
+      "modal": {
+        "title": "Add application",
+        "cancel": "Cancel",
+        "validate": "Submit"
+      }
+    }
   },
   "sessions": {
     "session": "{{value}} session",

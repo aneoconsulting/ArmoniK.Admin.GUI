@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
-import { ApplicationsService } from '../../../core/services/http';
 
 @Component({
   selector: 'app-pages-applications',
@@ -9,31 +8,27 @@ import { ApplicationsService } from '../../../core/services/http';
 })
 export class PagesApplicationsComponent {
   @Input() currentApplications: Application[] = [];
-  @Output() receivedApplication = new EventEmitter<Application['id']>();
+  @Output() addApplicationChange = new EventEmitter<Application>();
+  @Output() removeApplicationChange = new EventEmitter<Application>();
 
-  applications: Application[] = [];
-  selectedApplication: Application['id'] | null = null;
-  opened = true;
-
-  constructor(private applicationsService: ApplicationsService) {
-    this.applicationsService.index().subscribe((applications) => {
-      this.applications = applications;
-    });
-  }
+  opened = false;
 
   addApplication(): void {
     this.opened = true;
-    this.selectedApplication = null;
   }
 
-  validate(): void {
-    if (this.selectedApplication) {
-      this.receivedApplication.emit(this.selectedApplication);
-    }
-    this.opened = false;
+  removeApplication(application: Application): void {
+    this.currentApplications = this.currentApplications.filter(
+      (app) => app.id !== application.id
+    );
+    this.removeApplicationChange.emit(application);
   }
 
-  trackByApplication(index: number, application: Application): string {
+  onReceivedApplication(application: Application): void {
+    this.addApplicationChange.emit(application);
+  }
+
+  trackByApplication(_: number, application: Application): string {
     return application.id;
   }
 }

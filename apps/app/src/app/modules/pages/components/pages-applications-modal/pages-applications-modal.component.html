@@ -1,0 +1,23 @@
+<clr-modal
+  [clrModalOpen]="opened"
+  (clrModalOpenChange)="close()"
+  clrModalSize="md"
+>
+  <h3 class="modal-title">{{ 'applications.add.modal.title' | translate }}</h3>
+  <div class="modal-body">
+    <select clrSelect name="options" [(ngModel)]="selectedApplication">
+      <!-- options are applications -->
+      <option *ngFor="let application of applications" [value]="application.id">
+        {{ application.id }}
+      </option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="opened = false">
+      {{ 'applications.add.modal.cancel' | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="validate()">
+      {{ 'applications.add.modal.validate' | translate }}
+    </button>
+  </div>
+</clr-modal>

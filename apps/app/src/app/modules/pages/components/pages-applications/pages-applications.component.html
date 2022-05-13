@@ -7,39 +7,34 @@
         trackBy: trackByApplication
       "
     >
-      <a class="nav-link active" aria-current="page">{{ application.id }}</a>
-      <!-- TODO: Add a cross to close the item (and emit an event) -->
+      <a
+        class="nav-link"
+        [routerLink]="[application.id]"
+        routerLinkActive="active"
+      >
+        {{ application.id }}
+      </a>
+      <button
+        class="btn btn-sm btn-link btn-delete"
+        (click)="removeApplication(application)"
+        [title]="'applications.remove.title' | translate"
+      >
+        <clr-icon shape="times" size="16" class="is-error"></clr-icon>
+      </button>
     </li>
     <li>
       <button
         class="btn btn-sm btn-icon"
         (click)="addApplication()"
-        [title]="'applications.add.title'"
+        [title]="'applications.add.title' | translate"
       >
         <clr-icon shape="plus" size="24"></clr-icon>
       </button>
     </li>
-    <!-- TODO: Add a button to add an application (using a modal and a liste) -->
   </ul>
 </div>
 
-<!-- TODO: Add in a child component -->
-<clr-modal [(clrModalOpen)]="opened" clrModalSize="md">
-  <h3 class="modal-title">{{ 'applications.add.modal.title' | translate }}</h3>
-  <div class="modal-body">
-    <select clrSelect name="options" [(ngModel)]="selectedApplication">
-      <!-- options are applications -->
-      <option *ngFor="let application of applications" [value]="application.id">
-        {{ application.id }}
-      </option>
-    </select>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="opened = false">
-      {{ 'applications.add.modal.cancel' | translate }}
-    </button>
-    <button type="button" class="btn btn-primary" (click)="validate()">
-      {{ 'applications.add.modal.validate' | translate }}
-    </button>
-  </div>
-</clr-modal>
+<app-pages-applications-modal
+  [(opened)]="opened"
+  (receivedApplication)="onReceivedApplication($event)"
+></app-pages-applications-modal>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import { TranslateService } from '@ngx-translate/core';
+import { AppSettingsService } from '../core/services';
 import {
   Language,
   LanguageCode,
@@ -17,8 +18,6 @@ type Link = {
   styleUrls: ['./pages.component.scss'],
 })
 export class PagesComponent {
-  currentApplications: Application[] = [];
-
   now = Date.now();
 
   links: Link[] = [
@@ -42,10 +41,9 @@ export class PagesComponent {
 
   constructor(
     private translationService: TranslationService,
-    private translateService: TranslateService
-  ) {
-    //  TODO: Get application from the local storage using the service
-  }
+    private translateService: TranslateService,
+    private appSettingsService: AppSettingsService
+  ) {}
 
   public get languages() {
     return this.translationService.locales;
@@ -63,8 +61,23 @@ export class PagesComponent {
     return item.name;
   }
 
-  public onReceivedApplication(application: Application['id']): void {
-    this.currentApplications.push({ id: application });
-    // TODO: Save application to the local storage using the service
+  public get currentApplications(): Application[] {
+    return this.appSettingsService.currentApplications;
+  }
+
+  public onAddApplication(application: Application): void {
+    this.addCurrentApplication(application);
+  }
+
+  public onRemoveApplication(application: Application): void {
+    this.removeCurrentApplication(application);
+  }
+
+  private addCurrentApplication(application: Application): void {
+    this.appSettingsService.addCurrentApplication(application);
+  }
+
+  private removeCurrentApplication(application: Application): void {
+    this.appSettingsService.removeCurrentApplication(application);
   }
 }

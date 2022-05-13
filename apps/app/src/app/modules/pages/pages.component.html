@@ -24,7 +24,8 @@
 
   <app-pages-applications
     [currentApplications]="currentApplications"
-    (receivedApplication)="onReceivedApplication($event)"
+    (addApplicationChange)="onAddApplication($event)"
+    (removeApplicationChange)="onRemoveApplication($event)"
   ></app-pages-applications>
 
   <div class="content-container">
