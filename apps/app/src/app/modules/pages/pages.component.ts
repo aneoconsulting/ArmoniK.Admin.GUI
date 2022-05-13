@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import { TranslateService } from '@ngx-translate/core';
 import { AppSettingsService } from '../core/services';
@@ -43,6 +43,7 @@ export class PagesComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private translationService: TranslationService,
     private translateService: TranslateService,
     private applicationsService: ApplicationsService,
@@ -92,9 +93,11 @@ export class PagesComponent implements OnInit {
 
   private addCurrentApplication(application: Application): void {
     this.appSettingsService.addCurrentApplication(application);
+    this.router.navigate(['admin', application.id]);
   }
 
   private removeCurrentApplication(application: Application): void {
+    this.router.navigate(['admin', 'all']);
     this.appSettingsService.removeCurrentApplication(application);
   }
 }

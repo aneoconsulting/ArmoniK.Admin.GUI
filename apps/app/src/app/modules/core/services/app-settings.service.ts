@@ -12,10 +12,9 @@ export class AppSettingsService {
     this.loadCurrentApplications();
   }
 
-  setActiveApplication(application: Application): void {
-    if (!this.ifAlreadySet(application)) {
-      this.currentApplications.push(application);
-      this.saveCurrentApplications();
+  setActiveApplication(application: Application | null): void {
+    if (application && !this.ifAlreadySet(application)) {
+      this.addCurrentApplication(application);
     }
     this.activeApplication = application;
   }
@@ -32,6 +31,7 @@ export class AppSettingsService {
     this.currentApplications = this.currentApplications.filter(
       (currentApplication) => currentApplication.id !== application.id
     );
+    this.setActiveApplication(null);
     this.saveCurrentApplications();
   }
 
