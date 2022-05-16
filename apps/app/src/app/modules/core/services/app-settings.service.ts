@@ -7,6 +7,7 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
 export class AppSettingsService {
   currentApplications: Application[] = [];
   activeApplication: Application | null = null;
+  allApplicationsUrl = 'all-applications';
 
   constructor() {
     this.loadCurrentApplications();
@@ -33,6 +34,10 @@ export class AppSettingsService {
     );
     this.setActiveApplication(null);
     this.saveCurrentApplications();
+  }
+
+  isApplicationId(id: string | null): boolean {
+    return id !== this.allApplicationsUrl;
   }
 
   private ifAlreadySet(application: Application): boolean {

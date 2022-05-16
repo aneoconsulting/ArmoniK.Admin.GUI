@@ -33,7 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     RouterModule.forRoot([
-      { path: '', redirectTo: 'admin/all', pathMatch: 'full' },
+      { path: '', redirectTo: 'admin/all-applications', pathMatch: 'full' },
       {
         path: 'admin/:application',
         loadChildren: () =>
