@@ -97,7 +97,7 @@ export class PagesComponent implements OnInit {
   }
 
   private removeCurrentApplication(application: Application): void {
-    this.router.navigate(['admin', 'all']);
+    this.router.navigate(['admin', this.appSettingsService.allApplicationsUrl]);
     this.appSettingsService.removeCurrentApplication(application);
   }
 }
