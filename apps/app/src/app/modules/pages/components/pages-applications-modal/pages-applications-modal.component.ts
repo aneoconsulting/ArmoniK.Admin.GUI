@@ -1,5 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { AppSettingsService } from '../../../core/services';
 import { ApplicationsService } from '../../../core/services/http';
 
 @Component({
@@ -7,7 +16,7 @@ import { ApplicationsService } from '../../../core/services/http';
   templateUrl: './pages-applications-modal.component.html',
   styleUrls: ['./pages-applications-modal.component.scss'],
 })
-export class PagesApplicationsModalComponent {
+export class PagesApplicationsModalComponent implements OnInit, OnChanges {
   @Input() opened = false;
   @Output() openedChange = new EventEmitter<boolean>();
   @Output() receivedApplication = new EventEmitter<Application>();
@@ -15,10 +24,27 @@ export class PagesApplicationsModalComponent {
   selectedApplication: Application['id'] | null = null;
   applications: Application[] = [];
 
-  constructor(private applicationsService: ApplicationsService) {
+  constructor(
+    private applicationsService: ApplicationsService,
+    private appSettingsService: AppSettingsService
+  ) {}
+
+  ngOnInit(): void {
     this.applicationsService.index().subscribe((applications) => {
-      this.applications = applications;
+      this.applications = this.filterApplications(
+        applications,
+        this.appSettingsService.currentApplications
+      );
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['opened']) {
+      this.applications = this.filterApplications(
+        this.applications,
+        this.appSettingsService.currentApplications
+      );
+    }
   }
 
   validate(): void {
@@ -34,5 +60,15 @@ export class PagesApplicationsModalComponent {
   close(): void {
     this.selectedApplication = null;
     this.openedChange.emit(false);
+  }
+
+  filterApplications(
+    applications: Application[],
+    currentApplications: Application[]
+  ): Application[] {
+    return applications.filter(
+      (application) =>
+        !currentApplications.some((app) => app.id === application.id)
+    );
   }
 }
