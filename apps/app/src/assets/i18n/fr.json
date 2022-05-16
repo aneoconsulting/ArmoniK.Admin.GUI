@@ -2,15 +2,7 @@
   "more-info": "En savoir plus",
   "sidenav": {
     "dashboard": "Tableau de bord",
-    "sessions": "Sessions",
-    "tasks": "Tâches",
-    "applications": "Applications"
-  },
-  "tasks": {
-    "title": "Tâches"
-  },
-  "applications": {
-    "title": "Applications"
+    "sessions": "Sessions"
   },
   "sessions": {
     "session": "{{value}} session",
