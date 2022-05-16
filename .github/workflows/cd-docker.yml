@@ -3,10 +3,10 @@ name: cd docker
 on:
   push:
     branches:
-      - "main"
-      - "develop"
+      - 'main'
+      - 'develop'
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   docker:
