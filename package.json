@@ -31,6 +31,7 @@
     "@clr/ui": "^13.2.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/microservices": "^8.4.5",
     "@nestjs/platform-express": "^8.0.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
