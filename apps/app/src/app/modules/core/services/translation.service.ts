@@ -48,8 +48,9 @@ export class TranslationService {
       this.checkLanguage(this.getLanguageFromNavigator()) ||
       localeId;
     this.setDefaultLocale(defaultLocaleId);
-    this.translateService.use(defaultLocaleId);
-    this.subscribeToLangChange();
+    this.translateService.use(defaultLocaleId).subscribe(() => {
+      this.subscribeToLangChange();
+    });
   }
 
   setDefaultLocale(localeId: LanguageCode): void {
