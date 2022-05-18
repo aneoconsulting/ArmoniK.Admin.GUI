@@ -1,4 +1,3 @@
-
 # ArmoniK GUI
 
 ArmoniK GUI add an administration interface to the ArmoniK project.
@@ -89,7 +88,7 @@ Build project
 
 ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not interesting to deploy the project independently.
 
-With each push on *main*, *develop* and a *tag*, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
+With each push on _main_, _develop_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
 ## Authors
 
