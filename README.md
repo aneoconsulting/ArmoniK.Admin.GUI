@@ -1,98 +1,101 @@
-# ArmonikAdminGui
 
-This project was generated using [Nx](https://nx.dev).
+# ArmoniK GUI
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+ArmoniK GUI add an administration interface to the ArmoniK project.
 
-🔎 **Smart, Fast and Extensible Build System**
+It is a monorepo containing the client, the server and shared libraries.
 
-## Quick Start & Documentation
+## Tech Stack
 
-[Nx Documentation](https://nx.dev/angular)
+**Client:** [Angular](https://angular.io), [Clarity](https://clarity.design/)
 
-[10-minute video showing all Nx features](https://nx.dev/getting-started/intro)
+**Server:** [Nest](https://nestjs.com)
 
-[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
+**Build System:** [Nx](https://nx.dev/)
 
-## Adding capabilities to your workspace
+Gitflow is used to facilitate the production and management of code.
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+## Run Locally
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+Clone the project
 
-Below are our core plugins:
+```bash
+  git clone https://github.com/aneoconsulting/ArmoniK.Admin.GUI
+```
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+Go to the project directory
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+```bash
+  cd ArmoniK.Admin.GUI
+```
 
-## Generate an application
+Install dependencies
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
+```bash
+  npm install
+```
 
-> You can use any of the plugins above to generate applications as well.
+Start the app (front-end using Angular)
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+```bash
+  nx serve app
+```
 
-## Generate a library
+Start the server (REST API using Nest)
 
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
+```bash
+  nx serve api
+```
 
-> You can also use any of the plugins above to generate libraries as well.
+Start the GUI (app and server)
 
-Libraries are shareable across libraries and applications. They can be imported from `@armonik.admin.gui/mylib`.
+```bash
+  nx run-many --target=serve --all
+```
 
-## Development server
+## Contributing
 
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+Contributions are always welcome!
 
-## Code scaffolding
+See `contributing.md` for ways to get started.
 
-Run `ng g component my-component --project=my-app` to generate a new component.
+Please adhere to this project's `code of conduct`.
 
-## Build
+## Running Tests
 
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+The tests run at each automatic PR via the actions.
 
-## Running unit tests
+But, it is possible to run tests locally.
 
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+Check lint
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+```bash
+  npx nx affected --target=lint --parallel=3 --base=develop
+```
 
-## Running end-to-end tests
+Run tests
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+```bash
+  npx nx affected --target=test --parallel=3 --ci --code-coverage --base=develop
+```
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+Build project
 
-## Understand your workspace
+```bash
+  npx nx affected --target=build --parallel=3 --base=develop
+```
 
-Run `nx graph` to see a diagram of the dependencies of your projects.
+## Deployment
 
-## Further help
+ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not interesting to deploy the project independently.
 
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
+With each push on *main*, *develop* and a *tag*, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
-## ☁ Nx Cloud
+## Authors
 
-### Distributed Computation Caching & Distributed Task Execution
+- [@esoubiran-aneo](https://github.com/esoubiran-aneo)
+- [@maurelleaneo](https://github.com/maurelleaneo)
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
+## License
 
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+[Apache 2.0](https://choosealicense.com/licenses/apache/)
