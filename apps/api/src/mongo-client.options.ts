@@ -13,7 +13,7 @@ const mongoClientVar = {
   databaseName: process.env.MongoDB__DatabaseName ?? null,
   directConnection: process.env.MongoDB__DirectConnection ?? null,
   caFile: process.env.MongoDB__CAFile ?? null,
-  tls: process.env.MongoDB__TLS ?? null,
+  tls: process.env.MongoDB__Tls ?? null,
   allowInsecureTls: process.env.MongoDB__AllowInsecureTls ?? null,
 };
 
