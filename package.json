@@ -30,6 +30,7 @@
     "@clr/icons": "^13.0.2",
     "@clr/ui": "^13.2.1",
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^2.0.1",
     "@nestjs/core": "^8.0.0",
     "@nestjs/microservices": "^8.4.5",
     "@nestjs/mongoose": "^9.0.3",
