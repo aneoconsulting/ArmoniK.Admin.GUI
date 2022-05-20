@@ -1,19 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
-import { AppSumUpComponent } from './app-sum-up.component';
+import { ApplicationCardComponent } from './application-card.component';
 
-describe('AppSumUpComponent', () => {
-  let component: AppSumUpComponent;
-  let fixture: ComponentFixture<AppSumUpComponent>;
+describe('ApplicationCardComponent', () => {
+  let component: ApplicationCardComponent;
+  let fixture: ComponentFixture<ApplicationCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppSumUpComponent],
+      declarations: [ApplicationCardComponent],
+      imports: [TranslateModule.forRoot()],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AppSumUpComponent);
+    fixture = TestBed.createComponent(ApplicationCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
