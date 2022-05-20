@@ -9,7 +9,8 @@ export class ApplicationsService {
 
   async findAll(): Promise<Application[]> {
     const result = await this.connection
-      .collection('TasksData')
+      // TODO: use name from a schema
+      .collection('TaskData')
       .aggregate<Application>([
         {
           // Groupe by Options.Options.GridAppName and sum tasks using Status
