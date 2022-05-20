@@ -1,4 +1,7 @@
+import { APP_BASE_HREF } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterModule } from '@angular/router';
+import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { SessionsComponent } from './sessions.component';
@@ -10,7 +13,17 @@ describe('SessionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SessionsComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [
+        RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+        ClarityModule,
+      ],
+      providers: [
+        {
+          provide: APP_BASE_HREF,
+          useValue: '/',
+        },
+      ],
     }).compileComponents();
   });
 

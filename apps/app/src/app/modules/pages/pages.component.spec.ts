@@ -1,20 +1,19 @@
-import { APP_BASE_HREF } from '@angular/common';
+// import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { UiModule } from '@armonik.admin.gui/ui';
-import { ClarityModule } from '@clr/angular';
+import { APP_BASE_HREF } from '@angular/common';
+import { PagesComponent } from './pages.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { TasksSumUpComponent } from './components';
+import { ClarityModule } from '@clr/angular';
+import { UiModule } from '@armonik.admin.gui/ui';
 
-import { DashboardComponent } from './dashboard.component';
-
-describe('DashboardComponent', () => {
-  let component: DashboardComponent;
-  let fixture: ComponentFixture<DashboardComponent>;
+describe('PagesComponent', () => {
+  let component: PagesComponent;
+  let fixture: ComponentFixture<PagesComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [DashboardComponent, TasksSumUpComponent],
+    TestBed.configureTestingModule({
+      declarations: [PagesComponent],
       imports: [
         RouterModule.forRoot([]),
         TranslateModule.forRoot(),
@@ -31,7 +30,7 @@ describe('DashboardComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashboardComponent);
+    fixture = TestBed.createComponent(PagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
