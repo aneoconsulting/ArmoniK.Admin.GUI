@@ -4,18 +4,18 @@
   "sourceRoot": "libs/ui/src",
   "prefix": "ui",
   "targets": {
-    "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/ui"],
-      "options": {
-        "jestConfig": "libs/ui/jest.config.js",
-        "passWithNoTests": true
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
         "lintFilePatterns": ["libs/ui/src/**/*.ts", "libs/ui/src/**/*.html"]
+      }
+    },
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/ui/src/test.ts",
+        "tsConfig": "libs/ui/tsconfig.spec.json",
+        "karmaConfig": "libs/ui/karma.conf.js"
       }
     }
   },
