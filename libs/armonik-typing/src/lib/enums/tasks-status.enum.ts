@@ -1,0 +1,14 @@
+export enum TaskStatus {
+  UNSPECIFIED = 0,
+  CREATING = 1,
+  SUBMITTED = 2,
+  DISPATCHED = 3,
+  PROCESSING = 10,
+  PROCESSED = 11,
+  COMPLETED = 4,
+  ERROR = 5,
+  FAILED = 6,
+  TIMEOUT = 7,
+  CANCELING = 8,
+  CANCELED = 9,
+}
