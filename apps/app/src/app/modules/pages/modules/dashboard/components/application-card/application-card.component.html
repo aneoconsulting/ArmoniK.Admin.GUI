@@ -1,0 +1,45 @@
+<section class="clr-row">
+  <div class="clr-col-12 clr-col-lg-4">
+    <article class="card">
+      <h3 class="card-header">Application 1</h3>
+      <div class="card-block">
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px"
+          class="card-text"
+        >
+          <span> {{ 'dashboard.applications.error' | translate: data }} </span>
+          <span class="dot dot-danger"></span>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px"
+          class="card-text"
+        >
+          <span>
+            {{ 'dashboard.applications.in-progress' | translate: data }}
+          </span>
+          <span class="dot dot-warn"></span>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px"
+          class="card-text"
+        >
+          <span>
+            {{ 'dashboard.applications.completed' | translate: data }}
+          </span>
+          <span class="dot dot-success"></span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a class="btn btn-sm btn-link">
+          {{ 'dashboard.applications.see-sessions' | translate }}
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
