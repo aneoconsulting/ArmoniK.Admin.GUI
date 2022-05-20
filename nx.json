@@ -1,7 +1,7 @@
 {
   "npmScope": "armonik.admin.gui",
   "affected": {
-    "defaultBase": "master"
+    "defaultBase": "develop"
   },
   "cli": {
     "defaultCollection": "@nrwl/angular",
