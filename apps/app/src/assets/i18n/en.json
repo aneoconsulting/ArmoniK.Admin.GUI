@@ -21,7 +21,7 @@
     "title": "Dashboard",
     "applications": {
       "completed": "{{value}} tasks completed",
-      "in-progress": "{{value}} tasks in progress",
+      "processing": "{{value}} tasks processing",
       "error": "{{value}} tasks in error",
       "see-sessions": "See sessions"
     }

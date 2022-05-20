@@ -2,36 +2,35 @@
   <div class="clr-col-12 clr-col-lg-4">
     <article class="card">
       <h3 class="card-header">Application 1</h3>
-      <div class="card-block">
+      <div class="card-block" fxLayout="row" fxLayoutAlign="space-between">
         <div
           fxLayout="row"
           fxLayoutAlign="start center"
           fxLayoutGap="16px"
-          class="card-text"
+          class="card-title"
+          [title]="'dashboard.applications.error' | translate: data"
         >
-          <span> {{ 'dashboard.applications.error' | translate: data }} </span>
+          <span> {{ data.value }} </span>
           <span class="dot dot-danger"></span>
         </div>
         <div
           fxLayout="row"
           fxLayoutAlign="start center"
           fxLayoutGap="16px"
-          class="card-text"
+          class="card-title"
+          [title]="'dashboard.applications.processing' | translate: data"
         >
-          <span>
-            {{ 'dashboard.applications.in-progress' | translate: data }}
-          </span>
+          <span> {{ data.value }} </span>
           <span class="dot dot-warn"></span>
         </div>
         <div
           fxLayout="row"
           fxLayoutAlign="start center"
           fxLayoutGap="16px"
-          class="card-text"
+          class="card-title"
+          [title]="'dashboard.applications.completed' | translate: data"
         >
-          <span>
-            {{ 'dashboard.applications.completed' | translate: data }}
-          </span>
+          <span> {{ data.value }} </span>
           <span class="dot dot-success"></span>
         </div>
       </div>
