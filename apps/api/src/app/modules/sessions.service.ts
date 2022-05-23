@@ -33,4 +33,8 @@ export class SessionsService {
       meta,
     };
   }
+
+  async findOne(id: string): Promise<Session> {
+    return this.sessionModel.findById(id).exec();
+  }
 }

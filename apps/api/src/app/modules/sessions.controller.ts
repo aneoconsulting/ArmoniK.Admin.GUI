@@ -1,5 +1,5 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 
@@ -13,5 +13,10 @@ export class SessionsController {
     @Query('limit', ParseIntPipe) limit
   ): Promise<Pagination<Session>> {
     return this.sessionsService.findAllPaginated(page, limit);
+  }
+
+  @Get('/:id')
+  show(@Param('id') id: string): Promise<Session> {
+    return this.sessionsService.findOne(id);
   }
 }
