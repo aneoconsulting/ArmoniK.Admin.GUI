@@ -40,17 +40,34 @@ Install Nx globally
   npm install -g nx
 ```
 
+### App
+
 Start the app (front-end using Angular)
 
 ```bash
   nx serve app
 ```
 
-Start the server (REST API using Nest)
+### Server
+
+First, you need to install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
+Then, you must copy `.env.example` to `.env` and fill host, port and database name to use it locally.
+
+Example
+
+```txt
+MongoDB__Host=localhost
+MongoDB__Port=27017
+MongoDB__DatabaseName=armonik
+```
+
+And finally, you can start the server (REST API using Nest)
 
 ```bash
   nx serve api
 ```
+
+### App and Server
 
 Start the GUI (app and server)
 
