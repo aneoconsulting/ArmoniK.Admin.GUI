@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SessionsModule } from './sessions/sessions.module';
 import { ConfigModule } from '@nestjs/config';
 import { mongoConnectionString } from '../mongo-client.options';
-import { ApplicationsModule } from './applications/applications.module';
+import { ApplicationsModule } from './modules/applications/applications.module';
 
 @Module({
   imports: [
