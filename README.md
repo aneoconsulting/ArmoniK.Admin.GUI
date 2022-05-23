@@ -34,6 +34,12 @@ Install dependencies
   npm install
 ```
 
+Install Nx globally
+
+```bash
+  npm install -g nx
+```
+
 Start the app (front-end using Angular)
 
 ```bash
@@ -57,8 +63,6 @@ Start the GUI (app and server)
 Contributions are always welcome!
 
 See `contributing.md` for ways to get started.
-
-Please adhere to this project's `code of conduct`.
 
 ## Running Tests
 
