@@ -1,1 +1,1 @@
-export * from './tasks-sum-up/tasks-sum-up.component';
+export * from './application-card/application-card.component';
