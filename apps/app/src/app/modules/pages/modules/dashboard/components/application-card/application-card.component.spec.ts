@@ -1,22 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { TasksSumUpComponent } from './tasks-sum-up.component';
+import { ApplicationCardComponent } from './application-card.component';
 
-describe('TasksSumUpComponent', () => {
-  let component: TasksSumUpComponent;
-  let fixture: ComponentFixture<TasksSumUpComponent>;
+describe('ApplicationCardComponent', () => {
+  let component: ApplicationCardComponent;
+  let fixture: ComponentFixture<ApplicationCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TasksSumUpComponent],
-      imports: [RouterModule, TranslateModule.forRoot()],
+      declarations: [ApplicationCardComponent],
+      imports: [TranslateModule.forRoot()],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TasksSumUpComponent);
+    fixture = TestBed.createComponent(ApplicationCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,35 @@
+<section class="clr-row">
+  <div class="clr-col-12 clr-col-lg-4">
+    <article class="card">
+      <h3 class="card-header">Application 1</h3>
+      <div class="card-block">
+        <div
+          class="card-title"
+          [title]="'dashboard.applications.error' | translate: data"
+        >
+          <span> {{ data.value }} </span>
+          <span class="dot dot-danger"></span>
+        </div>
+        <div
+          class="card-title"
+          [title]="'dashboard.applications.processing' | translate: data"
+        >
+          <span> {{ data.value }} </span>
+          <span class="dot dot-warn"></span>
+        </div>
+        <div
+          class="card-title"
+          [title]="'dashboard.applications.completed' | translate: data"
+        >
+          <span> {{ data.value }} </span>
+          <span class="dot dot-success"></span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <a class="btn btn-sm btn-link">
+          {{ 'dashboard.applications.see-sessions' | translate }}
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
