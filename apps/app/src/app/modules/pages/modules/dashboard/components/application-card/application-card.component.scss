@@ -13,6 +13,18 @@
   }
 }
 
+.card-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .card-title {
   margin-bottom: 0 !important;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
 }
