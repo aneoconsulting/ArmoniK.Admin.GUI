@@ -94,6 +94,16 @@ ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not 
 
 With each push on _main_, _develop_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
+### Docker
+
+To build docker images, you need to run on linux this command
+
+```sh
+./scripts/create-container.sh <app|api> <version>
+```
+
+This is useful to try current GUI in a local deployment of ArmoniK.
+
 ## Authors
 
 - [@esoubiran-aneo](https://github.com/esoubiran-aneo)
