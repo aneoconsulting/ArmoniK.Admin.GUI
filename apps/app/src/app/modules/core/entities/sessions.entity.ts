@@ -1,4 +1,4 @@
 export type Session = {
-  id: number;
-  closed: boolean;
+  _id: string;
+  Status: string;
 };

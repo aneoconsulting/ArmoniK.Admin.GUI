@@ -3,19 +3,19 @@
 
   <clr-datagrid (clrDgRefresh)="refresh($event)" [clrDgLoading]="loading">
     <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column [clrDgField]="'status'">
+    <clr-dg-column clrDgField="Status">
       {{ 'sessions.table.status' | translate }}
     </clr-dg-column>
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
       <clr-dg-cell>
-        <a [routerLink]="[session.id]">
+        <a [routerLink]="[session._id]">
           <span>
-            {{ session.id }}
+            {{ session._id }}
           </span>
         </a>
       </clr-dg-cell>
-      <clr-dg-cell> status </clr-dg-cell>
+      <clr-dg-cell> {{ session.Status }} </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer>
