@@ -26,7 +26,10 @@
         </div>
       </div>
       <div class="card-footer">
-        <a class="btn btn-sm btn-link">
+        <a
+          class="btn btn-sm btn-link"
+          [routerLink]="['/admin', 'applications', data.value, 'sessions']"
+        >
           {{ 'dashboard.applications.see-sessions' | translate }}
         </a>
       </div>

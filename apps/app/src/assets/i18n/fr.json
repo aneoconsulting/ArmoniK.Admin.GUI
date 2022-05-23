@@ -1,8 +1,7 @@
 {
   "more-info": "En savoir plus",
   "sidenav": {
-    "dashboard": "Tableau de bord",
-    "sessions": "Sessions"
+    "dashboard": "Tableau de bord"
   },
   "sessions": {
     "session": "{{value}} session",

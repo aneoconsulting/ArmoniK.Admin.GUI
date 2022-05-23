@@ -1,8 +1,7 @@
 {
   "more-info": "More info",
   "sidenav": {
-    "dashboard": "Dashboard",
-    "sessions": "Sessions"
+    "dashboard": "Dashboard"
   },
   "sessions": {
     "session": "{{value}} session",
