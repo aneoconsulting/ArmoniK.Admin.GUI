@@ -19,10 +19,11 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "tasks": {
+    "applications": {
       "completed": "{{value}} tasks completed",
-      "in-progress": "{{value}} tasks in progress",
-      "error": "{{value}} tasks in error"
+      "processing": "{{value}} tasks processing",
+      "error": "{{value}} tasks in error",
+      "see-sessions": "See sessions"
     }
   }
 }
