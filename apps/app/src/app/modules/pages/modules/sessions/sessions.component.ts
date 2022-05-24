@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Session } from '../../../core/entities';
-import { TitleService } from '../../../core/services/title.service';
+import { Session } from '../../../core/';
+import { TitleService } from '../../../core/';
 
 @Component({
   selector: 'app-pages-sessions',
@@ -9,26 +10,29 @@ import { TitleService } from '../../../core/services/title.service';
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent {
+  total = 0;
+  loading = true;
+
   sessions: Session[] = [
     {
-      id: 1,
-      closed: false,
+      _id: 'e297367f-cd8f-44bb-8cb0-497c5fbe5ba5',
+      Status: 'Running',
     },
     {
-      id: 2,
-      closed: false,
+      _id: 'daeb8483-a0a0-4f07-ac08-115f49fac660',
+      Status: 'Running',
     },
     {
-      id: 3,
-      closed: false,
+      _id: 'dbf6a5d0-ebd0-42b7-be4f-936bcf30b3ec',
+      Status: 'Running',
     },
     {
-      id: 4,
-      closed: true,
+      _id: '45469ed3-1891-4366-b598-cbdc45c3056d',
+      Status: 'Processing',
     },
     {
-      id: 5,
-      closed: false,
+      _id: 'bf225c79-ae07-4e87-8fb4-33a0798950a5',
+      Status: 'Running',
     },
   ];
 
@@ -37,9 +41,16 @@ export class SessionsComponent {
     private translateService: TranslateService
   ) {
     this.titleService.setTitle(this.translateService.instant('sessions.title'));
+
+    this.total = this.sessions.length;
+    this.loading = false;
   }
 
-  trackBySession(_: number, session: Session): number {
-    return session.id;
+  trackBySession(_: number, session: Session): string {
+    return session._id;
+  }
+
+  refresh(state: ClrDatagridStateInterface) {
+    // TODO: refresh using state (gui-sessions)
   }
 }
