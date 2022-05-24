@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderModule } from './header/header.module';
-import { CardModule } from './card/card.module';
 
 @NgModule({
-  imports: [CommonModule, HeaderModule, CardModule],
+  imports: [CommonModule, HeaderModule],
   declarations: [],
-  exports: [HeaderModule, CardModule],
+  exports: [HeaderModule],
 })
 export class UiModule {}
