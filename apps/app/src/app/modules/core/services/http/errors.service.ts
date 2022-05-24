@@ -7,7 +7,7 @@ import { Observable, throwError } from 'rxjs';
 })
 export class ErrorsService {
   /**
-   * Used to return an controlled error message on error
+   * Used to return a controlled error message on error
    */
   public handleError(
     operation: string,
