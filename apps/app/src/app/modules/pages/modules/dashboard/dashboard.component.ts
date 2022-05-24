@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Load all application on init or display an error
+   * Load all applications on init or display an error
    */
   ngOnInit() {
     this.applicationsService.getAll().subscribe({

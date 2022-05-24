@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 
 /**
- * Used to display small card with application informations
+ * Used to display a small card with some informations about the application
  */
 @Component({
   selector: 'app-pages-dashboard-application-card',
