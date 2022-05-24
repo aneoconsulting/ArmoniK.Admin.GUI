@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Session } from '../../../core/';
 import { TitleService } from '../../../core/';
@@ -49,7 +50,7 @@ export class SessionsComponent {
     return session._id;
   }
 
-  // refresh(state: ClrDatagridStateInterface) {
-  //   // TODO: refresh using state (gui-sessions)
-  // }
+  refresh(state: ClrDatagridStateInterface) {
+    // TODO: refresh using state (gui-sessions)
+  }
 }
