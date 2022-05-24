@@ -9,6 +9,8 @@ export type SessionDocument = Session & Document;
 export class Session {
   @Prop()
   _id: string;
+
+  @Prop()
   Status: string;
 }
 
