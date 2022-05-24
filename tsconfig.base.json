@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@armonik.admin.gui/api-interfaces": ["libs/api-interfaces/src/index.ts"],
+      "@armonik.admin.gui/armonik-typing": ["libs/armonik-typing/src/index.ts"],
       "@armonik.admin.gui/ui": ["libs/ui/src/index.ts"]
     }
   },
