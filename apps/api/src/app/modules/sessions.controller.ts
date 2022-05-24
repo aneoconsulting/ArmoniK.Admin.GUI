@@ -9,8 +9,8 @@ export class SessionsController {
 
   @Get()
   index(
-    @Query('page', ParseIntPipe) page,
-    @Query('limit', ParseIntPipe) limit
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number
   ): Promise<Pagination<Session>> {
     return this.sessionsService.findAllPaginated(page, limit);
   }
