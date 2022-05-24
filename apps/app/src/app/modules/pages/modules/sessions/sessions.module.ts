@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { SessionsComponent } from './sessions.component';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import * as Components from './components';
 import { TranslateModule } from '@ngx-translate/core';
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
+import { SessionDetailComponent, TasksListComponent } from './components';
 
 @NgModule({
-  declarations: [SessionsComponent],
+  declarations: [SessionsComponent, TasksListComponent, SessionDetailComponent],
   imports: [
     CommonModule,
     ClarityModule,
@@ -20,8 +20,13 @@ import '@clr/icons/shapes/essential-shapes';
         component: SessionsComponent,
       },
       {
-        path: ':id',
-        component: Components.SessionDetailComponent,
+        path: ':id/tasks',
+        component: SessionDetailComponent,
+      },
+      {
+        path: ':id/tasks/:taskId',
+        loadChildren: () =>
+          import('./modules/tasks/tasks.module').then((m) => m.TasksModule),
       },
     ]),
   ],
