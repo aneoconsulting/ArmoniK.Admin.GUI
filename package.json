@@ -9,6 +9,7 @@
     "build": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all",
     "format": "nx format",
+    "format:check": "nx format:check",
     "lint": "nx run-many --target=lint --all",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
@@ -83,8 +84,9 @@
   },
   "lint-staged": {
     "**": [
-      "nx format:check",
-      "npm run lint"
+      "npm run format:check",
+      "npm run lint",
+      "npm run test"
     ]
   }
 }
