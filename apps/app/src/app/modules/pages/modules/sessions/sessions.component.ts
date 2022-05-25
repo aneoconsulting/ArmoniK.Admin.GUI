@@ -44,12 +44,15 @@ export class SessionsComponent {
       });
   }
 
+  /**
+   * Return total number of sessions even if there is no session (return 0)
+   */
   get totalSessions(): number {
     return this.sessions ? this.sessions.meta.total : 0;
   }
 
   /**
-   * Return the current application name
+   * Return the current application name from the route
    */
   get appName(): string {
     return this.route.snapshot.paramMap.get('application') ?? '';
