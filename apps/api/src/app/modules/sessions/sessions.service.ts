@@ -29,7 +29,6 @@ export class SessionsService {
       .find({
         'Options.Options.GridAppName': appName,
       })
-      .find()
       .skip(startIndex)
       .limit(limit)
       .exec();
