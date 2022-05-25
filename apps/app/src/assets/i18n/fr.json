@@ -7,14 +7,11 @@
   "sessions": {
     "session": "{{value}} session",
     "sessions": "{{value}} sessions",
+    "per_page": "Sessions par page",
     "title": "Toutes les sessions",
     "table": {
       "id": "Session ID",
-      "actions": {
-        "title": "Actions",
-        "open": "Ouvrir",
-        "close": "Fermer"
-      }
+      "status": "Statut"
     }
   },
   "dashboard": {
