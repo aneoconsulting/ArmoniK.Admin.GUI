@@ -49,6 +49,7 @@ export class ApplicationsService {
           },
         },
       ])
+      .sort({ _id: 1 })
       .toArray();
 
     return result;

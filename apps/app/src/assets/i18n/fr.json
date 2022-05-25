@@ -1,8 +1,8 @@
 {
+  "loading": "Chargement...",
   "more-info": "En savoir plus",
   "sidenav": {
-    "dashboard": "Tableau de bord",
-    "sessions": "Sessions"
+    "dashboard": "Tableau de bord"
   },
   "sessions": {
     "session": "{{value}} session",
@@ -16,10 +16,14 @@
   },
   "dashboard": {
     "title": "Tableau de bord",
+    "errors": {
+      "404": "Applications introuvable - opération '{{name}}'",
+      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    },
     "applications": {
-      "completed": "{{value}} tâches terminées",
-      "processing": "{{value}} tâches en cours",
-      "error": "{{value}} tâches en erreur",
+      "completed": "{{countTasksCompleted}} tâches terminées",
+      "processing": "{{countTasksProcessing}} tâches en cours",
+      "error": "{{countTasksError}} tâches en erreur",
       "see-sessions": "Voir les sessions"
     }
   }

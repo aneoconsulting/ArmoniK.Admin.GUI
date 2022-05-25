@@ -20,7 +20,7 @@ import { PagesComponent } from './pages.component';
         children: [
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
           {
-            path: 'sessions',
+            path: 'applications/:application/sessions',
             loadChildren: () =>
               import('./modules/sessions/sessions.module').then(
                 (m) => m.SessionsModule
