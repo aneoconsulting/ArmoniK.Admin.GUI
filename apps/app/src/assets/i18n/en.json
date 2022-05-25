@@ -13,6 +13,10 @@
       "id": "Session ID",
       "status": "Status"
     },
+    "errors": {
+      "404": "Sessions for {{value}} not found - operation '{{name}}'",
+      "504": "Impossible to contact the server - operation '{{name}}'"
+    },
     "session-detail": {
       "table": {
         "id": "Task ID",

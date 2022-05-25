@@ -5,6 +5,18 @@
   </div>
   <h1 class="title">{{ 'sessions.title' | translate }}</h1>
 
+  <clr-alerts class="">
+    <clr-alert
+      clrAlertType="danger"
+      [clrAlertAppLevel]="true"
+      *ngFor="let error of errors; trackBy: trackByError"
+    >
+      <clr-alert-item>
+        <span class="alert-text"> {{ getTranslatedError(error) }} </span>
+      </clr-alert-item>
+    </clr-alert>
+  </clr-alerts>
+
   <clr-datagrid
     (clrDgRefresh)="refresh($event)"
     [clrDgLoading]="loadingSessions"

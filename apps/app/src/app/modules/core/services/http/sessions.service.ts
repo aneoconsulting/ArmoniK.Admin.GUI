@@ -25,6 +25,8 @@ export class SessionsService {
       .get<Pagination<Session>>(
         `${this.url}?page=${page}&limit=${limit}&appName=${appName}`
       )
-      .pipe(catchError(this.errorsService.handleError('getAllPaginated')));
+      .pipe(
+        catchError(this.errorsService.handleError('getAllPaginated', appName))
+      );
   }
 }

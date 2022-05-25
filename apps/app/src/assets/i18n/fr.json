@@ -13,6 +13,10 @@
       "id": "Session ID",
       "status": "Statut"
     },
+    "errors": {
+      "404": "Sessions pour {{value}} introuvable - opération '{{name}}'",
+      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    },
     "session-detail": {
       "table": {
         "id": "Tâche ID",
