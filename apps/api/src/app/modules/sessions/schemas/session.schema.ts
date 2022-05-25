@@ -10,6 +10,9 @@ export class Session {
   @Prop()
   _id: string;
 
+  @Prop({ type: Object })
+  Options: { Options: { GridAppName: string } };
+
   @Prop()
   Status: string;
 }

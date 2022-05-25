@@ -13,14 +13,22 @@ export class SessionsService {
     private readonly paginationService: PaginationService
   ) {}
 
+  /**
+   * Get all sessions from the database using pagination and appName
+   */
   async findAllPaginated(
     page: number,
-    limit: number
+    limit: number,
+    appName: string
   ): Promise<Pagination<Session>> {
     const startIndex = (page - 1) * limit;
 
     const total = await this.sessionModel.countDocuments();
+    // Get sessions filtered by appName (field Options.Options.GridAppName)
     const data = await this.sessionModel
+      .find({
+        'Options.Options.GridAppName': appName,
+      })
       .find()
       .skip(startIndex)
       .limit(limit)

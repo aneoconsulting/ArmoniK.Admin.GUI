@@ -10,9 +10,10 @@ export class SessionsController {
   @Get()
   index(
     @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('appName') appName: string
   ): Promise<Pagination<Session>> {
-    return this.sessionsService.findAllPaginated(page, limit);
+    return this.sessionsService.findAllPaginated(page, limit, appName);
   }
 
   @Get('/:id')
