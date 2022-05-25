@@ -21,10 +21,14 @@ export class SessionsService {
     page: number = 1,
     limit: number = 10
   ): Observable<Pagination<Session>> {
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      appName,
+    });
+
     return this.http
-      .get<Pagination<Session>>(
-        `${this.url}?page=${page}&limit=${limit}&appName=${appName}`
-      )
+      .get<Pagination<Session>>(`${this.url}?${params.toString()}`)
       .pipe(
         catchError(this.errorsService.handleError('getAllPaginated', appName))
       );
