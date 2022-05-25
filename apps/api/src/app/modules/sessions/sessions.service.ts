@@ -2,7 +2,7 @@ import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PaginationService } from '../core';
+import { PaginationService } from '../../core';
 import { Session, SessionDocument } from './schemas';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PaginationService } from '../core';
+import { PaginationService } from '../../core';
 import { Session, SessionSchema } from './schemas';
 import { SessionsController } from './sessions.controller';
 import { SessionsService } from './sessions.service';
