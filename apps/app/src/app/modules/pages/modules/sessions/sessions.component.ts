@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Session } from '../../../core/';
-import { TitleService } from '../../../core/';
+import {
+  AppError,
+  Session,
+  TitleService,
+  SessionsService,
+} from '../../../core/';
 
 @Component({
   selector: 'app-pages-sessions',
@@ -10,47 +16,85 @@ import { TitleService } from '../../../core/';
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent {
-  total = 0;
-  loading = true;
-
-  sessions: Session[] = [
-    {
-      _id: 'e297367f-cd8f-44bb-8cb0-497c5fbe5ba5',
-      Status: 'Running',
-    },
-    {
-      _id: 'daeb8483-a0a0-4f07-ac08-115f49fac660',
-      Status: 'Running',
-    },
-    {
-      _id: 'dbf6a5d0-ebd0-42b7-be4f-936bcf30b3ec',
-      Status: 'Running',
-    },
-    {
-      _id: '45469ed3-1891-4366-b598-cbdc45c3056d',
-      Status: 'Processing',
-    },
-    {
-      _id: 'bf225c79-ae07-4e87-8fb4-33a0798950a5',
-      Status: 'Running',
-    },
-  ];
+  sessions: Pagination<Session> | null = null;
+  errors: AppError[] = [];
+  loadingSessions = true;
 
   constructor(
+    private route: ActivatedRoute,
     private titleService: TitleService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private sessionsService: SessionsService
   ) {
     this.titleService.setTitle(this.translateService.instant('sessions.title'));
-
-    this.total = this.sessions.length;
-    this.loading = false;
   }
 
+  /**
+   * Used to get the list of sessions from the api using pagination for the datagrid and refresh the datagrid
+   */
+  refresh(state: ClrDatagridStateInterface) {
+    const nextPage = state?.page?.current ?? 1;
+    const limit = state?.page?.size ?? 10;
+
+    this.sessionsService
+      .getAllPaginated(this.appName, nextPage, limit)
+      .subscribe({
+        error: this.onErrorSessions.bind(this),
+        next: this.onNextSessions.bind(this),
+      });
+  }
+
+  /**
+   * Return total number of sessions even if there is no session (return 0)
+   */
+  get totalSessions(): number {
+    return this.sessions ? this.sessions.meta.total : 0;
+  }
+
+  /**
+   * Return the current application name from the route
+   */
+  get appName(): string {
+    return this.route.snapshot.paramMap.get('application') ?? '';
+  }
+
+  /**
+   * handle error when loading sessions
+   */
+  private onErrorSessions(error: AppError) {
+    this.errors.push(error);
+    this.loadingSessions = false;
+  }
+
+  /**
+   * handle next when loading sessions
+   */
+  private onNextSessions(data: Pagination<Session>) {
+    this.sessions = data;
+    this.loadingSessions = false;
+  }
+
+  /**
+   * Return translated error message using the status code
+   */
+  getTranslatedError(error: AppError): string {
+    return this.translateService.instant(`sessions.errors.${error.status}`, {
+      value: error.id,
+      name: error.operation,
+    });
+  }
+
+  /**
+   * Used to track session for ngFor
+   */
   trackBySession(_: number, session: Session): string {
     return session._id;
   }
 
-  refresh(state: ClrDatagridStateInterface) {
-    // TODO: refresh using state (gui-sessions)
+  /**
+   * Used to track error for ngFor
+   */
+  trackByError(index: number) {
+    return index;
   }
 }

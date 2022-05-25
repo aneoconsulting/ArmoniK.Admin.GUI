@@ -1,13 +1,32 @@
 <section>
-  <h1>{{ 'sessions.title' | translate }}</h1>
+  <div class="subtitle">
+    <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+    <p>{{ appName }}</p>
+  </div>
+  <h1 class="title">{{ 'sessions.title' | translate }}</h1>
 
-  <clr-datagrid (clrDgRefresh)="refresh($event)" [clrDgLoading]="loading">
+  <clr-alerts class="">
+    <clr-alert
+      clrAlertType="danger"
+      [clrAlertAppLevel]="true"
+      *ngFor="let error of errors; trackBy: trackByError"
+    >
+      <clr-alert-item>
+        <span class="alert-text"> {{ getTranslatedError(error) }} </span>
+      </clr-alert-item>
+    </clr-alert>
+  </clr-alerts>
+
+  <clr-datagrid
+    (clrDgRefresh)="refresh($event)"
+    [clrDgLoading]="loadingSessions"
+  >
     <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
     <clr-dg-column>
       {{ 'sessions.table.status' | translate }}
     </clr-dg-column>
 
-    <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
+    <clr-dg-row *ngFor="let session of sessions?.data; trackBy: trackBySession">
       <clr-dg-cell>
         <a [routerLink]="[session._id, 'tasks']">
           <span>
@@ -19,13 +38,13 @@
     </clr-dg-row>
 
     <clr-dg-footer>
-      <clr-dg-pagination #pagination [clrDgTotalItems]="total">
+      <clr-dg-pagination #pagination [clrDgTotalItems]="totalSessions">
         <clr-dg-page-size>{{
           'sessions.per_page' | translate
         }}</clr-dg-page-size>
         {{
-          (sessions.length > 1 ? 'sessions.sessions' : 'sessions.session')
-            | translate: { value: sessions.length }
+          (totalSessions > 1 ? 'sessions.sessions' : 'sessions.session')
+            | translate: { value: totalSessions }
         }}
       </clr-dg-pagination>
     </clr-dg-footer>
