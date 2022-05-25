@@ -22,11 +22,11 @@ import { SessionsService } from '../../../core/';
         component: SessionsComponent,
       },
       {
-        path: ':application/:id/tasks',
+        path: ':application/sessions/:id/tasks',
         component: SessionDetailComponent,
       },
       {
-        path: ':application/:id/tasks/:taskId',
+        path: ':application/sessions/:id/tasks/:taskId',
         loadChildren: () =>
           import('./modules/tasks/tasks.module').then((m) => m.TasksModule),
       },
