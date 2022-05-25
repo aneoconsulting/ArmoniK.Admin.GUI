@@ -1,0 +1,29 @@
+<clr-datagrid>
+  <clr-dg-column>
+    {{ 'sessions.session-detail.table.id' | translate }}
+  </clr-dg-column>
+
+  <clr-dg-row *ngFor="let task of tasks; trackBy: trackByTask">
+    <clr-dg-cell>
+      <a [routerLink]="[task._id]">
+        <span>
+          {{ task._id }}
+        </span>
+      </a>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgTotalItems]="total">
+      <clr-dg-page-size>{{
+        'sessions.session-detail.table.per_page' | translate
+      }}</clr-dg-page-size>
+      {{
+        (tasks.length > 1
+          ? 'sessions.session-detail.table.tasks'
+          : 'sessions.session-detail.table.task'
+        ) | translate: { value: tasks.length }
+      }}
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

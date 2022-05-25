@@ -12,6 +12,14 @@
     "table": {
       "id": "Session ID",
       "status": "Statut"
+    },
+    "session-detail": {
+      "table": {
+        "id": "Tâche ID",
+        "per_page": "Par page",
+        "tasks": "{{value}} tâches",
+        "task": "{{value}} tâche"
+      }
     }
   },
   "dashboard": {

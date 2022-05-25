@@ -9,7 +9,7 @@
 
     <clr-dg-row *ngFor="let session of sessions; trackBy: trackBySession">
       <clr-dg-cell>
-        <a [routerLink]="[session._id]">
+        <a [routerLink]="[session._id, 'tasks']">
           <span>
             {{ session._id }}
           </span>
