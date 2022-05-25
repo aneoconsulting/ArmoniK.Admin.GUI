@@ -7,6 +7,15 @@ import { SessionsService } from './sessions.service';
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
+  /**
+   * Get all sessions using pagination and filters
+   *
+   * @param page Page number
+   * @param limit Number of items per page
+   * @param sessionId Id of the session
+   *
+   * @returns Pagination of sessions
+   */
   @Get()
   index(
     @Query('page', ParseIntPipe) page: number,
@@ -16,6 +25,13 @@ export class SessionsController {
     return this.sessionsService.findAllPaginated(page, limit, appName);
   }
 
+  /**
+   * Get one session by id
+   *
+   * @param id Id of the session
+   *
+   * @returns Session
+   */
   @Get('/:id')
   show(@Param('id') id: string): Promise<Session> {
     return this.sessionsService.findOne(id);

@@ -1,9 +1,11 @@
 <section>
-  <div class="subtitle">
-    <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
-    <p>{{ appName }}</p>
-  </div>
-  <h1 class="title">{{ 'sessions.title' | translate }}</h1>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+      <span>{{ appName }}</span>
+    </ng-container>
+    {{ 'sessions.title' | translate }}
+  </ui-page-header>
 
   <clr-alerts class="">
     <clr-alert
@@ -28,7 +30,7 @@
 
     <clr-dg-row *ngFor="let session of sessions?.data; trackBy: trackBySession">
       <clr-dg-cell>
-        <a [routerLink]="[session._id, 'tasks']">
+        <a [routerLink]="[session._id]">
           <span>
             {{ session._id }}
           </span>

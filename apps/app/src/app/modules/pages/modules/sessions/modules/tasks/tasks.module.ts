@@ -4,18 +4,16 @@ import { TasksComponent } from './tasks.component';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
-import { TaskDetailComponent } from './components';
+import { UiModule } from '@armonik.admin.gui/ui';
 
 @NgModule({
   declarations: [TasksComponent],
   imports: [
     CommonModule,
     ClarityModule,
+    UiModule,
     TranslateModule,
-    RouterModule.forChild([
-      { path: '', component: TasksComponent },
-      { path: ':id', component: TaskDetailComponent },
-    ]),
+    RouterModule.forChild([{ path: '', component: TasksComponent }]),
   ],
 })
 export class TasksModule {}

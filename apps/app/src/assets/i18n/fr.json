@@ -4,6 +4,9 @@
   "sidenav": {
     "dashboard": "Tableau de bord"
   },
+  "task": {
+    "title": "Détail d'une tâche"
+  },
   "sessions": {
     "session": "{{value}} session",
     "sessions": "{{value}} sessions",
@@ -18,6 +21,7 @@
       "504": "Impossible de contacter le serveur - opération '{{name}}'"
     },
     "session-detail": {
+      "title": "Détails de la session",
       "table": {
         "id": "Tâche ID",
         "per_page": "Par page",
