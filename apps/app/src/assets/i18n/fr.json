@@ -5,7 +5,11 @@
     "dashboard": "Tableau de bord"
   },
   "task": {
-    "title": "Détail d'une tâche"
+    "title": "Détail d'une tâche",
+    "errors": {
+      "404": "Tâche {{value}} introuvable - opération '{{name}}'",
+      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    }
   },
   "sessions": {
     "session": "{{value}} session",
@@ -27,6 +31,10 @@
         "per_page": "Par page",
         "tasks": "{{value}} tâches",
         "task": "{{value}} tâche"
+      },
+      "errors": {
+        "404": "Session {{value}} et tâches introuvables - opération '{{name}}'",
+        "504": "Impossible de contacter le serveur - opération '{{name}}'"
       }
     }
   },

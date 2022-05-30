@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
 import { SessionDetailComponent, TasksListComponent } from './components';
-import { SessionsService } from '../../../core/';
+import { CoreComponentsModule, SessionsService } from '../../../core/';
 import { UiModule } from '@armonik.admin.gui/ui';
 
 @NgModule({
@@ -16,6 +16,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
   imports: [
     CommonModule,
     ClarityModule,
+    CoreComponentsModule,
     UiModule,
     TranslateModule,
     RouterModule.forChild([

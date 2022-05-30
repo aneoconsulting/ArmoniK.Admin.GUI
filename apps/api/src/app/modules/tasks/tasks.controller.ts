@@ -1,5 +1,12 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
 
@@ -17,12 +24,18 @@ export class TasksController {
    * @returns Pagination of tasks
    */
   @Get()
-  index(
+  async index(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('sessionId') sessionId: string
   ): Promise<Pagination<Task>> {
-    return this.tasksService.findAllPaginated(page, limit, sessionId);
+    const tasks = await this.tasksService.findAllPaginated(
+      page,
+      limit,
+      sessionId
+    );
+
+    return tasks;
   }
 
   /**
@@ -33,7 +46,13 @@ export class TasksController {
    * @returns Task
    */
   @Get('/:id')
-  show(@Param('id') id: string): Promise<Task> {
-    return this.tasksService.findOne(id);
+  async show(@Param('id') id: string): Promise<Task> {
+    const task = await this.tasksService.findOne(id);
+
+    if (!task) {
+      throw new NotFoundException();
+    }
+
+    return task;
   }
 }

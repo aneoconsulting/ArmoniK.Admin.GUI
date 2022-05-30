@@ -30,6 +30,12 @@
     {{ 'task.title' | translate }}
   </ui-page-header>
 
+  <app-alert-error [errors]="errors" name="task"></app-alert-error>
+
+  <div *ngIf="loadingTask">
+    <span class="spinner spinner-inverse"> {{ 'loading' | translate }}</span>
+  </div>
+
   <pre>
     {{ task | json }}
   </pre>

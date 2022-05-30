@@ -75,26 +75,9 @@ export class SessionsComponent {
   }
 
   /**
-   * Return translated error message using the status code
-   */
-  getTranslatedError(error: AppError): string {
-    return this.translateService.instant(`sessions.errors.${error.status}`, {
-      value: error.id,
-      name: error.operation,
-    });
-  }
-
-  /**
    * Used to track session for ngFor
    */
   trackBySession(_: number, session: Session): string {
     return session._id;
-  }
-
-  /**
-   * Used to track error for ngFor
-   */
-  trackByError(index: number) {
-    return index;
   }
 }

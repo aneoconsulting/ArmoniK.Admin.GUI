@@ -5,11 +5,13 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
+import { CoreComponentsModule } from '../../../../../core';
 
 @NgModule({
   declarations: [TasksComponent],
   imports: [
     CommonModule,
+    CoreComponentsModule,
     ClarityModule,
     UiModule,
     TranslateModule,

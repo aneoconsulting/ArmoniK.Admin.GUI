@@ -7,17 +7,7 @@
     {{ 'sessions.title' | translate }}
   </ui-page-header>
 
-  <clr-alerts class="">
-    <clr-alert
-      clrAlertType="danger"
-      [clrAlertAppLevel]="true"
-      *ngFor="let error of errors; trackBy: trackByError"
-    >
-      <clr-alert-item>
-        <span class="alert-text"> {{ getTranslatedError(error) }} </span>
-      </clr-alert-item>
-    </clr-alert>
-  </clr-alerts>
+  <app-alert-error [errors]="errors" name="sessions"></app-alert-error>
 
   <clr-datagrid
     (clrDgRefresh)="refresh($event)"
