@@ -40,17 +40,34 @@ Install Nx globally
   npm install -g nx
 ```
 
+### App
+
 Start the app (front-end using Angular)
 
 ```bash
   nx serve app
 ```
 
-Start the server (REST API using Nest)
+### Server
+
+First, you need to install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
+Then, you must copy `.env.example` to `.env` and fill host, port and database name to use it locally.
+
+Example
+
+```txt
+MongoDB__Host=localhost
+MongoDB__Port=27017
+MongoDB__DatabaseName=armonik
+```
+
+And finally, you can start the server (REST API using Nest)
 
 ```bash
   nx serve api
 ```
+
+### App and Server
 
 Start the GUI (app and server)
 
@@ -93,6 +110,16 @@ Build project
 ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not interesting to deploy the project independently.
 
 With each push on _main_, _develop_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
+
+### Docker
+
+To build docker images, you need to run on linux this command
+
+```sh
+./scripts/create-container.sh <app|api> <version>
+```
+
+This is useful to try current GUI in a local deployment of ArmoniK.
 
 ## Authors
 
