@@ -12,8 +12,6 @@ It is a monorepo containing the client, the server and shared libraries.
 
 **Build System:** [Nx](https://nx.dev/)
 
-Gitflow is used to facilitate the production and management of code.
-
 ## Run Locally
 
 Clone the project
