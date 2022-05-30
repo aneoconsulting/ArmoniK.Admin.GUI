@@ -16,5 +16,5 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: npm run start
+          start: ""
           command: npx nx e2e app-e2e
