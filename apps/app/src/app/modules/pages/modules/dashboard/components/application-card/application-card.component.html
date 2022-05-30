@@ -1,0 +1,34 @@
+<article class="card">
+  <h3 class="card-header" [title]="application?._id">{{ application?._id }}</h3>
+  <div class="card-block">
+    <div
+      class="card-title"
+      [title]="'dashboard.applications.error' | translate: application"
+    >
+      <span> {{ application?.countTasksError }} </span>
+      <span class="dot dot-danger"></span>
+    </div>
+    <div
+      class="card-title"
+      [title]="'dashboard.applications.processing' | translate: application"
+    >
+      <span> {{ application?.countTasksProcessing }} </span>
+      <span class="dot dot-warn"></span>
+    </div>
+    <div
+      class="card-title"
+      [title]="'dashboard.applications.completed' | translate: application"
+    >
+      <span> {{ application?.countTasksCompleted }} </span>
+      <span class="dot dot-success"></span>
+    </div>
+  </div>
+  <div class="card-footer">
+    <a
+      class="btn btn-sm btn-link"
+      [routerLink]="['/admin', 'applications', application?._id, 'sessions']"
+    >
+      {{ 'dashboard.applications.see-sessions' | translate }}
+    </a>
+  </div>
+</article>

@@ -2,8 +2,8 @@ import { APP_BASE_HREF } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+import { HttpClientModule } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
-
 import { SessionsComponent } from './sessions.component';
 
 describe('SessionsComponent', () => {
@@ -17,6 +17,7 @@ describe('SessionsComponent', () => {
         RouterModule.forRoot([]),
         TranslateModule.forRoot(),
         ClarityModule,
+        HttpClientModule,
       ],
       providers: [
         {

@@ -1,0 +1,36 @@
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+
+  $dotTypes: ('success', 'warn', 'danger');
+
+  @each $type in $dotTypes {
+    &-#{$type} {
+      box-shadow: 0 0 0 3px var(--#{$type}-900);
+      background-color: var(--#{$type}-500);
+    }
+  }
+}
+
+.card-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-header {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-title {
+  // override clarity style
+  margin-bottom: 0 !important;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}

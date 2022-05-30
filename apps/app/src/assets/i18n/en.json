@@ -1,28 +1,42 @@
 {
+  "loading": "Loading...",
   "more-info": "More info",
   "sidenav": {
-    "dashboard": "Dashboard",
-    "sessions": "Sessions"
+    "dashboard": "Dashboard"
   },
   "sessions": {
     "session": "{{value}} session",
     "sessions": "{{value}} sessions",
+    "per_page": "Sessions per page",
     "title": "All sessions",
     "table": {
       "id": "Session ID",
-      "actions": {
-        "title": "Actions",
-        "open": "Open",
-        "close": "Close"
+      "status": "Status"
+    },
+    "errors": {
+      "404": "Sessions for {{value}} not found - operation '{{name}}'",
+      "504": "Impossible to contact the server - operation '{{name}}'"
+    },
+    "session-detail": {
+      "table": {
+        "id": "Task ID",
+        "per_page": "Per page",
+        "tasks": "{{value}} tasks",
+        "task": "{{value}} task"
       }
     }
   },
   "dashboard": {
     "title": "Dashboard",
-    "tasks": {
-      "completed": "{{value}} tasks completed",
-      "in-progress": "{{value}} tasks in progress",
-      "error": "{{value}} tasks in error"
+    "errors": {
+      "404": "Applications not found - operation '{{name}}'",
+      "504": "Impossible to contact the server - operation '{{name}}'"
+    },
+    "applications": {
+      "completed": "{{countTasksCompleted}} tasks completed",
+      "processing": "{{countTasksProcessing}} tasks processing",
+      "error": "{{countTasksError}} tasks in error",
+      "see-sessions": "See sessions"
     }
   }
 }

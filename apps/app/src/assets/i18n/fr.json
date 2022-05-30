@@ -1,28 +1,42 @@
 {
+  "loading": "Chargement...",
   "more-info": "En savoir plus",
   "sidenav": {
-    "dashboard": "Tableau de bord",
-    "sessions": "Sessions"
+    "dashboard": "Tableau de bord"
   },
   "sessions": {
     "session": "{{value}} session",
     "sessions": "{{value}} sessions",
+    "per_page": "Sessions par page",
     "title": "Toutes les sessions",
     "table": {
       "id": "Session ID",
-      "actions": {
-        "title": "Actions",
-        "open": "Ouvrir",
-        "close": "Fermer"
+      "status": "Statut"
+    },
+    "errors": {
+      "404": "Sessions pour {{value}} introuvable - opération '{{name}}'",
+      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    },
+    "session-detail": {
+      "table": {
+        "id": "Tâche ID",
+        "per_page": "Par page",
+        "tasks": "{{value}} tâches",
+        "task": "{{value}} tâche"
       }
     }
   },
   "dashboard": {
     "title": "Tableau de bord",
-    "tasks": {
-      "completed": "{{value}} tâches terminées",
-      "in-progress": "{{value}} tâches en cours",
-      "error": "{{value}} tâches en erreur"
+    "errors": {
+      "404": "Applications introuvable - opération '{{name}}'",
+      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    },
+    "applications": {
+      "completed": "{{countTasksCompleted}} tâches terminées",
+      "processing": "{{countTasksProcessing}} tâches en cours",
+      "error": "{{countTasksError}} tâches en erreur",
+      "see-sessions": "Voir les sessions"
     }
   }
 }

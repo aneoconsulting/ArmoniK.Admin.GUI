@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { TasksSumUpComponent } from './components';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -14,7 +13,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DashboardComponent, TasksSumUpComponent],
+      declarations: [DashboardComponent],
       imports: [
         RouterModule.forRoot([]),
         TranslateModule.forRoot(),
