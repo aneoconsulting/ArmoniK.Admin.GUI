@@ -1,23 +1,24 @@
-import { APP_BASE_HREF } from '@angular/common';
+// import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
-import { ClarityModule } from '@clr/angular';
-import { HttpClientModule } from '@angular/common/http';
+import { APP_BASE_HREF } from '@angular/common';
+import { PagesComponent } from './pages.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { SessionsComponent } from './sessions.component';
+import { ClarityModule } from '@clr/angular';
+import { UiModule } from '@armonik.admin.gui/ui';
 
-describe('SessionsComponent', () => {
-  let component: SessionsComponent;
-  let fixture: ComponentFixture<SessionsComponent>;
+describe('PagesComponent', () => {
+  let component: PagesComponent;
+  let fixture: ComponentFixture<PagesComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [SessionsComponent],
+    TestBed.configureTestingModule({
+      declarations: [PagesComponent],
       imports: [
         RouterModule.forRoot([]),
         TranslateModule.forRoot(),
+        UiModule,
         ClarityModule,
-        HttpClientModule,
       ],
       providers: [
         {
@@ -29,7 +30,7 @@ describe('SessionsComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SessionsComponent);
+    fixture = TestBed.createComponent(PagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

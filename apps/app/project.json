@@ -83,11 +83,15 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/app"],
+      "executor": "@angular-devkit/build-angular:karma",
       "options": {
-        "jestConfig": "apps/app/jest.config.js",
-        "passWithNoTests": true
+        "main": "apps/app/src/test.ts",
+        "tsConfig": "apps/app/tsconfig.spec.json",
+        "karmaConfig": "apps/app/karma.conf.js",
+        "polyfills": "apps/app/src/polyfills.ts",
+        "styles": [],
+        "scripts": [],
+        "assets": []
       }
     }
   },

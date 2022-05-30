@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ClarityModule } from '@clr/angular';
 
 import { HeaderComponent } from './header.component';
 
 @Component({
-  template: `<ui-header>
-    <div branding>title</div>
-    <div actions>actions</div>
-  </ui-header>`,
+  template: `<clr-main-container
+    ><ui-header>
+      <div branding>title</div>
+      <div actions>actions</div>
+    </ui-header></clr-main-container
+  >`,
 })
 class TestHostComponent {}
 
@@ -17,7 +20,8 @@ describe('HeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HeaderComponent, TestHostComponent],
+      declarations: [],
+      imports: [ClarityModule],
     }).compileComponents();
   });
 
