@@ -90,26 +90,26 @@ But, it is possible to run tests locally.
 Check lint
 
 ```bash
-  npx nx affected --target=lint --parallel=3 --base=develop
+  npx nx affected --target=lint --parallel=3
 ```
 
 Run tests
 
 ```bash
-  npx nx affected --target=test --parallel=3 --ci --code-coverage --base=develop
+  npx nx affected --target=test --parallel=3 --ci --code-coverage
 ```
 
 Build project
 
 ```bash
-  npx nx affected --target=build --parallel=3 --base=develop
+  npx nx affected --target=build --parallel=3
 ```
 
 ## Deployment
 
 ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not interesting to deploy the project independently.
 
-With each push on _main_, _develop_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
+With each push on _main_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
 ### Docker
 
