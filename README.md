@@ -12,8 +12,6 @@ It is a monorepo containing the client, the server and shared libraries.
 
 **Build System:** [Nx](https://nx.dev/)
 
-Gitflow is used to facilitate the production and management of code.
-
 ## Run Locally
 
 Clone the project
@@ -38,6 +36,23 @@ Install Nx globally
 
 ```bash
   npm install -g nx
+```
+
+Commandes available
+
+```sh
+# Start the project (App and Server)
+npm run start
+# Build the project (App and Server)
+npm run build
+# Run test on the project (App, Server and libs)
+npm run test
+# Format the project (App, Server and libs)
+npm run format
+# Check format of the project (App, Server and libs)
+npm run format:check
+# Lint the project (App, Server and libs)
+npm run lint
 ```
 
 ### App
@@ -85,31 +100,37 @@ See `contributing.md` for ways to get started.
 
 The tests run at each automatic PR via the actions.
 
-But, it is possible to run tests locally.
+But, it is possible to run tests locally (only on affected files).
+
+Format code
+
+```bash
+  npx nx affected --target=format --parallel=3 --base=main
+```
 
 Check lint
 
 ```bash
-  npx nx affected --target=lint --parallel=3 --base=develop
+  npx nx affected --target=lint --parallel=3 --base=main
 ```
 
 Run tests
 
 ```bash
-  npx nx affected --target=test --parallel=3 --ci --code-coverage --base=develop
+  npx nx affected --target=test --parallel=3 --code-coverage --base=main
 ```
 
 Build project
 
 ```bash
-  npx nx affected --target=build --parallel=3 --base=develop
+  npx nx affected --target=build --parallel=3 --base=main
 ```
 
 ## Deployment
 
 ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not interesting to deploy the project independently.
 
-With each push on _main_, _develop_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
+With each push on _main_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
 ### Docker
 
@@ -119,7 +140,7 @@ To build docker images, you need to run on linux this command
 ./scripts/create-container.sh <app|api> <version>
 ```
 
-This is useful to try current GUI in a local deployment of ArmoniK.
+This is useful to try current GUI in a local deployment of ArmoniK and avoid name mistake.
 
 ## Authors
 
