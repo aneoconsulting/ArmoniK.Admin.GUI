@@ -1,3 +1,28 @@
 <h1>{{ 'dashboard.title' | translate }}</h1>
 
-<app-pages-dashboard-application-card></app-pages-dashboard-application-card>
+<section class="clr-row">
+  <div
+    class="clr-col-12 clr-row clr-justify-content-center"
+    *ngIf="loadingApplications"
+  >
+    <span class="spinner spinner-inverse"> {{ 'loading' | translate }}</span>
+  </div>
+
+  <clr-alerts class="clr-col-12">
+    <clr-alert
+      clrAlertType="danger"
+      [clrAlertAppLevel]="true"
+      *ngFor="let error of errors; trackBy: trackByError"
+    >
+      <clr-alert-item>
+        <span class="alert-text"> {{ getTranslatedError(error) }} </span>
+      </clr-alert-item>
+    </clr-alert>
+  </clr-alerts>
+
+  <app-pages-dashboard-application-card
+    *ngFor="let application of applications; trackBy: trackByApplication"
+    [application]="application"
+    ngClass="clr-col-12 clr-col-lg-6"
+  ></app-pages-dashboard-application-card>
+</section>

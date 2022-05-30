@@ -1,13 +1,13 @@
 {
-  "root": "libs/api-interfaces",
-  "sourceRoot": "libs/api-interfaces/src",
+  "root": "libs/armonik-typing",
+  "sourceRoot": "libs/armonik-typing/src",
   "projectType": "library",
   "targets": {
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/api-interfaces/**/*.ts"]
+        "lintFilePatterns": ["libs/armonik-typing/**/*.ts"]
       }
     }
   },
