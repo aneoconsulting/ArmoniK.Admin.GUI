@@ -40,6 +40,23 @@ Install Nx globally
   npm install -g nx
 ```
 
+Commandes available
+
+```sh
+# Start the project (App and Server)
+npm run start
+# Build the project (App and Server)
+npm run build
+# Run test on the project (App, Server and libs)
+npm run test
+# Format the project (App, Server and libs)
+npm run format
+# Check format of the project (App, Server and libs)
+npm run format:check
+# Lint the project (App, Server and libs)
+npm run lint
+```
+
 ### App
 
 Start the app (front-end using Angular)
@@ -85,24 +102,30 @@ See `contributing.md` for ways to get started.
 
 The tests run at each automatic PR via the actions.
 
-But, it is possible to run tests locally.
+But, it is possible to run tests locally (only on affected files).
+
+Format code
+
+```bash
+  npx nx affected --target=format --parallel=3 --base=main
+```
 
 Check lint
 
 ```bash
-  npx nx affected --target=lint --parallel=3
+  npx nx affected --target=lint --parallel=3 --base=main
 ```
 
 Run tests
 
 ```bash
-  npx nx affected --target=test --parallel=3 --ci --code-coverage
+  npx nx affected --target=test --parallel=3 --code-coverage --base=main
 ```
 
 Build project
 
 ```bash
-  npx nx affected --target=build --parallel=3
+  npx nx affected --target=build --parallel=3 --base=main
 ```
 
 ## Deployment
@@ -119,7 +142,7 @@ To build docker images, you need to run on linux this command
 ./scripts/create-container.sh <app|api> <version>
 ```
 
-This is useful to try current GUI in a local deployment of ArmoniK.
+This is useful to try current GUI in a local deployment of ArmoniK and avoid name mistake.
 
 ## Authors
 
