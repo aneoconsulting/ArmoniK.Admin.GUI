@@ -5,14 +5,14 @@
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
-    "start": "nx serve",
-    "build": "nx build",
-    "test": "nx test",
+    "start": "nx run-many --target=serve --all",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "format": "nx format",
+    "format:check": "nx format:check",
+    "lint": "nx run-many --target=lint --all",
     "prepare": "husky install",
-    "pre-commit": "lint-staged",
-    "format:api": "prettier --write apps/api/**/*.{ts,js,json,md}",
-    "format:app": "prettier --write apps/app/**/*.{ts,js,json,md,scss,html}",
-    "format:libs": "prettier --write libs/**/*.{ts,js,json,md,scss,html}"
+    "pre-commit": "lint-staged"
   },
   "private": true,
   "dependencies": {
@@ -90,10 +90,10 @@
     "typescript": "~4.6.2"
   },
   "lint-staged": {
-    "*.{ts,js,json,html,scss}": [
-      "nx lint app",
-      "nx lint api",
-      "prettier --write"
+    "**": [
+      "npm run format:check",
+      "npm run lint",
+      "npm run test"
     ]
   }
 }

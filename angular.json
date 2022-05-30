@@ -2,9 +2,9 @@
   "version": 2,
   "projects": {
     "api": "apps/api",
-    "armonik-typing": "libs/armonik-typing",
     "app": "apps/app",
     "app-e2e": "apps/app-e2e",
+    "armonik-typing": "libs/armonik-typing",
     "ui": "libs/ui"
   }
 }

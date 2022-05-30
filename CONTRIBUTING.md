@@ -11,7 +11,7 @@ Please note we have a code of conduct, please follow it in all your interactions
    build.
 2. Update the README.md with details of changes to the interface, this includes new environment
    variables, exposed ports, useful file locations and container parameters.
-3. Make sure to do a PR against develop
+3. Make sure to do a PR against main
 4. Make sure you clearly define the changes in the description of the PR
 5. Make sure all tests pass
 
