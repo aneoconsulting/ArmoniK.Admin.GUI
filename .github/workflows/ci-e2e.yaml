@@ -13,8 +13,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: npm ci
-
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
