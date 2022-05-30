@@ -1,5 +1,6 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { ApiOkResponse } from '@nestjs/swagger';
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 
@@ -17,7 +18,8 @@ export class SessionsController {
   }
 
   @Get('/:id')
-  show(@Param('id') id: string): Promise<Session> {
+  @ApiOkResponse({ description: 'Session found' })
+  async show(@Param('id') id: string): Promise<Session> {
     return this.sessionsService.findOne(id);
   }
 }

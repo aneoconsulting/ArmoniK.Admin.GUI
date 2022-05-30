@@ -81,6 +81,22 @@ Contributions are always welcome!
 
 See `contributing.md` for ways to get started.
 
+## Documentation
+
+For the API, you can access to Swagger UI:
+
+```bash
+  http://localhost:4200/api/_swagger
+```
+
+To access to the json file:
+
+```bash
+  http://localhost:4200/api/_swagger-json
+```
+
+This is only available in development mode.
+
 ## Running Tests
 
 The tests run at each automatic PR via the actions.
