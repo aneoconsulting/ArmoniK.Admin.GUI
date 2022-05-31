@@ -26,6 +26,7 @@ export class TasksListComponent {
     const ids = this.selected.map((task) => task._id);
     if (ids.length > 0) {
       this.cancelButtonState = ClrLoadingState.LOADING;
+      // TODO: handle error connexion with the api (and show a banner using the core component)
       this.tasksService.cancelMany(ids).subscribe({
         complete: () => {
           this.cancelButtonState = ClrLoadingState.SUCCESS;
