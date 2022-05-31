@@ -2,7 +2,6 @@ describe('app', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display the dashboard page', () => {
-    // Function helper example, see `../support/app.po.ts` file
     // check if url is /admin/dashboard
     cy.url().should('include', '/admin/dashboard');
   });
