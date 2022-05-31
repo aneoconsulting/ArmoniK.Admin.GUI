@@ -52,4 +52,17 @@ export class TasksService {
       .get<Task>(`${this.url}/${id}`)
       .pipe(catchError(this.errorsService.handleError('getOne', id)));
   }
+
+  /**
+   * Used to cancel many tasks
+   *
+   * @parm ids Ids of the tasks
+   *
+   * @returns Tasks
+   */
+  cancelMany(ids: Task['_id'][]): Observable<Task[]> {
+    return this.http
+      .put<Task[]>(`${this.url}/cancel`, ids)
+      .pipe(catchError(this.errorsService.handleError('cancelMany')));
+  }
 }

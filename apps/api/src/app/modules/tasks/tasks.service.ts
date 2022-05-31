@@ -1,17 +1,26 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationService } from '../../core';
+import { Submitter } from '../../core/proto/submitter';
 import { Task, TaskDocument } from './schemas';
 
 @Injectable()
-export class TasksService {
+export class TasksService implements OnModuleInit {
+  private submitterService: Submitter;
+
   constructor(
     @InjectModel(Task.name)
     private readonly taskModel: Model<TaskDocument>,
-    private readonly paginationService: PaginationService
+    private readonly paginationService: PaginationService,
+    @Inject('Submitter') private client: ClientGrpc
   ) {}
+
+  onModuleInit() {
+    this.submitterService = this.client.getService<Submitter>('Submitter');
+  }
 
   /**
    * Get all tasks from the database using pagination and filters
@@ -54,5 +63,20 @@ export class TasksService {
    */
   async findOne(id: string): Promise<Task> {
     return this.taskModel.findById(id).exec();
+  }
+
+  /**
+   * Can tasks by id using gRPC
+   *
+   * @param ids Ids of the tasks
+   *
+   * @returns Promise
+   */
+  cancelMany(ids: string[]): Promise<Record<string, never>> {
+    return this.submitterService.CancelTasks({
+      task: {
+        ids,
+      },
+    });
   }
 }

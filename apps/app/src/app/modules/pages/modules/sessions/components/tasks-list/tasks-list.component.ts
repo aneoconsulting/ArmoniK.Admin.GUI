@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface } from '@clr/angular';
-import { TranslationService, Task } from '../../../../../core/';
+import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
+import { Task, TasksService } from '../../../../../core/';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -14,7 +14,26 @@ export class TasksListComponent {
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
 
-  constructor(private translationService: TranslationService) {}
+  selected: Task[] = [];
+  cancelButtonState = ClrLoadingState.DEFAULT;
+
+  constructor(private tasksService: TasksService) {}
+
+  /**
+   * Used to cancel tasks (one or many)
+   */
+  cancel() {
+    const ids = this.selected.map((task) => task._id);
+    if (ids.length > 0) {
+      this.cancelButtonState = ClrLoadingState.LOADING;
+      this.tasksService.cancelMany(ids).subscribe({
+        complete: () => {
+          this.cancelButtonState = ClrLoadingState.SUCCESS;
+          this.selected = [];
+        },
+      });
+    }
+  }
 
   /**
    * Return total number of tasks event if there is no task (return 0)

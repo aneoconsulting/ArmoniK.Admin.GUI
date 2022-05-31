@@ -1,10 +1,12 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import {
+  Body,
   Controller,
   Get,
   NotFoundException,
   Param,
   ParseIntPipe,
+  Put,
   Query,
 } from '@nestjs/common';
 import { Task } from './schemas';
@@ -54,5 +56,17 @@ export class TasksController {
     }
 
     return task;
+  }
+
+  /**
+   * Cancel tasks by ids
+   *
+   * @param ids Ids of the tasks
+   *
+   * @returns Tasks
+   */
+  @Put('/cancel')
+  cancelMany(@Body() body: string[]): Promise<Record<string, never>> {
+    return this.tasksService.cancelMany(body);
   }
 }

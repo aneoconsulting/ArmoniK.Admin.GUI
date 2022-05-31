@@ -28,9 +28,11 @@
       "title": "Détails de la session",
       "table": {
         "id": "Tâche ID",
+        "status": "Statut",
         "per_page": "Par page",
         "tasks": "{{value}} tâches",
-        "task": "{{value}} tâche"
+        "task": "{{value}} tâche",
+        "cancel": "Annuler la sélection"
       },
       "errors": {
         "404": "Session {{value}} et tâches introuvables - opération '{{name}}'",
