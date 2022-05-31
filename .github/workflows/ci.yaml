@@ -19,5 +19,9 @@ jobs:
 
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
-      - run: npx nx affected --target=test --parallel=3
+      - run: npx nx affected --target=test --parallel=3 --code-coverage
       - run: npx nx affected --target=build --parallel=3
+
+      - uses: romeovs/lcov-reporter-action@v0.2.16
+        with:
+          lcov-file: ./coverage/apps/app/lcov.info

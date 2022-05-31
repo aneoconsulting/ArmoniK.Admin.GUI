@@ -1,6 +1,13 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
 
@@ -8,17 +15,47 @@ import { TasksService } from './tasks.service';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
+  /**
+   * Get all tasks using pagination and filters
+   *
+   * @param page Page number
+   * @param limit Number of items per page
+   * @param sessionId Id of the session
+   *
+   * @returns Pagination of tasks
+   */
   @Get()
-  index(
+  async index(
     @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('sessionId') sessionId: string
   ): Promise<Pagination<Task>> {
-    return this.tasksService.findAllPaginated(page, limit);
+    const tasks = await this.tasksService.findAllPaginated(
+      page,
+      limit,
+      sessionId
+    );
+
+    return tasks;
   }
 
+  /**
+   * Get one task by id
+   *
+   * @param id Id of the task
+   *
+   * @returns Task
+   */
   @Get('/:id')
   @ApiOkResponse({ description: 'Task found' })
-  show(@Param('id') id: string): Promise<Task> {
-    return this.tasksService.findOne(id);
+  @ApiNotFoundResponse({ description: 'Task not found' })
+  async show(@Param('id') id: string): Promise<Task> {
+    const task = await this.tasksService.findOne(id);
+
+    if (!task) {
+      throw new NotFoundException();
+    }
+
+    return task;
   }
 }

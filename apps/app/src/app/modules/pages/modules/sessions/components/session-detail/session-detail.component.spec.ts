@@ -1,8 +1,11 @@
 import { APP_BASE_HREF } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { CoreComponentsModule } from '../../../../../core';
 import { SessionDetailComponent } from './session-detail.component';
 
 describe('SessionDetailComponent', () => {
@@ -12,7 +15,14 @@ describe('SessionDetailComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SessionDetailComponent],
-      imports: [RouterModule.forRoot([]), ClarityModule, UiModule],
+      imports: [
+        RouterModule.forRoot([]),
+        TranslateModule.forRoot(),
+        ClarityModule,
+        UiModule,
+        CoreComponentsModule,
+        HttpClientModule,
+      ],
       providers: [
         {
           provide: APP_BASE_HREF,

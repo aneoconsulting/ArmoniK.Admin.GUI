@@ -13,15 +13,26 @@ export class TasksService {
     private readonly paginationService: PaginationService
   ) {}
 
+  /**
+   * Get all tasks from the database using pagination and filters
+   * @param page Page number
+   * @param limit Number of items per page
+   * @param sessionId Id of the session
+   *
+   * @returns Pagination of tasks
+   */
   async findAllPaginated(
     page: number,
-    limit: number
+    limit: number,
+    sessionId: string
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
     const total = await this.taskModel.countDocuments();
     const data = await this.taskModel
-      .find()
+      .find({
+        SessionId: sessionId,
+      })
       .skip(startIndex)
       .limit(limit)
       .exec();
@@ -34,6 +45,13 @@ export class TasksService {
     };
   }
 
+  /**
+   * Get one task by id from the database
+   *
+   * @param id Id of the task
+   *
+   * @returns Task
+   */
   async findOne(id: string): Promise<Task> {
     return this.taskModel.findById(id).exec();
   }
