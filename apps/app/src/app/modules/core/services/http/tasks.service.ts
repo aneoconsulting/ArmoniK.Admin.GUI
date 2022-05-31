@@ -2,54 +2,54 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { catchError, Observable } from 'rxjs';
-import { Session } from '../../entities';
+import { Task } from '../../entities';
 import { ErrorsService } from './errors.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsService {
-  private url = 'api/sessions';
+export class TasksService {
+  private url = 'api/tasks';
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {}
 
   /**
-   * Used to get the list of sessions from the api using pagination and filters
+   * Used to get the list of tasks from the api using pagination and filters
    *
    * @param page Page number
    * @param limit Number of items per page
-   * @param appName Name of the app
+   * @param sessionId Id of the session
    *
-   * @returns Pagination of sessions
+   * @returns Pagination of tasks
    */
   getAllPaginated(
-    appName: string,
+    sessionId: string,
     page: number = 1,
     limit: number = 10
-  ): Observable<Pagination<Session>> {
+  ): Observable<Pagination<Task>> {
     const params = new URLSearchParams({
       page: String(page),
       limit: String(limit),
-      appName,
+      sessionId,
     });
 
     return this.http
-      .get<Pagination<Session>>(`${this.url}?${params.toString()}`)
+      .get<Pagination<Task>>(`${this.url}?${params.toString()}`)
       .pipe(
-        catchError(this.errorsService.handleError('getAllPaginated', appName))
+        catchError(this.errorsService.handleError('getAllPaginated', sessionId))
       );
   }
 
   /**
-   * Used to get one session by id
+   * Used to get one task by id
    *
-   * @param id Id of the session
+   * @param id Id of the task
    *
-   * @returns Session
+   * @returns Task
    */
-  getOne(id: string): Observable<Session> {
+  getOne(id: string): Observable<Task> {
     return this.http
-      .get<Session>(`${this.url}/${id}`)
+      .get<Task>(`${this.url}/${id}`)
       .pipe(catchError(this.errorsService.handleError('getOne', id)));
   }
 }

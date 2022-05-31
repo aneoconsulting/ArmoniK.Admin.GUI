@@ -7,7 +7,9 @@ export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
   @Get()
-  findAll(): Promise<Application[]> {
-    return this.applicationsService.findAll();
+  async findAll(): Promise<Application[]> {
+    const applications = await this.applicationsService.findAll();
+
+    return applications;
   }
 }

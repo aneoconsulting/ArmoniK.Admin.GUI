@@ -1,1 +1,42 @@
-<p>tasks works!</p>
+<section>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+      <span>{{ appName }}</span>
+    </ng-container>
+  </ui-page-header>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'applications', appName, 'sessions']"
+        >Sessions</a
+      >&nbsp;-&nbsp;
+      <span>{{ sessionId }}</span>
+    </ng-container>
+  </ui-page-header>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a
+        [routerLink]="[
+          '/admin',
+          'applications',
+          appName,
+          'sessions',
+          sessionId
+        ]"
+        >Tasks</a
+      >&nbsp;-&nbsp;
+      <span>{{ taskId }}</span>
+    </ng-container>
+    {{ 'task.title' | translate }}
+  </ui-page-header>
+
+  <app-alert-error [errors]="errors" name="task"></app-alert-error>
+
+  <div *ngIf="loadingTask">
+    <span class="spinner spinner-inverse"> {{ 'loading' | translate }}</span>
+  </div>
+
+  <pre>
+    {{ task | json }}
+  </pre>
+</section>
