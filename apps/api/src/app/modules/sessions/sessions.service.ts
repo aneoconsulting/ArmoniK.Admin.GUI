@@ -14,7 +14,13 @@ export class SessionsService {
   ) {}
 
   /**
-   * Get all sessions from the database using pagination and appName
+   * Get all sessions from the database using pagination and filters
+   *
+   * @param page Page number
+   * @param limit Number of items per page
+   * @param sessionId Id of the session
+   *
+   * @returns Pagination of sessions
    */
   async findAllPaginated(
     page: number,
@@ -41,6 +47,13 @@ export class SessionsService {
     };
   }
 
+  /**
+   * Get one session by id from the database
+   *
+   * @param id Id of the session
+   *
+   * @returns Session
+   */
   async findOne(id: string): Promise<Session> {
     return this.sessionModel.findById(id).exec();
   }

@@ -1,0 +1,10 @@
+.subtitle {
+  display: flex;
+  flex-direction: row;
+
+  margin-top: 0.25rem;
+}
+
+.subtitle + h1 {
+  margin-top: 0.5rem;
+}

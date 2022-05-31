@@ -5,6 +5,9 @@ import { TaskSchema } from './schemas';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 
+/**
+ * Tasks module
+ */
 @Module({
   imports: [MongooseModule.forFeature([{ name: 'Task', schema: TaskSchema }])],
   controllers: [TasksController],

@@ -9,6 +9,9 @@ export type TaskDocument = Task & Document;
 export class Task {
   @Prop()
   _id: string;
+
+  @Prop()
+  SessionId: string;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
