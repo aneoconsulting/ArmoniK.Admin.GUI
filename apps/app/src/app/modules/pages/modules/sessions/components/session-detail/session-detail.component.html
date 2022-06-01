@@ -15,6 +15,11 @@
     {{ 'sessions.session-detail.title' | translate }}
   </ui-page-header>
 
+  <app-alert-error
+    [errors]="errors"
+    name="sessions.session-detail"
+  ></app-alert-error>
+
   <div *ngIf="loadingSession">
     <span class="spinner spinner-inverse"> {{ 'loading' | translate }}</span>
   </div>
@@ -23,9 +28,13 @@
     {{ session | json }}
   </pre>
 
+  <app-alert-error [errors]="errorsTasks" name="tasks"></app-alert-error>
+  <!-- Externaliser l'appel pour la cancellation -->
+
   <app-pages-sessions-tasks-list
     [tasks]="tasks"
     [loading]="loadingTasks"
-    (refresh)="refresh($event)"
+    (refresh)="onRefreshTasksList($event)"
+    (errorChange)="onErrorTasksList($event)"
   ></app-pages-sessions-tasks-list>
 </section>

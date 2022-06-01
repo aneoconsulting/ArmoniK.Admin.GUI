@@ -4,6 +4,11 @@
   "sidenav": {
     "dashboard": "Dashboard"
   },
+  "tasks": {
+    "errors": {
+      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    }
+  },
   "task": {
     "title": "Task detail",
     "errors": {

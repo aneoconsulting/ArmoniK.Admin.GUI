@@ -21,6 +21,7 @@ export class SessionDetailComponent implements OnInit {
   session: Session | null = null;
   tasks: Pagination<Task> | null = null;
   errors: AppError[] = [];
+  errorsTasks: AppError[] = [];
   loadingSession = true;
   loadingTasks = true;
 
@@ -48,7 +49,9 @@ export class SessionDetailComponent implements OnInit {
    *
    * @param state Clarity datagrid state
    */
-  refresh(state: ClrDatagridStateInterface) {
+  onRefreshTasksList(state: ClrDatagridStateInterface) {
+    this.loadingTasks = true;
+
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
@@ -58,6 +61,17 @@ export class SessionDetailComponent implements OnInit {
         error: this.onErrorTasks.bind(this),
         next: this.onNextTasks.bind(this),
       });
+  }
+
+  /**
+   * Handle error from tasks list
+   *
+   * @param error Error
+   */
+  onErrorTasksList(error: AppError) {
+    console.error(error);
+    this.errorsTasks.push(error);
+    this.loadingTasks = false;
   }
 
   /**

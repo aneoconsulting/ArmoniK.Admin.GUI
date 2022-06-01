@@ -1,5 +1,10 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -73,6 +78,7 @@ export class TasksService implements OnModuleInit {
    * @returns Promise
    */
   cancelMany(ids: string[]): Promise<Record<string, never>> {
+    throw new NotFoundException('Method not implemented.');
     return this.submitterService.CancelTasks({
       task: {
         ids,
