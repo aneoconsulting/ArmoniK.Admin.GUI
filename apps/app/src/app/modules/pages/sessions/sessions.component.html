@@ -1,0 +1,47 @@
+<section>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+      <span>{{ applicationName }}</span>
+    </ng-container>
+    {{ 'sessions.title' | translate }}
+  </ui-page-header>
+
+  <app-alert-error [errors]="errors" name="sessions"></app-alert-error>
+
+  <clr-datagrid
+    (clrDgRefresh)="refresh($event)"
+    [clrDgLoading]="loadingSessions"
+  >
+    <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.table.status' | translate }}
+    </clr-dg-column>
+
+    <clr-dg-row
+      *ngFor="let session of sessions?.data"
+      [ngForTrackBy]="trackSessions"
+    >
+      <clr-dg-cell>
+        <a [routerLink]="[session._id]">
+          <span>
+            {{ session._id }}
+          </span>
+        </a>
+      </clr-dg-cell>
+      <clr-dg-cell> {{ session.Status }} </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgTotalItems]="totalSessions">
+        <clr-dg-page-size>{{
+          'sessions.per_page' | translate
+        }}</clr-dg-page-size>
+        {{
+          (totalSessions > 1 ? 'sessions.sessions' : 'sessions.session')
+            | translate: { value: totalSessions }
+        }}
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+</section>

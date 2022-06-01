@@ -1,0 +1,36 @@
+<section>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+      <span>{{ applicationName }}</span>
+    </ng-container>
+  </ui-page-header>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
+        >Sessions</a
+      >&nbsp;-&nbsp;
+      <span>{{ sessionId }}</span>
+    </ng-container>
+  </ui-page-header>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a
+        [routerLink]="[
+          '/admin',
+          'applications',
+          applicationName,
+          'sessions',
+          sessionId
+        ]"
+        >Tasks</a
+      >&nbsp;-&nbsp;
+      <span>{{ taskId }}</span>
+    </ng-container>
+    {{ 'task.title' | translate }}
+  </ui-page-header>
+
+  <pre>
+    {{ task | json }}
+  </pre>
+</section>

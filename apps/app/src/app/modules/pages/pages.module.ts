@@ -1,41 +1,14 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { RouterModule } from '@angular/router';
-import { UiModule } from '@armonik.admin.gui/ui';
-import { ClarityModule } from '@clr/angular';
+import { SharedModule } from '../../shared';
+import { ErrorComponent } from './error/error.component';
+import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 
+/**
+ * Load app pages
+ */
 @NgModule({
-  declarations: [PagesComponent],
-  imports: [
-    CommonModule,
-    ClarityModule,
-    UiModule,
-    FlexLayoutModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        component: PagesComponent,
-        children: [
-          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          {
-            path: 'applications',
-            loadChildren: () =>
-              import('./modules/sessions/sessions.module').then(
-                (m) => m.SessionsModule
-              ),
-          },
-          {
-            path: 'dashboard',
-            loadChildren: () =>
-              import('./modules/dashboard/dashboard.module').then(
-                (m) => m.DashboardModule
-              ),
-          },
-        ],
-      },
-    ]),
-  ],
+  declarations: [PagesComponent, ErrorComponent],
+  imports: [SharedModule, PagesRoutingModule],
 })
 export class PagesModule {}

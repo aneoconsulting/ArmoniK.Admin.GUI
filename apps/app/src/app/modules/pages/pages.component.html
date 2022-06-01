@@ -8,12 +8,7 @@
         </span>
       </span>
     </a>
-    <ul
-      actions
-      class="list-unstyled"
-      fxLayout="row"
-      fxLayoutAlign="center center"
-    >
+    <ul actions class="list-unstyled language">
       <li *ngFor="let language of languages; trackBy: trackByLanguageName">
         <button class="btn btn-link" (click)="changeLanguage(language.code)">
           {{ language.name | uppercase }}

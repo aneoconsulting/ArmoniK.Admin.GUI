@@ -1,15 +1,10 @@
 import { Component } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import {
+  LanguageService,
   Language,
   LanguageCode,
-  TranslationService,
-} from '../core/services/translation.service';
-
-type Link = {
-  path: string;
-  label: string;
-};
+  AppNavLink,
+} from '../../core';
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html',
@@ -18,31 +13,52 @@ type Link = {
 export class PagesComponent {
   now = Date.now();
 
-  links: Link[] = [
+  links: AppNavLink[] = [
     {
       path: 'dashboard',
-      label: this.translateService.instant('sidenav.dashboard'),
+      label: this.languageService.instant('sidenav.dashboard'),
     },
   ];
 
-  constructor(
-    private translationService: TranslationService,
-    private translateService: TranslateService
-  ) {}
+  constructor(private languageService: LanguageService) {
+    setInterval(() => {
+      this.now = Date.now();
+    }, 1000 * 60);
+  }
 
   public get languages() {
-    return this.translationService.locales;
+    return this.languageService.availableLanguages;
   }
 
+  /**
+   * Change currant lange of application
+   *
+   * @param lang
+   */
   public changeLanguage(lang: LanguageCode) {
-    this.translationService.setLocale(lang);
+    this.languageService.currentLang = lang;
   }
 
-  public trackByLabel(_: number, item: Link): string {
+  /** Used to track label
+   *
+   * @param index
+   * @param item
+   *
+   * @returns value
+   */
+  public trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
     return item.label;
   }
 
-  public trackByLanguageName(_: number, item: Language): string {
+  /**
+   * Used to track language for ngFor
+   *
+   * @param index
+   * @param item
+   *
+   * @returns value
+   */
+  public trackByLanguageName(_: number, item: Language): Language['name'] {
     return item.name;
   }
 }
