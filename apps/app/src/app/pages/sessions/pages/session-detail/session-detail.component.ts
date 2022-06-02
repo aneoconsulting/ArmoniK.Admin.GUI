@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { TranslateService } from '@ngx-translate/core';
 import {
   TasksService,
-  TitleService,
   Session,
   Task,
   AppError,
+  BrowserTitleService,
+  LanguageService,
 } from '../../../../core';
 
 @Component({
@@ -24,12 +24,12 @@ export class SessionDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private titleService: TitleService,
-    private translateService: TranslateService,
+    private browserTitleService: BrowserTitleService,
+    private languageService: LanguageService,
     private tasksService: TasksService
   ) {
-    this.titleService.setTitle(
-      this.translateService.instant('sessions.session-detail.title')
+    this.browserTitleService.setTitle(
+      this.languageService.instant('sessions.session-detail.title')
     );
   }
 

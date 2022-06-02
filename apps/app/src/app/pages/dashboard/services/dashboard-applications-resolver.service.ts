@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import { catchError, Observable } from 'rxjs';
-import { ApplicationsService, ErrorService } from '../../../../core';
+import { ApplicationsService, ErrorService } from '../../../core';
 
 @Injectable()
 export class DashboardApplicationsResolver

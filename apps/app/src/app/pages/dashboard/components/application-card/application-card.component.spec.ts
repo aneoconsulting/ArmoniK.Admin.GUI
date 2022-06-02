@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { UiModule } from '@armonik.admin.gui/ui';
+import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ApplicationCardComponent } from './application-card.component';
@@ -14,7 +16,12 @@ describe('ApplicationCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ApplicationCardComponent],
-      imports: [TranslateModule.forRoot(), RouterTestingModule.withRoutes([])],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+        ClarityModule,
+        UiModule,
+      ],
     }).compileComponents();
   });
 

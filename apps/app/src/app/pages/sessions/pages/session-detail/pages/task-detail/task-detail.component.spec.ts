@@ -1,7 +1,7 @@
-import { APP_BASE_HREF, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,17 +17,11 @@ describe('TaskDetailComponent', () => {
       declarations: [TaskDetailComponent],
       imports: [
         CommonModule,
-        RouterModule.forRoot([]),
+        RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
         UiModule,
         ClarityModule,
         HttpClientModule,
-      ],
-      providers: [
-        {
-          provide: APP_BASE_HREF,
-          useValue: '/',
-        },
       ],
     }).compileComponents();
   });

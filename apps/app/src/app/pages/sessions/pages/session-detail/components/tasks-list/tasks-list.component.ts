@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { TranslationService, Task } from '../../../../../../core';
+import { LanguageService, Task } from '../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -14,7 +14,7 @@ export class TasksListComponent {
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
 
-  constructor(private translationService: TranslationService) {}
+  constructor(private languageService: LanguageService) {}
 
   /**
    * Return total number of tasks event if there is no task (return 0)

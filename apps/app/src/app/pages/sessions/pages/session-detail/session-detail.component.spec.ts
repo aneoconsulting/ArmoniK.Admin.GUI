@@ -1,11 +1,12 @@
-import { APP_BASE_HREF } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { CoreComponentsModule } from '../../../../core';
+import { AlertErrorComponent } from '../../../../shared';
+import { TasksService } from '../../../../core';
+import { TasksListComponent } from './components';
 import { SessionDetailComponent } from './session-detail.component';
 
 describe('SessionDetailComponent', () => {
@@ -14,21 +15,19 @@ describe('SessionDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SessionDetailComponent],
+      declarations: [
+        SessionDetailComponent,
+        TasksListComponent,
+        AlertErrorComponent,
+      ],
       imports: [
-        RouterModule.forRoot([]),
+        RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
-        ClarityModule,
         UiModule,
-        CoreComponentsModule,
+        ClarityModule,
         HttpClientModule,
       ],
-      providers: [
-        {
-          provide: APP_BASE_HREF,
-          useValue: '/',
-        },
-      ],
+      providers: [TasksService],
     }).compileComponents();
   });
 

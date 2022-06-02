@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { catchError, Observable } from 'rxjs';
-import { ErrorService, TasksService, Task } from '../../../../../../core';
+import { ErrorService, TasksService, Task } from '../../../../../core';
 
 @Injectable()
 export class TaskDetailResolver implements Resolve<Task | null> {

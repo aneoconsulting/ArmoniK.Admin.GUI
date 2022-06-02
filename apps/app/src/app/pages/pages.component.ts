@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  LanguageService,
-  Language,
-  LanguageCode,
-  AppNavLink,
-} from '../../core';
+import { LanguageService, Language, LanguageCode, AppNavLink } from '../core';
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html',

@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {
-  BrowserTitleService,
-  LanguageService,
-} from '../../../../../../../core';
+import { BrowserTitleService, LanguageService } from '../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-task-detail',

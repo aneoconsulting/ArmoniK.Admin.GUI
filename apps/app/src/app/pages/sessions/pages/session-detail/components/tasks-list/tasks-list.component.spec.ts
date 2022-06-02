@@ -1,6 +1,7 @@
-import { APP_BASE_HREF } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { UiModule } from '@armonik.admin.gui/ui';
+import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { TasksListComponent } from './tasks-list.component';
@@ -12,12 +13,11 @@ describe('TasksListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TasksListComponent],
-      imports: [TranslateModule.forRoot(), RouterModule.forRoot([])],
-      providers: [
-        {
-          provide: APP_BASE_HREF,
-          useValue: '/',
-        },
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
+        ClarityModule,
+        UiModule,
       ],
     }).compileComponents();
   });
