@@ -11,7 +11,6 @@ import { AlertErrorComponent } from './components';
   imports: [
     ClarityModule,
     CommonModule,
-    HttpClientModule,
     RouterModule,
     TranslateModule,
     UiModule,
@@ -21,7 +20,6 @@ import { AlertErrorComponent } from './components';
     AlertErrorComponent,
     ClarityModule,
     CommonModule,
-    HttpClientModule,
     RouterModule,
     TranslateModule,
     UiModule,

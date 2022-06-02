@@ -11,7 +11,8 @@ import {
 } from './services';
 
 /**
- * contain the code that is specific to your application and implements the Cross-Cutting Concerns of the application
+ * Contain the code that is specific to the application
+ * and implements the Cross-Cutting Concerns of the application
  */
 @NgModule({
   imports: [BrowserModule, CommonModule, HttpClientModule],
