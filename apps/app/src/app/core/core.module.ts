@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import {
   ApiService,
-  ErrorService,
   ApplicationsService,
+  ErrorService,
   SessionsService,
   TasksService,
 } from './services';
@@ -12,7 +14,7 @@ import {
  * contain the code that is specific to your application and implements the Cross-Cutting Concerns of the application
  */
 @NgModule({
-  imports: [CommonModule],
+  imports: [BrowserModule, CommonModule, HttpClientModule],
   providers: [
     ApiService,
     ErrorService,

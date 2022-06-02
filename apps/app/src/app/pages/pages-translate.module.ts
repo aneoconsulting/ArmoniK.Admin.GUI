@@ -30,4 +30,4 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   exports: [TranslateModule],
 })
-export class AppTranslateModule {}
+export class PagesTranslateModule {}
