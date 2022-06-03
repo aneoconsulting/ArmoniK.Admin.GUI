@@ -1,5 +1,9 @@
 export type Application = {
-  _id: string;
+  _id: {
+    applicationName: string;
+    version: string;
+  };
+  countTasksPending?: number;
   countTasksError?: number;
   countTasksCompleted?: number;
   countTasksProcessing?: number;

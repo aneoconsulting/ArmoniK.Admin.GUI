@@ -17,14 +17,49 @@ export class ApplicationsService {
     const result = await this.connection
       .collection(this.taskModel.collection.collectionName)
       .aggregate<Application>([
+        // Get only the last seven days using StartDate
+        {
+          $match: {
+            $expr: {
+              $gte: [
+                '$StartDate',
+                new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+              ],
+            },
+          },
+        },
         {
           // Groupe by Options.Options.GridAppName and sum tasks using Status
           $group: {
-            _id: '$Options.Options.GridAppName',
+            _id: {
+              applicationName: '$Options.Options.GridAppName',
+              version: '$Options.Options.GridAppVersion',
+            },
+            countTasksPending: {
+              $sum: {
+                $cond: {
+                  if: {
+                    $or: [
+                      { $eq: ['$Status', TaskStatus.UNSPECIFIED] },
+                      { $eq: ['$Status', TaskStatus.CREATING] },
+                      { $eq: ['$Status', TaskStatus.SUBMITTED] },
+                      { $eq: ['$Status', TaskStatus.DISPATCHED] },
+                    ],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
             countTasksError: {
               $sum: {
                 $cond: {
-                  if: { $eq: ['$Status', TaskStatus.ERROR] },
+                  if: {
+                    $or: [
+                      { $eq: ['$Status', TaskStatus.ERROR] },
+                      { $eq: ['$Status', TaskStatus.FAILED] },
+                    ],
+                  },
                   then: 1,
                   else: 0,
                 },
@@ -54,7 +89,15 @@ export class ApplicationsService {
           // Handle default application
           $addFields: {
             _id: {
-              $ifNull: ['$_id', this.settingsService.defaultApplicationName],
+              applicationName: {
+                $ifNull: [
+                  '$_id.applicationName',
+                  this.settingsService.defaultApplicationName,
+                ],
+              },
+              version: {
+                $ifNull: ['$_id.version', this.settingsService.defaultVersion],
+              },
             },
           },
         },
