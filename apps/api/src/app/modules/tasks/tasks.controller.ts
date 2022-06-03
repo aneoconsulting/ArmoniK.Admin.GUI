@@ -1,4 +1,5 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Controller,
   Get,
@@ -46,6 +47,8 @@ export class TasksController {
    * @returns Task
    */
   @Get('/:id')
+  @ApiOkResponse({ description: 'Task found' })
+  @ApiNotFoundResponse({ description: 'Task not found' })
   async show(@Param('id') id: string): Promise<Task> {
     const task = await this.tasksService.findOne(id);
 
