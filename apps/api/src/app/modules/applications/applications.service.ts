@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import { Application, TaskStatus } from '@armonik.admin.gui/armonik-typing';
-import { Task, TaskDocument, TaskSchema } from '../tasks/schemas/task.schema';
+import { Task, TaskDocument } from '../tasks/schemas/task.schema';
+import { SettingsService } from '../../shared';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
+    private readonly settingsService: SettingsService,
     @InjectConnection() private connection: Connection,
     @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>
   ) {}
@@ -45,6 +47,14 @@ export class ApplicationsService {
                   else: 0,
                 },
               },
+            },
+          },
+        },
+        {
+          // Handle default application
+          $addFields: {
+            _id: {
+              $ifNull: ['$_id', this.settingsService.defaultApplicationName],
             },
           },
         },
