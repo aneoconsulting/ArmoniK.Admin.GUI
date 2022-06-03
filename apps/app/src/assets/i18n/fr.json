@@ -10,7 +10,7 @@
   },
   "pages": {
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Tableau de board",
       "applications": {
         "completed": "{{countTasksCompleted}} tâches complétées",
         "processing": "{{countTasksProcessing}} tâches en cours",
