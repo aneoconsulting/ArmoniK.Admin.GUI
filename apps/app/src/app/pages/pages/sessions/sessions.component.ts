@@ -27,7 +27,7 @@ export class SessionsComponent {
     private sessionsService: SessionsService
   ) {
     this.browserTitleService.setTitle(
-      this.languageService.instant('sessions.title')
+      this.languageService.instant('pages.sessions.title')
     );
   }
 

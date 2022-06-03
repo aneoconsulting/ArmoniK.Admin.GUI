@@ -19,7 +19,9 @@ export class TaskDetailComponent implements OnInit {
     private languageService: LanguageService
   ) {
     this.browserTitleService.setTitle(
-      this.languageService.instant('tasks.title')
+      this.languageService.instant(
+        'pages.sessions.session-detail.task-detail.title'
+      )
     );
   }
 

@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     private browserTitleService: BrowserTitleService
   ) {
     this.browserTitleService.setTitle(
-      this.languageService.instant('dashboard.title')
+      this.languageService.instant('pages.dashboard.title')
     );
   }
 

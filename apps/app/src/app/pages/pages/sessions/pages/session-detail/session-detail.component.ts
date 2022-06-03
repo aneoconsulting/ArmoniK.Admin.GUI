@@ -29,7 +29,7 @@ export class SessionDetailComponent implements OnInit {
     private tasksService: TasksService
   ) {
     this.browserTitleService.setTitle(
-      this.languageService.instant('sessions.session-detail.title')
+      this.languageService.instant('pages.sessions.session-detail.title')
     );
   }
 
