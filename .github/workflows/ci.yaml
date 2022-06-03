@@ -15,7 +15,18 @@ jobs:
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
-      - run: npm ci
+
+      - name: Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          # Invalidate the cache if the node_modules folder changes
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.node-cache.outputs.cache-hit != true
+        run: npm ci
 
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
