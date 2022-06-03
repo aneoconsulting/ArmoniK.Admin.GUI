@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LanguageService, Language, LanguageCode, AppNavLink } from '../core';
+
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.component.html',
@@ -11,7 +12,7 @@ export class PagesComponent {
   links: AppNavLink[] = [
     {
       path: 'dashboard',
-      label: this.languageService.instant('sidenav.dashboard'),
+      label: this.languageService.instant('navigation.dashboard'),
     },
   ];
 

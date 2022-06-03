@@ -1,54 +1,53 @@
 {
-  "loading": "Chargement...",
-  "more-info": "En savoir plus",
-  "sidenav": {
-    "dashboard": "Tableau de bord"
+  "global": {
+    "loading": "Chargement..."
   },
-  "task": {
-    "title": "Détail d'une tâche",
-    "errors": {
-      "404": "Tâche {{value}} introuvable - opération '{{name}}'",
-      "504": "Impossible de contacter le serveur - opération '{{name}}'"
-    }
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "applications": "Applications",
+    "sessions": "Sessions",
+    "tasks": "Tâches"
   },
-  "sessions": {
-    "session": "{{value}} session",
-    "sessions": "{{value}} sessions",
-    "per_page": "Sessions par page",
-    "title": "Toutes les sessions",
-    "table": {
-      "id": "Session ID",
-      "status": "Statut"
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "applications": {
+        "completed": "{{countTasksCompleted}} tâches complétées",
+        "processing": "{{countTasksProcessing}} tâches en cours",
+        "error": "{{countTasksError}} tâches en erreur",
+        "see-sessions": "Voir les sessions"
+      }
     },
-    "errors": {
-      "404": "Sessions pour {{value}} introuvable - opération '{{name}}'",
-      "504": "Impossible de contacter le serveur - opération '{{name}}'"
+    "error": {
+      "title": "Désolé",
+      "message": "Une erreur est survenue"
     },
-    "session-detail": {
-      "title": "Détails de la session",
+    "sessions": {
+      "session": "{{value}} session",
+      "sessions": "{{value}} sessions",
+      "per_page": "Sessions par page",
+      "title": "Toutes les sessions",
       "table": {
-        "id": "Tâche ID",
-        "per_page": "Par page",
-        "tasks": "{{value}} tâches",
-        "task": "{{value}} tâche"
+        "id": "Session ID",
+        "status": "Statut"
       },
-      "errors": {
-        "404": "Session {{value}} et tâches introuvables - opération '{{name}}'",
-        "504": "Impossible de contacter le serveur - opération '{{name}}'"
+      "session-detail": {
+        "title": "Détail de la session",
+        "table": {
+          "id": "Tâche ID",
+          "per_page": "Par page",
+          "tâches": "{{value}} tâches",
+          "tâche": "{{value}} tâche"
+        },
+        "task-detail": {
+          "title": "Détail de la tâche"
+        }
       }
     }
   },
-  "dashboard": {
-    "title": "Tableau de bord",
-    "errors": {
-      "404": "Applications introuvable - opération '{{name}}'",
-      "504": "Impossible de contacter le serveur - opération '{{name}}'"
-    },
-    "applications": {
-      "completed": "{{countTasksCompleted}} tâches terminées",
-      "processing": "{{countTasksProcessing}} tâches en cours",
-      "error": "{{countTasksError}} tâches en erreur",
-      "see-sessions": "Voir les sessions"
-    }
+  "errors": {
+    "404": "Non trouvée",
+    "500": "Erreur interne",
+    "504": "Erreur de connexion"
   }
 }

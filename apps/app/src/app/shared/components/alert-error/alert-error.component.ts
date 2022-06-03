@@ -7,7 +7,6 @@ import { AppError, LanguageService } from '../../../core';
   styleUrls: ['./alert-error.component.scss'],
 })
 export class AlertErrorComponent {
-  @Input() name = '';
   @Input() errors: AppError[] = [];
 
   constructor(private languageService: LanguageService) {}
@@ -20,10 +19,7 @@ export class AlertErrorComponent {
    * @returns translated error message
    */
   translateError(error: AppError): string {
-    return this.languageService.instant(`${this.name}.errors.${error.status}`, {
-      value: error.id,
-      name: error.operation,
-    });
+    return this.languageService.instant(`errors.${error.status}`);
   }
 
   /**

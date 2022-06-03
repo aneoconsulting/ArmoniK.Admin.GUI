@@ -1,4 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 
@@ -16,8 +20,10 @@ export class ApiService {
    *
    * @param error Error response
    */
-  private formatErrors(error: any) {
-    return throwError(() => error.error);
+  private formatErrors(error: HttpErrorResponse) {
+    return throwError(() => ({
+      status: error.status,
+    }));
   }
 
   /**

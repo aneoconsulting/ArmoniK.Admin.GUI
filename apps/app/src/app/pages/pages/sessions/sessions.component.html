@@ -1,21 +1,24 @@
 <section>
   <ui-page-header>
     <ng-container subtitle>
-      <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+      <a [routerLink]="['/admin', 'dashboard']">{{
+        'navigation.applications' | translate
+      }}</a
+      >&nbsp;-&nbsp;
       <span>{{ applicationName }}</span>
     </ng-container>
-    {{ 'sessions.title' | translate }}
+    {{ 'pages.sessions.title' | translate }}
   </ui-page-header>
 
-  <app-alert-error [errors]="errors" name="sessions"></app-alert-error>
+  <app-alert-error [errors]="errors"></app-alert-error>
 
   <clr-datagrid
     (clrDgRefresh)="refresh($event)"
     [clrDgLoading]="loadingSessions"
   >
-    <clr-dg-column> {{ 'sessions.table.id' | translate }} </clr-dg-column>
+    <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
     <clr-dg-column>
-      {{ 'sessions.table.status' | translate }}
+      {{ 'pages.sessions.table.status' | translate }}
     </clr-dg-column>
 
     <clr-dg-row
@@ -35,11 +38,13 @@
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgTotalItems]="totalSessions">
         <clr-dg-page-size>{{
-          'sessions.per_page' | translate
+          'pages.sessions.per_page' | translate
         }}</clr-dg-page-size>
         {{
-          (totalSessions > 1 ? 'sessions.sessions' : 'sessions.session')
-            | translate: { value: totalSessions }
+          (totalSessions > 1
+            ? 'pages.sessions.sessions'
+            : 'pages.sessions.session'
+          ) | translate: { value: totalSessions }
         }}
       </clr-dg-pagination>
     </clr-dg-footer>

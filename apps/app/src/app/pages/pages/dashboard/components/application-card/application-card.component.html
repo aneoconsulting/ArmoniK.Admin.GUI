@@ -3,21 +3,25 @@
   <div class="card-block">
     <div
       class="card-title"
-      [title]="'dashboard.applications.error' | translate: application"
+      [title]="'pages.dashboard.applications.error' | translate: application"
     >
       <span> {{ application?.countTasksError ?? 0 }} </span>
       <span class="dot dot-danger"></span>
     </div>
     <div
       class="card-title"
-      [title]="'dashboard.applications.processing' | translate: application"
+      [title]="
+        'pages.dashboard.applications.processing' | translate: application
+      "
     >
       <span> {{ application?.countTasksProcessing ?? 0 }} </span>
       <span class="dot dot-warn"></span>
     </div>
     <div
       class="card-title"
-      [title]="'dashboard.applications.completed' | translate: application"
+      [title]="
+        'pages.dashboard.applications.completed' | translate: application
+      "
     >
       <span> {{ application?.countTasksCompleted ?? 0 }} </span>
       <span class="dot dot-success"></span>
@@ -28,7 +32,7 @@
       class="btn btn-sm btn-link"
       [routerLink]="['/admin', 'applications', application?._id, 'sessions']"
     >
-      {{ 'dashboard.applications.see-sessions' | translate }}
+      {{ 'pages.dashboard.applications.see-sessions' | translate }}
     </a>
   </footer>
 </article>

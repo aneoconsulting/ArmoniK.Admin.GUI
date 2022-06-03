@@ -1,14 +1,18 @@
 <section>
   <ui-page-header>
     <ng-container subtitle>
-      <a [routerLink]="['/admin', 'dashboard']">Applications</a>&nbsp;-&nbsp;
+      <a [routerLink]="['/admin', 'dashboard']">{{
+        'navigation.applications' | translate
+      }}</a
+      >&nbsp;-&nbsp;
       <span>{{ applicationName }}</span>
     </ng-container>
   </ui-page-header>
   <ui-page-header>
     <ng-container subtitle>
-      <a [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
-        >Sessions</a
+      <a
+        [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
+        >{{ 'navigation.sessions' | translate }}</a
       >&nbsp;-&nbsp;
       <span>{{ sessionId }}</span>
     </ng-container>
@@ -23,11 +27,11 @@
           'sessions',
           sessionId
         ]"
-        >Tasks</a
+        >{{ 'navigation.tasks' | translate }}</a
       >&nbsp;-&nbsp;
       <span>{{ taskId }}</span>
     </ng-container>
-    {{ 'task.title' | translate }}
+    {{ 'pages.sessions.session-detail.task-detail.title' | translate }}
   </ui-page-header>
 
   <pre>

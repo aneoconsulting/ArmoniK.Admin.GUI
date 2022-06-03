@@ -1,6 +1,6 @@
 <clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
   <clr-dg-column>
-    {{ 'sessions.session-detail.table.id' | translate }}
+    {{ 'pages.sessions.session-detail.table.id' | translate }}
   </clr-dg-column>
 
   <clr-dg-row *ngFor="let task of tasks?.data; trackBy: trackByTask">
@@ -16,12 +16,12 @@
   <clr-dg-footer>
     <clr-dg-pagination #pagination [clrDgTotalItems]="totalTasks">
       <clr-dg-page-size>{{
-        'sessions.session-detail.table.per_page' | translate
+        'pages.sessions.session-detail.table.per_page' | translate
       }}</clr-dg-page-size>
       {{
         (totalTasks > 1
-          ? 'sessions.session-detail.table.tasks'
-          : 'sessions.session-detail.table.task'
+          ? 'pages.sessions.session-detail.table.tasks'
+          : 'pages.sessions.session-detail.table.task'
         ) | translate: { value: totalTasks }
       }}
     </clr-dg-pagination>

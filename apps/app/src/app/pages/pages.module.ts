@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { LanguageService, LocaleProvider } from '../core';
 import { SharedModule } from '../shared';
 import { ErrorComponent } from './pages';
 import { PagesRoutingModule } from './pages-routing.module';
-import { PagesTranslateModule } from './pages-translate.module';
 import { PagesComponent } from './pages.component';
 
 /**
@@ -11,11 +9,6 @@ import { PagesComponent } from './pages.component';
  */
 @NgModule({
   declarations: [PagesComponent, ErrorComponent],
-  imports: [SharedModule, PagesRoutingModule, PagesTranslateModule],
-  providers: [LocaleProvider, LanguageService],
+  imports: [SharedModule, PagesRoutingModule],
 })
-export class PagesModule {
-  constructor(private languageService: LanguageService) {
-    this.languageService.init();
-  }
-}
+export class PagesModule {}
