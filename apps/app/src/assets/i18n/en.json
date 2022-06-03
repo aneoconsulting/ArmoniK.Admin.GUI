@@ -36,19 +36,19 @@
         "404": "Session {{value}} and tasks not found - operation '{{name}}'",
         "504": "Impossible to contact the server - operation '{{name}}'"
       }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "errors": {
+      "404": "Applications not found - operation '{{name}}'",
+      "504": "Impossible to contact the server - operation '{{name}}'"
     },
-    "dashboard": {
-      "title": "Dashboard",
-      "errors": {
-        "404": "Applications not found - operation '{{name}}'",
-        "504": "Impossible to contact the server - operation '{{name}}'"
-      },
-      "applications": {
-        "completed": "{{countTasksCompleted}} tasks completed",
-        "processing": "{{countTasksProcessing}} tasks processing",
-        "error": "{{countTasksError}} tasks in error",
-        "see-sessions": "See sessions"
-      }
+    "applications": {
+      "completed": "{{countTasksCompleted}} tasks completed",
+      "processing": "{{countTasksProcessing}} tasks processing",
+      "error": "{{countTasksError}} tasks in error",
+      "see-sessions": "See sessions"
     }
   }
 }
