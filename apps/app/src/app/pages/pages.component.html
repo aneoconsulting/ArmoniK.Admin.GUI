@@ -1,0 +1,34 @@
+<clr-main-container>
+  <ui-header>
+    <a routerLink="/" branding>
+      <span class="title">
+        ArmoniK -
+        <span class="">
+          {{ now | date: 'short' }}
+        </span>
+      </span>
+    </a>
+    <ul actions class="list-unstyled language">
+      <li *ngFor="let language of languages; trackBy: trackByLanguageName">
+        <button class="btn btn-link" (click)="changeLanguage(language.code)">
+          {{ language.name | uppercase }}
+        </button>
+      </li>
+    </ul>
+  </ui-header>
+  <div class="content-container">
+    <clr-vertical-nav [clr-nav-level]="1">
+      <a
+        *ngFor="let link of links"
+        clrVerticalNavLink
+        [routerLink]="link.path"
+        routerLinkActive="active"
+        >{{ link.label }}</a
+      >
+    </clr-vertical-nav>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</clr-main-container>

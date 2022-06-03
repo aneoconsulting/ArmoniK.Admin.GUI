@@ -1,0 +1,33 @@
+<section>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a [routerLink]="['/admin', 'dashboard']">{{
+        'navigation.applications' | translate
+      }}</a
+      >&nbsp;-&nbsp;
+      <span>{{ applicationName }}</span>
+    </ng-container>
+  </ui-page-header>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a
+        [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
+        >{{ 'navigation.sessions' | translate }}</a
+      >&nbsp;-&nbsp;
+      <span>{{ sessionId }}</span>
+    </ng-container>
+    {{ 'pages.sessions.session-detail.title' | translate }}
+  </ui-page-header>
+
+  <pre>
+    {{ session | json }}
+  </pre>
+
+  <app-alert-error [errors]="errors"></app-alert-error>
+
+  <app-pages-sessions-tasks-list
+    [tasks]="tasks"
+    [loading]="loadingTasks"
+    (refresh)="refresh($event)"
+  ></app-pages-sessions-tasks-list>
+</section>
