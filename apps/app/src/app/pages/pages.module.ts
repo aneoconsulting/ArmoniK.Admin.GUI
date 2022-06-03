@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { LanguageService, LocaleProvider } from '../core';
 import { SharedModule } from '../shared';
-import { ErrorComponent } from './error/error.component';
+import { ErrorComponent } from './pages';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesTranslateModule } from './pages-translate.module';
 import { PagesComponent } from './pages.component';

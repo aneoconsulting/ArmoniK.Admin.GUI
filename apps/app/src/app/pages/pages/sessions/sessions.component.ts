@@ -8,7 +8,7 @@ import {
   LanguageService,
   Session,
   SessionsService,
-} from '../../core';
+} from '../../../core';
 
 @Component({
   selector: 'app-pages-sessions',

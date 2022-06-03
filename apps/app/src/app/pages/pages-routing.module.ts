@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ErrorComponent } from './error/error.component';
+import { ErrorComponent } from './pages';
 import { PagesComponent } from './pages.component';
 
 const routes: Routes = [
@@ -12,12 +12,16 @@ const routes: Routes = [
       {
         path: 'applications',
         loadChildren: () =>
-          import('./sessions/sessions.module').then((m) => m.SessionsModule),
+          import('./pages/sessions/sessions.module').then(
+            (m) => m.SessionsModule
+          ),
       },
       {
         path: 'dashboard',
         loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+          import('./pages/dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
       },
       {
         path: 'error',

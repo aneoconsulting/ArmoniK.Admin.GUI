@@ -9,7 +9,7 @@ import {
   AppError,
   BrowserTitleService,
   LanguageService,
-} from '../../../../core';
+} from '../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-session-detail',

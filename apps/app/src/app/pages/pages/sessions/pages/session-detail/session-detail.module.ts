@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../../../../shared';
+import { SharedModule } from '../../../../../shared';
 import { TasksListComponent } from './components';
 import { TaskDetailComponent } from './pages';
 import { SessionDetailRoutingModule } from './session-detail-routing.module';

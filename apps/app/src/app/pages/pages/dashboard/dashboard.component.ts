@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
-import { BrowserTitleService, LanguageService } from '../../core';
+import { BrowserTitleService, LanguageService } from '../../../core';
 
 /**
  *  Display the dashboard

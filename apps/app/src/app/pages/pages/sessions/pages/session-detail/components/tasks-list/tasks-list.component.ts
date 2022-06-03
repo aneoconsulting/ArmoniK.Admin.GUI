@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { LanguageService, Task } from '../../../../../../core';
+import { LanguageService, Task } from '../../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
