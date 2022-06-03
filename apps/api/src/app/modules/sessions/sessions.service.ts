@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationService } from '../../core';
+import { SettingsService } from '../../shared';
 import { Session, SessionDocument } from './schemas';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class SessionsService {
   constructor(
     @InjectModel(Session.name)
     private readonly sessionModel: Model<SessionDocument>,
+    private readonly settingsService: SettingsService,
     private readonly paginationService: PaginationService
   ) {}
 
@@ -29,11 +31,17 @@ export class SessionsService {
   ): Promise<Pagination<Session>> {
     const startIndex = (page - 1) * limit;
 
-    const total = await this.sessionModel.countDocuments();
+    const total = await this.sessionModel
+      .find({
+        'Options.Options.GridAppName':
+          this.settingsService.getApplicationName(appName),
+      })
+      .countDocuments();
     // Get sessions filtered by appName (field Options.Options.GridAppName)
     const data = await this.sessionModel
       .find({
-        'Options.Options.GridAppName': appName,
+        'Options.Options.GridAppName':
+          this.settingsService.getApplicationName(appName),
       })
       .skip(startIndex)
       .limit(limit)

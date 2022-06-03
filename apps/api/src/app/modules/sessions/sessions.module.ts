@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { PaginationService } from '../../core';
-import { Session, SessionSchema } from './schemas';
+import { SharedModule } from '../../shared/';
+import { SessionsMongooseModule } from './sessions-mongoose.module';
 import { SessionsController } from './sessions.controller';
 import { SessionsService } from './sessions.service';
 
@@ -9,9 +9,7 @@ import { SessionsService } from './sessions.service';
  * Sessions module
  */
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
-  ],
+  imports: [SharedModule, SessionsMongooseModule],
   controllers: [SessionsController],
   providers: [SessionsService, PaginationService],
 })

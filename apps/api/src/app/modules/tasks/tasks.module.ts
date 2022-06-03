@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { PaginationService } from '../../core';
-import { TaskSchema } from './schemas';
+import { TasksMongooseModule } from './tasks-mongoose.module';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 
@@ -9,7 +8,7 @@ import { TasksService } from './tasks.service';
  * Tasks module
  */
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Task', schema: TaskSchema }])],
+  imports: [TasksMongooseModule],
   controllers: [TasksController],
   providers: [TasksService, PaginationService],
 })
