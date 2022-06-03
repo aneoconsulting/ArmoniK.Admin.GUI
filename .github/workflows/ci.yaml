@@ -33,7 +33,9 @@ jobs:
       - run: npx nx affected --target=test --parallel=3 --code-coverage
       - run: npx nx affected --target=build --parallel=3
 
-      - uses: romeovs/lcov-reporter-action@v0.2.16
+      - name: Coverage Report (App)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: romeovs/lcov-reporter-action@v0.2.16
         with:
           lcov-file: ./coverage/apps/app/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
