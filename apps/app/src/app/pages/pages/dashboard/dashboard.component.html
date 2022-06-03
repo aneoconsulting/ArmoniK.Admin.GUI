@@ -1,0 +1,9 @@
+<h1>{{ 'pages.dashboard.title' | translate }}</h1>
+
+<section class="clr-row">
+  <app-pages-dashboard-application-card
+    *ngFor="let application of applications; trackBy: trackByApplication"
+    [application]="application"
+    ngClass="clr-col-12 clr-col-lg-6"
+  ></app-pages-dashboard-application-card>
+</section>

@@ -1,52 +1,19 @@
-import { registerLocaleData } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import localeEn from '@angular/common/locales/en';
-import localeFr from '@angular/common/locales/fr';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AppRoutingModule } from './app-routing.module';
+import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
-import { LocaleProvider } from './modules/core/providers';
-import { LanguageCode, TranslationService } from './modules/core/services/';
+import { CoreModule, LanguageService } from './core';
 
-registerLocaleData(localeFr, 'fr');
-registerLocaleData(localeEn, 'en');
-
-// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
-}
-
+/**
+ * Load app data
+ */
 @NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
-    RouterModule.forRoot([
-      { path: '', redirectTo: 'admin', pathMatch: 'full' },
-      {
-        path: 'admin',
-        loadChildren: () =>
-          import('./modules/pages/pages.module').then((m) => m.PagesModule),
-      },
-    ]),
-  ],
-  providers: [LocaleProvider],
+  imports: [CoreModule, AppRoutingModule, AppTranslateModule],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private translationService: TranslationService) {
-    this.translationService.initLocale(LanguageCode.EN);
+  constructor(private languageService: LanguageService) {
+    this.languageService.init();
   }
 }

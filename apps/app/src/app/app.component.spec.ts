@@ -1,21 +1,14 @@
 // import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { RouterModule } from '@angular/router';
-import { APP_BASE_HREF } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      imports: [RouterModule.forRoot([]), ClarityModule],
-      providers: [
-        {
-          provide: APP_BASE_HREF,
-          useValue: '/',
-        },
-      ],
+      imports: [RouterTestingModule.withRoutes([]), ClarityModule],
     }).compileComponents();
   });
 
@@ -23,5 +16,11 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('should have a router-outlet', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });

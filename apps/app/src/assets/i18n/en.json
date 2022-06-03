@@ -1,54 +1,53 @@
 {
-  "loading": "Loading...",
-  "more-info": "More info",
-  "sidenav": {
-    "dashboard": "Dashboard"
+  "global": {
+    "loading": "Loading..."
   },
-  "task": {
-    "title": "Task detail",
-    "errors": {
-      "404": "Task {{value}} not found - operation '{{name}}'",
-      "504": "Impossible to contact the server - operation '{{name}}'"
-    }
+  "navigation": {
+    "dashboard": "Dashboard",
+    "applications": "Applications",
+    "sessions": "Sessions",
+    "tasks": "Tasks"
   },
-  "sessions": {
-    "session": "{{value}} session",
-    "sessions": "{{value}} sessions",
-    "per_page": "Sessions per page",
-    "title": "All sessions",
-    "table": {
-      "id": "Session ID",
-      "status": "Status"
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "applications": {
+        "completed": "{{countTasksCompleted}} tasks completed",
+        "processing": "{{countTasksProcessing}} tasks processing",
+        "error": "{{countTasksError}} tasks error",
+        "see-sessions": "See sessions"
+      }
     },
-    "errors": {
-      "404": "Sessions for {{value}} not found - operation '{{name}}'",
-      "504": "Impossible to contact the server - operation '{{name}}'"
+    "error": {
+      "title": "Oops",
+      "message": "Something went wrong"
     },
-    "session-detail": {
-      "title": "Session detail",
+    "sessions": {
+      "session": "{{value}} session",
+      "sessions": "{{value}} sessions",
+      "per_page": "Sessions per page",
+      "title": "All sessions",
       "table": {
-        "id": "Task ID",
-        "per_page": "Per page",
-        "tasks": "{{value}} tasks",
-        "task": "{{value}} task"
+        "id": "Session ID",
+        "status": "Status"
       },
-      "errors": {
-        "404": "Session {{value}} and tasks not found - operation '{{name}}'",
-        "504": "Impossible to contact the server - operation '{{name}}'"
+      "session-detail": {
+        "title": "Session detail",
+        "table": {
+          "id": "Task ID",
+          "per_page": "Per page",
+          "tasks": "{{value}} tasks",
+          "task": "{{value}} task"
+        },
+        "task-detail": {
+          "title": "Task detail"
+        }
       }
     }
   },
-  "dashboard": {
-    "title": "Dashboard",
-    "errors": {
-      "404": "Applications not found - operation '{{name}}'",
-      "504": "Impossible to contact the server - operation '{{name}}'"
-    },
-    "applications": {
-      "completed": "{{countTasksCompleted}} tasks completed",
-      "processing": "{{countTasksProcessing}} tasks processing",
-      "error": "{{countTasksError}} tasks in error",
-      "see-sessions": "See sessions"
-    }
+  "errors": {
+    "404": "Not found",
+    "500": "Internal server error",
+    "504": "Gateway timeout"
   }
 }
