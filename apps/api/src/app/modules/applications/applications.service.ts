@@ -4,6 +4,12 @@ import { Connection, Model } from 'mongoose';
 import { Application, TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
+import {
+  CompletedStatus,
+  ErrorStatus,
+  PendingStatus,
+  ProcessingStatus,
+} from '../../core';
 
 @Injectable()
 export class ApplicationsService {
@@ -39,12 +45,7 @@ export class ApplicationsService {
               $sum: {
                 $cond: {
                   if: {
-                    $or: [
-                      { $eq: ['$Status', TaskStatus.UNSPECIFIED] },
-                      { $eq: ['$Status', TaskStatus.CREATING] },
-                      { $eq: ['$Status', TaskStatus.SUBMITTED] },
-                      { $eq: ['$Status', TaskStatus.DISPATCHED] },
-                    ],
+                    $in: ['$Status', PendingStatus],
                   },
                   then: 1,
                   else: 0,
@@ -55,10 +56,7 @@ export class ApplicationsService {
               $sum: {
                 $cond: {
                   if: {
-                    $or: [
-                      { $eq: ['$Status', TaskStatus.ERROR] },
-                      { $eq: ['$Status', TaskStatus.FAILED] },
-                    ],
+                    $in: ['$Status', ErrorStatus],
                   },
                   then: 1,
                   else: 0,
@@ -68,7 +66,7 @@ export class ApplicationsService {
             countTasksCompleted: {
               $sum: {
                 $cond: {
-                  if: { $eq: ['$Status', TaskStatus.COMPLETED] },
+                  if: { $in: ['$Status', CompletedStatus] },
                   then: 1,
                   else: 0,
                 },
@@ -77,7 +75,7 @@ export class ApplicationsService {
             countTasksProcessing: {
               $sum: {
                 $cond: {
-                  if: { $eq: ['$Status', TaskStatus.PROCESSING] },
+                  if: { $in: ['$Status', ProcessingStatus] },
                   then: 1,
                   else: 0,
                 },
