@@ -28,12 +28,14 @@ export class SessionsController {
   async index(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
-    @Query('appName') appName: string
+    @Query('applicationName') applicationName: string,
+    @Query('applicationVersion') applicationVersion: string
   ): Promise<Pagination<Session>> {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
       limit,
-      appName
+      applicationName,
+      applicationVersion
     );
 
     return sessions;

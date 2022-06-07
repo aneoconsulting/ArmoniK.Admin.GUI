@@ -1,7 +1,7 @@
 export type Application = {
   _id: {
     applicationName: string;
-    version: string;
+    applicationVersion: string;
   };
   countTasksPending?: number;
   countTasksError?: number;

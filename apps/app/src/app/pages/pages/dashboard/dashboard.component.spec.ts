@@ -51,7 +51,10 @@ describe('DashboardComponent', () => {
   it('should contains "app-pages-dashboard-application-card" in a section after h1', () => {
     component.applications = [
       {
-        _id: 'application_1',
+        _id: {
+          applicationName: 'application_1',
+          applicationVersion: '1.0.0',
+        },
       },
     ];
     fixture.detectChanges();

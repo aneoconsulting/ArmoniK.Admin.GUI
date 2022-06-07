@@ -27,22 +27,22 @@ export class SessionsService {
   async findAllPaginated(
     page: number,
     limit: number,
-    appName: string
+    applicationName: string,
+    applicationVersion: string
   ): Promise<Pagination<Session>> {
     const startIndex = (page - 1) * limit;
 
-    const total = await this.sessionModel
-      .find({
-        'Options.Options.GridAppName':
-          this.settingsService.getApplicationName(appName),
-      })
-      .countDocuments();
+    const fetchParams = {
+      'Options.Options.GridAppName':
+        this.settingsService.getApplicationName(applicationName),
+      'Options.Options.GridAppVersion':
+        this.settingsService.getApplicationVersion(applicationVersion),
+    };
+
+    const total = await this.sessionModel.find(fetchParams).countDocuments();
     // Get sessions filtered by appName (field Options.Options.GridAppName)
     const data = await this.sessionModel
-      .find({
-        'Options.Options.GridAppName':
-          this.settingsService.getApplicationName(appName),
-      })
+      .find(fetchParams)
       .skip(startIndex)
       .limit(limit)
       .exec();

@@ -5,11 +5,11 @@ import { SessionsComponent } from './sessions.component';
 
 const routes: Routes = [
   {
-    path: ':application/sessions',
+    path: ':applicationName/:applicationVersion/sessions',
     component: SessionsComponent,
   },
   {
-    path: ':application/sessions/:session',
+    path: ':applicationName/:applicationVersion/sessions/:session',
     loadChildren: () =>
       import('./pages/session-detail/session-detail.module').then(
         (m) => m.SessionDetailModule

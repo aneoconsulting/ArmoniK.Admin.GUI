@@ -1,12 +1,15 @@
 <article class="card">
-  <h3 class="card-header" [title]="application?._id">{{ application?._id }}</h3>
+  <h3 class="card-header" [title]="application?._id">
+    {{ application?._id?.applicationName }} -
+    {{ application?._id?.applicationVersion }}
+  </h3>
   <div class="card-block">
     <div
       class="card-title"
-      [title]="'pages.dashboard.applications.error' | translate: application"
+      [title]="'pages.dashboard.applications.pending' | translate: application"
     >
-      <span> {{ application?.countTasksError ?? 0 }} </span>
-      <span class="dot dot-danger"></span>
+      <span> {{ application?.countTasksPending ?? 0 }} </span>
+      <span class="dot dot-pending"></span>
     </div>
     <div
       class="card-title"
@@ -16,6 +19,13 @@
     >
       <span> {{ application?.countTasksProcessing ?? 0 }} </span>
       <span class="dot dot-warn"></span>
+    </div>
+    <div
+      class="card-title"
+      [title]="'pages.dashboard.applications.error' | translate: application"
+    >
+      <span> {{ application?.countTasksError ?? 0 }} </span>
+      <span class="dot dot-danger"></span>
     </div>
     <div
       class="card-title"
@@ -30,7 +40,13 @@
   <footer class="card-footer">
     <a
       class="btn btn-sm btn-link"
-      [routerLink]="['/admin', 'applications', application?._id, 'sessions']"
+      [routerLink]="[
+        '/admin',
+        'applications',
+        application?._id?.applicationName,
+        application?._id?.applicationVersion,
+        'sessions'
+      ]"
     >
       {{ 'pages.dashboard.applications.see-sessions' | translate }}
     </a>

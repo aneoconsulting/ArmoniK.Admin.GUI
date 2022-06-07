@@ -43,7 +43,14 @@ export class SessionsComponent {
     this.loadingSessions = true;
 
     this.sessionsService
-      .getAllPaginated(this.applicationName, nextPage, limit)
+      .getAllPaginated(
+        {
+          applicationName: this.applicationName,
+          applicationVersion: this.applicationVersion,
+        },
+        nextPage,
+        limit
+      )
       .subscribe({
         error: this.onErrorSessions.bind(this),
         next: this.onNextSessions.bind(this),
@@ -52,6 +59,8 @@ export class SessionsComponent {
 
   /**
    * Return total number of sessions even if there is no session (return 0)
+   *
+   * @returns total number of sessions
    */
   get totalSessions(): number {
     return this.sessions ? this.sessions.meta.total : 0;
@@ -59,9 +68,21 @@ export class SessionsComponent {
 
   /**
    * Return the current application name from the route
+   *
+   * @returns application name
    */
   get applicationName(): string {
-    return this.route.snapshot.paramMap.get('application') ?? '';
+    return this.route.snapshot.paramMap.get('applicationName') ?? '';
+  }
+
+  /**
+   * Return the current application version from the route
+   *
+   * @returns application version
+   *
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 
   /**

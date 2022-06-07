@@ -93,6 +93,15 @@ export class SessionDetailComponent implements OnInit {
    * @returns Name of the application
    */
   get applicationName(): string {
-    return this.route.snapshot.paramMap.get('application') ?? '';
+    return this.route.snapshot.paramMap.get('applicationName') ?? '';
+  }
+
+  /**
+   * Return the current application version from the route
+   *
+   * @returns Version of the application
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 }

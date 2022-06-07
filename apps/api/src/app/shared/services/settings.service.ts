@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SettingsService {
+  // Use an _ before default to avoid conflict with real name
   defaultApplicationName = '_Default_Application';
-  defaultVersion = '_0.0.0';
+  defaultApplicationVersion = '_0.0.0';
 
   /**
    * Handle default application (non-set in database)
@@ -27,8 +28,8 @@ export class SettingsService {
    *
    * @returns version
    */
-  getVersion(version: string): string | null {
-    if (version === this.defaultVersion) {
+  getApplicationVersion(version: string): string | null {
+    if (version === this.defaultApplicationVersion) {
       return null;
     }
 

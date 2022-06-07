@@ -12,9 +12,10 @@
     "dashboard": {
       "title": "Dashboard",
       "applications": {
-        "completed": "{{countTasksCompleted}} tasks completed",
-        "processing": "{{countTasksProcessing}} tasks processing",
-        "error": "{{countTasksError}} tasks error",
+        "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
+        "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",
+        "error": "{{countTasksError}} tasks error on the last 7 days",
+        "pending": "{{countTasksPending}} tasks pending on the last 7 days",
         "see-sessions": "See sessions"
       }
     },

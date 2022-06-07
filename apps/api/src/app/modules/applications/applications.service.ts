@@ -33,7 +33,7 @@ export class ApplicationsService {
           $group: {
             _id: {
               applicationName: '$Options.Options.GridAppName',
-              version: '$Options.Options.GridAppVersion',
+              applicationVersion: '$Options.Options.GridAppVersion',
             },
             countTasksPending: {
               $sum: {
@@ -95,8 +95,11 @@ export class ApplicationsService {
                   this.settingsService.defaultApplicationName,
                 ],
               },
-              version: {
-                $ifNull: ['$_id.version', this.settingsService.defaultVersion],
+              applicationVersion: {
+                $ifNull: [
+                  '$_id.applicationVersion',
+                  this.settingsService.defaultApplicationVersion,
+                ],
               },
             },
           },
