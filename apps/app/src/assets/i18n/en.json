@@ -8,6 +8,12 @@
     "sessions": "Sessions",
     "tasks": "Tasks"
   },
+  "header": {
+    "subnav": {
+      "no-current-applications": "No current application",
+      "close-tab": "Close tab"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Dashboard",

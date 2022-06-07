@@ -48,16 +48,16 @@ describe('ApplicationCardComponent', () => {
     expect(compiled.querySelector('footer.card-footer')).toBeTruthy();
   });
 
-  it('should contains a anchor element in the footer', () => {
+  it('should contains a button element in the footer', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('footer a')).toBeTruthy();
+    expect(compiled.querySelector('footer button')).toBeTruthy();
   });
 
-  it('should have a link styled like button', () => {
+  it('should have a button styled like a link', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('footer a').getAttribute('class')).toContain(
-      'btn btn-sm btn-link'
-    );
+    expect(
+      compiled.querySelector('footer button').getAttribute('class')
+    ).toContain('btn btn-sm btn-link');
   });
 
   it('should have name and version in the header', () => {
@@ -78,7 +78,7 @@ describe('ApplicationCardComponent', () => {
     );
   });
 
-  it("should have a link to go to 'sessions'", () => {
+  it('should emit an event when the footer button is clicked', () => {
     const application: Application = {
       _id: {
         applicationName: 'application_1',
@@ -88,10 +88,14 @@ describe('ApplicationCardComponent', () => {
     component.application = application;
     fixture.detectChanges();
 
+    //  Add a spy on the event emitter
+    spyOn(component, 'onClick');
+
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('footer a').getAttribute('href')).toBe(
-      `/admin/applications/${application._id.applicationName}/${application._id.applicationVersion}/sessions`
-    );
+    const button = compiled.querySelector('footer button');
+    button.click();
+
+    expect(component.onClick).toHaveBeenCalledWith();
   });
 
   it('should have a "card-block" class with 4 children', () => {

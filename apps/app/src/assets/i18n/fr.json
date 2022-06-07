@@ -8,6 +8,12 @@
     "sessions": "Sessions",
     "tasks": "Tâches"
   },
+  "header": {
+    "subnav": {
+      "no-current-applications": "Aucune application sélectionnée",
+      "close-tab": "Fermer l'onglet"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",

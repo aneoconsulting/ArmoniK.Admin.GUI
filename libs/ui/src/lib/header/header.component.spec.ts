@@ -9,6 +9,7 @@ import { HeaderComponent } from './header.component';
     ><ui-header>
       <div branding>title</div>
       <div actions>actions</div>
+      <div subnav>subnav</div>
     </ui-header></clr-main-container
   >`,
 })
@@ -61,5 +62,17 @@ describe('HeaderComponent', () => {
     expect(header.querySelector('div[actions]').textContent).toContain(
       'actions'
     );
+  });
+
+  it('should hav a class subnav after clr-header', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('clr-header + .subnav')).toBeTruthy();
+  });
+
+  it('should have a div[subnav] with subnav', () => {
+    const fixture = TestBed.createComponent(TestHostComponent);
+    const header = fixture.nativeElement;
+
+    expect(header.querySelector('div[subnav]').textContent).toContain('subnav');
   });
 });

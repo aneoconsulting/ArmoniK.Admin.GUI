@@ -4,6 +4,9 @@ import { ErrorComponent } from './pages';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 
+import '@clr/icons';
+import '@clr/icons/shapes/essential-shapes';
+
 /**
  * Load app pages
  */

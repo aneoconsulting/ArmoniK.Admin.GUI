@@ -1,5 +1,12 @@
 <article class="card">
-  <h3 class="card-header" [title]="application?._id">
+  <h3
+    class="card-header"
+    [title]="
+      application?._id?.applicationName +
+      ' - ' +
+      application?._id?.applicationVersion
+    "
+  >
     {{ application?._id?.applicationName }} -
     {{ application?._id?.applicationVersion }}
   </h3>
@@ -38,17 +45,8 @@
     </div>
   </div>
   <footer class="card-footer">
-    <a
-      class="btn btn-sm btn-link"
-      [routerLink]="[
-        '/admin',
-        'applications',
-        application?._id?.applicationName,
-        application?._id?.applicationVersion,
-        'sessions'
-      ]"
-    >
+    <button class="btn btn-sm btn-link" (click)="onClick()">
       {{ 'pages.dashboard.applications.see-sessions' | translate }}
-    </a>
+    </button>
   </footer>
 </article>

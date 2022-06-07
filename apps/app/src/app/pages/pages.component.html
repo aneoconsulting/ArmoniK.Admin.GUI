@@ -15,6 +15,48 @@
         </button>
       </li>
     </ul>
+    <ul subnav class="nav" role="tablist">
+      <li class="nav-item" role="tab" *ngIf="currentApplications.length === 0">
+        {{ 'header.subnav.no-current-applications' | translate }}
+      </li>
+      <li
+        class="nav-item"
+        role="tab"
+        *ngFor="
+          let current of currentApplications;
+          trackBy: trackByApplicationId
+        "
+      >
+        <a
+          class="btn btn-link nav-link"
+          [routerLink]="[
+            '/admin',
+            'applications',
+            current.applicationName,
+            current.applicationVersion,
+            'sessions'
+          ]"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          {{ current.applicationName }} - {{ current.applicationVersion }}</a
+        >
+        <button
+          type="button"
+          class="close-btn"
+          [title]="'header.subnav.close-tab' | translate"
+        >
+          <span class="sr-only">{{
+            'header.subnav.close-tab' | translate
+          }}</span>
+          <clr-icon
+            shape="times"
+            class="is-error"
+            (click)="removeApplication(current)"
+          ></clr-icon>
+        </button>
+      </li>
+    </ul>
   </ui-header>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
