@@ -6,6 +6,6 @@ export const grpcClientOptions: ClientOptions = {
   options: {
     package: 'ArmoniK.api.grpc.v1',
     protoPath: join(__dirname, './app/core/proto/submitter_service.proto'),
-    url: process.env.ControlPlane__Endpoint.replace(/^https?:\/\//, ''),
+    url: process.env.ControlPlane__Endpoint?.replace(/^https?:\/\//, ''),
   },
 };
