@@ -23,7 +23,7 @@ describe('SettingsService', () => {
   });
 
   it('should contains empty currentApplications', () => {
-    expect(service.currentApplications.length).toEqual(0);
+    expect(service.currentApplications.size).toEqual(0);
   });
 
   it('should add application to currentApplications', () => {
@@ -34,7 +34,7 @@ describe('SettingsService', () => {
       },
     };
     service.addCurrentApplication(application);
-    expect(service.currentApplications.length).toEqual(1);
+    expect(service.currentApplications.size).toEqual(1);
   });
 
   it('should not be able to add an application twice', () => {
@@ -46,7 +46,7 @@ describe('SettingsService', () => {
     };
     service.addCurrentApplication(application);
     service.addCurrentApplication(application);
-    expect(service.currentApplications.length).toEqual(1);
+    expect(service.currentApplications.size).toEqual(1);
   });
 
   it('should be able to add 2 different applications', () => {
@@ -64,7 +64,7 @@ describe('SettingsService', () => {
     };
     service.addCurrentApplication(application1);
     service.addCurrentApplication(application2);
-    expect(service.currentApplications.length).toEqual(2);
+    expect(service.currentApplications.size).toEqual(2);
   });
 
   it('should not throw error when remove non existing application', () => {
@@ -75,7 +75,7 @@ describe('SettingsService', () => {
       },
     };
     service.removeCurrentApplication(application._id);
-    expect(service.currentApplications.length).toEqual(0);
+    expect(service.currentApplications.size).toEqual(0);
   });
 
   it('should remove application from currentApplications', () => {
@@ -88,7 +88,7 @@ describe('SettingsService', () => {
     service.addCurrentApplication(application);
 
     service.removeCurrentApplication(application._id);
-    expect(service.currentApplications.length).toEqual(0);
+    expect(service.currentApplications.size).toEqual(0);
   });
 
   it('should remove the correct application from currentApplications', () => {
@@ -108,8 +108,8 @@ describe('SettingsService', () => {
     service.addCurrentApplication(application2);
 
     service.removeCurrentApplication(application1._id);
-    expect(service.currentApplications.length).toEqual(1);
-    expect(service.currentApplications[0].applicationName).toEqual('test2');
+    expect(service.currentApplications.size).toEqual(1);
+    expect(service.currentApplications.has(application1._id)).toBeFalsy();
   });
 
   it('should store currentApplications in localStorage', () => {

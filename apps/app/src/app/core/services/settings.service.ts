@@ -5,10 +5,10 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
   providedIn: 'root',
 })
 export class SettingsService {
-  currentApplications: Application['_id'][] = [];
+  currentApplications: Set<Application['_id']>;
 
   constructor() {
-    this.currentApplications = this.getCurrentApplicationFromStore();
+    this.currentApplications = new Set(this.getCurrentApplicationFromStore());
   }
 
   /**
@@ -17,8 +17,8 @@ export class SettingsService {
    * @param application Application to add
    */
   addCurrentApplication(application: Application): void {
-    if (!this.findCurrentApplication(application._id)) {
-      this.currentApplications.push(application._id);
+    if (!this.currentApplications.has(application._id)) {
+      this.currentApplications.add(application._id);
       this.storeCurrentApplications();
     }
   }
@@ -29,32 +29,10 @@ export class SettingsService {
    * @param application Application to remove
    */
   removeCurrentApplication(applicationId: Application['_id']): void {
-    if (this.findCurrentApplication(applicationId)) {
-      this.currentApplications = this.currentApplications.filter(
-        (currentApplication) => {
-          return !(
-            currentApplication.applicationName ===
-              applicationId.applicationName &&
-            currentApplication.applicationVersion ===
-              applicationId.applicationVersion
-          );
-        }
-      );
+    if (this.currentApplications.has(applicationId)) {
+      this.currentApplications.delete(applicationId);
       this.storeCurrentApplications();
     }
-  }
-
-  private findCurrentApplication(applicationId: Application['_id']): boolean {
-    return (
-      this.currentApplications.findIndex((currentApplication) => {
-        return (
-          currentApplication.applicationName ===
-            applicationId.applicationName &&
-          currentApplication.applicationVersion ===
-            applicationId.applicationVersion
-        );
-      }) !== -1
-    );
   }
 
   /**
@@ -73,7 +51,7 @@ export class SettingsService {
   private storeCurrentApplications(): void {
     localStorage.setItem(
       'currentApplications',
-      JSON.stringify(this.currentApplications)
+      JSON.stringify(Array.from(this.currentApplications))
     );
   }
 }

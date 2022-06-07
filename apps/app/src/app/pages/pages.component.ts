@@ -38,8 +38,8 @@ export class PagesComponent {
     return this.languageService.availableLanguages;
   }
 
-  public get currentApplications(): Application['_id'][] {
-    return this.settingsService.currentApplications;
+  public get currentApplications() {
+    return this.settingsService.currentApplications.values();
   }
 
   /**
