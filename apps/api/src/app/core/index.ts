@@ -2,4 +2,4 @@ export * from './core.module';
 
 export * from './services';
 
-export * from './const';
+export * from './constantes';
