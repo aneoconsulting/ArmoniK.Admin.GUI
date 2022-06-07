@@ -16,7 +16,7 @@
       </li>
     </ul>
     <ul subnav class="nav" role="tablist">
-      <li class="nav-item" role="tab" *ngIf="currentApplications.length === 0">
+      <li class="nav-item" role="tab" *ngIf="currentApplications.size === 0">
         {{ 'header.subnav.no-current-applications' | translate }}
       </li>
       <li

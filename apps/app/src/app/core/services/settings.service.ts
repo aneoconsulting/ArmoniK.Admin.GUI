@@ -8,7 +8,7 @@ export class SettingsService {
   currentApplications: Set<Application['_id']>;
 
   constructor() {
-    this.currentApplications = new Set(this.getCurrentApplicationFromStore());
+    this.currentApplications = new Set(this.getCurrentApplicationsFromStore());
   }
 
   /**
@@ -38,7 +38,7 @@ export class SettingsService {
   /**
    * Get current applications from local storage
    */
-  private getCurrentApplicationFromStore(): Application['_id'][] {
+  private getCurrentApplicationsFromStore(): Application['_id'][] {
     const data = localStorage.getItem('currentApplications');
 
     if (data) return JSON.parse(data);
