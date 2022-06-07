@@ -51,6 +51,17 @@ export class SessionsComponent {
   }
 
   /**
+   * Cancel a session
+   *
+   * @param session
+   */
+  cancelSession(sessionId: Session['_id']) {
+    this.sessionsService.cancel(sessionId).subscribe({
+      error: this.onCancelSessionError.bind(this),
+    });
+  }
+
+  /**
    * Return total number of sessions even if there is no session (return 0)
    */
   get totalSessions(): number {
@@ -82,6 +93,15 @@ export class SessionsComponent {
   private onNextSessions(data: Pagination<Session>) {
     this.sessions = data;
     this.loadingSessions = false;
+  }
+
+  /**
+   * Handle error when cancelling a session
+   *
+   * @param error
+   */
+  private onCancelSessionError(error: AppError) {
+    this.errors.push(error);
   }
 
   /**

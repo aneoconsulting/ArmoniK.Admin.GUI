@@ -27,9 +27,13 @@
       "sessions": "{{value}} sessions",
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
+      "cancel": {
+        "text": "Annuler la session"
+      },
       "table": {
         "id": "Session ID",
-        "status": "Statut"
+        "status": "Statut",
+        "cancel": "Annuler"
       },
       "session-detail": {
         "title": "Détail de la session",

@@ -45,4 +45,13 @@ export class SessionsService {
   getOne(id: string): Observable<Session> {
     return this.apiService.get<Session>(`${this.url}/${id}`);
   }
+
+  /**
+   * Cancel a session
+   *
+   * @param id Id of the session
+   */
+  cancel(id: string): Observable<Session> {
+    return this.apiService.put<Session>(`${this.url}/${id}/cancel`);
+  }
 }

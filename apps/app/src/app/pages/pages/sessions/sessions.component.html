@@ -20,6 +20,9 @@
     <clr-dg-column>
       {{ 'pages.sessions.table.status' | translate }}
     </clr-dg-column>
+    <clr-dg-column>
+      {{ 'pages.sessions.table.cancel' | translate }}
+    </clr-dg-column>
 
     <clr-dg-row
       *ngFor="let session of sessions?.data"
@@ -33,6 +36,18 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell> {{ session.Status }} </clr-dg-cell>
+      <clr-dg-cell>
+        <button
+          type="button"
+          class="btn btn-sm btn-icon btn-danger-outline"
+          (click)="cancelSession(session._id)"
+        >
+          <span class="sr-only">{{
+            'pages.sessions.cancel.text' | translate
+          }}</span>
+          <clr-icon shape="times" size="20"></clr-icon>
+        </button>
+      </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer>

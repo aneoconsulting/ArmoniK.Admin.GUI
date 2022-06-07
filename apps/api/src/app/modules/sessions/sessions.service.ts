@@ -1,19 +1,34 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PaginationService } from '../../core';
+import { catchError } from 'rxjs';
+import { PaginationService, Submitter } from '../../core';
 import { SettingsService } from '../../shared';
 import { Session, SessionDocument } from './schemas';
 
 @Injectable()
-export class SessionsService {
+export class SessionsService implements OnModuleInit {
+  private submitterService: Submitter;
+
   constructor(
     @InjectModel(Session.name)
     private readonly sessionModel: Model<SessionDocument>,
     private readonly settingsService: SettingsService,
-    private readonly paginationService: PaginationService
+    private readonly paginationService: PaginationService,
+    @Inject('Submitter') private client: ClientGrpc
   ) {}
+
+  onModuleInit() {
+    this.submitterService = this.client.getService<Submitter>('Submitter');
+  }
 
   /**
    * Get all sessions from the database using pagination and filters
@@ -64,5 +79,14 @@ export class SessionsService {
    */
   async findOne(id: string): Promise<Session> {
     return this.sessionModel.findById(id).exec();
+  }
+
+  /**
+   * Cancel a session
+   *
+   * @param sessionId Id of the session
+   */
+  cancel(sessionId: string) {
+    return this.submitterService.CancelSession({ Id: sessionId });
   }
 }
