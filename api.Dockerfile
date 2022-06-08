@@ -4,11 +4,12 @@ ARG configuration=production
 
 WORKDIR /usr/src/app
 
+RUN npm install -g nx
+
 COPY package*.json ./
 COPY decorate-angular-cli.js ./
 
-RUN npm install
-RUN npm install -g nx
+RUN npm ci
 
 COPY . .
 
@@ -22,6 +23,9 @@ ENV NODE_ENV=${configuration}
 WORKDIR /usr/src/app/
 
 RUN npm install -g pm2
+
+RUN addgroup --gid 2000 armonik && adduser -u 2000 --group armonik --shell /bin/sh --home /usr/src/app
+USER armonik
 
 COPY --from=build /usr/src/app/dist/apps/api ./
 
