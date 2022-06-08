@@ -4,12 +4,7 @@ import { Connection, Model } from 'mongoose';
 import { Application, TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
-import {
-  CompletedStatus,
-  ErrorStatus,
-  PendingStatus,
-  ProcessingStatus,
-} from '../../core';
+import { ErrorStatus, PendingStatus } from '../../core';
 
 @Injectable()
 export class ApplicationsService {
@@ -66,7 +61,7 @@ export class ApplicationsService {
             countTasksCompleted: {
               $sum: {
                 $cond: {
-                  if: { $in: ['$Status', CompletedStatus] },
+                  if: { $eq: ['$Status', TaskStatus.COMPLETED] },
                   then: 1,
                   else: 0,
                 },
@@ -75,7 +70,7 @@ export class ApplicationsService {
             countTasksProcessing: {
               $sum: {
                 $cond: {
-                  if: { $in: ['$Status', ProcessingStatus] },
+                  if: { $eq: ['$Status', TaskStatus.PROCESSING] },
                   then: 1,
                   else: 0,
                 },
