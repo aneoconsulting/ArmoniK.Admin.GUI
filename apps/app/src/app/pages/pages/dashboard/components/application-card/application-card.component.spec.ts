@@ -48,33 +48,59 @@ describe('ApplicationCardComponent', () => {
     expect(compiled.querySelector('footer.card-footer')).toBeTruthy();
   });
 
-  it('should contains a anchor element in the footer', () => {
+  it('should contains a button element in the footer', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('footer a')).toBeTruthy();
+    expect(compiled.querySelector('footer button')).toBeTruthy();
   });
 
-  it('should have a link styled like button', () => {
+  it('should have a button styled like a link', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('footer a').getAttribute('class')).toContain(
-      'btn btn-sm btn-link'
-    );
+    expect(
+      compiled.querySelector('footer button').getAttribute('class')
+    ).toContain('btn btn-sm btn-link');
   });
 
-  it("should have a link to go to 'sessions'", () => {
+  it('should have name and version in the header', () => {
     component.application = {
-      _id: 'application_1',
-    };
+      _id: {
+        applicationName: 'application_1',
+        applicationVersion: '1.0.0',
+      },
+    } as Application;
     fixture.detectChanges();
 
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('footer a').getAttribute('href')).toBe(
-      '/admin/applications/application_1/sessions'
+    expect(compiled.querySelector('h3.card-header').textContent).toContain(
+      'application_1'
+    );
+    expect(compiled.querySelector('h3.card-header').textContent).toContain(
+      '1.0.0'
     );
   });
 
-  it('should have a "card-block" class with 3 children', () => {
+  it('should emit an event when the footer button is clicked', () => {
+    const application: Application = {
+      _id: {
+        applicationName: 'application_1',
+        applicationVersion: '1.0.0',
+      },
+    };
+    component.application = application;
+    fixture.detectChanges();
+
+    //  Add a spy on the event emitter
+    spyOn(component, 'onClick');
+
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.card-block').children.length).toBe(3);
+    const button = compiled.querySelector('footer button');
+    button.click();
+
+    expect(component.onClick).toHaveBeenCalledWith();
+  });
+
+  it('should have a "card-block" class with 4 children', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('.card-block').children.length).toBe(4);
   });
 
   it('should have a 0 in all card-title', () => {
@@ -90,7 +116,10 @@ describe('ApplicationCardComponent', () => {
 
   it('should have a correct error count', () => {
     const application: Application = {
-      _id: 'application_1',
+      _id: {
+        applicationName: 'application_1',
+        applicationVersion: '1.0.0',
+      },
       countTasksError: 2,
     };
     component.application = application;
@@ -100,7 +129,7 @@ describe('ApplicationCardComponent', () => {
     // select first card-title
     const cardTitle = (
       compiled.querySelectorAll('.card-title') as HTMLElement[]
-    )[0];
+    )[2];
     expect(cardTitle.textContent).toContain(
       application.countTasksError?.toString()
     );
@@ -108,7 +137,10 @@ describe('ApplicationCardComponent', () => {
 
   it('should have a correct processing count', () => {
     const application: Application = {
-      _id: 'application_1',
+      _id: {
+        applicationName: 'application_1',
+        applicationVersion: '1.0.0',
+      },
       countTasksProcessing: 2,
     };
     component.application = application;
@@ -124,9 +156,12 @@ describe('ApplicationCardComponent', () => {
     );
   });
 
-  it('should have a correct processing count', () => {
+  it('should have a correct completed count', () => {
     const application: Application = {
-      _id: 'application_1',
+      _id: {
+        applicationName: 'application_1',
+        applicationVersion: '1.0.0',
+      },
       countTasksCompleted: 2,
     };
     component.application = application;
@@ -136,9 +171,30 @@ describe('ApplicationCardComponent', () => {
     // select first card-title
     const cardTitle = (
       compiled.querySelectorAll('.card-title') as HTMLElement[]
-    )[2];
+    )[3];
     expect(cardTitle.textContent).toContain(
       application.countTasksCompleted?.toString()
+    );
+  });
+
+  it('should have a correct pending count', () => {
+    const application: Application = {
+      _id: {
+        applicationName: 'application_1',
+        applicationVersion: '1.0.0',
+      },
+      countTasksPending: 2,
+    };
+    component.application = application;
+    fixture.detectChanges();
+
+    const compiled = fixture.debugElement.nativeElement;
+    // select first card-title
+    const cardTitle = (
+      compiled.querySelectorAll('.card-title') as HTMLElement[]
+    )[0];
+    expect(cardTitle.textContent).toContain(
+      application.countTasksPending?.toString()
     );
   });
 });

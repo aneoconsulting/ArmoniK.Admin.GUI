@@ -8,13 +8,20 @@
     "sessions": "Sessions",
     "tasks": "Tâches"
   },
+  "header": {
+    "subnav": {
+      "no-current-applications": "Aucune application sélectionnée",
+      "close-tab": "Fermer l'onglet"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",
       "applications": {
-        "completed": "{{countTasksCompleted}} tâches complétées",
-        "processing": "{{countTasksProcessing}} tâches en cours",
-        "error": "{{countTasksError}} tâches en erreur",
+        "completed": "{{countTasksCompleted}} tâches complétées sur les 7 derniers jours",
+        "processing": "{{countTasksProcessing}} tâches en cours sur les 7 derniers jours",
+        "error": "{{countTasksError}} tâches en erreur sur les 7 derniers jours",
+        "pending": "{{countTasksPending}} tâches en attente sur les 7 derniers jours",
         "see-sessions": "Voir les sessions"
       }
     },

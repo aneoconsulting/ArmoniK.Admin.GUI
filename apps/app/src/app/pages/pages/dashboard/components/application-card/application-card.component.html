@@ -1,12 +1,22 @@
 <article class="card">
-  <h3 class="card-header" [title]="application?._id">{{ application?._id }}</h3>
+  <h3
+    class="card-header"
+    [title]="
+      application?._id?.applicationName +
+      ' - ' +
+      application?._id?.applicationVersion
+    "
+  >
+    {{ application?._id?.applicationName }} -
+    {{ application?._id?.applicationVersion }}
+  </h3>
   <div class="card-block">
     <div
       class="card-title"
-      [title]="'pages.dashboard.applications.error' | translate: application"
+      [title]="'pages.dashboard.applications.pending' | translate: application"
     >
-      <span> {{ application?.countTasksError ?? 0 }} </span>
-      <span class="dot dot-danger"></span>
+      <span> {{ application?.countTasksPending ?? 0 }} </span>
+      <span class="dot dot-pending"></span>
     </div>
     <div
       class="card-title"
@@ -19,6 +29,13 @@
     </div>
     <div
       class="card-title"
+      [title]="'pages.dashboard.applications.error' | translate: application"
+    >
+      <span> {{ application?.countTasksError ?? 0 }} </span>
+      <span class="dot dot-danger"></span>
+    </div>
+    <div
+      class="card-title"
       [title]="
         'pages.dashboard.applications.completed' | translate: application
       "
@@ -28,11 +45,8 @@
     </div>
   </div>
   <footer class="card-footer">
-    <a
-      class="btn btn-sm btn-link"
-      [routerLink]="['/admin', 'applications', application?._id, 'sessions']"
-    >
+    <button class="btn btn-sm btn-link" (click)="onClick()">
       {{ 'pages.dashboard.applications.see-sessions' | translate }}
-    </a>
+    </button>
   </footer>
 </article>
