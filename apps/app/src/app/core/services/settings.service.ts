@@ -17,7 +17,7 @@ export class SettingsService {
    * @param application Application to add
    */
   addCurrentApplication(application: Application): void {
-    if (!this.currentApplications.has(application._id)) {
+    if (!this.hasCurrentApplication(application._id)) {
       this.currentApplications.add(application._id);
       this.storeCurrentApplications();
     }
@@ -29,10 +29,30 @@ export class SettingsService {
    * @param application Application to remove
    */
   removeCurrentApplication(applicationId: Application['_id']): void {
-    if (this.currentApplications.has(applicationId)) {
+    if (this.hasCurrentApplication(applicationId)) {
       this.currentApplications.delete(applicationId);
       this.storeCurrentApplications();
     }
+  }
+
+  /**
+   * Check if current applications contains application
+   * Can't use default 'has' from Set because of object reference
+   *
+   * @param applicationId Application id to check
+   *
+   * @returns True if current applications contains application, false otherwise
+   */
+  private hasCurrentApplication(applicationId: Application['_id']): boolean {
+    for (const id of this.currentApplications) {
+      if (
+        id.applicationName === applicationId.applicationName &&
+        id.applicationVersion === applicationId.applicationVersion
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

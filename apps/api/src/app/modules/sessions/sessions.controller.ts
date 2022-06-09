@@ -30,7 +30,7 @@ export class SessionsController {
     @Query('limit', ParseIntPipe) limit: number,
     @Query('applicationName') applicationName: string,
     @Query('applicationVersion') applicationVersion: string
-  ): Promise<Pagination<Session>> {
+  ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
       limit,

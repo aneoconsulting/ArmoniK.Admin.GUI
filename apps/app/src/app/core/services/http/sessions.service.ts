@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Application, Pagination } from '@armonik.admin.gui/armonik-typing';
+import {
+  Application,
+  FormattedSession,
+  Pagination,
+} from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
 import { Session } from '../../models';
 import { ApiService } from './api.service';
@@ -23,7 +27,7 @@ export class SessionsService {
     applicationId: Application['_id'],
     page: number = 1,
     limit: number = 10
-  ): Observable<Pagination<Session>> {
+  ): Observable<Pagination<FormattedSession>> {
     const params = new URLSearchParams({
       page: String(page),
       limit: String(limit),
@@ -31,7 +35,7 @@ export class SessionsService {
       applicationVersion: applicationId.applicationVersion,
     });
 
-    return this.apiService.get<Pagination<Session>>(
+    return this.apiService.get<Pagination<FormattedSession>>(
       `${this.url}?${params.toString()}`
     );
   }
