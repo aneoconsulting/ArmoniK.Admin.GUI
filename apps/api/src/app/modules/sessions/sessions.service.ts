@@ -39,17 +39,23 @@ export class SessionsService {
   ) {
     const startIndex = (page - 1) * limit;
 
+    const match = {
+      'Options.Options.GridAppName':
+        this.settingsService.getApplicationName(applicationName),
+      'Options.Options.GridAppVersion':
+        this.settingsService.getApplicationVersion(applicationVersion),
+      // Only get the last seven days using StartDate
+      $expr: {
+        $gte: ['$StartDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
+      },
+    };
+
     const result = await this.connection
       .collection(this.taskModel.collection.collectionName)
       .aggregate<FormattedSession>([
         // Filter by application name and version
         {
-          $match: {
-            'Options.Options.GridAppName':
-              this.settingsService.getApplicationName(applicationName),
-            'Options.Options.GridAppVersion':
-              this.settingsService.getApplicationVersion(applicationVersion),
-          },
+          $match: match,
         },
         // Group by session id
         {
@@ -148,12 +154,7 @@ export class SessionsService {
       .aggregate([
         // Filter by application name and version
         {
-          $match: {
-            'Options.Options.GridAppName':
-              this.settingsService.getApplicationName(applicationName),
-            'Options.Options.GridAppVersion':
-              this.settingsService.getApplicationVersion(applicationVersion),
-          },
+          $match: match,
         },
         // Group by session id
         {
