@@ -1,0 +1,7 @@
+$textTypes: ('success', 'warn', 'danger', 'pending');
+
+@each $type in $textTypes {
+  .text-#{$type} {
+    color: var(--#{$type}-500);
+  }
+}

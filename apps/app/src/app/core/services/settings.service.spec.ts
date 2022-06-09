@@ -38,14 +38,20 @@ describe('SettingsService', () => {
   });
 
   it('should not be able to add an application twice', () => {
-    const application: Application = {
+    const application1: Application = {
       _id: {
         applicationName: 'test',
         applicationVersion: '1.0.0',
       },
     };
-    service.addCurrentApplication(application);
-    service.addCurrentApplication(application);
+    const application2: Application = {
+      _id: {
+        applicationName: 'test',
+        applicationVersion: '1.0.0',
+      },
+    };
+    service.addCurrentApplication(application1);
+    service.addCurrentApplication(application2);
     expect(service.currentApplications.size).toEqual(1);
   });
 

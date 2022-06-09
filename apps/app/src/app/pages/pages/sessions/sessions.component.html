@@ -18,7 +18,13 @@
   >
     <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
     <clr-dg-column>
-      {{ 'pages.sessions.table.status' | translate }}
+      {{ 'pages.sessions.table.status.title' | translate }}
+    </clr-dg-column>
+    <clr-dg-column>
+      {{ 'pages.sessions.table.createdAt' | translate }}
+    </clr-dg-column>
+    <clr-dg-column>
+      {{ 'pages.sessions.table.cancelledAt' | translate }}
     </clr-dg-column>
 
     <clr-dg-row
@@ -32,7 +38,47 @@
           </span>
         </a>
       </clr-dg-cell>
-      <clr-dg-cell> {{ session.Status }} </clr-dg-cell>
+      <clr-dg-cell>
+        <span class="text-danger" *ngIf="session.countTasksError">
+          {{ 'pages.sessions.table.status.error' | translate }}
+        </span>
+        <span
+          class="text-pending"
+          *ngIf="
+            !session.countTasksError &&
+            !session.countTasksProcessing &&
+            !session.countTasksCompleted
+          "
+        >
+          {{ 'pages.sessions.table.status.pending' | translate }}
+        </span>
+        <span
+          class="text-warn"
+          *ngIf="!session.countTasksError && session.countTasksProcessing"
+        >
+          {{ 'pages.sessions.table.status.processing' | translate }}
+        </span>
+        <span
+          class="text-success"
+          *ngIf="
+            !session.countTasksError &&
+            !session.countTasksPending &&
+            !session.countTasksProcessing
+          "
+        >
+          {{ 'pages.sessions.table.status.completed' | translate }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span>
+          {{ session.createdAt | date: 'medium' }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span>
+          {{ session.cancelledAt | date: 'medium' }}
+        </span>
+      </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer>

@@ -36,7 +36,15 @@
       "title": "All sessions",
       "table": {
         "id": "Session ID",
-        "status": "Status"
+        "status": {
+          "title": "Status",
+          "pending": "Pending",
+          "processing": "Processing",
+          "error": "Error",
+          "completed": "Completed"
+        },
+        "createdAt": "Created at",
+        "cancelledAt": "Cancelled at"
       },
       "session-detail": {
         "title": "Session detail",

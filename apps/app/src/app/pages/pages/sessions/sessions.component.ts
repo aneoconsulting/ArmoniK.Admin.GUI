@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
+import {
+  FormattedSession,
+  Pagination,
+} from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
@@ -16,7 +19,7 @@ import {
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent {
-  sessions: Pagination<Session> | null = null;
+  sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
 
@@ -110,7 +113,7 @@ export class SessionsComponent {
    *
    * @param data
    */
-  private onNextSessions(data: Pagination<Session>) {
+  private onNextSessions(data: Pagination<FormattedSession>) {
     this.sessions = data;
     this.loadingSessions = false;
   }
@@ -123,7 +126,7 @@ export class SessionsComponent {
    *
    * @returns session id
    */
-  trackSessions(_: number, session: Session): Session['_id'] {
+  trackSessions(_: number, session: FormattedSession): FormattedSession['_id'] {
     return session._id;
   }
 }
