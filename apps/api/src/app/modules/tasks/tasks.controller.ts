@@ -1,19 +1,26 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
+  Body,
   Controller,
   Get,
   NotFoundException,
   Param,
   ParseIntPipe,
+  Put,
   Query,
 } from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
+import { GrpcErrorService } from '../../core';
+import { catchError } from 'rxjs';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private grpcErrorService: GrpcErrorService
+  ) {}
 
   /**
    * Get all tasks using pagination and filters
@@ -57,5 +64,18 @@ export class TasksController {
     }
 
     return task;
+  }
+
+  /**
+   * Cancel tasks by ids
+   *
+   * @param taskFilter Task filter
+   */
+  @Put('/cancel')
+  @ApiNotFoundResponse({ description: 'Not found' })
+  async cancel(@Body('tasks') tasks: string[]) {
+    return this.tasksService
+      .cancel(tasks)
+      .pipe(catchError(this.grpcErrorService.handleError));
   }
 }
