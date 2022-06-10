@@ -57,6 +57,15 @@ export class TaskDetailComponent implements OnInit {
    * @returns Name for the application
    */
   get applicationName(): string {
-    return this.route.snapshot.paramMap.get('application') ?? '';
+    return this.route.snapshot.paramMap.get('applicationName') ?? '';
+  }
+
+  /**
+   * Return the current application version from the route
+   *
+   * @returns Version for the application
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 }

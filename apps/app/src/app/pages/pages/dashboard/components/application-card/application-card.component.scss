@@ -3,7 +3,7 @@
   height: 12px;
   border-radius: 50%;
 
-  $dotTypes: ('success', 'warn', 'danger');
+  $dotTypes: ('success', 'warn', 'danger', 'pending');
 
   @each $type in $dotTypes {
     &-#{$type} {

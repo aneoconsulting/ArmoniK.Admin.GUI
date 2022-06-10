@@ -1,17 +1,19 @@
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import {
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  OnModuleInit,
-} from '@nestjs/common';
+  FormattedSession,
+  TaskStatus,
+} from '@armonik.admin.gui/armonik-typing';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { catchError } from 'rxjs';
-import { PaginationService, Submitter } from '../../core';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
+import {
+  ErrorStatus,
+  PaginationService,
+  PendingStatus,
+  Submitter,
+} from '../../core';
 import { SettingsService } from '../../shared';
+import { Task, TaskDocument } from '../tasks/schemas';
 import { Session, SessionDocument } from './schemas';
 
 @Injectable()
@@ -21,6 +23,8 @@ export class SessionsService implements OnModuleInit {
   constructor(
     @InjectModel(Session.name)
     private readonly sessionModel: Model<SessionDocument>,
+    @InjectConnection() private connection: Connection,
+    @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>,
     private readonly settingsService: SettingsService,
     private readonly paginationService: PaginationService,
     @Inject('Submitter') private client: ClientGrpc
@@ -42,32 +46,153 @@ export class SessionsService implements OnModuleInit {
   async findAllPaginated(
     page: number,
     limit: number,
-    appName: string
-  ): Promise<Pagination<Session>> {
+    applicationName: string,
+    applicationVersion: string
+  ) {
     const startIndex = (page - 1) * limit;
 
-    const total = await this.sessionModel
-      .find({
-        'Options.Options.GridAppName':
-          this.settingsService.getApplicationName(appName),
-      })
-      .countDocuments();
-    // Get sessions filtered by appName (field Options.Options.GridAppName)
-    const data = await this.sessionModel
-      .find({
-        'Options.Options.GridAppName':
-          this.settingsService.getApplicationName(appName),
-      })
-      .skip(startIndex)
-      .limit(limit)
-      .exec();
-
-    const meta = this.paginationService.createMeta(total, page, limit);
-
-    return {
-      data,
-      meta,
+    const match = {
+      'Options.Options.GridAppName':
+        this.settingsService.getApplicationName(applicationName),
+      'Options.Options.GridAppVersion':
+        this.settingsService.getApplicationVersion(applicationVersion),
+      // Only get the last seven days using StartDate
+      $expr: {
+        $gte: ['$StartDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
+      },
     };
+
+    const result = await this.connection
+      .collection(this.taskModel.collection.collectionName)
+      .aggregate<FormattedSession>([
+        // Filter by application name and version
+        {
+          $match: match,
+        },
+        // Group by session id
+        {
+          $group: {
+            _id: '$SessionId',
+            countTasksPending: {
+              $sum: {
+                $cond: {
+                  if: {
+                    $in: ['$Status', PendingStatus],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+            countTasksError: {
+              $sum: {
+                $cond: {
+                  if: {
+                    $in: ['$Status', ErrorStatus],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+            countTasksCompleted: {
+              $sum: {
+                $cond: {
+                  if: {
+                    $eq: ['$Status', TaskStatus.COMPLETED],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+            countTasksProcessing: {
+              $sum: {
+                $cond: {
+                  if: {
+                    $eq: ['$Status', TaskStatus.PROCESSING],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+          },
+        },
+        // Join with only one session (merge object)
+        {
+          $lookup: {
+            from: this.sessionModel.collection.collectionName,
+            localField: '_id',
+            foreignField: '_id',
+            as: 'session',
+          },
+        },
+        {
+          $unwind: '$session',
+        },
+        // Pick only the fields we need
+        {
+          $project: {
+            _id: '$_id',
+            countTasksPending: '$countTasksPending',
+            countTasksError: '$countTasksError',
+            countTasksCompleted: '$countTasksCompleted',
+            countTasksProcessing: '$countTasksProcessing',
+            status: '$session.Status',
+            createdAt: '$session.CreationDate',
+            cancelledAt: '$session.CancellationDate',
+          },
+        },
+        // Sort by session id
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
+        // Skip the number of items per page
+        {
+          $skip: startIndex,
+        },
+        // Limit the number of items per page
+        {
+          $limit: limit,
+        },
+      ])
+      .toArray();
+
+    const total = await this.connection
+      .collection(this.taskModel.collection.collectionName)
+      .aggregate([
+        // Filter by application name and version
+        {
+          $match: match,
+        },
+        // Group by session id
+        {
+          $group: {
+            _id: '$SessionId',
+          },
+        },
+        // Count the number of sessions
+        {
+          $group: {
+            _id: null,
+            count: {
+              $sum: 1,
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    const meta = this.paginationService.createMeta(
+      total[0].count, // Total number of sessions
+      page, // Current page
+      limit // Items per page
+    );
+
+    return { meta, data: result };
   }
 
   /**

@@ -4,6 +4,7 @@ import { Connection, Model } from 'mongoose';
 import { Application, TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
+import { ErrorStatus, PendingStatus } from '../../core';
 
 @Injectable()
 export class ApplicationsService {
@@ -17,14 +18,41 @@ export class ApplicationsService {
     const result = await this.connection
       .collection(this.taskModel.collection.collectionName)
       .aggregate<Application>([
+        // Get only the last seven days using StartDate
+        {
+          $match: {
+            $expr: {
+              $gte: [
+                '$StartDate',
+                new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+              ],
+            },
+          },
+        },
         {
           // Groupe by Options.Options.GridAppName and sum tasks using Status
           $group: {
-            _id: '$Options.Options.GridAppName',
+            _id: {
+              applicationName: '$Options.Options.GridAppName',
+              applicationVersion: '$Options.Options.GridAppVersion',
+            },
+            countTasksPending: {
+              $sum: {
+                $cond: {
+                  if: {
+                    $in: ['$Status', PendingStatus],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
             countTasksError: {
               $sum: {
                 $cond: {
-                  if: { $eq: ['$Status', TaskStatus.ERROR] },
+                  if: {
+                    $in: ['$Status', ErrorStatus],
+                  },
                   then: 1,
                   else: 0,
                 },
@@ -54,7 +82,18 @@ export class ApplicationsService {
           // Handle default application
           $addFields: {
             _id: {
-              $ifNull: ['$_id', this.settingsService.defaultApplicationName],
+              applicationName: {
+                $ifNull: [
+                  '$_id.applicationName',
+                  this.settingsService.defaultApplicationName,
+                ],
+              },
+              applicationVersion: {
+                $ifNull: [
+                  '$_id.applicationVersion',
+                  this.settingsService.defaultApplicationVersion,
+                ],
+              },
             },
           },
         },

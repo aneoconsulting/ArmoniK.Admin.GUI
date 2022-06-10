@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import {
+  FormattedSession,
+  Pagination,
+} from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
@@ -16,19 +19,29 @@ import {
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent {
-  sessions: Pagination<Session> | null = null;
+  sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService,
     private sessionsService: SessionsService
   ) {
     this.browserTitleService.setTitle(
-      this.languageService.instant('pages.sessions.title')
+      this.applicationName + ' - ' + this.applicationVersion
     );
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.refresh({});
+        this.browserTitleService.setTitle(
+          this.applicationName + ' - ' + this.applicationVersion
+        );
+      }
+    });
   }
 
   /**
@@ -43,7 +56,14 @@ export class SessionsComponent {
     this.loadingSessions = true;
 
     this.sessionsService
-      .getAllPaginated(this.applicationName, nextPage, limit)
+      .getAllPaginated(
+        {
+          applicationName: this.applicationName,
+          applicationVersion: this.applicationVersion,
+        },
+        nextPage,
+        limit
+      )
       .subscribe({
         error: this.onErrorSessions.bind(this),
         next: this.onNextSessions.bind(this),
@@ -63,6 +83,8 @@ export class SessionsComponent {
 
   /**
    * Return total number of sessions even if there is no session (return 0)
+   *
+   * @returns total number of sessions
    */
   get totalSessions(): number {
     return this.sessions ? this.sessions.meta.total : 0;
@@ -70,9 +92,21 @@ export class SessionsComponent {
 
   /**
    * Return the current application name from the route
+   *
+   * @returns application name
    */
   get applicationName(): string {
-    return this.route.snapshot.paramMap.get('application') ?? '';
+    return this.route.snapshot.paramMap.get('applicationName') ?? '';
+  }
+
+  /**
+   * Return the current application version from the route
+   *
+   * @returns application version
+   *
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 
   /**
@@ -90,7 +124,7 @@ export class SessionsComponent {
    *
    * @param data
    */
-  private onNextSessions(data: Pagination<Session>) {
+  private onNextSessions(data: Pagination<FormattedSession>) {
     this.sessions = data;
     this.loadingSessions = false;
   }
@@ -112,7 +146,7 @@ export class SessionsComponent {
    *
    * @returns session id
    */
-  trackSessions(_: number, session: Session): Session['_id'] {
+  trackSessions(_: number, session: FormattedSession): FormattedSession['_id'] {
     return session._id;
   }
 }
