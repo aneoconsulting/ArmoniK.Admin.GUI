@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Application, Pagination } from '@armonik.admin.gui/armonik-typing';
+import {
+  Application,
+  FormattedSession,
+  Pagination,
+} from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
 import { Session } from '../../models';
 import { ApiService } from './api.service';
@@ -13,24 +17,25 @@ export class SessionsService {
   /**
    * Used to get the list of sessions from the api using pagination and filters
    *
-   * @param applicationName Name of the app
+   * @param applicationId Id of the application
    * @param page Page number
    * @param limit Number of items per page
    *
    * @returns Pagination of sessions
    */
   getAllPaginated(
-    applicationName: Application['_id'],
+    applicationId: Application['_id'],
     page: number = 1,
     limit: number = 10
-  ): Observable<Pagination<Session>> {
+  ): Observable<Pagination<FormattedSession>> {
     const params = new URLSearchParams({
       page: String(page),
       limit: String(limit),
-      appName: applicationName,
+      applicationName: applicationId.applicationName,
+      applicationVersion: applicationId.applicationVersion,
     });
 
-    return this.apiService.get<Pagination<Session>>(
+    return this.apiService.get<Pagination<FormattedSession>>(
       `${this.url}?${params.toString()}`
     );
   }
@@ -44,5 +49,14 @@ export class SessionsService {
    */
   getOne(id: string): Observable<Session> {
     return this.apiService.get<Session>(`${this.url}/${id}`);
+  }
+
+  /**
+   * Cancel a session
+   *
+   * @param id Id of the session
+   */
+  cancel(id: string): Observable<Session> {
+    return this.apiService.put<Session>(`${this.url}/${id}/cancel`);
   }
 }

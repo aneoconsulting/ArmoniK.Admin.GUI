@@ -3,13 +3,16 @@ import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Controller,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseIntPipe,
+  Put,
   Query,
 } from '@nestjs/common';
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
+import { catchError } from 'rxjs';
 
 @Controller('sessions')
 export class SessionsController {
@@ -28,12 +31,14 @@ export class SessionsController {
   async index(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
-    @Query('appName') appName: string
-  ): Promise<Pagination<Session>> {
+    @Query('applicationName') applicationName: string,
+    @Query('applicationVersion') applicationVersion: string
+  ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
       limit,
-      appName
+      applicationName,
+      applicationVersion
     );
 
     return sessions;
@@ -57,5 +62,23 @@ export class SessionsController {
     }
 
     return session;
+  }
+
+  /**
+   * Cancel a session
+   *
+   * @param sessionId Id of the session
+   */
+  @Put('/:id/cancel')
+  @ApiNotFoundResponse({ description: 'Not found' })
+  async cancel(@Param('id') sessionId: string) {
+    return this.sessionsService.cancel(sessionId).pipe(
+      catchError((error) => {
+        if (error.code === 5) {
+          throw new NotFoundException();
+        }
+        throw new InternalServerErrorException(error);
+      })
+    );
   }
 }

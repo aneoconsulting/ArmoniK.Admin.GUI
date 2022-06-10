@@ -9,6 +9,7 @@ import {
   ErrorService,
   LanguageService,
   SessionsService,
+  SettingsService,
   TasksService,
 } from './services';
 
@@ -21,6 +22,7 @@ import {
   providers: [
     LocaleProvider,
     LanguageService,
+    SettingsService,
     ApiService,
     ErrorService,
     ApplicationsService,
