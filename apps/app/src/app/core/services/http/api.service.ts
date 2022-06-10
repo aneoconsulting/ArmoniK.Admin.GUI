@@ -39,4 +39,8 @@ export class ApiService {
       .get<T>(path, { params })
       .pipe(catchError(this.formatErrors));
   }
+
+  put<T>(path: string, body: Record<string, unknown> = {}): Observable<T> {
+    return this.http.put<T>(path, body).pipe(catchError(this.formatErrors));
+  }
 }

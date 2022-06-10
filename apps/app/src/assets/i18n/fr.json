@@ -34,8 +34,12 @@
       "sessions": "{{value}} sessions",
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
+      "cancel": {
+        "text": "Annuler la session"
+      },
       "table": {
         "id": "Session ID",
+        "cancel": "Annuler",
         "status": {
           "title": "Statut",
           "pending": "En attente",
