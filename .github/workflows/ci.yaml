@@ -85,6 +85,6 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          install-command: ""
-          start: "npx nx serve api"
+          install-command: ''
+          start: 'npx nx serve api'
           command: npx nx e2e app-e2e
