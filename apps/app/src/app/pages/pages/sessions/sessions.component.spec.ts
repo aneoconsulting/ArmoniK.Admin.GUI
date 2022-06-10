@@ -68,9 +68,14 @@ describe('SessionsComponent', () => {
     component.sessions = sessions;
     fixture.detectChanges();
 
-    // select the first row of the datagrid and class must be text-danger
-    const row = fixture.nativeElement.querySelector('.text-danger');
-    expect(row).toBeTruthy();
+    // select the first clr-dg-row
+    const row = fixture.nativeElement.querySelector('clr-dg-row');
+    // select the 2nd clr-dg-cell
+    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    // must only contains one child
+    expect(cell.childElementCount).toBe(1);
+    // child must contains the class .text-danger
+    expect(cell.children[0].classList.contains('text-danger')).toBeTruthy();
   });
 
   it('should have a pending status for the first session', () => {
@@ -101,9 +106,14 @@ describe('SessionsComponent', () => {
     component.sessions = sessions;
     fixture.detectChanges();
 
-    // select the first row of the datagrid and class must be text-danger
-    const row = fixture.nativeElement.querySelector('.text-pending');
-    expect(row).toBeTruthy();
+    // select the first clr-dg-row
+    const row = fixture.nativeElement.querySelector('clr-dg-row');
+    // select the 2nd clr-dg-cell
+    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    // must only contains one child
+    expect(cell.childElementCount).toBe(1);
+    // child must contains the class .text-pending
+    expect(cell.children[0].classList.contains('text-pending')).toBeTruthy();
   });
 
   it('should have a processing status for the first session', () => {
@@ -134,9 +144,14 @@ describe('SessionsComponent', () => {
     component.sessions = sessions;
     fixture.detectChanges();
 
-    // select the first row of the datagrid and class must be text-danger
-    const row = fixture.nativeElement.querySelector('.text-warn');
-    expect(row).toBeTruthy();
+    // select the first clr-dg-row
+    const row = fixture.nativeElement.querySelector('clr-dg-row');
+    // select the 2nd clr-dg-cell
+    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    // must only contains one child
+    expect(cell.childElementCount).toBe(1);
+    // child must contains the class .text-warn
+    expect(cell.children[0].classList.contains('text-warn')).toBeTruthy();
   });
 
   it('should have a completed status for the first session', () => {
@@ -167,8 +182,49 @@ describe('SessionsComponent', () => {
     component.sessions = sessions;
     fixture.detectChanges();
 
-    // select the first row of the datagrid and class must be text-danger
-    const row = fixture.nativeElement.querySelector('.text-success');
-    expect(row).toBeTruthy();
+    // select the first clr-dg-row
+    const row = fixture.nativeElement.querySelector('clr-dg-row');
+    // select the 2nd clr-dg-cell
+    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    // must only contains one child
+    expect(cell.childElementCount).toBe(1);
+    // child must contains the class .text-success
+    expect(cell.children[0].classList.contains('text-success')).toBeTruthy();
+  });
+
+  it('should have not have any status', () => {
+    const sessions: Pagination<FormattedSession> = {
+      data: [
+        {
+          _id: '1',
+          status: 1,
+          countTasksError: 0,
+          countTasksCompleted: 0,
+          countTasksPending: 0,
+          countTasksProcessing: 0,
+          cancelledAt: '',
+          createdAt: '2020-01-01T00:00:00.000Z',
+        },
+      ],
+      meta: {
+        total: 1,
+        perPage: 10,
+        currentPage: 1,
+        nextPage: null,
+        prevPage: null,
+        firstPage: 1,
+        lastPage: 1,
+      },
+    };
+
+    component.sessions = sessions;
+    fixture.detectChanges();
+
+    // select the first clr-dg-row
+    const row = fixture.nativeElement.querySelector('clr-dg-row');
+    // select the 2nd clr-dg-cell
+    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    // must only contains one child
+    expect(cell.childElementCount).toBe(0);
   });
 });
