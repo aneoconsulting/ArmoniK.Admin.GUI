@@ -26,7 +26,7 @@ jobs:
           mongodb-db: test
 
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
