@@ -50,7 +50,8 @@
           *ngIf="
             !session.countTasksError &&
             !session.countTasksProcessing &&
-            !session.countTasksCompleted
+            !session.countTasksCompleted &&
+            session.countTasksPending
           "
         >
           {{ 'pages.sessions.table.status.pending' | translate }}
@@ -66,7 +67,8 @@
           *ngIf="
             !session.countTasksError &&
             !session.countTasksPending &&
-            !session.countTasksProcessing
+            !session.countTasksProcessing &&
+            session.countTasksCompleted
           "
         >
           {{ 'pages.sessions.table.status.completed' | translate }}

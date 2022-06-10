@@ -27,7 +27,6 @@ export class SessionsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private browserTitleService: BrowserTitleService,
-    private languageService: LanguageService,
     private sessionsService: SessionsService
   ) {
     this.browserTitleService.setTitle(
