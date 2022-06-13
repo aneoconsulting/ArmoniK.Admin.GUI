@@ -24,7 +24,7 @@ WORKDIR /usr/src/app/
 
 RUN npm install -g pm2
 
-RUN addgroup --gid 5000 armonik && adduser -u 5000 --group armonik --shell /bin/sh --home /usr/src/app
+RUN addgroup --gid 5000 armonik && adduser -u 5000 -G armonik --shell /bin/sh --home /usr/src/app --disabled-password armonik
 USER armonik
 
 COPY --from=build /usr/src/app/dist/apps/api ./

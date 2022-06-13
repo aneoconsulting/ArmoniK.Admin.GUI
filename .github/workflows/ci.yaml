@@ -88,3 +88,49 @@ jobs:
           install-command: echo "dependencies from cache"
           start: 'npx nx serve api'
           command: npx nx e2e app-e2e
+
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile:
+          - name: armonik_admin_app
+            file: app.Dockerfile
+          - name: armonik_admin_api
+            file: api.Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            dockerhubaneo/${{ matrix.dockerfile.name }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Docker build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ matrix.dockerfile.file }}
