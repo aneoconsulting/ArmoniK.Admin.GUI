@@ -86,7 +86,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: echo "dependencies from cache"
-          start: "npx nx serve api"
+          start: 'npx nx serve api'
           command: npx nx e2e app-e2e
 
   docker:
