@@ -86,7 +86,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: echo "dependencies from cache"
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
   docker:
@@ -134,3 +134,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile.file }}
+
+      - name: Docker test
+        run: |
+          docker run --rm ${{ steps.meta.outputs.tags }}
