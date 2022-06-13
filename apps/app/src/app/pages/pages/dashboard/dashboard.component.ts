@@ -24,13 +24,13 @@ export class DashboardComponent implements OnInit {
     private languageService: LanguageService,
     private browserTitleService: BrowserTitleService,
     private settingsService: SettingsService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.browserTitleService.setTitle(
       this.languageService.instant('pages.dashboard.title')
     );
-  }
 
-  ngOnInit() {
     this.route.data.subscribe((data) => {
       if (data['applications']) {
         this.applications = data['applications'];
