@@ -69,7 +69,7 @@ export class TasksService implements OnModuleInit {
    *
    * @param ids Ids of the tasks
    */
-  cancel(ids: string[]) {
+  cancelMany(ids: string[]) {
     return this.submitterService.CancelTasks({ task: { ids } });
   }
 }

@@ -56,7 +56,9 @@
           "id": "Task ID",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
-          "task": "{{value}} task"
+          "task": "{{value}} task",
+          "status": "Status",
+          "cancel": "Cancel selected tasks"
         },
         "task-detail": {
           "title": "Task detail"

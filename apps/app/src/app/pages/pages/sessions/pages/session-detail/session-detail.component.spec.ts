@@ -8,6 +8,7 @@ import { AlertErrorComponent } from '../../../../../shared';
 import { TasksService } from '../../../../../core';
 import { TasksListComponent } from './components';
 import { SessionDetailComponent } from './session-detail.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SessionDetailComponent', () => {
   let component: SessionDetailComponent;
@@ -26,6 +27,7 @@ describe('SessionDetailComponent', () => {
         UiModule,
         ClarityModule,
         HttpClientModule,
+        BrowserAnimationsModule,
       ],
       providers: [TasksService],
     }).compileComponents();

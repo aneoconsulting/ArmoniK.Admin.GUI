@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
@@ -18,6 +19,7 @@ describe('TasksListComponent', () => {
         RouterTestingModule.withRoutes([]),
         ClarityModule,
         UiModule,
+        BrowserAnimationsModule,
       ],
     }).compileComponents();
   });

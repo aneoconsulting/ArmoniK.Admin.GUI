@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface } from '@clr/angular';
-import { LanguageService, Task } from '../../../../../../../core';
+import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
+import { Task } from '../../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -10,11 +10,13 @@ import { LanguageService, Task } from '../../../../../../../core';
 })
 export class TasksListComponent {
   @Input() tasks: Pagination<Task> | null = null;
+  @Input() selection: Task[] = [];
   @Input() loading = true;
+  @Input() cancelButtonState = ClrLoadingState.DEFAULT;
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
-
-  constructor(private languageService: LanguageService) {}
+  @Output() selectionChange = new EventEmitter<Task[]>();
+  @Output() cancelTasksChange = new EventEmitter<Task[]>();
 
   /**
    * Return total number of tasks event if there is no task (return 0)
@@ -26,7 +28,7 @@ export class TasksListComponent {
   /**
    * Used to track error for ngFor
    */
-  trackByTask(_: number, task: Task) {
-    return task._id;
+  trackByTask(index: number, task: Task) {
+    return task?._id ?? index;
   }
 }

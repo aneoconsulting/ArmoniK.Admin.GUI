@@ -71,11 +71,11 @@ export class TasksController {
    *
    * @param taskFilter Task filter
    */
-  @Put('/cancel')
+  @Put('/cancel-many')
   @ApiNotFoundResponse({ description: 'Not found' })
   async cancel(@Body('tasks') tasks: string[]) {
     return this.tasksService
-      .cancel(tasks)
+      .cancelMany(tasks)
       .pipe(catchError(this.grpcErrorService.handleError));
   }
 }

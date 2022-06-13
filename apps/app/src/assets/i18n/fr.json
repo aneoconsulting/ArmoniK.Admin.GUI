@@ -56,7 +56,9 @@
           "id": "Tâche ID",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
-          "tâche": "{{value}} tâche"
+          "tâche": "{{value}} tâche",
+          "status": "Statut",
+          "cancel": "Annuler les tâches sélectionnées"
         },
         "task-detail": {
           "title": "Détail de la tâche"

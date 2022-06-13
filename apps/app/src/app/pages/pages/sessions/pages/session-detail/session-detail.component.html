@@ -28,6 +28,9 @@
   <app-pages-sessions-tasks-list
     [tasks]="tasks"
     [loading]="loadingTasks"
-    (refresh)="refresh($event)"
+    [(selection)]="selectedTasks"
+    [cancelButtonState]="cancelTasksButtonState"
+    (cancelTasksChange)="onCancelTasks()"
+    (refresh)="onTasksRefresh($event)"
   ></app-pages-sessions-tasks-list>
 </section>
