@@ -46,6 +46,6 @@ export class TasksService {
    * @returns Task
    */
   getOne(id: string): Observable<Task> {
-    return this.apiService.get<Task>(`${this.url}/${id}`);
+    return this.apiService.get<Task>(`${this.url}/${encodeURIComponent(id)}`);
   }
 }

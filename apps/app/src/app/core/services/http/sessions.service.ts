@@ -48,7 +48,9 @@ export class SessionsService {
    * @returns Session
    */
   getOne(id: string): Observable<Session> {
-    return this.apiService.get<Session>(`${this.url}/${id}`);
+    return this.apiService.get<Session>(
+      `${this.url}/${encodeURIComponent(id)}`
+    );
   }
 
   /**
@@ -57,6 +59,8 @@ export class SessionsService {
    * @param id Id of the session
    */
   cancel(id: string): Observable<Session> {
-    return this.apiService.put<Session>(`${this.url}/${id}/cancel`);
+    return this.apiService.put<Session>(
+      `${this.url}/${encodeURIComponent(id)}/cancel`
+    );
   }
 }
