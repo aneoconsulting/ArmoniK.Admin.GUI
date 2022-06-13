@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  main:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -14,21 +14,36 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - uses: nrwl/nx-set-shas@v2
-        with:
-          main-branch-name: main
-
       - name: Cache Node Modules
         id: node-cache
         uses: actions/cache@v2
         with:
           path: node_modules
-          # Invalidate the cache if the node_modules folder changes
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
+
+  unit-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: main
 
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
@@ -39,3 +54,37 @@ jobs:
         with:
           lcov-file: ./coverage/apps/app/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  e2e-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: 5.0
+          mongodb-db: test
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          install-command: echo "dependencies from cache"
+          start: 'npx nx serve api'
+          command: npx nx e2e app-e2e
