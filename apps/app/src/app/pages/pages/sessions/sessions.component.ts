@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
@@ -8,7 +8,6 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
-  LanguageService,
   Session,
   SessionsService,
 } from '../../../core';
@@ -18,7 +17,7 @@ import {
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
 })
-export class SessionsComponent {
+export class SessionsComponent implements OnInit {
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
@@ -28,19 +27,13 @@ export class SessionsComponent {
     private router: Router,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );
-
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.refresh({});
-        this.browserTitleService.setTitle(
-          this.applicationName + ' - ' + this.applicationVersion
-        );
-      }
-    });
   }
 
   /**
