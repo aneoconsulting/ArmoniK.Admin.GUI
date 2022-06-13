@@ -42,7 +42,16 @@ export class TasksService {
       .toArray();
 
     const data = await this.taskModel
-      .find(match)
+      .find(match, {
+        _id: 1,
+        startedAt: '$StartDate',
+        endedAt: '$EndDate',
+        status: '$Status',
+        output: {
+          success: '$Output.Success',
+          error: '$Output.Error',
+        },
+      })
       .skip(startIndex)
       .limit(limit)
       .exec();

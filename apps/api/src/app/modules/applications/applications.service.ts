@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
-import { Application, TaskStatus } from '@armonik.admin.gui/armonik-typing';
+import {
+  Application,
+  TaskStatus,
+  ErrorStatus,
+  PendingStatus,
+} from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
-import { ErrorStatus, PendingStatus } from '../../core';
 
 @Injectable()
 export class ApplicationsService {
