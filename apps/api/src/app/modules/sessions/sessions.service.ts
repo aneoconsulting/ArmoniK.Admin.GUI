@@ -47,7 +47,9 @@ export class SessionsService implements OnModuleInit {
     page: number,
     limit: number,
     applicationName: string,
-    applicationVersion: string
+    applicationVersion: string,
+    orderBy?: string,
+    order?: string
   ) {
     const startIndex = (page - 1) * limit;
 
@@ -131,6 +133,22 @@ export class SessionsService implements OnModuleInit {
         {
           $unwind: '$session',
         },
+        // Sort by session id
+        {
+          $sort: {
+            [`session.${orderBy}` ?? 'session.CreationDate']: order
+              ? Number(order)
+              : -1,
+          },
+        },
+        // Skip the number of items per page
+        {
+          $skip: startIndex,
+        },
+        // Limit the number of items per page
+        {
+          $limit: limit,
+        },
         // Pick only the fields we need
         {
           $project: {
@@ -143,20 +161,6 @@ export class SessionsService implements OnModuleInit {
             createdAt: '$session.CreationDate',
             cancelledAt: '$session.CancellationDate',
           },
-        },
-        // Sort by session id
-        {
-          $sort: {
-            _id: 1,
-          },
-        },
-        // Skip the number of items per page
-        {
-          $skip: startIndex,
-        },
-        // Limit the number of items per page
-        {
-          $limit: limit,
         },
       ])
       .toArray();
