@@ -13,7 +13,7 @@
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <clr-datagrid
-    (clrDgRefresh)="refresh($event)"
+    (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
     <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
