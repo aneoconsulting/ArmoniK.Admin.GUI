@@ -59,6 +59,8 @@ export class DashboardComponent implements OnInit {
    * @param state Clarity datagrid state
    */
   onRefreshApplicationsErrors(state: ClrDatagridStateInterface) {
+    this.applicationsErrorsLoading = true;
+
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
