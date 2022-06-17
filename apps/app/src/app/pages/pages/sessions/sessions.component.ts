@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { HttpParams } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
@@ -8,7 +9,6 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
-  LanguageService,
   Session,
   SessionsService,
 } from '../../../core';
@@ -18,7 +18,7 @@ import {
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
 })
-export class SessionsComponent {
+export class SessionsComponent implements OnInit {
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
@@ -27,21 +27,14 @@ export class SessionsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private browserTitleService: BrowserTitleService,
-    private languageService: LanguageService,
     private sessionsService: SessionsService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );
-
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.refresh({});
-        this.browserTitleService.setTitle(
-          this.applicationName + ' - ' + this.applicationVersion
-        );
-      }
-    });
   }
 
   /**
@@ -49,25 +42,28 @@ export class SessionsComponent {
    *
    * @param state
    */
-  refresh(state: ClrDatagridStateInterface) {
+  onRefreshSessions(state: ClrDatagridStateInterface) {
+    this.loadingSessions = true;
+
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
-    this.loadingSessions = true;
+    let params = new HttpParams()
+      .set('page', nextPage.toString())
+      .set('limit', limit.toString())
+      .set('applicationName', this.applicationName)
+      .set('applicationVersion', this.applicationVersion);
 
-    this.sessionsService
-      .getAllPaginated(
-        {
-          applicationName: this.applicationName,
-          applicationVersion: this.applicationVersion,
-        },
-        nextPage,
-        limit
-      )
-      .subscribe({
-        error: this.onErrorSessions.bind(this),
-        next: this.onNextSessions.bind(this),
-      });
+    const orderBy = state?.sort?.by as string;
+    const order = state?.sort?.reverse ? -1 : 1;
+    if (orderBy) {
+      params = params.set('orderBy', orderBy).set('order', order);
+    }
+
+    this.sessionsService.getAllPaginated(params).subscribe({
+      error: this.onErrorSessions.bind(this),
+      next: this.onNextSessions.bind(this),
+    });
   }
 
   /**

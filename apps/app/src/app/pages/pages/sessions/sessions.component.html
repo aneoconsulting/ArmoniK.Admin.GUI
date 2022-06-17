@@ -13,17 +13,17 @@
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <clr-datagrid
-    (clrDgRefresh)="refresh($event)"
+    (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
     <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="Status">
       {{ 'pages.sessions.table.status.title' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="CreationDate">
       {{ 'pages.sessions.table.createdAt' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="CancellationDate">
       {{ 'pages.sessions.table.cancelledAt' | translate }}
     </clr-dg-column>
     <clr-dg-column>
@@ -50,7 +50,8 @@
           *ngIf="
             !session.countTasksError &&
             !session.countTasksProcessing &&
-            !session.countTasksCompleted
+            !session.countTasksCompleted &&
+            session.countTasksPending
           "
         >
           {{ 'pages.sessions.table.status.pending' | translate }}
@@ -65,8 +66,9 @@
           class="text-success"
           *ngIf="
             !session.countTasksError &&
+            !session.countTasksProcessing &&
             !session.countTasksPending &&
-            !session.countTasksProcessing
+            session.countTasksCompleted
           "
         >
           {{ 'pages.sessions.table.status.completed' | translate }}
@@ -85,7 +87,7 @@
       <clr-dg-cell>
         <button
           type="button"
-          class="btn btn-sm btn-icon btn-danger-outline"
+          class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
           (click)="cancelSession(session._id)"
         >
           <span class="sr-only">{{

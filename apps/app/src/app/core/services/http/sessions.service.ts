@@ -1,6 +1,6 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  Application,
   FormattedSession,
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
@@ -24,20 +24,9 @@ export class SessionsService {
    * @returns Pagination of sessions
    */
   getAllPaginated(
-    applicationId: Application['_id'],
-    page: number = 1,
-    limit: number = 10
+    params: HttpParams = new HttpParams()
   ): Observable<Pagination<FormattedSession>> {
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: String(limit),
-      applicationName: applicationId.applicationName,
-      applicationVersion: applicationId.applicationVersion,
-    });
-
-    return this.apiService.get<Pagination<FormattedSession>>(
-      `${this.url}?${params.toString()}`
-    );
+    return this.apiService.get<Pagination<FormattedSession>>(this.url, params);
   }
 
   /**

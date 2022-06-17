@@ -1,7 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
 import { Task } from '../../../../../../../core';
+import {
+  ErrorStatus,
+  Pagination,
+  PendingStatus,
+  TaskStatus,
+} from '@armonik.admin.gui/armonik-typing';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -18,6 +23,14 @@ export class TasksListComponent {
   @Output() selectionChange = new EventEmitter<Task[]>();
   @Output() cancelTasksChange = new EventEmitter<Task[]>();
 
+  isModalOpen = false;
+  activeTask: Task | null = null;
+
+  openModal(task: Task) {
+    this.activeTask = task;
+    this.isModalOpen = true;
+  }
+
   /**
    * Return total number of tasks event if there is no task (return 0)
    */
@@ -30,5 +43,50 @@ export class TasksListComponent {
    */
   trackByTask(index: number, task: Task) {
     return task?._id ?? index;
+  }
+
+  /**
+   * Used to check if task status is in error
+   *
+   * @param task Task to check
+   */
+  isError(task: Task): boolean {
+    return task.status in ErrorStatus;
+  }
+
+  /**
+   * Used to check if task status is in pending
+   *
+   * @param task Task to check
+   */
+  isPending(task: Task): boolean {
+    return task.status in PendingStatus;
+  }
+
+  /**
+   * Used to check if task status is in completed
+   *
+   * @param task Task to check
+   */
+  isCompleted(task: Task): boolean {
+    return task.status === TaskStatus.COMPLETED;
+  }
+
+  /**
+   * Used to check if task status is in cancelled
+   *
+   * @param task Task to check
+   */
+  isCancelled(task: Task): boolean {
+    return task.status === TaskStatus.CANCELED;
+  }
+
+  /**
+   * Used to check if task status is in processing
+   *
+   * @param task Task to check
+   */
+  isProcessing(task: Task): boolean {
+    return task.status === TaskStatus.PROCESSING;
   }
 }

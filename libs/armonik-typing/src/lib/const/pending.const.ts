@@ -1,4 +1,4 @@
-import { TaskStatus } from '@armonik.admin.gui/armonik-typing';
+import { TaskStatus } from '../enums';
 
 export const PendingStatus = [
   TaskStatus.UNSPECIFIED,

@@ -1,8 +1,8 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
+import { Connection, Model } from 'mongoose';
 import { PaginationService, Submitter } from '../../core';
 import { Task, TaskDocument } from './schemas';
 
@@ -14,7 +14,8 @@ export class TasksService implements OnModuleInit {
     @InjectModel(Task.name)
     private readonly taskModel: Model<TaskDocument>,
     private readonly paginationService: PaginationService,
-    @Inject('Submitter') private readonly client: ClientGrpc
+    @Inject('Submitter') private readonly client: ClientGrpc,
+    @InjectConnection() private connection: Connection
   ) {}
 
   onModuleInit() {
@@ -36,16 +37,34 @@ export class TasksService implements OnModuleInit {
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
-    const total = await this.taskModel.countDocuments();
+    const match = {
+      SessionId: sessionId,
+    };
+
+    const total = await this.connection
+      .collection(this.taskModel.collection.collectionName)
+      .aggregate([
+        { $match: match },
+        { $group: { _id: '$SessionId', count: { $sum: 1 } } },
+      ])
+      .toArray();
+
     const data = await this.taskModel
-      .find({
-        SessionId: sessionId,
+      .find(match, {
+        _id: 1,
+        startedAt: '$StartDate',
+        endedAt: '$EndDate',
+        status: '$Status',
+        output: {
+          success: '$Output.Success',
+          error: '$Output.Error',
+        },
       })
       .skip(startIndex)
       .limit(limit)
       .exec();
 
-    const meta = this.paginationService.createMeta(total, page, limit);
+    const meta = this.paginationService.createMeta(total[0].count, page, limit);
 
     return {
       data,
