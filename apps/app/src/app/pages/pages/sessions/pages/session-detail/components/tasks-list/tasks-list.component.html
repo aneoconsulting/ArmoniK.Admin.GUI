@@ -1,4 +1,22 @@
-<clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
+<clr-datagrid
+  (clrDgRefresh)="refresh.emit($event)"
+  [clrDgLoading]="loading"
+  [clrDgSelected]="selection"
+  (clrDgSelectedChange)="selectionChange.emit($event)"
+>
+  <clr-dg-action-bar>
+    <div class="btn-group">
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="cancelTasksChange.emit()"
+        [clrLoading]="cancelButtonState"
+      >
+        {{ 'pages.sessions.session-detail.table.cancel' | translate }}
+      </button>
+    </div>
+  </clr-dg-action-bar>
+
   <clr-dg-column>
     {{ 'pages.sessions.session-detail.table.id' | translate }}
   </clr-dg-column>
@@ -15,7 +33,7 @@
     {{ 'pages.sessions.session-detail.table.detail' | translate }}
   </clr-dg-column>
 
-  <clr-dg-row *ngFor="let task of tasks?.data; trackBy: trackByTask">
+  <clr-dg-row *clrDgItems="let task of tasks?.data ?? []" [clrDgItem]="task">
     <clr-dg-cell>
       <a [routerLink]="['tasks', task._id]">
         <span>

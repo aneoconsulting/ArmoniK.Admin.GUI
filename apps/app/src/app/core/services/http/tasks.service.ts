@@ -48,4 +48,14 @@ export class TasksService {
   getOne(id: string): Observable<Task> {
     return this.apiService.get<Task>(`${this.url}/${encodeURIComponent(id)}`);
   }
+
+  /**
+   * Used to cancel tasks
+   *
+   * @param tasks Tasks to cancel
+   */
+  cancelMany(tasks: Task[]): Observable<Task[]> {
+    const tasksId = tasks.map((task) => task._id);
+    return this.apiService.put<Task[]>(`${this.url}/cancel-many`, { tasksId });
+  }
 }

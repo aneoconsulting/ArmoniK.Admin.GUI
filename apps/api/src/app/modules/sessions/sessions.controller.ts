@@ -13,10 +13,14 @@ import {
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 import { catchError } from 'rxjs';
+import { GrpcErrorService } from '../../core';
 
 @Controller('sessions')
 export class SessionsController {
-  constructor(private readonly sessionsService: SessionsService) {}
+  constructor(
+    private readonly sessionsService: SessionsService,
+    private grpcErrorService: GrpcErrorService
+  ) {}
 
   /**
    * Get all sessions using pagination and filters
@@ -76,13 +80,8 @@ export class SessionsController {
   @Put('/:id/cancel')
   @ApiNotFoundResponse({ description: 'Not found' })
   async cancel(@Param('id') sessionId: string) {
-    return this.sessionsService.cancel(sessionId).pipe(
-      catchError((error) => {
-        if (error.code === 5) {
-          throw new NotFoundException();
-        }
-        throw new InternalServerErrorException(error);
-      })
-    );
+    return this.sessionsService
+      .cancel(sessionId)
+      .pipe(catchError(this.grpcErrorService.handleError));
   }
 }
