@@ -62,7 +62,7 @@ export class TasksService implements OnModuleInit {
           error: '$Output.Error',
         },
       })
-      .sort({ [orderBy || 'StartDate']: order || -1 })
+      .sort({ [orderBy || 'StartDate']: Number(order) || -1 })
       .skip(startIndex)
       .limit(limit)
       .exec();
