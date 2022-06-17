@@ -32,13 +32,17 @@ export class SessionsController {
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('applicationName') applicationName: string,
-    @Query('applicationVersion') applicationVersion: string
+    @Query('applicationVersion') applicationVersion: string,
+    @Query('orderBy') orderBy: string,
+    @Query('order') order: string
   ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
       limit,
       applicationName,
-      applicationVersion
+      applicationVersion,
+      orderBy,
+      order
     );
 
     return sessions;

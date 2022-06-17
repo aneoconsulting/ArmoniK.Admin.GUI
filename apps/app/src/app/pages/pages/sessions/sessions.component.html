@@ -13,17 +13,17 @@
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <clr-datagrid
-    (clrDgRefresh)="refresh($event)"
+    (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
     <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="Status">
       {{ 'pages.sessions.table.status.title' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="CreationDate">
       {{ 'pages.sessions.table.createdAt' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="CancellationDate">
       {{ 'pages.sessions.table.cancelledAt' | translate }}
     </clr-dg-column>
     <clr-dg-column>
