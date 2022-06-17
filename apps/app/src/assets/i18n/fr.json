@@ -52,11 +52,26 @@
       },
       "session-detail": {
         "title": "Détail de la session",
+        "modal": {
+          "title": "Tâche {{id}}"
+        },
         "table": {
           "id": "Tâche ID",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
-          "tâche": "{{value}} tâche"
+          "tâche": "{{value}} tâche",
+          "started_at": "Démarrée le",
+          "ended_at": "Terminée le",
+          "status": {
+            "title": "Statut",
+            "pending": "En attente",
+            "processing": "En cours",
+            "completed": "Terminée",
+            "error": "Erreur",
+            "cancelled": "Annulée"
+          },
+          "detail": "Détail de l'erreur",
+          "see-more": "Voir plus"
         },
         "task-detail": {
           "title": "Détail de la tâche"

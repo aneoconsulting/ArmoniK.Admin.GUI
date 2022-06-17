@@ -52,11 +52,26 @@
       },
       "session-detail": {
         "title": "Session detail",
+        "modal": {
+          "title": "Task {{id}}"
+        },
         "table": {
           "id": "Task ID",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
-          "task": "{{value}} task"
+          "task": "{{value}} task",
+          "started_at": "Started at",
+          "ended_at": "Ended at",
+          "status": {
+            "title": "Status",
+            "pending": "Pending",
+            "processing": "Processing",
+            "error": "Error",
+            "completed": "Completed",
+            "cancelled": "Cancelled"
+          },
+          "detail": "Error detail",
+          "see-more": "See more"
         },
         "task-detail": {
           "title": "Task detail"
