@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
@@ -54,12 +55,21 @@ export class SessionDetailComponent implements OnInit {
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
-    this.tasksService
-      .getAllPaginated(this.sessionId, nextPage, limit)
-      .subscribe({
-        error: this.onErrorTasks.bind(this),
-        next: this.onNextTasks.bind(this),
-      });
+    let params = new HttpParams()
+      .set('sessionId', this.sessionId)
+      .set('page', `${nextPage}`)
+      .set('limit', `${limit}`);
+
+    const orderBy = state?.sort?.by as string;
+    const order = state?.sort?.reverse ? -1 : 1;
+    if (orderBy) {
+      params = params.set('orderBy', orderBy).set('order', `${order}`);
+    }
+
+    this.tasksService.getAllPaginated(params).subscribe({
+      error: this.onErrorTasks.bind(this),
+      next: this.onNextTasks.bind(this),
+    });
   }
 
   /**

@@ -35,12 +35,16 @@ export class TasksController {
   async index(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
-    @Query('sessionId') sessionId: string
+    @Query('sessionId') sessionId: string,
+    @Query('orderBy') orderBy: string,
+    @Query('order') order: string
   ): Promise<Pagination<Task>> {
     const tasks = await this.tasksService.findAllPaginated(
       page,
       limit,
-      sessionId
+      sessionId,
+      orderBy,
+      order
     );
 
     return tasks;

@@ -2,7 +2,7 @@ import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
-import { Connection, Model } from 'mongoose';
+import { Connection, Model, SortOrder } from 'mongoose';
 import { PaginationService, Submitter } from '../../core';
 import { Task, TaskDocument } from './schemas';
 
@@ -33,7 +33,9 @@ export class TasksService implements OnModuleInit {
   async findAllPaginated(
     page: number,
     limit: number,
-    sessionId: string
+    sessionId: string,
+    orderBy: string | null,
+    order: string | null
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
@@ -60,6 +62,7 @@ export class TasksService implements OnModuleInit {
           error: '$Output.Error',
         },
       })
+      .sort({ [orderBy || 'StartDate']: (Number(order) as SortOrder) || -1 })
       .skip(startIndex)
       .limit(limit)
       .exec();
