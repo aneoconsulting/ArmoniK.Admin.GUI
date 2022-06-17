@@ -71,7 +71,8 @@
             "cancelled": "Annulée"
           },
           "detail": "Détail de l'erreur",
-          "see-more": "Voir plus"
+          "see-more": "Voir plus",
+          "cancel": "Annuler la sélection"
         },
         "task-detail": {
           "title": "Détail de la tâche"

@@ -71,7 +71,8 @@
             "cancelled": "Cancelled"
           },
           "detail": "Error detail",
-          "see-more": "See more"
+          "see-more": "See more",
+          "cancel": "Cancel selection"
         },
         "task-detail": {
           "title": "Task detail"
