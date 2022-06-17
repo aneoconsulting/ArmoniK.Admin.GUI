@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
-import { Task } from '../../../../../../../core';
 import {
   ErrorStatus,
   Pagination,
   PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
+import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
+import { Task } from '../../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
