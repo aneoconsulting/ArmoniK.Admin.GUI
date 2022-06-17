@@ -33,7 +33,9 @@ export class TasksService implements OnModuleInit {
   async findAllPaginated(
     page: number,
     limit: number,
-    sessionId: string
+    sessionId: string,
+    orderBy: string | null,
+    order: string | null
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
@@ -60,6 +62,7 @@ export class TasksService implements OnModuleInit {
           error: '$Output.Error',
         },
       })
+      .sort({ [orderBy || 'StartDate']: order || -1 })
       .skip(startIndex)
       .limit(limit)
       .exec();

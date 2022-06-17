@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
@@ -22,20 +23,8 @@ export class TasksService {
    *
    * @returns Pagination of tasks
    */
-  getAllPaginated(
-    sessionId: string,
-    page: number = 1,
-    limit: number = 10
-  ): Observable<Pagination<Task>> {
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: String(limit),
-      sessionId,
-    });
-
-    return this.apiService.get<Pagination<Task>>(
-      `${this.url}?${params.toString()}`
-    );
+  getAllPaginated(params: HttpParams): Observable<Pagination<Task>> {
+    return this.apiService.get<Pagination<Task>>(this.url, params);
   }
 
   /**
