@@ -13,3 +13,7 @@ date_in_milliseconds=$(date +%s%N)
 # search for <date> in ./apps/app-e2e/src/fixtures/data/SessionData.json
 # and replace it with the current date in milliseconds
 sed -i "s/<date>/$date_in_milliseconds/g" ./apps/app-e2e/src/fixtures/data/SessionData.json
+
+# search for <date> in ./apps/app-e2e/src/fixtures/data/TaskData.json
+# and replace it with the current date in milliseconds
+sed -i "s/<date>/$date_in_milliseconds/g" ./apps/app-e2e/src/fixtures/data/TaskData.json
