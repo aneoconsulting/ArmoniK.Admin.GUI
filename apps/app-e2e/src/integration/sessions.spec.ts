@@ -19,8 +19,8 @@ describe('sessions', () => {
       });
   });
 
-  it('should be able to click o "applications" button to return to dashboard', () => {
-    cy.get('.subtitle > a').first().click();
+  it('should be able to click on "applications" button to return to dashboard', () => {
+    cy.get('.subtitle > a').click();
     cy.url().should('include', '/admin/dashboard');
   });
 
