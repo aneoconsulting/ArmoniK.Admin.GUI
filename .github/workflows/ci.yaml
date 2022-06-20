@@ -75,6 +75,12 @@ jobs:
           mongodb-version: 5.0
           mongodb-db: test
 
+      - name: Update fixture
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-update-mongo-fixtures.sh
+
+      - name: Populate MongoDB
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
+
       - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v2
@@ -88,6 +94,18 @@ jobs:
           install-command: echo "dependencies from cache"
           start: 'npx nx serve api'
           command: npx nx e2e app-e2e
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ./dist/cypress/apps/app-e2e/screenshots
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: ./dist/cypress/apps/app-e2e/videos
 
   docker:
     runs-on: ubuntu-latest
