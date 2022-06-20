@@ -96,6 +96,18 @@ jobs:
           start: 'npx nx serve api'
           command: npx nx e2e app-e2e
 
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+
   docker:
     runs-on: ubuntu-latest
     strategy:
