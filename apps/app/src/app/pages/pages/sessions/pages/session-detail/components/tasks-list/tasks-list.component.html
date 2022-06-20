@@ -33,7 +33,11 @@
     {{ 'pages.sessions.session-detail.table.detail' | translate }}
   </clr-dg-column>
 
-  <clr-dg-row *clrDgItems="let task of tasks?.data ?? []" [clrDgItem]="task">
+  <clr-dg-row
+    *ngFor="let task of tasks?.data ?? []"
+    [clrDgItem]="task"
+    [ngForTrackBy]="trackByTask"
+  >
     <clr-dg-cell>
       <a [routerLink]="['tasks', task._id]">
         <span>
@@ -94,7 +98,7 @@
 
   <clr-dg-footer>
     <clr-dg-pagination #pagination [clrDgTotalItems]="totalTasks">
-      <clr-dg-page-size>{{
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
         'pages.sessions.session-detail.table.per_page' | translate
       }}</clr-dg-page-size>
       {{

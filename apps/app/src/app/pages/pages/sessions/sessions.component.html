@@ -88,6 +88,7 @@
         <button
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
+          [disabled]="session.cancelledAt"
           (click)="cancelSession(session._id)"
         >
           <span class="sr-only">{{

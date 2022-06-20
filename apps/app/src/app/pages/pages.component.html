@@ -10,7 +10,11 @@
     </a>
     <ul actions class="list-unstyled language">
       <li *ngFor="let language of languages; trackBy: trackByLanguageName">
-        <button class="btn btn-link" (click)="changeLanguage(language.code)">
+        <button
+          class="btn btn-link"
+          (click)="changeLanguage(language.code)"
+          [disabled]="isSelected(language.code)"
+        >
           {{ language.name | uppercase }}
         </button>
       </li>
@@ -37,7 +41,6 @@
             'sessions'
           ]"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
         >
           {{ current.applicationName }} - {{ current.applicationVersion }}</a
         >

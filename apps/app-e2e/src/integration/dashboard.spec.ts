@@ -2,8 +2,9 @@ describe('dashboard', () => {
   beforeEach(() => cy.visit('/admin/dashboard'));
 
   it('should display the dashboard title in english', () => {
-    // click on english language switcher
-    cy.get('.header-actions > ul > li:nth-child(1) > button').click();
+    cy.get('.header-actions > ul > li:nth-child(1) > button').should(
+      'be.disabled'
+    );
     cy.get('h1').should('contain', 'Dashboard');
   });
 
