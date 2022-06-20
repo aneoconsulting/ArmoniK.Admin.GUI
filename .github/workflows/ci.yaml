@@ -99,13 +99,13 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: cypress/screenshots
+          path: ./dist/cypress/apps/app-e2e/screenshots
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: cypress-videos
-          path: cypress/videos
+          path: ./dist/cypress/apps/app-e2e/videos
 
   docker:
     runs-on: ubuntu-latest
