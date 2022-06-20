@@ -17,7 +17,7 @@
     "Status": 2,
     "CreationDate": {
       "$date": {
-        "$numberLong": "1654853987292"
+        "$numberLong": "<date>"
       }
     }
   }

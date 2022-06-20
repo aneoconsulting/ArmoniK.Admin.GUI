@@ -11,7 +11,6 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     echo "You must have a running mongo instance on localhost:27017."
     exit 1
 fi
-# this script is used to populate a mongo database with data in /apps/app-e2e/src/fixtures/data/{SessionData,TaskData}.json
 
 # load SessionData to mongo
 mongoimport --db test --collection SessionData --jsonArray --file ./apps/app-e2e/src/fixtures/data/SessionData.json

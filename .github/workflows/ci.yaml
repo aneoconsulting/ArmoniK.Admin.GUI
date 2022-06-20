@@ -75,6 +75,9 @@ jobs:
           mongodb-version: 5.0
           mongodb-db: test
 
+      - name: Update fixture
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-update-mongo-fixtures.sh
+
       - name: Populate MongoDB
         run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
