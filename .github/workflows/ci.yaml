@@ -75,6 +75,9 @@ jobs:
           mongodb-version: 5.0
           mongodb-db: test
 
+      - name: Populate MongoDB
+        run: ./scripts/e2e-populate-mongo.sh
+
       - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v2
@@ -86,7 +89,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: echo "dependencies from cache"
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
   docker:
