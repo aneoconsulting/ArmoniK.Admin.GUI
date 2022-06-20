@@ -52,6 +52,7 @@ export class SessionDetailComponent implements OnInit {
    * @param state Clarity datagrid state
    */
   onTasksRefresh(state: ClrDatagridStateInterface) {
+    console.log('onTasksRefresh', state);
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 

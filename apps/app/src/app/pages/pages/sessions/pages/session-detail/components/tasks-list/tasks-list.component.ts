@@ -89,4 +89,16 @@ export class TasksListComponent {
   isProcessing(task: Task): boolean {
     return task.status === TaskStatus.PROCESSING;
   }
+
+  /**
+   * Used to track task for ngFor
+   *
+   * @param index Index of the task
+   * @param task Task to track
+   *
+   * @returns Task id
+   */
+  trackByTaskId(_: number, task: Task) {
+    return task._id;
+  }
 }
