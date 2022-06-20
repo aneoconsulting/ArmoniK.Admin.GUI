@@ -76,7 +76,7 @@ jobs:
           mongodb-db: test
 
       - name: Populate MongoDB
-        run: ./scripts/e2e-populate-mongo.sh
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
       - name: Restore Node Modules
         id: node-cache
