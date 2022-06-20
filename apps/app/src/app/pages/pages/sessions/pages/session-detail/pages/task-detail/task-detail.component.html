@@ -11,7 +11,13 @@
   <ui-page-header>
     <ng-container subtitle>
       <a
-        [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
+        [routerLink]="[
+          '/admin',
+          'applications',
+          applicationName,
+          applicationVersion,
+          'sessions'
+        ]"
         >{{ 'navigation.sessions' | translate }}</a
       >&nbsp;-&nbsp;
       <span>{{ sessionId }}</span>
@@ -24,6 +30,7 @@
           '/admin',
           'applications',
           applicationName,
+          applicationVersion,
           'sessions',
           sessionId
         ]"
