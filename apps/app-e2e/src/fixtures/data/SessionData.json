@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "f36f8054-e2e8-4f1c-a99e-e528d941ce91",
+    "Options": {
+      "MaxDuration": "00: 05: 00",
+      "MaxRetries": 5,
+      "Options": {
+        "MaxDuration": "300",
+        "MaxRetries": "5",
+        "Priority": "1",
+        "GridAppName": "ArmoniK.Samples.SymphonyPackage",
+        "GridAppVersion": "1.0.0",
+        "GridAppNamespace": "ArmoniK.Samples.Symphony.Packages"
+      },
+      "Priority": 1
+    },
+    "Status": 2,
+    "CreationDate": {
+      "$date": {
+        "$numberLong": "1654853987292"
+      }
+    }
+  }
+]
