@@ -42,14 +42,14 @@
         "cancel": "Cancel",
         "status": {
           "title": "Status",
-          "cancelled": "Cancelled",
+          "canceled": "Canceled",
           "pending": "Pending",
           "processing": "Processing",
           "error": "Error",
           "completed": "Completed"
         },
         "createdAt": "Created at",
-        "cancelledAt": "Cancelled at"
+        "canceledAt": "Canceled at"
       },
       "session-detail": {
         "title": "Session detail",
@@ -70,7 +70,7 @@
             "processing": "Processing",
             "error": "Error",
             "completed": "Completed",
-            "cancelled": "Cancelled"
+            "canceled": "Canceled"
           },
           "detail": "Error detail",
           "see-more": "See more",

@@ -8,5 +8,5 @@ export type FormattedSession = {
   countTasksProcessing: number;
   status: SessionStatus;
   createdAt: string;
-  cancelledAt: string;
+  canceledAt: string;
 };
