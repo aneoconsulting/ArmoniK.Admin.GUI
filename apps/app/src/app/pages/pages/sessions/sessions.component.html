@@ -3,12 +3,12 @@
     <ng-container subtitle>
       <a [routerLink]="['/admin', 'dashboard']">{{
         'navigation.applications' | translate
-      }}</a
-      >&nbsp;-&nbsp;
-      <span>{{ applicationName }} - {{ applicationVersion }}</span>
+      }}</a>
     </ng-container>
-    {{ 'pages.sessions.title' | translate }}
+    <h1>{{ applicationName }} - {{ applicationVersion }}</h1>
   </ui-page-header>
+
+  <h2>{{ 'pages.sessions.title' | translate }}</h2>
 
   <app-alert-error [errors]="errors"></app-alert-error>
 

@@ -5,7 +5,6 @@
         'navigation.applications' | translate
       }}</a
       >&nbsp;-&nbsp;
-      <span>{{ applicationName }} - {{ applicationVersion }}</span>
     </ng-container>
   </ui-page-header>
   <ui-page-header>
@@ -18,18 +17,22 @@
           applicationVersion,
           'sessions'
         ]"
-        >{{ 'navigation.sessions' | translate }}</a
+        >{{ 'navigation.sessions' | translate }} </a
       >&nbsp;-&nbsp;
-      <span>{{ sessionId }}</span>
+      <span>{{ applicationName }} - {{ applicationVersion }}</span>
     </ng-container>
-    {{ 'pages.sessions.session-detail.title' | translate }}
+    {{ sessionId }}
   </ui-page-header>
+
+  <h2>{{ 'pages.sessions.session-detail.title' | translate }}</h2>
 
   <pre>
     {{ session | json }}
   </pre>
 
   <app-alert-error [errors]="errors"></app-alert-error>
+
+  <h2>{{ 'pages.sessions.session-detail.table.title' | translate }}</h2>
 
   <app-pages-sessions-tasks-list
     [tasks]="tasks"

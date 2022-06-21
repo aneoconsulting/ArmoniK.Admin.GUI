@@ -4,9 +4,9 @@
   },
   "navigation": {
     "dashboard": "Tableau de bord",
-    "applications": "Applications",
-    "sessions": "Sessions",
-    "tasks": "Tâches"
+    "applications": "Retourner aux applications",
+    "sessions": "Retourner aux sessions",
+    "tasks": "Retourner aux tâches"
   },
   "header": {
     "subnav": {
@@ -56,6 +56,7 @@
           "title": "Tâche {{id}}"
         },
         "table": {
+          "title": "Tâches associées",
           "id": "Tâche ID",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
