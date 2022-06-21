@@ -51,7 +51,7 @@ export class TasksListComponent {
    * @param task Task to check
    */
   isError(task: Task): boolean {
-    return task.status in ErrorStatus;
+    return ErrorStatus.includes(task.status);
   }
 
   /**
@@ -60,7 +60,7 @@ export class TasksListComponent {
    * @param task Task to check
    */
   isPending(task: Task): boolean {
-    return task.status in PendingStatus;
+    return PendingStatus.includes(task.status);
   }
 
   /**
@@ -70,6 +70,17 @@ export class TasksListComponent {
    */
   isCompleted(task: Task): boolean {
     return task.status === TaskStatus.COMPLETED;
+  }
+
+  /**
+   * Used to check if task status is canceling
+   *
+   * @param task Task to check
+   *
+   * @returns true if task is canceling
+   */
+  isCancelling(task: Task): boolean {
+    return task.status === TaskStatus.CANCELING;
   }
 
   /**
