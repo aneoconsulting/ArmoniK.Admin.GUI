@@ -42,6 +42,7 @@
         "cancel": "Annuler",
         "status": {
           "title": "Statut",
+          "cancelled": "Annulé",
           "pending": "En attente",
           "processing": "En cours",
           "completed": "Terminée",
