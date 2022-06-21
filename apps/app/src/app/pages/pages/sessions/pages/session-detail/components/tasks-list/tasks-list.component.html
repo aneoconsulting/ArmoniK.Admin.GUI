@@ -67,10 +67,8 @@
           'pages.sessions.session-detail.table.status.processing' | translate
         }}
       </span>
-      <span class="text-danger" *ngIf="isCancelling(task)">
-        {{
-          'pages.sessions.session-detail.table.status.cancelling' | translate
-        }}
+      <span class="text-danger" *ngIf="isCanceling(task)">
+        {{ 'pages.sessions.session-detail.table.status.canceling' | translate }}
       </span>
       <span class="text-danger" *ngIf="isCancelled(task)">
         {{ 'pages.sessions.session-detail.table.status.cancelled' | translate }}
@@ -83,7 +81,7 @@
           !isError(task) &&
           !isPending(task) &&
           !isProcessing(task) &&
-          !isCancelling(task) &&
+          !isCanceling(task) &&
           !isCancelled(task) &&
           !isCompleted(task)
         "

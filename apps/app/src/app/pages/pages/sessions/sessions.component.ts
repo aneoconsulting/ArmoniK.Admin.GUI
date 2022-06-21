@@ -126,7 +126,7 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
-   * Handle error when cancelling a session
+   * Handle error when canceling a session
    *
    * @param error
    */

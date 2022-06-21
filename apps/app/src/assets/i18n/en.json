@@ -68,7 +68,7 @@
             "processing": "Processing",
             "error": "Error",
             "completed": "Completed",
-            "cancelling": "Cancelling",
+            "canceling": "Canceling",
             "cancelled": "Cancelled"
           },
           "detail": "Error detail",

@@ -79,7 +79,7 @@ export class TasksListComponent {
    *
    * @returns true if task is canceling
    */
-  isCancelling(task: Task): boolean {
+  isCanceling(task: Task): boolean {
     return task.status === TaskStatus.CANCELING;
   }
 
