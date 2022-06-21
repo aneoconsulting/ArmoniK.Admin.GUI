@@ -4,9 +4,9 @@
   },
   "navigation": {
     "dashboard": "Dashboard",
-    "applications": "Applications",
-    "sessions": "Sessions",
-    "tasks": "Tasks"
+    "applications": "Return to applications",
+    "sessions": "Return to sessions",
+    "tasks": "Return to tasks"
   },
   "header": {
     "subnav": {
@@ -56,6 +56,7 @@
           "title": "Task {{id}}"
         },
         "table": {
+          "title": "Associate tasks",
           "id": "Task ID",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
