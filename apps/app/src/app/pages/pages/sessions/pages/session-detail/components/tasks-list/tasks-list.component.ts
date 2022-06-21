@@ -84,11 +84,11 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to check if task status is in cancelled
+   * Used to check if task status is in canceled
    *
    * @param task Task to check
    */
-  isCancelled(task: Task): boolean {
+  isCanceled(task: Task): boolean {
     return task.status === TaskStatus.CANCELED;
   }
 
