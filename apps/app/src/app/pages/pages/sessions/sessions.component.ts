@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
+  SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -75,6 +76,16 @@ export class SessionsComponent implements OnInit {
     this.sessionsService.cancel(sessionId).subscribe({
       error: this.onCancelSessionError.bind(this),
     });
+  }
+
+  /**
+   * Check if a session is cancelled
+   *
+   * @param session
+   * @returns true if the session is cancelled
+   */
+  isCancelled(session: FormattedSession): boolean {
+    return session.status === SessionStatus.CANCELLED;
   }
 
   /**

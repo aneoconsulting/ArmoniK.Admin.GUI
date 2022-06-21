@@ -42,6 +42,7 @@
         "cancel": "Cancel",
         "status": {
           "title": "Status",
+          "cancelled": "Cancelled",
           "pending": "Pending",
           "processing": "Processing",
           "error": "Error",

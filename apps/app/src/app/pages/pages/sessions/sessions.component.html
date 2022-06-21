@@ -42,12 +42,19 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
-        <span class="text-danger" *ngIf="session.countTasksError">
+        <span class="text-danger" *ngIf="isCancelled(session)">
+          {{ 'pages.sessions.table.status.cancelled' | translate }}
+        </span>
+        <span
+          class="text-danger"
+          *ngIf="!isCancelled(session) && session.countTasksError"
+        >
           {{ 'pages.sessions.table.status.error' | translate }}
         </span>
         <span
           class="text-pending"
           *ngIf="
+            !isCancelled(session) &&
             !session.countTasksError &&
             !session.countTasksProcessing &&
             !session.countTasksCompleted &&
@@ -58,13 +65,18 @@
         </span>
         <span
           class="text-warn"
-          *ngIf="!session.countTasksError && session.countTasksProcessing"
+          *ngIf="
+            !isCancelled(session) &&
+            !session.countTasksError &&
+            session.countTasksProcessing
+          "
         >
           {{ 'pages.sessions.table.status.processing' | translate }}
         </span>
         <span
           class="text-success"
           *ngIf="
+            !isCancelled(session) &&
             !session.countTasksError &&
             !session.countTasksProcessing &&
             !session.countTasksPending &&
