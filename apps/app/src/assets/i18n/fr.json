@@ -70,6 +70,7 @@
             "processing": "En cours",
             "completed": "Terminée",
             "error": "Erreur",
+            "canceling": "Annulation en cours",
             "cancelled": "Annulée"
           },
           "detail": "Détail de l'erreur",
