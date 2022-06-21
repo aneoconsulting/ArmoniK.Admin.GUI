@@ -48,7 +48,7 @@
           "error": "Erreur"
         },
         "createdAt": "Créée le",
-        "cancelledAt": "Mise à jour le"
+        "cancelledAt": "Annulé le"
       },
       "session-detail": {
         "title": "Détail de la session",
