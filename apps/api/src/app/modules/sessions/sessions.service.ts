@@ -133,10 +133,10 @@ export class SessionsService implements OnModuleInit {
         // Sort by session id
         {
           $sort: {
-            _id: 1,
             [`session.${orderBy}` ?? 'session.CreationDate']: order
               ? Number(order)
               : -1,
+            _id: 1,
           },
         },
         // Skip the number of items per page
