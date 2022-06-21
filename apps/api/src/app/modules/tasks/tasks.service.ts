@@ -63,8 +63,8 @@ export class TasksService implements OnModuleInit {
         },
       })
       .sort({
-        _id: 1,
         [orderBy || 'StartDate']: (Number(order) as SortOrder) || -1,
+        _id: 1,
       })
       .skip(startIndex)
       .limit(limit)
