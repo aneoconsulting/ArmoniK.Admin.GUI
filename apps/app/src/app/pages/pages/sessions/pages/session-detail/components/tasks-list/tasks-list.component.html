@@ -88,7 +88,7 @@
     <clr-dg-cell>
       <button
         class="btn-detail btn btn-sm"
-        [disabled]="task?.output?.success ?? true"
+        [disabled]="!isError(task)"
         (click)="openModal(task)"
       >
         {{ 'pages.sessions.session-detail.table.see-more' | translate }}
