@@ -30,9 +30,9 @@
     {{ session | json }}
   </pre>
 
-  <app-alert-error [errors]="errors"></app-alert-error>
-
   <h2>{{ 'pages.sessions.session-detail.table.title' | translate }}</h2>
+
+  <app-alert-error [errors]="errors"></app-alert-error>
 
   <app-pages-sessions-tasks-list
     [tasks]="tasks"
