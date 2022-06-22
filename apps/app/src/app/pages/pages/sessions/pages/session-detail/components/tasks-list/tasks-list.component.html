@@ -37,6 +37,7 @@
     *ngFor="let task of tasks?.data ?? []"
     [clrDgItem]="task"
     [ngForTrackBy]="trackByTask"
+    [clrDgSelectable]="!isCompleted(task)"
   >
     <clr-dg-cell>
       <a [routerLink]="['tasks', task._id]">

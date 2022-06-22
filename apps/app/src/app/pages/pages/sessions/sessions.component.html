@@ -93,7 +93,7 @@
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        <span>
+        <span *ngIf="isCanceled(session)">
           {{ session.canceledAt | date: 'medium' }}
         </span>
       </clr-dg-cell>
@@ -101,7 +101,7 @@
         <button
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
-          [disabled]="session.canceledAt"
+          [disabled]="isCanceled(session)"
           (click)="cancelSession(session._id)"
         >
           <span class="sr-only">{{
