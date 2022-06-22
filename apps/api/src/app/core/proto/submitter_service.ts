@@ -1,5 +1,6 @@
 // Type definition from proto file
 
+import { TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
 
 export interface Submitter {
@@ -10,6 +11,9 @@ export interface Submitter {
 interface TaskFilter {
   task: {
     ids: string[];
+  };
+  included: {
+    Statuses: readonly TaskStatus[];
   };
 }
 interface Session {
