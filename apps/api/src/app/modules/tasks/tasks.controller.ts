@@ -77,9 +77,9 @@ export class TasksController {
    */
   @Put('/cancel-many')
   @ApiNotFoundResponse({ description: 'Not found' })
-  async cancel(@Body('tasks') tasks: string[]) {
+  cancel(@Body('tasksId') tasksId: string[]) {
     return this.tasksService
-      .cancelMany(tasks)
+      .cancelMany(tasksId)
       .pipe(catchError(this.grpcErrorService.handleError));
   }
 }

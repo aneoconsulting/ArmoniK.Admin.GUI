@@ -1,4 +1,4 @@
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
+import { Pagination, PendingStatus } from '@armonik.admin.gui/armonik-typing';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
@@ -95,6 +95,10 @@ export class TasksService implements OnModuleInit {
    * @param ids Ids of the tasks
    */
   cancelMany(ids: string[]) {
-    return this.submitterService.CancelTasks({ task: { ids } });
+    return this.submitterService.CancelTasks({
+      task: { ids },
+      // only tasks that can be canceled
+      included: { Statuses: PendingStatus },
+    });
   }
 }
