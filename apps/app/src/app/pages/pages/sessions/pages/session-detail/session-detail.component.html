@@ -3,31 +3,42 @@
     <ng-container subtitle>
       <a [routerLink]="['/admin', 'dashboard']">{{
         'navigation.applications' | translate
-      }}</a
-      >&nbsp;-&nbsp;
-      <span>{{ applicationName }} - {{ applicationVersion }}</span>
+      }}</a>
     </ng-container>
   </ui-page-header>
   <ui-page-header>
     <ng-container subtitle>
       <a
-        [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
-        >{{ 'navigation.sessions' | translate }}</a
+        [routerLink]="[
+          '/admin',
+          'applications',
+          applicationName,
+          applicationVersion,
+          'sessions'
+        ]"
+        >{{ 'navigation.sessions' | translate }} </a
       >&nbsp;-&nbsp;
-      <span>{{ sessionId }}</span>
+      <span>{{ applicationName }} - {{ applicationVersion }}</span>
     </ng-container>
-    {{ 'pages.sessions.session-detail.title' | translate }}
+    {{ sessionId }}
   </ui-page-header>
+
+  <h2>{{ 'pages.sessions.session-detail.title' | translate }}</h2>
 
   <pre>
     {{ session | json }}
   </pre>
+
+  <h2>{{ 'pages.sessions.session-detail.table.title' | translate }}</h2>
 
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <app-pages-sessions-tasks-list
     [tasks]="tasks"
     [loading]="loadingTasks"
-    (refresh)="refresh($event)"
+    [(selection)]="selectedTasks"
+    [cancelButtonState]="cancelTasksButtonState"
+    (cancelTasksChange)="onCancelTasks()"
+    (refresh)="onTasksRefresh($event)"
   ></app-pages-sessions-tasks-list>
 </section>

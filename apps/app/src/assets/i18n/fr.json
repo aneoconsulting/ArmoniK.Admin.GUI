@@ -4,9 +4,9 @@
   },
   "navigation": {
     "dashboard": "Tableau de bord",
-    "applications": "Applications",
-    "sessions": "Sessions",
-    "tasks": "Tâches"
+    "applications": "Retourner aux applications",
+    "sessions": "Retourner aux sessions",
+    "tasks": "Retourner aux tâches"
   },
   "header": {
     "subnav": {
@@ -57,21 +57,40 @@
         "cancel": "Annuler",
         "status": {
           "title": "Statut",
+          "canceled": "Annulé",
           "pending": "En attente",
           "processing": "En cours",
           "completed": "Terminée",
           "error": "Erreur"
         },
         "createdAt": "Créée le",
-        "cancelledAt": "Mise à jour le"
+        "canceledAt": "Annulé le"
       },
       "session-detail": {
         "title": "Détail de la session",
+        "modal": {
+          "title": "Tâche {{id}}"
+        },
         "table": {
+          "title": "Tâches associées",
           "id": "Tâche ID",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
-          "tâche": "{{value}} tâche"
+          "tâche": "{{value}} tâche",
+          "started_at": "Démarrée le",
+          "ended_at": "Terminée le",
+          "status": {
+            "title": "Statut",
+            "pending": "En attente",
+            "processing": "En cours",
+            "completed": "Terminée",
+            "error": "Erreur",
+            "canceling": "Annulation en cours",
+            "canceled": "Annulée"
+          },
+          "detail": "Détail de l'erreur",
+          "see-more": "Voir plus",
+          "cancel": "Annuler la sélection"
         },
         "task-detail": {
           "title": "Détail de la tâche"

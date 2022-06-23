@@ -1,0 +1,15 @@
+$textTypes: ('success', 'warn', 'danger', 'pending');
+
+@each $type in $textTypes {
+  .text-#{$type} {
+    color: var(--#{$type}-500);
+  }
+}
+
+clr-dg-cell {
+  margin: auto;
+}
+
+.btn-detail {
+  margin: 0;
+}

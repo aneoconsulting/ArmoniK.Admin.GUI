@@ -61,6 +61,17 @@ export class PagesComponent {
     this.languageService.currentLang = lang;
   }
 
+  /**
+   * Used to know if a language is current
+   *
+   * @param lang
+   *
+   * @returns boolean
+   */
+  public isSelected(lang: LanguageCode): boolean {
+    return this.languageService.currentLang === lang;
+  }
+
   /** Used to track label
    *
    * @param index

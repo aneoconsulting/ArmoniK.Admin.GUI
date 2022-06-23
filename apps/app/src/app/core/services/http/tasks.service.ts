@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
@@ -22,20 +23,8 @@ export class TasksService {
    *
    * @returns Pagination of tasks
    */
-  getAllPaginated(
-    sessionId: string,
-    page: number = 1,
-    limit: number = 10
-  ): Observable<Pagination<Task>> {
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: String(limit),
-      sessionId,
-    });
-
-    return this.apiService.get<Pagination<Task>>(
-      `${this.url}?${params.toString()}`
-    );
+  getAllPaginated(params: HttpParams): Observable<Pagination<Task>> {
+    return this.apiService.get<Pagination<Task>>(this.url, params);
   }
 
   /**
@@ -47,5 +36,15 @@ export class TasksService {
    */
   getOne(id: string): Observable<Task> {
     return this.apiService.get<Task>(`${this.url}/${encodeURIComponent(id)}`);
+  }
+
+  /**
+   * Used to cancel tasks
+   *
+   * @param tasks Tasks to cancel
+   */
+  cancelMany(tasks: Task[]): Observable<Task[]> {
+    const tasksId = tasks.map((task) => task._id);
+    return this.apiService.put<Task[]>(`${this.url}/cancel-many`, { tasksId });
   }
 }

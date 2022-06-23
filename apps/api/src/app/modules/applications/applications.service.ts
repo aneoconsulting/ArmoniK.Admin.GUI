@@ -3,13 +3,15 @@ import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import {
   Application,
-  ApplicationError,
-  Pagination,
   TaskStatus,
+  ErrorStatus,
+  PendingStatus,
+  Pagination,
+  ApplicationError,
 } from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
-import { ErrorStatus, PaginationService, PendingStatus } from '../../core';
+import { PaginationService } from '../../core';
 
 @Injectable()
 export class ApplicationsService {

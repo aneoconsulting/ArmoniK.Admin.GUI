@@ -1,17 +1,14 @@
 import {
   FormattedSession,
   TaskStatus,
+  ErrorStatus,
+  PendingStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
-import {
-  ErrorStatus,
-  PaginationService,
-  PendingStatus,
-  Submitter,
-} from '../../core';
+import { PaginationService, Submitter } from '../../core';
 import { SettingsService } from '../../shared';
 import { Task, TaskDocument } from '../tasks/schemas';
 import { Session, SessionDocument } from './schemas';
@@ -47,7 +44,9 @@ export class SessionsService implements OnModuleInit {
     page: number,
     limit: number,
     applicationName: string,
-    applicationVersion: string
+    applicationVersion: string,
+    orderBy?: string,
+    order?: string
   ) {
     const startIndex = (page - 1) * limit;
 
@@ -131,22 +130,12 @@ export class SessionsService implements OnModuleInit {
         {
           $unwind: '$session',
         },
-        // Pick only the fields we need
-        {
-          $project: {
-            _id: '$_id',
-            countTasksPending: '$countTasksPending',
-            countTasksError: '$countTasksError',
-            countTasksCompleted: '$countTasksCompleted',
-            countTasksProcessing: '$countTasksProcessing',
-            status: '$session.Status',
-            createdAt: '$session.CreationDate',
-            cancelledAt: '$session.CancellationDate',
-          },
-        },
         // Sort by session id
         {
           $sort: {
+            [`session.${orderBy}` ?? 'session.CreationDate']: order
+              ? Number(order)
+              : -1,
             _id: 1,
           },
         },
@@ -157,6 +146,19 @@ export class SessionsService implements OnModuleInit {
         // Limit the number of items per page
         {
           $limit: limit,
+        },
+        // Pick only the fields we need
+        {
+          $project: {
+            _id: '$_id',
+            countTasksPending: '$countTasksPending',
+            countTasksError: '$countTasksError',
+            countTasksCompleted: '$countTasksCompleted',
+            countTasksProcessing: '$countTasksProcessing',
+            status: '$session.Status',
+            createdAt: '$session.CreationDate',
+            canceledAt: '$session.CancellationDate',
+          },
         },
       ])
       .toArray();

@@ -1,8 +1,10 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
+  SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -41,25 +43,28 @@ export class SessionsComponent implements OnInit {
    *
    * @param state
    */
-  refresh(state: ClrDatagridStateInterface) {
+  onRefreshSessions(state: ClrDatagridStateInterface) {
+    this.loadingSessions = true;
+
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
-    this.loadingSessions = true;
+    let params = new HttpParams()
+      .set('page', nextPage.toString())
+      .set('limit', limit.toString())
+      .set('applicationName', this.applicationName)
+      .set('applicationVersion', this.applicationVersion);
 
-    this.sessionsService
-      .getAllPaginated(
-        {
-          applicationName: this.applicationName,
-          applicationVersion: this.applicationVersion,
-        },
-        nextPage,
-        limit
-      )
-      .subscribe({
-        error: this.onErrorSessions.bind(this),
-        next: this.onNextSessions.bind(this),
-      });
+    const orderBy = state?.sort?.by as string;
+    const order = state?.sort?.reverse ? -1 : 1;
+    if (orderBy) {
+      params = params.set('orderBy', orderBy).set('order', order);
+    }
+
+    this.sessionsService.getAllPaginated(params).subscribe({
+      error: this.onErrorSessions.bind(this),
+      next: this.onNextSessions.bind(this),
+    });
   }
 
   /**
@@ -71,6 +76,16 @@ export class SessionsComponent implements OnInit {
     this.sessionsService.cancel(sessionId).subscribe({
       error: this.onCancelSessionError.bind(this),
     });
+  }
+
+  /**
+   * Check if a session is canceled
+   *
+   * @param session
+   * @returns true if the session is canceled
+   */
+  isCanceled(session: FormattedSession): boolean {
+    return session.status === SessionStatus.CANCELED;
   }
 
   /**
@@ -122,7 +137,7 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
-   * Handle error when cancelling a session
+   * Handle error when canceling a session
    *
    * @param error
    */

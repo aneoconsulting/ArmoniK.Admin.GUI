@@ -13,10 +13,14 @@ import {
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 import { catchError } from 'rxjs';
+import { GrpcErrorService } from '../../core';
 
 @Controller('sessions')
 export class SessionsController {
-  constructor(private readonly sessionsService: SessionsService) {}
+  constructor(
+    private readonly sessionsService: SessionsService,
+    private grpcErrorService: GrpcErrorService
+  ) {}
 
   /**
    * Get all sessions using pagination and filters
@@ -32,13 +36,17 @@ export class SessionsController {
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
     @Query('applicationName') applicationName: string,
-    @Query('applicationVersion') applicationVersion: string
+    @Query('applicationVersion') applicationVersion: string,
+    @Query('orderBy') orderBy: string,
+    @Query('order') order: string
   ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
       limit,
       applicationName,
-      applicationVersion
+      applicationVersion,
+      orderBy,
+      order
     );
 
     return sessions;
@@ -72,13 +80,8 @@ export class SessionsController {
   @Put('/:id/cancel')
   @ApiNotFoundResponse({ description: 'Not found' })
   async cancel(@Param('id') sessionId: string) {
-    return this.sessionsService.cancel(sessionId).pipe(
-      catchError((error) => {
-        if (error.code === 5) {
-          throw new NotFoundException();
-        }
-        throw new InternalServerErrorException(error);
-      })
-    );
+    return this.sessionsService
+      .cancel(sessionId)
+      .pipe(catchError(this.grpcErrorService.handleError));
   }
 }
