@@ -68,7 +68,7 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
-   * Cancel a session
+   * Cancell a session
    *
    * @param session
    */
@@ -79,13 +79,13 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
-   * Check if a session is canceled
+   * Check if a session is cancelled
    *
    * @param session
-   * @returns true if the session is canceled
+   * @returns true if the session is cancelled
    */
-  isCanceled(session: FormattedSession): boolean {
-    return session.status === SessionStatus.CANCELED;
+  isCancelled(session: FormattedSession): boolean {
+    return session.status === SessionStatus.CANCELLED;
   }
 
   /**
@@ -137,7 +137,7 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
-   * Handle error when canceling a session
+   * Handle error when cancelling a session
    *
    * @param error
    */

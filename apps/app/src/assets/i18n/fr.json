@@ -42,14 +42,14 @@
         "cancel": "Annuler",
         "status": {
           "title": "Statut",
-          "canceled": "Annulé",
+          "cancelled": "Annulé",
           "pending": "En attente",
           "processing": "En cours",
           "completed": "Terminée",
           "error": "Erreur"
         },
         "createdAt": "Créée le",
-        "canceledAt": "Annulé le"
+        "cancelledAt": "Annulé le"
       },
       "session-detail": {
         "title": "Détail de la session",
@@ -70,8 +70,8 @@
             "processing": "En cours",
             "completed": "Terminée",
             "error": "Erreur",
-            "canceling": "Annulation en cours",
-            "canceled": "Annulée"
+            "cancelling": "Annulation en cours",
+            "cancelled": "Annulée"
           },
           "detail": "Détail de l'erreur",
           "see-more": "Voir plus",

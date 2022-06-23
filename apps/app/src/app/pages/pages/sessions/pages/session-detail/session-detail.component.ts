@@ -108,7 +108,7 @@ export class SessionDetailComponent implements OnInit {
   }
 
   /**
-   * Handle the error when canceling tasks
+   * Handle the error when cancelling tasks
    *
    * @param error Error
    */
@@ -118,7 +118,7 @@ export class SessionDetailComponent implements OnInit {
   }
 
   /**
-   * Handle the success when canceling tasks
+   * Handle the success when cancelling tasks
    *
    * @param tasks Tasks
    */

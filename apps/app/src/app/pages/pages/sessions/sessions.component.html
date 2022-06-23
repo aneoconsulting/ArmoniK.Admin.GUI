@@ -23,8 +23,8 @@
     <clr-dg-column clrDgField="CreationDate">
       {{ 'pages.sessions.table.createdAt' | translate }}
     </clr-dg-column>
-    <clr-dg-column clrDgField="CancelationDate">
-      {{ 'pages.sessions.table.canceledAt' | translate }}
+    <clr-dg-column clrDgField="CancellationDate">
+      {{ 'pages.sessions.table.cancelledAt' | translate }}
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions.table.cancel' | translate }}
@@ -42,19 +42,19 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
-        <span class="text-danger" *ngIf="isCanceled(session)">
-          {{ 'pages.sessions.table.status.canceled' | translate }}
+        <span class="text-danger" *ngIf="isCancelled(session)">
+          {{ 'pages.sessions.table.status.cancelled' | translate }}
         </span>
         <span
           class="text-danger"
-          *ngIf="!isCanceled(session) && session.countTasksError"
+          *ngIf="!isCancelled(session) && session.countTasksError"
         >
           {{ 'pages.sessions.table.status.error' | translate }}
         </span>
         <span
           class="text-pending"
           *ngIf="
-            !isCanceled(session) &&
+            !isCancelled(session) &&
             !session.countTasksError &&
             !session.countTasksProcessing &&
             !session.countTasksCompleted &&
@@ -66,7 +66,7 @@
         <span
           class="text-warn"
           *ngIf="
-            !isCanceled(session) &&
+            !isCancelled(session) &&
             !session.countTasksError &&
             session.countTasksProcessing
           "
@@ -76,7 +76,7 @@
         <span
           class="text-success"
           *ngIf="
-            !isCanceled(session) &&
+            !isCancelled(session) &&
             !session.countTasksError &&
             !session.countTasksProcessing &&
             !session.countTasksPending &&
@@ -93,15 +93,15 @@
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        <span *ngIf="isCanceled(session)">
-          {{ session.canceledAt | date: 'medium' }}
+        <span *ngIf="isCancelled(session)">
+          {{ session.cancelledAt | date: 'medium' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <button
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
-          [disabled]="isCanceled(session)"
+          [disabled]="isCancelled(session)"
           (click)="cancelSession(session._id)"
         >
           <span class="sr-only">{{
