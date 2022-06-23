@@ -22,9 +22,9 @@
     </clr-dg-column>
     <clr-dg-column clrDgField="CreationDate">
       {{ 'pages.sessions.table.createdAt' | translate }}
-      <clr-dg-filter [clrDgFilter]="dateFilter">
+      <clr-dg-filter [clrDgFilter]="createdAtFilter">
         <app-date-filter
-          #dateFilter
+          #createdAtFilter
           name="createdAt"
           property="createdAt"
         ></app-date-filter>
@@ -32,6 +32,13 @@
     </clr-dg-column>
     <clr-dg-column clrDgField="CancelationDate">
       {{ 'pages.sessions.table.canceledAt' | translate }}
+      <clr-dg-filter [clrDgFilter]="cancelledAtFilter">
+        <app-date-filter
+          #cancelledAtFilter
+          name="cancelledAt"
+          property="cancelledAt"
+        ></app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions.table.cancel' | translate }}

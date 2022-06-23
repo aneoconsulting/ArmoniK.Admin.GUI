@@ -47,7 +47,8 @@ export class SessionsService implements OnModuleInit {
     applicationVersion: string,
     orderBy?: string,
     order?: string,
-    createdAt?: string
+    createdAt?: string,
+    cancelledAt?: string
   ) {
     const startIndex = (page - 1) * limit;
 
@@ -64,22 +65,38 @@ export class SessionsService implements OnModuleInit {
 
     const sessionMatch = {
       $expr: {
-        // if createdAt is defined, filter by it
-        // else, do not filter
-        $cond: {
-          if: { $ne: [createdAt, null] },
-          then: {
-            $eq: [
-              {
-                $dateToString: {
-                  format: '%Y-%m-%d',
-                  date: '$CreationDate',
-                },
+        $switch: {
+          branches: [
+            {
+              case: { $ne: [createdAt, null] },
+              then: {
+                $eq: [
+                  {
+                    $dateToString: {
+                      format: '%Y-%m-%d',
+                      date: '$CreationDate',
+                    },
+                  },
+                  createdAt,
+                ],
               },
-              createdAt,
-            ],
-          },
-          else: true,
+            },
+            {
+              case: { $ne: [cancelledAt, null] },
+              then: {
+                $eq: [
+                  {
+                    $dateToString: {
+                      format: '%Y-%m-%d',
+                      date: '$CancellationDate',
+                    },
+                  },
+                  cancelledAt,
+                ],
+              },
+            },
+          ],
+          default: true,
         },
       },
     };
