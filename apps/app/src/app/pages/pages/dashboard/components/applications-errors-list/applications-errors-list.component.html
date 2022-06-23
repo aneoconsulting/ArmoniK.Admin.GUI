@@ -1,8 +1,4 @@
-<clr-datagrid
-  class="clr-col-12"
-  (clrDgRefresh)="refresh.emit($event)"
-  [clrLoading]="loading"
->
+<clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
   <!-- clrDgField must be the name in the database -->
   <clr-dg-column clrDgField="Options.Options.GridAppName">
     {{ 'pages.dashboard.table.application_name' | translate }}
