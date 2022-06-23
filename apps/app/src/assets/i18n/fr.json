@@ -14,6 +14,13 @@
       "close-tab": "Fermer l'onglet"
     }
   },
+  "shared": {
+    "filters": {
+      "date": {
+        "label": "Sélectionner une date"
+      }
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",

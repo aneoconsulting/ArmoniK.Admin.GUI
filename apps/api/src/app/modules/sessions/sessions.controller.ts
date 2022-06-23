@@ -38,7 +38,8 @@ export class SessionsController {
     @Query('applicationName') applicationName: string,
     @Query('applicationVersion') applicationVersion: string,
     @Query('orderBy') orderBy: string,
-    @Query('order') order: string
+    @Query('order') order: string,
+    @Query('createdAt') createdAt: string
   ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
@@ -46,7 +47,8 @@ export class SessionsController {
       applicationName,
       applicationVersion,
       orderBy,
-      order
+      order,
+      createdAt
     );
 
     return sessions;

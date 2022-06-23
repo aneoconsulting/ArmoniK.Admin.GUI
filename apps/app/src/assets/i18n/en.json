@@ -14,6 +14,13 @@
       "close-tab": "Close tab"
     }
   },
+  "shared": {
+    "filters": {
+      "date": {
+        "label": "Select a date"
+      }
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Dashboard",

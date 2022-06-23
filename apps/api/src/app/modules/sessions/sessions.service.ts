@@ -46,7 +46,8 @@ export class SessionsService implements OnModuleInit {
     applicationName: string,
     applicationVersion: string,
     orderBy?: string,
-    order?: string
+    order?: string,
+    createdAt?: string
   ) {
     const startIndex = (page - 1) * limit;
 
@@ -58,6 +59,28 @@ export class SessionsService implements OnModuleInit {
       // Only get the last seven days using StartDate
       $expr: {
         $gte: ['$StartDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
+      },
+    };
+
+    const sessionMatch = {
+      $expr: {
+        // if createdAt is defined, filter by it
+        // else, do not filter
+        $cond: {
+          if: { $ne: [createdAt, null] },
+          then: {
+            $eq: [
+              {
+                $dateToString: {
+                  format: '%Y-%m-%d',
+                  date: '$CreationDate',
+                },
+              },
+              createdAt,
+            ],
+          },
+          else: true,
+        },
       },
     };
 
@@ -125,6 +148,11 @@ export class SessionsService implements OnModuleInit {
             localField: '_id',
             foreignField: '_id',
             as: 'session',
+            pipeline: [
+              {
+                $match: sessionMatch,
+              },
+            ],
           },
         },
         {
@@ -176,20 +204,36 @@ export class SessionsService implements OnModuleInit {
             _id: '$SessionId',
           },
         },
-        // Count the number of sessions
+
+        // Join with only one session (merge object)
+        {
+          $lookup: {
+            from: this.sessionModel.collection.collectionName,
+            localField: '_id',
+            foreignField: '_id',
+            as: 'session',
+            pipeline: [
+              {
+                $match: sessionMatch,
+              },
+            ],
+          },
+        },
+        {
+          $unwind: '$session',
+        },
+        // Count the number of sessions using session._id
         {
           $group: {
             _id: null,
-            count: {
-              $sum: 1,
-            },
+            count: { $sum: 1 },
           },
         },
       ])
       .toArray();
 
     const meta = this.paginationService.createMeta(
-      total[0].count, // Total number of sessions
+      total[0]?.count ?? 0, // Total number of sessions
       page, // Current page
       limit // Items per page
     );

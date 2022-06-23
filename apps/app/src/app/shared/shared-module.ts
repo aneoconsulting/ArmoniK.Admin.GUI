@@ -5,6 +5,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AlertErrorComponent } from './components';
+import { DateFilterComponent } from './filters';
 
 @NgModule({
   imports: [
@@ -14,9 +15,10 @@ import { AlertErrorComponent } from './components';
     TranslateModule,
     UiModule,
   ],
-  declarations: [AlertErrorComponent],
+  declarations: [AlertErrorComponent, DateFilterComponent],
   exports: [
     AlertErrorComponent,
+    DateFilterComponent,
     ClarityModule,
     CommonModule,
     RouterModule,

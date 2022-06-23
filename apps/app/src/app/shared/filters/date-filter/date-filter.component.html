@@ -1,0 +1,9 @@
+<clr-date-container>
+  <label [for]="name">{{ 'shared.filters.date.label' | translate }}</label>
+  <input
+    [id]="name"
+    type="date"
+    [clrDate]="selectedDate"
+    (clrDateChange)="onDateSelected($event)"
+  />
+</clr-date-container>
