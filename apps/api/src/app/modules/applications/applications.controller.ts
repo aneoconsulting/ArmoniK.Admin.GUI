@@ -10,6 +10,11 @@ import {
 export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
+  /**
+   * Find all applications
+   *
+   * @returns Applications
+   */
   @Get()
   async findAll(): Promise<Application[]> {
     const applications = await this.applicationsService.findAll();
@@ -17,6 +22,11 @@ export class ApplicationsController {
     return applications;
   }
 
+  /**
+   * Find all errors with pagination
+   *
+   * @return Pagination of ApplicationError
+   */
   @Get('/errors')
   async findAllWithErrorsPaginated(
     @Query('page', ParseIntPipe) page: number,

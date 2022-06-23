@@ -112,6 +112,16 @@ export class ApplicationsService {
     return result;
   }
 
+  /**
+   * Find all error paginated
+   *
+   * @param page
+   * @param limit
+   * @param orderBy
+   * @param order
+   *
+   * @returns Pagination of application error
+   */
   async findAllWithErrorsPaginated(
     page: number,
     limit: number,
@@ -139,8 +149,8 @@ export class ApplicationsService {
         { $match: match },
         {
           $sort: {
-            StartDate: -1,
             [orderBy ?? 'StartDate']: order ? Number(order) : -1,
+            _id: 1,
           },
         },
         {
