@@ -9,7 +9,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SessionsService } from '../../../core';
-import { AlertErrorComponent } from '../../../shared';
+import { AlertErrorComponent, DateFilterComponent } from '../../../shared';
 import { SessionsComponent } from './sessions.component';
 
 describe('SessionsComponent', () => {
@@ -18,7 +18,11 @@ describe('SessionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SessionsComponent, AlertErrorComponent],
+      declarations: [
+        SessionsComponent,
+        AlertErrorComponent,
+        DateFilterComponent,
+      ],
       imports: [
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
