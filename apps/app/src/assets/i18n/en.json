@@ -4,17 +4,24 @@
   },
   "navigation": {
     "dashboard": "Dashboard",
-    "applications": "Applications",
-    "sessions": "Sessions",
-    "tasks": "Tasks"
+    "applications": "Return to applications",
+    "sessions": "Return to sessions",
+    "tasks": "Return to tasks"
+  },
+  "header": {
+    "subnav": {
+      "no-current-applications": "No current application",
+      "close-tab": "Close tab"
+    }
   },
   "pages": {
     "dashboard": {
       "title": "Dashboard",
       "applications": {
-        "completed": "{{countTasksCompleted}} tasks completed",
-        "processing": "{{countTasksProcessing}} tasks processing",
-        "error": "{{countTasksError}} tasks error",
+        "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
+        "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",
+        "error": "{{countTasksError}} tasks error on the last 7 days",
+        "pending": "{{countTasksPending}} tasks pending on the last 7 days",
         "see-sessions": "See sessions"
       }
     },
@@ -27,17 +34,48 @@
       "sessions": "{{value}} sessions",
       "per_page": "Sessions per page",
       "title": "All sessions",
+      "cancel": {
+        "text": "Cancel session"
+      },
       "table": {
         "id": "Session ID",
-        "status": "Status"
+        "cancel": "Cancel",
+        "status": {
+          "title": "Status",
+          "canceled": "Canceled",
+          "pending": "Pending",
+          "processing": "Processing",
+          "error": "Error",
+          "completed": "Completed"
+        },
+        "createdAt": "Created at",
+        "canceledAt": "Canceled at"
       },
       "session-detail": {
         "title": "Session detail",
+        "modal": {
+          "title": "Task {{id}}"
+        },
         "table": {
+          "title": "Associate tasks",
           "id": "Task ID",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
-          "task": "{{value}} task"
+          "task": "{{value}} task",
+          "started_at": "Started at",
+          "ended_at": "Ended at",
+          "status": {
+            "title": "Status",
+            "pending": "Pending",
+            "processing": "Processing",
+            "error": "Error",
+            "completed": "Completed",
+            "canceling": "Canceling",
+            "canceled": "Canceled"
+          },
+          "detail": "Error detail",
+          "see-more": "See more",
+          "cancel": "Cancel selection"
         },
         "task-detail": {
           "title": "Task detail"

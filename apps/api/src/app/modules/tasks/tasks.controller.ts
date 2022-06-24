@@ -1,19 +1,26 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
+  Body,
   Controller,
   Get,
   NotFoundException,
   Param,
   ParseIntPipe,
+  Put,
   Query,
 } from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
+import { GrpcErrorService } from '../../core';
+import { catchError } from 'rxjs';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private grpcErrorService: GrpcErrorService
+  ) {}
 
   /**
    * Get all tasks using pagination and filters
@@ -28,12 +35,16 @@ export class TasksController {
   async index(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
-    @Query('sessionId') sessionId: string
+    @Query('sessionId') sessionId: string,
+    @Query('orderBy') orderBy: string,
+    @Query('order') order: string
   ): Promise<Pagination<Task>> {
     const tasks = await this.tasksService.findAllPaginated(
       page,
       limit,
-      sessionId
+      sessionId,
+      orderBy,
+      order
     );
 
     return tasks;
@@ -57,5 +68,18 @@ export class TasksController {
     }
 
     return task;
+  }
+
+  /**
+   * Cancel tasks by ids
+   *
+   * @param taskFilter Task filter
+   */
+  @Put('/cancel-many')
+  @ApiNotFoundResponse({ description: 'Not found' })
+  cancel(@Body('tasksId') tasksId: string[]) {
+    return this.tasksService
+      .cancelMany(tasksId)
+      .pipe(catchError(this.grpcErrorService.handleError));
   }
 }

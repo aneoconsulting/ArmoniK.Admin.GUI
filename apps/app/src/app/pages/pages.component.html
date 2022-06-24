@@ -10,8 +10,53 @@
     </a>
     <ul actions class="list-unstyled language">
       <li *ngFor="let language of languages; trackBy: trackByLanguageName">
-        <button class="btn btn-link" (click)="changeLanguage(language.code)">
+        <button
+          class="btn btn-link"
+          (click)="changeLanguage(language.code)"
+          [disabled]="isSelected(language.code)"
+        >
           {{ language.name | uppercase }}
+        </button>
+      </li>
+    </ul>
+    <ul subnav class="nav" role="tablist">
+      <li class="nav-item" role="tab" *ngIf="currentApplications.size === 0">
+        {{ 'header.subnav.no-current-applications' | translate }}
+      </li>
+      <li
+        class="nav-item"
+        role="tab"
+        *ngFor="
+          let current of currentApplications;
+          trackBy: trackByApplicationId
+        "
+      >
+        <a
+          class="btn btn-link nav-link"
+          [routerLink]="[
+            '/admin',
+            'applications',
+            current.applicationName,
+            current.applicationVersion,
+            'sessions'
+          ]"
+          routerLinkActive="active"
+        >
+          {{ current.applicationName }} - {{ current.applicationVersion }}</a
+        >
+        <button
+          type="button"
+          class="close-btn"
+          [title]="'header.subnav.close-tab' | translate"
+        >
+          <span class="sr-only">{{
+            'header.subnav.close-tab' | translate
+          }}</span>
+          <clr-icon
+            shape="times"
+            class="is-error"
+            (click)="removeApplication(current)"
+          ></clr-icon>
         </button>
       </li>
     </ul>

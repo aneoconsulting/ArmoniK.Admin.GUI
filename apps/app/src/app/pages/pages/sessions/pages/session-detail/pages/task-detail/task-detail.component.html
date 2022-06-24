@@ -3,18 +3,7 @@
     <ng-container subtitle>
       <a [routerLink]="['/admin', 'dashboard']">{{
         'navigation.applications' | translate
-      }}</a
-      >&nbsp;-&nbsp;
-      <span>{{ applicationName }}</span>
-    </ng-container>
-  </ui-page-header>
-  <ui-page-header>
-    <ng-container subtitle>
-      <a
-        [routerLink]="['/admin', 'applications', applicationName, 'sessions']"
-        >{{ 'navigation.sessions' | translate }}</a
-      >&nbsp;-&nbsp;
-      <span>{{ sessionId }}</span>
+      }}</a>
     </ng-container>
   </ui-page-header>
   <ui-page-header>
@@ -24,15 +13,34 @@
           '/admin',
           'applications',
           applicationName,
+          applicationVersion,
+          'sessions'
+        ]"
+        >{{ 'navigation.sessions' | translate }}</a
+      >&nbsp;-&nbsp;
+      <span>{{ applicationName }} - {{ applicationVersion }}</span>
+    </ng-container>
+  </ui-page-header>
+  <ui-page-header>
+    <ng-container subtitle>
+      <a
+        [routerLink]="[
+          '/admin',
+          'applications',
+          applicationName,
+          applicationVersion,
           'sessions',
           sessionId
         ]"
         >{{ 'navigation.tasks' | translate }}</a
-      >&nbsp;-&nbsp;
-      <span>{{ taskId }}</span>
+      >&nbsp;-&nbsp;<span>{{ sessionId }}</span>
     </ng-container>
-    {{ 'pages.sessions.session-detail.task-detail.title' | translate }}
+    {{ taskId }}
   </ui-page-header>
+
+  <h2>
+    {{ 'pages.sessions.session-detail.task-detail.title' | translate }}
+  </h2>
 
   <pre>
     {{ task | json }}

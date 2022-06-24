@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { mongoConnectionString } from '../mongo-client.options';
+import { mongoConnectionString } from './core/';
 
 @Module({
   imports: [MongooseModule.forRoot(mongoConnectionString())],

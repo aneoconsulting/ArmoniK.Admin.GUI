@@ -17,7 +17,7 @@ It is a monorepo containing the client, the server and shared libraries.
 Clone the project
 
 ```bash
-  git clone https://github.com/aneoconsulting/ArmoniK.Admin.GUI
+  git clone --recurse-submodules https://github.com/aneoconsulting/ArmoniK.Admin.GUI
 ```
 
 Go to the project directory

@@ -3,22 +3,31 @@
     <ng-container subtitle>
       <a [routerLink]="['/admin', 'dashboard']">{{
         'navigation.applications' | translate
-      }}</a
-      >&nbsp;-&nbsp;
-      <span>{{ applicationName }}</span>
+      }}</a>
     </ng-container>
-    {{ 'pages.sessions.title' | translate }}
+    <h1>{{ applicationName }} - {{ applicationVersion }}</h1>
   </ui-page-header>
+
+  <h2>{{ 'pages.sessions.title' | translate }}</h2>
 
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <clr-datagrid
-    (clrDgRefresh)="refresh($event)"
+    (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
     <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
+    <clr-dg-column clrDgField="Status">
+      {{ 'pages.sessions.table.status.title' | translate }}
+    </clr-dg-column>
+    <clr-dg-column clrDgField="CreationDate">
+      {{ 'pages.sessions.table.createdAt' | translate }}
+    </clr-dg-column>
+    <clr-dg-column clrDgField="CancelationDate">
+      {{ 'pages.sessions.table.canceledAt' | translate }}
+    </clr-dg-column>
     <clr-dg-column>
-      {{ 'pages.sessions.table.status' | translate }}
+      {{ 'pages.sessions.table.cancel' | translate }}
     </clr-dg-column>
 
     <clr-dg-row
@@ -32,7 +41,75 @@
           </span>
         </a>
       </clr-dg-cell>
-      <clr-dg-cell> {{ session.Status }} </clr-dg-cell>
+      <clr-dg-cell>
+        <span class="text-danger" *ngIf="isCanceled(session)">
+          {{ 'pages.sessions.table.status.canceled' | translate }}
+        </span>
+        <span
+          class="text-danger"
+          *ngIf="!isCanceled(session) && session.countTasksError"
+        >
+          {{ 'pages.sessions.table.status.error' | translate }}
+        </span>
+        <span
+          class="text-pending"
+          *ngIf="
+            !isCanceled(session) &&
+            !session.countTasksError &&
+            !session.countTasksProcessing &&
+            !session.countTasksCompleted &&
+            session.countTasksPending
+          "
+        >
+          {{ 'pages.sessions.table.status.pending' | translate }}
+        </span>
+        <span
+          class="text-warn"
+          *ngIf="
+            !isCanceled(session) &&
+            !session.countTasksError &&
+            session.countTasksProcessing
+          "
+        >
+          {{ 'pages.sessions.table.status.processing' | translate }}
+        </span>
+        <span
+          class="text-success"
+          *ngIf="
+            !isCanceled(session) &&
+            !session.countTasksError &&
+            !session.countTasksProcessing &&
+            !session.countTasksPending &&
+            session.countTasksCompleted
+          "
+          cancel
+        >
+          {{ 'pages.sessions.table.status.completed' | translate }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span>
+          {{ session.createdAt | date: 'medium' }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span *ngIf="isCanceled(session)">
+          {{ session.canceledAt | date: 'medium' }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <button
+          type="button"
+          class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
+          [disabled]="isCanceled(session)"
+          (click)="cancelSession(session._id)"
+        >
+          <span class="sr-only">{{
+            'pages.sessions.cancel.text' | translate
+          }}</span>
+          <clr-icon shape="times" size="20"></clr-icon>
+        </button>
+      </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer>

@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
-import { BrowserTitleService, LanguageService } from '../../../core';
+import {
+  BrowserTitleService,
+  LanguageService,
+  SettingsService,
+} from '../../../core';
 
 /**
  *  Display the dashboard
@@ -16,20 +20,39 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private languageService: LanguageService,
-    private browserTitleService: BrowserTitleService
-  ) {
+    private browserTitleService: BrowserTitleService,
+    private settingsService: SettingsService
+  ) {}
+
+  ngOnInit() {
     this.browserTitleService.setTitle(
       this.languageService.instant('pages.dashboard.title')
     );
-  }
 
-  ngOnInit() {
     this.route.data.subscribe((data) => {
       if (data['applications']) {
         this.applications = data['applications'];
       }
     });
+  }
+
+  /**
+   * Update application on application click
+   *
+   * @param applicationId
+   */
+  onApplicationClick(application: Application) {
+    this.settingsService.addCurrentApplication(application);
+
+    this.router.navigate([
+      '/admin',
+      'applications',
+      application._id.applicationName,
+      application._id.applicationVersion,
+      'sessions',
+    ]);
   }
 
   /**

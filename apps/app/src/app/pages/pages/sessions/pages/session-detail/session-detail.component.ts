@@ -1,7 +1,8 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
 import {
   TasksService,
   Session,
@@ -18,9 +19,13 @@ import {
 })
 export class SessionDetailComponent implements OnInit {
   session: Session | undefined;
+
   tasks: Pagination<Task> | null = null;
-  errors: AppError[] = [];
+  selectedTasks: Task[] = [];
+  cancelTasksButtonState = ClrLoadingState.DEFAULT;
   loadingTasks = true;
+
+  errors: AppError[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -46,16 +51,40 @@ export class SessionDetailComponent implements OnInit {
    *
    * @param state Clarity datagrid state
    */
-  refresh(state: ClrDatagridStateInterface) {
+  onTasksRefresh(state: ClrDatagridStateInterface) {
+    this.loadingTasks = true;
+
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
-    this.tasksService
-      .getAllPaginated(this.sessionId, nextPage, limit)
-      .subscribe({
-        error: this.onErrorTasks.bind(this),
-        next: this.onNextTasks.bind(this),
-      });
+    let params = new HttpParams()
+      .set('sessionId', this.sessionId)
+      .set('page', `${nextPage}`)
+      .set('limit', `${limit}`);
+
+    const orderBy = state?.sort?.by as string;
+    const order = state?.sort?.reverse ? -1 : 1;
+    if (orderBy) {
+      params = params.set('orderBy', orderBy).set('order', `${order}`);
+    }
+
+    this.tasksService.getAllPaginated(params).subscribe({
+      error: this.onErrorTasks.bind(this),
+      next: this.onNextTasks.bind(this),
+    });
+  }
+
+  /**
+   * Used to cancel a list of task
+   *
+   * @param tasks Tasks to cancel
+   */
+  onCancelTasks() {
+    this.cancelTasksButtonState = ClrLoadingState.LOADING;
+    this.tasksService.cancelMany(this.selectedTasks).subscribe({
+      error: this.onErrorCancelTasks.bind(this),
+      next: this.onNextCancelTasks.bind(this),
+    });
   }
 
   /**
@@ -79,6 +108,26 @@ export class SessionDetailComponent implements OnInit {
   }
 
   /**
+   * Handle the error when canceling tasks
+   *
+   * @param error Error
+   */
+  private onErrorCancelTasks(error: AppError) {
+    this.errors.push(error);
+    this.cancelTasksButtonState = ClrLoadingState.DEFAULT;
+  }
+
+  /**
+   * Handle the success when canceling tasks
+   *
+   * @param tasks Tasks
+   */
+  private onNextCancelTasks() {
+    this.cancelTasksButtonState = ClrLoadingState.SUCCESS;
+    this.selectedTasks = [];
+  }
+
+  /**
    * Return the current session id from the route
    *
    * @returns Id of the session
@@ -93,6 +142,15 @@ export class SessionDetailComponent implements OnInit {
    * @returns Name of the application
    */
   get applicationName(): string {
-    return this.route.snapshot.paramMap.get('application') ?? '';
+    return this.route.snapshot.paramMap.get('applicationName') ?? '';
+  }
+
+  /**
+   * Return the current application version from the route
+   *
+   * @returns Version of the application
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 }

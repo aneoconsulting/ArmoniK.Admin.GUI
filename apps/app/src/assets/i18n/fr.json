@@ -4,17 +4,24 @@
   },
   "navigation": {
     "dashboard": "Tableau de bord",
-    "applications": "Applications",
-    "sessions": "Sessions",
-    "tasks": "Tâches"
+    "applications": "Retourner aux applications",
+    "sessions": "Retourner aux sessions",
+    "tasks": "Retourner aux tâches"
+  },
+  "header": {
+    "subnav": {
+      "no-current-applications": "Aucune application sélectionnée",
+      "close-tab": "Fermer l'onglet"
+    }
   },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",
       "applications": {
-        "completed": "{{countTasksCompleted}} tâches complétées",
-        "processing": "{{countTasksProcessing}} tâches en cours",
-        "error": "{{countTasksError}} tâches en erreur",
+        "completed": "{{countTasksCompleted}} tâches complétées sur les 7 derniers jours",
+        "processing": "{{countTasksProcessing}} tâches en cours sur les 7 derniers jours",
+        "error": "{{countTasksError}} tâches en erreur sur les 7 derniers jours",
+        "pending": "{{countTasksPending}} tâches en attente sur les 7 derniers jours",
         "see-sessions": "Voir les sessions"
       }
     },
@@ -27,17 +34,48 @@
       "sessions": "{{value}} sessions",
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
+      "cancel": {
+        "text": "Annuler la session"
+      },
       "table": {
         "id": "Session ID",
-        "status": "Statut"
+        "cancel": "Annuler",
+        "status": {
+          "title": "Statut",
+          "canceled": "Annulé",
+          "pending": "En attente",
+          "processing": "En cours",
+          "completed": "Terminée",
+          "error": "Erreur"
+        },
+        "createdAt": "Créée le",
+        "canceledAt": "Annulé le"
       },
       "session-detail": {
         "title": "Détail de la session",
+        "modal": {
+          "title": "Tâche {{id}}"
+        },
         "table": {
+          "title": "Tâches associées",
           "id": "Tâche ID",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
-          "tâche": "{{value}} tâche"
+          "tâche": "{{value}} tâche",
+          "started_at": "Démarrée le",
+          "ended_at": "Terminée le",
+          "status": {
+            "title": "Statut",
+            "pending": "En attente",
+            "processing": "En cours",
+            "completed": "Terminée",
+            "error": "Erreur",
+            "canceling": "Annulation en cours",
+            "canceled": "Annulée"
+          },
+          "detail": "Détail de l'erreur",
+          "see-more": "Voir plus",
+          "cancel": "Annuler la sélection"
         },
         "task-detail": {
           "title": "Détail de la tâche"

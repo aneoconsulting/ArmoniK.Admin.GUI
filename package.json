@@ -1,6 +1,6 @@
 {
   "name": "armonik.admin.gui",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -8,8 +8,10 @@
     "start": "nx run-many --target=serve --all",
     "build": "nx run-many --target=build --all",
     "test": "nx run-many --target=test --all",
-    "format": "nx format",
-    "format:check": "nx format:check",
+    "e2e": "nx run-many --target=e2e --all",
+    "e2e:watch": "nx run-many --target=e2e --all --watch",
+    "format": "nx format --base=main",
+    "format:check": "nx format:check --base=main",
     "lint": "nx run-many --target=lint --all",
     "prepare": "husky install",
     "pre-commit": "lint-staged"
@@ -29,6 +31,7 @@
     "@clr/angular": "^13.3.0",
     "@clr/icons": "^13.0.2",
     "@clr/ui": "^13.3.0",
+    "@grpc/grpc-js": "^1.6.7",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.1",
     "@nestjs/core": "^8.0.0",
@@ -93,7 +96,7 @@
   },
   "lint-staged": {
     "**": [
-      "npm run format:check -- --base=main",
+      "npm run format:check",
       "npm run lint",
       "npm run test"
     ]

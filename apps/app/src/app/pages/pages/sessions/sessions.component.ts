@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
+import { HttpParams } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  FormattedSession,
+  Pagination,
+  SessionStatus,
+} from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
-  LanguageService,
   Session,
   SessionsService,
 } from '../../../core';
@@ -15,19 +19,22 @@ import {
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
 })
-export class SessionsComponent {
-  sessions: Pagination<Session> | null = null;
+export class SessionsComponent implements OnInit {
+  sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private browserTitleService: BrowserTitleService,
-    private languageService: LanguageService,
     private sessionsService: SessionsService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.browserTitleService.setTitle(
-      this.languageService.instant('pages.sessions.title')
+      this.applicationName + ' - ' + this.applicationVersion
     );
   }
 
@@ -36,22 +43,55 @@ export class SessionsComponent {
    *
    * @param state
    */
-  refresh(state: ClrDatagridStateInterface) {
+  onRefreshSessions(state: ClrDatagridStateInterface) {
+    this.loadingSessions = true;
+
     const nextPage = state?.page?.current ?? 1;
     const limit = state?.page?.size ?? 10;
 
-    this.loadingSessions = true;
+    let params = new HttpParams()
+      .set('page', nextPage.toString())
+      .set('limit', limit.toString())
+      .set('applicationName', this.applicationName)
+      .set('applicationVersion', this.applicationVersion);
 
-    this.sessionsService
-      .getAllPaginated(this.applicationName, nextPage, limit)
-      .subscribe({
-        error: this.onErrorSessions.bind(this),
-        next: this.onNextSessions.bind(this),
-      });
+    const orderBy = state?.sort?.by as string;
+    const order = state?.sort?.reverse ? -1 : 1;
+    if (orderBy) {
+      params = params.set('orderBy', orderBy).set('order', order);
+    }
+
+    this.sessionsService.getAllPaginated(params).subscribe({
+      error: this.onErrorSessions.bind(this),
+      next: this.onNextSessions.bind(this),
+    });
+  }
+
+  /**
+   * Cancel a session
+   *
+   * @param session
+   */
+  cancelSession(sessionId: Session['_id']) {
+    this.sessionsService.cancel(sessionId).subscribe({
+      error: this.onCancelSessionError.bind(this),
+    });
+  }
+
+  /**
+   * Check if a session is canceled
+   *
+   * @param session
+   * @returns true if the session is canceled
+   */
+  isCanceled(session: FormattedSession): boolean {
+    return session.status === SessionStatus.CANCELED;
   }
 
   /**
    * Return total number of sessions even if there is no session (return 0)
+   *
+   * @returns total number of sessions
    */
   get totalSessions(): number {
     return this.sessions ? this.sessions.meta.total : 0;
@@ -59,9 +99,21 @@ export class SessionsComponent {
 
   /**
    * Return the current application name from the route
+   *
+   * @returns application name
    */
   get applicationName(): string {
-    return this.route.snapshot.paramMap.get('application') ?? '';
+    return this.route.snapshot.paramMap.get('applicationName') ?? '';
+  }
+
+  /**
+   * Return the current application version from the route
+   *
+   * @returns application version
+   *
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 
   /**
@@ -79,9 +131,18 @@ export class SessionsComponent {
    *
    * @param data
    */
-  private onNextSessions(data: Pagination<Session>) {
+  private onNextSessions(data: Pagination<FormattedSession>) {
     this.sessions = data;
     this.loadingSessions = false;
+  }
+
+  /**
+   * Handle error when canceling a session
+   *
+   * @param error
+   */
+  private onCancelSessionError(error: AppError) {
+    this.errors.push(error);
   }
 
   /**
@@ -92,7 +153,7 @@ export class SessionsComponent {
    *
    * @returns session id
    */
-  trackSessions(_: number, session: Session): Session['_id'] {
+  trackSessions(_: number, session: FormattedSession): FormattedSession['_id'] {
     return session._id;
   }
 }

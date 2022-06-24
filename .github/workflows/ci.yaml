@@ -6,27 +6,44 @@ on:
   pull_request:
 
 jobs:
-  main:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: nrwl/nx-set-shas@v2
-        with:
-          main-branch-name: main
+          submodules: true
 
       - name: Cache Node Modules
         id: node-cache
         uses: actions/cache@v2
         with:
           path: node_modules
-          # Invalidate the cache if the node_modules folder changes
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
+
+  unit-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: main
 
       - run: npx nx format:check
       - run: npx nx affected --target=lint --parallel=3
@@ -39,3 +56,101 @@ jobs:
         with:
           lcov-file: ./coverage/apps/app/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  e2e-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: 5.0
+          mongodb-db: test
+
+      - name: Update fixture
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-update-mongo-fixtures.sh
+
+      - name: Populate MongoDB
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
+        with:
+          install-command: echo "dependencies from cache"
+          start: 'npx nx serve api'
+          command: npx nx e2e app-e2e
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ./dist/cypress/apps/app-e2e/screenshots
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: ./dist/cypress/apps/app-e2e/videos
+
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile:
+          - name: armonik_admin_app
+            file: app.Dockerfile
+          - name: armonik_admin_api
+            file: api.Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            dockerhubaneo/${{ matrix.dockerfile.name }}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Docker build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ matrix.dockerfile.file }}
