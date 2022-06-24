@@ -16,8 +16,10 @@
     (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
-    <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column clrDgField="Status">
+    <clr-dg-column>
+      {{ 'pages.sessions.table.id' | translate }}
+    </clr-dg-column>
+    <clr-dg-column>
       {{ 'pages.sessions.table.status.title' | translate }}
     </clr-dg-column>
     <clr-dg-column clrDgField="CreationDate">
