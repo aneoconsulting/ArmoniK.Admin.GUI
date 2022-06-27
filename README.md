@@ -26,19 +26,32 @@ Go to the project directory
   cd ArmoniK.Admin.GUI
 ```
 
-Install dependencies
+### Install dependencies
 
 ```bash
   npm install
 ```
 
-Install Nx globally
+### Install Nx globally
 
 ```bash
   npm install -g nx
 ```
 
-Commandes available
+### Install mongoDB
+
+See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
+
+### Populate DB (Optional)
+
+_A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is required_
+
+1. Run sample
+2. Export database using ArmoniK/tools/export-mongo.sh
+3. Move exported files to apps/api/src/database/fixtures
+4. Import database using the [MongoDB Compass](https://www.mongodb.com/docs/compass/master/install/).
+
+### Commandes available
 
 ```sh
 # Start the project (App and Server)
