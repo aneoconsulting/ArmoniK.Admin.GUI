@@ -148,6 +148,15 @@ ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not 
 
 With each push on _main_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
+## Create a release
+
+In order to be able to release quickly, some tasks are automated.
+To create a release, you need to:
+
+1. Create a release using GitHub
+2. Publish the release
+3. Wait for actions to finish
+
 ### Docker
 
 To build docker images, you need to run on linux this command
