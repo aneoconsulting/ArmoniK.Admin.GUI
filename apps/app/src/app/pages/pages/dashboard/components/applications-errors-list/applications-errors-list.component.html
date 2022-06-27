@@ -1,0 +1,64 @@
+<clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
+  <!-- clrDgField must be the name in the database -->
+  <clr-dg-column clrDgField="Options.Options.GridAppName">
+    {{ 'pages.dashboard.table.application_name' | translate }}
+  </clr-dg-column>
+  <clr-dg-column clrDgField="Options.Options.GridAppVersion">
+    {{ 'pages.dashboard.table.application_version' | translate }}
+  </clr-dg-column>
+  <clr-dg-column clrDgField="SessionId">
+    {{ 'pages.dashboard.table.session_id' | translate }}
+  </clr-dg-column>
+  <clr-dg-column clrDgField="Output.Error">
+    {{ 'pages.dashboard.table.error.message' | translate }}
+  </clr-dg-column>
+
+  <clr-dg-row
+    *clrDgItems="let error of applications?.data ?? []"
+    [clrDgItem]="error"
+  >
+    <clr-dg-cell>
+      <span>
+        {{ error.applicationName }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{ error.applicationVersion }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <a
+        [routerLink]="[
+          '/admin',
+          'applications',
+          error.applicationName,
+          error.applicationVersion,
+          'sessions',
+          error.sessionId
+        ]"
+      >
+        {{ error.sessionId }}
+      </a>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{ error.error.message }}
+      </span>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgTotalItems]="totalApplications">
+      <clr-dg-page-size>{{
+        'pages.dashboard.table.per_page' | translate
+      }}</clr-dg-page-size>
+      {{
+        (totalApplications > 1
+          ? 'pages.dashboard.table.applications'
+          : 'pages.dashboard.table.application'
+        ) | translate: { value: totalApplications }
+      }}
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

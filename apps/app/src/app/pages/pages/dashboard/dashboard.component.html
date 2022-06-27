@@ -1,10 +1,27 @@
 <h1>{{ 'pages.dashboard.title' | translate }}</h1>
 
-<section class="clr-row">
-  <app-pages-dashboard-application-card
-    *ngFor="let application of applications; trackBy: trackByApplication"
-    [application]="application"
-    (applicationChange)="onApplicationClick($event)"
-    ngClass="clr-col-12 clr-col-lg-6"
-  ></app-pages-dashboard-application-card>
+<section>
+  <h2>{{ 'pages.dashboard.applications.title' | translate }}</h2>
+
+  <div class="clr-row">
+    <app-pages-dashboard-application-card
+      *ngFor="let application of applications; trackBy: trackByApplication"
+      [application]="application"
+      (applicationChange)="onApplicationClick($event)"
+      ngClass="clr-col-12 clr-col-lg-6"
+    ></app-pages-dashboard-application-card>
+  </div>
+</section>
+
+<section>
+  <h2>
+    {{ 'pages.dashboard.errors.title' | translate }}
+  </h2>
+
+  <app-alert-error [errors]="errors"></app-alert-error>
+  <app-pages-dashboard-applications-errors-list
+    [loading]="applicationsErrorsLoading"
+    [applications]="applicationsErrors"
+    (refresh)="onRefreshApplicationsErrors($event)"
+  ></app-pages-dashboard-applications-errors-list>
 </section>

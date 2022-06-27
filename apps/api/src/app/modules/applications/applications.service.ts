@@ -6,14 +6,18 @@ import {
   TaskStatus,
   ErrorStatus,
   PendingStatus,
+  Pagination,
+  ApplicationError,
 } from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
+import { PaginationService } from '../../core';
 
 @Injectable()
 export class ApplicationsService {
   constructor(
     private readonly settingsService: SettingsService,
+    private readonly paginationService: PaginationService,
     @InjectConnection() private connection: Connection,
     @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>
   ) {}
@@ -106,5 +110,102 @@ export class ApplicationsService {
       .toArray();
 
     return result;
+  }
+
+  /**
+   * Find all error paginated
+   *
+   * @param page
+   * @param limit
+   * @param orderBy
+   * @param order
+   *
+   * @returns Pagination of application error
+   */
+  async findAllWithErrorsPaginated(
+    page: number,
+    limit: number,
+    orderBy: string,
+    order: string
+  ): Promise<Pagination<ApplicationError>> {
+    const startIndex = (page - 1) * limit;
+
+    const match = {
+      $expr: {
+        $and: [
+          { $in: ['$Status', ErrorStatus] },
+          {
+            // 24hs ago
+            $gte: ['$StartDate', new Date(Date.now() - 24 * 60 * 60 * 1000)],
+          },
+        ],
+      },
+    };
+
+    const result = await this.connection
+      .collection(this.taskModel.collection.collectionName)
+      // Get only tasks where Status is Error and StartDate is greater than 24h ago and sort by StartDate (recent first). Then format the result to have the same structure as ApplicationError
+      .aggregate<ApplicationError>([
+        { $match: match },
+        {
+          $sort: {
+            [orderBy ?? 'StartDate']: order ? Number(order) : -1,
+            _id: 1,
+          },
+        },
+        {
+          $skip: startIndex,
+        },
+        {
+          $limit: limit,
+        },
+        {
+          $project: {
+            _id: 0,
+            applicationName: '$Options.Options.GridAppName',
+            applicationVersion: '$Options.Options.GridAppVersion',
+            taskId: '$_id',
+            sessionId: '$SessionId',
+            error: {
+              message: '$Output.Error',
+            },
+          },
+        },
+        // Handle default application
+        {
+          $addFields: {
+            applicationName: {
+              $ifNull: [
+                '$applicationName',
+                this.settingsService.defaultApplicationName,
+              ],
+            },
+            applicationVersion: {
+              $ifNull: [
+                '$applicationVersion',
+                this.settingsService.defaultApplicationVersion,
+              ],
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    const total = await this.connection
+      .collection(this.taskModel.collection.collectionName)
+      .aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id: null,
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
+
+    const meta = this.paginationService.createMeta(total[0].count, page, limit);
+
+    return { meta, data: result };
   }
 }
