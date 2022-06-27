@@ -68,7 +68,7 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
-   * Cancell a session
+   * Cancel a session
    *
    * @param session
    */
