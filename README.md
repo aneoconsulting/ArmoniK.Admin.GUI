@@ -46,7 +46,7 @@ See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for
 
 _A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is required_
 
-1. Run sample
+1. Run sample using ArmoniK.Sample
 2. Export database using ArmoniK/tools/export-mongo.sh
 3. Move exported files to apps/api/src/database/fixtures
 4. Import database using the [MongoDB Compass](https://www.mongodb.com/docs/compass/master/install/).
