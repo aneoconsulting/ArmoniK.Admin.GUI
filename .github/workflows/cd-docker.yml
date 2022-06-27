@@ -3,9 +3,9 @@ name: cd docker
 on:
   push:
     branches:
-      - "main"
+      - 'main'
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   docker:
@@ -35,7 +35,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           new_branch: main
-          message: "Update version to ${{ github.ref_name }}"
+          message: 'Update version to ${{ github.ref_name }}'
           push: true
 
       - name: Docker meta
