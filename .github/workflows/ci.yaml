@@ -51,11 +51,20 @@ jobs:
       - run: npx nx affected --target=build --parallel=3
 
       - name: Coverage Report (App)
+        # Can't publish on push on main
         if: ${{ github.event_name == 'pull_request' }}
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
           lcov-file: ./coverage/apps/app/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifact (App)
+        # Store report created on main
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-apps-app
+          path: ./coverage/apps/app/
 
   e2e-tests:
     needs: setup
