@@ -1,3 +1,4 @@
+import { TaskStatus, TaskOptions } from '@armonik.admin.gui/armonik-typing';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
@@ -12,6 +13,18 @@ export class Task {
 
   @Prop()
   SessionId: string;
+
+  @Prop({ type: {} })
+  Options: TaskOptions;
+
+  @Prop({ type: Number })
+  Status: TaskStatus;
+
+  @Prop()
+  StartDate: Date;
+
+  @Prop()
+  EndDate?: Date;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);

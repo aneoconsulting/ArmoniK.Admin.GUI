@@ -50,9 +50,20 @@ jobs:
       - run: npx nx affected --target=test --parallel=3 --code-coverage
       - run: npx nx affected --target=build --parallel=3
 
-      - uses: romeovs/lcov-reporter-action@v0.2.16
+      - name: Coverage for App
+        uses: romeovs/lcov-reporter-action@v0.3.1
         with:
+          title: App - Coverage
+          delete-old-comments: true
           lcov-file: ./coverage/apps/app/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Coverage for Api
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          title: Api - Coverage
+          delete-old-comments: true
+          lcov-file: ./coverage/apps/api/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   e2e-tests:
@@ -91,7 +102,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          install-command: echo "dependencies from cache"
+          install-command: npx cypress install
           start: 'npx nx serve api'
           command: npx nx e2e app-e2e
 
