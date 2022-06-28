@@ -70,7 +70,7 @@ describe('SessionsComponent', () => {
 
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
-    // select the 2nd clr-dg-cell
+    // select the cell containing status
     const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
@@ -108,7 +108,7 @@ describe('SessionsComponent', () => {
 
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
-    // select the 2nd clr-dg-cell
+    // select the cell containing status
     const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
@@ -146,7 +146,7 @@ describe('SessionsComponent', () => {
 
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
-    // select the 2nd clr-dg-cell
+    // select the cell containing status
     const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
@@ -184,7 +184,7 @@ describe('SessionsComponent', () => {
 
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
-    // select the 2nd clr-dg-cell
+    // select the cell containing status
     const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
@@ -222,7 +222,7 @@ describe('SessionsComponent', () => {
 
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
-    // select the 2nd clr-dg-cell
+    // select the cell containing status
     const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(0);
