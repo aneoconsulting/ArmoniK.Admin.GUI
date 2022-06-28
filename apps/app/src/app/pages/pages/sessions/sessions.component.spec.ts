@@ -71,7 +71,7 @@ describe('SessionsComponent', () => {
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
     // select the 2nd clr-dg-cell
-    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
     // child must contains the class .text-danger
@@ -109,7 +109,7 @@ describe('SessionsComponent', () => {
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
     // select the 2nd clr-dg-cell
-    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
     // child must contains the class .text-pending
@@ -147,7 +147,7 @@ describe('SessionsComponent', () => {
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
     // select the 2nd clr-dg-cell
-    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
     // child must contains the class .text-warn
@@ -185,7 +185,7 @@ describe('SessionsComponent', () => {
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
     // select the 2nd clr-dg-cell
-    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(1);
     // child must contains the class .text-success
@@ -223,7 +223,7 @@ describe('SessionsComponent', () => {
     // select the first clr-dg-row
     const row = fixture.nativeElement.querySelector('clr-dg-row');
     // select the 2nd clr-dg-cell
-    const cell = row.querySelectorAll('clr-dg-cell')[1];
+    const cell = row.querySelectorAll('clr-dg-cell')[2];
     // must only contains one child
     expect(cell.childElementCount).toBe(0);
   });
