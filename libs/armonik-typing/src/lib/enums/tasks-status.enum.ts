@@ -9,6 +9,6 @@ export enum TaskStatus {
   ERROR = 5,
   FAILED = 6,
   TIMEOUT = 7,
-  CANCELING = 8,
-  CANCELED = 9,
+  CANCELLING = 8,
+  CANCELLED = 9,
 }

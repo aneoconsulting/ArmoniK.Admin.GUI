@@ -55,7 +55,19 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: romeovs/lcov-reporter-action@v0.2.16
         with:
+          title: App - Coverage
+          delete-old-comments: true
           lcov-file: ./coverage/apps/app/lcov.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Coverage for Api
+        # Can't publish on push on main
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: romeovs/lcov-reporter-action@v0.3.1
+        with:
+          title: Api - Coverage
+          delete-old-comments: true
+          lcov-file: ./coverage/apps/api/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifact (App)
@@ -65,6 +77,14 @@ jobs:
         with:
           name: coverage-apps-app
           path: ./coverage/apps/app/
+
+      - name: Upload Artifact (Api)
+        # Store report created on main
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-apps-api
+          path: ./coverage/apps/api/
 
   e2e-tests:
     needs: setup
@@ -102,7 +122,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          install-command: echo "dependencies from cache"
+          install-command: npx cypress install
           start: 'npx nx serve api'
           command: npx nx e2e app-e2e
 

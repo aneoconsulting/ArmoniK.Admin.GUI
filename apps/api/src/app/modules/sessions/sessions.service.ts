@@ -157,7 +157,7 @@ export class SessionsService implements OnModuleInit {
             countTasksProcessing: '$countTasksProcessing',
             status: '$session.Status',
             createdAt: '$session.CreationDate',
-            canceledAt: '$session.CancellationDate',
+            cancelledAt: '$session.CancellationDate',
           },
         },
       ])

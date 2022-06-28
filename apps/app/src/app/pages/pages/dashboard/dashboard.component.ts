@@ -1,7 +1,15 @@
+import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Application } from '@armonik.admin.gui/armonik-typing';
 import {
+  Application,
+  ApplicationError,
+  Pagination,
+} from '@armonik.admin.gui/armonik-typing';
+import { ClrDatagridStateInterface } from '@clr/angular';
+import {
+  AppError,
+  ApplicationsService,
   BrowserTitleService,
   LanguageService,
   SettingsService,
@@ -18,12 +26,18 @@ import {
 export class DashboardComponent implements OnInit {
   applications: Application[] = [];
 
+  errors: AppError[] = [];
+
+  applicationsErrorsLoading = true;
+  applicationsErrors: Pagination<ApplicationError> | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private languageService: LanguageService,
     private browserTitleService: BrowserTitleService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private applicationsService: ApplicationsService
   ) {}
 
   ngOnInit() {
@@ -35,6 +49,35 @@ export class DashboardComponent implements OnInit {
       if (data['applications']) {
         this.applications = data['applications'];
       }
+    });
+  }
+
+  /**
+   * Used to get the list of application errors from the api
+   * using pagination for the datagrid and refresh the datagrid
+   *
+   * @param state Clarity datagrid state
+   */
+  onRefreshApplicationsErrors(state: ClrDatagridStateInterface) {
+    this.applicationsErrorsLoading = true;
+
+    const nextPage = state?.page?.current ?? 1;
+    const limit = state?.page?.size ?? 10;
+
+    let params = new HttpParams()
+      .set('page', nextPage.toString())
+      .set('limit', limit.toString());
+
+    const orderBy = state?.sort?.by as string;
+    const order = state?.sort?.reverse ? -1 : 1;
+    if (orderBy) {
+      params = params.set('orderBy', orderBy);
+      params = params.set('order', order.toString());
+    }
+
+    this.applicationsService.getAllWithErrorsPaginated(params).subscribe({
+      error: this.onErrorApplicationsErrors.bind(this),
+      next: this.onNextApplicationsErrors.bind(this),
     });
   }
 
@@ -65,5 +108,25 @@ export class DashboardComponent implements OnInit {
    */
   trackByApplication(_: number, application: Application): Application['_id'] {
     return application._id;
+  }
+
+  /**
+   * Handle the error when getting applications
+   *
+   * @param error Error
+   */
+  private onErrorApplicationsErrors(error: AppError) {
+    this.applicationsErrorsLoading = false;
+    this.errors.push(error);
+  }
+
+  /**
+   * Handle applications when getting them
+   *
+   * @param applications Applications
+   */
+  private onNextApplicationsErrors(applications: Pagination<ApplicationError>) {
+    this.applicationsErrorsLoading = false;
+    this.applicationsErrors = applications;
   }
 }

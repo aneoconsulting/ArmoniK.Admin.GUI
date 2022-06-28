@@ -73,23 +73,23 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to check if task status is canceling
+   * Used to check if task status is cancelling
    *
    * @param task Task to check
    *
-   * @returns true if task is canceling
+   * @returns true if task is cancelling
    */
-  isCanceling(task: Task): boolean {
-    return task.status === TaskStatus.CANCELING;
+  isCancelling(task: Task): boolean {
+    return task.status === TaskStatus.CANCELLING;
   }
 
   /**
-   * Used to check if task status is in canceled
+   * Used to check if task status is in cancelled
    *
    * @param task Task to check
    */
-  isCanceled(task: Task): boolean {
-    return task.status === TaskStatus.CANCELED;
+  isCancelled(task: Task): boolean {
+    return task.status === TaskStatus.CANCELLED;
   }
 
   /**

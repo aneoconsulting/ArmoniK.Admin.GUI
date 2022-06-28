@@ -17,12 +17,27 @@
   "pages": {
     "dashboard": {
       "title": "Dashboard",
+      "errors": {
+        "title": "Errors"
+      },
       "applications": {
+        "title": "Applications",
         "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
         "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",
         "error": "{{countTasksError}} tasks error on the last 7 days",
         "pending": "{{countTasksPending}} tasks pending on the last 7 days",
         "see-sessions": "See sessions"
+      },
+      "table": {
+        "application_name": "Application name",
+        "application_version": "Application version",
+        "session_id": "Session ID",
+        "error": {
+          "message": "Error message"
+        },
+        "per_page": "Per page",
+        "applications": "{{value}} Applications",
+        "application": "{{value}} Application"
       }
     },
     "error": {
@@ -42,14 +57,14 @@
         "cancel": "Cancel",
         "status": {
           "title": "Status",
-          "canceled": "Canceled",
+          "cancelled": "Cancelled",
           "pending": "Pending",
           "processing": "Processing",
           "error": "Error",
           "completed": "Completed"
         },
         "createdAt": "Created at",
-        "canceledAt": "Canceled at"
+        "cancelledAt": "Cancelled at"
       },
       "session-detail": {
         "title": "Session detail",
@@ -70,8 +85,8 @@
             "processing": "Processing",
             "error": "Error",
             "completed": "Completed",
-            "canceling": "Canceling",
-            "canceled": "Canceled"
+            "cancelling": "Cancelling",
+            "cancelled": "Cancelled"
           },
           "detail": "Error detail",
           "see-more": "See more",

@@ -17,12 +17,27 @@
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",
+      "errors": {
+        "title": "Les erreurs"
+      },
       "applications": {
+        "title": "Les applications",
         "completed": "{{countTasksCompleted}} tâches complétées sur les 7 derniers jours",
         "processing": "{{countTasksProcessing}} tâches en cours sur les 7 derniers jours",
         "error": "{{countTasksError}} tâches en erreur sur les 7 derniers jours",
         "pending": "{{countTasksPending}} tâches en attente sur les 7 derniers jours",
         "see-sessions": "Voir les sessions"
+      },
+      "table": {
+        "application_name": "Nom de l'application",
+        "application_version": "Version de l'application",
+        "session_id": "Session ID",
+        "error": {
+          "message": "Message d'erreur"
+        },
+        "per_page": "Par page",
+        "applications": "{{value}} applications",
+        "application": "{{value}} application"
       }
     },
     "error": {
@@ -42,14 +57,14 @@
         "cancel": "Annuler",
         "status": {
           "title": "Statut",
-          "canceled": "Annulé",
+          "cancelled": "Annulé",
           "pending": "En attente",
           "processing": "En cours",
           "completed": "Terminée",
           "error": "Erreur"
         },
         "createdAt": "Créée le",
-        "canceledAt": "Annulé le"
+        "cancelledAt": "Annulé le"
       },
       "session-detail": {
         "title": "Détail de la session",
@@ -70,8 +85,8 @@
             "processing": "En cours",
             "completed": "Terminée",
             "error": "Erreur",
-            "canceling": "Annulation en cours",
-            "canceled": "Annulée"
+            "cancelling": "Annulation en cours",
+            "cancelled": "Annulée"
           },
           "detail": "Détail de l'erreur",
           "see-more": "Voir plus",
