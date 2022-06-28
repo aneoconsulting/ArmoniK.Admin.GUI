@@ -148,9 +148,7 @@ export class SessionsService implements OnModuleInit {
         },
         {
           $sort: {
-            [`${orderBy}` ?? 'session.CreationDate']: order
-              ? Number(order)
-              : -1,
+            [`${orderBy ?? 'createdAt'}`]: order ? Number(order) : -1,
             _id: orderBy === '_id' ? Number(order) : 1,
           },
         },
