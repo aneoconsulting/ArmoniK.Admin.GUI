@@ -17,7 +17,7 @@ export class Task {
   @Prop({ type: {} })
   Options: TaskOptions;
 
-  @Prop()
+  @Prop({ type: Number })
   Status: TaskStatus;
 
   @Prop()
