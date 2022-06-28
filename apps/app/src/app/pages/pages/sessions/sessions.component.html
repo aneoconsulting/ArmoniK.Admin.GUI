@@ -18,18 +18,35 @@
     (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
-    <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column clrDgField="_id">
+      {{ 'pages.sessions.table.id' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column clrDgField="countTasks">
       {{ 'pages.sessions.table.count.title' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="Status">
+    <clr-dg-column clrDgField="session.Status">
       {{ 'pages.sessions.table.status.title' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="CreationDate">
+    <clr-dg-column clrDgField="session.CreationDate">
       {{ 'pages.sessions.table.createdAt' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="CancellationDate">
+    <clr-dg-column clrDgField="session.CancellationDate">
       {{ 'pages.sessions.table.cancelledAt' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions.table.cancel' | translate }}
@@ -59,7 +76,7 @@
                   }
           }}"
         >
-          {{ countTasks(session) }}
+          {{ session.countTasks ?? '-' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
@@ -76,9 +93,7 @@
           class="text-pending"
           *ngIf="
             !isCancelled(session) &&
-            !session.countTasksError &&
             !session.countTasksProcessing &&
-            !session.countTasksCompleted &&
             session.countTasksPending
           "
         >
@@ -103,7 +118,6 @@
             !session.countTasksPending &&
             session.countTasksCompleted
           "
-          cancel
         >
           {{ 'pages.sessions.table.status.completed' | translate }}
         </span>

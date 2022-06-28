@@ -1,6 +1,9 @@
 {
   "global": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "filters": {
+      "no-filter-available": "No filter available"
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -55,6 +58,10 @@
       "table": {
         "id": "Session ID",
         "cancel": "Cancel",
+        "count": {
+          "title": "Tasks count",
+          "tooltip": "{{countError}} error, {{countPending}} pending, {{countProcessing}} processing, {{countCompleted}} completed"
+        },
         "status": {
           "title": "Status",
           "cancelled": "Cancelled",
