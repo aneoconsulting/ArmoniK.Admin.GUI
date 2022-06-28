@@ -51,7 +51,7 @@ jobs:
       - run: npx nx affected --target=build --parallel=3
 
       - name: Coverage for App
-        uses: romeovs/lcov-reporter-action@v0.2.16
+        uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           title: App - Coverage
           delete-old-comments: true
@@ -59,7 +59,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Coverage for Api
-        uses: romeovs/lcov-reporter-action@v0.2.16
+        uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           title: Api - Coverage
           delete-old-comments: true
