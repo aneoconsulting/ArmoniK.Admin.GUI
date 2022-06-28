@@ -204,7 +204,11 @@ export class ApplicationsService {
       ])
       .toArray();
 
-    const meta = this.paginationService.createMeta(total[0].count, page, limit);
+    const meta = this.paginationService.createMeta(
+      total[0]?.count ?? 0,
+      page,
+      limit
+    );
 
     return { meta, data: result };
   }

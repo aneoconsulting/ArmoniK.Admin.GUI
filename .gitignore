@@ -40,3 +40,6 @@ Thumbs.db
 
 .angular
 .env
+
+apps/api/src/database/fixtures/*
+!.gitkeep
