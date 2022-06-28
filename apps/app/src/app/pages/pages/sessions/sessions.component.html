@@ -19,6 +19,9 @@
     [clrDgLoading]="loadingSessions"
   >
     <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
+    <clr-dg-column>
+      {{ 'pages.sessions.table.count.title' | translate }}
+    </clr-dg-column>
     <clr-dg-column clrDgField="Status">
       {{ 'pages.sessions.table.status.title' | translate }}
     </clr-dg-column>
@@ -42,6 +45,22 @@
             {{ session._id }}
           </span>
         </a>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        <span
+          title="{{
+            'pages.sessions.table.count.tooltip'
+              | translate
+                : {
+                    countError: session.countTasksError,
+                    countProcessing: session.countTasksProcessing,
+                    countPending: session.countTasksPending,
+                    countCompleted: session.countTasksCompleted
+                  }
+          }}"
+        >
+          {{ countTasks(session) }}
+        </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <span class="text-danger" *ngIf="isCancelled(session)">

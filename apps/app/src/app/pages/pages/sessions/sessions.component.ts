@@ -89,6 +89,21 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
+   * Count tasks
+   *
+   * @param session
+   * @returns number of tasks
+   */
+  countTasks(session: FormattedSession): number {
+    return (
+      session.countTasksError +
+      session.countTasksProcessing +
+      session.countTasksPending +
+      session.countTasksCompleted
+    );
+  }
+
+  /**
    * Return total number of sessions even if there is no session (return 0)
    *
    * @returns total number of sessions
