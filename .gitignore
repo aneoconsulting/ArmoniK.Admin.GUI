@@ -42,4 +42,4 @@ Thumbs.db
 .env
 
 apps/api/src/database/fixtures/*
-!apps/api/src/database/fixtures/.gitkeep
+!.gitkeep
