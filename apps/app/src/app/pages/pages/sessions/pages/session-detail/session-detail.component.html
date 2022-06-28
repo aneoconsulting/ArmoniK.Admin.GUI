@@ -25,9 +25,26 @@
 
   <h2>{{ 'pages.sessions.session-detail.title' | translate }}</h2>
 
-  <pre>
-    {{ session | json }}
-  </pre>
+  <div class="session-detail clr-row">
+    <div class="clr-row-12 clr-row-md-6 clr-row-lg-4">
+      <label>{{ 'pages.sessions.session-detail.created_at' | translate }}</label
+      >&nbsp;
+      <span class="font-bold">{{
+        session?.CreationDate | date: 'medium'
+      }}</span>
+    </div>
+  </div>
+
+  <clr-accordion>
+    <clr-accordion-panel>
+      <clr-accordion-title>{{
+        'pages.sessions.session-detail.see-more' | translate
+      }}</clr-accordion-title>
+      <clr-accordion-content *clrIfExpanded>
+        <pre>{{ session | json }}</pre>
+      </clr-accordion-content>
+    </clr-accordion-panel>
+  </clr-accordion>
 
   <h2>{{ 'pages.sessions.session-detail.table.title' | translate }}</h2>
 

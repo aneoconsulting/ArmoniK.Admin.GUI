@@ -68,6 +68,8 @@
       },
       "session-detail": {
         "title": "Session detail",
+        "created_at": "Created at",
+        "see-more": "See more",
         "modal": {
           "title": "Task {{id}}"
         },

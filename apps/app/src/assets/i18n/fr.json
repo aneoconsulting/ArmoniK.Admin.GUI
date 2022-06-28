@@ -68,6 +68,8 @@
       },
       "session-detail": {
         "title": "Détail de la session",
+        "created_at": "Créée le",
+        "see-more": "En voir plus",
         "modal": {
           "title": "Tâche {{id}}"
         },
