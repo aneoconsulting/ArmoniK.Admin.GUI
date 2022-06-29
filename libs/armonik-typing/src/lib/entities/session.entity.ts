@@ -11,3 +11,27 @@ export type FormattedSession = {
   createdAt: string;
   cancelledAt: string;
 };
+
+export type SessionOptions = {
+  [key: string]: any;
+  MaxDuration: string;
+  MaxRetries: number;
+  Priority: number;
+  Options: {
+    [key: string]: any;
+    MaxDuration: string;
+    MaxRetries: number;
+    Priority: string;
+    GridAppName: string;
+    GridAppVersion: string;
+    GridAppNamespace: string;
+  };
+};
+
+export type RawSession = {
+  _id: string;
+  Status: SessionStatus;
+  Options: SessionOptions;
+  CreationDate: string;
+  CancellationDate: string;
+};

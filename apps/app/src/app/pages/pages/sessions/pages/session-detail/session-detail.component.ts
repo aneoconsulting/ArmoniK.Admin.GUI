@@ -1,11 +1,10 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
+import { Pagination, RawSession } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
 import {
   TasksService,
-  Session,
   Task,
   AppError,
   BrowserTitleService,
@@ -18,7 +17,7 @@ import {
   styleUrls: ['./session-detail.component.scss'],
 })
 export class SessionDetailComponent implements OnInit {
-  session: Session | undefined;
+  session: RawSession | undefined;
 
   tasks: Pagination<Task> | null = null;
   selectedTasks: Task[] = [];
