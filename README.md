@@ -163,7 +163,7 @@ This is useful to try current GUI in a local deployment of ArmoniK and avoid nam
 In order to be able to release quickly, some tasks are automated.
 To create a release, you need to:
 
-1. Create a release using GitHub
+1. Create a release (starting with a 'v' and following [Semver](https://semver.org), e.g.: v2.4.5) using GitHub
 2. Publish the release
 3. Wait for actions to finish
 
