@@ -2,6 +2,7 @@ import { SessionStatus } from '../enums';
 
 export type FormattedSession = {
   _id: string;
+  countTasks?: number;
   countTasksPending: number;
   countTasksError: number;
   countTasksCompleted: number;

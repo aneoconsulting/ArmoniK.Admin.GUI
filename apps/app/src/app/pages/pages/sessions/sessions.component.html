@@ -18,15 +18,35 @@
     (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
-    <clr-dg-column> {{ 'pages.sessions.table.id' | translate }} </clr-dg-column>
-    <clr-dg-column clrDgField="Status">
+    <clr-dg-column clrDgField="_id">
+      {{ 'pages.sessions.table.id' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column clrDgField="countTasks">
+      {{ 'pages.sessions.table.count.title' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column clrDgField="status">
       {{ 'pages.sessions.table.status.title' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="CreationDate">
+    <clr-dg-column clrDgField="createdAt">
       {{ 'pages.sessions.table.createdAt' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="CancellationDate">
+    <clr-dg-column clrDgField="cancelledAt">
       {{ 'pages.sessions.table.cancelledAt' | translate }}
+      <clr-dg-filter>
+        {{ 'global.filters.no-filter-available' | translate }}
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions.table.cancel' | translate }}
@@ -44,6 +64,22 @@
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
+        <span
+          title="{{
+            'pages.sessions.table.count.tooltip'
+              | translate
+                : {
+                    countError: session.countTasksError,
+                    countProcessing: session.countTasksProcessing,
+                    countPending: session.countTasksPending,
+                    countCompleted: session.countTasksCompleted
+                  }
+          }}"
+        >
+          {{ session.countTasks ?? '-' }}
+        </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
         <span class="text-danger" *ngIf="isCancelled(session)">
           {{ 'pages.sessions.table.status.cancelled' | translate }}
         </span>
@@ -57,9 +93,7 @@
           class="text-pending"
           *ngIf="
             !isCancelled(session) &&
-            !session.countTasksError &&
             !session.countTasksProcessing &&
-            !session.countTasksCompleted &&
             session.countTasksPending
           "
         >
@@ -84,7 +118,6 @@
             !session.countTasksPending &&
             session.countTasksCompleted
           "
-          cancel
         >
           {{ 'pages.sessions.table.status.completed' | translate }}
         </span>
@@ -116,7 +149,7 @@
 
     <clr-dg-footer>
       <clr-dg-pagination #pagination [clrDgTotalItems]="totalSessions">
-        <clr-dg-page-size>{{
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
           'pages.sessions.per_page' | translate
         }}</clr-dg-page-size>
         {{

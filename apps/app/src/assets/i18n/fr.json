@@ -1,6 +1,9 @@
 {
   "global": {
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "filters": {
+      "no-filter-available": "Pas de filtre disponible"
+    }
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -55,6 +58,10 @@
       "table": {
         "id": "Session ID",
         "cancel": "Annuler",
+        "count": {
+          "title": "Total des tâches",
+          "tooltip": "{{countError}} erreurs, {{countProcessing}} en cours, {{countPending}} en attente, {{countCompleted}} complétées"
+        },
         "status": {
           "title": "Statut",
           "cancelled": "Annulé",

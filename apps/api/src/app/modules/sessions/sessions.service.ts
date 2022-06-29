@@ -72,6 +72,7 @@ export class SessionsService implements OnModuleInit {
         {
           $group: {
             _id: '$SessionId',
+            countTasks: { $sum: 1 },
             countTasksPending: {
               $sum: {
                 $cond: {
@@ -131,12 +132,24 @@ export class SessionsService implements OnModuleInit {
           $unwind: '$session',
         },
         // Sort by session id
+        // Pick only the fields we need
+        {
+          $project: {
+            _id: '$_id',
+            countTasks: '$countTasks',
+            countTasksPending: '$countTasksPending',
+            countTasksError: '$countTasksError',
+            countTasksCompleted: '$countTasksCompleted',
+            countTasksProcessing: '$countTasksProcessing',
+            status: '$session.Status',
+            createdAt: '$session.CreationDate',
+            cancelledAt: '$session.CancellationDate',
+          },
+        },
         {
           $sort: {
-            [`session.${orderBy}` ?? 'session.CreationDate']: order
-              ? Number(order)
-              : -1,
-            _id: 1,
+            [`${orderBy ?? 'createdAt'}`]: order ? Number(order) : -1,
+            _id: orderBy === '_id' ? Number(order) : 1,
           },
         },
         // Skip the number of items per page
@@ -146,19 +159,6 @@ export class SessionsService implements OnModuleInit {
         // Limit the number of items per page
         {
           $limit: limit,
-        },
-        // Pick only the fields we need
-        {
-          $project: {
-            _id: '$_id',
-            countTasksPending: '$countTasksPending',
-            countTasksError: '$countTasksError',
-            countTasksCompleted: '$countTasksCompleted',
-            countTasksProcessing: '$countTasksProcessing',
-            status: '$session.Status',
-            createdAt: '$session.CreationDate',
-            cancelledAt: '$session.CancellationDate',
-          },
         },
       ])
       .toArray();
