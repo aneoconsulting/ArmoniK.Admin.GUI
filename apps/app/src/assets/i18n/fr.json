@@ -102,7 +102,10 @@
           "cancel": "Annuler la sélection"
         },
         "task-detail": {
-          "title": "Détail de la tâche"
+          "title": "Détail de la tâche",
+          "created_at": "Créée le",
+          "ended_at": "Terminée le",
+          "see_more": "En voir plus"
         }
       }
     }

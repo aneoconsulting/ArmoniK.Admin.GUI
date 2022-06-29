@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
@@ -17,6 +18,7 @@ describe('TaskDetailComponent', () => {
       declarations: [TaskDetailComponent],
       imports: [
         CommonModule,
+        NoopAnimationsModule,
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
         UiModule,

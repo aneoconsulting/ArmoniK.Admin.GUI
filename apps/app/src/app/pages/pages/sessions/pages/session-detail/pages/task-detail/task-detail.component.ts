@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RawTask } from '@armonik.admin.gui/armonik-typing';
 import {
   BrowserTitleService,
   LanguageService,
@@ -11,7 +12,7 @@ import {
   styleUrls: ['./task-detail.component.scss'],
 })
 export class TaskDetailComponent implements OnInit {
-  task: Task | null = null;
+  task: RawTask | null = null;
 
   constructor(
     private route: ActivatedRoute,
