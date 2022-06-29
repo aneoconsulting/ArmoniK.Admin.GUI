@@ -1,6 +1,6 @@
 import { TaskStatus } from '../enums';
 
-export type Task = {
+export type RawTask = {
   _id: string;
   Options: TaskOptions;
   Status: TaskStatus;
