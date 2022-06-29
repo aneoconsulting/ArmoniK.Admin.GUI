@@ -50,8 +50,10 @@ jobs:
       - run: npx nx affected --target=test --parallel=3 --code-coverage
       - run: npx nx affected --target=build --parallel=3
 
-      - name: Coverage for App
-        uses: romeovs/lcov-reporter-action@v0.3.1
+      - name: Coverage Report (App)
+        # Can't publish on push on main
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: romeovs/lcov-reporter-action@v0.2.16
         with:
           title: App - Coverage
           delete-old-comments: true
@@ -59,12 +61,30 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Coverage for Api
+        # Can't publish on push on main
+        if: ${{ github.event_name == 'pull_request' }}
         uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           title: Api - Coverage
           delete-old-comments: true
           lcov-file: ./coverage/apps/api/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifact (App)
+        # Store report created on main
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-apps-app
+          path: ./coverage/apps/app/
+
+      - name: Upload Artifact (Api)
+        # Store report created on main
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-apps-api
+          path: ./coverage/apps/api/
 
   e2e-tests:
     needs: setup
