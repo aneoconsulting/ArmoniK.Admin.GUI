@@ -73,9 +73,12 @@ export class SessionsComponent implements OnInit {
    * @param session
    */
   cancelSession(sessionId: Session['_id']) {
-    this.sessionsService.cancel(sessionId).subscribe({
-      error: this.onCancelSessionError.bind(this),
-    });
+    // Use an alert to confirm the cancellation
+    if (confirm('Are you sure you want to cancel this session?')) {
+      this.sessionsService.cancel(sessionId).subscribe({
+        error: this.onCancelSessionError.bind(this),
+      });
+    }
   }
 
   /**
