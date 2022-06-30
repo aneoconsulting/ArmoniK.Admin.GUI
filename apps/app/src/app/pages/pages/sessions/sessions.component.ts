@@ -44,7 +44,6 @@ export class SessionsComponent implements OnInit {
    * @param state
    */
   onRefreshSessions(state: ClrDatagridStateInterface) {
-    console.log(state);
     this.loadingSessions = true;
 
     const nextPage = state?.page?.current ?? 1;
