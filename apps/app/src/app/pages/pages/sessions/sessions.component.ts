@@ -20,6 +20,8 @@ import {
   styleUrls: ['./sessions.component.scss'],
 })
 export class SessionsComponent implements OnInit {
+  // Store state for manual refresh
+  private state: ClrDatagridStateInterface = {};
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
@@ -44,6 +46,8 @@ export class SessionsComponent implements OnInit {
    * @param state
    */
   onRefreshSessions(state: ClrDatagridStateInterface) {
+    this.state = state;
+
     this.loadingSessions = true;
 
     const nextPage = state?.page?.current ?? 1;
@@ -65,6 +69,13 @@ export class SessionsComponent implements OnInit {
       error: this.onErrorSessions.bind(this),
       next: this.onNextSessions.bind(this),
     });
+  }
+
+  /**
+   * Refresh
+   */
+  refresh() {
+    this.onRefreshSessions(this.state);
   }
 
   /**

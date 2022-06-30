@@ -20,6 +20,7 @@ export class TasksListComponent {
   @Input() cancelButtonState = ClrLoadingState.DEFAULT;
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
+  @Output() manualRefresh = new EventEmitter<void>();
   @Output() selectionChange = new EventEmitter<Task[]>();
   @Output() cancelTasksChange = new EventEmitter<Task[]>();
 

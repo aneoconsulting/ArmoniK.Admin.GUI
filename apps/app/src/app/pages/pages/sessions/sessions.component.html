@@ -18,6 +18,16 @@
     (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
+    <clr-dg-action-bar>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="refresh()"
+      >
+        {{ 'pages.sessions.table.refresh' | translate }}
+      </button>
+    </clr-dg-action-bar>
+
     <clr-dg-column clrDgField="_id">
       {{ 'pages.sessions.table.id' | translate }}
       <clr-dg-filter>

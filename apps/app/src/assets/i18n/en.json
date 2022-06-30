@@ -57,6 +57,7 @@
       },
       "table": {
         "id": "Session ID",
+        "refresh": "Refresh",
         "cancel": "Cancel",
         "count": {
           "title": "Tasks count",
@@ -83,6 +84,7 @@
         "table": {
           "title": "Associate tasks",
           "id": "Task ID",
+          "refresh": "Refresh",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
           "task": "{{value}} task",
