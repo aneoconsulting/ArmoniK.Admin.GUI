@@ -83,7 +83,7 @@
           "title": "Task {{id}}"
         },
         "table": {
-          "title": "Associate tasks",
+          "title": "Associated tasks",
           "id": "Task ID",
           "refresh": "Refresh",
           "per_page": "Per page",
