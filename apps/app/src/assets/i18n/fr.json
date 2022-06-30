@@ -53,7 +53,8 @@
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
       "cancel": {
-        "text": "Annuler la session"
+        "text": "Annuler la session",
+        "confirm": "Êtes-vous sûr de vouloir annuler cette session ?"
       },
       "table": {
         "id": "Session ID",

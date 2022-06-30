@@ -10,6 +10,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
+  LanguageService,
   Session,
   SessionsService,
 } from '../../../core';
@@ -28,7 +29,8 @@ export class SessionsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private browserTitleService: BrowserTitleService,
-    private sessionsService: SessionsService
+    private sessionsService: SessionsService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +76,9 @@ export class SessionsComponent implements OnInit {
    */
   cancelSession(sessionId: Session['_id']) {
     // Use an alert to confirm the cancellation
-    if (confirm('Are you sure you want to cancel this session?')) {
+    if (
+      confirm(this.languageService.instant('pages.sessions.cancel.confirm'))
+    ) {
       this.sessionsService.cancel(sessionId).subscribe({
         error: this.onCancelSessionError.bind(this),
       });
