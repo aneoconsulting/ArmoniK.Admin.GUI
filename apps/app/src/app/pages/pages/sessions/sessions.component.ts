@@ -44,6 +44,7 @@ export class SessionsComponent implements OnInit {
    * @param state
    */
   onRefreshSessions(state: ClrDatagridStateInterface) {
+    console.log(state);
     this.loadingSessions = true;
 
     const nextPage = state?.page?.current ?? 1;
@@ -59,6 +60,16 @@ export class SessionsComponent implements OnInit {
     const order = state?.sort?.reverse ? -1 : 1;
     if (orderBy) {
       params = params.set('orderBy', orderBy).set('order', order);
+    }
+
+    const filters = state?.filters;
+    if (filters) {
+      // filters is an array of filter
+      for (const filter of filters) {
+        const filterName = filter.property as string;
+        const filterValue = filter.value as string;
+        params = params.set(filterName, filterValue);
+      }
     }
 
     this.sessionsService.getAllPaginated(params).subscribe({

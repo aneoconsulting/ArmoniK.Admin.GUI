@@ -46,11 +46,12 @@ export class SessionsService implements OnModuleInit {
     applicationName: string,
     applicationVersion: string,
     orderBy?: string,
-    order?: string
+    order?: string,
+    _id?: string
   ) {
     const startIndex = (page - 1) * limit;
 
-    const match = {
+    const match: { [key: string]: any } = {
       'Options.Options.GridAppName':
         this.settingsService.getApplicationName(applicationName),
       'Options.Options.GridAppVersion':
@@ -60,6 +61,12 @@ export class SessionsService implements OnModuleInit {
         $gte: ['$StartDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
       },
     };
+
+    const sessionMatch: { [key: string]: any } = {};
+
+    if (_id) {
+      sessionMatch._id = { $regex: _id, $options: 'i' };
+    }
 
     const result = await this.connection
       .collection(this.taskModel.collection.collectionName)
@@ -126,6 +133,11 @@ export class SessionsService implements OnModuleInit {
             localField: '_id',
             foreignField: '_id',
             as: 'session',
+            pipeline: [
+              {
+                $match: sessionMatch,
+              },
+            ],
           },
         },
         {
@@ -176,6 +188,20 @@ export class SessionsService implements OnModuleInit {
             _id: '$SessionId',
           },
         },
+        // Join with only one session (merge object)
+        {
+          $lookup: {
+            from: this.sessionModel.collection.collectionName,
+            localField: '_id',
+            foreignField: '_id',
+            as: 'session',
+            pipeline: [
+              {
+                $match: sessionMatch,
+              },
+            ],
+          },
+        },
         // Count the number of sessions
         {
           $group: {
@@ -189,7 +215,7 @@ export class SessionsService implements OnModuleInit {
       .toArray();
 
     const meta = this.paginationService.createMeta(
-      total[0].count, // Total number of sessions
+      total[0]?.count ?? 0, // Total number of sessions
       page, // Current page
       limit // Items per page
     );
