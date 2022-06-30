@@ -58,6 +58,7 @@
       },
       "table": {
         "id": "Session ID",
+        "refresh": "Rafraîchir",
         "cancel": "Annuler",
         "count": {
           "title": "Total des tâches",
@@ -84,6 +85,7 @@
         "table": {
           "title": "Tâches associées",
           "id": "Tâche ID",
+          "refresh": "Rafraîchir",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
           "tâche": "{{value}} tâche",

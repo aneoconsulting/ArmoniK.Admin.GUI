@@ -17,6 +17,9 @@ import {
   styleUrls: ['./session-detail.component.scss'],
 })
 export class SessionDetailComponent implements OnInit {
+  // Store state to use in refresh
+  private state: ClrDatagridStateInterface = {};
+
   session: RawSession | undefined;
 
   tasks: Pagination<Task> | null = null;
@@ -51,6 +54,8 @@ export class SessionDetailComponent implements OnInit {
    * @param state Clarity datagrid state
    */
   onTasksRefresh(state: ClrDatagridStateInterface) {
+    this.state = state;
+
     this.loadingTasks = true;
 
     const nextPage = state?.page?.current ?? 1;
@@ -71,6 +76,13 @@ export class SessionDetailComponent implements OnInit {
       error: this.onErrorTasks.bind(this),
       next: this.onNextTasks.bind(this),
     });
+  }
+
+  /**
+   * Manual refresh of tasks list
+   */
+  onManualTasksRefresh() {
+    this.onTasksRefresh(this.state);
   }
 
   /**

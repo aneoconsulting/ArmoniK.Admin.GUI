@@ -5,16 +5,21 @@
   (clrDgSelectedChange)="selectionChange.emit($event)"
 >
   <clr-dg-action-bar>
-    <div class="btn-group">
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="cancelTasksChange.emit()"
-        [clrLoading]="cancelButtonState"
-      >
-        {{ 'pages.sessions.session-detail.table.cancel' | translate }}
-      </button>
-    </div>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger"
+      (click)="cancelTasksChange.emit()"
+      [clrLoading]="cancelButtonState"
+    >
+      {{ 'pages.sessions.session-detail.table.cancel' | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline"
+      (click)="manualRefresh.emit()"
+    >
+      {{ 'pages.sessions.session-detail.table.refresh' | translate }}
+    </button>
   </clr-dg-action-bar>
 
   <clr-dg-column>
