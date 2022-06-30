@@ -17,20 +17,32 @@
     </div>
   </clr-dg-action-bar>
 
-  <clr-dg-column>
+  <clr-dg-column clrDgField="_id">
     {{ 'pages.sessions.session-detail.table.id' | translate }}
   </clr-dg-column>
   <clr-dg-column clrDgField="StartDate">
     {{ 'pages.sessions.session-detail.table.started_at' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column clrDgField="EndDate">
     {{ 'pages.sessions.session-detail.table.ended_at' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column clrDgField="Status">
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column>
     {{ 'pages.sessions.session-detail.table.detail' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
 
   <clr-dg-row

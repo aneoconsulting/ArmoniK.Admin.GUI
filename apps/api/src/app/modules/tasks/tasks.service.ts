@@ -35,13 +35,18 @@ export class TasksService implements OnModuleInit {
     limit: number,
     sessionId: string,
     orderBy: string | null,
-    order: string | null
+    order: string | null,
+    _id?: string
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
-    const match = {
+    const match: { [key: string]: any } = {
       SessionId: sessionId,
     };
+
+    if (_id) {
+      match._id = { $regex: _id, $options: 'i' };
+    }
 
     const total = await this.connection
       .collection(this.taskModel.collection.collectionName)
@@ -64,14 +69,13 @@ export class TasksService implements OnModuleInit {
       })
       .sort({
         [orderBy || 'StartDate']: (Number(order) as SortOrder) || -1,
-        _id: 1,
+        _id: orderBy === '_id' ? (Number(order) as 1 | -1) : 1,
       })
       .skip(startIndex)
       .limit(limit)
       .exec();
 
     const meta = this.paginationService.createMeta(total[0].count, page, limit);
-
     return {
       data,
       meta,

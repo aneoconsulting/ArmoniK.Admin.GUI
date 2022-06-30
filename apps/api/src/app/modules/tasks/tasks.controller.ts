@@ -37,14 +37,16 @@ export class TasksController {
     @Query('limit', ParseIntPipe) limit: number,
     @Query('sessionId') sessionId: string,
     @Query('orderBy') orderBy: string,
-    @Query('order') order: string
+    @Query('order') order: string,
+    @Query('_id') _id: string
   ): Promise<Pagination<Task>> {
     const tasks = await this.tasksService.findAllPaginated(
       page,
       limit,
       sessionId,
       orderBy,
-      order
+      order,
+      _id
     );
 
     return tasks;

@@ -67,6 +67,16 @@ export class SessionDetailComponent implements OnInit {
       params = params.set('orderBy', orderBy).set('order', `${order}`);
     }
 
+    const filters = state?.filters;
+    if (filters) {
+      // filters is an array of filter
+      for (const filter of filters) {
+        const filterName = filter.property as string;
+        const filterValue = filter.value as string;
+        params = params.set(filterName, filterValue);
+      }
+    }
+
     this.tasksService.getAllPaginated(params).subscribe({
       error: this.onErrorTasks.bind(this),
       next: this.onNextTasks.bind(this),
