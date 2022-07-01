@@ -7,7 +7,7 @@ export class AutoRefreshService implements OnDestroy {
   interval: ReturnType<typeof setInterval> | null = null;
 
   private fn: () => void = () => {
-    throw new Error('AutoRefreshService.autoRefreshFn is not set');
+    throw new Error('AutoRefreshService.fn is not set');
   };
 
   ngOnDestroy() {
