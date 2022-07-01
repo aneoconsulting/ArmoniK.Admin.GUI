@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./timer-interval-selector.component.scss'],
 })
 export class TimerIntervalSelectorComponent {
-  @Input() timer = 10_000;
+  @Input() timer: number | null = 10_000;
   @Input() timersList: number[] = [10_000, 30_000, 60_000, 120_000];
 
   @Output() timerChange = new EventEmitter<number>();

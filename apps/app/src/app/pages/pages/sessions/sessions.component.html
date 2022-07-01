@@ -28,11 +28,11 @@
       </button>
       <div class="btn-group">
         <app-auto-refresh-activator
-          [isEnabled]="autoRefreshService.autoRefreshInterval"
-          (autoRefreshChange)="autoRefreshService.toggleAutoRefresh()"
+          [isEnabled]="autoRefreshService.isEnabled()"
+          (autoRefreshChange)="autoRefreshService.toggle()"
         ></app-auto-refresh-activator>
         <app-timer-interval-selector
-          [timer]="autoRefreshService.defaultTimer"
+          [timer]="autoRefreshService.timer"
           (timerChange)="onTimerChange($event)"
         ></app-timer-interval-selector>
       </div>

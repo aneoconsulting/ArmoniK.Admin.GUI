@@ -20,6 +20,16 @@
     >
       {{ 'pages.sessions.session-detail.table.refresh' | translate }}
     </button>
+    <div class="btn-group">
+      <app-auto-refresh-activator
+        [isEnabled]="isAutoRefreshEnabled"
+        (autoRefreshChange)="onAutoRefreshChange()"
+      ></app-auto-refresh-activator>
+      <app-timer-interval-selector
+        [timer]="autoRefreshTimer"
+        (timerChange)="onAutoRefreshTimerChange($event)"
+      ></app-timer-interval-selector>
+    </div>
   </clr-dg-action-bar>
 
   <clr-dg-column>

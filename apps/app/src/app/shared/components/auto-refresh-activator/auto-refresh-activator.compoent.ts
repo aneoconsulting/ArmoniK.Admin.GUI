@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./auto-refresh-activator.component.scss'],
 })
 export class AutoRefreshActivatorComponent {
-  @Input() isEnabled: ReturnType<typeof setInterval> | null = null;
+  @Input() isEnabled: boolean | null = null;
 
   @Output() autoRefreshChange = new EventEmitter();
 

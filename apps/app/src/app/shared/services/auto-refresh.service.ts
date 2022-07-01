@@ -2,16 +2,16 @@ import { Injectable, OnDestroy } from '@angular/core';
 
 @Injectable()
 export class AutoRefreshService implements OnDestroy {
-  defaultTimer = 10_000;
-  defaultTimersList: number[] = [10_000, 30_000, 60_000, 120_000];
-  autoRefreshInterval: ReturnType<typeof setInterval> | null = null;
+  timer = 10_000;
+  timersList: number[] = [10_000, 30_000, 60_000, 120_000];
+  interval: ReturnType<typeof setInterval> | null = null;
 
-  private autoRefreshFn: () => void = () => {
+  private fn: () => void = () => {
     throw new Error('AutoRefreshService.autoRefreshFn is not set');
   };
 
   ngOnDestroy() {
-    this.disableAutoRefresh();
+    this.disable();
   }
 
   /**
@@ -19,8 +19,8 @@ export class AutoRefreshService implements OnDestroy {
    *
    * @param fn
    */
-  setAutoRefreshFn(fn: () => void) {
-    this.autoRefreshFn = fn;
+  setFn(fn: () => void) {
+    this.fn = fn;
     return this;
   }
 
@@ -32,48 +32,52 @@ export class AutoRefreshService implements OnDestroy {
    * @returns this
    */
   setTimer(timer: number) {
-    this.defaultTimer = timer;
+    this.timer = timer;
     return this;
   }
 
   /**
    * Enable auto refresh
    */
-  enableAutoRefresh() {
-    if (this.autoRefreshFn) {
-      this.autoRefreshInterval = setInterval(
-        this.autoRefreshFn,
-        this.defaultTimer
-      );
+  enable() {
+    if (this.fn) {
+      this.interval = setInterval(this.fn, this.timer);
     }
   }
 
   /**
    * Disable auto refresh
    */
-  disableAutoRefresh() {
-    if (this.autoRefreshInterval) {
-      clearInterval(this.autoRefreshInterval);
+  disable() {
+    if (this.isEnabled()) {
+      clearInterval(this.interval as ReturnType<typeof setInterval>);
     }
-    this.autoRefreshInterval = null;
+    this.interval = null;
   }
 
   /**
    * Toggle the auto refresh
    */
-  toggleAutoRefresh() {
-    if (this.autoRefreshInterval) {
-      this.disableAutoRefresh();
+  toggle() {
+    if (this.isEnabled()) {
+      this.disable();
     } else {
-      this.enableAutoRefresh();
+      this.enable();
     }
   }
 
   /**
    * Restart the auto refresh
    */
-  restartAutoRefresh() {
-    this.disableAutoRefresh();
-    this.enableAutoRefresh();
+  restart() {
+    this.disable();
+    this.enable();
+  }
+
+  /**
+   * Get if auto refresh is enabled
+   */
+  isEnabled() {
+    return this.interval !== null;
   }
 }
