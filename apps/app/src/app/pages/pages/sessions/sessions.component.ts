@@ -14,18 +14,17 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
+import { AutoRefreshService } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
+  providers: [AutoRefreshService],
 })
-export class SessionsComponent implements OnInit, OnDestroy {
+export class SessionsComponent implements OnInit {
   // Store state for manual and auto refresh
   private state: ClrDatagridStateInterface = {};
-  autoRefresh: ReturnType<typeof setInterval> | null = null;
-  timer = 10_000;
-  timers_list: number[] = [10_000, 30_000, 60_000, 120_000];
 
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
@@ -36,7 +35,8 @@ export class SessionsComponent implements OnInit, OnDestroy {
     private router: Router,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    public autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
@@ -44,13 +44,10 @@ export class SessionsComponent implements OnInit, OnDestroy {
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );
-    // Refresh the list of sessions every 10 seconds
-    this.enableAutoRefresh();
-  }
-
-  ngOnDestroy(): void {
-    // Stop refreshing sessions
-    this.disableAutoRefresh();
+    // Activate auto refresh
+    this.autoRefreshService
+      .setAutoRefreshFn(() => this.refresh())
+      .enableAutoRefresh();
   }
 
   /**
@@ -92,44 +89,12 @@ export class SessionsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Enable auto refresh
-   */
-  enableAutoRefresh() {
-    this.autoRefresh = setInterval(() => {
-      this.refresh();
-    }, this.timer);
-  }
-
-  /**
-   * Disable auto refresh
-   */
-  disableAutoRefresh() {
-    if (this.autoRefresh) {
-      clearInterval(this.autoRefresh);
-      this.autoRefresh = null;
-    }
-  }
-
-  /**
-   *  Toggle the auto refresh
-   */
-  toggleAutoRefresh() {
-    if (this.autoRefresh) {
-      this.disableAutoRefresh();
-    } else {
-      this.enableAutoRefresh();
-    }
-  }
-
-  /**
-   * Set timer
+   * Update the timer
    *
    * @param timer
    */
-  setTimer(timer: number) {
-    this.timer = timer;
-    this.disableAutoRefresh();
-    this.enableAutoRefresh();
+  onTimerChange(timer: number) {
+    this.autoRefreshService.setTimer(timer).restartAutoRefresh();
   }
 
   /**

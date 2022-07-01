@@ -30,38 +30,21 @@
         <button
           type="button"
           class="btn btn-sm"
-          [class.btn-danger-outline]="!autoRefresh"
-          [class.btn-primary]="autoRefresh"
-          (click)="toggleAutoRefresh()"
+          [class.btn-danger-outline]="!autoRefreshService.autoRefreshInterval"
+          [class.btn-primary]="autoRefreshService.autoRefreshInterval"
+          (click)="autoRefreshService.toggleAutoRefresh()"
         >
           {{
-            (autoRefresh
+            (autoRefreshService.autoRefreshInterval
               ? 'pages.sessions.table.auto_refresh.is_enabled'
               : 'pages.sessions.table.auto_refresh.is_disabled'
             ) | translate
           }}
         </button>
-        <clr-dropdown>
-          <button
-            type="button"
-            class="btn btn-sm btn-secondary"
-            clrDropdownTrigger
-          >
-            {{ 'pages.sessions.table.auto_refresh.interval' | translate }}
-            <clr-icon shape="caret down"></clr-icon>
-          </button>
-          <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-            <button
-              type="button"
-              clrDropdownItem
-              *ngFor="let timerItem of timers_list"
-              (click)="setTimer(timerItem)"
-              [clrDisabled]="timerItem === timer"
-            >
-              {{ timerItem / 1_000 }}s
-            </button>
-          </clr-dropdown-menu>
-        </clr-dropdown>
+        <app-timer-interval-selector
+          [timer]="autoRefreshService.defaultTimer"
+          (timerChange)="onTimerChange($event)"
+        ></app-timer-interval-selector>
       </div>
     </clr-dg-action-bar>
 
