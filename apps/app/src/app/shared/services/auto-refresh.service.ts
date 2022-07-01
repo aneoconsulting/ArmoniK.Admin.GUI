@@ -54,8 +54,8 @@ export class AutoRefreshService implements OnDestroy {
   disableAutoRefresh() {
     if (this.autoRefreshInterval) {
       clearInterval(this.autoRefreshInterval);
-      this.autoRefreshInterval = null;
     }
+    this.autoRefreshInterval = null;
   }
 
   /**
@@ -73,9 +73,7 @@ export class AutoRefreshService implements OnDestroy {
    * Restart the auto refresh
    */
   restartAutoRefresh() {
-    if (this.autoRefreshInterval) {
-      this.disableAutoRefresh();
-      this.enableAutoRefresh();
-    }
+    this.disableAutoRefresh();
+    this.enableAutoRefresh();
   }
 }

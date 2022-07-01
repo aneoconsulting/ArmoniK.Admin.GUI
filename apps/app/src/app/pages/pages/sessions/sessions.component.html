@@ -27,20 +27,10 @@
         {{ 'pages.sessions.table.refresh' | translate }}
       </button>
       <div class="btn-group">
-        <button
-          type="button"
-          class="btn btn-sm"
-          [class.btn-danger-outline]="!autoRefreshService.autoRefreshInterval"
-          [class.btn-primary]="autoRefreshService.autoRefreshInterval"
-          (click)="autoRefreshService.toggleAutoRefresh()"
-        >
-          {{
-            (autoRefreshService.autoRefreshInterval
-              ? 'pages.sessions.table.auto_refresh.is_enabled'
-              : 'pages.sessions.table.auto_refresh.is_disabled'
-            ) | translate
-          }}
-        </button>
+        <app-auto-refresh-activator
+          [isEnabled]="autoRefreshService.autoRefreshInterval"
+          (autoRefreshChange)="autoRefreshService.toggleAutoRefresh()"
+        ></app-auto-refresh-activator>
         <app-timer-interval-selector
           [timer]="autoRefreshService.defaultTimer"
           (timerChange)="onTimerChange($event)"

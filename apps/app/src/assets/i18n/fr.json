@@ -5,6 +5,13 @@
       "no-filter-available": "Pas de filtre disponible"
     }
   },
+  "shared": {
+    "auto_refresh": {
+      "interval": "Intervalle",
+      "is_disabled": "Auto-rafraîchissement désactivé",
+      "is_enabled": "Auto-rafraîchissement activé"
+    }
+  },
   "navigation": {
     "dashboard": "Tableau de bord",
     "applications": "Retourner aux applications",
@@ -59,11 +66,6 @@
       "table": {
         "id": "Session ID",
         "refresh": "Rafraîchir",
-        "auto_refresh": {
-          "is_disabled": "Auto-rafraîchissement désactivé",
-          "is_enabled": "Auto-rafraîchissement activé",
-          "interval": "Intervalle"
-        },
         "cancel": "Annuler",
         "count": {
           "title": "Total des tâches",

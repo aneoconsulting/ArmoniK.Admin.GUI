@@ -1,0 +1,14 @@
+<button
+  type="button"
+  class="btn btn-sm"
+  [class.btn-danger-outline]="!isEnabled"
+  [class.btn-primary]="isEnabled"
+  (click)="onClick()"
+>
+  {{
+    (isEnabled
+      ? 'shared.auto_refresh.is_enabled'
+      : 'shared.auto_refresh.is_disabled'
+    ) | translate
+  }}
+</button>

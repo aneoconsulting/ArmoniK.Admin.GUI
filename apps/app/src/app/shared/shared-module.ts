@@ -5,6 +5,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AlertErrorComponent } from './components';
+import { AutoRefreshActivatorComponent } from './components/auto-refresh-activator';
 import { TimerIntervalSelectorComponent } from './components/timer-interval-selector';
 
 @NgModule({
@@ -15,10 +16,15 @@ import { TimerIntervalSelectorComponent } from './components/timer-interval-sele
     TranslateModule,
     UiModule,
   ],
-  declarations: [AlertErrorComponent, TimerIntervalSelectorComponent],
+  declarations: [
+    AlertErrorComponent,
+    TimerIntervalSelectorComponent,
+    AutoRefreshActivatorComponent,
+  ],
   exports: [
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
+    AutoRefreshActivatorComponent,
     ClarityModule,
     CommonModule,
     RouterModule,
