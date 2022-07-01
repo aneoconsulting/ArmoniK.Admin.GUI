@@ -43,7 +43,7 @@ export class SessionDetailComponent implements OnInit {
     );
 
     // Activate auto refresh
-    this.autoRefreshService.setFn(() => this.tasksRefresh()).enable();
+    this.autoRefreshService.setFn(() => this.onManualTasksRefresh()).enable();
   }
 
   ngOnInit() {
@@ -87,7 +87,7 @@ export class SessionDetailComponent implements OnInit {
   /**
    * Refresh of tasks list
    */
-  tasksRefresh() {
+  onManualTasksRefresh() {
     this.onTasksRefresh(this.state);
   }
 
