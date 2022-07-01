@@ -59,6 +59,11 @@
       "table": {
         "id": "Session ID",
         "refresh": "Rafraîchir",
+        "auto_refresh": {
+          "is_disabled": "Auto-rafraîchissement désactivé",
+          "is_enabled": "Auto-rafraîchissement activé",
+          "interval": "Intervalle"
+        },
         "cancel": "Annuler",
         "count": {
           "title": "Total des tâches",

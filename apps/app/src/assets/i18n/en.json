@@ -59,6 +59,11 @@
       "table": {
         "id": "Session ID",
         "refresh": "Refresh",
+        "auto_refresh": {
+          "is_disabled": "Auto refresh is disabled",
+          "is_enabled": "Auto refresh is enabled",
+          "interval": "Interval"
+        },
         "cancel": "Cancel",
         "count": {
           "title": "Tasks count",

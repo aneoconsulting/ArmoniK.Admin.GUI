@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormattedSession,
@@ -20,9 +20,13 @@ import {
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
 })
-export class SessionsComponent implements OnInit {
-  // Store state for manual refresh
+export class SessionsComponent implements OnInit, OnDestroy {
+  // Store state for manual and auto refresh
   private state: ClrDatagridStateInterface = {};
+  autoRefresh: ReturnType<typeof setInterval> | null = null;
+  timer = 10_000;
+  timers_list: number[] = [10_000, 30_000, 60_000, 120_000];
+
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
@@ -40,6 +44,13 @@ export class SessionsComponent implements OnInit {
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );
+    // Refresh the list of sessions every 10 seconds
+    this.enableAutoRefresh();
+  }
+
+  ngOnDestroy(): void {
+    // Stop refreshing sessions
+    this.disableAutoRefresh();
   }
 
   /**
@@ -78,6 +89,47 @@ export class SessionsComponent implements OnInit {
    */
   refresh() {
     this.onRefreshSessions(this.state);
+  }
+
+  /**
+   * Enable auto refresh
+   */
+  enableAutoRefresh() {
+    this.autoRefresh = setInterval(() => {
+      this.refresh();
+    }, this.timer);
+  }
+
+  /**
+   * Disable auto refresh
+   */
+  disableAutoRefresh() {
+    if (this.autoRefresh) {
+      clearInterval(this.autoRefresh);
+      this.autoRefresh = null;
+    }
+  }
+
+  /**
+   *  Toggle the auto refresh
+   */
+  toggleAutoRefresh() {
+    if (this.autoRefresh) {
+      this.disableAutoRefresh();
+    } else {
+      this.enableAutoRefresh();
+    }
+  }
+
+  /**
+   * Set timer
+   *
+   * @param timer
+   */
+  setTimer(timer: number) {
+    this.timer = timer;
+    this.disableAutoRefresh();
+    this.enableAutoRefresh();
   }
 
   /**
