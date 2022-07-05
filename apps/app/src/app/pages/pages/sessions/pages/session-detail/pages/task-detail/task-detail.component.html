@@ -1,7 +1,7 @@
 <section>
   <ui-page-header>
     <ng-container subtitle>
-      <a [routerLink]="['/admin', 'dashboard']">{{
+      <a [routerLink]="['/', 'dashboard']">{{
         'navigation.applications' | translate
       }}</a>
     </ng-container>
@@ -10,7 +10,7 @@
     <ng-container subtitle>
       <a
         [routerLink]="[
-          '/admin',
+          '/',
           'applications',
           applicationName,
           applicationVersion,
@@ -25,7 +25,7 @@
     <ng-container subtitle>
       <a
         [routerLink]="[
-          '/admin',
+          '/',
           'applications',
           applicationName,
           applicationVersion,
