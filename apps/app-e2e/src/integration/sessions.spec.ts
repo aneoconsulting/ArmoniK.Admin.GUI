@@ -1,6 +1,6 @@
 describe('sessions', () => {
   beforeEach(() => {
-    cy.visit('/admin/dashboard');
+    cy.visit('/dashboard');
     cy.get(':nth-child(1) > .card > .card-header')
       .invoke('text')
       .then((text) => {
@@ -12,7 +12,7 @@ describe('sessions', () => {
         const applicationVersion = application[1].trim();
 
         cy.visit(
-          `/admin/applications/${applicationName}/${applicationVersion}/sessions`
+          `/applications/${applicationName}/${applicationVersion}/sessions`
         );
 
         cy.get('.datagrid clr-dg-row a').first().click();
@@ -21,7 +21,7 @@ describe('sessions', () => {
 
   it('should be able to click on "applications" button to return to dashboard', () => {
     cy.get('.subtitle > a').click();
-    cy.url().should('include', '/admin/dashboard');
+    cy.url().should('include', '/dashboard');
   });
 
   it('should be able to click on "sessions" button to return to sessions list', () => {
