@@ -13,7 +13,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 
     echo "This script will update the version in all the projet using the argument as the version."
     echo "The version follow semver format (eg: 1.0.0)."
-    exit 1
+    exit 0
 fi
 
 # Replace version in package.json file
