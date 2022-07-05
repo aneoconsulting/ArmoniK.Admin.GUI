@@ -17,13 +17,13 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 fi
 
 # Replace version in package.json file
-sed -i "s/\"version\": \".*\"/\"version\": \"$1\"/g" package.json
+sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$1\"/g" package.json
 echo "Version updated in package.json"
 
 # Replace version in app.controller.ts file
-sed -i "s/version: '.*'/version: '$1'/g" apps/api/src/app/app.controller.ts
+sed -i "s/version: '[^']*'/version: '$1'/g" apps/api/src/app/app.controller.ts
 echo "Version updated in app.controller.ts"
 
 # Replace version in pages.component.html file
-sed -i "s/<span> v.* <\/span>/<span> v$1 <\/span>/g" apps/app/src/app/pages/pages.component.html
+sed -i "s/<span> v[^ ]* <\/span>/<span> v$1 <\/span>/g" apps/app/src/app/pages/pages.component.html
 echo "Version updated in pages.component.html"
