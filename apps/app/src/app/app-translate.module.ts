@@ -5,6 +5,7 @@ import localeFr from '@angular/common/locales/fr';
 import { NgModule } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { environment } from '../environments/environment';
 // Get version from package.json
 import pkg from '../../../../package.json';
 
@@ -15,7 +16,7 @@ registerLocaleData(localeEn, 'en');
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(
     http,
-    '/assets/i18n/',
+    environment.baseHref + 'assets/i18n/',
     // Use the version to avoid cache issues
     '.json?v=' + pkg.version
   );
