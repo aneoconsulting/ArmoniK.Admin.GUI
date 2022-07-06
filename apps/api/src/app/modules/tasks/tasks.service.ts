@@ -34,18 +34,27 @@ export class TasksService implements OnModuleInit {
     page: number,
     limit: number,
     sessionId: string,
-    orderBy: string | null,
-    order: string | null,
-    _id?: string
+    orderBy: string | undefined,
+    order: string | undefined,
+    _id: string | undefined
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
-    const match: { [key: string]: any } = {
+    const match: { [key: string]: unknown } = {
       SessionId: sessionId,
     };
 
     if (_id) {
-      match._id = { $regex: _id, $options: 'i' };
+      match['_id'] = _id;
+    }
+
+    const tasksSort: { [key: string]: 1 | -1 } = {};
+
+    if (orderBy) {
+      tasksSort[orderBy] = Number(order) as -1 | 1;
+    } else {
+      tasksSort['startedAt'] = -1;
+      tasksSort['_id'] = 1;
     }
 
     const total = await this.connection
@@ -67,10 +76,7 @@ export class TasksService implements OnModuleInit {
           error: '$Output.Error',
         },
       })
-      .sort({
-        [orderBy || 'StartDate']: (Number(order) as SortOrder) || -1,
-        _id: orderBy === '_id' ? (Number(order) as 1 | -1) : 1,
-      })
+      .sort(tasksSort)
       .skip(startIndex)
       .limit(limit)
       .exec();
