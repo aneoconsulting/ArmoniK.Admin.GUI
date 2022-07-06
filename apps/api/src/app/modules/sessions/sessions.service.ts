@@ -68,16 +68,14 @@ export class SessionsService implements OnModuleInit {
       sessionMatch['_id'] = _id;
     }
 
-    const tasksSort: { [key: string]: 1 | -1 } = {};
+    const sessionsSort: { [key: string]: 1 | -1 } = {};
 
     if (orderBy) {
-      tasksSort[orderBy] = Number(order) as -1 | 1;
+      sessionsSort[orderBy] = Number(order) as -1 | 1;
     } else {
-      tasksSort['createdAt'] = -1;
-      tasksSort['_id'] = 1;
+      sessionsSort['createdAt'] = -1;
+      sessionsSort['_id'] = 1;
     }
-
-    console.log(tasksSort);
 
     const result = await this.connection
       .collection(this.taskModel.collection.collectionName)
@@ -170,7 +168,7 @@ export class SessionsService implements OnModuleInit {
           },
         },
         {
-          $sort: tasksSort,
+          $sort: sessionsSort,
         },
         // Skip the number of items per page
         {
