@@ -1,5 +1,5 @@
 describe('dashboard', () => {
-  beforeEach(() => cy.visit('/admin/dashboard'));
+  beforeEach(() => cy.visit('/dashboard'));
 
   it('should display the dashboard title in english', () => {
     cy.get('.header-actions > ul > li:nth-child(1) > button').should(
@@ -27,10 +27,10 @@ describe('dashboard', () => {
         const applicationVersion = application[1].trim();
 
         cy.get(':nth-child(1) > .card > .card-footer > .btn').click();
-        // check if url is /admin/applications/<applicationName>/<applicationVersion>/sessions
+        // check if url is /applications/<applicationName>/<applicationVersion>/sessions
         cy.url().should(
           'include',
-          `/admin/applications/${applicationName}/${applicationVersion}/sessions`
+          `/applications/${applicationName}/${applicationVersion}/sessions`
         );
       });
   });

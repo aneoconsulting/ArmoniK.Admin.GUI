@@ -3,6 +3,6 @@ describe('app', () => {
 
   it('should display the dashboard page', () => {
     // check if url is /admin/dashboard
-    cy.url().should('include', '/admin/dashboard');
+    cy.url().should('include', '/dashboard');
   });
 });

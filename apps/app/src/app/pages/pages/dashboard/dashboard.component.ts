@@ -90,7 +90,7 @@ export class DashboardComponent implements OnInit {
     this.settingsService.addCurrentApplication(application);
 
     this.router.navigate([
-      '/admin',
+      '/',
       'applications',
       application._id.applicationName,
       application._id.applicationVersion,
