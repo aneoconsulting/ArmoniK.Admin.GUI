@@ -62,11 +62,22 @@ export class SessionsService implements OnModuleInit {
       },
     };
 
-    const sessionMatch: { [key: string]: any } = {};
+    const sessionMatch: { [key: string]: unknown } = {};
 
     if (_id) {
-      sessionMatch._id = { $regex: _id, $options: 'i' };
+      sessionMatch['_id'] = _id;
     }
+
+    const tasksSort: { [key: string]: 1 | -1 } = {};
+
+    if (orderBy) {
+      tasksSort[orderBy] = Number(order) as -1 | 1;
+    } else {
+      tasksSort['createdAt'] = -1;
+      tasksSort['_id'] = 1;
+    }
+
+    console.log(tasksSort);
 
     const result = await this.connection
       .collection(this.taskModel.collection.collectionName)
@@ -159,10 +170,7 @@ export class SessionsService implements OnModuleInit {
           },
         },
         {
-          $sort: {
-            [`${orderBy ?? 'createdAt'}`]: order ? Number(order) : -1,
-            _id: orderBy === '_id' ? Number(order) : 1,
-          },
+          $sort: tasksSort,
         },
         // Skip the number of items per page
         {
@@ -201,6 +209,10 @@ export class SessionsService implements OnModuleInit {
               },
             ],
           },
+        },
+        // Used to remove a task if object if empty
+        {
+          $unwind: '$session',
         },
         // Count the number of sessions
         {
