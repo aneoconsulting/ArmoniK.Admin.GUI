@@ -43,7 +43,7 @@ export class SessionDetailComponent implements OnInit {
     );
 
     // Activate auto refresh
-    this.autoRefreshService.setFn(() => this.onManualTasksRefresh());
+    this.autoRefreshService.setFn(() => this.refresh());
   }
 
   ngOnInit() {
@@ -59,8 +59,14 @@ export class SessionDetailComponent implements OnInit {
    *
    * @param state Clarity datagrid state
    */
-  onTasksRefresh(state: ClrDatagridStateInterface) {
-    this.state = state;
+  refresh(state: ClrDatagridStateInterface | undefined = undefined) {
+    if (state) {
+      // save the state
+      this.state = state;
+    } else {
+      // set the state to the last one
+      state = this.state;
+    }
 
     this.loadingTasks = true;
 
@@ -82,13 +88,6 @@ export class SessionDetailComponent implements OnInit {
       error: this.onErrorTasks.bind(this),
       next: this.onNextTasks.bind(this),
     });
-  }
-
-  /**
-   * Refresh of tasks list
-   */
-  onManualTasksRefresh() {
-    this.onTasksRefresh(this.state);
   }
 
   /**

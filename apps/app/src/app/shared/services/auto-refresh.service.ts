@@ -25,7 +25,7 @@ export class AutoRefreshService implements OnDestroy {
   }
 
   /**
-   * Set timer to be used for auto refresh
+   * Set timer to be used for auto refresh and restart the auto refresh is enabled
    *
    * @param timer
    *
@@ -33,16 +33,17 @@ export class AutoRefreshService implements OnDestroy {
    */
   setTimer(timer: number) {
     this.timer = timer;
-    return this;
+
+    if (this.isEnabled()) {
+      this.restart();
+    }
   }
 
   /**
    * Enable auto refresh
    */
   enable() {
-    if (this.fn) {
-      this.interval = setInterval(this.fn, this.timer);
-    }
+    this.interval = setInterval(this.fn, this.timer);
   }
 
   /**
@@ -67,17 +68,17 @@ export class AutoRefreshService implements OnDestroy {
   }
 
   /**
-   * Restart the auto refresh
-   */
-  restart() {
-    this.disable();
-    this.enable();
-  }
-
-  /**
    * Get if auto refresh is enabled
    */
   isEnabled() {
     return this.interval !== null;
+  }
+
+  /**
+   * Restart the auto refresh
+   */
+  private restart() {
+    this.disable();
+    this.enable();
   }
 }

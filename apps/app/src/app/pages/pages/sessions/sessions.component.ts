@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormattedSession,
@@ -92,7 +92,7 @@ export class SessionsComponent implements OnInit {
    * @param timer
    */
   onTimerChange(timer: number) {
-    this.autoRefreshService.setTimer(timer).restart();
+    this.autoRefreshService.setTimer(timer);
   }
 
   /**
