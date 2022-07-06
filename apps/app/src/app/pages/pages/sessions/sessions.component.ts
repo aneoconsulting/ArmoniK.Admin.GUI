@@ -45,7 +45,7 @@ export class SessionsComponent implements OnInit {
       this.applicationName + ' - ' + this.applicationVersion
     );
     // Activate auto refresh
-    this.autoRefreshService.setFn(() => this.refresh()).enable();
+    this.autoRefreshService.setFn(() => this.refresh());
   }
 
   /**
