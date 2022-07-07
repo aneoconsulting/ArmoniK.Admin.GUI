@@ -73,6 +73,16 @@ export class SessionsComponent implements OnInit {
       params = params.set('orderBy', orderBy).set('order', order);
     }
 
+    const filters = state?.filters;
+    if (filters) {
+      // filters is an array of filter
+      for (const filter of filters) {
+        const filterName = filter.property as string;
+        const filterValue = filter.value as string;
+        params = params.set(filterName, filterValue);
+      }
+    }
+
     this.sessionsService.getAllPaginated(params).subscribe({
       error: this.onErrorSessions.bind(this),
       next: this.onNextSessions.bind(this),
