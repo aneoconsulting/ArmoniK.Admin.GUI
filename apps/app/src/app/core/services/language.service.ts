@@ -132,7 +132,7 @@ export class LanguageService {
    *
    * @returns True if the language is accepted by the application
    */
-  private isAcceptedLanguage(lang: string | undefined): boolean {
+  private isAcceptedLanguage(lang?: string): boolean {
     if (!lang) {
       return false;
     }
