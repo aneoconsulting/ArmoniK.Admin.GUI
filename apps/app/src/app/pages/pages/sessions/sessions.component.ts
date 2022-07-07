@@ -14,15 +14,18 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
+import { AutoRefreshService } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
+  providers: [AutoRefreshService],
 })
 export class SessionsComponent implements OnInit {
-  // Store state for manual refresh
+  // Store state for manual and auto refresh
   private state: ClrDatagridStateInterface = {};
+
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
@@ -32,7 +35,8 @@ export class SessionsComponent implements OnInit {
     private router: Router,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    public autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +44,8 @@ export class SessionsComponent implements OnInit {
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );
+    // Activate auto refresh
+    this.autoRefreshService.setFn(() => this.refresh());
   }
 
   /**
@@ -78,6 +84,15 @@ export class SessionsComponent implements OnInit {
    */
   refresh() {
     this.onRefreshSessions(this.state);
+  }
+
+  /**
+   * Update the timer
+   *
+   * @param timer
+   */
+  onTimerChange(timer: number) {
+    this.autoRefreshService.setTimer(timer);
   }
 
   /**

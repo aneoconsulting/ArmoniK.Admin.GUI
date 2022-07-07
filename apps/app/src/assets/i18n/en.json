@@ -5,6 +5,13 @@
       "no-filter-available": "No filter available"
     }
   },
+  "shared": {
+    "auto_refresh": {
+      "interval": "Interval",
+      "is_disabled": "Auto refresh is disabled",
+      "is_enabled": "Auto refresh is enabled"
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "applications": "Return to applications",

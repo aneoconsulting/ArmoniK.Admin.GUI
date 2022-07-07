@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination, RawSession } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
+import { AutoRefreshService } from '../../../../../shared';
 import {
   TasksService,
   Task,
@@ -15,9 +16,10 @@ import {
   selector: 'app-pages-sessions-session-detail',
   templateUrl: './session-detail.component.html',
   styleUrls: ['./session-detail.component.scss'],
+  providers: [AutoRefreshService],
 })
 export class SessionDetailComponent implements OnInit {
-  // Store state to use in refresh
+  // Store state for manual and auto refresh
   private state: ClrDatagridStateInterface = {};
 
   session: RawSession | undefined;
@@ -33,11 +35,15 @@ export class SessionDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    public autoRefreshService: AutoRefreshService
   ) {
     this.browserTitleService.setTitle(
       this.languageService.instant('pages.sessions.session-detail.title')
     );
+
+    // Activate auto refresh
+    this.autoRefreshService.setFn(() => this.refresh());
   }
 
   ngOnInit() {
@@ -53,8 +59,14 @@ export class SessionDetailComponent implements OnInit {
    *
    * @param state Clarity datagrid state
    */
-  onTasksRefresh(state: ClrDatagridStateInterface) {
-    this.state = state;
+  refresh(state: ClrDatagridStateInterface | undefined = undefined) {
+    if (state) {
+      // save the state
+      this.state = state;
+    } else {
+      // set the state to the last one
+      state = this.state;
+    }
 
     this.loadingTasks = true;
 
@@ -86,13 +98,6 @@ export class SessionDetailComponent implements OnInit {
       error: this.onErrorTasks.bind(this),
       next: this.onNextTasks.bind(this),
     });
-  }
-
-  /**
-   * Manual refresh of tasks list
-   */
-  onManualTasksRefresh() {
-    this.onTasksRefresh(this.state);
   }
 
   /**

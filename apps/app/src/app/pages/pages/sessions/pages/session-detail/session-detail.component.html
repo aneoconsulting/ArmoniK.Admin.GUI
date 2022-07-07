@@ -51,12 +51,16 @@
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <app-pages-sessions-tasks-list
+    [isAutoRefreshEnabled]="autoRefreshService.isEnabled()"
+    (autoRefreshChange)="autoRefreshService.toggle()"
+    [autoRefreshTimer]="autoRefreshService.timer"
+    (autoRefreshTimerChange)="autoRefreshService.setTimer($event)"
     [tasks]="tasks"
     [loading]="loadingTasks"
     [(selection)]="selectedTasks"
-    [cancelButtonState]="cancelTasksButtonState"
     (cancelTasksChange)="onCancelTasks()"
-    (refresh)="onTasksRefresh($event)"
-    (manualRefresh)="onManualTasksRefresh()"
+    [cancelButtonState]="cancelTasksButtonState"
+    (refresh)="refresh($event)"
+    (manualRefresh)="refresh()"
   ></app-pages-sessions-tasks-list>
 </section>
