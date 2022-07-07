@@ -49,7 +49,7 @@ export class PagesComponent {
    */
   public removeApplication(application: Application['_id']) {
     this.settingsService.removeCurrentApplication(application);
-    this.router.navigate(['/admin', 'dashboard']);
+    this.router.navigate(['/', 'dashboard']);
   }
 
   /**

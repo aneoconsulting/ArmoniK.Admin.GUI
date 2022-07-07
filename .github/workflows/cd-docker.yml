@@ -24,6 +24,20 @@ jobs:
           fetch-depth: 0
           submodules: true
 
+      # - name: Update version
+      #   # Only for a tag
+      #   if: startsWith(github.ref, 'refs/tags/v')
+      #   run: bash ${GITHUB_WORKSPACE}/scripts/github/update-version.sh
+
+      # - name: Commit and Push
+      #   # Only for a tag
+      #   if: startsWith(github.ref, 'refs/tags/v')
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     new_branch: main
+      #     message: 'Update version to ${{ github.ref_name }}'
+      #     push: true
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3

@@ -43,6 +43,12 @@
   </clr-dg-column>
   <clr-dg-column clrDgField="Status">
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
+    <clr-dg-filter [clrDgFilter]="taskStatusFilter">
+      <app-task-status-filter
+        #taskStatusFilter
+        name="Status"
+      ></app-task-status-filter>
+    </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column>
     {{ 'pages.sessions.session-detail.table.detail' | translate }}

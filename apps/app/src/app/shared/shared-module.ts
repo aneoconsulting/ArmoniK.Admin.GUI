@@ -4,9 +4,12 @@ import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { AlertErrorComponent } from './components';
-import { AutoRefreshActivatorComponent } from './components/auto-refresh-activator';
-import { TimerIntervalSelectorComponent } from './components/timer-interval-selector';
+import {
+  AlertErrorComponent,
+  TimerIntervalSelectorComponent,
+  AutoRefreshActivatorComponent,
+} from './components';
+import { TaskStatusFilterComponent } from './filters';
 
 @NgModule({
   imports: [
@@ -20,11 +23,13 @@ import { TimerIntervalSelectorComponent } from './components/timer-interval-sele
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
     AutoRefreshActivatorComponent,
+    TaskStatusFilterComponent,
   ],
   exports: [
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
     AutoRefreshActivatorComponent,
+    TaskStatusFilterComponent,
     ClarityModule,
     CommonModule,
     RouterModule,

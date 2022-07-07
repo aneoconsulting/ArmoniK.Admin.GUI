@@ -34,14 +34,19 @@ export class TasksService implements OnModuleInit {
     page: number,
     limit: number,
     sessionId: string,
-    orderBy: string | null,
-    order: string | null
+    orderBy: string | undefined,
+    order: string | undefined,
+    status: number | undefined
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
     const match = {
       SessionId: sessionId,
     };
+
+    if (status !== undefined) {
+      match['Status'] = status;
+    }
 
     const total = await this.connection
       .collection(this.taskModel.collection.collectionName)
@@ -70,7 +75,11 @@ export class TasksService implements OnModuleInit {
       .limit(limit)
       .exec();
 
-    const meta = this.paginationService.createMeta(total[0].count, page, limit);
+    const meta = this.paginationService.createMeta(
+      total[0]?.count ?? 0,
+      page,
+      limit
+    );
 
     return {
       data,
