@@ -102,7 +102,25 @@
           },
           "detail": "Error detail",
           "see-more": "See more",
-          "cancel": "Cancel selection"
+          "cancel": "Cancel selection",
+          "filters": {
+            "status": {
+              "title": "Select a status",
+              "default": "All",
+              "UNSPECIFIED": "Unspecified",
+              "CREATING": "Creating",
+              "SUBMITTED": "Submitted",
+              "DISPATCHED": "Dispatched",
+              "PROCESSING": "Processing",
+              "PROCESSED": "Processed",
+              "COMPLETED": "Completed",
+              "ERROR": "Error",
+              "FAILED": "Failed",
+              "TIMEOUT": "Timeout",
+              "CANCELLING": "Cancelling",
+              "CANCELLED": "Cancelled"
+            }
+          }
         },
         "task-detail": {
           "title": "Task detail",

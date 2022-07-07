@@ -4,7 +4,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { AlertErrorComponent } from '../../../../../shared';
+import {
+  AlertErrorComponent,
+  TaskStatusFilterComponent,
+} from '../../../../../shared';
 import { TasksService } from '../../../../../core';
 import { TasksListComponent } from './components';
 import { SessionDetailComponent } from './session-detail.component';
@@ -20,6 +23,7 @@ describe('SessionDetailComponent', () => {
         SessionDetailComponent,
         TasksListComponent,
         AlertErrorComponent,
+        TaskStatusFilterComponent,
       ],
       imports: [
         RouterTestingModule.withRoutes([]),
