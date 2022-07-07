@@ -14,7 +14,7 @@ export class ErrorService {
     switch (errorResponse.status) {
       default: {
         console.error(errorResponse);
-        this.router.navigate(['/admin', 'error']);
+        this.router.navigate(['/', 'error']);
         return of(null);
       }
     }

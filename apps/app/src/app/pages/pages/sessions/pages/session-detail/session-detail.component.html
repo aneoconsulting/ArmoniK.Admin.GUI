@@ -1,7 +1,7 @@
 <section>
   <ui-page-header>
     <ng-container subtitle>
-      <a [routerLink]="['/admin', 'dashboard']">{{
+      <a [routerLink]="['/', 'dashboard']">{{
         'navigation.applications' | translate
       }}</a>
     </ng-container>
@@ -10,7 +10,7 @@
     <ng-container subtitle>
       <a
         [routerLink]="[
-          '/admin',
+          '/',
           'applications',
           applicationName,
           applicationVersion,
@@ -51,11 +51,16 @@
   <app-alert-error [errors]="errors"></app-alert-error>
 
   <app-pages-sessions-tasks-list
+    [isAutoRefreshEnabled]="autoRefreshService.isEnabled()"
+    (autoRefreshChange)="autoRefreshService.toggle()"
+    [autoRefreshTimer]="autoRefreshService.timer"
+    (autoRefreshTimerChange)="autoRefreshService.setTimer($event)"
     [tasks]="tasks"
     [loading]="loadingTasks"
     [(selection)]="selectedTasks"
-    [cancelButtonState]="cancelTasksButtonState"
     (cancelTasksChange)="onCancelTasks()"
-    (refresh)="onTasksRefresh($event)"
+    [cancelButtonState]="cancelTasksButtonState"
+    (refresh)="refresh($event)"
+    (manualRefresh)="refresh()"
   ></app-pages-sessions-tasks-list>
 </section>

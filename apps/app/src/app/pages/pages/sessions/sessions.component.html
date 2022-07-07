@@ -1,7 +1,7 @@
 <section>
   <ui-page-header>
     <ng-container subtitle>
-      <a [routerLink]="['/admin', 'dashboard']">{{
+      <a [routerLink]="['/', 'dashboard']">{{
         'navigation.applications' | translate
       }}</a>
     </ng-container>
@@ -18,11 +18,28 @@
     (clrDgRefresh)="onRefreshSessions($event)"
     [clrDgLoading]="loadingSessions"
   >
+    <clr-dg-action-bar>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="refresh()"
+      >
+        {{ 'pages.sessions.table.refresh' | translate }}
+      </button>
+      <div class="btn-group">
+        <app-auto-refresh-activator
+          [isEnabled]="autoRefreshService.isEnabled()"
+          (autoRefreshChange)="autoRefreshService.toggle()"
+        ></app-auto-refresh-activator>
+        <app-timer-interval-selector
+          [timer]="autoRefreshService.timer"
+          (timerChange)="onTimerChange($event)"
+        ></app-timer-interval-selector>
+      </div>
+    </clr-dg-action-bar>
+
     <clr-dg-column clrDgField="_id">
       {{ 'pages.sessions.table.id' | translate }}
-      <clr-dg-filter>
-        {{ 'global.filters.no-filter-available' | translate }}
-      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column clrDgField="countTasks">
       {{ 'pages.sessions.table.count.title' | translate }}

@@ -36,7 +36,8 @@ export class TasksService implements OnModuleInit {
     sessionId: string,
     orderBy: string | undefined,
     order: string | undefined,
-    _id: string | undefined
+    _id: string | undefined,
+    status: number | undefined
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
@@ -46,6 +47,10 @@ export class TasksService implements OnModuleInit {
 
     if (_id) {
       match['_id'] = _id;
+    }
+
+    if (status !== undefined) {
+      match['Status'] = status;
     }
 
     const tasksSort: { [key: string]: 1 | -1 } = {};
@@ -81,7 +86,12 @@ export class TasksService implements OnModuleInit {
       .limit(limit)
       .exec();
 
-    const meta = this.paginationService.createMeta(total[0].count, page, limit);
+    const meta = this.paginationService.createMeta(
+      total[0]?.count ?? 0,
+      page,
+      limit
+    );
+
     return {
       data,
       meta,

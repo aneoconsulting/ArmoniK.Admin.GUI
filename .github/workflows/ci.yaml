@@ -53,7 +53,7 @@ jobs:
       - name: Coverage Report (App)
         # Can't publish on push on main
         if: ${{ github.event_name == 'pull_request' }}
-        uses: romeovs/lcov-reporter-action@v0.2.16
+        uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           title: App - Coverage
           delete-old-comments: true

@@ -1,12 +1,12 @@
 describe('applications', () => {
   beforeEach(() => {
-    cy.visit('/admin/dashboard');
+    cy.visit('/dashboard');
     cy.get(':nth-child(1) > .card > .card-footer > .btn').click();
   });
 
   it('should be able to click on "applications" button to return to dashboard', () => {
     cy.get('.subtitle > a').click();
-    cy.url().should('include', '/admin/dashboard');
+    cy.url().should('include', '/dashboard');
   });
 
   it('should be able to click on a session ID button', () => {

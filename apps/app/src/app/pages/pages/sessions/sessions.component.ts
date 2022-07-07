@@ -10,16 +10,22 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
+  LanguageService,
   Session,
   SessionsService,
 } from '../../../core';
+import { AutoRefreshService } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
+  providers: [AutoRefreshService],
 })
 export class SessionsComponent implements OnInit {
+  // Store state for manual and auto refresh
+  private state: ClrDatagridStateInterface = {};
+
   sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
   loadingSessions = true;
@@ -28,7 +34,9 @@ export class SessionsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private browserTitleService: BrowserTitleService,
-    private sessionsService: SessionsService
+    private sessionsService: SessionsService,
+    private languageService: LanguageService,
+    public autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
@@ -36,6 +44,8 @@ export class SessionsComponent implements OnInit {
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );
+    // Activate auto refresh
+    this.autoRefreshService.setFn(() => this.refresh());
   }
 
   /**
@@ -44,6 +54,8 @@ export class SessionsComponent implements OnInit {
    * @param state
    */
   onRefreshSessions(state: ClrDatagridStateInterface) {
+    this.state = state;
+
     this.loadingSessions = true;
 
     const nextPage = state?.page?.current ?? 1;
@@ -61,10 +73,36 @@ export class SessionsComponent implements OnInit {
       params = params.set('orderBy', orderBy).set('order', order);
     }
 
+    const filters = state?.filters;
+    if (filters) {
+      // filters is an array of filter
+      for (const filter of filters) {
+        const filterName = filter.property as string;
+        const filterValue = filter.value as string;
+        params = params.set(filterName, filterValue);
+      }
+    }
+
     this.sessionsService.getAllPaginated(params).subscribe({
       error: this.onErrorSessions.bind(this),
       next: this.onNextSessions.bind(this),
     });
+  }
+
+  /**
+   * Refresh
+   */
+  refresh() {
+    this.onRefreshSessions(this.state);
+  }
+
+  /**
+   * Update the timer
+   *
+   * @param timer
+   */
+  onTimerChange(timer: number) {
+    this.autoRefreshService.setTimer(timer);
   }
 
   /**
@@ -73,9 +111,14 @@ export class SessionsComponent implements OnInit {
    * @param session
    */
   cancelSession(sessionId: Session['_id']) {
-    this.sessionsService.cancel(sessionId).subscribe({
-      error: this.onCancelSessionError.bind(this),
-    });
+    // Use an alert to confirm the cancellation
+    if (
+      confirm(this.languageService.instant('pages.sessions.cancel.confirm'))
+    ) {
+      this.sessionsService.cancel(sessionId).subscribe({
+        error: this.onCancelSessionError.bind(this),
+      });
+    }
   }
 
   /**

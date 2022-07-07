@@ -5,6 +5,13 @@
       "no-filter-available": "Pas de filtre disponible"
     }
   },
+  "shared": {
+    "auto_refresh": {
+      "interval": "Intervalle",
+      "is_disabled": "Auto-rafraîchissement désactivé",
+      "is_enabled": "Auto-rafraîchissement activé"
+    }
+  },
   "navigation": {
     "dashboard": "Tableau de bord",
     "applications": "Retourner aux applications",
@@ -53,10 +60,12 @@
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
       "cancel": {
-        "text": "Annuler la session"
+        "text": "Annuler la session",
+        "confirm": "Êtes-vous sûr de vouloir annuler cette session ?"
       },
       "table": {
         "id": "Session ID",
+        "refresh": "Rafraîchir",
         "cancel": "Annuler",
         "count": {
           "title": "Total des tâches",
@@ -83,6 +92,7 @@
         "table": {
           "title": "Tâches associées",
           "id": "Tâche ID",
+          "refresh": "Rafraîchir",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
           "tâche": "{{value}} tâche",
@@ -99,7 +109,25 @@
           },
           "detail": "Détail de l'erreur",
           "see-more": "Voir plus",
-          "cancel": "Annuler la sélection"
+          "cancel": "Annuler la sélection",
+          "filters": {
+            "status": {
+              "title": "Filtres",
+              "default": "Toutes",
+              "UNSPECIFIED": "Non spécifié",
+              "CREATING": "Création",
+              "SUBMITTED": "Soumise",
+              "DISPATCHED": "Dépôt",
+              "PROCESSING": "En cours",
+              "PROCESSED": "Traitée",
+              "COMPLETED": "Terminée",
+              "ERROR": "Erreur",
+              "FAILED": "Échouée",
+              "TIMEOUT": "Temps écoulé",
+              "CANCELLING": "Annulation",
+              "CANCELLED": "Annulée"
+            }
+          }
         },
         "task-detail": {
           "title": "Détail de la tâche",

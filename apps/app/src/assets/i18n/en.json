@@ -5,6 +5,13 @@
       "no-filter-available": "No filter available"
     }
   },
+  "shared": {
+    "auto_refresh": {
+      "interval": "Interval",
+      "is_disabled": "Auto refresh is disabled",
+      "is_enabled": "Auto refresh is enabled"
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "applications": "Return to applications",
@@ -53,10 +60,12 @@
       "per_page": "Sessions per page",
       "title": "All sessions",
       "cancel": {
-        "text": "Cancel session"
+        "text": "Cancel session",
+        "confirm": "Are you sure you want to cancel this session?"
       },
       "table": {
         "id": "Session ID",
+        "refresh": "Refresh",
         "cancel": "Cancel",
         "count": {
           "title": "Tasks count",
@@ -81,8 +90,9 @@
           "title": "Task {{id}}"
         },
         "table": {
-          "title": "Associate tasks",
+          "title": "Associated tasks",
           "id": "Task ID",
+          "refresh": "Refresh",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
           "task": "{{value}} task",
@@ -99,7 +109,25 @@
           },
           "detail": "Error detail",
           "see-more": "See more",
-          "cancel": "Cancel selection"
+          "cancel": "Cancel selection",
+          "filters": {
+            "status": {
+              "title": "Select a status",
+              "default": "All",
+              "UNSPECIFIED": "Unspecified",
+              "CREATING": "Creating",
+              "SUBMITTED": "Submitted",
+              "DISPATCHED": "Dispatched",
+              "PROCESSING": "Processing",
+              "PROCESSED": "Processed",
+              "COMPLETED": "Completed",
+              "ERROR": "Error",
+              "FAILED": "Failed",
+              "TIMEOUT": "Timeout",
+              "CANCELLING": "Cancelling",
+              "CANCELLED": "Cancelled"
+            }
+          }
         },
         "task-detail": {
           "title": "Task detail",

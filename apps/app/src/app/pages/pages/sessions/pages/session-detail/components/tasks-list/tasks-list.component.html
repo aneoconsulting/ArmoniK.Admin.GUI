@@ -5,15 +5,30 @@
   (clrDgSelectedChange)="selectionChange.emit($event)"
 >
   <clr-dg-action-bar>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-danger"
+      (click)="cancelTasksChange.emit()"
+      [clrLoading]="cancelButtonState"
+    >
+      {{ 'pages.sessions.session-detail.table.cancel' | translate }}
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline"
+      (click)="manualRefresh.emit()"
+    >
+      {{ 'pages.sessions.session-detail.table.refresh' | translate }}
+    </button>
     <div class="btn-group">
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="cancelTasksChange.emit()"
-        [clrLoading]="cancelButtonState"
-      >
-        {{ 'pages.sessions.session-detail.table.cancel' | translate }}
-      </button>
+      <app-auto-refresh-activator
+        [isEnabled]="isAutoRefreshEnabled"
+        (autoRefreshChange)="onAutoRefreshChange()"
+      ></app-auto-refresh-activator>
+      <app-timer-interval-selector
+        [timer]="autoRefreshTimer"
+        (timerChange)="onAutoRefreshTimerChange($event)"
+      ></app-timer-interval-selector>
     </div>
   </clr-dg-action-bar>
 
@@ -34,8 +49,11 @@
   </clr-dg-column>
   <clr-dg-column clrDgField="Status">
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
-    <clr-dg-filter>
-      {{ 'global.filters.no-filter-available' | translate }}
+    <clr-dg-filter [clrDgFilter]="taskStatusFilter">
+      <app-task-status-filter
+        #taskStatusFilter
+        name="Status"
+      ></app-task-status-filter>
     </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column>

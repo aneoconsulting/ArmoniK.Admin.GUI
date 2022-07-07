@@ -14,17 +14,42 @@ import { Task } from '../../../../../../../core';
   styleUrls: ['./tasks-list.component.scss'],
 })
 export class TasksListComponent {
+  @Input() isAutoRefreshEnabled: boolean | null = null;
+  @Output() autoRefreshChange: EventEmitter<void> = new EventEmitter();
+
+  @Input() autoRefreshTimer: number | null = null;
+  @Output() autoRefreshTimerChange = new EventEmitter<number>();
+
   @Input() tasks: Pagination<Task> | null = null;
-  @Input() selection: Task[] = [];
   @Input() loading = true;
+
+  @Input() selection: Task[] = [];
+  @Output() selectionChange = new EventEmitter<Task[]>();
+
   @Input() cancelButtonState = ClrLoadingState.DEFAULT;
+  @Output() cancelTasksChange = new EventEmitter<Task[]>();
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
-  @Output() selectionChange = new EventEmitter<Task[]>();
-  @Output() cancelTasksChange = new EventEmitter<Task[]>();
+  @Output() manualRefresh = new EventEmitter<void>();
 
   isModalOpen = false;
   activeTask: Task | null = null;
+
+  /**
+   * Emit event when auto refresh change
+   */
+  onAutoRefreshChange() {
+    this.autoRefreshChange.emit();
+  }
+
+  /**
+   * Emit event when auto refresh timer change
+   *
+   * @param timer New timer value
+   */
+  onAutoRefreshTimerChange(timer: number) {
+    this.autoRefreshTimerChange.emit(timer);
+  }
 
   openModal(task: Task) {
     this.activeTask = task;
