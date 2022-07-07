@@ -53,13 +53,13 @@ export class TasksService implements OnModuleInit {
       match['Status'] = status;
     }
 
-    const tasksSort: { [key: string]: 1 | -1 } = {};
+    const taskSort: { [key: string]: 1 | -1 } = {};
 
     if (orderBy) {
-      tasksSort[orderBy] = Number(order) as -1 | 1;
+      taskSort[orderBy] = Number(order) as -1 | 1;
     } else {
-      tasksSort['startedAt'] = -1;
-      tasksSort['_id'] = 1;
+      taskSort['startedAt'] = -1;
+      taskSort['_id'] = 1;
     }
 
     const total = await this.connection
@@ -81,7 +81,7 @@ export class TasksService implements OnModuleInit {
           error: '$Output.Error',
         },
       })
-      .sort(tasksSort)
+      .sort(taskSort)
       .skip(startIndex)
       .limit(limit)
       .exec();
