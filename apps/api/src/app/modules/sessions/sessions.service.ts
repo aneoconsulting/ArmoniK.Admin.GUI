@@ -68,13 +68,13 @@ export class SessionsService implements OnModuleInit {
       sessionMatch['_id'] = _id;
     }
 
-    const sessionsSort: { [key: string]: 1 | -1 } = {};
+    const sessionSort: { [key: string]: 1 | -1 } = {};
 
     if (orderBy) {
-      sessionsSort[orderBy] = Number(order) as -1 | 1;
+      sessionSort[orderBy] = Number(order) as -1 | 1;
     } else {
-      sessionsSort['createdAt'] = -1;
-      sessionsSort['_id'] = 1;
+      sessionSort['createdAt'] = -1;
+      sessionSort['_id'] = 1;
     }
 
     const result = await this.connection
@@ -168,7 +168,7 @@ export class SessionsService implements OnModuleInit {
           },
         },
         {
-          $sort: sessionsSort,
+          $sort: sessionSort,
         },
         // Skip the number of items per page
         {
