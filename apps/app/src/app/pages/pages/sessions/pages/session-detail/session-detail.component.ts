@@ -88,7 +88,7 @@ export class SessionDetailComponent implements OnInit {
     if (filters) {
       // filters is an array of filters
       for (const filter of filters) {
-        const filterName = filter.name as string;
+        const filterName = filter.name ?? (filter.property as string);
         const filterValue = filter.value as string;
         params = params.set(filterName, filterValue);
       }
