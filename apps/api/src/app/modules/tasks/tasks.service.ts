@@ -49,6 +49,7 @@ export class TasksService implements OnModuleInit {
       match['_id'] = taskId;
     }
 
+    // Need to be careful with the status, it can be 0
     if (status !== undefined) {
       match['Status'] = status;
     }
