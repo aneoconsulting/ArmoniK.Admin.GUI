@@ -19,7 +19,7 @@ export class PagesComponent {
 
   links: AppNavLink[] = [
     {
-      path: 'dashboard',
+      path: ['/', 'dashboard'],
       label: this.languageService.instant('navigation.dashboard'),
     },
   ];

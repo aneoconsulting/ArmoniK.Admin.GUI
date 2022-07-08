@@ -10,7 +10,7 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
   styleUrls: ['./application-card.component.scss'],
 })
 export class ApplicationCardComponent {
-  @Input() application: Application | undefined;
+  @Input() application?: Application;
   @Output() applicationChange: EventEmitter<Application> = new EventEmitter();
 
   onClick() {

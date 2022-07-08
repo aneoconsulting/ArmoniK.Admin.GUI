@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination, RawSession } from '@armonik.admin.gui/armonik-typing';
@@ -23,7 +22,7 @@ export class SessionDetailComponent implements OnInit {
   // Store state for manual and auto refresh
   private state: ClrDatagridStateInterface = {};
 
-  session: RawSession | undefined;
+  session?: RawSession;
 
   tasks: Pagination<Task> | null = null;
   selectedTasks: Task[] = [];
