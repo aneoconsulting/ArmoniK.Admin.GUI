@@ -76,14 +76,12 @@ export class PagerService {
     state: ClrDatagridStateInterface,
     params: Map<string, string>
   ) {
-    const filters = state?.filters;
-    if (filters) {
-      // filters is an array of filter
-      for (const filter of filters) {
-        const filterName = filter.property as string;
-        const filterValue = filter.value as string;
-        params.set(filterName, filterValue);
-      }
+    const filters = state?.filters ?? [];
+    // filters is an array of filter
+    for (const filter of filters) {
+      const filterName = filter.property as string;
+      const filterValue = filter.value as string;
+      params.set(filterName, filterValue);
     }
   }
 }
