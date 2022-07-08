@@ -40,7 +40,6 @@ export class SessionsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.browserTitleService.setTitle(
       this.applicationName + ' - ' + this.applicationVersion
     );

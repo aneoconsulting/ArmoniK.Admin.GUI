@@ -1,4 +1,4 @@
 export type AppNavLink = {
-  path: string;
+  path: string | string[];
   label: string;
 };
