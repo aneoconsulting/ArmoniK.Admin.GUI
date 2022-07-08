@@ -22,7 +22,7 @@ export class SessionDetailComponent implements OnInit {
   // Store state for manual and auto refresh
   private state: ClrDatagridStateInterface = {};
 
-  session: RawSession | undefined;
+  session?: RawSession;
 
   tasks: Pagination<Task> | null = null;
   selectedTasks: Task[] = [];
@@ -59,7 +59,7 @@ export class SessionDetailComponent implements OnInit {
    *
    * @param state Clarity datagrid state
    */
-  refresh(state: ClrDatagridStateInterface | undefined = undefined) {
+  refresh(state?: ClrDatagridStateInterface) {
     if (state) {
       // save the state
       this.state = state;

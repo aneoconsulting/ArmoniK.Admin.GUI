@@ -34,10 +34,10 @@ export class TasksService implements OnModuleInit {
     page: number,
     limit: number,
     sessionId: string,
-    orderBy: string | undefined,
-    order: string | undefined,
-    taskId: string | undefined,
-    status: number | undefined
+    orderBy?: string,
+    order?: string,
+    taskId?: string,
+    status?: number
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
