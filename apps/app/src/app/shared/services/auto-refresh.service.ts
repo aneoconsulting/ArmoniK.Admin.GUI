@@ -1,10 +1,19 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable()
 export class AutoRefreshService implements OnDestroy {
   timer = 10_000;
   timersList: number[] = [10_000, 30_000, 60_000, 120_000];
   interval: ReturnType<typeof setInterval> | null = null;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.disable();
+      }
+    });
+  }
 
   private fn: () => void = () => {
     throw new Error('AutoRefreshService.fn is not set');
