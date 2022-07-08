@@ -7,6 +7,7 @@ import { LocaleProvider } from './providers';
 import {
   ApiService,
   ApplicationsService,
+  PagerService,
   ErrorService,
   LanguageService,
   SessionsService,
@@ -34,6 +35,7 @@ import {
     ApplicationsService,
     SessionsService,
     TasksService,
+    PagerService,
   ],
 })
 export class CoreModule {}

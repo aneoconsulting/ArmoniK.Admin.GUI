@@ -11,6 +11,7 @@ export class TaskStatusFilterComponent
   implements ClrDatagridFilterInterface<TaskStatus>
 {
   @Input() name = '';
+  public property = this.name;
 
   // Keep only ids
   taskStatus = TaskStatus;

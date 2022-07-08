@@ -8,7 +8,7 @@ import {
   AlertErrorComponent,
   TaskStatusFilterComponent,
 } from '../../../../../shared';
-import { TasksService } from '../../../../../core';
+import { PagerService, TasksService } from '../../../../../core';
 import { TasksListComponent } from './components';
 import { SessionDetailComponent } from './session-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -33,7 +33,7 @@ describe('SessionDetailComponent', () => {
         HttpClientModule,
         BrowserAnimationsModule,
       ],
-      providers: [TasksService],
+      providers: [TasksService, PagerService],
     }).compileComponents();
   });
 

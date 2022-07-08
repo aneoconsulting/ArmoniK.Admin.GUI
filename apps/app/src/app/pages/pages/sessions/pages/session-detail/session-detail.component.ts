@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination, RawSession } from '@armonik.admin.gui/armonik-typing';
@@ -10,6 +9,7 @@ import {
   AppError,
   BrowserTitleService,
   LanguageService,
+  PagerService,
 } from '../../../../../core';
 
 @Component({
@@ -36,6 +36,7 @@ export class SessionDetailComponent implements OnInit {
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService,
     private tasksService: TasksService,
+    private pagerService: PagerService,
     public autoRefreshService: AutoRefreshService
   ) {
     this.browserTitleService.setTitle(
@@ -70,29 +71,10 @@ export class SessionDetailComponent implements OnInit {
 
     this.loadingTasks = true;
 
-    const nextPage = state?.page?.current ?? 1;
-    const limit = state?.page?.size ?? 10;
-
-    let params = new HttpParams()
-      .set('sessionId', this.sessionId)
-      .set('page', `${nextPage}`)
-      .set('limit', `${limit}`);
-
-    const orderBy = state?.sort?.by as string;
-    const order = state?.sort?.reverse ? -1 : 1;
-    if (orderBy) {
-      params = params.set('orderBy', orderBy).set('order', `${order}`);
-    }
-
-    const filters = state?.filters;
-    if (filters) {
-      // filters is an array of filters
-      for (const filter of filters) {
-        const filterName = filter.name ?? (filter.property as string);
-        const filterValue = filter.value as string;
-        params = params.set(filterName, filterValue);
-      }
-    }
+    const data = {
+      sessionId: this.sessionId,
+    };
+    const params = this.pagerService.createHttpParams(state, data);
 
     this.tasksService.getAllPaginated(params).subscribe({
       error: this.onErrorTasks.bind(this),
