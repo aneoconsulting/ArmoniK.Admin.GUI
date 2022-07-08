@@ -10,6 +10,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
+  ClarityService,
   LanguageService,
   Session,
   SessionsService,
@@ -36,6 +37,7 @@ export class SessionsComponent implements OnInit {
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
     private languageService: LanguageService,
+    private clarityService: ClarityService,
     public autoRefreshService: AutoRefreshService
   ) {}
 
@@ -58,30 +60,11 @@ export class SessionsComponent implements OnInit {
 
     this.loadingSessions = true;
 
-    const nextPage = state?.page?.current ?? 1;
-    const limit = state?.page?.size ?? 10;
-
-    let params = new HttpParams()
-      .set('page', nextPage.toString())
-      .set('limit', limit.toString())
-      .set('applicationName', this.applicationName)
-      .set('applicationVersion', this.applicationVersion);
-
-    const orderBy = state?.sort?.by as string;
-    const order = state?.sort?.reverse ? -1 : 1;
-    if (orderBy) {
-      params = params.set('orderBy', orderBy).set('order', order);
-    }
-
-    const filters = state?.filters;
-    if (filters) {
-      // filters is an array of filter
-      for (const filter of filters) {
-        const filterName = filter.property as string;
-        const filterValue = filter.value as string;
-        params = params.set(filterName, filterValue);
-      }
-    }
+    const data = {
+      applicationName: this.applicationName,
+      applicationVersion: this.applicationVersion,
+    };
+    const params = this.clarityService.createHttpParams(state, data);
 
     this.sessionsService.getAllPaginated(params).subscribe({
       error: this.onErrorSessions.bind(this),
