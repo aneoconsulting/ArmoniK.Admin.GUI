@@ -6,4 +6,4 @@ export * from './language.service';
 
 export * from './settings.service';
 
-export * from './clarity.service';
+export * from './pager.service';

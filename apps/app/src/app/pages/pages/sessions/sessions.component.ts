@@ -10,7 +10,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
-  ClarityService,
+  PagerService,
   LanguageService,
   Session,
   SessionsService,
@@ -37,7 +37,7 @@ export class SessionsComponent implements OnInit {
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
     private languageService: LanguageService,
-    private clarityService: ClarityService,
+    private pagerService: PagerService,
     public autoRefreshService: AutoRefreshService
   ) {}
 
@@ -63,7 +63,7 @@ export class SessionsComponent implements OnInit {
       applicationName: this.applicationName,
       applicationVersion: this.applicationVersion,
     };
-    const params = this.clarityService.createHttpParams(state, data);
+    const params = this.pagerService.createHttpParams(state, data);
 
     this.sessionsService.getAllPaginated(params).subscribe({
       error: this.onErrorSessions.bind(this),

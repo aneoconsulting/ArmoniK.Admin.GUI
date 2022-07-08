@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
 
 @Injectable()
-export class ClarityService {
+export class PagerService {
   private defaultNextPage = 1;
   private defaultLimit = 10;
 

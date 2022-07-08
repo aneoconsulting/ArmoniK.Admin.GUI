@@ -9,7 +9,7 @@ import {
   AppError,
   BrowserTitleService,
   LanguageService,
-  ClarityService,
+  PagerService,
 } from '../../../../../core';
 
 @Component({
@@ -36,7 +36,7 @@ export class SessionDetailComponent implements OnInit {
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService,
     private tasksService: TasksService,
-    private clarityService: ClarityService,
+    private pagerService: PagerService,
     public autoRefreshService: AutoRefreshService
   ) {
     this.browserTitleService.setTitle(
@@ -74,7 +74,7 @@ export class SessionDetailComponent implements OnInit {
     const data = {
       sessionId: this.sessionId,
     };
-    const params = this.clarityService.createHttpParams(state, data);
+    const params = this.pagerService.createHttpParams(state, data);
 
     this.tasksService.getAllPaginated(params).subscribe({
       error: this.onErrorTasks.bind(this),
