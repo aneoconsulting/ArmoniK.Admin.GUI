@@ -19,8 +19,6 @@ export class ClarityService {
     state: ClrDatagridStateInterface,
     data: { [key: string]: string } = {}
   ): HttpParams {
-    console.log('state', state);
-
     const params = new Map();
 
     this.setPage(state, params);
