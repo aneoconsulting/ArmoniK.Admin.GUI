@@ -8,7 +8,7 @@ import {
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { SessionsService } from '../../../core';
+import { ClarityService, SessionsService } from '../../../core';
 import { AlertErrorComponent } from '../../../shared';
 import { SessionsComponent } from './sessions.component';
 
@@ -26,7 +26,7 @@ describe('SessionsComponent', () => {
         ClarityModule,
         UiModule,
       ],
-      providers: [SessionsService],
+      providers: [SessionsService, ClarityService],
     }).compileComponents();
   });
 
