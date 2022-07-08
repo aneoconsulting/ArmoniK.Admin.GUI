@@ -36,7 +36,7 @@ export class TasksService implements OnModuleInit {
     sessionId: string,
     orderBy: string | undefined,
     order: string | undefined,
-    _id: string | undefined,
+    taskId: string | undefined,
     status: number | undefined
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
@@ -45,8 +45,8 @@ export class TasksService implements OnModuleInit {
       SessionId: sessionId,
     };
 
-    if (_id) {
-      match['_id'] = _id;
+    if (taskId) {
+      match['_id'] = taskId;
     }
 
     if (status !== undefined) {
