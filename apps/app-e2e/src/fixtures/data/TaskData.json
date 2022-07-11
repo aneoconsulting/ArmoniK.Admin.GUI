@@ -13,7 +13,7 @@
     },
     "Status": 5,
     "SessionId": "f36f8054-e2e8-4f1c-a99e-e528d941ce91",
-    "StartDate": {
+    "CreationDate": {
       "$date": {
         "$numberLong": "<date>"
       }
