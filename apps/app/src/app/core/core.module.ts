@@ -13,6 +13,7 @@ import {
   SessionsService,
   SettingsService,
   TasksService,
+  SeqService,
 } from './services';
 
 /**
@@ -36,6 +37,7 @@ import {
     SessionsService,
     TasksService,
     PagerService,
+    SeqService,
   ],
 })
 export class CoreModule {}
