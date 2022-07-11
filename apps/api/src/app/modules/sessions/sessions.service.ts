@@ -58,7 +58,8 @@ export class SessionsService implements OnModuleInit {
         this.settingsService.getApplicationVersion(applicationVersion),
       // Only get the last seven days using StartDate
       $expr: {
-        $gte: ['$StartDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
+        // Use $CreationDate to get pending tasks
+        $gte: ['$CreationDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
       },
     };
 
