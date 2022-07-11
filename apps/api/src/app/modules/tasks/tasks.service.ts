@@ -1,8 +1,14 @@
 import { Pagination, PendingStatus } from '@armonik.admin.gui/armonik-typing';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model, SortOrder } from 'mongoose';
+import { exit } from 'process';
 import { PaginationService, Submitter } from '../../core';
 import { Task, TaskDocument } from './schemas';
 
@@ -63,38 +69,49 @@ export class TasksService implements OnModuleInit {
       taskSort['_id'] = 1;
     }
 
-    const total = await this.connection
-      .collection(this.taskModel.collection.collectionName)
-      .aggregate([
-        { $match: match },
-        { $group: { _id: '$SessionId', count: { $sum: 1 } } },
-      ])
-      .toArray();
+    const getTotal = async () => {
+      return this.connection
+        .collection(this.taskModel.collection.collectionName)
+        .aggregate([
+          { $match: match },
+          { $group: { _id: '$SessionId', count: { $sum: 1 } } },
+        ])
+        .toArray();
+    };
 
-    const data = await this.taskModel
-      .find(match, {
-        _id: 1,
-        startedAt: '$StartDate',
-        endedAt: '$EndDate',
-        status: '$Status',
-        output: {
-          success: '$Output.Success',
-          error: '$Output.Error',
-        },
-      })
-      .sort(taskSort)
-      .skip(startIndex)
-      .limit(limit)
-      .exec();
+    const getTasks = async (): Promise<Task[]> => {
+      return this.taskModel
+        .find(match, {
+          _id: 1,
+          startedAt: '$StartDate',
+          endedAt: '$EndDate',
+          status: '$Status',
+          output: {
+            success: '$Output.Success',
+            error: '$Output.Error',
+          },
+        })
+        .sort(taskSort)
+        .skip(startIndex)
+        .limit(limit)
+        .allowDiskUse(true)
+        .exec();
+    };
+
+    const [total, data] = await Promise.allSettled([getTotal(), getTasks()]);
+
+    if (total.status === 'rejected' || data.status === 'rejected') {
+      throw new InternalServerErrorException('Error while getting tasks');
+    }
 
     const meta = this.paginationService.createMeta(
-      total[0]?.count ?? 0,
+      total.value[0]?.count ?? 0,
       page,
       limit
     );
 
     return {
-      data,
+      data: data.value,
       meta,
     };
   }
