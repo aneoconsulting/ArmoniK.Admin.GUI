@@ -1,19 +1,17 @@
-import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Controller,
   Get,
-  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseIntPipe,
   Put,
   Query,
 } from '@nestjs/common';
-import { Session } from './schemas';
-import { SessionsService } from './sessions.service';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import { catchError } from 'rxjs';
 import { GrpcErrorService } from '../../core';
+import { Session } from './schemas';
+import { SessionsService } from './sessions.service';
 
 @Controller('sessions')
 export class SessionsController {
@@ -39,7 +37,8 @@ export class SessionsController {
     @Query('applicationVersion') applicationVersion: string,
     @Query('orderBy') orderBy: string,
     @Query('order') order: string,
-    @Query('_id') _id: string
+    @Query('_id') _id: string,
+    @Query('lastActivity') lastActivity: string
   ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
@@ -48,7 +47,8 @@ export class SessionsController {
       applicationVersion,
       orderBy,
       order,
-      _id
+      _id,
+      lastActivity ? new Date(lastActivity) : undefined
     );
 
     return sessions;

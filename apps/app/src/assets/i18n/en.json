@@ -66,6 +66,7 @@
       "table": {
         "id": "Session ID",
         "refresh": "Refresh",
+        "last_activity": "Last activity",
         "cancel": "Cancel",
         "count": {
           "title": "Tasks count",
@@ -80,7 +81,14 @@
           "completed": "Completed"
         },
         "createdAt": "Created at",
-        "cancelledAt": "Cancelled at"
+        "cancelledAt": "Cancelled at",
+        "filters": {
+          "last_activity": {
+            "title": "Last activity since",
+            "default": "Always",
+            "days": "Last {{value}} day(s)"
+          }
+        }
       },
       "session-detail": {
         "title": "Session detail",

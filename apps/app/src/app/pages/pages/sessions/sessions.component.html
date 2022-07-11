@@ -65,6 +65,15 @@
         {{ 'global.filters.no-filter-available' | translate }}
       </clr-dg-filter>
     </clr-dg-column>
+    <clr-dg-column clrDgField="lastActivity">
+      {{ 'pages.sessions.table.last_activity' | translate }}
+      <clr-dg-filter [clrDgFilter]="lastActivityFilter">
+        <app-last-activity-filter
+          name="lastActivity"
+          #lastActivityFilter
+        ></app-last-activity-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions.table.cancel' | translate }}
     </clr-dg-column>
@@ -148,6 +157,9 @@
         <span *ngIf="isCancelled(session)">
           {{ session.cancelledAt | date: 'medium' }}
         </span>
+      </clr-dg-cell>
+      <clr-dg-cell>
+        {{ session.lastActivity | date: 'medium' }}
       </clr-dg-cell>
       <clr-dg-cell>
         <button
