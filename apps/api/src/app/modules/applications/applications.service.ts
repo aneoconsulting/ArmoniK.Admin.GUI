@@ -31,7 +31,8 @@ export class ApplicationsService {
           $match: {
             $expr: {
               $gte: [
-                '$StartDate',
+                // Use this instead of $StartDate to have pending tasks too
+                '$CreationDate',
                 new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
               ],
             },
