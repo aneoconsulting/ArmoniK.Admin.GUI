@@ -17,6 +17,11 @@
       "$date": {
         "$numberLong": "<date>"
       }
+    },
+    "CreationDate": {
+      "$date": {
+        "$numberLong": "<date>"
+      }
     }
   }
 ]
