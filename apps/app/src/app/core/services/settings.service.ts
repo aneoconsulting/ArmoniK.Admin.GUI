@@ -5,6 +5,7 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
   providedIn: 'root',
 })
 export class SettingsService {
+  isSeqUp = false;
   currentApplications: Set<Application['_id']>;
 
   constructor() {
