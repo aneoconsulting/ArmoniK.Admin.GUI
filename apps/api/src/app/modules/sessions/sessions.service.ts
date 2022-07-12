@@ -4,7 +4,12 @@ import {
   ErrorStatus,
   PendingStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
@@ -78,160 +83,170 @@ export class SessionsService implements OnModuleInit {
       sessionSort['_id'] = 1;
     }
 
-    const result = await this.connection
-      .collection(this.taskModel.collection.collectionName)
-      .aggregate<FormattedSession>([
-        // Filter by application name and version
-        {
-          $match: match,
-        },
-        // Group by session id
-        {
-          $group: {
-            _id: '$SessionId',
-            countTasks: { $sum: 1 },
-            countTasksPending: {
-              $sum: {
-                $cond: {
-                  if: {
-                    $in: ['$Status', PendingStatus],
-                  },
-                  then: 1,
-                  else: 0,
-                },
-              },
+    const getTotal = async () => {
+      return this.connection
+        .collection(this.taskModel.collection.collectionName)
+        .aggregate([
+          // Filter by application name and version
+          {
+            $match: match,
+          },
+          // Group by session id
+          {
+            $group: {
+              _id: '$SessionId',
             },
-            countTasksError: {
-              $sum: {
-                $cond: {
-                  if: {
-                    $in: ['$Status', ErrorStatus],
-                  },
-                  then: 1,
-                  else: 0,
+          },
+          // Join with only one session (merge object)
+          {
+            $lookup: {
+              from: this.sessionModel.collection.collectionName,
+              localField: '_id',
+              foreignField: '_id',
+              as: 'session',
+              pipeline: [
+                {
+                  $match: sessionMatch,
                 },
-              },
+              ],
             },
-            countTasksCompleted: {
-              $sum: {
-                $cond: {
-                  if: {
-                    $eq: ['$Status', TaskStatus.COMPLETED],
-                  },
-                  then: 1,
-                  else: 0,
-                },
-              },
-            },
-            countTasksProcessing: {
-              $sum: {
-                $cond: {
-                  if: {
-                    $eq: ['$Status', TaskStatus.PROCESSING],
-                  },
-                  then: 1,
-                  else: 0,
-                },
+          },
+          // Used to remove a task if object if empty
+          {
+            $unwind: '$session',
+          },
+          // Count the number of sessions
+          {
+            $group: {
+              _id: null,
+              count: {
+                $sum: 1,
               },
             },
           },
-        },
-        // Join with only one session (merge object)
-        {
-          $lookup: {
-            from: this.sessionModel.collection.collectionName,
-            localField: '_id',
-            foreignField: '_id',
-            as: 'session',
-            pipeline: [
-              {
-                $match: sessionMatch,
-              },
-            ],
-          },
-        },
-        {
-          $unwind: '$session',
-        },
-        // Sort by session id
-        // Pick only the fields we need
-        {
-          $project: {
-            _id: '$_id',
-            countTasks: '$countTasks',
-            countTasksPending: '$countTasksPending',
-            countTasksError: '$countTasksError',
-            countTasksCompleted: '$countTasksCompleted',
-            countTasksProcessing: '$countTasksProcessing',
-            status: '$session.Status',
-            createdAt: '$session.CreationDate',
-            cancelledAt: '$session.CancellationDate',
-          },
-        },
-        {
-          $sort: sessionSort,
-        },
-        // Skip the number of items per page
-        {
-          $skip: startIndex,
-        },
-        // Limit the number of items per page
-        {
-          $limit: limit,
-        },
-      ])
-      .toArray();
+        ])
+        .toArray();
+    };
 
-    const total = await this.connection
-      .collection(this.taskModel.collection.collectionName)
-      .aggregate([
-        // Filter by application name and version
-        {
-          $match: match,
-        },
-        // Group by session id
-        {
-          $group: {
-            _id: '$SessionId',
+    const getSessions = async (): Promise<FormattedSession[]> => {
+      return this.connection
+        .collection(this.taskModel.collection.collectionName)
+        .aggregate<FormattedSession>([
+          // Filter by application name and version
+          {
+            $match: match,
           },
-        },
-        // Join with only one session (merge object)
-        {
-          $lookup: {
-            from: this.sessionModel.collection.collectionName,
-            localField: '_id',
-            foreignField: '_id',
-            as: 'session',
-            pipeline: [
-              {
-                $match: sessionMatch,
+          // Group by session id
+          {
+            $group: {
+              _id: '$SessionId',
+              countTasks: { $sum: 1 },
+              countTasksPending: {
+                $sum: {
+                  $cond: {
+                    if: {
+                      $in: ['$Status', PendingStatus],
+                    },
+                    then: 1,
+                    else: 0,
+                  },
+                },
               },
-            ],
-          },
-        },
-        // Used to remove a task if object if empty
-        {
-          $unwind: '$session',
-        },
-        // Count the number of sessions
-        {
-          $group: {
-            _id: null,
-            count: {
-              $sum: 1,
+              countTasksError: {
+                $sum: {
+                  $cond: {
+                    if: {
+                      $in: ['$Status', ErrorStatus],
+                    },
+                    then: 1,
+                    else: 0,
+                  },
+                },
+              },
+              countTasksCompleted: {
+                $sum: {
+                  $cond: {
+                    if: {
+                      $eq: ['$Status', TaskStatus.COMPLETED],
+                    },
+                    then: 1,
+                    else: 0,
+                  },
+                },
+              },
+              countTasksProcessing: {
+                $sum: {
+                  $cond: {
+                    if: {
+                      $eq: ['$Status', TaskStatus.PROCESSING],
+                    },
+                    then: 1,
+                    else: 0,
+                  },
+                },
+              },
             },
           },
-        },
-      ])
-      .toArray();
+          // Join with only one session (merge object)
+          {
+            $lookup: {
+              from: this.sessionModel.collection.collectionName,
+              localField: '_id',
+              foreignField: '_id',
+              as: 'session',
+              pipeline: [
+                {
+                  $match: sessionMatch,
+                },
+              ],
+            },
+          },
+          {
+            $unwind: '$session',
+          },
+          // Sort by session id
+          // Pick only the fields we need
+          {
+            $project: {
+              _id: '$_id',
+              countTasks: '$countTasks',
+              countTasksPending: '$countTasksPending',
+              countTasksError: '$countTasksError',
+              countTasksCompleted: '$countTasksCompleted',
+              countTasksProcessing: '$countTasksProcessing',
+              status: '$session.Status',
+              createdAt: '$session.CreationDate',
+              cancelledAt: '$session.CancellationDate',
+            },
+          },
+          {
+            $sort: sessionSort,
+          },
+          // Skip the number of items per page
+          {
+            $skip: startIndex,
+          },
+          // Limit the number of items per page
+          {
+            $limit: limit,
+          },
+        ])
+        .toArray();
+    };
 
-    const meta = this.paginationService.createMeta(
-      total[0]?.count ?? 0, // Total number of sessions
-      page, // Current page
-      limit // Items per page
-    );
+    try {
+      const [total, data] = await Promise.all([getTotal(), getSessions()]);
 
-    return { meta, data: result };
+      const meta = this.paginationService.createMeta(
+        total[0]?.count ?? 0, // Total number of sessions
+        page, // Current page
+        limit // Items per page
+      );
+
+      return { meta, data };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   /**
