@@ -5,7 +5,8 @@ export type RawTask = {
   Options: TaskOptions;
   Status: TaskStatus;
   SessionId: string;
-  StartDate: Date;
+  CreationDate: Date;
+  StartDate?: Date;
   EndDate?: Date;
 };
 
