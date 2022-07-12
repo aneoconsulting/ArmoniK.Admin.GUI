@@ -66,6 +66,7 @@
       "table": {
         "id": "Session ID",
         "refresh": "Rafraîchir",
+        "last_activity_at": "Dernière activité le",
         "cancel": "Annuler",
         "count": {
           "title": "Total des tâches",
@@ -80,7 +81,14 @@
           "error": "Erreur"
         },
         "createdAt": "Créée le",
-        "cancelledAt": "Annulé le"
+        "cancelledAt": "Annulée le",
+        "filters": {
+          "last_activity_at": {
+            "title": "Dernière activité depuis",
+            "default": "Toujours",
+            "days": "Derniers {{value}} jour(s)"
+          }
+        }
       },
       "session-detail": {
         "title": "Détail de la session",

@@ -1,8 +1,8 @@
 import {
-  FormattedSession,
-  TaskStatus,
   ErrorStatus,
+  FormattedSession,
   PendingStatus,
+  TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import {
   Inject,
@@ -52,7 +52,8 @@ export class SessionsService implements OnModuleInit {
     applicationVersion: string,
     orderBy?: string,
     order?: string,
-    _id?: string
+    _id?: string,
+    lastActivityAt?: Date
   ) {
     const startIndex = (page - 1) * limit;
 
@@ -61,12 +62,12 @@ export class SessionsService implements OnModuleInit {
         this.settingsService.getApplicationName(applicationName),
       'Options.Options.GridAppVersion':
         this.settingsService.getApplicationVersion(applicationVersion),
-      // Only get the last seven days using StartDate
-      $expr: {
-        // Use $CreationDate to get pending tasks
-        $gte: ['$CreationDate', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)],
-      },
+      $expr: {},
     };
+
+    if (lastActivityAt) {
+      match['$expr']['$gte'] = ['$CreationDate', lastActivityAt];
+    }
 
     const sessionMatch: { [key: string]: unknown } = {};
 
@@ -204,7 +205,28 @@ export class SessionsService implements OnModuleInit {
           {
             $unwind: '$session',
           },
-          // Sort by session id
+          // Join with the most recent task (using CreationDate)
+          {
+            $lookup: {
+              from: this.taskModel.collection.collectionName,
+              localField: '_id',
+              foreignField: 'SessionId',
+              as: 'task',
+              pipeline: [
+                {
+                  $sort: {
+                    CreationDate: -1,
+                  },
+                },
+                {
+                  $limit: 1,
+                },
+              ],
+            },
+          },
+          {
+            $unwind: '$task',
+          },
           // Pick only the fields we need
           {
             $project: {
@@ -217,6 +239,7 @@ export class SessionsService implements OnModuleInit {
               status: '$session.Status',
               createdAt: '$session.CreationDate',
               cancelledAt: '$session.CancellationDate',
+              lastActivityAt: '$task.CreationDate',
             },
           },
           {

@@ -1,0 +1,20 @@
+<clr-select-container>
+  <label>
+    {{ 'pages.sessions.table.filters.last_activity_at.title' | translate }}
+  </label>
+  <select clrSelect [name]="name" (change)="onChange($event)">
+    <option value="">
+      {{ 'pages.sessions.table.filters.last_activity_at.default' | translate }}
+    </option>
+    <option
+      *ngFor="let item of lastDays"
+      [value]="getDate(createDateSince(item))"
+      [selected]="item === defaultValue"
+    >
+      {{
+        'pages.sessions.table.filters.last_activity_at.days'
+          | translate: { value: item }
+      }}
+    </option>
+  </select>
+</clr-select-container>
