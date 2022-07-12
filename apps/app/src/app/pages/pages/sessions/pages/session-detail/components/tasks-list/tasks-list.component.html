@@ -134,15 +134,11 @@
         {{ 'pages.sessions.session-detail.table.see-more' | translate }}
       </button>
     </clr-dg-cell>
-    <clr-dg-cell>
-      <a
-        *ngIf="isSeqUp && isError(task)"
-        href
-        (click)="onClickSeqLink($event, task._id)"
-      >
+    <clr-dg-cell *ngIf="isSeqUp">
+      <a *ngIf="isError(task)" href (click)="onClickSeqLink($event, task._id)">
         {{ 'pages.sessions.session-detail.table.error.seq_link' | translate }}
       </a>
-      <span *ngIf="isSeqUp && !isError(task)">-</span>
+      <span *ngIf="!isError(task)">-</span>
     </clr-dg-cell>
   </clr-dg-row>
 
