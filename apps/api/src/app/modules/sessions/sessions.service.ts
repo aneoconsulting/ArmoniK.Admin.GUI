@@ -48,7 +48,7 @@ export class SessionsService implements OnModuleInit {
     orderBy?: string,
     order?: string,
     _id?: string,
-    lastActivity?: Date
+    lastActivityAt?: Date
   ) {
     const startIndex = (page - 1) * limit;
 
@@ -60,8 +60,8 @@ export class SessionsService implements OnModuleInit {
       $expr: {},
     };
 
-    if (lastActivity) {
-      match['$expr']['$gte'] = ['$CreationDate', lastActivity];
+    if (lastActivityAt) {
+      match['$expr']['$gte'] = ['$CreationDate', lastActivityAt];
     }
 
     const sessionMatch: { [key: string]: unknown } = {};
@@ -188,7 +188,7 @@ export class SessionsService implements OnModuleInit {
             status: '$session.Status',
             createdAt: '$session.CreationDate',
             cancelledAt: '$session.CancellationDate',
-            lastActivity: '$task.CreationDate',
+            lastActivityAt: '$task.CreationDate',
           },
         },
         {

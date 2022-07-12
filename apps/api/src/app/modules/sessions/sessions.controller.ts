@@ -38,7 +38,7 @@ export class SessionsController {
     @Query('orderBy') orderBy: string,
     @Query('order') order: string,
     @Query('_id') _id: string,
-    @Query('lastActivity') lastActivity: string
+    @Query('lastActivityAt') lastActivityAt?: string
   ) {
     const sessions = await this.sessionsService.findAllPaginated(
       page,
@@ -48,7 +48,7 @@ export class SessionsController {
       orderBy,
       order,
       _id,
-      lastActivity ? new Date(lastActivity) : undefined
+      lastActivityAt ? new Date(lastActivityAt) : undefined
     );
 
     return sessions;
