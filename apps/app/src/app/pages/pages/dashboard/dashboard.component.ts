@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  get isSeqUp() {
+  get isSeqUp(): boolean {
     return this.settingsService.isSeqUp();
   }
 
@@ -63,7 +63,7 @@ export class DashboardComponent implements OnInit {
    *
    * @returns URL
    */
-  generateSeqUrl(taskId: string) {
+  generateSeqUrl(taskId: string): string {
     return this.settingsService.generateSeqUrlForTaskError(taskId);
   }
 

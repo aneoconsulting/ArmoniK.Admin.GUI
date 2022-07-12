@@ -6,7 +6,7 @@ import {
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
-import { SettingsService, Task } from '../../../../../../../core';
+import { Task } from '../../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -37,8 +37,6 @@ export class TasksListComponent {
 
   @Input() isSeqUp = false;
   @Input() generateSeqUrl: (taskId: string) => string = () => '';
-
-  constructor(public settingsService: SettingsService) {}
 
   /**
    * Emit event when auto refresh change
