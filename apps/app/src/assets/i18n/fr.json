@@ -43,6 +43,8 @@
         "application_version": "Version de l'application",
         "session_id": "Session ID",
         "error": {
+          "seq": "Seq",
+          "seq_link": "Voir dans Seq",
           "message": "Message d'erreur"
         },
         "per_page": "Par page",
@@ -106,6 +108,10 @@
             "error": "Erreur",
             "cancelling": "Annulation en cours",
             "cancelled": "Annulée"
+          },
+          "error": {
+            "seq": "Seq",
+            "seq_link": "Voir dans Seq"
           },
           "detail": "Détail de l'erreur",
           "see-more": "Voir plus",

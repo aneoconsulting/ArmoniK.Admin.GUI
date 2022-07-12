@@ -6,7 +6,7 @@ import {
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
-import { Task } from '../../../../../../../core';
+import { SettingsService, Task } from '../../../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -34,6 +34,8 @@ export class TasksListComponent {
 
   isModalOpen = false;
   activeTask: Task | null = null;
+
+  constructor(public settingsService: SettingsService) {}
 
   /**
    * Emit event when auto refresh change

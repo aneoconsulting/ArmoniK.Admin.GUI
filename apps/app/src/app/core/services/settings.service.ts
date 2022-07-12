@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 
@@ -5,11 +6,63 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
   providedIn: 'root',
 })
 export class SettingsService {
-  isSeqUp = false;
+  seqEndpoint: string | null = null;
   currentApplications: Set<Application['_id']>;
 
   constructor() {
     this.currentApplications = new Set(this.getCurrentApplicationsFromStore());
+  }
+
+  /**
+   * Verify if Seq is up and running
+   *
+   * @returns True if Seq is up and running, false otherwise
+   */
+  isSeqUp(): boolean {
+    return this.seqEndpoint !== null;
+  }
+
+  /**
+   * Generate Seq url
+   *
+   * @param query Query to add to the url
+   *
+   * @returns Seq url
+   */
+  generateSeqUrl(query: { [key: string]: string }): string {
+    if (!this.seqEndpoint) return '';
+
+    // If seqEndpoint doesn't contains a slash at the end, add it
+    if (this.seqEndpoint.slice(-1) !== '/') {
+      this.seqEndpoint += '/';
+    }
+
+    // If seqEndpoint doesn't contains http:// or https://, add it
+    if (
+      this.seqEndpoint.slice(0, 7) !== 'http://' &&
+      this.seqEndpoint.slice(0, 8) !== 'https://'
+    ) {
+      this.seqEndpoint = 'http://' + this.seqEndpoint;
+    }
+
+    // Create HTTP Params
+    const params = new HttpParams({
+      fromObject: query,
+    });
+
+    return `${this.seqEndpoint}?${params.toString()}`;
+  }
+
+  /**
+   * Generate Seq Url for task error
+   *
+   * @param taskId Task id
+   *
+   */
+  generateSeqUrlForTaskError(taskId: string): string {
+    return this.generateSeqUrl({
+      filter: `taskId = '${taskId}' && @Level = 'Error'`,
+    });
   }
 
   /**
