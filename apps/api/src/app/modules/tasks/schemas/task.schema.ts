@@ -21,7 +21,10 @@ export class Task {
   Status: TaskStatus;
 
   @Prop()
-  StartDate: Date;
+  CreationDate: Date;
+
+  @Prop()
+  StartDate?: Date;
 
   @Prop()
   EndDate?: Date;

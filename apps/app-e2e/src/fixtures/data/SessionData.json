@@ -19,6 +19,11 @@
       "$date": {
         "$numberLong": "<date>"
       }
+    },
+    "StartDate": {
+      "$date": {
+        "$numberLong": "<date>"
+      }
     }
   }
 ]

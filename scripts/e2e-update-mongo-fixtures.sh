@@ -8,7 +8,7 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     exit 1
 fi
 # create a variable for the current date in milliseconds
-date_in_milliseconds=$(date +%s%N)
+date_in_milliseconds=$(date +%s%N | cut -b1-13)
 
 # search for <date> in ./apps/app-e2e/src/fixtures/data/SessionData.json
 # and replace it with the current date in milliseconds

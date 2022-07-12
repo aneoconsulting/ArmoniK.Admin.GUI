@@ -7,5 +7,5 @@ export const TaskStub: RawTask = {
     Options: { GridAppName: 'appName', GridAppVersion: 'appVersion' },
   },
   Status: TaskStatus.COMPLETED,
-  StartDate: new Date(),
+  CreationDate: new Date(),
 };
