@@ -64,12 +64,14 @@ export class SessionDetailComponent implements OnInit {
   /**
    * Get Seq URL
    *
-   * @param taskId Task ID
-   *
-   * @returns URL
+   * @returns Function to get the seq url
    */
-  generateSeqUrl(taskId: string): string {
-    return this.settingsService.generateSeqUrlForTaskError(taskId);
+  generateSeqUrl(): (taskId: string) => string {
+    const service = this.settingsService;
+
+    return function (taskId: string): string {
+      return service.generateSeqUrlForTaskError(taskId);
+    };
   }
 
   /**

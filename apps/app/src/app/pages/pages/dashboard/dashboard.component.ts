@@ -63,8 +63,12 @@ export class DashboardComponent implements OnInit {
    *
    * @returns URL
    */
-  generateSeqUrl(taskId: string): string {
-    return this.settingsService.generateSeqUrlForTaskError(taskId);
+  generateSeqUrl(): (taskId: string) => string {
+    const service = this.settingsService;
+
+    return function (taskId: string) {
+      return service.generateSeqUrlForTaskError(taskId);
+    };
   }
 
   /**

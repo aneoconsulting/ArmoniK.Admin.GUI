@@ -56,7 +56,7 @@
     [autoRefreshTimer]="autoRefreshService.timer"
     (autoRefreshTimerChange)="autoRefreshService.setTimer($event)"
     [isSeqUp]="isSeqUp"
-    [generateSeqUrl]="generateSeqUrl"
+    [generateSeqUrl]="generateSeqUrl()"
     [tasks]="tasks"
     [loading]="loadingTasks"
     [(selection)]="selectedTasks"
