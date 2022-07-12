@@ -110,8 +110,8 @@ export class TasksService implements OnModuleInit {
         data,
         meta,
       };
-    } catch (e) {
-      throw new InternalServerErrorException(e);
+    } catch (error) {
+      throw new InternalServerErrorException(error);
     }
   }
 
