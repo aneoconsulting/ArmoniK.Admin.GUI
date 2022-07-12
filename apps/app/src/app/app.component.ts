@@ -15,9 +15,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Ping Seq to check if it is up and running
     this.seqService.ping().subscribe({
-      next: () => {
+      next: (data) => {
         // Enable Seq in settings
-        this.settingsService.isSeqUp = true;
+        this.settingsService.seqEndpoint = data.seqEndpoint;
       },
     });
   }

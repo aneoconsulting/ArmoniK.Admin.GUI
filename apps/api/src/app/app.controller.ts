@@ -12,18 +12,18 @@ export class AppController {
   }
 
   /**
-   * Verify if SEQ is up and running.
+   * Verify if Seq is up and running.
    */
   @Get('/seq/ping')
   @ApiOkResponse()
-  @ApiNotFoundResponse({ description: 'SEQ not found' })
-  seq(): { status: string } {
+  @ApiNotFoundResponse({ description: 'Seq not found' })
+  seq(): { seqEndpoint: string } {
     if (!process.env.Seq__Endpoint) {
-      throw new NotFoundException('SEQ not found');
+      throw new NotFoundException('Seq not found');
     }
 
     return {
-      status: 'ok',
+      seqEndpoint: process.env.Seq__Endpoint,
     };
   }
 }
