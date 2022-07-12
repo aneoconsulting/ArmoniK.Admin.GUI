@@ -35,6 +35,9 @@ export class TasksListComponent {
   isModalOpen = false;
   activeTask: Task | null = null;
 
+  @Input() isSeqUp = false;
+  @Input() generateSeqUrl: (taskId: string) => string = () => '';
+
   constructor(public settingsService: SettingsService) {}
 
   /**

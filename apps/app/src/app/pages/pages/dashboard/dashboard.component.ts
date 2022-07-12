@@ -52,6 +52,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  get isSeqUp() {
+    return this.settingsService.isSeqUp();
+  }
+
+  /**
+   * Get Seq URL
+   *
+   * @param taskId Task ID
+   *
+   * @returns URL
+   */
+  generateSeqUrl(taskId: string) {
+    return this.settingsService.generateSeqUrl({ taskId });
+  }
+
   /**
    * Used to get the list of application errors from the api
    * using pagination for the datagrid and refresh the datagrid

@@ -12,7 +12,7 @@
   <clr-dg-column clrDgField="Output.Error">
     {{ 'pages.dashboard.table.error.message' | translate }}
   </clr-dg-column>
-  <clr-dg-column *ngIf="settingsService.isSeqUp()">
+  <clr-dg-column *ngIf="isSeqUp">
     {{ 'pages.dashboard.table.error.seq' | translate }}
   </clr-dg-column>
 
@@ -49,11 +49,8 @@
         {{ error.error.message }}
       </span>
     </clr-dg-cell>
-    <clr-dg-cell *ngIf="settingsService.isSeqUp()">
-      <a
-        [href]="settingsService.generateSeqUrlForTaskError(error.taskId)"
-        target="_blank"
-      >
+    <clr-dg-cell *ngIf="isSeqUp">
+      <a [href]="generateSeqUrl(error.taskId)" target="_blank">
         {{ 'pages.dashboard.table.error.seq_link' | translate }}
       </a>
     </clr-dg-cell>

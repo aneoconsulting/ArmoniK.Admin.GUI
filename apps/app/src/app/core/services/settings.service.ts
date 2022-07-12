@@ -38,11 +38,13 @@ export class SettingsService {
     }
 
     // If seqEndpoint doesn't contains http:// or https://, add it
-    if (
-      this.seqEndpoint.slice(0, 7) !== 'http://' &&
-      this.seqEndpoint.slice(0, 8) !== 'https://'
-    ) {
-      this.seqEndpoint = 'http://' + this.seqEndpoint;
+    try {
+      const url = new URL(this.seqEndpoint);
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        this.seqEndpoint = 'http://' + url.host;
+      }
+    } catch (e) {
+      this.seqEndpoint = `http://${this.seqEndpoint}`;
     }
 
     // Create HTTP Params

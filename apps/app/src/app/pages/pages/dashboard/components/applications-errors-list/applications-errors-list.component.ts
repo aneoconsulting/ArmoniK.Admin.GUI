@@ -4,7 +4,6 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { SettingsService } from '../../../../../core';
 
 /**
  * Display applications erros in list
@@ -20,7 +19,8 @@ export class ApplicationsErrorsListComponent {
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
 
-  constructor(public settingsService: SettingsService) {}
+  @Input() isSeqUp = false;
+  @Input() generateSeqUrl: (taskId: string) => string = () => '';
 
   /**
    * Return total number of applications event if there is no task (return 0)
