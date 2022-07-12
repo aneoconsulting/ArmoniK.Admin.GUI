@@ -10,6 +10,7 @@ export type FormattedSession = {
   status: SessionStatus;
   createdAt: string;
   cancelledAt: string;
+  lastActivityAt?: string;
 };
 
 export type SessionOptions = {
