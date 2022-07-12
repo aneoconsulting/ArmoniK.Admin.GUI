@@ -20,7 +20,17 @@ export class ApplicationsErrorsListComponent {
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
 
   @Input() isSeqUp = false;
-  @Input() generateSeqUrl: (taskId: string) => string = () => '';
+  @Output() clickSeqLink = new EventEmitter<string>();
+
+  /**
+   * Emit event when click on seq link
+   *
+   * @param taskId Task id
+   */
+  onClickSeqLink(event: Event, taskId: string) {
+    event.preventDefault();
+    this.clickSeqLink.emit(taskId);
+  }
 
   /**
    * Return total number of applications event if there is no task (return 0)

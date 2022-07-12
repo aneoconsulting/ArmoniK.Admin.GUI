@@ -62,14 +62,17 @@ export class SessionDetailComponent implements OnInit {
   }
 
   /**
-   * Get Seq URL
+   * Redirect to Seq
    *
    * @param taskId Task ID
    *
    * @returns URL
    */
-  generateSeqUrl(taskId: string): string {
-    return this.settingsService.generateSeqUrlForTaskError(taskId);
+  redirectToSeq(taskId: string) {
+    window.open(
+      this.settingsService.generateSeqUrlForTaskError(taskId),
+      '_blank'
+    );
   }
 
   /**

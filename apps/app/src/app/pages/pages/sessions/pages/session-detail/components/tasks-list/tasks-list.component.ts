@@ -36,7 +36,17 @@ export class TasksListComponent {
   activeTask: Task | null = null;
 
   @Input() isSeqUp = false;
-  @Input() generateSeqUrl: (taskId: string) => string = () => '';
+  @Output() clickSeqLink = new EventEmitter<string>();
+
+  /**
+   * Emit event when click on seq link
+   *
+   * @param taskId Task id
+   */
+  onClickSeqLink(event: Event, taskId: string) {
+    event.preventDefault();
+    this.clickSeqLink.emit(taskId);
+  }
 
   /**
    * Emit event when auto refresh change

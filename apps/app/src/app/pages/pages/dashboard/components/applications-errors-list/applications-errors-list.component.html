@@ -50,7 +50,7 @@
       </span>
     </clr-dg-cell>
     <clr-dg-cell *ngIf="isSeqUp">
-      <a [href]="generateSeqUrl(error.taskId)" target="_blank">
+      <a href (click)="onClickSeqLink($event, error.taskId)">
         {{ 'pages.dashboard.table.error.seq_link' | translate }}
       </a>
     </clr-dg-cell>
