@@ -97,22 +97,22 @@ export class TasksService implements OnModuleInit {
         .exec();
     };
 
-    const [total, data] = await Promise.allSettled([getTotal(), getTasks()]);
+    try {
+      const [total, data] = await Promise.all([getTotal(), getTasks()]);
 
-    if (total.status === 'rejected' || data.status === 'rejected') {
-      throw new InternalServerErrorException('Error while getting tasks');
+      const meta = this.paginationService.createMeta(
+        total[0]?.count ?? 0,
+        page,
+        limit
+      );
+
+      return {
+        data,
+        meta,
+      };
+    } catch (e) {
+      throw new InternalServerErrorException(e);
     }
-
-    const meta = this.paginationService.createMeta(
-      total.value[0]?.count ?? 0,
-      page,
-      limit
-    );
-
-    return {
-      data: data.value,
-      meta,
-    };
   }
 
   /**
