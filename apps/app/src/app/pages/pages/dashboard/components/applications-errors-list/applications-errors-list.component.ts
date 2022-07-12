@@ -4,7 +4,7 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { SettingsService } from 'apps/app/src/app/core';
+import { SettingsService } from '../../../../../core';
 
 /**
  * Display applications erros in list
