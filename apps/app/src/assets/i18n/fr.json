@@ -43,7 +43,7 @@
         "application_version": "Version de l'application",
         "session_id": "Session ID",
         "error": {
-          "seq": "Seq",
+          "seq": "Lien vers Seq de l'erreur",
           "seq_link": "Voir dans Seq",
           "message": "Message d'erreur"
         },
@@ -118,7 +118,7 @@
             "cancelled": "Annulée"
           },
           "error": {
-            "seq": "Seq",
+            "seq": "Lien vers Seq de l'erreur",
             "seq_link": "Voir dans Seq"
           },
           "detail": "Détail de l'erreur",

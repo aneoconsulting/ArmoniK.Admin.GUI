@@ -57,18 +57,17 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Get Seq URL
+   * Redirect to Seq
    *
    * @param taskId Task ID
    *
    * @returns URL
    */
-  generateSeqUrl(): (taskId: string) => string {
-    const service = this.settingsService;
-
-    return function (taskId: string) {
-      return service.generateSeqUrlForTaskError(taskId);
-    };
+  redirectToSeq(taskId: string) {
+    window.open(
+      this.settingsService.generateSeqUrlForTaskError(taskId),
+      '_blank'
+    );
   }
 
   /**

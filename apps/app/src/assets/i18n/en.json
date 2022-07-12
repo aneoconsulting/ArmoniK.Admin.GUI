@@ -43,7 +43,7 @@
         "application_version": "Application version",
         "session_id": "Session ID",
         "error": {
-          "seq": "Seq",
+          "seq": "Link to Seq error",
           "seq_link": "See in Seq",
           "message": "Error message"
         },
@@ -118,7 +118,7 @@
             "cancelled": "Cancelled"
           },
           "error": {
-            "seq": "Seq",
+            "seq": "Link to Seq error",
             "seq_link": "See in Seq"
           },
           "detail": "Error detail",
