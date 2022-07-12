@@ -69,7 +69,7 @@ export class SessionDetailComponent implements OnInit {
    * @returns URL
    */
   generateSeqUrl(taskId: string) {
-    return this.settingsService.generateSeqUrl({ taskId });
+    return this.settingsService.generateSeqUrlForTaskError(taskId);
   }
 
   /**
