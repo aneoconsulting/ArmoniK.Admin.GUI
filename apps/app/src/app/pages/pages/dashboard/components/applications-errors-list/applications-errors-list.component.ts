@@ -19,6 +19,9 @@ export class ApplicationsErrorsListComponent {
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
 
+  @Input() isSeqUp = false;
+  @Input() generateSeqUrl: (taskId: string) => string = () => '';
+
   /**
    * Return total number of applications event if there is no task (return 0)
    */

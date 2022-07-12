@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotFoundException } from '@nestjs/common';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -8,5 +9,21 @@ export class AppController {
   @Get()
   index(): { message: string; version: string } {
     return { message: 'Welcome to ArmoniK GUI API', version: '0.2.0' };
+  }
+
+  /**
+   * Verify if Seq is up and running.
+   */
+  @Get('/seq/ping')
+  @ApiOkResponse()
+  @ApiNotFoundResponse({ description: 'Seq not found' })
+  seq(): { seqEndpoint: string } {
+    if (!process.env.Seq__Endpoint) {
+      throw new NotFoundException('Seq not found');
+    }
+
+    return {
+      seqEndpoint: process.env.Seq__Endpoint,
+    };
   }
 }

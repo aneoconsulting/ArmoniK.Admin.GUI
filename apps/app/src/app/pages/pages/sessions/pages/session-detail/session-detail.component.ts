@@ -10,6 +10,7 @@ import {
   BrowserTitleService,
   LanguageService,
   PagerService,
+  SettingsService,
 } from '../../../../../core';
 
 @Component({
@@ -37,6 +38,7 @@ export class SessionDetailComponent implements OnInit {
     private languageService: LanguageService,
     private tasksService: TasksService,
     private pagerService: PagerService,
+    private settingsService: SettingsService,
     public autoRefreshService: AutoRefreshService
   ) {
     this.browserTitleService.setTitle(
@@ -53,6 +55,21 @@ export class SessionDetailComponent implements OnInit {
         this.session = data['session'];
       }
     });
+  }
+
+  get isSeqUp(): boolean {
+    return this.settingsService.isSeqUp();
+  }
+
+  /**
+   * Get Seq URL
+   *
+   * @param taskId Task ID
+   *
+   * @returns URL
+   */
+  generateSeqUrl(taskId: string): string {
+    return this.settingsService.generateSeqUrlForTaskError(taskId);
   }
 
   /**
