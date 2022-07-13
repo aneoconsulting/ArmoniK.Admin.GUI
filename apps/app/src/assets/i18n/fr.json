@@ -50,7 +50,14 @@
         },
         "per_page": "Par page",
         "applications": "{{value}} applications",
-        "application": "{{value}} application"
+        "application": "{{value}} application",
+        "filters": {
+          "error_at": {
+            "label": "Erreur depuis",
+            "default": "Toutes",
+            "text": "{{value}} jours"
+          }
+        }
       }
     },
     "error": {
@@ -87,9 +94,9 @@
         "cancelledAt": "Annulée le",
         "filters": {
           "last_activity_at": {
-            "title": "Dernière activité depuis",
+            "label": "Dernière activité depuis",
             "default": "Toujours",
-            "days": "Derniers {{value}} jour(s)"
+            "text": "Derniers {{value}} jour(s)"
           }
         }
       },

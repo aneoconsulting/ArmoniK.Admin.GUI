@@ -21,12 +21,18 @@ describe('AppComponent', () => {
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
+
+    fixture.detectChanges();
+
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it('should have a router-outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);
+
+    fixture.detectChanges();
+
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });

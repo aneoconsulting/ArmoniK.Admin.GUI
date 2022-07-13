@@ -9,10 +9,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { PagerService, SessionsService } from '../../../core';
-import {
-  AlertErrorComponent,
-  LastActivityFilterComponent,
-} from '../../../shared';
+import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
 import { SessionsComponent } from './sessions.component';
 
 describe('SessionsComponent', () => {
@@ -24,7 +21,7 @@ describe('SessionsComponent', () => {
       declarations: [
         SessionsComponent,
         AlertErrorComponent,
-        LastActivityFilterComponent,
+        SinceDateFilterComponent,
       ],
       imports: [
         RouterTestingModule.withRoutes([]),

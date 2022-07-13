@@ -36,7 +36,7 @@ export class ApplicationsController {
     @Query('Options.Options.GridAppName') applicationName?: string,
     @Query('Options.Options.GridAppVersion') applicationVersion?: string,
     @Query('SessionId') sessionId?: string,
-    @Query('errorAt') errorAt?: string
+    @Query('EndDate') errorAt?: string
   ): Promise<Pagination<ApplicationError>> {
     const errors = await this.applicationsService.findAllWithErrorsPaginated(
       page,
