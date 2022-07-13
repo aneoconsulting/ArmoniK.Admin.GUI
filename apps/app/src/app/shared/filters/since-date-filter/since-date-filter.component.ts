@@ -1,22 +1,28 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({
-  selector: 'app-last-activity-filter',
-  templateUrl: './last-activity-filter.component.html',
-  styleUrls: ['./last-activity-filter.component.scss'],
+  selector: 'app-since-date-filter',
+  templateUrl: './since-date-filter.component.html',
+  styleUrls: ['./since-date-filter.component.scss'],
 })
-export class LastActivityFilterComponent
-  implements ClrDatagridFilterInterface<string>
+export class SinceDateFilterComponent
+  implements ClrDatagridFilterInterface<string>, OnInit
 {
+  @Input() label = '';
+  @Input() defaultText = '';
+  @Input() text = '';
   @Input() name = '';
   @Input() defaultValue = 7;
 
-  lastDays: number[] = [1, 3, 7, 15, 30, 60, 90, 180, 365];
+  sinceDays: number[] = [1, 3, 7, 15, 30, 60, 90, 180, 365];
 
-  selectedValue: string | null =
-    this.getDate(this.createDateSince(this.defaultValue)) ?? null;
+  selectedValue: string | null = null;
   changes = new EventEmitter<boolean>(false);
+
+  ngOnInit() {
+    this.selectedValue = this.getDate(this.createDateSince(this.defaultValue));
+  }
 
   onChange(event: any) {
     this.selectedValue = event.target.value;
@@ -52,7 +58,11 @@ export class LastActivityFilterComponent
    *
    * @returns Date in the past
    */
-  createDateSince(days: number): Date {
+  createDateSince(days?: number): Date {
+    if (!days) {
+      return new Date();
+    }
+
     return new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   }
 

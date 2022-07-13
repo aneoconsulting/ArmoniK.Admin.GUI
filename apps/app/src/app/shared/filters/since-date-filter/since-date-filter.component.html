@@ -1,0 +1,17 @@
+<clr-select-container>
+  <label>
+    {{ label | translate }}
+  </label>
+  <select clrSelect [name]="name" (change)="onChange($event)">
+    <option value="">
+      {{ defaultText | translate }}
+    </option>
+    <option
+      *ngFor="let item of sinceDays"
+      [value]="getDate(createDateSince(item))"
+      [selected]="item === defaultValue"
+    >
+      {{ text | translate: { value: item } }}
+    </option>
+  </select>
+</clr-select-container>

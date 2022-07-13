@@ -9,10 +9,7 @@ import {
   TimerIntervalSelectorComponent,
   AutoRefreshActivatorComponent,
 } from './components';
-import {
-  LastActivityFilterComponent,
-  TaskStatusFilterComponent,
-} from './filters';
+import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 
 @NgModule({
   imports: [
@@ -27,14 +24,14 @@ import {
     TimerIntervalSelectorComponent,
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
-    LastActivityFilterComponent,
+    SinceDateFilterComponent,
   ],
   exports: [
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
-    LastActivityFilterComponent,
+    SinceDateFilterComponent,
     ClarityModule,
     CommonModule,
     RouterModule,

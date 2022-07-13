@@ -137,13 +137,7 @@ export class ApplicationsService {
 
     const match: { [key: string]: any } = {
       $expr: {
-        $and: [
-          { $in: ['$Status', ErrorStatus] },
-          {
-            // 24hs ago
-            $gte: ['$StartDate', new Date(Date.now() - 24 * 60 * 60 * 1000)],
-          },
-        ],
+        $and: [{ $in: ['$Status', ErrorStatus] }],
       },
     };
 
@@ -171,7 +165,7 @@ export class ApplicationsService {
 
     if (errorAt) {
       match.$expr.$and.push({
-        $get: ['$ErrorAt', errorAt],
+        $gte: ['$EndDate', new Date(errorAt)],
       });
     }
 
@@ -200,55 +194,52 @@ export class ApplicationsService {
     };
 
     const getTasks = async () => {
-      return (
-        this.connection
-          .collection(this.taskModel.collection.collectionName)
-          // Get only tasks where Status is Error and StartDate is greater than 24h ago and sort by StartDate (recent first). Then format the result to have the same structure as ApplicationError
-          .aggregate<ApplicationError>([
-            { $match: match },
+      return this.connection
+        .collection(this.taskModel.collection.collectionName)
+        .aggregate<ApplicationError>([
+          { $match: match },
 
-            {
-              $sort: applicationSort,
-            },
-            {
-              $skip: startIndex,
-            },
-            {
-              $limit: limit,
-            },
-            {
-              $project: {
-                _id: 0,
-                applicationName: '$Options.Options.GridAppName',
-                applicationVersion: '$Options.Options.GridAppVersion',
-                taskId: '$_id',
-                sessionId: '$SessionId',
-                errorAt: '$EndDate',
-                error: {
-                  message: '$Output.Error',
-                },
+          {
+            $sort: applicationSort,
+          },
+          {
+            $skip: startIndex,
+          },
+          {
+            $limit: limit,
+          },
+          {
+            $project: {
+              _id: 0,
+              applicationName: '$Options.Options.GridAppName',
+              applicationVersion: '$Options.Options.GridAppVersion',
+              taskId: '$_id',
+              sessionId: '$SessionId',
+              errorAt: '$EndDate',
+              error: {
+                message: '$Output.Error',
               },
             },
-            // Handle default application
-            {
-              $addFields: {
-                applicationName: {
-                  $ifNull: [
-                    '$applicationName',
-                    this.settingsService.defaultApplicationName,
-                  ],
-                },
-                applicationVersion: {
-                  $ifNull: [
-                    '$applicationVersion',
-                    this.settingsService.defaultApplicationVersion,
-                  ],
-                },
+          },
+          // Handle default application
+          {
+            $addFields: {
+              applicationName: {
+                $ifNull: [
+                  '$applicationName',
+                  this.settingsService.defaultApplicationName,
+                ],
+              },
+              applicationVersion: {
+                $ifNull: [
+                  '$applicationVersion',
+                  this.settingsService.defaultApplicationVersion,
+                ],
               },
             },
-          ])
-          .toArray()
-      );
+          },
+        ])
+        .toArray();
     };
 
     try {

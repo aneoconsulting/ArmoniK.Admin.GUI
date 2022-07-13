@@ -8,10 +8,21 @@
   <clr-dg-column clrDgField="SessionId">
     {{ 'pages.dashboard.table.session_id' | translate }}
   </clr-dg-column>
-  <clr-dg-column clrDgField="EndAt">
+  <clr-dg-column clrDgField="EndDate">
     {{ 'pages.dashboard.table.error_at' | translate }}
-    <clr-dg-filter>
-      {{ 'global.filters.no-filter-available' | translate }}
+    <clr-dg-filter [clrDgFilter]="errorAtFilter">
+      <app-since-date-filter
+        label="pages.dashboard.table.filters.error_at.label"
+        defaultText="pages.dashboard.table.filters.error_at.default"
+        text="pages.dashboard.table.filters.error_at.text"
+        [defaultValue]="1"
+        name="EndDate"
+        #errorAtFilter
+      >
+        <ng-template let-item>
+          {{ item }}
+        </ng-template>
+      </app-since-date-filter>
     </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column>

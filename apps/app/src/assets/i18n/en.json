@@ -50,7 +50,14 @@
         },
         "per_page": "Per page",
         "applications": "{{value}} Applications",
-        "application": "{{value}} Application"
+        "application": "{{value}} Application",
+        "filters": {
+          "error_at": {
+            "label": "Error since",
+            "default": "Always",
+            "text": "{{value}} days"
+          }
+        }
       }
     },
     "error": {

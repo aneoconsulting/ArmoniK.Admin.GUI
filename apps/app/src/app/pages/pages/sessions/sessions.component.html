@@ -68,10 +68,13 @@
     <clr-dg-column clrDgField="lastActivityAt">
       {{ 'pages.sessions.table.last_activity_at' | translate }}
       <clr-dg-filter [clrDgFilter]="lastActivityFilter">
-        <app-last-activity-filter
+        <app-since-date-filter
+          label="pages.sessions.table.filters.last_activity_at.label"
+          defaultText="pages.sessions.table.filters.last_activity_at.default"
+          text="pages.sessions.table.filters.last_activity_at.text"
           name="lastActivityAt"
           #lastActivityFilter
-        ></app-last-activity-filter>
+        ></app-since-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
