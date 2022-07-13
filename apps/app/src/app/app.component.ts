@@ -21,7 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.pingSubscription = this.seqService.ping().subscribe({
       next: (data) => {
         // Enable Seq in settings
-        this.settingsService.seqEndpoint = data.seqEndpoint;
+        this.settingsService.seqEnabled = true;
       },
     });
   }

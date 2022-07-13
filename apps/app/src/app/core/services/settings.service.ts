@@ -6,7 +6,7 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
   providedIn: 'root',
 })
 export class SettingsService {
-  seqEndpoint: string | null = null;
+  seqEnabled = false;
   currentApplications: Set<Application['_id']>;
 
   constructor() {
@@ -19,7 +19,7 @@ export class SettingsService {
    * @returns True if Seq is up and running, false otherwise
    */
   isSeqUp(): boolean {
-    return this.seqEndpoint !== null;
+    return this.seqEnabled;
   }
 
   /**
@@ -30,29 +30,14 @@ export class SettingsService {
    * @returns Seq url
    */
   generateSeqUrl(query: { [key: string]: string }): string {
-    if (!this.seqEndpoint) return '';
-
-    // If seqEndpoint doesn't contains a slash at the end, add it
-    if (this.seqEndpoint.slice(-1) !== '/') {
-      this.seqEndpoint += '/';
-    }
-
-    // If seqEndpoint doesn't contains http:// or https://, add it
-    try {
-      const url = new URL(this.seqEndpoint);
-      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-        this.seqEndpoint = 'http://' + url.host;
-      }
-    } catch (e) {
-      this.seqEndpoint = `http://${this.seqEndpoint}`;
-    }
+    const seqPath = '/seq/#/events';
 
     // Create HTTP Params
     const params = new HttpParams({
       fromObject: query,
     });
 
-    return `${this.seqEndpoint}?${params.toString()}`;
+    return `${seqPath}?${params.toString()}`;
   }
 
   /**

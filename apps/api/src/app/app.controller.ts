@@ -17,13 +17,13 @@ export class AppController {
   @Get('/seq/ping')
   @ApiOkResponse()
   @ApiNotFoundResponse({ description: 'Seq not found' })
-  seq(): { seqEndpoint: string } {
+  seq(): { status: string } {
     if (!process.env.Seq__Endpoint) {
       throw new NotFoundException('Seq not found');
     }
 
     return {
-      seqEndpoint: process.env.Seq__Endpoint,
+      status: 'ok',
     };
   }
 }
