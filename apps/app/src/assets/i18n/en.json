@@ -42,6 +42,7 @@
         "application_name": "Application name",
         "application_version": "Application version",
         "session_id": "Session ID",
+        "error_at": "Error at",
         "error": {
           "seq": "Link to Seq error",
           "seq_link": "See in Seq",

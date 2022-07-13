@@ -15,6 +15,7 @@ export type ApplicationError = {
   applicationName: string;
   applicationVersion: string;
   sessionId: string;
+  errorAt: string;
   error: {
     type: string;
     message: string;

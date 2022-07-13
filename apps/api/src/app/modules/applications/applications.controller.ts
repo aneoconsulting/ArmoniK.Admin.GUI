@@ -31,14 +31,22 @@ export class ApplicationsController {
   async findAllWithErrorsPaginated(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
-    @Query('orderBy') orderBy: string,
-    @Query('order') order: string
+    @Query('orderBy') orderBy?: string,
+    @Query('order') order?: string,
+    @Query('Options.Options.GridAppName') applicationName?: string,
+    @Query('Options.Options.GridAppVersion') applicationVersion?: string,
+    @Query('SessionId') sessionId?: string,
+    @Query('errorAt') errorAt?: string
   ): Promise<Pagination<ApplicationError>> {
     const errors = await this.applicationsService.findAllWithErrorsPaginated(
       page,
       limit,
       orderBy,
-      order
+      order,
+      applicationName,
+      applicationVersion,
+      sessionId,
+      errorAt
     );
 
     return errors;

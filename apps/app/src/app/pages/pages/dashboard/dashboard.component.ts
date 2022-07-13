@@ -12,6 +12,7 @@ import {
   ApplicationsService,
   BrowserTitleService,
   LanguageService,
+  PagerService,
   SettingsService,
 } from '../../../core';
 
@@ -37,6 +38,7 @@ export class DashboardComponent implements OnInit {
     private languageService: LanguageService,
     private browserTitleService: BrowserTitleService,
     private settingsService: SettingsService,
+    private pagerService: PagerService,
     private applicationsService: ApplicationsService
   ) {}
 
@@ -79,19 +81,7 @@ export class DashboardComponent implements OnInit {
   onRefreshApplicationsErrors(state: ClrDatagridStateInterface) {
     this.applicationsErrorsLoading = true;
 
-    const nextPage = state?.page?.current ?? 1;
-    const limit = state?.page?.size ?? 10;
-
-    let params = new HttpParams()
-      .set('page', nextPage.toString())
-      .set('limit', limit.toString());
-
-    const orderBy = state?.sort?.by as string;
-    const order = state?.sort?.reverse ? -1 : 1;
-    if (orderBy) {
-      params = params.set('orderBy', orderBy);
-      params = params.set('order', order.toString());
-    }
+    const params = this.pagerService.createHttpParams(state);
 
     this.applicationsService.getAllWithErrorsPaginated(params).subscribe({
       error: this.onErrorApplicationsErrors.bind(this),

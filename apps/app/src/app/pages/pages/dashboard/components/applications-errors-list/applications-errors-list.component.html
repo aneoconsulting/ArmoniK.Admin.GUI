@@ -1,5 +1,4 @@
 <clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
-  <!-- clrDgField must be the name in the database -->
   <clr-dg-column clrDgField="Options.Options.GridAppName">
     {{ 'pages.dashboard.table.application_name' | translate }}
   </clr-dg-column>
@@ -9,7 +8,10 @@
   <clr-dg-column clrDgField="SessionId">
     {{ 'pages.dashboard.table.session_id' | translate }}
   </clr-dg-column>
-  <clr-dg-column clrDgField="Output.Error">
+  <clr-dg-column clrDgField="EndAt">
+    {{ 'pages.dashboard.table.error_at' | translate }}
+  </clr-dg-column>
+  <clr-dg-column>
     {{ 'pages.dashboard.table.error.message' | translate }}
   </clr-dg-column>
   <clr-dg-column *ngIf="isSeqUp">
@@ -17,8 +19,8 @@
   </clr-dg-column>
 
   <clr-dg-row
-    *clrDgItems="let error of applications?.data ?? []"
-    [clrDgItem]="error"
+    *ngFor="let error of applications?.data"
+    [ngForTrackBy]="trackErrors"
   >
     <clr-dg-cell>
       <span>
@@ -45,6 +47,9 @@
       </a>
     </clr-dg-cell>
     <clr-dg-cell>
+      {{ error.errorAt | date: 'medium' }}
+    </clr-dg-cell>
+    <clr-dg-cell>
       <span>
         {{ error.error.message }}
       </span>
@@ -58,7 +63,7 @@
 
   <clr-dg-footer>
     <clr-dg-pagination #pagination [clrDgTotalItems]="totalApplications">
-      <clr-dg-page-size>{{
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
         'pages.dashboard.table.per_page' | translate
       }}</clr-dg-page-size>
       {{

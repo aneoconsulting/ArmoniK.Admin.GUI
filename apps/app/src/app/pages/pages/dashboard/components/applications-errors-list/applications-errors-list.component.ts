@@ -38,4 +38,16 @@ export class ApplicationsErrorsListComponent {
   get totalApplications(): number {
     return this.applications ? this.applications.meta.total : 0;
   }
+
+  /**
+   * Track error by id
+   *
+   * @param _
+   * @param error
+   *
+   * @returns task id
+   */
+  trackErrors(_: number, error: ApplicationError): ApplicationError['taskId'] {
+    return error.taskId;
+  }
 }
