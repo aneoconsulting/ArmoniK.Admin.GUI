@@ -11,7 +11,7 @@ export class SeqService {
   /**
    * Check if seq is up and running
    */
-  ping(): Observable<{ seqEndpoint: string }> {
-    return this.apiService.get<{ seqEndpoint: string }>(this.url + '/ping');
+  ping(): Observable<{ status: string }> {
+    return this.apiService.get<{ status: string }>(this.url + '/ping');
   }
 }
