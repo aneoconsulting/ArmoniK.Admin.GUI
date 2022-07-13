@@ -4,12 +4,16 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ApplicationsService, PagerService } from '../../../core';
+import {
+  ApplicationsService,
+  PagerService,
+  SettingsService,
+} from '../../../core';
 import {
   ApplicationCardComponent,
   ApplicationsErrorsListComponent,
 } from './components';
-import { AlertErrorComponent } from '../../../shared';
+import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
 
 import { DashboardComponent } from './dashboard.component';
 
@@ -24,6 +28,7 @@ describe('DashboardComponent', () => {
         ApplicationCardComponent,
         ApplicationsErrorsListComponent,
         AlertErrorComponent,
+        SinceDateFilterComponent,
       ],
       imports: [
         RouterTestingModule.withRoutes([]),
@@ -32,14 +37,15 @@ describe('DashboardComponent', () => {
         ClarityModule,
         UiModule,
       ],
-      providers: [ApplicationsService, PagerService],
+      providers: [ApplicationsService, PagerService, SettingsService],
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DashboardComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
+
+    component = fixture.componentInstance;
   });
 
   it('should create', () => {
