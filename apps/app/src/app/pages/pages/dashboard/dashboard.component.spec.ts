@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ApplicationsService } from '../../../core';
+import { ApplicationsService, PagerService } from '../../../core';
 import {
   ApplicationCardComponent,
   ApplicationsErrorsListComponent,
@@ -32,7 +32,7 @@ describe('DashboardComponent', () => {
         ClarityModule,
         UiModule,
       ],
-      providers: [ApplicationsService],
+      providers: [ApplicationsService, PagerService],
     }).compileComponents();
   });
 

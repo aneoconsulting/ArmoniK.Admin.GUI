@@ -6,7 +6,7 @@ import {
 import { ClrDatagridStateInterface } from '@clr/angular';
 
 /**
- * Display applications erros in list
+ * Display applications errors in list
  */
 @Component({
   selector: 'app-pages-dashboard-applications-errors-list',
@@ -37,5 +37,17 @@ export class ApplicationsErrorsListComponent {
    */
   get totalApplications(): number {
     return this.applications ? this.applications.meta.total : 0;
+  }
+
+  /**
+   * Track error by id
+   *
+   * @param _
+   * @param error
+   *
+   * @returns task id
+   */
+  trackErrors(_: number, error: ApplicationError): string {
+    return error.taskId;
   }
 }

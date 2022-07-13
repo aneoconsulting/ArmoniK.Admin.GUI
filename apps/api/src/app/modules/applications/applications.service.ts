@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import {
@@ -126,12 +126,16 @@ export class ApplicationsService {
   async findAllWithErrorsPaginated(
     page: number,
     limit: number,
-    orderBy: string,
-    order: string
+    orderBy?: string,
+    order?: string,
+    applicationName?: string,
+    applicationVersion?: string,
+    sessionId?: string,
+    errorAt?: string
   ): Promise<Pagination<ApplicationError>> {
     const startIndex = (page - 1) * limit;
 
-    const match = {
+    const match: { [key: string]: any } = {
       $expr: {
         $and: [
           { $in: ['$Status', ErrorStatus] },
@@ -143,74 +147,121 @@ export class ApplicationsService {
       },
     };
 
-    const result = await this.connection
-      .collection(this.taskModel.collection.collectionName)
-      // Get only tasks where Status is Error and StartDate is greater than 24h ago and sort by StartDate (recent first). Then format the result to have the same structure as ApplicationError
-      .aggregate<ApplicationError>([
-        { $match: match },
-        {
-          $sort: {
-            [orderBy ?? 'StartDate']: order ? Number(order) : -1,
-            _id: 1,
-          },
-        },
-        {
-          $skip: startIndex,
-        },
-        {
-          $limit: limit,
-        },
-        {
-          $project: {
-            _id: 0,
-            applicationName: '$Options.Options.GridAppName',
-            applicationVersion: '$Options.Options.GridAppVersion',
-            taskId: '$_id',
-            sessionId: '$SessionId',
-            error: {
-              message: '$Output.Error',
+    if (applicationName) {
+      match.$expr.$and.push({
+        $eq: [
+          '$Options.Options.GridAppName',
+          this.settingsService.getApplicationName(applicationName),
+        ],
+      });
+    }
+
+    if (applicationVersion) {
+      match.$expr.$and.push({
+        $eq: [
+          '$Options.Options.GridAppVersion',
+          this.settingsService.getApplicationVersion(applicationVersion),
+        ],
+      });
+    }
+
+    if (sessionId) {
+      match['SessionId'] = sessionId;
+    }
+
+    if (errorAt) {
+      match.$expr.$and.push({
+        $get: ['$ErrorAt', errorAt],
+      });
+    }
+
+    const applicationSort: { [key: string]: 1 | -1 } = {};
+
+    if (orderBy) {
+      applicationSort[orderBy] = Number(order) as 1 | -1;
+    } else {
+      applicationSort['errorAt'] = -1;
+      applicationSort['_id'] = 1;
+    }
+
+    const getTotal = async () => {
+      return this.connection
+        .collection(this.taskModel.collection.collectionName)
+        .aggregate([
+          { $match: match },
+          {
+            $group: {
+              _id: null,
+              count: { $sum: 1 },
             },
           },
-        },
-        // Handle default application
-        {
-          $addFields: {
-            applicationName: {
-              $ifNull: [
-                '$applicationName',
-                this.settingsService.defaultApplicationName,
-              ],
+        ])
+        .toArray();
+    };
+
+    const getTasks = async () => {
+      return (
+        this.connection
+          .collection(this.taskModel.collection.collectionName)
+          // Get only tasks where Status is Error and StartDate is greater than 24h ago and sort by StartDate (recent first). Then format the result to have the same structure as ApplicationError
+          .aggregate<ApplicationError>([
+            { $match: match },
+
+            {
+              $sort: applicationSort,
             },
-            applicationVersion: {
-              $ifNull: [
-                '$applicationVersion',
-                this.settingsService.defaultApplicationVersion,
-              ],
+            {
+              $skip: startIndex,
             },
-          },
-        },
-      ])
-      .toArray();
+            {
+              $limit: limit,
+            },
+            {
+              $project: {
+                _id: 0,
+                applicationName: '$Options.Options.GridAppName',
+                applicationVersion: '$Options.Options.GridAppVersion',
+                taskId: '$_id',
+                sessionId: '$SessionId',
+                errorAt: '$EndDate',
+                error: {
+                  message: '$Output.Error',
+                },
+              },
+            },
+            // Handle default application
+            {
+              $addFields: {
+                applicationName: {
+                  $ifNull: [
+                    '$applicationName',
+                    this.settingsService.defaultApplicationName,
+                  ],
+                },
+                applicationVersion: {
+                  $ifNull: [
+                    '$applicationVersion',
+                    this.settingsService.defaultApplicationVersion,
+                  ],
+                },
+              },
+            },
+          ])
+          .toArray()
+      );
+    };
 
-    const total = await this.connection
-      .collection(this.taskModel.collection.collectionName)
-      .aggregate([
-        { $match: match },
-        {
-          $group: {
-            _id: null,
-            count: { $sum: 1 },
-          },
-        },
-      ])
-      .toArray();
+    try {
+      const [total, data] = await Promise.all([getTotal(), getTasks()]);
 
-    const meta = this.paginationService.createMeta(
-      total[0]?.count ?? 0,
-      page,
-      limit
-    );
-
-    return { meta, data: result };
+      const meta = this.paginationService.createMeta(
+        total[0]?.count ?? 0,
+        page,
+        limit
+      );
+      return { meta, data };
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

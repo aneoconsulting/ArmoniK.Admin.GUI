@@ -42,6 +42,7 @@
         "application_name": "Nom de l'application",
         "application_version": "Version de l'application",
         "session_id": "Session ID",
+        "error_at": "Erreur le",
         "error": {
           "seq": "Lien vers Seq de l'erreur",
           "seq_link": "Voir dans Seq",
