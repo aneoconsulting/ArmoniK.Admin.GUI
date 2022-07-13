@@ -8,7 +8,7 @@ export class AppController {
    */
   @Get()
   index(): { message: string; version: string } {
-    return { message: 'Welcome to ArmoniK GUI API', version: '0.2.0' };
+    return { message: 'Welcome to ArmoniK GUI API', version: '0.3.0' };
   }
 
   /**

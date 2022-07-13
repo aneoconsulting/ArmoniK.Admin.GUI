@@ -96,7 +96,7 @@
           "last_activity_at": {
             "title": "Last activity since",
             "default": "Always",
-            "days": "Last {{value}} day(s)"
+            "text": "Last {{value}} day(s)"
           }
         }
       },
