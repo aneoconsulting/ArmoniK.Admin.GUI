@@ -1,1 +1,1 @@
-export * from './auto-refresh-activator.compoent';
+export * from './auto-refresh-activator.component';
