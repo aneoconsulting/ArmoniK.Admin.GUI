@@ -66,4 +66,13 @@ describe('SinceDateFilterComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('select')).toBeTruthy();
   });
+
+  it('should always return true for accepts', () => {
+    expect(component.accepts()).toBeTruthy();
+  });
+
+  it('should create a new date if params is not defined', () => {
+    const date = component.createDateSince();
+    expect(date).toBeDefined();
+  });
 });
