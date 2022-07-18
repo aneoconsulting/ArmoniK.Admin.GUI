@@ -71,4 +71,8 @@ describe('TaskStatusFilterComponent', () => {
       Object.keys(TaskStatus).filter((x) => parseInt(x) >= 0).length + 1 // +1 for "All"
     );
   });
+
+  it('should accept all', () => {
+    expect(component.accepts()).toBeTruthy();
+  });
 });
