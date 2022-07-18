@@ -25,12 +25,13 @@ describe('SettingsService', () => {
 
     localStorage.setItem(
       'currentApplications',
-      JSON.stringify(currentApplications)
+      JSON.stringify(Array.from(currentApplications))
     );
 
     const service = new SettingsService();
-
-    expect(service.currentApplications).toEqual(currentApplications);
+    expect(Array.from(service.currentApplications)).toEqual(
+      Array.from(currentApplications)
+    );
   });
 
   it('should be created', () => {
