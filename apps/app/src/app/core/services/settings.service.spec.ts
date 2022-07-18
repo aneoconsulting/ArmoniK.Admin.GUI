@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import { SettingsService } from './settings.service';
@@ -12,6 +13,24 @@ describe('SettingsService', () => {
 
   afterEach(() => {
     localStorage.removeItem('currentApplications');
+  });
+
+  it('should get current applications from local storage', () => {
+    const currentApplications: Set<Application['_id']> = new Set([
+      {
+        applicationName: 'test',
+        applicationVersion: '1.0.0',
+      },
+    ]);
+
+    localStorage.setItem(
+      'currentApplications',
+      JSON.stringify(currentApplications)
+    );
+
+    const service = new SettingsService();
+
+    expect(service.currentApplications).toEqual(currentApplications);
   });
 
   it('should be created', () => {
@@ -128,6 +147,26 @@ describe('SettingsService', () => {
     service.addCurrentApplication(application);
     expect(localStorage.getItem('currentApplications')).toEqual(
       JSON.stringify([application._id])
+    );
+  });
+
+  it('should generate seq url', () => {
+    const path = service.generateSeqUrl({
+      applicationName: 'test',
+    });
+    expect(path).toEqual('/seq/#/events?applicationName=test');
+  });
+
+  it('should generate seq url for errors', () => {
+    const path = service.generateSeqUrlForTaskError('1');
+
+    expect(path).toEqual(
+      '/seq/#/events?' +
+        new HttpParams({
+          fromObject: {
+            filter: `taskId = '1' && @Level = 'Error'`,
+          },
+        }).toString()
     );
   });
 });
