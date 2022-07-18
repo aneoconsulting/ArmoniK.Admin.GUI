@@ -15,7 +15,7 @@ export class AutoRefreshService implements OnDestroy {
     });
   }
 
-  private fn: () => void = () => {
+  fn: () => void = () => {
     throw new Error('AutoRefreshService.fn is not set');
   };
 

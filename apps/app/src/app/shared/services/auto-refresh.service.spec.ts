@@ -1,15 +1,18 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AutoRefreshService } from './auto-refresh.service';
 
 describe('AutoRefreshService', () => {
   let service: AutoRefreshService;
+  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       providers: [AutoRefreshService],
     });
+    router = TestBed.get(Router);
     service = TestBed.inject(AutoRefreshService);
   });
 
@@ -18,9 +21,9 @@ describe('AutoRefreshService', () => {
   });
 
   it('should call "disable" when "ngOnDestroy" is called', () => {
-    spyOn(service, 'disable');
+    service.enable();
     service.ngOnDestroy();
-    expect(service.disable).toHaveBeenCalled();
+    expect(service.interval).toBeNull();
   });
 
   it('should set new timer when "setTimer" is called', () => {
@@ -30,8 +33,11 @@ describe('AutoRefreshService', () => {
 
   it('should restart interval when "setTimer" is called and interval enabled', () => {
     service.interval = setInterval(() => null, 10_000);
+    const initialInterval = service.interval;
     service.setTimer(10_000);
     expect(service.interval).toBeTruthy();
+    // Must be different instance (restarted with new timer)
+    expect(service.interval).not.toEqual(initialInterval);
   });
 
   it('should not restart interval when "setTimer" is called and interval disabled', () => {
@@ -77,4 +83,17 @@ describe('AutoRefreshService', () => {
     service.toggle();
     expect(service.interval).toBeNull();
   });
+
+  it('should throw an error when fn is call when fn is not set', () => {
+    expect(function () {
+      service.fn();
+    }).toThrowError('AutoRefreshService.fn is not set');
+  });
+
+  it('should disable interval on routing', fakeAsync(() => {
+    service.enable();
+    router.navigate(['/']);
+    tick();
+    expect(service.interval).toBeNull();
+  }));
 });
