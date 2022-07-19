@@ -1,16 +1,19 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageCode } from '../enums';
 import { LanguageService } from './language.service';
 
 describe('LanguageService', () => {
+  let router: Router;
   let service: LanguageService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
     });
+    router = TestBed.inject(Router);
     service = TestBed.inject(LanguageService);
   });
 
@@ -61,4 +64,15 @@ describe('LanguageService', () => {
   it('should have an function to translate asynchronously', () => {
     expect(service.translate).toBeTruthy();
   });
+
+  it('should reload interface when language changes', fakeAsync(() => {
+    spyOn(router, 'navigateByUrl');
+
+    service.init();
+
+    service.currentLang = LanguageCode.fr;
+    tick();
+    expect(service.currentLang).toEqual(LanguageCode.fr);
+    expect(router.navigateByUrl).toHaveBeenCalledTimes(1);
+  }));
 });

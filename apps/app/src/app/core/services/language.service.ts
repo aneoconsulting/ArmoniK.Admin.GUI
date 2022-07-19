@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { noop, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LanguageCode } from '../enums';
 import { Language } from '../types';
 
@@ -115,11 +115,12 @@ export class LanguageService {
       // Store current strategy to restore it later
       const { shouldReuseRoute } = this.router.routeReuseStrategy;
       // Remove the current route from the router (to prevent the route from being reused)
+      /* istanbul ignore next */
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
       // Give the router the ability to rebuild the route
       this.router.navigated = false;
       // Rebuild the route
-      await this.router.navigateByUrl(this.router.url).catch(noop);
+      await this.router.navigateByUrl(this.router.url);
       // Restore the route reuse strategy
       this.router.routeReuseStrategy.shouldReuseRoute = shouldReuseRoute;
     });
