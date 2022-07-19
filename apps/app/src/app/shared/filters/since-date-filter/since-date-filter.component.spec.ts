@@ -62,6 +62,7 @@ describe('SinceDateFilterComponent', () => {
   });
 
   it('should return false when is not active', () => {
+    component.selectedValue = null;
     expect(component.isActive()).toBeFalsy();
   });
 
@@ -70,11 +71,17 @@ describe('SinceDateFilterComponent', () => {
     expect(component.isActive()).toBeTruthy();
   });
 
-  it('should emit an event when the value changes', () => {
-    const changes = { emit: jasmine.createSpy('changes') };
-    component.changes = changes as unknown as EventEmitter<boolean>;
-    component.onChange({ target: { value: 'test' } });
-    expect(changes.emit).toHaveBeenCalled();
+  it('should get date', () => {
+    const date = component.getDate(new Date());
+    expect(date).toBeDefined();
+    expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('should be init with a default date (7 days ago)', () => {
+    component.ngOnInit();
+    const date = component.selectedValue;
+    expect(date).toBeDefined();
+    expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   it('should change the selected value', () => {
@@ -85,6 +92,13 @@ describe('SinceDateFilterComponent', () => {
   it('should change the value', () => {
     component.onChange({ target: { value: 'test' } });
     expect(component.value).toBe('test');
+  });
+
+  it('should emit an event when the value changes', () => {
+    const changes = { emit: jasmine.createSpy('changes') };
+    component.changes = changes as unknown as EventEmitter<boolean>;
+    component.onChange({ target: { value: 'test' } });
+    expect(changes.emit).toHaveBeenCalled();
   });
 
   describe('date since', () => {
