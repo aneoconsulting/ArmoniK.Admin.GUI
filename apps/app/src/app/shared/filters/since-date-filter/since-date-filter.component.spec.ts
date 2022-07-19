@@ -123,11 +123,14 @@ describe('SinceDateFilterComponent', () => {
     it('should have a label and a select element', () => {
       const compiled = fixture.debugElement.nativeElement;
       expect(compiled.querySelector('label')).toBeTruthy();
+      expect(compiled.querySelector('select')).toBeTruthy();
     });
 
     it('should display a list of options', () => {
       const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('select')).toBeTruthy();
+      expect(compiled.querySelectorAll('option').length).toBe(
+        component.sinceDays.length + 1 // +1 for the default option
+      );
     });
   });
 });
