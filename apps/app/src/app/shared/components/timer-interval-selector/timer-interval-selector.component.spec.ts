@@ -25,79 +25,91 @@ describe('TimerIntervalSelectorComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a clr-dropdown', () => {
-    expect(fixture.nativeElement.querySelector('clr-dropdown')).toBeTruthy();
+  describe('input', () => {
+    it('should have a timer, default to 10 000', () => {
+      expect(component.timer).toBe(10_000);
+    });
+
+    it('should have a timersList, default to [10 000, 30 000, 60 000, 120 000]', () => {
+      expect(component.timersList).toEqual([10_000, 30_000, 60_000, 120_000]);
+    });
   });
 
-  it('should have a clr-dropdown-menu', () => {
-    // Open dropdown menu
-    fixture.nativeElement.querySelector('clr-dropdown > button').click();
-    expect(
-      fixture.nativeElement.querySelector('clr-dropdown-menu')
-    ).toBeTruthy();
-  });
+  describe('ui', () => {
+    it('should have a clr-dropdown', () => {
+      expect(fixture.nativeElement.querySelector('clr-dropdown')).toBeTruthy();
+    });
 
-  it('should have a button for each timer', () => {
-    // Open dropdown menu
-    fixture.nativeElement.querySelector('clr-dropdown > button').click();
+    it('should have a clr-dropdown-menu', () => {
+      // Open dropdown menu
+      fixture.nativeElement.querySelector('clr-dropdown > button').click();
+      expect(
+        fixture.nativeElement.querySelector('clr-dropdown-menu')
+      ).toBeTruthy();
+    });
 
-    fixture.detectChanges();
+    it('should have a button for each timer', () => {
+      // Open dropdown menu
+      fixture.nativeElement.querySelector('clr-dropdown > button').click();
 
-    expect(
-      fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')
-        .length
-    ).toBe(component.timersList.length);
-  });
+      fixture.detectChanges();
 
-  it('should have a button disabled for the current timer', () => {
-    // Open dropdown menu
-    fixture.nativeElement.querySelector('clr-dropdown > button').click();
+      expect(
+        fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')
+          .length
+      ).toBe(component.timersList.length);
+    });
 
-    fixture.detectChanges();
+    it('should have a button disabled for the current timer', () => {
+      // Open dropdown menu
+      fixture.nativeElement.querySelector('clr-dropdown > button').click();
 
-    const index = component.timersList.indexOf(component.timer as number);
+      fixture.detectChanges();
 
-    console.log(
-      fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')[
-        index
-      ].disabled
-    );
+      const index = component.timersList.indexOf(component.timer as number);
 
-    expect(
-      fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')[
-        index
-      ].ariaDisabled
-    ).toBeTruthy();
-  });
+      console.log(
+        fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')[
+          index
+        ].disabled
+      );
 
-  it('should trigger a click', () => {
-    spyOn(component, 'onClick');
-    // Open dropdown menu
-    fixture.nativeElement.querySelector('clr-dropdown > button').click();
+      expect(
+        fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')[
+          index
+        ].ariaDisabled
+      ).toBeTruthy();
+    });
 
-    fixture.detectChanges();
+    it('should trigger a click', () => {
+      spyOn(component, 'onClick');
+      // Open dropdown menu
+      fixture.nativeElement.querySelector('clr-dropdown > button').click();
 
-    fixture.nativeElement
-      .querySelectorAll('clr-dropdown-menu > button')[0]
-      .click();
+      fixture.detectChanges();
 
-    expect(component.onClick).toHaveBeenCalled();
-  });
+      fixture.nativeElement
+        .querySelectorAll('clr-dropdown-menu > button')[0]
+        .click();
 
-  it('should emit an event on click', () => {
-    const changes = { emit: jasmine.createSpy('changes') };
-    component.timerChange = changes as unknown as EventEmitter<number>;
-    // Open dropdown menu
-    fixture.nativeElement.querySelector('clr-dropdown > button').click();
+      expect(component.onClick).toHaveBeenCalled();
+    });
 
-    fixture.detectChanges();
+    it('should emit an event on click', () => {
+      const changes = { emit: jasmine.createSpy('changes') };
+      component.timerChange = changes as unknown as EventEmitter<number>;
+      // Open dropdown menu
+      fixture.nativeElement.querySelector('clr-dropdown > button').click();
 
-    const index = component.timersList.indexOf(component.timer as number);
+      fixture.detectChanges();
 
-    fixture.nativeElement
-      .querySelectorAll('clr-dropdown-menu > button')
-      [index].click();
+      const index = component.timersList.indexOf(component.timer as number);
 
-    expect(changes.emit).toHaveBeenCalledWith(component.timersList[index]);
+      fixture.nativeElement
+        .querySelectorAll('clr-dropdown-menu > button')
+        [index].click();
+
+      expect(changes.emit).toHaveBeenCalledWith(component.timersList[index]);
+    });
   });
 });
