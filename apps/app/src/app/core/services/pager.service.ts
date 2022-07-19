@@ -41,8 +41,8 @@ export class PagerService {
     state: ClrDatagridStateInterface,
     params: Map<string, string>
   ) {
-    const nextPage = state?.page?.current ?? this.defaultNextPage;
-    const limit = state?.page?.size ?? this.defaultLimit;
+    const nextPage = state.page?.current ?? this.defaultNextPage;
+    const limit = state.page?.size ?? this.defaultLimit;
 
     params.set('page', nextPage.toString());
     params.set('limit', limit.toString());
@@ -58,8 +58,8 @@ export class PagerService {
     state: ClrDatagridStateInterface,
     params: Map<string, string>
   ) {
-    const orderBy = state?.sort?.by as string;
-    const order = state?.sort?.reverse ? -1 : 1;
+    const orderBy = state.sort?.by as string;
+    const order = state.sort?.reverse ? -1 : 1;
     if (orderBy) {
       params.set('orderBy', orderBy);
       params.set('order', order.toString());
@@ -76,7 +76,7 @@ export class PagerService {
     state: ClrDatagridStateInterface,
     params: Map<string, string>
   ) {
-    const filters = state?.filters ?? [];
+    const filters = state.filters ?? [];
     // filters is an array of filter
     for (const filter of filters) {
       const filterName = filter.property as string;
