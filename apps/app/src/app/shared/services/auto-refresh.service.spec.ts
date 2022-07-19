@@ -64,6 +64,19 @@ describe('AutoRefreshService', () => {
       service.toggle();
       expect(service.interval).toBeNull();
     });
+
+    it('should set be null when navigate to another route', fakeAsync(() => {
+      service.enable();
+      router.navigate(['/']);
+      tick();
+      expect(service.interval).toBeNull();
+    }));
+
+    it('should set be null when component is destroy', () => {
+      service.enable();
+      service.ngOnDestroy();
+      expect(service.interval).toBeNull();
+    });
   });
 
   describe('enable', () => {
@@ -87,21 +100,6 @@ describe('AutoRefreshService', () => {
       spyOn(window, 'clearInterval');
       service.disable();
       expect(window.clearInterval).toHaveBeenCalledWith(intervalId);
-    });
-  });
-
-  describe('interval', () => {
-    it('should set be null when navigate to another route', fakeAsync(() => {
-      service.enable();
-      router.navigate(['/']);
-      tick();
-      expect(service.interval).toBeNull();
-    }));
-
-    it('should set be null when component is destroy', () => {
-      service.enable();
-      service.ngOnDestroy();
-      expect(service.interval).toBeNull();
     });
   });
 });
