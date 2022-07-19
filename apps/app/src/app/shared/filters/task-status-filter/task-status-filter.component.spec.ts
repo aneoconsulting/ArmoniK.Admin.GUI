@@ -1,4 +1,3 @@
-import { HttpClientModule } from '@angular/common/http';
 import { EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskStatus } from '@armonik.admin.gui/armonik-typing';
@@ -45,7 +44,7 @@ describe('TaskStatusFilterComponent', () => {
 
   it('should change the selected value', () => {
     component.onChange({ target: { value: TaskStatus.CANCELLED } });
-    expect(component.selectedValue).toBe(TaskStatus.CANCELLED);
+    expect(component.selectedValue).toBe(component.value);
   });
 
   it('should change the value', () => {
@@ -53,26 +52,38 @@ describe('TaskStatusFilterComponent', () => {
     expect(component.value).toBe(TaskStatus.CANCELLED);
   });
 
-  it('should have a clr-select-container', () => {
-    expect(
-      fixture.nativeElement.querySelector('clr-select-container')
-    ).toBeTruthy();
-  });
-
-  it('should have a label and a select element', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('label')).toBeTruthy();
-    expect(compiled.querySelector('select')).toBeTruthy();
-  });
-
-  it('should display a list of options', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelectorAll('option').length).toBe(
-      Object.keys(TaskStatus).filter((x) => parseInt(x) >= 0).length + 1 // +1 for "All"
-    );
-  });
-
   it('should accept all', () => {
     expect(component.accepts()).toBeTruthy();
+  });
+
+  it('should return true if the value is active', () => {
+    component.selectedValue = TaskStatus.CANCELLED;
+    expect(component.isActive()).toBeTruthy();
+  });
+
+  it('should return false if the value is not active', () => {
+    component.selectedValue = null;
+    expect(component.isActive()).toBeFalsy();
+  });
+
+  describe('ui', () => {
+    it('should have a clr-select-container', () => {
+      expect(
+        fixture.nativeElement.querySelector('clr-select-container')
+      ).toBeTruthy();
+    });
+
+    it('should have a label and a select element', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('label')).toBeTruthy();
+      expect(compiled.querySelector('select')).toBeTruthy();
+    });
+
+    it('should display a list of options', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelectorAll('option').length).toBe(
+        Object.keys(TaskStatus).filter((x) => parseInt(x) >= 0).length + 1 // +1 for "All"
+      );
+    });
   });
 });
