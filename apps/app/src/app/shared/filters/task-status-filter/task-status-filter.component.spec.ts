@@ -44,26 +44,28 @@ describe('TaskStatusFilterComponent', () => {
 
   it('should change the selected value', () => {
     component.onChange({ target: { value: TaskStatus.CANCELLED } });
-    expect(component.selectedValue).toBe(component.value);
+    expect(component.selectedValue).toBe(TaskStatus.CANCELLED);
   });
 
   it('should change the value', () => {
     component.onChange({ target: { value: TaskStatus.CANCELLED } });
-    expect(component.value).toBe(TaskStatus.CANCELLED);
+    expect(component.value).toBe(component.selectedValue);
   });
 
   it('should accept all', () => {
     expect(component.accepts()).toBeTruthy();
   });
 
-  it('should return true if the value is active', () => {
-    component.selectedValue = TaskStatus.CANCELLED;
-    expect(component.isActive()).toBeTruthy();
-  });
+  describe('active', () => {
+    it('should return true if the value is active', () => {
+      component.selectedValue = TaskStatus.CANCELLED;
+      expect(component.isActive()).toBeTruthy();
+    });
 
-  it('should return false if the value is not active', () => {
-    component.selectedValue = null;
-    expect(component.isActive()).toBeFalsy();
+    it('should return false if the value is not active', () => {
+      component.selectedValue = null;
+      expect(component.isActive()).toBeFalsy();
+    });
   });
 
   describe('ui', () => {
