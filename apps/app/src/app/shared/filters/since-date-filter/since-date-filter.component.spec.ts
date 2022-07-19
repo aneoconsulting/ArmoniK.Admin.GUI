@@ -91,8 +91,7 @@ describe('SinceDateFilterComponent', () => {
     expect(component.selectedValue).toBe('test');
   });
 
-  it('should change the value', () => {
-    component.onChange({ target: { value: 'test' } });
+  it('should return the selectedValue with "value"', () => {
     expect(component.value).toBe(component.selectedValue);
   });
 
