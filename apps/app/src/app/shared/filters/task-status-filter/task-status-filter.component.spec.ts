@@ -47,8 +47,7 @@ describe('TaskStatusFilterComponent', () => {
     expect(component.selectedValue).toBe(TaskStatus.CANCELLED);
   });
 
-  it('should change the value', () => {
-    component.onChange({ target: { value: TaskStatus.CANCELLED } });
+  it('should return the selectedValue with "value"', () => {
     expect(component.value).toBe(component.selectedValue);
   });
 
@@ -56,7 +55,7 @@ describe('TaskStatusFilterComponent', () => {
     expect(component.accepts()).toBeTruthy();
   });
 
-  describe('active', () => {
+  describe('isActive', () => {
     it('should return true if the value is active', () => {
       component.selectedValue = TaskStatus.CANCELLED;
       expect(component.isActive()).toBeTruthy();
