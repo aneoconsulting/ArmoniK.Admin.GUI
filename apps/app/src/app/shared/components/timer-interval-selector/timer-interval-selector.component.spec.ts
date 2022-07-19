@@ -68,12 +68,6 @@ describe('TimerIntervalSelectorComponent', () => {
 
       const index = component.timersList.indexOf(component.timer as number);
 
-      console.log(
-        fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')[
-          index
-        ].disabled
-      );
-
       expect(
         fixture.nativeElement.querySelectorAll('clr-dropdown-menu > button')[
           index
