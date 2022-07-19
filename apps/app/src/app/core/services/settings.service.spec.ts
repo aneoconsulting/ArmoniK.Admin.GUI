@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import { SettingsService } from './settings.service';
