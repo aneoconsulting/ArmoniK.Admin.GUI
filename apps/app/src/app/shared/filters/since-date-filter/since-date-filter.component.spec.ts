@@ -92,6 +92,7 @@ describe('SinceDateFilterComponent', () => {
   });
 
   it('should return the selectedValue with "value"', () => {
+    component.selectedValue = null;
     expect(component.value).toBe(null);
     component.selectedValue = 'test';
     expect(component.value).toBe('test');
