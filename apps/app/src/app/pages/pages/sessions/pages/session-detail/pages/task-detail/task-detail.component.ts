@@ -18,15 +18,15 @@ export class TaskDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.browserTitleService.setTitle(
       this.languageService.instant(
         'pages.sessions.session-detail.task-detail.title'
       )
     );
-  }
 
-  ngOnInit() {
     this.route.data.subscribe((data) => {
       if (data['task']) {
         this.task = data['task'];
