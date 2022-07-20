@@ -48,7 +48,9 @@ describe('TaskStatusFilterComponent', () => {
   });
 
   it('should return the selectedValue with "value"', () => {
-    expect(component.value).toBe(component.selectedValue);
+    expect(component.value).toBe(null);
+    component.selectedValue = TaskStatus.CANCELLED;
+    expect(component.value).toBe(TaskStatus.CANCELLED);
   });
 
   it('should accept all', () => {
