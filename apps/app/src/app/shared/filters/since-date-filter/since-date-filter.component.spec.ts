@@ -61,7 +61,7 @@ describe('SinceDateFilterComponent', () => {
     expect(component.accepts()).toBeTruthy();
   });
 
-  describe('active', () => {
+  describe('isActive', () => {
     it('should return false when is not active', () => {
       component.selectedValue = null;
       expect(component.isActive()).toBeFalsy();
@@ -92,7 +92,9 @@ describe('SinceDateFilterComponent', () => {
   });
 
   it('should return the selectedValue with "value"', () => {
-    expect(component.value).toBe(component.selectedValue);
+    expect(component.value).toBe(null);
+    component.selectedValue = 'test';
+    expect(component.value).toBe('test');
   });
 
   it('should emit an event when the value changes', () => {
