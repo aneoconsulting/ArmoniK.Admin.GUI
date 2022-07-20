@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Application,
@@ -39,7 +39,8 @@ export class DashboardComponent implements OnInit {
     private browserTitleService: BrowserTitleService,
     private settingsService: SettingsService,
     private pagerService: PagerService,
-    private applicationsService: ApplicationsService
+    private applicationsService: ApplicationsService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -87,6 +88,8 @@ export class DashboardComponent implements OnInit {
       error: this.onErrorApplicationsErrors.bind(this),
       next: this.onNextApplicationsErrors.bind(this),
     });
+    // Refresh the datagrid
+    this.cdr.detectChanges();
   }
 
   /**
