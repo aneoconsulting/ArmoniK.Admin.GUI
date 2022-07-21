@@ -49,7 +49,7 @@ export class PagesComponent implements OnInit {
    *
    * @param application
    */
-  removeApplication(application: Application['_id']) {
+  removeApplication(application: Application['_id']): void {
     this.settingsService.removeCurrentApplication(application);
     this.router.navigate(['/', 'dashboard']);
   }
@@ -59,7 +59,7 @@ export class PagesComponent implements OnInit {
    *
    * @param lang
    */
-  changeLanguage(lang: LanguageCode) {
+  changeLanguage(lang: LanguageCode): void {
     this.languageService.currentLang = lang;
   }
 
@@ -106,6 +106,6 @@ export class PagesComponent implements OnInit {
    * @returns value
    */
   trackByApplicationId(_: number, item: Application['_id']): string {
-    return item.applicationName + item.applicationVersion;
+    return `${item.applicationName}${item.applicationVersion}`;
   }
 }
