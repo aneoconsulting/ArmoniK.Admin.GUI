@@ -82,7 +82,7 @@ describe('TasksListComponent', () => {
     });
   });
 
-  describe('Seq', () => {
+  describe('onClickSeqLink', () => {
     it('should emit event when click on seq link', () => {
       const clickSeqLink = { emit: jasmine.createSpy('emit') };
       const event = new Event('click');
@@ -169,6 +169,11 @@ describe('TasksListComponent', () => {
         expect(component.isCancelling(task)).toBeTruthy();
       });
 
+      it('should return "false" when status is not cancelling', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isCancelling(task)).toBeFalsy();
+      });
+
       it('should return "true" when status is cancelled', () => {
         const task = { status: TaskStatus.CANCELLED } as Task;
         expect(component.isCancelled(task)).toBeTruthy();
@@ -228,10 +233,9 @@ describe('TasksListComponent', () => {
         component.clickSeqLink = seq as unknown as EventEmitter<string>;
 
         const seqLink = fixture.nativeElement.querySelector('.seq-link');
-        console.log(seqLink);
         seqLink.click();
 
-        expect(seq.emit).toHaveBeenCalled();
+        expect(seq.emit).toHaveBeenCalledWith(taskId);
       });
 
       it('should be shown when task is in error', () => {
@@ -301,7 +305,7 @@ describe('TasksListComponent', () => {
         expect(component.openModal).toHaveBeenCalledWith(task);
       });
 
-      it('should have task id in modal title', () => {
+      it('should have error of clicked task in modal body', () => {
         const error = 'error';
         const task = {
           _id: taskId,
