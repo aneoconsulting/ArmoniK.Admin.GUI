@@ -1,9 +1,16 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import {
+  Application,
+  ApplicationError,
+  Pagination,
+} from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
-import { ClarityModule, ClrDatagridStateInterface } from '@clr/angular';
+import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { Observable, of, throwError } from 'rxjs';
 import {
   ApplicationsService,
   BrowserTitleService,
@@ -11,20 +18,12 @@ import {
   PagerService,
   SettingsService,
 } from '../../../core';
+import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
 import {
   ApplicationCardComponent,
   ApplicationsErrorsListComponent,
 } from './components';
-import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
-
 import { DashboardComponent } from './dashboard.component';
-import {
-  Application,
-  ApplicationError,
-  Pagination,
-} from '@armonik.admin.gui/armonik-typing';
-import { Observable, of, throwError } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
 
 describe('DashboardComponent', () => {
   const applications: Application[] = [
@@ -146,7 +145,7 @@ describe('DashboardComponent', () => {
     });
   });
 
-  describe('applications', () => {
+  describe('onRefreshApplicationsErrors', () => {
     it('should get all applications with errors', () => {
       component.onRefreshApplicationsErrors({});
 
@@ -166,8 +165,10 @@ describe('DashboardComponent', () => {
 
       expect(component.errors[0]).toEqual(error);
     });
+  });
 
-    it('should add clicked application to currentApplication and navigate', () => {
+  describe('onApplicationClick', () => {
+    it('should add to currentApplication and navigate', () => {
       const application = applications[0];
 
       const settingsService = TestBed.inject(SettingsService);
@@ -194,7 +195,7 @@ describe('DashboardComponent', () => {
     });
   });
 
-  describe('Seq', () => {
+  describe('redirectToSeq', () => {
     it('should open a _blank tab with seq url', () => {
       const taskId = '1';
       const url = 'test-url';
@@ -205,47 +206,6 @@ describe('DashboardComponent', () => {
       component.redirectToSeq(taskId);
 
       expect(spy).toHaveBeenCalledWith(url, '_blank');
-    });
-  });
-
-  describe('ui', () => {
-    it('should contains a h1', () => {
-      const compiled = fixture.nativeElement;
-      expect(compiled.querySelector('h1')).toBeTruthy();
-    });
-    it('should contains a section after h1', () => {
-      const compiled = fixture.nativeElement;
-      expect(compiled.querySelector('h1 + section')).toBeTruthy();
-    });
-    it('should contains 2 h2', () => {
-      const compiled = fixture.nativeElement;
-      expect(compiled.querySelectorAll('h2').length).toBe(2);
-    });
-    it('should contains a div with class "clr-row" after the first h2', () => {
-      const compiled = fixture.nativeElement;
-      expect(compiled.querySelector('h2 + div.clr-row')).toBeTruthy();
-    });
-    it('should contains "app-pages-dashboard-application-card" in a tag with class "clr-row" after first h2', () => {
-      const compiled = fixture.nativeElement;
-      fixture.detectChanges();
-
-      expect(compiled.querySelector('div.clr-row').textContent).toContain(
-        applications[0]._id.applicationName
-      );
-    });
-
-    it('should contains a app-alert-error after the second h2', () => {
-      const compiled = fixture.nativeElement;
-      expect(compiled.querySelector('h2 + app-alert-error')).toBeTruthy();
-    });
-
-    it('should contains a app-pages-dashboard-applications-errors-list after the app-alert-error', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(
-        compiled.querySelector(
-          'app-alert-error + app-pages-dashboard-applications-errors-list'
-        )
-      ).toBeTruthy();
     });
   });
 });

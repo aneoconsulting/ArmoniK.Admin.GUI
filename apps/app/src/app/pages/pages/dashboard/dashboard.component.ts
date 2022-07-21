@@ -1,5 +1,5 @@
 import { HttpParams } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Application,
@@ -7,6 +7,7 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
+import { Subscription } from 'rxjs';
 import {
   AppError,
   ApplicationsService,
@@ -24,7 +25,9 @@ import {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
+  allApplicationsErrorsSubscription: Subscription | null = null;
+  routeDataSubscription: Subscription | null = null;
   applications: Application[] = [];
 
   errors: AppError[] = [];
@@ -48,11 +51,20 @@ export class DashboardComponent implements OnInit {
       this.languageService.instant('pages.dashboard.title')
     );
 
-    this.route.data.subscribe((data) => {
+    this.routeDataSubscription = this.route.data.subscribe((data) => {
       if (data['applications']) {
         this.applications = data['applications'];
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.routeDataSubscription) {
+      this.routeDataSubscription.unsubscribe();
+    }
+    if (this.allApplicationsErrorsSubscription) {
+      this.allApplicationsErrorsSubscription.unsubscribe();
+    }
   }
 
   get isSeqUp(): boolean {
@@ -84,10 +96,12 @@ export class DashboardComponent implements OnInit {
 
     const params = this.pagerService.createHttpParams(state);
 
-    this.applicationsService.getAllWithErrorsPaginated(params).subscribe({
-      error: this.onErrorApplicationsErrors.bind(this),
-      next: this.onNextApplicationsErrors.bind(this),
-    });
+    this.allApplicationsErrorsSubscription = this.applicationsService
+      .getAllWithErrorsPaginated(params)
+      .subscribe({
+        error: this.onErrorApplicationsErrors.bind(this),
+        next: this.onNextApplicationsErrors.bind(this),
+      });
     // Refresh the datagrid
     this.cdr.detectChanges();
   }
