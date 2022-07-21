@@ -53,6 +53,7 @@ describe('LanguageService', () => {
   it('should init using navigator language', () => {
     service.fallbackLang = LanguageCode.fr;
 
+    // Mock navigator languages to be English
     spyOn(window.navigator, 'languages' as never).and.returnValue([
       LanguageCode.en,
     ] as never);
