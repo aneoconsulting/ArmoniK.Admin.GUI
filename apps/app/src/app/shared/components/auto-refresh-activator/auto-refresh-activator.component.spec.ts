@@ -44,9 +44,10 @@ describe('AutoRefreshActivatorComponent', () => {
   });
 
   it('should trigger "onClick" when button is clicked', () => {
-    spyOn(component, 'onClick');
+    const spy = spyOn(component, 'onClick');
     fixture.nativeElement.querySelector('button').click();
     expect(component.onClick).toHaveBeenCalled();
+    spy.calls.reset();
   });
 
   it('should emit an event on click', () => {

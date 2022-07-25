@@ -54,13 +54,14 @@ describe('LanguageService', () => {
     service.fallbackLang = LanguageCode.fr;
 
     // Mock navigator languages to be English
-    spyOn(window.navigator, 'languages' as never).and.returnValue([
+    const spy = spyOn(window.navigator, 'languages' as never).and.returnValue([
       LanguageCode.en,
     ] as never);
 
     service.init();
 
     expect(service.currentLang).toEqual(LanguageCode.en);
+    spy.calls.reset();
   });
 
   it('should have an function to translate instantly', () => {
@@ -72,7 +73,7 @@ describe('LanguageService', () => {
   });
 
   it('should reload interface when language changes', fakeAsync(() => {
-    spyOn(router, 'navigateByUrl');
+    const spy = spyOn(router, 'navigateByUrl');
 
     service.init();
 
@@ -80,5 +81,6 @@ describe('LanguageService', () => {
     tick();
     expect(service.currentLang).toEqual(LanguageCode.fr);
     expect(router.navigateByUrl).toHaveBeenCalledTimes(1);
+    spy.calls.reset();
   }));
 });
