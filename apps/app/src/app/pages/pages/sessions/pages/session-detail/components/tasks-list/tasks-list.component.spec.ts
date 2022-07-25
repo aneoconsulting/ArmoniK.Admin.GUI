@@ -148,12 +148,6 @@ describe('TasksListComponent', () => {
         });
       });
 
-      it('should return "false" when status is not an error or pending', () => {
-        const task = { status: TaskStatus.CANCELLED } as Task;
-        expect(component.isError(task)).toBeFalsy();
-        expect(component.isPending(task)).toBeFalsy();
-      });
-
       it('should return "true" when status is completed', () => {
         const task = { status: TaskStatus.COMPLETED } as Task;
         expect(component.isCompleted(task)).toBeTruthy();
@@ -303,27 +297,6 @@ describe('TasksListComponent', () => {
         detailButton.click();
 
         expect(component.openModal).toHaveBeenCalledWith(task);
-      });
-
-      it('should have error of clicked task in modal body', () => {
-        const error = 'error';
-        const task = {
-          _id: taskId,
-          status: TaskStatus.ERROR,
-          output: { error },
-        } as Task;
-        component.tasks = {
-          data: [task],
-          meta: { total: 1 },
-        } as Pagination<Task>;
-        fixture.detectChanges();
-
-        fixture.nativeElement.querySelector('.btn-detail').click();
-
-        fixture.detectChanges();
-
-        const modalBody = fixture.nativeElement.querySelector('.modal-body');
-        expect(modalBody.innerText).toContain(error);
       });
     });
   });
