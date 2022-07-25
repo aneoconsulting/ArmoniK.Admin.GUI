@@ -46,7 +46,7 @@ describe('PagesComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should update date every second', fakeAsync(() => {
+    it('should update date every minute', fakeAsync(() => {
       const initialNow = component.now;
       component.ngOnInit();
       tick(2000 * 60);
@@ -88,6 +88,22 @@ describe('PagesComponent', () => {
       component.changeLanguage(lang.code);
 
       expect(languageService.currentLang).toBe(lang.code);
+    });
+
+    it('should have button from current lang disabled', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
+
+      component.changeLanguage(lang.code);
+
+      const indexEn = component.languages.findIndex(
+        (language) => language.code === LanguageCode.en
+      );
+
+      const button = fixture.nativeElement.querySelector(
+        `.language button:nth-child(${indexEn + 1})`
+      );
+
+      expect(button.disabled).toBe(true);
     });
   });
 
