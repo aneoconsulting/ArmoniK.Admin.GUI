@@ -1,5 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -8,7 +10,7 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
-import { ClarityModule } from '@clr/angular';
+import { ClarityModule, ClrDatagridStateInterface } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable, of, throwError } from 'rxjs';
 import {
@@ -19,11 +21,20 @@ import {
   SettingsService,
 } from '../../../core';
 import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
-import {
-  ApplicationCardComponent,
-  ApplicationsErrorsListComponent,
-} from './components';
+import { ApplicationCardComponent } from './components';
 import { DashboardComponent } from './dashboard.component';
+
+@Component({
+  selector: 'app-pages-dashboard-applications-errors-list',
+  template: `<button class="seq-link" (click)="clickSeqLink.emit('mock')">
+      seq link
+    </button>
+    <button class="refresh" (click)="refresh.emit({})">seq link</button>`,
+})
+class MockApplicationsErrorsListComponent {
+  @Output() clickSeqLink = new EventEmitter<string>();
+  @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
+}
 
 describe('DashboardComponent', () => {
   const applications: Application[] = [
@@ -73,7 +84,7 @@ describe('DashboardComponent', () => {
       declarations: [
         DashboardComponent,
         ApplicationCardComponent,
-        ApplicationsErrorsListComponent,
+        MockApplicationsErrorsListComponent,
         AlertErrorComponent,
         SinceDateFilterComponent,
       ],
@@ -165,6 +176,20 @@ describe('DashboardComponent', () => {
 
       expect(component.errors[0]).toEqual(error);
     });
+
+    it('should trigger a refresh', () => {
+      const child = fixture.debugElement.query(
+        By.directive(MockApplicationsErrorsListComponent)
+      );
+
+      spyOn(component, 'onRefreshApplicationsErrors');
+
+      // Select '.seq-link' button and click
+      const button = child.query(By.css('.refresh'));
+      button.triggerEventHandler('click', null);
+
+      expect(component.onRefreshApplicationsErrors).toHaveBeenCalledWith({});
+    });
   });
 
   describe('onApplicationClick', () => {
@@ -206,6 +231,20 @@ describe('DashboardComponent', () => {
       component.redirectToSeq(taskId);
 
       expect(spy).toHaveBeenCalledWith(url, '_blank');
+    });
+
+    it('should redirect to seq on click', () => {
+      const child = fixture.debugElement.query(
+        By.directive(MockApplicationsErrorsListComponent)
+      );
+
+      spyOn(component, 'redirectToSeq');
+
+      // Select '.seq-link' button and click
+      const button = child.query(By.css('.seq-link'));
+      button.triggerEventHandler('click', null);
+
+      expect(component.redirectToSeq).toHaveBeenCalledWith('mock');
     });
   });
 });
