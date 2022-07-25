@@ -57,9 +57,9 @@ describe('PagesComponent', () => {
     expect(compiled.querySelector('ui-header')).toBeTruthy();
   });
 
-  it('should contain a title with "Armonik"', () => {
+  it('should contain a title with an ArmoniK logo', () => {
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('ui-header .title').textContent).toContain(
+    expect(compiled.querySelector('ui-header .title img').alt).toContain(
       'ArmoniK'
     );
   });
