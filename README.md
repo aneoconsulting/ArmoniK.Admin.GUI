@@ -1,3 +1,4 @@
+<!-- TODO: Essayer de faire un cancel session via une connexion au submitter, c'est en cours via le submitter et core qui va devoir être revu -->
 # ArmoniK GUI
 
 ArmoniK GUI add an administration interface to the ArmoniK project.
@@ -32,7 +33,7 @@ Go to the project directory
   npm install
 ```
 
-### Install Nx globally
+### Install Nx globally (optional)
 
 ```bash
   npm install -g nx
@@ -50,6 +51,18 @@ _A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is
 2. Export database using ArmoniK/tools/export-mongo.sh
 3. Move exported files to apps/api/src/database/fixtures
 4. Import database using the [MongoDB Compass](https://www.mongodb.com/docs/compass/master/install/).
+
+### Generate types from Proto files
+
+These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK` and use to request the gRPC services.
+
+```sh
+# For Linux
+npm run proto:generate
+
+# For Windows
+npm run proto:generate:win
+```
 
 ### Commandes available
 
@@ -76,7 +89,8 @@ Start the app (front-end using Angular)
   nx serve app
 ```
 
-### Server
+<!-- TODO: Add a part to install ArmoniK and use it! -->
+### Server (Deprecated)
 
 First, you need to install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
 Then, you must copy `.env.example` to `.env` and fill host, port and database name to use it locally.
@@ -92,10 +106,10 @@ MongoDB__DatabaseName=armonik
 And finally, you can start the server (REST API using Nest)
 
 ```bash
-  nx serve api
+  nx serve api # Deprecated
 ```
 
-### App and Server
+### App and Server (Deprecated)
 
 Start the GUI (app and server)
 
@@ -109,7 +123,7 @@ Contributions are always welcome!
 
 See `contributing.md` for ways to get started.
 
-## Documentation
+## Documentation (Deprecated)
 
 For the API, you can access to Swagger UI:
 
@@ -161,7 +175,7 @@ ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not 
 
 With each push on _main_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
-### Docker
+### Docker (Deprecated for api)
 
 To build docker images, you need to run on linux this command
 

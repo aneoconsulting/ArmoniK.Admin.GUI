@@ -2,5 +2,9 @@
   "/api": {
     "target": "http://localhost:3333",
     "secure": false
+  },
+  "/ArmoniK.api.grpc.v1.Submitter/*": {
+    "target": "http://172.31.49.85:5000",
+    "secure": false
   }
 }

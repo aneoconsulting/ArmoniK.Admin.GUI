@@ -6,13 +6,18 @@ import {
 } from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
 import { Session } from '../../models';
+import { Session as SessionRequest } from '../../types/proto/submitter-service.pb';
+import { SubmitterClient } from '../../types/proto/submitter-service.pbsc';
 import { ApiService } from './api.service';
 
 @Injectable()
 export class SessionsService {
   private url = '/api/sessions';
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private client: SubmitterClient
+  ) {}
 
   /**
    * Used to get the list of sessions from the api using pagination and filters
@@ -47,9 +52,10 @@ export class SessionsService {
    *
    * @param id Id of the session
    */
-  cancel(id: string): Observable<Session> {
-    return this.apiService.put<Session>(
-      `${this.url}/${encodeURIComponent(id)}/cancel`
-    );
+  cancel(id: string) {
+    const session = new SessionRequest({
+      id,
+    });
+    this.client.cancelSession(session).subscribe(console.log);
   }
 }

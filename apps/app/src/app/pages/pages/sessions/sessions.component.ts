@@ -97,9 +97,7 @@ export class SessionsComponent implements OnInit {
     if (
       confirm(this.languageService.instant('pages.sessions.cancel.confirm'))
     ) {
-      this.sessionsService.cancel(sessionId).subscribe({
-        error: this.onCancelSessionError.bind(this),
-      });
+      this.sessionsService.cancel(sessionId);
     }
   }
 
