@@ -1,4 +1,4 @@
-name: cd docker
+name: cd test docker
 
 on:
   push:
