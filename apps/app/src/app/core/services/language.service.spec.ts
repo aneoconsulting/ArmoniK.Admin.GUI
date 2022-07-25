@@ -36,7 +36,8 @@ describe('LanguageService', () => {
   it('should init language', () => {
     service.init();
 
-    expect(service.currentLang).toEqual(LanguageCode.en);
+    // No matter the current language, one must be set when initialized
+    expect(service.currentLang).toBeDefined();
   });
 
   it('should init using local storage', () => {
@@ -51,6 +52,11 @@ describe('LanguageService', () => {
 
   it('should init using navigator language', () => {
     service.fallbackLang = LanguageCode.fr;
+
+    // Mock navigator languages to be English
+    spyOn(window.navigator, 'languages' as never).and.returnValue([
+      LanguageCode.en,
+    ] as never);
 
     service.init();
 
