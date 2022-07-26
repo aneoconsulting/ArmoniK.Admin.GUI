@@ -77,13 +77,6 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to track error for ngFor
-   */
-  trackByTask(index: number, task: Task) {
-    return task?._id ?? index;
-  }
-
-  /**
    * Used to check if task status is in error
    *
    * @param task Task to check
@@ -140,14 +133,14 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to track task for ngFor
+   * Used to track error for ngFor
    *
-   * @param index Index of the task
-   * @param task Task to track
+   * @param index Index of the error
+   * @param error Error to track
    *
    * @returns Task id
    */
-  trackByTaskId(_: number, task: Task) {
+  trackByTask(_: number, task: Task) {
     return task._id;
   }
 }
