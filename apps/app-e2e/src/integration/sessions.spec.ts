@@ -20,7 +20,7 @@ describe('sessions', () => {
   });
 
   it('should be able to click on "applications" button to return to dashboard', () => {
-    cy.get('.subtitle > a').click();
+    cy.get(':nth-child(1) > .subtitle > a').click();
     cy.url().should('include', '/dashboard');
   });
 

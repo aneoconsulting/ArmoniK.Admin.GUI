@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageCode } from '../enums';
 import { LanguageService } from './language.service';
 
@@ -53,10 +53,10 @@ describe('LanguageService', () => {
   it('should init using navigator language', () => {
     service.fallbackLang = LanguageCode.fr;
 
+    const translateService = TestBed.inject(TranslateService);
+
     // Mock navigator languages to be English
-    spyOn(window.navigator, 'languages' as never).and.returnValue([
-      LanguageCode.en,
-    ] as never);
+    spyOn(translateService, 'getBrowserLang').and.returnValue(LanguageCode.en);
 
     service.init();
 
