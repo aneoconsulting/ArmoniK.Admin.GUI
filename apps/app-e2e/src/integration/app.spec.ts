@@ -11,8 +11,10 @@ describe('app', () => {
   });
 
   it('should change the date on the header when passing in FR', () => {
+    // Click on fr button
     cy.get(':nth-child(2) > .btn').click();
     cy.get('.title--date').contains(/\d{2}\/\d{2}\/\d{4} (\d{2}:\d{2})/);
+    // Click on en button
     cy.get(':nth-child(1) > .btn').click();
   });
 });
