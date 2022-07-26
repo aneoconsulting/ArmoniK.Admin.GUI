@@ -7,7 +7,7 @@
   <clr-dg-action-bar>
     <button
       type="button"
-      class="btn btn-sm btn-outline-danger"
+      class="cancel-button btn btn-sm btn-outline-danger"
       (click)="cancelTasksChange.emit()"
       [clrLoading]="cancelButtonState"
     >
@@ -15,7 +15,7 @@
     </button>
     <button
       type="button"
-      class="btn btn-sm btn-outline"
+      class="refresh-button btn btn-sm btn-outline"
       (click)="manualRefresh.emit()"
     >
       {{ 'pages.sessions.session-detail.table.refresh' | translate }}
@@ -135,7 +135,12 @@
       </button>
     </clr-dg-cell>
     <clr-dg-cell *ngIf="isSeqUp">
-      <a *ngIf="isError(task)" href (click)="onClickSeqLink($event, task._id)">
+      <a
+        *ngIf="isError(task)"
+        href
+        (click)="onClickSeqLink($event, task._id)"
+        class="seq-link"
+      >
         {{ 'pages.sessions.session-detail.table.error.seq_link' | translate }}
       </a>
       <span *ngIf="!isError(task)">-</span>
