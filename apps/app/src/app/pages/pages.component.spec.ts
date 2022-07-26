@@ -91,19 +91,35 @@ describe('PagesComponent', () => {
     });
 
     it('should have button from current lang disabled', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-
-      component.changeLanguage(lang.code);
+      component.changeLanguage(LanguageCode.en);
+      fixture.detectChanges();
 
       const indexEn = component.languages.findIndex(
         (language) => language.code === LanguageCode.en
       );
 
       const button = fixture.nativeElement.querySelector(
-        `.language button:nth-child(${indexEn + 1})`
+        `.language li:nth-child(${indexEn + 1}) > button`
       );
 
-      expect(button.disabled).toBe(true);
+      expect(button.disabled).toBeTruthy();
+    });
+
+    it('should change language on button click', () => {
+      component.changeLanguage(LanguageCode.en);
+
+      // Select the other language
+      const indexFr = component.languages.findIndex(
+        (language) => language.code === LanguageCode.fr
+      );
+
+      const button = fixture.nativeElement.querySelector(
+        `.language li:nth-child(${indexFr + 1}) > button`
+      );
+
+      button.click();
+
+      expect(component.isSelected(LanguageCode.fr)).toBeTruthy();
     });
   });
 
