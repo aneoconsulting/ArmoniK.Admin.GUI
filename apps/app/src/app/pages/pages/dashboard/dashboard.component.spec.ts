@@ -21,8 +21,20 @@ import {
   SettingsService,
 } from '../../../core';
 import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
-import { ApplicationCardComponent } from './components';
 import { DashboardComponent } from './dashboard.component';
+
+@Component({
+  selector: 'app-pages-dashboard-application-card',
+  template: `<button
+    class="application-change"
+    (click)="applicationChange.emit({})"
+  >
+    application change
+  </button> `,
+})
+class MockApplicationCardComponent {
+  @Output() applicationChange = new EventEmitter<Application>();
+}
 
 @Component({
   selector: 'app-pages-dashboard-applications-errors-list',
@@ -83,7 +95,7 @@ describe('DashboardComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [
         DashboardComponent,
-        ApplicationCardComponent,
+        MockApplicationCardComponent,
         MockApplicationsErrorsListComponent,
         AlertErrorComponent,
         SinceDateFilterComponent,
@@ -217,6 +229,28 @@ describe('DashboardComponent', () => {
         application._id.applicationVersion,
         'sessions',
       ]);
+    });
+
+    it('should be triggered', () => {
+      // Create an application
+      const application = applications[0];
+      // Add application to dashboard
+      component.applications = [application];
+      fixture.detectChanges();
+
+      const child = fixture.debugElement.query(
+        By.directive(MockApplicationCardComponent)
+      );
+
+      spyOn(component, 'onApplicationClick');
+
+      // Select '.application-change' button and click
+      const button = child.query(By.css('.application-change'));
+      button.triggerEventHandler('click', null);
+
+      expect(component.onApplicationClick).toHaveBeenCalledWith(
+        {} as Application
+      );
     });
   });
 
