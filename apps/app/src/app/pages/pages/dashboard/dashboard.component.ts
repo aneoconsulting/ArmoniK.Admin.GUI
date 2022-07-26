@@ -26,8 +26,7 @@ import {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  allApplicationsErrorsSubscription: Subscription | null = null;
-  routeDataSubscription: Subscription | null = null;
+  subscription: Subscription = new Subscription();
   applications: Application[] = [];
 
   errors: AppError[] = [];
@@ -51,20 +50,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.languageService.instant('pages.dashboard.title')
     );
 
-    this.routeDataSubscription = this.route.data.subscribe((data) => {
+    const subscription = this.route.data.subscribe((data) => {
       if (data['applications']) {
         this.applications = data['applications'];
       }
     });
+    this.subscription.add(subscription);
   }
 
   ngOnDestroy() {
-    if (this.routeDataSubscription) {
-      this.routeDataSubscription.unsubscribe();
-    }
-    if (this.allApplicationsErrorsSubscription) {
-      this.allApplicationsErrorsSubscription.unsubscribe();
-    }
+    this.subscription.unsubscribe();
   }
 
   get isSeqUp(): boolean {
@@ -96,12 +91,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const params = this.pagerService.createHttpParams(state);
 
-    this.allApplicationsErrorsSubscription = this.applicationsService
+    const subscription = this.applicationsService
       .getAllWithErrorsPaginated(params)
       .subscribe({
         error: this.onErrorApplicationsErrors.bind(this),
         next: this.onNextApplicationsErrors.bind(this),
       });
+    this.subscription.add(subscription);
     // Refresh the datagrid
     this.cdr.detectChanges();
   }
