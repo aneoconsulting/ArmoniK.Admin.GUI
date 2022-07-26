@@ -60,9 +60,9 @@
     <clr-dg-cell>
       {{ error.errorAt | date: 'medium' }}
     </clr-dg-cell>
-    <clr-dg-cell>
+    <clr-dg-cell [title]="error.error.message">
       <span>
-        {{ error.error.message }}
+        {{ excerpt(error.error.message) }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell *ngIf="isSeqUp">

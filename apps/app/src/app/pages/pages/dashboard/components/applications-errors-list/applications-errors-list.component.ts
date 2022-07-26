@@ -23,6 +23,19 @@ export class ApplicationsErrorsListComponent {
   @Output() clickSeqLink = new EventEmitter<string>();
 
   /**
+   * Except text using ellipsis when longer than 100 characters
+   *
+   * @param text
+   */
+  excerpt(text: string): string {
+    if (text.length > 100) {
+      return text.substring(0, 100) + '...';
+    }
+
+    return text;
+  }
+
+  /**
    * Emit event when click on seq link
    *
    * @param taskId Task id
