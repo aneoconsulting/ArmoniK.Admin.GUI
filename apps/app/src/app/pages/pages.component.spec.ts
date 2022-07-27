@@ -1,9 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PagesComponent } from './pages.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { ClarityModule } from '@clr/angular';
-import { UiModule } from '@armonik.admin.gui/ui';
+import { InjectionToken } from '@angular/core';
+import {
+  ComponentFixture,
+  discardPeriodicTasks,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Application } from '@armonik.admin.gui/armonik-typing';
+import { UiModule } from '@armonik.admin.gui/ui';
+import { ClarityModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  Language,
+  LanguageCode,
+  LanguageService,
+  SettingsService,
+} from '../core';
+import { PagesComponent } from './pages.component';
+
+const WindowMock = {
+  location: { reload: jasmine.createSpy('reload') },
+} as unknown as Window & typeof globalThis;
 
 describe('PagesComponent', () => {
   let component: PagesComponent;
@@ -18,6 +37,7 @@ describe('PagesComponent', () => {
         UiModule,
         ClarityModule,
       ],
+      providers: [{ provide: Window, useValue: WindowMock }],
     }).compileComponents();
   });
 
@@ -31,41 +51,83 @@ describe('PagesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a "clr-main-container"', () => {
-    expect(
-      fixture.nativeElement.querySelector('clr-main-container')
-    ).toBeTruthy();
+  describe('ngOnInit', () => {
+    it('should update date every minute', fakeAsync(() => {
+      const initialNow = component.now;
+      component.ngOnInit();
+      tick(2000 * 60);
+      discardPeriodicTasks();
+      expect(component.now).toBeGreaterThan(initialNow);
+    }));
   });
 
-  it('should contains a "content-container" class', () => {
-    expect(
-      fixture.nativeElement.querySelector('.content-container')
-    ).toBeTruthy();
+  describe('track by', () => {
+    it('should return label for navigation link', () => {
+      const label = 'Dashboard';
+      const link = { path: ['/', 'dashboard'], label };
+      expect(component.trackByLabel(0, link)).toBe(label);
+    });
+
+    it('should return name for language', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
+      expect(component.trackByLanguageName(0, lang)).toBe(lang.name);
+    });
+
+    it('should return application name and version for application', () => {
+      const applicationId = {
+        applicationName: 'Test',
+        applicationVersion: '1.0.0',
+      } as Application['_id'];
+      expect(component.trackByApplicationId(0, applicationId)).toBe(
+        `${applicationId.applicationName}${applicationId.applicationVersion}`
+      );
+    });
   });
 
-  it('should contains a "content-area" class', () => {
-    expect(fixture.nativeElement.querySelector('.content-area')).toBeTruthy();
+  describe('changeLanguage', () => {
+    it('should update language in storage', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
+
+      const languageService = TestBed.inject(LanguageService);
+      spyOn(languageService, 'setLanguageInStorage');
+
+      component.changeLanguage(lang.code);
+
+      expect(languageService.setLanguageInStorage).toHaveBeenCalledWith(
+        lang.code
+      );
+    });
+
+    it('should reload page', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
+
+      const window = TestBed.inject(Window);
+
+      component.changeLanguage(lang.code);
+
+      expect(window.location.reload).toHaveBeenCalled();
+    });
   });
 
-  it('should have a router-outlet', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('router-outlet')).toBeTruthy();
-  });
+  describe('removeApplication', () => {
+    it('should remove application', () => {
+      const application = {
+        applicationName: 'Test',
+        applicationVersion: '1.0.0',
+      } as Application['_id'];
 
-  it('should have a header', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('ui-header')).toBeTruthy();
-  });
+      const settingsService = TestBed.inject(SettingsService);
+      spyOn(settingsService, 'removeCurrentApplication');
 
-  it('should contain a title with "Armonik"', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('ui-header .title').textContent).toContain(
-      'ArmoniK'
-    );
-  });
+      const router = TestBed.inject(Router);
+      spyOn(router, 'navigate');
 
-  it('should contains a list of language', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('ui-header .language')).toBeTruthy();
+      component.removeApplication(application);
+
+      expect(settingsService.removeCurrentApplication).toHaveBeenCalledWith(
+        application
+      );
+      expect(router.navigate).toHaveBeenCalledWith(['/', 'dashboard']);
+    });
   });
 });

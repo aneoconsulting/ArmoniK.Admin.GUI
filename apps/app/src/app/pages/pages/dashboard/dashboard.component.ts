@@ -1,5 +1,4 @@
-import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Application,
@@ -7,6 +6,7 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
+import { Subscription } from 'rxjs';
 import {
   AppError,
   ApplicationsService,
@@ -24,7 +24,8 @@ import {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription = new Subscription();
   applications: Application[] = [];
 
   errors: AppError[] = [];
@@ -39,7 +40,8 @@ export class DashboardComponent implements OnInit {
     private browserTitleService: BrowserTitleService,
     private settingsService: SettingsService,
     private pagerService: PagerService,
-    private applicationsService: ApplicationsService
+    private applicationsService: ApplicationsService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -47,11 +49,17 @@ export class DashboardComponent implements OnInit {
       this.languageService.instant('pages.dashboard.title')
     );
 
-    this.route.data.subscribe((data) => {
-      if (data['applications']) {
-        this.applications = data['applications'];
-      }
-    });
+    this.subscriptions.add(
+      this.route.data.subscribe((data) => {
+        if (data['applications']) {
+          this.applications = data['applications'];
+        }
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   get isSeqUp(): boolean {
@@ -83,10 +91,14 @@ export class DashboardComponent implements OnInit {
 
     const params = this.pagerService.createHttpParams(state);
 
-    this.applicationsService.getAllWithErrorsPaginated(params).subscribe({
-      error: this.onErrorApplicationsErrors.bind(this),
-      next: this.onNextApplicationsErrors.bind(this),
-    });
+    this.subscriptions.add(
+      this.applicationsService.getAllWithErrorsPaginated(params).subscribe({
+        error: this.onErrorApplicationsErrors.bind(this),
+        next: this.onNextApplicationsErrors.bind(this),
+      })
+    );
+    // Refresh the datagrid
+    this.cdr.detectChanges();
   }
 
   /**
