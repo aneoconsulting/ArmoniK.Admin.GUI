@@ -91,10 +91,11 @@ describe('TaskDetailComponent', () => {
         'pages.sessions.session-detail.task-detail.title'
       );
 
-      spyOn(browserTitleService, 'setTitle');
+      const spy = spyOn(browserTitleService, 'setTitle');
       component.ngOnInit();
 
       expect(browserTitleService.setTitle).toHaveBeenCalledWith(title);
+      spy.calls.reset();
     });
 
     it('should get task data from the router', () => {

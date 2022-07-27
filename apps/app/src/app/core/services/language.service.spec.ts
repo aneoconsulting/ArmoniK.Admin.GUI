@@ -56,13 +56,19 @@ describe('LanguageService', () => {
     const translateService = TestBed.inject(TranslateService);
 
     // Ensure that local storage is empty
-    spyOn(localStorage, 'getItem').and.returnValue(null);
+    const spyGetItem = spyOn(localStorage, 'getItem').and.returnValue(null);
     // Mock navigator languages to be English
-    spyOn(translateService, 'getBrowserLang').and.returnValue(LanguageCode.en);
+    const spyGetBrowserLang = spyOn(
+      translateService,
+      'getBrowserLang'
+    ).and.returnValue(LanguageCode.en);
 
     service.init();
 
     expect(service.currentLang).toEqual(LanguageCode.en);
+
+    spyGetItem.calls.reset();
+    spyGetBrowserLang.calls.reset();
   });
 
   it('should have an function to translate instantly', () => {
@@ -74,7 +80,7 @@ describe('LanguageService', () => {
   });
 
   it('should reload interface when language changes', fakeAsync(() => {
-    spyOn(router, 'navigateByUrl');
+    const spy = spyOn(router, 'navigateByUrl');
 
     service.init();
 
@@ -82,5 +88,6 @@ describe('LanguageService', () => {
     tick();
     expect(service.currentLang).toEqual(LanguageCode.fr);
     expect(router.navigateByUrl).toHaveBeenCalledTimes(1);
+    spy.calls.reset();
   }));
 });

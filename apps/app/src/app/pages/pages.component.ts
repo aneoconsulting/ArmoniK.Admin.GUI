@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import {
@@ -14,7 +14,7 @@ import {
   templateUrl: './pages.component.html',
   styleUrls: ['./pages.component.scss'],
 })
-export class PagesComponent {
+export class PagesComponent implements OnInit {
   now = Date.now();
 
   links: AppNavLink[] = [
@@ -27,8 +27,11 @@ export class PagesComponent {
   constructor(
     private router: Router,
     private languageService: LanguageService,
-    public settingsService: SettingsService
-  ) {
+    public settingsService: SettingsService,
+    public window: Window
+  ) {}
+
+  ngOnInit(): void {
     setInterval(() => {
       this.now = Date.now();
     }, 1000 * 60);
@@ -47,7 +50,7 @@ export class PagesComponent {
    *
    * @param application
    */
-  public removeApplication(application: Application['_id']) {
+  removeApplication(application: Application['_id']): void {
     this.settingsService.removeCurrentApplication(application);
     this.router.navigate(['/', 'dashboard']);
   }
@@ -57,9 +60,9 @@ export class PagesComponent {
    *
    * @param lang
    */
-  public changeLanguage(lang: LanguageCode) {
+  changeLanguage(lang: LanguageCode): void {
     this.languageService.setLanguageInStorage(lang);
-    window.location.reload();
+    this.window.location.reload();
   }
 
   /**
@@ -69,7 +72,7 @@ export class PagesComponent {
    *
    * @returns boolean
    */
-  public isSelected(lang: LanguageCode): boolean {
+  isSelected(lang: LanguageCode): boolean {
     return this.languageService.currentLang === lang;
   }
 
@@ -80,7 +83,7 @@ export class PagesComponent {
    *
    * @returns value
    */
-  public trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
+  trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
     return item.label;
   }
 
@@ -92,7 +95,7 @@ export class PagesComponent {
    *
    * @returns value
    */
-  public trackByLanguageName(_: number, item: Language): Language['name'] {
+  trackByLanguageName(_: number, item: Language): Language['name'] {
     return item.name;
   }
 
@@ -104,7 +107,7 @@ export class PagesComponent {
    *
    * @returns value
    */
-  public trackByApplicationId(_: number, item: Application['_id']): string {
-    return item.applicationName + item.applicationVersion;
+  trackByApplicationId(_: number, item: Application['_id']): string {
+    return `${item.applicationName}${item.applicationVersion}`;
   }
 }
