@@ -1,3 +1,4 @@
+import { InjectionToken } from '@angular/core';
 import {
   ComponentFixture,
   discardPeriodicTasks,
@@ -19,6 +20,10 @@ import {
 } from '../core';
 import { PagesComponent } from './pages.component';
 
+const WindowMock = {
+  location: { reload: jasmine.createSpy('reload') },
+} as unknown as Window & typeof globalThis;
+
 describe('PagesComponent', () => {
   let component: PagesComponent;
   let fixture: ComponentFixture<PagesComponent>;
@@ -32,6 +37,7 @@ describe('PagesComponent', () => {
         UiModule,
         ClarityModule,
       ],
+      providers: [{ provide: Window, useValue: WindowMock }],
     }).compileComponents();
   });
 
@@ -79,47 +85,27 @@ describe('PagesComponent', () => {
   });
 
   describe('changeLanguage', () => {
-    it('should change language', () => {
+    it('should update language in storage', () => {
       const lang = { code: LanguageCode.en, name: 'English' } as Language;
 
       const languageService = TestBed.inject(LanguageService);
-      expect(languageService.currentLang).toBeUndefined();
+      spyOn(languageService, 'setLanguageInStorage');
 
       component.changeLanguage(lang.code);
 
-      expect(languageService.currentLang).toBe(lang.code);
+      expect(languageService.setLanguageInStorage).toHaveBeenCalledWith(
+        lang.code
+      );
     });
 
-    it('should have button from current lang disabled', () => {
-      component.changeLanguage(LanguageCode.en);
-      fixture.detectChanges();
+    it('should reload page', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
 
-      const indexEn = component.languages.findIndex(
-        (language) => language.code === LanguageCode.en
-      );
+      const window = TestBed.inject(Window);
 
-      const button = fixture.nativeElement.querySelector(
-        `.language li:nth-child(${indexEn + 1}) > button`
-      );
+      component.changeLanguage(lang.code);
 
-      expect(button.disabled).toBeTruthy();
-    });
-
-    it('should change language on button click', () => {
-      component.changeLanguage(LanguageCode.en);
-
-      // Select the other language
-      const indexFr = component.languages.findIndex(
-        (language) => language.code === LanguageCode.fr
-      );
-
-      const button = fixture.nativeElement.querySelector(
-        `.language li:nth-child(${indexFr + 1}) > button`
-      );
-
-      button.click();
-
-      expect(component.isSelected(LanguageCode.fr)).toBeTruthy();
+      expect(window.location.reload).toHaveBeenCalled();
     });
   });
 

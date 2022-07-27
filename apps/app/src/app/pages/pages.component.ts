@@ -27,7 +27,8 @@ export class PagesComponent implements OnInit {
   constructor(
     private router: Router,
     private languageService: LanguageService,
-    public settingsService: SettingsService
+    public settingsService: SettingsService,
+    public window: Window
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +62,7 @@ export class PagesComponent implements OnInit {
    */
   changeLanguage(lang: LanguageCode): void {
     this.languageService.setLanguageInStorage(lang);
-    window.location.reload();
+    this.window.location.reload();
   }
 
   /**
