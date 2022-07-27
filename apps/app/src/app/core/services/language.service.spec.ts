@@ -1,7 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageCode } from '../enums';
 import { LanguageService } from './language.service';
 
@@ -53,15 +53,22 @@ describe('LanguageService', () => {
   it('should init using navigator language', () => {
     service.fallbackLang = LanguageCode.fr;
 
+    const translateService = TestBed.inject(TranslateService);
+
+    // Ensure that local storage is empty
+    const spyGetItem = spyOn(localStorage, 'getItem').and.returnValue(null);
     // Mock navigator languages to be English
-    const spy = spyOn(window.navigator, 'languages' as never).and.returnValue([
-      LanguageCode.en,
-    ] as never);
+    const spyGetBrowserLang = spyOn(
+      translateService,
+      'getBrowserLang'
+    ).and.returnValue(LanguageCode.en);
 
     service.init();
 
     expect(service.currentLang).toEqual(LanguageCode.en);
-    spy.calls.reset();
+
+    spyGetItem.calls.reset();
+    spyGetBrowserLang.calls.reset();
   });
 
   it('should have an function to translate instantly', () => {
