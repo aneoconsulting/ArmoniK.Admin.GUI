@@ -89,13 +89,14 @@ describe('ApplicationCardComponent', () => {
     fixture.detectChanges();
 
     //  Add a spy on the event emitter
-    spyOn(component, 'onClick');
+    const spy = spyOn(component, 'onClick');
 
     const compiled = fixture.debugElement.nativeElement;
     const button = compiled.querySelector('footer button');
     button.click();
 
     expect(component.onClick).toHaveBeenCalledWith();
+    spy.calls.reset();
   });
 
   it('should have a "card-block" class with 4 children', () => {

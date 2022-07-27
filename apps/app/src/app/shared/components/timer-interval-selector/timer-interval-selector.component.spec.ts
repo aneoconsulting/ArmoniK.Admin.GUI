@@ -76,7 +76,7 @@ describe('TimerIntervalSelectorComponent', () => {
     });
 
     it('should trigger a click', () => {
-      spyOn(component, 'onClick');
+      const spy = spyOn(component, 'onClick');
       // Open dropdown menu
       fixture.nativeElement.querySelector('clr-dropdown > button').click();
 
@@ -87,6 +87,7 @@ describe('TimerIntervalSelectorComponent', () => {
         .click();
 
       expect(component.onClick).toHaveBeenCalled();
+      spy.calls.reset();
     });
 
     it('should emit an event on click', () => {

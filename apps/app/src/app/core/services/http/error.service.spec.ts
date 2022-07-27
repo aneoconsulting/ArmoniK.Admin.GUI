@@ -23,7 +23,7 @@ describe('ErrorService', () => {
   });
 
   it('should navigate to error page', () => {
-    spyOn(router, 'navigate');
+    const spy = spyOn(router, 'navigate');
 
     service.handleError(
       {} as ActivatedRouteSnapshot,
@@ -31,5 +31,6 @@ describe('ErrorService', () => {
     );
 
     expect(router.navigate).toHaveBeenCalledWith(['/', 'error']);
+    spy.calls.reset();
   });
 });
