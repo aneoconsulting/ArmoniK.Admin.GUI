@@ -58,7 +58,8 @@ export class PagesComponent {
    * @param lang
    */
   public changeLanguage(lang: LanguageCode) {
-    this.languageService.currentLang = lang;
+    this.languageService.setLanguageInStorage(lang);
+    window.location.reload();
   }
 
   /**
