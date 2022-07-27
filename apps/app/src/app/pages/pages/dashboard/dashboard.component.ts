@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -26,7 +25,7 @@ import {
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  subscription: Subscription = new Subscription();
+  subscriptions: Subscription = new Subscription();
   applications: Application[] = [];
 
   errors: AppError[] = [];
@@ -50,16 +49,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.languageService.instant('pages.dashboard.title')
     );
 
-    const subscription = this.route.data.subscribe((data) => {
-      if (data['applications']) {
-        this.applications = data['applications'];
-      }
-    });
-    this.subscription.add(subscription);
+    this.subscriptions.add(
+      this.route.data.subscribe((data) => {
+        if (data['applications']) {
+          this.applications = data['applications'];
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   get isSeqUp(): boolean {
@@ -91,13 +91,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const params = this.pagerService.createHttpParams(state);
 
-    const subscription = this.applicationsService
-      .getAllWithErrorsPaginated(params)
-      .subscribe({
+    this.subscriptions.add(
+      this.applicationsService.getAllWithErrorsPaginated(params).subscribe({
         error: this.onErrorApplicationsErrors.bind(this),
         next: this.onNextApplicationsErrors.bind(this),
-      });
-    this.subscription.add(subscription);
+      })
+    );
     // Refresh the datagrid
     this.cdr.detectChanges();
   }
