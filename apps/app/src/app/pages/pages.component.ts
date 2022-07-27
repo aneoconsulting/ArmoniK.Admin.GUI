@@ -60,7 +60,8 @@ export class PagesComponent implements OnInit {
    * @param lang
    */
   changeLanguage(lang: LanguageCode): void {
-    this.languageService.currentLang = lang;
+    this.languageService.setLanguageInStorage(lang);
+    window.location.reload();
   }
 
   /**
