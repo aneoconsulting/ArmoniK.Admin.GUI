@@ -13,5 +13,11 @@ import '@clr/icons/shapes/essential-shapes';
 @NgModule({
   declarations: [PagesComponent, ErrorComponent],
   imports: [SharedModule, PagesRoutingModule],
+  providers: [
+    {
+      provide: Window,
+      useValue: window,
+    },
+  ],
 })
 export class PagesModule {}
