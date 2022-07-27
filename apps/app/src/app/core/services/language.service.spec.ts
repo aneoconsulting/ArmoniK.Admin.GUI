@@ -55,6 +55,8 @@ describe('LanguageService', () => {
 
     const translateService = TestBed.inject(TranslateService);
 
+    // Ensure that local storage is empty
+    spyOn(localStorage, 'getItem').and.returnValue(null);
     // Mock navigator languages to be English
     spyOn(translateService, 'getBrowserLang').and.returnValue(LanguageCode.en);
 
