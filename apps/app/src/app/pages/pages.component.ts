@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { environment } from '../../environments/environment';
 import {
   LanguageService,
   Language,
