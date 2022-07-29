@@ -1,6 +1,5 @@
-import { HttpParams } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
@@ -10,8 +9,8 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   AppError,
   BrowserTitleService,
-  PagerService,
   LanguageService,
+  PagerService,
   Session,
   SessionsService,
 } from '../../../core';
@@ -32,12 +31,13 @@ export class SessionsComponent implements OnInit {
   loadingSessions = true;
 
   constructor(
+    private window: Window,
     private route: ActivatedRoute,
-    private router: Router,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
     private languageService: LanguageService,
     private pagerService: PagerService,
+    private cdr: ChangeDetectorRef,
     public autoRefreshService: AutoRefreshService
   ) {}
 
@@ -69,6 +69,8 @@ export class SessionsComponent implements OnInit {
       error: this.onErrorSessions.bind(this),
       next: this.onNextSessions.bind(this),
     });
+    // Refresh the datagrid
+    this.cdr.detectChanges();
   }
 
   /**
@@ -95,7 +97,9 @@ export class SessionsComponent implements OnInit {
   cancelSession(sessionId: Session['_id']) {
     // Use an alert to confirm the cancellation
     if (
-      confirm(this.languageService.instant('pages.sessions.cancel.confirm'))
+      this.window.confirm(
+        this.languageService.instant('pages.sessions.cancel.confirm')
+      )
     ) {
       this.sessionsService.cancel(sessionId).subscribe({
         error: this.onCancelSessionError.bind(this),
@@ -128,6 +132,7 @@ export class SessionsComponent implements OnInit {
    * @returns application name
    */
   get applicationName(): string {
+    /* istanbul ignore next */
     return this.route.snapshot.paramMap.get('applicationName') ?? '';
   }
 
@@ -138,6 +143,7 @@ export class SessionsComponent implements OnInit {
    *
    */
   get applicationVersion(): string {
+    /* istanbul ignore next */
     return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 
