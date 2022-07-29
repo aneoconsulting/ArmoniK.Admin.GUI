@@ -2,7 +2,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   FormattedSession,
@@ -11,7 +10,6 @@ import {
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { utimes } from 'fs';
 import { of, throwError } from 'rxjs';
 import {
   BrowserTitleService,
@@ -22,10 +20,8 @@ import {
 } from '../../../core';
 import {
   AlertErrorComponent,
-  AutoRefreshActivatorComponent,
   AutoRefreshService,
   SinceDateFilterComponent,
-  TimerIntervalSelectorComponent,
 } from '../../../shared';
 import { SessionsComponent } from './sessions.component';
 
