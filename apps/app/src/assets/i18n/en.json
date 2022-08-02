@@ -70,14 +70,15 @@
       "per_page": "Sessions per page",
       "title": "All sessions",
       "cancel": {
-        "text": "Cancel session",
-        "confirm": "Are you sure you want to cancel this session?"
+        "title": "Close the session",
+        "text": "Are you sure you want to close the session '{{id}}'?",
+        "button": "Validate"
       },
       "table": {
         "id": "Session ID",
         "refresh": "Refresh",
         "last_activity_at": "Last activity at",
-        "cancel": "Cancel",
+        "cancel": "Close",
         "count": {
           "title": "Tasks count",
           "tooltip": "{{countError}} error, {{countPending}} pending, {{countProcessing}} processing, {{countCompleted}} completed"

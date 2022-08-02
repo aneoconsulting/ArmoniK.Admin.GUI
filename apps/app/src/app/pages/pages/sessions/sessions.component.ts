@@ -1,6 +1,5 @@
-import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
@@ -11,7 +10,6 @@ import {
   AppError,
   BrowserTitleService,
   PagerService,
-  LanguageService,
   Session,
   SessionsService,
 } from '../../../core';
@@ -31,12 +29,13 @@ export class SessionsComponent implements OnInit {
   errors: AppError[] = [];
   loadingSessions = true;
 
+  sessionToCancel: FormattedSession | null = null;
+  isModalOpen = false;
+
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
-    private languageService: LanguageService,
     private pagerService: PagerService,
     public autoRefreshService: AutoRefreshService
   ) {}
@@ -88,19 +87,25 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
+   * Confirm the cancellation of a session
+   *
+   * @param session
+   */
+  confirmCancelSession(session: FormattedSession) {
+    this.isModalOpen = true;
+    this.sessionToCancel = session;
+  }
+
+  /**
    * Cancel a session
    *
    * @param session
    */
   cancelSession(sessionId: Session['_id']) {
-    // Use an alert to confirm the cancellation
-    if (
-      confirm(this.languageService.instant('pages.sessions.cancel.confirm'))
-    ) {
-      this.sessionsService.cancel(sessionId).subscribe({
-        error: this.onCancelSessionError.bind(this),
-      });
-    }
+    this.sessionsService.cancel(sessionId).subscribe({
+      next: this.onCancelSessionNext.bind(this),
+      error: this.onCancelSessionError.bind(this),
+    });
   }
 
   /**
@@ -162,11 +167,22 @@ export class SessionsComponent implements OnInit {
   }
 
   /**
+   * Handle next response when loading sessions
+   */
+  private onCancelSessionNext() {
+    this.sessionToCancel = null;
+    this.isModalOpen = false;
+  }
+
+  /**
    * Handle error when cancelling a session
    *
    * @param error
    */
   private onCancelSessionError(error: AppError) {
+    this.sessionToCancel = null;
+    this.isModalOpen = false;
+
     this.errors.push(error);
   }
 
