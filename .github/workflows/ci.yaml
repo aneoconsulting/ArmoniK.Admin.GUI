@@ -25,7 +25,7 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
-  unit-tests:
+  validate-code:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -45,10 +45,33 @@ jobs:
         with:
           main-branch-name: main
 
-      - run: npx nx format:check
-      - run: npx nx affected --target=lint --parallel=3
-      - run: npx nx affected --target=test --parallel=3 --code-coverage
-      - run: npx nx affected --target=build --parallel=3
+      - name: Check code style
+        run: npx nx format:check
+      - name: Check code quality
+        run: npx nx affected --target=lint --parallel=3
+
+  unit-tests:
+    needs: validate-code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: main
+
+      - name: Run Unit Tests
+        run: npx nx affected --target=test --parallel=3 --code-coverage
 
       - name: Coverage Report (App)
         # Can't publish on push on main
@@ -86,8 +109,31 @@ jobs:
           name: coverage-apps-api
           path: ./coverage/apps/api/
 
+  build:
+    needs: validate-code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: main
+
+      - name: Build all
+        run: npx nx affected --target=build --parallel=3
+
   e2e-tests:
-    needs: setup
+    needs: validate-code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -123,7 +169,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
       - uses: actions/upload-artifact@v2
