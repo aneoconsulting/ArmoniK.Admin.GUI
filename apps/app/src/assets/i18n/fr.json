@@ -70,8 +70,9 @@
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
       "cancel": {
-        "text": "Annuler la session",
-        "confirm": "Êtes-vous sûr de vouloir annuler cette session ?"
+        "title": "Fermer la session",
+        "text": "Vous êtes sur le point de fermer la session '{{id}}'. Voulez-vous continuer ?",
+        "button": "Valider la fermeture"
       },
       "table": {
         "id": "Session ID",

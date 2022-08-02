@@ -169,7 +169,7 @@
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
           [disabled]="isCancelled(session)"
-          (click)="cancelSession(session._id)"
+          (click)="confirmCancelSession(session)"
         >
           <span class="sr-only">{{
             'pages.sessions.cancel.text' | translate
@@ -194,3 +194,24 @@
     </clr-dg-footer>
   </clr-datagrid>
 </section>
+
+<clr-modal [(clrModalOpen)]="isModalOpen">
+  <h3 class="modal-title">{{ 'pages.sessions.cancel.title' | translate }}</h3>
+  <div class="modal-body">
+    <p>
+      {{
+        'pages.sessions.cancel.text'
+          | translate: { id: sessionToCancel?._id ?? '' }
+      }}
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cancelSession(sessionToCancel?._id ?? '')"
+    >
+      {{ 'pages.sessions.cancel.button' | translate }}
+    </button>
+  </div>
+</clr-modal>
