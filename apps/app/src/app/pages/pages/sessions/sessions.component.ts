@@ -33,7 +33,6 @@ export class SessionsComponent implements OnInit {
   isModalOpen = false;
 
   constructor(
-    private window: Window,
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,

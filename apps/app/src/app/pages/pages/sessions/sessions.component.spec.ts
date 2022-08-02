@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   FormattedSession,
@@ -50,10 +51,6 @@ class MockAutoRefreshActivatorComponent {
   @Output() autoRefreshChange = new EventEmitter();
 }
 
-const WindowMock = {
-  confirm: jasmine.createSpy('confirm').and.returnValue(true),
-};
-
 describe('SessionsComponent', () => {
   const sessionsPaginated = {
     data: [
@@ -88,6 +85,7 @@ describe('SessionsComponent', () => {
         MockAutoRefreshActivatorComponent,
       ],
       imports: [
+        BrowserAnimationsModule,
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
         HttpClientModule,
@@ -100,7 +98,6 @@ describe('SessionsComponent', () => {
         BrowserTitleService,
         LanguageService,
         AutoRefreshService,
-        { provide: Window, useValue: WindowMock },
       ],
     }).compileComponents();
   });
@@ -210,23 +207,28 @@ describe('SessionsComponent', () => {
 
   describe('cancelSession', () => {
     it('should confirm before to cancel session', () => {
-      const session = {
-        _id: 'session-id',
-      } as unknown as FormattedSession;
-      component.cancelSession(session._id);
-      expect(WindowMock.confirm).toHaveBeenCalled();
+      component.sessions = sessionsPaginated;
+      fixture.detectChanges();
+
+      const spy = spyOn(component, 'confirmCancelSession');
+
+      const button = fixture.nativeElement.querySelector('.btn-cancel');
+      button.click();
+
+      expect(spy).toHaveBeenCalled();
+      spy.calls.reset();
     });
 
-    it('should not cancel a session if not confirmed', () => {
-      const session = {
-        _id: 'session-id',
-      } as unknown as FormattedSession;
+    it('should open confirm modal', () => {
+      component.sessions = sessionsPaginated;
+      fixture.detectChanges();
 
-      WindowMock.confirm.and.returnValue(false);
+      const button = fixture.nativeElement.querySelector('.btn-cancel');
+      button.click();
+      fixture.detectChanges();
 
-      component.cancelSession(session._id);
-
-      expect(http.cancel).not.toHaveBeenCalled();
+      const modal = fixture.nativeElement.querySelector('clr-modal');
+      expect(modal).toBeTruthy();
     });
 
     it('should cancel session', () => {
@@ -234,7 +236,6 @@ describe('SessionsComponent', () => {
         _id: 'session-id',
       } as unknown as FormattedSession;
 
-      WindowMock.confirm.and.returnValue(true);
       component.cancelSession(session._id);
 
       expect(http.cancel).toHaveBeenCalledWith(session._id);
@@ -245,7 +246,6 @@ describe('SessionsComponent', () => {
         _id: 'session-id',
       } as unknown as FormattedSession;
 
-      WindowMock.confirm.and.returnValue(true);
       http.cancel.and.returnValue(throwError(() => 'error'));
 
       component.cancelSession(session._id);
