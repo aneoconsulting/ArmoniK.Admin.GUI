@@ -111,9 +111,12 @@ describe('SinceDateFilterComponent', () => {
       expect(date).toBeDefined();
     });
 
-    it('should create a new date subtracting the number of days from now', () => {
-      const date = component.createDateSince(7);
-      expect(date.getUTCDate()).toBe(new Date().getUTCDate() - 7);
+    it('should create a new date removing the number of days from now', () => {
+      const daysFromNow = 7;
+      const date = component.createDateSince(daysFromNow);
+      expect(date.getUTCDate()).toBe(
+        new Date(Date.now() - daysFromNow * 24 * 60 * 60 * 1000).getUTCDate()
+      );
     });
   });
 
