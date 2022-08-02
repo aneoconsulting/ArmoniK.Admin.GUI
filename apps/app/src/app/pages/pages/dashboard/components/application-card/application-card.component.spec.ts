@@ -75,90 +75,8 @@ describe('ApplicationCardComponent', () => {
     });
   });
 
-  describe('ui', () => {
-    it('should be an article with "card" class', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('article.card')).toBeTruthy();
-    });
-
-    it('should contains a h3 with "card-header" class', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('h3.card-header')).toBeTruthy();
-    });
-
-    it('should contains a footer with "card-footer" class', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('footer.card-footer')).toBeTruthy();
-    });
-
-    it('should contains a button element in the footer', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('footer button')).toBeTruthy();
-    });
-
-    it('should have a button styled like a link', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(
-        compiled.querySelector('footer button').getAttribute('class')
-      ).toContain('btn btn-sm btn-link');
-    });
-
-    it('should have name and version in the header', () => {
-      component.application = {
-        _id: {
-          applicationName: 'application_1',
-          applicationVersion: '1.0.0',
-        },
-      } as Application;
-      fixture.detectChanges();
-
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('h3.card-header').textContent).toContain(
-        'application_1'
-      );
-      expect(compiled.querySelector('h3.card-header').textContent).toContain(
-        '1.0.0'
-      );
-    });
-
-    it('should emit an event when the footer button is clicked', () => {
-      const application: Application = {
-        _id: {
-          applicationName: 'application_1',
-          applicationVersion: '1.0.0',
-        },
-      };
-      component.application = application;
-      fixture.detectChanges();
-
-      //  Add a spy on the event emitter
-      const spy = spyOn(component, 'onClick');
-
-      const compiled = fixture.debugElement.nativeElement;
-      const button = compiled.querySelector('footer button');
-      button.click();
-
-      expect(component.onClick).toHaveBeenCalledWith();
-      spy.calls.reset();
-    });
-
-    it('should have a "card-block" class with 4 children', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('.card-block').children.length).toBe(4);
-    });
-
-    it('should have a 0 in all card-title', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(
-        (compiled.querySelectorAll('.card-title') as HTMLElement[]).forEach(
-          (element) => {
-            expect(element.textContent).toContain('0');
-          }
-        )
-      );
-    });
-
-    it('should have a correct error count', () => {
+  describe('tasks counter', () => {
+    it('should have a correct error value', () => {
       const application: Application = {
         _id: {
           applicationName: 'application_1',
@@ -179,7 +97,7 @@ describe('ApplicationCardComponent', () => {
       );
     });
 
-    it('should have a correct processing count', () => {
+    it('should have a correct processing value', () => {
       const application: Application = {
         _id: {
           applicationName: 'application_1',
@@ -200,7 +118,7 @@ describe('ApplicationCardComponent', () => {
       );
     });
 
-    it('should have a correct completed count', () => {
+    it('should have a correct completed value', () => {
       const application: Application = {
         _id: {
           applicationName: 'application_1',
@@ -221,7 +139,7 @@ describe('ApplicationCardComponent', () => {
       );
     });
 
-    it('should have a correct pending count', () => {
+    it('should have a correct pending value', () => {
       const application: Application = {
         _id: {
           applicationName: 'application_1',
