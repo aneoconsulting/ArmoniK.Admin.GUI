@@ -123,7 +123,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
       - uses: actions/upload-artifact@v2
@@ -170,11 +170,6 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
 
       - name: Docker build
         uses: docker/build-push-action@v2
