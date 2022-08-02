@@ -109,29 +109,6 @@ jobs:
           name: coverage-apps-api
           path: ./coverage/apps/api/
 
-  build:
-    needs: validate-code
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: true
-
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
-
-      - uses: nrwl/nx-set-shas@v2
-        with:
-          main-branch-name: main
-
-      - name: Build all
-        run: npx nx affected --target=build --parallel=3
-
   e2e-tests:
     needs: validate-code
     runs-on: ubuntu-latest
@@ -184,7 +161,31 @@ jobs:
           name: cypress-videos
           path: ./dist/cypress/apps/app-e2e/videos
 
-  docker:
+  build:
+    needs: [unit-tests, e2e-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: main
+
+      - name: Build all
+        run: npx nx affected --target=build --parallel=3
+
+  build-docker-images:
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
