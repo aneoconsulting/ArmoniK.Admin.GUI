@@ -117,6 +117,7 @@
           "task": "{{value}} task",
           "started_at": "Started at",
           "ended_at": "Ended at",
+          "duration": "Duration",
           "status": {
             "title": "Status",
             "pending": "Pending",

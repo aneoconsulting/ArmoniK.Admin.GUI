@@ -77,6 +77,33 @@ export class TasksListComponent {
   }
 
   /**
+   * Calculate duration between start and end date
+   *
+   * @param start Start date
+   * @param end End date
+   *
+   * @returns Duration between start and end date
+   */
+  duration(start: Date, end: Date): string {
+    const diff = end.getTime() - start.getTime();
+    const hours = Math.floor(diff / 1000 / 60 / 60);
+    const minutes = Math.floor(diff / 1000 / 60) % 60;
+    const seconds = Math.floor(diff / 1000) % 60;
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  /**
+   * Convert string to date
+   *
+   * @param date String to convert
+   *
+   * @returns Date
+   */
+  toDate(date: string): Date {
+    return new Date(date);
+  }
+
+  /**
    * Used to check if task status is in error
    *
    * @param task Task to check

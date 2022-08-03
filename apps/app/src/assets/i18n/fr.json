@@ -117,6 +117,7 @@
           "tâche": "{{value}} tâche",
           "started_at": "Démarrée le",
           "ended_at": "Terminée le",
+          "duration": "Durée",
           "status": {
             "title": "Statut",
             "pending": "En attente",
