@@ -11,7 +11,7 @@ import {
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule, ClrLoadingState } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { Task } from '../../../../../../../core';
+import { LanguageService, Task } from '../../../../../../../core';
 import {
   TaskStatusFilterComponent,
   AutoRefreshActivatorComponent,
@@ -39,6 +39,7 @@ describe('TasksListComponent', () => {
         UiModule,
         BrowserAnimationsModule,
       ],
+      providers: [LanguageService],
     }).compileComponents();
   });
 

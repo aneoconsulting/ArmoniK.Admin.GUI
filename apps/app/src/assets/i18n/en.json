@@ -117,7 +117,13 @@
           "task": "{{value}} task",
           "started_at": "Started at",
           "ended_at": "Ended at",
-          "duration": "Duration",
+          "duration": {
+            "title": "Duration",
+            "seconds": "{{value}}s",
+            "minutes": "{{value}}m",
+            "hours": "{{value}}h",
+            "days": "{{value}}d"
+          },
           "status": {
             "title": "Status",
             "pending": "Pending",

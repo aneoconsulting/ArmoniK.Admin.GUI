@@ -48,7 +48,7 @@
     </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column>
-    {{ 'pages.sessions.session-detail.table.duration' | translate }}
+    {{ 'pages.sessions.session-detail.table.duration.title' | translate }}
   </clr-dg-column>
   <clr-dg-column clrDgField="Status">
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
@@ -96,7 +96,7 @@
       <span>
         {{
           task.endedAt
-            ? duration(toDate(task.startedAt), toDate(task.endedAt))
+            ? printTime(duration(toDate(task.startedAt), toDate(task.endedAt)))
             : '-'
         }}
       </span>
