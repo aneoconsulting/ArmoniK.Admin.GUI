@@ -47,6 +47,9 @@
       {{ 'global.filters.no-filter-available' | translate }}
     </clr-dg-filter>
   </clr-dg-column>
+  <clr-dg-column>
+    {{ 'pages.sessions.session-detail.table.duration.title' | translate }}
+  </clr-dg-column>
   <clr-dg-column clrDgField="Status">
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
     <clr-dg-filter [clrDgFilter]="taskStatusFilter">
@@ -87,6 +90,15 @@
     <clr-dg-cell>
       <span>
         {{ (task.endedAt | date: 'medium') ?? '-' }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{
+          task.endedAt
+            ? printTime(duration(toDate(task.startedAt), toDate(task.endedAt)))
+            : '-'
+        }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
