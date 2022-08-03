@@ -122,6 +122,7 @@
           class="text-pending"
           *ngIf="
             !isCancelled(session) &&
+            !session.countTasksError &&
             !session.countTasksProcessing &&
             session.countTasksPending
           "
