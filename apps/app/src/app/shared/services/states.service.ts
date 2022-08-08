@@ -36,6 +36,16 @@ export class StatesService {
   }
 
   /**
+   * Delete state from store
+   *
+   * @param filterName Filter name
+   */
+  deleteState(filterName: string) {
+    delete this.states[filterName];
+    this.save();
+  }
+
+  /**
    * Get currant page
    *
    * @returns current page

@@ -77,6 +77,7 @@
       "table": {
         "id": "Session ID",
         "refresh": "Rafraîchir",
+        "reset_state": "Réinitialiser l'état de la table",
         "last_activity_at": "Dernière activité le",
         "cancel": "Annuler",
         "count": {

@@ -112,6 +112,7 @@
           "title": "Associated tasks",
           "id": "Task ID",
           "refresh": "Refresh",
+          "reset_state": "Reset table state",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
           "task": "{{value}} task",

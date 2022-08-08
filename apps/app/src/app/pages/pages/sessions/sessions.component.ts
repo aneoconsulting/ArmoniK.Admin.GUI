@@ -97,6 +97,16 @@ export class SessionsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState() {
+    this.state = {};
+    this.statesService.deleteState(this.sessionsStateKey);
+    this.refresh();
+  }
+
+  /**
    * Used to get the list of sessions from the api using pagination for the datagrid and refresh the datagrid
    *
    * @param state
