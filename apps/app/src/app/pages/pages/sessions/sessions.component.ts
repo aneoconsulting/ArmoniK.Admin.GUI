@@ -13,9 +13,8 @@ import {
   PagerService,
   Session,
   SessionsService,
-  StatesService,
 } from '../../../core';
-import { AutoRefreshService } from '../../../shared';
+import { AutoRefreshService, StatesService } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions',

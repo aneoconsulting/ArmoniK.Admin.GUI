@@ -10,6 +10,7 @@ import {
   AutoRefreshActivatorComponent,
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
+import { StatesService } from './services';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
     TranslateModule,
     UiModule,
   ],
+  providers: [StatesService],
   declarations: [
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
