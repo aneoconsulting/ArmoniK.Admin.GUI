@@ -69,6 +69,7 @@
     <clr-dg-filter [clrDgFilter]="taskStatusFilter">
       <app-task-status-filter
         #taskStatusFilter
+        [selectedValue]="toStatus(getFilterValue('Status'))"
         name="Status"
       ></app-task-status-filter>
     </clr-dg-filter>

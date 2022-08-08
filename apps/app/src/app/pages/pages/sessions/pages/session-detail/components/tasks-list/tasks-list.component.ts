@@ -90,6 +90,25 @@ export class TasksListComponent {
   }
 
   /**
+   * Convert a value to a status or return null if the value is not a status
+   *
+   * @param value Value to convert
+   *
+   * @returns Status or null
+   */
+  toStatus(value: string): TaskStatus | null {
+    if (!value) {
+      return null;
+    }
+
+    const convertedValue = Number(value);
+    if (Number.isNaN(convertedValue)) {
+      return null;
+    }
+    return TaskStatus[TaskStatus[convertedValue] as keyof typeof TaskStatus];
+  }
+
+  /**
    * Emit event when click on seq link
    *
    * @param taskId Task id

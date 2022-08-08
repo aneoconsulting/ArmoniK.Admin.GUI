@@ -5,12 +5,16 @@
     }}
   </label>
   <select clrSelect [name]="name" (change)="onChange($event)">
-    <option value="">
+    <option value="" [selected]="selectedValue === null">
       {{
         'pages.sessions.session-detail.table.filters.status.default' | translate
       }}
     </option>
-    <option *ngFor="let item of status" [value]="item">
+    <option
+      *ngFor="let item of status"
+      [value]="item"
+      [selected]="isSelected(item)"
+    >
       {{
         'pages.sessions.session-detail.table.filters.status.' + taskStatus[item]
           | translate
