@@ -16,6 +16,7 @@ import {
   TaskStatusFilterComponent,
   AutoRefreshActivatorComponent,
   TimerIntervalSelectorComponent,
+  StatesService,
 } from '../../../../../../../shared';
 import { TasksListComponent } from './tasks-list.component';
 
@@ -39,7 +40,7 @@ describe('TasksListComponent', () => {
         UiModule,
         BrowserAnimationsModule,
       ],
-      providers: [LanguageService],
+      providers: [LanguageService, StatesService],
     }).compileComponents();
   });
 

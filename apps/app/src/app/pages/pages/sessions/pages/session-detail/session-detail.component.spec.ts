@@ -6,6 +6,7 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   AlertErrorComponent,
+  StatesService,
   TaskStatusFilterComponent,
 } from '../../../../../shared';
 import { PagerService, TasksService } from '../../../../../core';
@@ -33,7 +34,7 @@ describe('SessionDetailComponent', () => {
         HttpClientModule,
         BrowserAnimationsModule,
       ],
-      providers: [TasksService, PagerService],
+      providers: [TasksService, PagerService, StatesService],
     }).compileComponents();
   });
 
