@@ -5,30 +5,41 @@
   (clrDgSelectedChange)="selectionChange.emit($event)"
 >
   <clr-dg-action-bar>
-    <button
-      type="button"
-      class="cancel-button btn btn-sm btn-outline-danger"
-      (click)="cancelTasksChange.emit()"
-      [clrLoading]="cancelButtonState"
-    >
-      {{ 'pages.sessions.session-detail.table.cancel' | translate }}
-    </button>
-    <button
-      type="button"
-      class="refresh-button btn btn-sm btn-outline"
-      (click)="manualRefresh.emit()"
-    >
-      {{ 'pages.sessions.session-detail.table.refresh' | translate }}
-    </button>
-    <div class="btn-group">
-      <app-auto-refresh-activator
-        [isEnabled]="isAutoRefreshEnabled"
-        (autoRefreshChange)="onAutoRefreshChange()"
-      ></app-auto-refresh-activator>
-      <app-timer-interval-selector
-        [timer]="autoRefreshTimer"
-        (timerChange)="onAutoRefreshTimerChange($event)"
-      ></app-timer-interval-selector>
+    <div class="clr-row clr-justify-content-between">
+      <div>
+        <button
+          type="button"
+          class="cancel-button btn btn-sm btn-outline-danger"
+          (click)="cancelTasksChange.emit()"
+          [clrLoading]="cancelButtonState"
+        >
+          {{ 'pages.sessions.session-detail.table.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="refresh-button btn btn-sm btn-outline"
+          (click)="manualRefresh.emit()"
+        >
+          {{ 'pages.sessions.session-detail.table.refresh' | translate }}
+        </button>
+        <div class="btn-group">
+          <app-auto-refresh-activator
+            [isEnabled]="isAutoRefreshEnabled"
+            (autoRefreshChange)="onAutoRefreshChange()"
+          ></app-auto-refresh-activator>
+          <app-timer-interval-selector
+            [timer]="autoRefreshTimer"
+            (timerChange)="onAutoRefreshTimerChange($event)"
+          ></app-timer-interval-selector>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn-delete btn btn-sm btn-summary"
+        (click)="deleteState()"
+      >
+        {{ 'pages.sessions.session-detail.table.delete_state' | translate }}
+      </button>
     </div>
   </clr-dg-action-bar>
 

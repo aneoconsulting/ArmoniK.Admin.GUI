@@ -77,7 +77,7 @@
       "table": {
         "id": "Session ID",
         "refresh": "Rafraîchir",
-        "reset_state": "Réinitialiser l'état de la table",
+        "delete_state": "Supprimer l'état de la table",
         "last_activity_at": "Dernière activité le",
         "cancel": "Annuler",
         "count": {
@@ -113,6 +113,7 @@
           "title": "Tâches associées",
           "id": "Tâche ID",
           "refresh": "Rafraîchir",
+          "delete_state": "Delete table state",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
           "tâche": "{{value}} tâche",

@@ -110,6 +110,15 @@ export class TasksListComponent {
   }
 
   /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState() {
+    this.statesService.deleteState(this.stateKey);
+    this.refresh.emit({});
+  }
+
+  /**
    * Emit event when click on seq link
    *
    * @param taskId Task id

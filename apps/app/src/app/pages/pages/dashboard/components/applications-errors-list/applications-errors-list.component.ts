@@ -67,6 +67,15 @@ export class ApplicationsErrorsListComponent {
   }
 
   /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState() {
+    this.statesService.deleteState(this.stateKey);
+    this.refresh.emit({});
+  }
+
+  /**
    * Except text using ellipsis when longer than 100 characters
    *
    * @param text
