@@ -62,7 +62,7 @@ export class StatesService {
    */
   getFilterValue(filterName: string, key: string): string {
     const state = this.states[filterName];
-    const filter = state.filters?.find((f) => f.property === key);
+    const filter = state?.filters?.find((f) => f?.property === key);
     return filter?.value ?? '';
   }
 
@@ -75,9 +75,9 @@ export class StatesService {
    */
   getSortOrder(filterName: string, key: string): ClrDatagridSortOrder {
     const state = this.states[filterName];
-    const by = state.sort?.by;
+    const by = state?.sort?.by;
     if (by === key) {
-      return state.sort?.reverse
+      return state?.sort?.reverse
         ? ClrDatagridSortOrder.DESC
         : ClrDatagridSortOrder.ASC;
     }

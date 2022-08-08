@@ -25,11 +25,12 @@ import { AutoRefreshService, StatesService } from '../../../shared';
 export class SessionsComponent implements OnInit, OnDestroy {
   sessionsSubscription = new Subscription();
 
-  sessions: Pagination<FormattedSession> | null = null;
-  sessionsFiltersKey = 'sessions';
-  state: ClrDatagridStateInterface = {};
   errors: AppError[] = [];
+
+  sessionsStateKey = 'sessions';
+  private state: ClrDatagridStateInterface = {};
   loadingSessions = true;
+  sessions: Pagination<FormattedSession> | null = null;
 
   sessionToCancel: FormattedSession | null = null;
   isModalOpen = false;
@@ -61,7 +62,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns current page
    */
   get currentPage(): number {
-    return this.statesService.getCurrentPage(this.sessionsFiltersKey);
+    return this.statesService.getCurrentPage(this.sessionsStateKey);
   }
 
   /**
@@ -70,7 +71,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns page size
    */
   get pageSize(): number {
-    return this.statesService.getPageSize(this.sessionsFiltersKey);
+    return this.statesService.getPageSize(this.sessionsStateKey);
   }
 
   /**
@@ -81,7 +82,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns filter value
    */
   getFilterValue(key: string): string {
-    return this.statesService.getFilterValue(this.sessionsFiltersKey, key);
+    return this.statesService.getFilterValue(this.sessionsStateKey, key);
   }
 
   /**
@@ -92,7 +93,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns sort order
    */
   getSortOrder(key: string): ClrDatagridSortOrder {
-    return this.statesService.getSortOrder(this.sessionsFiltersKey, key);
+    return this.statesService.getSortOrder(this.sessionsStateKey, key);
   }
 
   /**
@@ -106,7 +107,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
     // Stop current request to avoid multiple requests at the same time
     this.sessionsSubscription.unsubscribe();
 
-    // Store the current state to be saved when the request completes
+    // Store the current state to be saved when the request completes or for manual and auto refresh
     this.state = state;
 
     const data = {
@@ -127,7 +128,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * Refresh
    */
   refresh() {
-    this.onRefreshSessions({});
+    this.onRefreshSessions(this.state);
   }
 
   /**
@@ -215,7 +216,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @param data
    */
   private onNextSessions(data: Pagination<FormattedSession>) {
-    this.statesService.saveState(this.sessionsFiltersKey, this.state);
+    this.statesService.saveState(this.sessionsStateKey, this.state);
     this.sessions = data;
     this.loadingSessions = false;
   }

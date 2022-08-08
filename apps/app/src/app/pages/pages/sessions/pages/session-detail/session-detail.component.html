@@ -56,13 +56,14 @@
     [autoRefreshTimer]="autoRefreshService.timer"
     (autoRefreshTimerChange)="autoRefreshService.setTimer($event)"
     [isSeqUp]="isSeqUp"
+    [stateKey]="tasksStateKey"
     [tasks]="tasks"
     [loading]="loadingTasks"
     [(selection)]="selectedTasks"
     (cancelTasksChange)="onCancelTasks()"
     [cancelButtonState]="cancelTasksButtonState"
     (clickSeqLink)="redirectToSeq($event)"
-    (refresh)="refresh($event)"
+    (refresh)="onRefreshTasks($event)"
     (manualRefresh)="refresh()"
   ></app-pages-sessions-tasks-list>
 </section>

@@ -15,7 +15,7 @@ import { StatesService } from '../../../../../shared';
   styleUrls: ['./applications-errors-list.component.scss'],
 })
 export class ApplicationsErrorsListComponent {
-  @Input() filtersKey = '';
+  @Input() stateKey = '';
   @Input() applications: Pagination<ApplicationError> | null = null;
   @Input() loading = true;
 
@@ -32,7 +32,7 @@ export class ApplicationsErrorsListComponent {
    * @returns current page
    */
   get currentPage(): number {
-    return this.statesService.getCurrentPage(this.filtersKey);
+    return this.statesService.getCurrentPage(this.stateKey);
   }
 
   /**
@@ -41,7 +41,7 @@ export class ApplicationsErrorsListComponent {
    * @returns page size
    */
   get pageSize(): number {
-    return this.statesService.getPageSize(this.filtersKey);
+    return this.statesService.getPageSize(this.stateKey);
   }
 
   /**
@@ -52,7 +52,7 @@ export class ApplicationsErrorsListComponent {
    * @returns filter value
    */
   getFilterValue(key: string): string {
-    return this.statesService.getFilterValue(this.filtersKey, key);
+    return this.statesService.getFilterValue(this.stateKey, key);
   }
 
   /**
@@ -63,7 +63,7 @@ export class ApplicationsErrorsListComponent {
    * @returns sort order
    */
   getSortOrder(key: string): ClrDatagridSortOrder {
-    return this.statesService.getSortOrder(this.filtersKey, key);
+    return this.statesService.getSortOrder(this.stateKey, key);
   }
 
   /**

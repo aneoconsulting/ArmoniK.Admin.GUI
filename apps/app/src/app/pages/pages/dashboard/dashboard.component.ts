@@ -33,8 +33,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   errors: AppError[] = [];
 
-  applicationsErrorsFiltersKey = 'applications-errors';
-  state: ClrDatagridStateInterface = {};
+  applicationsErrorsStateKey = 'applications-errors';
+  private state: ClrDatagridStateInterface = {};
   applicationsErrorsLoading = true;
   applicationsErrors: Pagination<ApplicationError> | null = null;
 
@@ -159,7 +159,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * @param applications Applications
    */
   private onNextApplicationsErrors(applications: Pagination<ApplicationError>) {
-    this.statesService.saveState(this.applicationsErrorsFiltersKey, this.state);
+    this.statesService.saveState(this.applicationsErrorsStateKey, this.state);
     this.applicationsErrorsLoading = false;
     this.applicationsErrors = applications;
   }

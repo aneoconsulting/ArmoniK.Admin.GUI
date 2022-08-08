@@ -5,8 +5,13 @@ import {
   PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
+import {
+  ClrDatagridSortOrder,
+  ClrDatagridStateInterface,
+  ClrLoadingState,
+} from '@clr/angular';
 import { Task } from '../../../../../../../core';
+import { StatesService } from '../../../../../../../shared';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -20,6 +25,7 @@ export class TasksListComponent {
   @Input() autoRefreshTimer: number | null = null;
   @Output() autoRefreshTimerChange = new EventEmitter<number>();
 
+  @Input() stateKey = 'tasks';
   @Input() tasks: Pagination<Task> | null = null;
   @Input() loading = true;
 
@@ -37,6 +43,48 @@ export class TasksListComponent {
 
   @Input() isSeqUp = false;
   @Output() clickSeqLink = new EventEmitter<string>();
+
+  constructor(private statesService: StatesService) {}
+
+  /**
+   * Get currant page
+   *
+   * @returns current page
+   */
+  get currentPage(): number {
+    return this.statesService.getCurrentPage(this.stateKey);
+  }
+
+  /**
+   * Get page size
+   *
+   * @returns page size
+   */
+  get pageSize(): number {
+    return this.statesService.getPageSize(this.stateKey);
+  }
+
+  /**
+   * Get filter value from the filters store
+   *
+   * @param key Key to find the filter value
+   *
+   * @returns filter value
+   */
+  getFilterValue(key: string): string {
+    return this.statesService.getFilterValue(this.stateKey, key);
+  }
+
+  /**
+   * Get sort order from the filters store
+   *
+   * @param key Key to find the sort order
+   *
+   * @returns sort order
+   */
+  getSortOrder(key: string): ClrDatagridSortOrder {
+    return this.statesService.getSortOrder(this.stateKey, key);
+  }
 
   /**
    * Emit event when click on seq link
