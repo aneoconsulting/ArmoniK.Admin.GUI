@@ -97,6 +97,7 @@ export class TasksListComponent {
    * @returns Status or null
    */
   toStatus(value: string): TaskStatus | null {
+    // value can be ''
     if (!value) {
       return null;
     }
