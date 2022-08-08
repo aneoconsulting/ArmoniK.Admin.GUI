@@ -38,7 +38,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
-    private statesServices: StatesService,
+    private statesService: StatesService,
     private pagerService: PagerService,
     public autoRefreshService: AutoRefreshService
   ) {}
@@ -61,7 +61,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns current page
    */
   get currentPage(): number {
-    return this.statesServices.getCurrentPage(this.sessionsFiltersKey);
+    return this.statesService.getCurrentPage(this.sessionsFiltersKey);
   }
 
   /**
@@ -70,7 +70,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns page size
    */
   get pageSize(): number {
-    return this.statesServices.getPageSize(this.sessionsFiltersKey);
+    return this.statesService.getPageSize(this.sessionsFiltersKey);
   }
 
   /**
@@ -81,7 +81,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns filter value
    */
   getFilterValue(key: string): string {
-    return this.statesServices.getFilterValue(this.sessionsFiltersKey, key);
+    return this.statesService.getFilterValue(this.sessionsFiltersKey, key);
   }
 
   /**
@@ -92,7 +92,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns sort order
    */
   getSortOrder(key: string): ClrDatagridSortOrder {
-    return this.statesServices.getSortOrder(this.sessionsFiltersKey, key);
+    return this.statesService.getSortOrder(this.sessionsFiltersKey, key);
   }
 
   /**
@@ -106,7 +106,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
     // Stop current request to avoid multiple requests at the same time
     this.sessionsSubscription.unsubscribe();
 
-    // Store the current state to be saved later
+    // Store the current state to be saved when the request completes
     this.state = state;
 
     const data = {
@@ -215,7 +215,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @param data
    */
   private onNextSessions(data: Pagination<FormattedSession>) {
-    this.statesServices.saveState(this.sessionsFiltersKey, this.state);
+    this.statesService.saveState(this.sessionsFiltersKey, this.state);
     this.sessions = data;
     this.loadingSessions = false;
   }

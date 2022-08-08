@@ -1,14 +1,36 @@
 <clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
-  <clr-dg-column clrDgField="Options.Options.GridAppName">
+  <clr-dg-column
+    clrDgField="Options.Options.GridAppName"
+    [clrDgSortOrder]="getSortOrder('Options.Options.GridAppName')"
+  >
     {{ 'pages.dashboard.table.application_name' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
-  <clr-dg-column clrDgField="Options.Options.GridAppVersion">
+  <clr-dg-column
+    clrDgField="Options.Options.GridAppVersion"
+    [clrDgSortOrder]="getSortOrder('Options.Options.GridAppVersion')"
+  >
     {{ 'pages.dashboard.table.application_version' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
-  <clr-dg-column clrDgField="SessionId">
+  <clr-dg-column
+    clrDgField="SessionId"
+    [clrDgSortOrder]="getSortOrder('SessionId')"
+  >
     {{ 'pages.dashboard.table.session_id' | translate }}
+    <clr-dg-filter>
+      {{ 'global.filters.no-filter-available' | translate }}
+    </clr-dg-filter>
   </clr-dg-column>
-  <clr-dg-column clrDgField="EndDate">
+  <clr-dg-column
+    clrDgField="EndDate"
+    [clrDgSortOrder]="getSortOrder('EndDate')"
+    [clrFilterValue]="getFilterValue('EndDate')"
+  >
     {{ 'pages.dashboard.table.error_at' | translate }}
     <clr-dg-filter [clrDgFilter]="errorAtFilter">
       <app-since-date-filter
@@ -16,6 +38,7 @@
         defaultText="pages.dashboard.table.filters.error_at.default"
         text="pages.dashboard.table.filters.error_at.text"
         [defaultValue]="1"
+        [selectedValue]="getFilterValue('EndDate')"
         name="EndDate"
         #errorAtFilter
       >
@@ -73,7 +96,12 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    <clr-dg-pagination #pagination [clrDgTotalItems]="totalApplications">
+    <clr-dg-pagination
+      #pagination
+      [clrDgTotalItems]="totalApplications"
+      [clrDgPageSize]="pageSize"
+      [clrDgPage]="currentPage"
+    >
       <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
         'pages.dashboard.table.per_page' | translate
       }}</clr-dg-page-size>
