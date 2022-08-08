@@ -17,11 +17,15 @@ export class SinceDateFilterComponent
 
   sinceDays: number[] = [1, 3, 7, 15, 30, 60, 90, 180, 365];
 
-  selectedValue: string | null = null;
+  @Input() selectedValue: string | null = null;
   changes = new EventEmitter<boolean>(false);
 
   ngOnInit() {
-    this.selectedValue = this.getDate(this.createDateSince(this.defaultValue));
+    if (!this.selectedValue) {
+      this.selectedValue = this.getDate(
+        this.createDateSince(this.defaultValue)
+      );
+    }
   }
 
   onChange(event: any) {

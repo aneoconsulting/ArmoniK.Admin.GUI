@@ -14,7 +14,7 @@ import { CoreModule, LanguageService, CustomRouteReuseStrategy } from './core';
   imports: [CoreModule, AppRoutingModule, AppTranslateModule],
   providers: [
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
+    // { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

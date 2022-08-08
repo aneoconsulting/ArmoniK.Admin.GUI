@@ -14,6 +14,7 @@ import {
   SettingsService,
   TasksService,
   SeqService,
+  StatesService,
 } from './services';
 
 /**
@@ -28,6 +29,7 @@ import {
     HttpClientModule,
   ],
   providers: [
+    Window,
     LocaleProvider,
     LanguageService,
     SettingsService,
@@ -37,6 +39,7 @@ import {
     SessionsService,
     TasksService,
     PagerService,
+    StatesService,
     SeqService,
   ],
 })

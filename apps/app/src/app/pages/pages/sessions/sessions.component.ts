@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { Subscription } from 'rxjs';
 import {
   AppError,
   BrowserTitleService,
   PagerService,
   Session,
   SessionsService,
+  StatesService,
 } from '../../../core';
 import { AutoRefreshService } from '../../../shared';
 
@@ -21,11 +23,12 @@ import { AutoRefreshService } from '../../../shared';
   styleUrls: ['./sessions.component.scss'],
   providers: [AutoRefreshService],
 })
-export class SessionsComponent implements OnInit {
-  // Store state for manual and auto refresh
-  private state: ClrDatagridStateInterface = {};
+export class SessionsComponent implements OnInit, OnDestroy {
+  sessionsSubscription = new Subscription();
 
   sessions: Pagination<FormattedSession> | null = null;
+  sessionsFiltersKey = 'sessions';
+  state: ClrDatagridStateInterface = {};
   errors: AppError[] = [];
   loadingSessions = true;
 
@@ -36,6 +39,7 @@ export class SessionsComponent implements OnInit {
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
+    private statesServices: StatesService,
     private pagerService: PagerService,
     public autoRefreshService: AutoRefreshService
   ) {}
@@ -48,15 +52,63 @@ export class SessionsComponent implements OnInit {
     this.autoRefreshService.setFn(() => this.refresh());
   }
 
+  ngOnDestroy(): void {
+    this.sessionsSubscription.unsubscribe();
+  }
+
+  /**
+   * Get currant page
+   *
+   * @returns current page
+   */
+  get currentPage(): number {
+    return this.statesServices.getCurrentPage(this.sessionsFiltersKey);
+  }
+
+  /**
+   * Get page size
+   *
+   * @returns page size
+   */
+  get pageSize(): number {
+    return this.statesServices.getPageSize(this.sessionsFiltersKey);
+  }
+
+  /**
+   * Get filter value from the filters store
+   *
+   * @param key Key to find the filter value
+   *
+   * @returns filter value
+   */
+  getFilterValue(key: string): string {
+    return this.statesServices.getFilterValue(this.sessionsFiltersKey, key);
+  }
+
+  /**
+   * Get sort order from the filters store
+   *
+   * @param key Key to find the sort order
+   *
+   * @returns sort order
+   */
+  getSortOrder(key: string): ClrDatagridSortOrder {
+    return this.statesServices.getSortOrder(this.sessionsFiltersKey, key);
+  }
+
   /**
    * Used to get the list of sessions from the api using pagination for the datagrid and refresh the datagrid
    *
    * @param state
    */
   onRefreshSessions(state: ClrDatagridStateInterface) {
-    this.state = state;
-
     this.loadingSessions = true;
+
+    // Stop current request to avoid multiple requests at the same time
+    this.sessionsSubscription.unsubscribe();
+
+    // Store the current state to be saved later
+    this.state = state;
 
     const data = {
       applicationName: this.applicationName,
@@ -64,17 +116,19 @@ export class SessionsComponent implements OnInit {
     };
     const params = this.pagerService.createHttpParams(state, data);
 
-    this.sessionsService.getAllPaginated(params).subscribe({
-      error: this.onErrorSessions.bind(this),
-      next: this.onNextSessions.bind(this),
-    });
+    this.sessionsSubscription = this.sessionsService
+      .getAllPaginated(params)
+      .subscribe({
+        error: this.onErrorSessions.bind(this),
+        next: this.onNextSessions.bind(this),
+      });
   }
 
   /**
    * Refresh
    */
   refresh() {
-    this.onRefreshSessions(this.state);
+    this.onRefreshSessions({});
   }
 
   /**
@@ -162,6 +216,7 @@ export class SessionsComponent implements OnInit {
    * @param data
    */
   private onNextSessions(data: Pagination<FormattedSession>) {
+    this.statesServices.saveState(this.sessionsFiltersKey, this.state);
     this.sessions = data;
     this.loadingSessions = false;
   }
