@@ -10,7 +10,7 @@ import {
   ClrDatagridStateInterface,
   ClrLoadingState,
 } from '@clr/angular';
-import { Task } from '../../../../../../../core';
+import { LanguageService, Task } from '../../../../../../../core';
 import { StatesService } from '../../../../../../../shared';
 
 @Component({
@@ -44,7 +44,10 @@ export class TasksListComponent {
   @Input() isSeqUp = false;
   @Output() clickSeqLink = new EventEmitter<string>();
 
-  constructor(private statesService: StatesService) {}
+  constructor(
+    private statesService: StatesService,
+    private languageService: LanguageService
+  ) {}
 
   /**
    * Get currant page
@@ -122,6 +125,94 @@ export class TasksListComponent {
    */
   get totalTasks(): number {
     return this.tasks ? this.tasks.meta.total : 0;
+  }
+
+  /**
+   * Calculate duration between start and end date
+   *
+   * @param start Start date
+   * @param end End date
+   *
+   * @returns Duration between start and end date
+   */
+  duration(
+    start: Date,
+    end: Date
+  ): { days: number; hours: number; minutes: number; seconds: number } {
+    const diff = end.getTime() - start.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    return { days, hours, minutes, seconds };
+  }
+
+  /**
+   * Print time
+   *
+   * @param date
+   *
+   * @returns Time string
+   */
+  printTime(date: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }): string {
+    const time = [];
+    if (date.days > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.days',
+          {
+            value: date.days.toString(),
+          }
+        )
+      );
+    }
+    if (date.hours > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.hours',
+          {
+            value: date.hours.toString(),
+          }
+        )
+      );
+    }
+    if (date.minutes > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.minutes',
+          {
+            value: date.minutes.toString(),
+          }
+        )
+      );
+    }
+    if (date.seconds > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.seconds',
+          {
+            value: date.seconds.toString(),
+          }
+        )
+      );
+    }
+    return time.join(' ');
+  }
+
+  /**
+   * Convert string to date
+   *
+   * @param date String to convert
+   *
+   * @returns Date
+   */
+  toDate(date: string): Date {
+    return new Date(date);
   }
 
   /**

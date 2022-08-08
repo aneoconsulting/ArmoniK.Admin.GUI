@@ -120,6 +120,44 @@ describe('SessionsComponent', () => {
     expect(cell.children[0].classList.contains('text-pending')).toBeTruthy();
   });
 
+  it('should have a error status for the first session even with pending tasks', () => {
+    const sessions: Pagination<FormattedSession> = {
+      data: [
+        {
+          _id: '1',
+          status: 1,
+          countTasksError: 1,
+          countTasksCompleted: 0,
+          countTasksPending: 2,
+          countTasksProcessing: 0,
+          cancelledAt: '',
+          createdAt: '2020-01-01T00:00:00.000Z',
+        },
+      ],
+      meta: {
+        total: 1,
+        perPage: 10,
+        currentPage: 1,
+        nextPage: null,
+        prevPage: null,
+        firstPage: 1,
+        lastPage: 1,
+      },
+    };
+
+    component.sessions = sessions;
+    fixture.detectChanges();
+
+    // select the first clr-dg-row
+    const row = fixture.nativeElement.querySelector('clr-dg-row');
+    // select the cell containing status
+    const cell = row.querySelectorAll('clr-dg-cell')[2];
+    // must only contains one child
+    expect(cell.childElementCount).toBe(1);
+    // child must contains the class .text-pending
+    expect(cell.children[0].classList.contains('text-danger')).toBeTruthy();
+  });
+
   it('should have a processing status for the first session', () => {
     const sessions: Pagination<FormattedSession> = {
       data: [
