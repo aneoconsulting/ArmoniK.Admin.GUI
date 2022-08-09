@@ -1,21 +1,21 @@
-<article class="card">
+<article class="card" *ngIf="application">
   <h3
     class="card-header"
     [title]="
-      application?._id?.applicationName +
+      application._id.applicationName +
       ' - ' +
-      application?._id?.applicationVersion
+      application._id.applicationVersion
     "
   >
-    {{ application?._id?.applicationName }} -
-    {{ application?._id?.applicationVersion }}
+    {{ application._id.applicationName }} -
+    {{ application._id.applicationVersion }}
   </h3>
   <div class="card-block dots">
     <div
       class="card-title card-title__value"
       [title]="'pages.dashboard.applications.pending' | translate: application"
     >
-      <span> {{ application?.countTasksPending ?? 0 }} </span>
+      <span> {{ application.countTasksPending ?? 0 }} </span>
       <span class="dot dot-pending"></span>
     </div>
     <div
@@ -24,14 +24,14 @@
         'pages.dashboard.applications.processing' | translate: application
       "
     >
-      <span> {{ application?.countTasksProcessing ?? 0 }} </span>
+      <span> {{ application.countTasksProcessing ?? 0 }} </span>
       <span class="dot dot-warn"></span>
     </div>
     <div
       class="card-title card-title__value"
       [title]="'pages.dashboard.applications.error' | translate: application"
     >
-      <span> {{ application?.countTasksError ?? 0 }} </span>
+      <span> {{ application.countTasksError ?? 0 }} </span>
       <span class="dot dot-danger"></span>
     </div>
     <div
@@ -40,7 +40,7 @@
         'pages.dashboard.applications.completed' | translate: application
       "
     >
-      <span> {{ application?.countTasksCompleted ?? 0 }} </span>
+      <span> {{ application.countTasksCompleted ?? 0 }} </span>
       <span class="dot dot-success"></span>
     </div>
   </div>
@@ -49,15 +49,13 @@
       {{ 'pages.dashboard.applications.last_sessions' | translate }}
     </div>
     <ul>
-      <li
-        *ngFor="let session of application?.sessions; trackBy: trackBySession"
-      >
+      <li *ngFor="let session of application.sessions; trackBy: trackBySession">
         <a
           [routerLink]="[
             '/',
             'applications',
-            application?._id?.applicationName,
-            application?._id?.applicationVersion,
+            application._id.applicationName,
+            application._id.applicationVersion,
             'sessions',
             session._id
           ]"

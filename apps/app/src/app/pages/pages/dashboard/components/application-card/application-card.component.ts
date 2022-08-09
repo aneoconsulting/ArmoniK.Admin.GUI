@@ -17,7 +17,7 @@ export class ApplicationCardComponent {
     this.applicationChange.emit(this.application);
   }
 
-  trackBySession(index: number) {
-    return index;
+  trackBySession(index: number, session: { _id: string }) {
+    return session._id;
   }
 }
