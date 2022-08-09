@@ -59,6 +59,7 @@ describe('DashboardComponent', () => {
       countTasksError: 2,
       countTasksCompleted: 3,
       countTasksProcessing: 4,
+      sessions: [],
     },
   ];
   const applicationsErrorsPaginated = {

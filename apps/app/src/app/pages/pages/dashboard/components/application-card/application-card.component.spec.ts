@@ -84,6 +84,7 @@ describe('ApplicationCardComponent', () => {
         applicationName: 'application_1',
         applicationVersion: '1.0.0',
       },
+      sessions: [],
     };
     component.application = application;
     fixture.detectChanges();
@@ -122,6 +123,7 @@ describe('ApplicationCardComponent', () => {
         applicationVersion: '1.0.0',
       },
       countTasksError: 2,
+      sessions: [],
     };
     component.application = application;
     fixture.detectChanges();
@@ -143,6 +145,7 @@ describe('ApplicationCardComponent', () => {
         applicationVersion: '1.0.0',
       },
       countTasksProcessing: 2,
+      sessions: [],
     };
     component.application = application;
     fixture.detectChanges();
@@ -164,6 +167,7 @@ describe('ApplicationCardComponent', () => {
         applicationVersion: '1.0.0',
       },
       countTasksCompleted: 2,
+      sessions: [],
     };
     component.application = application;
     fixture.detectChanges();
@@ -185,6 +189,7 @@ describe('ApplicationCardComponent', () => {
         applicationVersion: '1.0.0',
       },
       countTasksPending: 2,
+      sessions: [],
     };
     component.application = application;
     fixture.detectChanges();

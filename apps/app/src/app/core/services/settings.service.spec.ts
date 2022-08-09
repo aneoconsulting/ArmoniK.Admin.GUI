@@ -91,6 +91,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application);
       expect(service.currentApplications.size).toEqual(1);
@@ -102,12 +103,14 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       const application2: Application = {
         _id: {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application1);
       service.addCurrentApplication(application2);
@@ -120,12 +123,14 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       const application2: Application = {
         _id: {
           applicationName: 'test2',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application1);
       service.addCurrentApplication(application2);
@@ -138,6 +143,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.removeCurrentApplication(application._id);
       expect(service.currentApplications.size).toEqual(0);
@@ -149,6 +155,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application);
 
@@ -162,12 +169,14 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       const application2: Application = {
         _id: {
           applicationName: 'test2',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application1);
       service.addCurrentApplication(application2);
@@ -183,6 +192,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application);
       expect(localStorage.getItem('currentApplications')).toEqual(
