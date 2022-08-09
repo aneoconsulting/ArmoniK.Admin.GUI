@@ -76,6 +76,21 @@ Start the app (front-end using Angular)
   nx serve app
 ```
 
+#### Analyze the app
+
+If Angular tells that the dist folder is too heavy, you can analyze the app and dependencies with the following command:
+
+```bash
+  # Install a source map explorer
+  npm install -g source-map-explorer
+  # Build app and generate source maps
+  nx build app --prod --sourceMaps=true
+  # Analyze source maps
+  source-map-explorer dist/apps/app/main.<hash>.js
+```
+
+Using this, you can optimize the way the dependencies are loaded and reduce initial load.
+
 ### Server
 
 First, you need to install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
