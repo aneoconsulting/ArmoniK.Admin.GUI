@@ -1,4 +1,4 @@
-FROM node:16.15-alpine as build
+FROM node:lts-alpine as build
 
 ARG configuration=production
 
