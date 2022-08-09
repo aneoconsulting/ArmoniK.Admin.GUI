@@ -27,7 +27,7 @@ export class ApplicationsErrorsListComponent {
   constructor(private statesService: StatesService) {}
 
   /**
-   * Get currant page
+   * Get current page
    *
    * @returns current page
    */
@@ -70,7 +70,7 @@ export class ApplicationsErrorsListComponent {
    * Delete state from the filters store
    *
    */
-  deleteState() {
+  deleteState(): void {
     this.statesService.deleteState(this.stateKey);
     this.refresh.emit({});
   }
@@ -80,12 +80,12 @@ export class ApplicationsErrorsListComponent {
    *
    * @param text
    */
-  excerpt(text: string): string {
-    if (text?.length > 100) {
+  excerpt(text?: string): string {
+    if (text && text.length > 100) {
       return text.substring(0, 100) + '...';
     }
 
-    return text;
+    return text ?? '';
   }
 
   /**

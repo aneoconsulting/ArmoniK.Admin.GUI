@@ -113,7 +113,7 @@
           "title": "Tâches associées",
           "id": "Tâche ID",
           "refresh": "Rafraîchir",
-          "delete_state": "Delete table state",
+          "delete_state": "Supprimer l'état de la table",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
           "tâche": "{{value}} tâche",
