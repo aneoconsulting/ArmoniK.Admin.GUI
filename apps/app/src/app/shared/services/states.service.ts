@@ -31,7 +31,7 @@ export class StatesService {
    *
    * @returns Filter state
    */
-  restoreState(filterName: string): ClrDatagridStateInterface {
+  findState(filterName: string): ClrDatagridStateInterface {
     return this.states[filterName] ?? {};
   }
 
@@ -48,43 +48,49 @@ export class StatesService {
   /**
    * Get currant page
    *
+   * @param stateName State name
+   *
    * @returns current page
    */
-  getCurrentPage(filterName: string): number {
-    return this.states[filterName]?.page?.current ?? 1;
+  getCurrentPage(stateName: string): number {
+    return this.findState(stateName).page?.current ?? 1;
   }
 
   /**
    * Get page size
    *
+   * @param stateName State name
+   *
    * @returns page size
    */
-  getPageSize(filterName: string): number {
-    return this.states[filterName]?.page?.size ?? 10;
+  getPageSize(stateName: string): number {
+    return this.findState(stateName).page?.size ?? 10;
   }
 
   /**
    * Get filter value from the filters store
    *
+   * @param stateName State name
    * @param key Key to find the filter value
    *
    * @returns filter value
    */
-  getFilterValue(filterName: string, key: string): string {
-    const state = this.states[filterName];
-    const filter = state?.filters?.find((f) => f?.property === key);
+  getFilterValue(stateName: string, key: string): string {
+    const state = this.findState(stateName);
+    const filter = state.filters?.find((f) => f?.property === key);
     return filter?.value ?? '';
   }
 
   /**
    * Get sort order from the filters store
    *
+   * @param stateName State name
    * @param key Key to find the sort order
    *
    * @returns sort order
    */
-  getSortOrder(filterName: string, key: string): ClrDatagridSortOrder {
-    const state = this.states[filterName];
+  getSortOrder(stateName: string, key: string): ClrDatagridSortOrder {
+    const state = this.findState(stateName);
     const by = state?.sort?.by;
     if (by === key) {
       return state?.sort?.reverse

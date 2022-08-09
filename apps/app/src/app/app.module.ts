@@ -11,10 +11,7 @@ import { CoreModule, LanguageService } from './core';
  */
 @NgModule({
   imports: [CoreModule, AppRoutingModule, AppTranslateModule],
-  providers: [
-    { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    // { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
-  ],
+  providers: [{ provide: APP_BASE_HREF, useValue: environment.baseHref }],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
