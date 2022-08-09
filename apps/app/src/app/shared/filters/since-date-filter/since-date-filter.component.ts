@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({
