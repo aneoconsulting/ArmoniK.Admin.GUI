@@ -7,6 +7,11 @@ export type Application = {
   countTasksError?: number;
   countTasksCompleted?: number;
   countTasksProcessing?: number;
+  sessions: {
+    _id: string;
+    createdAt: string;
+    cancelledAt: string;
+  }[];
 };
 
 export type ApplicationError = {

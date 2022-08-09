@@ -10,7 +10,7 @@
     {{ application?._id?.applicationName }} -
     {{ application?._id?.applicationVersion }}
   </h3>
-  <div class="card-block">
+  <div class="card-block dots">
     <div
       class="card-title"
       [title]="'pages.dashboard.applications.pending' | translate: application"
@@ -43,6 +43,29 @@
       <span> {{ application?.countTasksCompleted ?? 0 }} </span>
       <span class="dot dot-success"></span>
     </div>
+  </div>
+  <div class="card-block last-sessions flex flex-col flex-grow">
+    <div class="card-title">
+      {{ 'pages.dashboard.applications.last_sessions' | translate }}
+    </div>
+    <ul>
+      <li
+        *ngFor="let session of application?.sessions; trackBy: trackBySession"
+      >
+        <a
+          [routerLink]="[
+            '/',
+            'applications',
+            application?._id?.applicationName,
+            application?._id?.applicationVersion,
+            'sessions',
+            session._id
+          ]"
+          >{{ session._id }}</a
+        >
+        <span> - {{ session.createdAt | date: 'short' }} </span>
+      </li>
+    </ul>
   </div>
   <footer class="card-footer">
     <button class="btn btn-sm btn-link" (click)="onClick()">
