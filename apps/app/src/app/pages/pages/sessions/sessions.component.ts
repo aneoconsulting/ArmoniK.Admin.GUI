@@ -27,7 +27,6 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
   errors: AppError[] = [];
 
-  sessionsStateKey = 'sessions';
   private state: ClrDatagridStateInterface = {};
   loadingSessions = true;
   sessions: Pagination<FormattedSession> | null = null;
@@ -54,6 +53,12 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.sessionsSubscription.unsubscribe();
+  }
+
+  get sessionsStateKey(): string {
+    return ['sessions', this.applicationName, this.applicationVersion].join(
+      '-'
+    );
   }
 
   /**

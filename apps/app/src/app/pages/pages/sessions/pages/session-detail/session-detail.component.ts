@@ -30,7 +30,6 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
 
   selectedTasks: Task[] = [];
 
-  tasksStateKey = 'tasks';
   private state: ClrDatagridStateInterface = {};
   loadingTasks = true;
   tasks: Pagination<Task> | null = null;
@@ -65,6 +64,10 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.tasksSubscription.unsubscribe();
+  }
+
+  get tasksStateKey(): string {
+    return ['tasks', this.sessionId].join('-');
   }
 
   get isSeqUp(): boolean {
