@@ -83,6 +83,7 @@ describe('ApplicationsService', () => {
         countTasksPending: 0,
         countTasksError: 0,
         countTasksCompleted: 1,
+        sessions: [],
       },
     ]);
   });
