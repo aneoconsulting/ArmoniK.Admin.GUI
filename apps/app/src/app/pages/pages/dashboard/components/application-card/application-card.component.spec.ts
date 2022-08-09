@@ -105,14 +105,14 @@ describe('ApplicationCardComponent', () => {
     expect(compiled.querySelector('.card-block').children.length).toBe(4);
   });
 
-  it('should have a 0 in all card-title', () => {
+  it('should have a 0 in all card-title__value', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(
-      (compiled.querySelectorAll('.card-title') as HTMLElement[]).forEach(
-        (element) => {
-          expect(element.textContent).toContain('0');
-        }
-      )
+      (
+        compiled.querySelectorAll('.card-title__value') as HTMLElement[]
+      ).forEach((element) => {
+        expect(element.textContent).toContain('0');
+      })
     );
   });
 

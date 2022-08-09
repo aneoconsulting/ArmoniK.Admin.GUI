@@ -12,14 +12,14 @@
   </h3>
   <div class="card-block dots">
     <div
-      class="card-title"
+      class="card-title card-title__value"
       [title]="'pages.dashboard.applications.pending' | translate: application"
     >
       <span> {{ application?.countTasksPending ?? 0 }} </span>
       <span class="dot dot-pending"></span>
     </div>
     <div
-      class="card-title"
+      class="card-title card-title__value"
       [title]="
         'pages.dashboard.applications.processing' | translate: application
       "
@@ -28,14 +28,14 @@
       <span class="dot dot-warn"></span>
     </div>
     <div
-      class="card-title"
+      class="card-title card-title__value"
       [title]="'pages.dashboard.applications.error' | translate: application"
     >
       <span> {{ application?.countTasksError ?? 0 }} </span>
       <span class="dot dot-danger"></span>
     </div>
     <div
-      class="card-title"
+      class="card-title card-title__value"
       [title]="
         'pages.dashboard.applications.completed' | translate: application
       "
