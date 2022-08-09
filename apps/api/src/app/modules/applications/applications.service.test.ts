@@ -5,6 +5,7 @@ import { Connection, Model, connect } from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Task, TaskDocument, TaskSchema } from '../tasks/schemas';
 import { TaskStub } from '../../test/stubs/';
+import { Session, SessionDocument, SessionSchema } from '../sessions/schemas';
 
 describe('ApplicationsService', () => {
   let mongod: MongoMemoryServer;
@@ -14,12 +15,14 @@ describe('ApplicationsService', () => {
   let settingsService: SettingsService;
   let paginationService: PaginationService;
   let taskModel: Model<Task>;
+  let sessionModel: Model<Session>;
 
   beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
     mongoConnection = (await connect(uri)).connection;
     taskModel = mongoConnection.model('TaskData', TaskSchema);
+    sessionModel = mongoConnection.model('SessionData', SessionSchema);
 
     settingsService = new SettingsService();
     paginationService = new PaginationService();
@@ -33,7 +36,13 @@ describe('ApplicationsService', () => {
         collection: {
           collectionName: 'TaskData',
         },
-      } as Model<TaskDocument>
+      } as Model<TaskDocument>,
+      {
+        ...sessionModel,
+        collection: {
+          collectionName: 'SessionData',
+        },
+      } as Model<SessionDocument>
     );
   });
 
