@@ -103,14 +103,14 @@ export class SessionsService implements OnModuleInit {
             $lookup: {
               from: this.sessionModel.collection.collectionName,
               let: {
-                sessionId: '$_id',
+                id: '$_id',
               },
               as: 'session',
               pipeline: [
                 {
                   $match: {
                     $expr: {
-                      $eq: ['$_id', '$$sessionId'],
+                      $eq: ['$_id', '$$id'],
                     },
                     ...sessionMatch,
                   },
@@ -288,7 +288,6 @@ export class SessionsService implements OnModuleInit {
 
       return { meta, data };
     } catch (error) {
-      console.error(error);
       throw new InternalServerErrorException(error);
     }
   }
