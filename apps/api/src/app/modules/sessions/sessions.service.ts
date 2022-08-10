@@ -55,8 +55,12 @@ export class SessionsService implements OnModuleInit {
     _id?: string,
     lastActivityAt?: Date
   ) {
+    console.log('start findAllPaginated');
+
+    console.log('startIndex');
     const startIndex = (page - 1) * limit;
 
+    console.log('match');
     const match: { [key: string]: any } = {
       'Options.Options.GridAppName':
         this.settingsService.getApplicationName(applicationName),
@@ -84,6 +88,7 @@ export class SessionsService implements OnModuleInit {
       sessionSort['_id'] = 1;
     }
 
+    console.log('getTotal');
     const getTotal = async () => {
       return this.connection
         .collection(this.taskModel.collection.collectionName)
@@ -129,6 +134,7 @@ export class SessionsService implements OnModuleInit {
         .toArray();
     };
 
+    console.log('getSessions');
     const getSessions = async (): Promise<FormattedSession[]> => {
       return this.connection
         .collection(this.taskModel.collection.collectionName)
@@ -268,6 +274,7 @@ export class SessionsService implements OnModuleInit {
 
       return { meta, data };
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException(error);
     }
   }

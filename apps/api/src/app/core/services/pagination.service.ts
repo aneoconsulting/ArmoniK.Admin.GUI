@@ -7,6 +7,7 @@ export class PaginationService {
    * Creat meta utils for pagination
    */
   public createMeta(total: number, page = 1, limit = 10): PaginationMeta {
+    console.log('start createMeta', total, page, limit);
     const lastPage = Math.ceil(total / limit);
 
     return {
