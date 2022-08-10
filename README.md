@@ -42,7 +42,9 @@ Go to the project directory
 
 See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
 
-You must use version **^4.4.15**
+You must use version **^4.4.15**. Be careful when using pipeline in aggregation to avoid errors because of an API change with version 5.x.x.
+
+- ["$lookup with 'pipeline' may not specify 'localField' or 'foreignField'"](https://stackoverflow.com/questions/66748716/lookup-with-pipeline-may-not-specify-localfield-or-foreignfield)
 
 ### Populate DB (Optional)
 
