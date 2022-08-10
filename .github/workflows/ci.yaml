@@ -185,7 +185,7 @@ jobs:
         run: npx nx affected --target=build --parallel=3
 
   build-docker-images:
-    needs: build
+    # needs: build
     runs-on: ubuntu-latest
     strategy:
       matrix:
