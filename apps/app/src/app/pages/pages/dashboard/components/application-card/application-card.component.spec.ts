@@ -54,25 +54,25 @@ describe('ApplicationCardComponent', () => {
       spy.calls.reset();
     });
 
-    it('should emit when button is clicked', () => {
+    it('should emit an event when the footer button is clicked', () => {
       const application: Application = {
         _id: {
-          applicationName: 'test',
+          applicationName: 'application_1',
           applicationVersion: '1.0.0',
         },
         sessions: [],
       };
       component.application = application;
+      fixture.detectChanges();
 
-      const spy = spyOn(component.applicationChange, 'emit');
+      //  Add a spy on the event emitter
+      const spy = spyOn(component, 'onClick');
 
-      const button = fixture.debugElement.nativeElement.querySelector('button');
+      const compiled = fixture.debugElement.nativeElement;
+      const button = compiled.querySelector('footer button');
       button.click();
 
-      expect(component.applicationChange.emit).toHaveBeenCalledWith(
-        application
-      );
-
+      expect(component.onClick).toHaveBeenCalledWith();
       spy.calls.reset();
     });
   });
@@ -144,31 +144,20 @@ describe('ApplicationCardComponent', () => {
       );
     });
 
-    it('should emit an event when the footer button is clicked', () => {
+    it('should have a "card-block" class with 4 children', () => {
       const application: Application = {
         _id: {
           applicationName: 'application_1',
           applicationVersion: '1.0.0',
         },
+        countTasksError: 2,
         sessions: [],
       };
       component.application = application;
       fixture.detectChanges();
 
-      //  Add a spy on the event emitter
-      const spy = spyOn(component, 'onClick');
-
       const compiled = fixture.debugElement.nativeElement;
-      const button = compiled.querySelector('footer button');
-      button.click();
-
-      expect(component.onClick).toHaveBeenCalledWith();
-      spy.calls.reset();
-    });
-
-    it('should have a "card-block" class with 4 children', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('.card-block').children.length).toBe(4);
+      expect(compiled.querySelector('.dots').children.length).toBe(4);
     });
 
     it('should have a 0 in all card-title__value', () => {
