@@ -110,7 +110,7 @@ export class SessionsService implements OnModuleInit {
                 {
                   $match: {
                     $expr: {
-                      $eq: ['$_id', '$$id'],
+                      $eq: ['$$id', '$_id'],
                     },
                     ...sessionMatch,
                   },
