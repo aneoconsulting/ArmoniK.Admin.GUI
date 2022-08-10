@@ -40,7 +40,7 @@ export class SessionsController {
     @Query('_id') _id: string,
     @Query('lastActivityAt') lastActivityAt?: string
   ) {
-    return {
+    const sessions = await this.sessionsService.findAllPaginated(
       page,
       limit,
       applicationName,
@@ -48,20 +48,10 @@ export class SessionsController {
       orderBy,
       order,
       _id,
-      lastActivityAt,
-    };
-    // const sessions = await this.sessionsService.findAllPaginated(
-    //   page,
-    //   limit,
-    //   applicationName,
-    //   applicationVersion,
-    //   orderBy,
-    //   order,
-    //   _id,
-    //   lastActivityAt ? new Date(lastActivityAt) : undefined
-    // );
+      lastActivityAt ? new Date(lastActivityAt) : undefined
+    );
 
-    // return sessions;
+    return sessions;
   }
 
   /**
