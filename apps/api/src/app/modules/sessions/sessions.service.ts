@@ -102,8 +102,6 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.sessionModel.collection.collectionName,
-              // localField: '_id',
-              // foreignField: '_id',
               let: {
                 sessionId: '$_id',
               },
@@ -205,9 +203,6 @@ export class SessionsService implements OnModuleInit {
               },
               as: 'session',
               pipeline: [
-                // {
-                //   $match: sessionMatch,
-                // },
                 {
                   $match: {
                     $expr: {
