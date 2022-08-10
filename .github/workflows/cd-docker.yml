@@ -1,11 +1,11 @@
-name: cd docker
+name: CD Docker
 
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   docker:
