@@ -146,7 +146,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
       - uses: actions/upload-artifact@v2
@@ -218,10 +218,18 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
 
-      - name: Docker build
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile.file }}

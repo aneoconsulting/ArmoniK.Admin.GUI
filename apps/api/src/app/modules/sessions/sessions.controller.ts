@@ -31,27 +31,30 @@ export class SessionsController {
    */
   @Get()
   async index(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
-    @Query('applicationName') applicationName: string,
-    @Query('applicationVersion') applicationVersion: string,
-    @Query('orderBy') orderBy: string,
-    @Query('order') order: string,
-    @Query('_id') _id: string,
-    @Query('lastActivityAt') lastActivityAt?: string
+    // @Query('page', ParseIntPipe) page: number,
+    // @Query('limit', ParseIntPipe) limit: number,
+    // @Query('applicationName') applicationName: string,
+    // @Query('applicationVersion') applicationVersion: string,
+    // @Query('orderBy') orderBy: string,
+    // @Query('order') order: string,
+    // @Query('_id') _id: string,
+    // @Query('lastActivityAt') lastActivityAt?: string
+    // Get the request
+    @Query() query: any
   ) {
-    const sessions = await this.sessionsService.findAllPaginated(
-      page,
-      limit,
-      applicationName,
-      applicationVersion,
-      orderBy,
-      order,
-      _id,
-      lastActivityAt ? new Date(lastActivityAt) : undefined
-    );
+    return query;
+    // const sessions = await this.sessionsService.findAllPaginated(
+    //   page,
+    //   limit,
+    //   applicationName,
+    //   applicationVersion,
+    //   orderBy,
+    //   order,
+    //   _id,
+    //   lastActivityAt ? new Date(lastActivityAt) : undefined
+    // );
 
-    return sessions;
+    // return sessions;
   }
 
   /**
