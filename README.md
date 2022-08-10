@@ -42,6 +42,8 @@ Go to the project directory
 
 See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
 
+You must use version **^4.4.15**
+
 ### Populate DB (Optional)
 
 _A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is required_

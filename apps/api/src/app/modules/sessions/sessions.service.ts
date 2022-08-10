@@ -102,12 +102,20 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.sessionModel.collection.collectionName,
-              localField: '_id',
-              foreignField: '_id',
+              // localField: '_id',
+              // foreignField: '_id',
+              let: {
+                sessionId: '$_id',
+              },
               as: 'session',
               pipeline: [
                 {
-                  $match: sessionMatch,
+                  $match: {
+                    $expr: {
+                      $eq: ['$_id', '$$sessionId'],
+                    },
+                    ...sessionMatch,
+                  },
                 },
               ],
             },
@@ -192,12 +200,21 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.sessionModel.collection.collectionName,
-              localField: '_id',
-              foreignField: '_id',
+              let: {
+                id: '$_id',
+              },
               as: 'session',
               pipeline: [
+                // {
+                //   $match: sessionMatch,
+                // },
                 {
-                  $match: sessionMatch,
+                  $match: {
+                    $expr: {
+                      $eq: ['$$id', '$_id'],
+                    },
+                    ...sessionMatch,
+                  },
                 },
               ],
             },
@@ -209,10 +226,18 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.taskModel.collection.collectionName,
-              localField: '_id',
-              foreignField: 'SessionId',
+              let: {
+                id: '$_id',
+              },
               as: 'task',
               pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$id', '$SessionId'],
+                    },
+                  },
+                },
                 {
                   $sort: {
                     CreationDate: -1,
@@ -268,6 +293,7 @@ export class SessionsService implements OnModuleInit {
 
       return { meta, data };
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException(error);
     }
   }
