@@ -146,7 +146,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
       - uses: actions/upload-artifact@v2
@@ -184,7 +184,7 @@ jobs:
       - name: Build all
         run: npx nx affected --target=build --parallel=3
 
-  build-docker-images:
+  build-push-docker-images:
     needs: build
     runs-on: ubuntu-latest
     strategy:
