@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   FormattedSession,
@@ -40,6 +40,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
     private sessionsService: SessionsService,
     private statesService: StatesService,
     private pagerService: PagerService,
+    private cdr: ChangeDetectorRef,
     public autoRefreshService: AutoRefreshService
   ) {}
 
@@ -137,6 +138,8 @@ export class SessionsComponent implements OnInit, OnDestroy {
         error: this.onErrorSessions.bind(this),
         next: this.onNextSessions.bind(this),
       });
+    // Refresh the datagrid
+    this.cdr.detectChanges();
   }
 
   /**
@@ -202,6 +205,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns application name
    */
   get applicationName(): string {
+    /* istanbul ignore next */
     return this.route.snapshot.paramMap.get('applicationName') ?? '';
   }
 
@@ -212,6 +216,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    */
   get applicationVersion(): string {
+    /* istanbul ignore next */
     return this.route.snapshot.paramMap.get('applicationVersion') ?? '';
   }
 
