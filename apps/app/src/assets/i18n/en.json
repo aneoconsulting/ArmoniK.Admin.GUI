@@ -13,6 +13,7 @@
     }
   },
   "navigation": {
+    "how_to_use": "How to use",
     "dashboard": "Dashboard",
     "applications": "Return to applications",
     "sessions": "Return to sessions",

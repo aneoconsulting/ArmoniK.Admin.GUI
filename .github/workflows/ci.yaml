@@ -184,7 +184,7 @@ jobs:
       - name: Build all
         run: npx nx affected --target=build --parallel=3
 
-  build-docker-images:
+  build-push-docker-images:
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -210,18 +210,20 @@ jobs:
             dockerhubaneo/${{ matrix.dockerfile.name }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
 
-      - name: Docker build
+      - name: Login to DockerHub
+        if: github.event_name != 'push'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
+          push: ${{ github.event_name != 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile.file }}

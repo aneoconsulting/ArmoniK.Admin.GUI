@@ -13,6 +13,7 @@
     }
   },
   "navigation": {
+    "how_to_use": "Utiliser l'application",
     "dashboard": "Tableau de bord",
     "applications": "Retourner aux applications",
     "sessions": "Retourner aux sessions",

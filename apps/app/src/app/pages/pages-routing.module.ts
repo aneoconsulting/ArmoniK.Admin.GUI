@@ -25,6 +25,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'how-to-use',
+        loadChildren: () =>
+          import('./pages/how-to-use/how-to-use.module').then(
+            (m) => m.HowToUseModule
+          ),
+      },
+      {
         path: 'error',
         component: ErrorComponent,
       },
