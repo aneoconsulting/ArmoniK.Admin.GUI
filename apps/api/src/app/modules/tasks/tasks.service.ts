@@ -3,8 +3,8 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  OnModuleInit,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
