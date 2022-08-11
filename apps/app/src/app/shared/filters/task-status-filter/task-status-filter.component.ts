@@ -17,11 +17,11 @@ export class TaskStatusFilterComponent
   status = Object.keys(TaskStatus).filter(
     (x) => parseInt(x) >= 0
   ) as unknown as number[];
-  selectedValue: TaskStatus | null = null;
+  @Input() selectedValue: TaskStatus | null = null;
   changes = new EventEmitter<boolean>(false);
 
   onChange(event: any) {
-    this.selectedValue = event.target.value;
+    this.selectedValue = event.target.value ?? null;
     this.changes.emit(true);
   }
 
@@ -31,6 +31,15 @@ export class TaskStatusFilterComponent
 
   get property() {
     return this.name;
+  }
+
+  /**
+   * Check if item is selected.
+   *
+   * @param item item to check
+   */
+  isSelected(item: TaskStatus): boolean {
+    return this.selectedValue === Number(item);
   }
 
   /**

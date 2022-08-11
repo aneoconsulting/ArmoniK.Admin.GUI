@@ -45,11 +45,6 @@ describe('SinceDateFilterComponent', () => {
       const name = component.name;
       expect(name).toBeDefined();
     });
-
-    it('should have a default value set to 7', () => {
-      const defaultValue = component.defaultValue;
-      expect(defaultValue).toBe(7);
-    });
   });
 
   it('should return the name with "property"', () => {
@@ -75,13 +70,6 @@ describe('SinceDateFilterComponent', () => {
 
   it('should get date', () => {
     const date = component.getDate(new Date());
-    expect(date).toBeDefined();
-    expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-  });
-
-  it('should be init with a default date (7 days ago)', () => {
-    component.ngOnInit();
-    const date = component.selectedValue;
     expect(date).toBeDefined();
     expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });

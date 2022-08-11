@@ -20,7 +20,11 @@ import {
   PagerService,
   SettingsService,
 } from '../../../core';
-import { AlertErrorComponent, SinceDateFilterComponent } from '../../../shared';
+import {
+  AlertErrorComponent,
+  SinceDateFilterComponent,
+  StatesService,
+} from '../../../shared';
 import { DashboardComponent } from './dashboard.component';
 
 @Component({
@@ -123,6 +127,7 @@ describe('DashboardComponent', () => {
           },
         },
         PagerService,
+        StatesService,
         SettingsService,
       ],
     }).compileComponents();

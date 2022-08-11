@@ -7,13 +7,13 @@ import { LocaleProvider } from './providers';
 import {
   ApiService,
   ApplicationsService,
-  PagerService,
   ErrorService,
   LanguageService,
+  PagerService,
+  SeqService,
   SessionsService,
   SettingsService,
   TasksService,
-  SeqService,
 } from './services';
 
 /**

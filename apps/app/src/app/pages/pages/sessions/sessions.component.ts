@@ -1,11 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { Subscription } from 'rxjs';
 import {
   AppError,
   BrowserTitleService,
@@ -13,7 +14,7 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
-import { AutoRefreshService } from '../../../shared';
+import { AutoRefreshService, StatesService } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions',
@@ -21,13 +22,14 @@ import { AutoRefreshService } from '../../../shared';
   styleUrls: ['./sessions.component.scss'],
   providers: [AutoRefreshService],
 })
-export class SessionsComponent implements OnInit {
-  // Store state for manual and auto refresh
-  private state: ClrDatagridStateInterface = {};
+export class SessionsComponent implements OnInit, OnDestroy {
+  sessionsSubscription = new Subscription();
 
-  sessions: Pagination<FormattedSession> | null = null;
   errors: AppError[] = [];
+
+  private state: ClrDatagridStateInterface = {};
   loadingSessions = true;
+  sessions: Pagination<FormattedSession> | null = null;
 
   sessionToCancel: FormattedSession | null = null;
   isModalOpen = false;
@@ -36,6 +38,7 @@ export class SessionsComponent implements OnInit {
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
+    private statesService: StatesService,
     private pagerService: PagerService,
     private cdr: ChangeDetectorRef,
     public autoRefreshService: AutoRefreshService
@@ -49,15 +52,79 @@ export class SessionsComponent implements OnInit {
     this.autoRefreshService.setFn(() => this.refresh());
   }
 
+  ngOnDestroy(): void {
+    this.sessionsSubscription.unsubscribe();
+  }
+
+  get sessionsStateKey(): string {
+    return ['sessions', this.applicationName, this.applicationVersion].join(
+      '-'
+    );
+  }
+
+  /**
+   * Get currant page
+   *
+   * @returns current page
+   */
+  get currentPage(): number {
+    return this.statesService.getCurrentPage(this.sessionsStateKey);
+  }
+
+  /**
+   * Get page size
+   *
+   * @returns page size
+   */
+  get pageSize(): number {
+    return this.statesService.getPageSize(this.sessionsStateKey);
+  }
+
+  /**
+   * Get filter value from the filters store
+   *
+   * @param key Key to find the filter value
+   *
+   * @returns filter value
+   */
+  getFilterValue(key: string): string {
+    return this.statesService.getFilterValue(this.sessionsStateKey, key);
+  }
+
+  /**
+   * Get sort order from the filters store
+   *
+   * @param key Key to find the sort order
+   *
+   * @returns sort order
+   */
+  getSortOrder(key: string): ClrDatagridSortOrder {
+    return this.statesService.getSortOrder(this.sessionsStateKey, key);
+  }
+
+  /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState() {
+    this.state = {};
+    this.statesService.deleteState(this.sessionsStateKey);
+    this.refresh();
+  }
+
   /**
    * Used to get the list of sessions from the api using pagination for the datagrid and refresh the datagrid
    *
    * @param state
    */
   onRefreshSessions(state: ClrDatagridStateInterface) {
-    this.state = state;
-
     this.loadingSessions = true;
+
+    // Stop current request to avoid multiple requests at the same time
+    this.sessionsSubscription.unsubscribe();
+
+    // Store the current state to be saved when the request completes or for manual and auto refresh
+    this.state = state;
 
     const data = {
       applicationName: this.applicationName,
@@ -65,10 +132,12 @@ export class SessionsComponent implements OnInit {
     };
     const params = this.pagerService.createHttpParams(state, data);
 
-    this.sessionsService.getAllPaginated(params).subscribe({
-      error: this.onErrorSessions.bind(this),
-      next: this.onNextSessions.bind(this),
-    });
+    this.sessionsSubscription = this.sessionsService
+      .getAllPaginated(params)
+      .subscribe({
+        error: this.onErrorSessions.bind(this),
+        next: this.onNextSessions.bind(this),
+      });
     // Refresh the datagrid
     this.cdr.detectChanges();
   }
@@ -167,6 +236,7 @@ export class SessionsComponent implements OnInit {
    * @param data
    */
   private onNextSessions(data: Pagination<FormattedSession>) {
+    this.statesService.saveState(this.sessionsStateKey, this.state);
     this.sessions = data;
     this.loadingSessions = false;
   }

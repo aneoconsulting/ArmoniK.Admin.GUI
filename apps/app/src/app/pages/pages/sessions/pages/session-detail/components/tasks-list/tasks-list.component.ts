@@ -5,8 +5,13 @@ import {
   PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
+import {
+  ClrDatagridSortOrder,
+  ClrDatagridStateInterface,
+  ClrLoadingState,
+} from '@clr/angular';
 import { LanguageService, Task } from '../../../../../../../core';
+import { StatesService } from '../../../../../../../shared';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -20,6 +25,7 @@ export class TasksListComponent {
   @Input() autoRefreshTimer: number | null = null;
   @Output() autoRefreshTimerChange = new EventEmitter<number>();
 
+  @Input() stateKey = 'tasks';
   @Input() tasks: Pagination<Task> | null = null;
   @Input() loading = true;
 
@@ -38,7 +44,79 @@ export class TasksListComponent {
   @Input() isSeqUp = false;
   @Output() clickSeqLink = new EventEmitter<string>();
 
-  constructor(private languageService: LanguageService) {}
+  constructor(
+    private statesService: StatesService,
+    private languageService: LanguageService
+  ) {}
+
+  /**
+   * Get currant page
+   *
+   * @returns current page
+   */
+  get currentPage(): number {
+    return this.statesService.getCurrentPage(this.stateKey);
+  }
+
+  /**
+   * Get page size
+   *
+   * @returns page size
+   */
+  get pageSize(): number {
+    return this.statesService.getPageSize(this.stateKey);
+  }
+
+  /**
+   * Get filter value from the filters store
+   *
+   * @param key Key to find the filter value
+   *
+   * @returns filter value
+   */
+  getFilterValue(key: string): string {
+    return this.statesService.getFilterValue(this.stateKey, key);
+  }
+
+  /**
+   * Get sort order from the filters store
+   *
+   * @param key Key to find the sort order
+   *
+   * @returns sort order
+   */
+  getSortOrder(key: string): ClrDatagridSortOrder {
+    return this.statesService.getSortOrder(this.stateKey, key);
+  }
+
+  /**
+   * Convert a value to a status or return null if the value is not a status
+   *
+   * @param value Value to convert
+   *
+   * @returns Status or null
+   */
+  toStatus(value: string): TaskStatus | null {
+    // value can be ''
+    if (!value) {
+      return null;
+    }
+
+    const convertedValue = Number(value);
+    if (Number.isNaN(convertedValue)) {
+      return null;
+    }
+    return TaskStatus[TaskStatus[convertedValue] as keyof typeof TaskStatus];
+  }
+
+  /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState() {
+    this.statesService.deleteState(this.stateKey);
+    this.refresh.emit({});
+  }
 
   /**
    * Emit event when click on seq link

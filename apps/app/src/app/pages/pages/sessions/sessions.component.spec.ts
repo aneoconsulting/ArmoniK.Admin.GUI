@@ -23,6 +23,7 @@ import {
   AlertErrorComponent,
   AutoRefreshService,
   SinceDateFilterComponent,
+  StatesService,
 } from '../../../shared';
 import { SessionsComponent } from './sessions.component';
 
@@ -98,6 +99,7 @@ describe('SessionsComponent', () => {
         BrowserTitleService,
         LanguageService,
         AutoRefreshService,
+        StatesService,
       ],
     }).compileComponents();
   });
