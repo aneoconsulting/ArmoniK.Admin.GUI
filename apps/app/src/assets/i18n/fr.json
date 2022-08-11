@@ -31,6 +31,7 @@
         "title": "Les erreurs"
       },
       "applications": {
+        "last_sessions": "Dernières sessions",
         "title": "Les applications",
         "completed": "{{countTasksCompleted}} tâches complétées sur les 7 derniers jours",
         "processing": "{{countTasksProcessing}} tâches en cours sur les 7 derniers jours",

@@ -31,6 +31,7 @@
         "title": "Errors"
       },
       "applications": {
+        "last_sessions": "Last sessions",
         "title": "Applications",
         "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
         "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",

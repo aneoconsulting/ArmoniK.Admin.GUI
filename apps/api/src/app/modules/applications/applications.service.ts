@@ -12,6 +12,7 @@ import {
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
 import { SettingsService } from '../../shared';
 import { PaginationService } from '../../core';
+import { Session, SessionDocument } from '../sessions/schemas';
 
 @Injectable()
 export class ApplicationsService {
@@ -19,7 +20,9 @@ export class ApplicationsService {
     private readonly settingsService: SettingsService,
     private readonly paginationService: PaginationService,
     @InjectConnection() private connection: Connection,
-    @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>
+    @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>,
+    @InjectModel(Session.name)
+    private readonly sessionModel: Model<SessionDocument>
   ) {}
 
   async findAll(): Promise<Application[]> {
@@ -85,6 +88,55 @@ export class ApplicationsService {
                 },
               },
             },
+          },
+        },
+        {
+          // Get the last three sessions using creation date
+          $lookup: {
+            from: this.sessionModel.collection.collectionName,
+            let: {
+              applicationName: '$_id.applicationName',
+              applicationVersion: '$_id.applicationVersion',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: [
+                          '$Options.Options.GridAppName',
+                          '$$applicationName',
+                        ],
+                      },
+                      {
+                        $eq: [
+                          '$Options.Options.GridAppVersion',
+                          '$$applicationVersion',
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+              {
+                $sort: {
+                  CreationDate: -1,
+                },
+              },
+              {
+                $limit: 3,
+              },
+              {
+                $project: {
+                  _id: '$_id',
+                  createdAt: '$CreationDate',
+                  cancelledAt: '$CancelledDate',
+                  status: '$Status',
+                },
+              },
+            ],
+            as: 'sessions',
           },
         },
         {

@@ -40,6 +40,7 @@ describe('ApplicationCardComponent', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       component.application = application;
 
@@ -53,24 +54,25 @@ describe('ApplicationCardComponent', () => {
       spy.calls.reset();
     });
 
-    it('should emit when button is clicked', () => {
+    it('should emit an event when the footer button is clicked', () => {
       const application: Application = {
         _id: {
-          applicationName: 'test',
+          applicationName: 'application_1',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       component.application = application;
+      fixture.detectChanges();
 
-      const spy = spyOn(component.applicationChange, 'emit');
+      //  Add a spy on the event emitter
+      const spy = spyOn(component, 'onClick');
 
-      const button = fixture.debugElement.nativeElement.querySelector('button');
+      const compiled = fixture.debugElement.nativeElement;
+      const button = compiled.querySelector('footer button');
       button.click();
 
-      expect(component.applicationChange.emit).toHaveBeenCalledWith(
-        application
-      );
-
+      expect(component.onClick).toHaveBeenCalledWith();
       spy.calls.reset();
     });
   });
@@ -83,6 +85,7 @@ describe('ApplicationCardComponent', () => {
           applicationVersion: '1.0.0',
         },
         countTasksError: 2,
+        sessions: [],
       };
       component.application = application;
       fixture.detectChanges();
@@ -104,6 +107,7 @@ describe('ApplicationCardComponent', () => {
           applicationVersion: '1.0.0',
         },
         countTasksProcessing: 2,
+        sessions: [],
       };
       component.application = application;
       fixture.detectChanges();
@@ -125,6 +129,7 @@ describe('ApplicationCardComponent', () => {
           applicationVersion: '1.0.0',
         },
         countTasksCompleted: 2,
+        sessions: [],
       };
       component.application = application;
       fixture.detectChanges();
@@ -139,13 +144,107 @@ describe('ApplicationCardComponent', () => {
       );
     });
 
-    it('should have a correct pending value', () => {
+    it('should have a "card-block" class with 4 children', () => {
+      const application: Application = {
+        _id: {
+          applicationName: 'application_1',
+          applicationVersion: '1.0.0',
+        },
+        countTasksError: 2,
+        sessions: [],
+      };
+      component.application = application;
+      fixture.detectChanges();
+
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('.dots').children.length).toBe(4);
+    });
+
+    it('should have a 0 in all card-title__value', () => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(
+        (
+          compiled.querySelectorAll('.card-title__value') as HTMLElement[]
+        ).forEach((element) => {
+          expect(element.textContent).toContain('0');
+        })
+      );
+    });
+
+    it('should have a correct error count', () => {
+      const application: Application = {
+        _id: {
+          applicationName: 'application_1',
+          applicationVersion: '1.0.0',
+        },
+        countTasksError: 2,
+        sessions: [],
+      };
+      component.application = application;
+      fixture.detectChanges();
+
+      const compiled = fixture.debugElement.nativeElement;
+      // select first card-title
+      const cardTitle = (
+        compiled.querySelectorAll('.card-title') as HTMLElement[]
+      )[2];
+      expect(cardTitle.textContent).toContain(
+        application.countTasksError?.toString()
+      );
+    });
+
+    it('should have a correct processing count', () => {
+      const application: Application = {
+        _id: {
+          applicationName: 'application_1',
+          applicationVersion: '1.0.0',
+        },
+        countTasksProcessing: 2,
+        sessions: [],
+      };
+      component.application = application;
+      fixture.detectChanges();
+
+      const compiled = fixture.debugElement.nativeElement;
+      // select first card-title
+      const cardTitle = (
+        compiled.querySelectorAll('.card-title') as HTMLElement[]
+      )[1];
+      expect(cardTitle.textContent).toContain(
+        application.countTasksProcessing?.toString()
+      );
+    });
+
+    it('should have a correct completed count', () => {
+      const application: Application = {
+        _id: {
+          applicationName: 'application_1',
+          applicationVersion: '1.0.0',
+        },
+        countTasksCompleted: 2,
+        sessions: [],
+      };
+      component.application = application;
+      fixture.detectChanges();
+
+      const compiled = fixture.debugElement.nativeElement;
+      // select first card-title
+      const cardTitle = (
+        compiled.querySelectorAll('.card-title') as HTMLElement[]
+      )[3];
+      expect(cardTitle.textContent).toContain(
+        application.countTasksCompleted?.toString()
+      );
+    });
+
+    it('should have a correct pending count', () => {
       const application: Application = {
         _id: {
           applicationName: 'application_1',
           applicationVersion: '1.0.0',
         },
         countTasksPending: 2,
+        sessions: [],
       };
       component.application = application;
       fixture.detectChanges();
