@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   OnModuleInit,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -13,6 +14,7 @@ import { Task, TaskDocument } from './schemas';
 
 @Injectable()
 export class TasksService implements OnModuleInit {
+  private readonly logger = new Logger(TasksService.name);
   private submitterService: Submitter;
 
   constructor(
@@ -111,6 +113,7 @@ export class TasksService implements OnModuleInit {
         meta,
       };
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException(error);
     }
   }

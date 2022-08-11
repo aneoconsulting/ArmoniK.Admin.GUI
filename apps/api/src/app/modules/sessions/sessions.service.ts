@@ -8,6 +8,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   OnModuleInit,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -20,6 +21,7 @@ import { Session, SessionDocument } from './schemas';
 
 @Injectable()
 export class SessionsService implements OnModuleInit {
+  private readonly logger = new Logger(SessionsService.name);
   private submitterService: Submitter;
 
   constructor(
@@ -288,6 +290,7 @@ export class SessionsService implements OnModuleInit {
 
       return { meta, data };
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException(error);
     }
   }
