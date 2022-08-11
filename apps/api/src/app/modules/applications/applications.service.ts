@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import {
@@ -15,6 +19,8 @@ import { PaginationService } from '../../core';
 
 @Injectable()
 export class ApplicationsService {
+  private readonly logger = new Logger(ApplicationsService.name);
+
   constructor(
     private readonly settingsService: SettingsService,
     private readonly paginationService: PaginationService,
@@ -252,6 +258,7 @@ export class ApplicationsService {
       );
       return { meta, data };
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException(error.message);
     }
   }
