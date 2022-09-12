@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
-import { GrpcErrorService } from '../../core';
 import { catchError } from 'rxjs';
+import { GrpcErrorService } from '../../shared';
 
 @Controller('tasks')
 export class TasksController {
@@ -84,6 +84,6 @@ export class TasksController {
   cancel(@Body('tasksId') tasksId: string[]) {
     return this.tasksService
       .cancelMany(tasksId)
-      .pipe(catchError(this.grpcErrorService.handleError));
+      .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }

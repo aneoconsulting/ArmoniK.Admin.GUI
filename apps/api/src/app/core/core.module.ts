@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PaginationService, GrpcErrorService } from './services';
+import { PaginationService } from './services';
 
 @Module({
   imports: [ConfigModule.forRoot()],
-  providers: [PaginationService, GrpcErrorService],
+  providers: [PaginationService],
 })
 export class CoreModule {}

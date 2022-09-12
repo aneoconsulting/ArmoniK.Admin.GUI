@@ -1,10 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-import {
-  grpcClientOptions,
-  GrpcErrorService,
-  PaginationService,
-} from '../../core';
+import { grpcClientOptions, PaginationService } from '../../core';
 import { SharedModule } from '../../shared/';
 import { SessionsMongooseModule } from './sessions-mongoose.module';
 import { SessionsController } from './sessions.controller';
@@ -25,6 +21,6 @@ import { SessionsService } from './sessions.service';
     ]),
   ],
   controllers: [SessionsController],
-  providers: [SessionsService, PaginationService, GrpcErrorService],
+  providers: [SessionsService, PaginationService],
 })
 export class SessionsModule {}
