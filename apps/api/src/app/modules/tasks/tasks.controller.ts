@@ -1,5 +1,4 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -10,10 +9,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Task } from './schemas';
-import { TasksService } from './tasks.service';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import { catchError } from 'rxjs';
 import { GrpcErrorService } from '../../core';
+import { Task } from './schemas';
+import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
