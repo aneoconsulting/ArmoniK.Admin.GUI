@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppMongooseModule } from './app-mongoose.module';
 import { AppController } from './app.controller';
-import { CoreModule } from './core';
 import { ApplicationsModule, SessionsModule, TasksModule } from './modules';
 
 @Module({
   imports: [
-    CoreModule,
+    ConfigModule.forRoot(),
     AppMongooseModule,
     TasksModule,
     SessionsModule,

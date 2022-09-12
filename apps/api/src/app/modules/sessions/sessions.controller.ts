@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import { catchError } from 'rxjs';
-import { GrpcErrorService } from '../../core';
+import { GrpcErrorService } from '../../common';
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 
