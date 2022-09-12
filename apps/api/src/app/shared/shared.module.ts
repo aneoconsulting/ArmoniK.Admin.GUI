@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { GrpcErrorService, SettingsService } from './services';
+import { SettingsService } from './services';
 
 @Module({
-  providers: [SettingsService, GrpcErrorService],
-  exports: [SettingsService, GrpcErrorService],
+  providers: [SettingsService],
+  exports: [SettingsService],
 })
 export class SharedModule {}

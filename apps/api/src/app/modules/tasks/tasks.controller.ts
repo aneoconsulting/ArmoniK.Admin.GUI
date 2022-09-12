@@ -13,7 +13,7 @@ import {
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
 import { catchError } from 'rxjs';
-import { GrpcErrorService } from '../../shared';
+import { GrpcErrorService } from '../../core';
 
 @Controller('tasks')
 export class TasksController {

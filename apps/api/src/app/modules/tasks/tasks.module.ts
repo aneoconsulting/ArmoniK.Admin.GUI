@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-import { grpcClientOptions, PaginationService } from '../../core';
+import {
+  grpcClientOptions,
+  GrpcErrorService,
+  PaginationService,
+} from '../../core';
 import { SharedModule } from '../../shared';
 import { TasksMongooseModule } from './tasks-mongoose.module';
 import { TasksController } from './tasks.controller';
@@ -21,6 +25,6 @@ import { TasksService } from './tasks.service';
     ]),
   ],
   controllers: [TasksController],
-  providers: [TasksService, PaginationService],
+  providers: [TasksService, PaginationService, GrpcErrorService],
 })
 export class TasksModule {}
