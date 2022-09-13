@@ -186,16 +186,16 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <span>
-          {{ session.createdAt | date: 'medium' }}
+          {{ session.createdAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <span *ngIf="isCancelled(session)">
-          {{ session.cancelledAt | date: 'medium' }}
+          {{ session.cancelledAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        {{ session.lastActivityAt | date: 'medium' }}
+        {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
       </clr-dg-cell>
       <clr-dg-cell>
         <button

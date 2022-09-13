@@ -107,12 +107,12 @@
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ (task.startedAt | date: 'medium') ?? '-' }}
+        {{ (task.startedAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ (task.endedAt | date: 'medium') ?? '-' }}
+        {{ (task.endedAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
