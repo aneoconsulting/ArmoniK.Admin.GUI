@@ -46,10 +46,6 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     public autoRefreshService: AutoRefreshService
   ) {
-    this.browserTitleService.setTitle(
-      this.languageService.instant('pages.sessions.session-detail.title')
-    );
-
     // Activate auto refresh
     this.autoRefreshService.setFn(() => this.refresh());
   }
@@ -60,6 +56,12 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
         this.session = data['session'];
       }
     });
+
+    this.browserTitleService.setTitle(
+      this.languageService.instant('pages.sessions.session-detail.tab_title', {
+        id: this.sessionId,
+      })
+    );
   }
 
   ngOnDestroy() {
