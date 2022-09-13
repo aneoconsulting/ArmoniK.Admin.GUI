@@ -32,25 +32,25 @@ describe('TaskStatusFilterComponent', () => {
 
   it('should return the name with "property"', () => {
     component.name = 'test';
-    expect(component.property).toBe(component.name);
+    expect(component.property).toEqual(component.name);
   });
 
-  it('should emit an event when the value changes', () => {
+  it('should emit an event when the selection change', () => {
     const changes = { emit: jasmine.createSpy('changes') };
     component.changes = changes as unknown as EventEmitter<boolean>;
-    component.onChange({ target: { value: 'test' } });
+    component.onSelectionChange(['test']);
     expect(changes.emit).toHaveBeenCalled();
   });
 
-  it('should change the selected value', () => {
-    component.onChange({ target: { value: TaskStatus.CANCELLED } });
-    expect(component.selectedValue).toBe(TaskStatus.CANCELLED);
+  it('should change the selection', () => {
+    component.onSelectionChange(['test']);
+    expect(component.selection).toEqual(['test']);
   });
 
-  it('should return the selectedValue with "value"', () => {
-    expect(component.value).toBe(null);
-    component.selectedValue = TaskStatus.CANCELLED;
-    expect(component.value).toBe(TaskStatus.CANCELLED);
+  it('should return the selection with "value"', () => {
+    expect(component.value).toEqual([]);
+    component.selection = ['test'];
+    expect(component.value).toEqual(['test']);
   });
 
   it('should accept all', () => {
@@ -59,34 +59,13 @@ describe('TaskStatusFilterComponent', () => {
 
   describe('isActive', () => {
     it('should return true if the value is active', () => {
-      component.selectedValue = TaskStatus.CANCELLED;
+      component.selection = ['test'];
       expect(component.isActive()).toBeTruthy();
     });
 
     it('should return false if the value is not active', () => {
-      component.selectedValue = null;
+      component.selection = [];
       expect(component.isActive()).toBeFalsy();
-    });
-  });
-
-  describe('ui', () => {
-    it('should have a clr-select-container', () => {
-      expect(
-        fixture.nativeElement.querySelector('clr-select-container')
-      ).toBeTruthy();
-    });
-
-    it('should have a label and a select element', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector('label')).toBeTruthy();
-      expect(compiled.querySelector('select')).toBeTruthy();
-    });
-
-    it('should display a list of options', () => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelectorAll('option').length).toBe(
-        Object.keys(TaskStatus).filter((x) => parseInt(x) >= 0).length + 1 // +1 for "All"
-      );
     });
   });
 });

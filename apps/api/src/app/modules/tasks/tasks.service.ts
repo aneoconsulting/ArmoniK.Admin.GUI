@@ -44,7 +44,7 @@ export class TasksService implements OnModuleInit {
     orderBy?: string,
     order?: string,
     taskId?: string,
-    status?: number
+    status?: number[]
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
 
@@ -56,9 +56,8 @@ export class TasksService implements OnModuleInit {
       match['_id'] = taskId;
     }
 
-    // Need to be careful with the status, it can be 0
-    if (status !== undefined) {
-      match['Status'] = status;
+    if (status?.length > 0) {
+      match['Status'] = { $in: status };
     }
 
     const taskSort: { [key: string]: 1 | -1 } = {};
@@ -74,7 +73,9 @@ export class TasksService implements OnModuleInit {
       return this.connection
         .collection(this.taskModel.collection.collectionName)
         .aggregate([
-          { $match: match },
+          {
+            $match: match,
+          },
           { $group: { _id: '$SessionId', count: { $sum: 1 } } },
         ])
         .toArray();
