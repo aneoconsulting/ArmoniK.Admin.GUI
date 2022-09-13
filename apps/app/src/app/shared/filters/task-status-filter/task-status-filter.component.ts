@@ -11,7 +11,7 @@ export class TaskStatusFilterComponent
   implements ClrDatagridFilterInterface<TaskStatus>
 {
   @Input() name = '';
-  @Input() selection: TaskStatus[] = [];
+  @Input() selection: string[] = [];
 
   @Output() changes = new EventEmitter<boolean>(false);
 
@@ -34,12 +34,26 @@ export class TaskStatusFilterComponent
    *
    * @returns void
    */
-  onSelectionChange(item: TaskStatus[]): void {
+  onSelectionChange(item: string[]): void {
     this.selection = item;
     this.changes.emit(true);
   }
 
-  get value() {
+  @Input()
+  set value(value: string | string[]) {
+    if (!value) {
+      this.selection = [];
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      this.selection = value;
+    } else {
+      this.selection = [value];
+    }
+  }
+
+  get value(): string[] {
     return this.selection;
   }
 
@@ -52,7 +66,7 @@ export class TaskStatusFilterComponent
    *
    * @param item item to check
    */
-  isSelected(item: TaskStatus): boolean {
+  isSelected(item: string): boolean {
     return !!this.selection?.includes(item);
     // return this.selectedValue === Number(item);
   }
