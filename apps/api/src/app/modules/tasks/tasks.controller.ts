@@ -39,8 +39,19 @@ export class TasksController {
     @Query('orderBy') orderBy?: string,
     @Query('order') order?: string,
     @Query('taskId') taskId?: string,
-    @Query('Status') status?: string
+    @Query('status') status?: string | string[]
   ): Promise<Pagination<Task>> {
+    const formattedStatus = [];
+    if (status) {
+      if (Array.isArray(status)) {
+        status.forEach((s) => {
+          formattedStatus.push(parseInt(s, 10));
+        });
+      } else {
+        formattedStatus.push(parseInt(status, 10));
+      }
+    }
+
     const tasks = await this.tasksService.findAllPaginated(
       page,
       limit,
@@ -48,7 +59,7 @@ export class TasksController {
       orderBy,
       order,
       taskId,
-      status ? Number(status) : undefined
+      formattedStatus
     );
 
     return tasks;
