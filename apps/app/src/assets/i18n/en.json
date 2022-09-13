@@ -123,6 +123,7 @@
           "ended_at": "Ended at",
           "duration": {
             "title": "Duration",
+            "milliseconds": "{{value}}ms",
             "seconds": "{{value}}s",
             "minutes": "{{value}}m",
             "hours": "{{value}}h",
