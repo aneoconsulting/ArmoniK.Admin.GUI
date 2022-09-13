@@ -118,7 +118,7 @@
     <clr-dg-cell>
       <span>
         {{
-          task.endedAt
+          task.startedAt && task.endedAt
             ? printTime(duration(toDate(task.startedAt), toDate(task.endedAt)))
             : '-'
         }}
