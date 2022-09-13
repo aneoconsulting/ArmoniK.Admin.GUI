@@ -14,9 +14,8 @@ import {
   ApplicationError,
 } from '@armonik.admin.gui/armonik-typing';
 import { Task, TaskDocument } from '../tasks/schemas/task.schema';
-import { SettingsService } from '../../shared';
-import { PaginationService } from '../../core';
 import { Session, SessionDocument } from '../sessions/schemas';
+import { PaginationService, SettingsService } from '../../common';
 
 @Injectable()
 export class ApplicationsService {

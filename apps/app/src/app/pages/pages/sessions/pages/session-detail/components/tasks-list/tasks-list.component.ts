@@ -167,13 +167,21 @@ export class TasksListComponent {
   duration(
     start: Date,
     end: Date
-  ): { days: number; hours: number; minutes: number; seconds: number } {
+  ): {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    milliseconds: number;
+  } {
     const diff = end.getTime() - start.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    return { days, hours, minutes, seconds };
+    const milliseconds = Math.trunc(diff % 1000);
+
+    return { days, hours, minutes, seconds, milliseconds };
   }
 
   /**
@@ -188,6 +196,7 @@ export class TasksListComponent {
     hours: number;
     minutes: number;
     seconds: number;
+    milliseconds: number;
   }): string {
     const time = [];
     if (date.days > 0) {
@@ -226,6 +235,16 @@ export class TasksListComponent {
           'pages.sessions.session-detail.table.duration.seconds',
           {
             value: date.seconds.toString(),
+          }
+        )
+      );
+    }
+    if (date.milliseconds > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.milliseconds',
+          {
+            value: date.milliseconds.toString(),
           }
         )
       );

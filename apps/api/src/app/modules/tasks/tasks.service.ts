@@ -9,7 +9,7 @@ import {
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
-import { PaginationService, Submitter } from '../../core';
+import { PaginationService, Submitter } from '../../common';
 import { Task, TaskDocument } from './schemas';
 
 @Injectable()

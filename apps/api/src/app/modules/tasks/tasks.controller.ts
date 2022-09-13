@@ -9,11 +9,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
-import { catchError } from 'rxjs';
-import { GrpcErrorService } from '../../core';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
+import { catchError } from 'rxjs';
+import { GrpcErrorService } from '../../common';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('tasks')
 export class TasksController {
