@@ -1,3 +1,4 @@
 import { TaskStatus } from '../enums';
 
-export const ErrorStatus = [TaskStatus.ERROR, TaskStatus.FAILED] as const;
+// This file is no longer needed. Must be removed in the future.
+export const ErrorStatus = [TaskStatus.ERROR] as const;
