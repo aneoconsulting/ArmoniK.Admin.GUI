@@ -312,6 +312,6 @@ export class SessionsService implements OnModuleInit {
    * @param sessionId Id of the session
    */
   cancel(sessionId: string) {
-    return this.submitterService.CancelSession({ Id: sessionId });
+    return this.submitterService.CancelSession({ id: sessionId });
   }
 }

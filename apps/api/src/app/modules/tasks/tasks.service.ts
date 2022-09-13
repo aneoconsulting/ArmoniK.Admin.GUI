@@ -138,7 +138,7 @@ export class TasksService implements OnModuleInit {
     return this.submitterService.CancelTasks({
       task: { ids },
       // only tasks that can be cancelled
-      included: { Statuses: PendingStatus },
+      included: { statuses: PendingStatus },
     });
   }
 }
