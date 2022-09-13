@@ -1,28 +1,3 @@
-<!-- <clr-select-container>
-  <label
-    >{{
-      'pages.sessions.session-detail.table.filters.status.title' | translate
-    }}
-  </label>
-  <select clrSelect [name]="name" (change)="onChange($event)">
-    <option value="" [selected]="selectedValue === null">
-      {{
-        'pages.sessions.session-detail.table.filters.status.default' | translate
-      }}
-    </option>
-    <option
-      *ngFor="let item of status"
-      [value]="item"
-      [selected]="isSelected(item)"
-    >
-      {{
-        'pages.sessions.session-detail.table.filters.status.' + taskStatus[item]
-          | translate
-      }}
-    </option>
-  </select>
-</clr-select-container> -->
-
 <clr-combobox-container>
   <label>{{
     'pages.sessions.session-detail.table.filters.status.title' | translate
