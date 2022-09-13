@@ -105,6 +105,7 @@
         }
       },
       "session-detail": {
+        "tab_title": "Session {{id}}",
         "title": "Session detail",
         "created_at": "Created at",
         "see-more": "See more",
@@ -164,6 +165,7 @@
           }
         },
         "task-detail": {
+          "tab_title": "Task {{id}}",
           "title": "Task detail",
           "created_at": "Created at",
           "ended_at": "Ended at",
