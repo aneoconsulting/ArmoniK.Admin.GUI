@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridFilterInterface } from '@clr/angular';
-import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-task-status-filter',
