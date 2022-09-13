@@ -4,7 +4,7 @@ import { join } from 'path';
 export const grpcClientOptions: ClientOptions = {
   transport: Transport.GRPC,
   options: {
-    package: 'ArmoniK.api.grpc.v1',
+    package: 'armonik.api.grpc.v1',
     protoPath: join(
       __dirname,
       './assets/ArmoniK.Api/Protos/V1/submitter_service.proto'

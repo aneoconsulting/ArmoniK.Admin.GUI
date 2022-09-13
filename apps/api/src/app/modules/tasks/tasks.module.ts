@@ -19,7 +19,7 @@ import { TasksService } from './tasks.service';
     TasksMongooseModule,
     ClientsModule.register([
       {
-        name: 'Submitter',
+        name: 'submitter',
         ...grpcClientOptions,
       },
     ]),
