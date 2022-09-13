@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
-import { GrpcErrorService } from '../../core';
 import { catchError } from 'rxjs';
+import { GrpcErrorService } from '../../common';
 
 @Controller('tasks')
 export class TasksController {
