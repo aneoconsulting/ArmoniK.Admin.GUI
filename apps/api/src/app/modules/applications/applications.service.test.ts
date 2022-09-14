@@ -1,11 +1,10 @@
-import { SettingsService } from '../../shared/';
-import { PaginationService } from '../../core/';
 import { ApplicationsService } from './applications.service';
 import { Connection, Model, connect } from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Task, TaskDocument, TaskSchema } from '../tasks/schemas';
 import { TaskStub } from '../../test/stubs/';
 import { Session, SessionDocument, SessionSchema } from '../sessions/schemas';
+import { PaginationService, SettingsService } from '../../common';
 
 describe('ApplicationsService', () => {
   let mongod: MongoMemoryServer;

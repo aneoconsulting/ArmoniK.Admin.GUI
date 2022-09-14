@@ -1,5 +1,4 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -12,8 +11,9 @@ import {
 } from '@nestjs/common';
 import { Task } from './schemas';
 import { TasksService } from './tasks.service';
-import { GrpcErrorService } from '../../core';
 import { catchError } from 'rxjs';
+import { GrpcErrorService } from '../../common';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('tasks')
 export class TasksController {
@@ -39,8 +39,19 @@ export class TasksController {
     @Query('orderBy') orderBy?: string,
     @Query('order') order?: string,
     @Query('taskId') taskId?: string,
-    @Query('Status') status?: string
+    @Query('status') status?: string | string[]
   ): Promise<Pagination<Task>> {
+    const formattedStatus = [];
+    if (status) {
+      if (Array.isArray(status)) {
+        status.forEach((s) => {
+          formattedStatus.push(parseInt(s, 10));
+        });
+      } else {
+        formattedStatus.push(parseInt(status, 10));
+      }
+    }
+
     const tasks = await this.tasksService.findAllPaginated(
       page,
       limit,
@@ -48,7 +59,7 @@ export class TasksController {
       orderBy,
       order,
       taskId,
-      status ? Number(status) : undefined
+      formattedStatus
     );
 
     return tasks;
@@ -84,6 +95,6 @@ export class TasksController {
   cancel(@Body('tasksId') tasksId: string[]) {
     return this.tasksService
       .cancelMany(tasksId)
-      .pipe(catchError(this.grpcErrorService.handleError));
+      .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }

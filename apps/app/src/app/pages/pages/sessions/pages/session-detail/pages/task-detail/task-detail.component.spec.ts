@@ -88,7 +88,7 @@ describe('TaskDetailComponent', () => {
       const languageService = TestBed.inject(LanguageService);
 
       const title = languageService.instant(
-        'pages.sessions.session-detail.task-detail.title'
+        'pages.sessions.session-detail.task-detail.tab_title'
       );
 
       const spy = spyOn(browserTitleService, 'setTitle');

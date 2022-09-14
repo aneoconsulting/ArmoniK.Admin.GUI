@@ -23,17 +23,20 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.browserTitleService.setTitle(
-      this.languageService.instant(
-        'pages.sessions.session-detail.task-detail.title'
-      )
-    );
-
     this.routeDataSubscription = this.route.data.subscribe((data) => {
       if (data['task']) {
         this.task = data['task'];
       }
     });
+
+    this.browserTitleService.setTitle(
+      this.languageService.instant(
+        'pages.sessions.session-detail.task-detail.tab_title',
+        {
+          id: this.taskId,
+        }
+      )
+    );
   }
 
   ngOnDestroy() {
