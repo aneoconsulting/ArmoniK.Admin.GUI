@@ -143,6 +143,24 @@ Contributions are always welcome!
 
 See `contributing.md` for ways to get started.
 
+## gRPC services
+
+To be able to communicate with the gRPC services, you need to use the `ArmoniK.Api/Proto/V1` proto files. In the GUI, we use HTTP/2 to communicate with the gRPC services.
+
+The route to use is `/armonik.api.grpc.v1`.
+
+
+
+### Sessions
+
+Used files:
+- `session_status.proto` contains the definition of the session status.
+- `sessions_common.proto` contains the definition of the session, the session request and the response used in the service for sessions.
+- `sessions_service.proto` contains the definition of the service for sessions.
+
+
+
+
 ## Documentation (Deprecated)
 
 For the API, you can access to Swagger UI:
