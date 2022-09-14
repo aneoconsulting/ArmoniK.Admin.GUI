@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   ErrorStatus,
   Pagination,
-  PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
@@ -140,13 +139,6 @@ describe('TasksListComponent', () => {
         it(`should return "true" when status is an error ${status}`, () => {
           const task = { status } as Task;
           expect(component.isError(task)).toBeTruthy();
-        });
-      });
-
-      PendingStatus.forEach((status) => {
-        it(`should return "true" when status is in pending ${status}`, () => {
-          const task = { status } as Task;
-          expect(component.isPending(task)).toBeTruthy();
         });
       });
 

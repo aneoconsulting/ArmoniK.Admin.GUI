@@ -37,7 +37,7 @@
         "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
         "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",
         "error": "{{countTasksError}} tasks error on the last 7 days",
-        "pending": "{{countTasksPending}} tasks pending on the last 7 days",
+        "pending": "{{countTasksPending}} tasks in creation, submission or dispatch on the last 7 days",
         "see-sessions": "See sessions"
       },
       "table": {
@@ -132,7 +132,9 @@
           },
           "status": {
             "title": "Status",
-            "pending": "Pending",
+            "creating": "Creating",
+            "submitted": "Submitted",
+            "dispatched": "Dispatched",
             "processing": "Processing",
             "error": "Error",
             "completed": "Completed",

@@ -11,7 +11,7 @@
   margin-right: 0;
 }
 
-$textTypes: ('success', 'warn', 'danger', 'pending');
+$textTypes: ('success', 'warn', 'danger', 'creating', 'submitted', 'dispatched');
 
 @each $type in $textTypes {
   .text-#{$type} {
