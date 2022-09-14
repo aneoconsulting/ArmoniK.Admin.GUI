@@ -1,5 +1,4 @@
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -14,6 +13,7 @@ import { Task } from './schemas';
 import { TasksService } from './tasks.service';
 import { catchError } from 'rxjs';
 import { GrpcErrorService } from '../../common';
+import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('tasks')
 export class TasksController {
@@ -95,6 +95,6 @@ export class TasksController {
   cancel(@Body('tasksId') tasksId: string[]) {
     return this.tasksService
       .cancelMany(tasksId)
-      .pipe(catchError(this.grpcErrorService.handleError));
+      .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }
