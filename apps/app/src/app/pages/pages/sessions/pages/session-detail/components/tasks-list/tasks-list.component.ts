@@ -328,6 +328,6 @@ export class TasksListComponent {
    * @returns Task id
    */
   trackByTask(_: number, task: Task) {
-    return task._id;
+    return task.id;
   }
 }

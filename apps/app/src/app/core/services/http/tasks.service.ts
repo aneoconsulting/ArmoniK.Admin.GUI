@@ -44,7 +44,7 @@ export class TasksService {
    * @param tasks Tasks to cancel
    */
   cancelMany(tasks: Task[]): Observable<Task[]> {
-    const tasksId = tasks.map((task) => task._id);
+    const tasksId = tasks.map((task) => task.id);
     return this.apiService.put<Task[]>(`${this.url}/cancel-many`, { tasksId });
   }
 }

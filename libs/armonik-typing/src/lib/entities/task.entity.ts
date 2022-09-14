@@ -11,10 +11,13 @@ export type RawTask = {
 };
 
 export type TaskOptions = {
-  [key: string]: unknown;
-  Options: {
-    [key: string]: unknown;
-    GridAppName: string;
-    GridAppVersion: string;
-  };
+  MaxDuration: string;
+  MaxRetries: number;
+  Priority: number;
+  PartitionId: string;
+  ApplicationName: string;
+  ApplicationVersion: string;
+  ApplicationNamespace: string;
+  ApplicationService: string;
+  EngineType: string;
 };

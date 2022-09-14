@@ -38,7 +38,7 @@ export class TasksController {
     @Query('sessionId') sessionId: string,
     @Query('orderBy') orderBy?: string,
     @Query('order') order?: string,
-    @Query('taskId') taskId?: string,
+    @Query('_id') id?: string,
     @Query('status') status?: string | string[]
   ): Promise<Pagination<Task>> {
     const formattedStatus = [];
@@ -58,7 +58,7 @@ export class TasksController {
       sessionId,
       orderBy,
       order,
-      taskId,
+      id,
       formattedStatus
     );
 
