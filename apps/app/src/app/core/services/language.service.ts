@@ -145,7 +145,7 @@ export class LanguageService {
    * @param lang Language code
    *
    */
-  private setLanguageInStorage(lang: LanguageCode): void {
+  setLanguageInStorage(lang: LanguageCode): void {
     localStorage.setItem(this.storageKey, lang);
   }
 

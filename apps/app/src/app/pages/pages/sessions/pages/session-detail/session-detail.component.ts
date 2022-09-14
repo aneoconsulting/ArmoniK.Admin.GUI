@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination, RawSession } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
@@ -12,6 +12,8 @@ import {
   PagerService,
   SettingsService,
 } from '../../../../../core';
+import { StatesService } from '../../../../../shared';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pages-sessions-session-detail',
@@ -19,32 +21,31 @@ import {
   styleUrls: ['./session-detail.component.scss'],
   providers: [AutoRefreshService],
 })
-export class SessionDetailComponent implements OnInit {
-  // Store state for manual and auto refresh
-  private state: ClrDatagridStateInterface = {};
+export class SessionDetailComponent implements OnInit, OnDestroy {
+  tasksSubscription = new Subscription();
 
   session?: RawSession;
 
-  tasks: Pagination<Task> | null = null;
-  selectedTasks: Task[] = [];
-  cancelTasksButtonState = ClrLoadingState.DEFAULT;
-  loadingTasks = true;
-
   errors: AppError[] = [];
+
+  selectedTasks: Task[] = [];
+
+  private state: ClrDatagridStateInterface = {};
+  loadingTasks = true;
+  tasks: Pagination<Task> | null = null;
+
+  cancelTasksButtonState = ClrLoadingState.DEFAULT;
 
   constructor(
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService,
     private tasksService: TasksService,
+    private statesService: StatesService,
     private pagerService: PagerService,
     private settingsService: SettingsService,
     public autoRefreshService: AutoRefreshService
   ) {
-    this.browserTitleService.setTitle(
-      this.languageService.instant('pages.sessions.session-detail.title')
-    );
-
     // Activate auto refresh
     this.autoRefreshService.setFn(() => this.refresh());
   }
@@ -55,6 +56,20 @@ export class SessionDetailComponent implements OnInit {
         this.session = data['session'];
       }
     });
+
+    this.browserTitleService.setTitle(
+      this.languageService.instant('pages.sessions.session-detail.tab_title', {
+        id: this.sessionId,
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.tasksSubscription.unsubscribe();
+  }
+
+  get tasksStateKey(): string {
+    return ['tasks', this.sessionId].join('-');
   }
 
   get isSeqUp(): boolean {
@@ -80,26 +95,33 @@ export class SessionDetailComponent implements OnInit {
    *
    * @param state Clarity datagrid state
    */
-  refresh(state?: ClrDatagridStateInterface) {
-    if (state) {
-      // save the state
-      this.state = state;
-    } else {
-      // set the state to the last one
-      state = this.state;
-    }
-
+  onRefreshTasks(state: ClrDatagridStateInterface) {
     this.loadingTasks = true;
+
+    // Stop current request to avoid multiple requests at the same time
+    this.tasksSubscription.unsubscribe();
+
+    // Store the current state to be saved when the request completes or for manual and auto refresh
+    this.state = state;
 
     const data = {
       sessionId: this.sessionId,
     };
     const params = this.pagerService.createHttpParams(state, data);
 
-    this.tasksService.getAllPaginated(params).subscribe({
-      error: this.onErrorTasks.bind(this),
-      next: this.onNextTasks.bind(this),
-    });
+    this.tasksSubscription = this.tasksService
+      .getAllPaginated(params)
+      .subscribe({
+        error: this.onErrorTasks.bind(this),
+        next: this.onNextTasks.bind(this),
+      });
+  }
+
+  /**
+   * Refresh
+   */
+  refresh() {
+    this.onRefreshTasks(this.state);
   }
 
   /**
@@ -131,6 +153,7 @@ export class SessionDetailComponent implements OnInit {
    * @param tasks Tasks
    */
   private onNextTasks(tasks: Pagination<Task>) {
+    this.statesService.saveState(this.tasksStateKey, this.state);
     this.tasks = tasks;
     this.loadingTasks = false;
   }

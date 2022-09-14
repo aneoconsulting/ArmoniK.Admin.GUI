@@ -2,8 +2,11 @@
   <ui-header>
     <a routerLink="/" branding>
       <span class="title">
-        ArmoniK -
-        <span class="">
+        <figure>
+          <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
+        </figure>
+        &nbsp; - &nbsp;
+        <span class="title--date">
           {{ now | date: 'short' }}
         </span>
       </span>
@@ -70,8 +73,15 @@
         routerLinkActive="active"
         >{{ link.label }}</a
       >
+      <div class="nav-divider"></div>
+      <a
+        clrVerticalNavLink
+        routerLink="/how-to-use"
+        routerLinkActive="active"
+        >{{ 'navigation.how_to_use' | translate }}</a
+      >
       <div class="version">
-        <span> v0.3.0 </span>
+        <span> v0.6.0 </span>
       </div>
     </clr-vertical-nav>
 

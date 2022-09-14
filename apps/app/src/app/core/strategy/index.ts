@@ -1,1 +1,1 @@
-export * from './custom-route-reuse-strategy';
+export * from './remove-route-reuse';

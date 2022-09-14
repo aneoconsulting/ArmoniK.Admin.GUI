@@ -5,8 +5,13 @@ import {
   PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
-import { Task } from '../../../../../../../core';
+import {
+  ClrDatagridSortOrder,
+  ClrDatagridStateInterface,
+  ClrLoadingState,
+} from '@clr/angular';
+import { LanguageService, Task } from '../../../../../../../core';
+import { StatesService } from '../../../../../../../shared';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -20,6 +25,7 @@ export class TasksListComponent {
   @Input() autoRefreshTimer: number | null = null;
   @Output() autoRefreshTimerChange = new EventEmitter<number>();
 
+  @Input() stateKey = 'tasks';
   @Input() tasks: Pagination<Task> | null = null;
   @Input() loading = true;
 
@@ -37,6 +43,80 @@ export class TasksListComponent {
 
   @Input() isSeqUp = false;
   @Output() clickSeqLink = new EventEmitter<string>();
+
+  constructor(
+    private statesService: StatesService,
+    private languageService: LanguageService
+  ) {}
+
+  /**
+   * Get currant page
+   *
+   * @returns current page
+   */
+  get currentPage(): number {
+    return this.statesService.getCurrentPage(this.stateKey);
+  }
+
+  /**
+   * Get page size
+   *
+   * @returns page size
+   */
+  get pageSize(): number {
+    return this.statesService.getPageSize(this.stateKey);
+  }
+
+  /**
+   * Get filter value from the filters store
+   *
+   * @param key Key to find the filter value
+   *
+   * @returns filter value
+   */
+  getFilterValue(key: string): string {
+    return this.statesService.getFilterValue(this.stateKey, key);
+  }
+
+  /**
+   * Get sort order from the filters store
+   *
+   * @param key Key to find the sort order
+   *
+   * @returns sort order
+   */
+  getSortOrder(key: string): ClrDatagridSortOrder {
+    return this.statesService.getSortOrder(this.stateKey, key);
+  }
+
+  /**
+   * Convert a value to a status or return null if the value is not a status
+   *
+   * @param value Value to convert
+   *
+   * @returns Status or null
+   */
+  toStatus(value: string): TaskStatus | null {
+    // value can be ''
+    if (!value) {
+      return null;
+    }
+
+    const convertedValue = Number(value);
+    if (Number.isNaN(convertedValue)) {
+      return null;
+    }
+    return TaskStatus[TaskStatus[convertedValue] as keyof typeof TaskStatus];
+  }
+
+  /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState() {
+    this.statesService.deleteState(this.stateKey);
+    this.refresh.emit({});
+  }
 
   /**
    * Emit event when click on seq link
@@ -77,10 +157,110 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to track error for ngFor
+   * Calculate duration between start and end date
+   *
+   * @param start Start date
+   * @param end End date
+   *
+   * @returns Duration between start and end date
    */
-  trackByTask(index: number, task: Task) {
-    return task?._id ?? index;
+  duration(
+    start: Date,
+    end: Date
+  ): {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    milliseconds: number;
+  } {
+    const diff = end.getTime() - start.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    const milliseconds = Math.trunc(diff % 1000);
+
+    return { days, hours, minutes, seconds, milliseconds };
+  }
+
+  /**
+   * Print time
+   *
+   * @param date
+   *
+   * @returns Time string
+   */
+  printTime(date: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    milliseconds: number;
+  }): string {
+    const time = [];
+    if (date.days > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.days',
+          {
+            value: date.days.toString(),
+          }
+        )
+      );
+    }
+    if (date.hours > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.hours',
+          {
+            value: date.hours.toString(),
+          }
+        )
+      );
+    }
+    if (date.minutes > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.minutes',
+          {
+            value: date.minutes.toString(),
+          }
+        )
+      );
+    }
+    if (date.seconds > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.seconds',
+          {
+            value: date.seconds.toString(),
+          }
+        )
+      );
+    }
+    if (date.milliseconds > 0) {
+      time.push(
+        this.languageService.instant(
+          'pages.sessions.session-detail.table.duration.milliseconds',
+          {
+            value: date.milliseconds.toString(),
+          }
+        )
+      );
+    }
+    return time.join(' ');
+  }
+
+  /**
+   * Convert string to date
+   *
+   * @param date String to convert
+   *
+   * @returns Date
+   */
+  toDate(date: string): Date {
+    return new Date(date);
   }
 
   /**
@@ -140,14 +320,14 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to track task for ngFor
+   * Used to track error for ngFor
    *
-   * @param index Index of the task
-   * @param task Task to track
+   * @param index Index of the error
+   * @param error Error to track
    *
    * @returns Task id
    */
-  trackByTaskId(_: number, task: Task) {
+  trackByTask(_: number, task: Task) {
     return task._id;
   }
 }

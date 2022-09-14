@@ -43,6 +43,10 @@ Go to the project directory
 
 See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
 
+You must use version **^4.4.15**. Be careful when using pipeline in aggregation to avoid errors because of an API change with version 5.x.x.
+
+- ["$lookup with 'pipeline' may not specify 'localField' or 'foreignField'"](https://stackoverflow.com/questions/66748716/lookup-with-pipeline-may-not-specify-localfield-or-foreignfield)
+
 ### Populate DB (Optional)
 
 _A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is required_
@@ -88,6 +92,21 @@ Start the app (front-end using Angular)
 ```bash
   nx serve app
 ```
+
+#### Analyze the app
+
+If Angular tells that the dist folder is too heavy, you can analyze the app and dependencies with the following command:
+
+```bash
+  # Install a source map explorer
+  npm install -g source-map-explorer
+  # Build app and generate source maps
+  nx build app --prod --sourceMaps=true
+  # Analyze source maps
+  source-map-explorer dist/apps/app/main.<hash>.js
+```
+
+Using this, you can optimize the way the dependencies are loaded and reduce initial load.
 
 <!-- TODO: Add a part to install ArmoniK and use it! -->
 ### Server (Deprecated)

@@ -19,59 +19,91 @@
     [clrDgLoading]="loadingSessions"
   >
     <clr-dg-action-bar>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="refresh()"
-      >
-        {{ 'pages.sessions.table.refresh' | translate }}
-      </button>
-      <div class="btn-group">
-        <app-auto-refresh-activator
-          [isEnabled]="autoRefreshService.isEnabled()"
-          (autoRefreshChange)="autoRefreshService.toggle()"
-        ></app-auto-refresh-activator>
-        <app-timer-interval-selector
-          [timer]="autoRefreshService.timer"
-          (timerChange)="onTimerChange($event)"
-        ></app-timer-interval-selector>
+      <div class="clr-row clr-justify-content-between">
+        <div>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            (click)="refresh()"
+          >
+            {{ 'pages.sessions.table.refresh' | translate }}
+          </button>
+          <div class="btn-group">
+            <app-auto-refresh-activator
+              [isEnabled]="autoRefreshService.isEnabled()"
+              (autoRefreshChange)="autoRefreshService.toggle()"
+            ></app-auto-refresh-activator>
+            <app-timer-interval-selector
+              [timer]="autoRefreshService.timer"
+              (timerChange)="onTimerChange($event)"
+            ></app-timer-interval-selector>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn-delete btn btn-sm btn-summary"
+          (click)="deleteState()"
+        >
+          {{ 'pages.sessions.table.delete_state' | translate }}
+        </button>
       </div>
     </clr-dg-action-bar>
 
-    <clr-dg-column clrDgField="_id">
+    <clr-dg-column
+      clrDgField="_id"
+      [clrDgSortOrder]="getSortOrder('_id')"
+      [clrFilterValue]="getFilterValue('_id')"
+    >
       {{ 'pages.sessions.table.id' | translate }}
     </clr-dg-column>
-    <clr-dg-column clrDgField="countTasks">
+    <clr-dg-column
+      clrDgField="countTasks"
+      [clrDgSortOrder]="getSortOrder('countTasks')"
+    >
       {{ 'pages.sessions.table.count.title' | translate }}
       <clr-dg-filter>
         {{ 'global.filters.no-filter-available' | translate }}
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="status">
+    <clr-dg-column
+      clrDgField="status"
+      [clrDgSortOrder]="getSortOrder('status')"
+    >
       {{ 'pages.sessions.table.status.title' | translate }}
       <clr-dg-filter>
         {{ 'global.filters.no-filter-available' | translate }}
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="createdAt">
+    <clr-dg-column
+      clrDgField="createdAt"
+      [clrDgSortOrder]="getSortOrder('createdAt')"
+    >
       {{ 'pages.sessions.table.createdAt' | translate }}
       <clr-dg-filter>
         {{ 'global.filters.no-filter-available' | translate }}
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="cancelledAt">
+    <clr-dg-column
+      clrDgField="cancelledAt"
+      [clrDgSortOrder]="getSortOrder('cancelledAt')"
+    >
       {{ 'pages.sessions.table.cancelledAt' | translate }}
       <clr-dg-filter>
         {{ 'global.filters.no-filter-available' | translate }}
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column clrDgField="lastActivityAt">
+    <clr-dg-column
+      clrDgField="lastActivityAt"
+      [clrDgSortOrder]="getSortOrder('lastActivityAt')"
+      [clrFilterValue]="getFilterValue('lastActivityAt')"
+    >
       {{ 'pages.sessions.table.last_activity_at' | translate }}
       <clr-dg-filter [clrDgFilter]="lastActivityFilter">
         <app-since-date-filter
           label="pages.sessions.table.filters.last_activity_at.label"
           defaultText="pages.sessions.table.filters.last_activity_at.default"
           text="pages.sessions.table.filters.last_activity_at.text"
+          [selectedValue]="getFilterValue('lastActivityAt')"
           name="lastActivityAt"
           #lastActivityFilter
         ></app-since-date-filter>
@@ -122,6 +154,7 @@
           class="text-pending"
           *ngIf="
             !isCancelled(session) &&
+            !session.countTasksError &&
             !session.countTasksProcessing &&
             session.countTasksPending
           "
@@ -153,23 +186,23 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <span>
-          {{ session.createdAt | date: 'medium' }}
+          {{ session.createdAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <span *ngIf="isCancelled(session)">
-          {{ session.cancelledAt | date: 'medium' }}
+          {{ session.cancelledAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        {{ session.lastActivityAt | date: 'medium' }}
+        {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
       </clr-dg-cell>
       <clr-dg-cell>
         <button
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
           [disabled]="isCancelled(session)"
-          (click)="cancelSession(session._id)"
+          (click)="confirmCancelSession(session)"
         >
           <span class="sr-only">{{
             'pages.sessions.cancel.text' | translate
@@ -180,7 +213,12 @@
     </clr-dg-row>
 
     <clr-dg-footer>
-      <clr-dg-pagination #pagination [clrDgTotalItems]="totalSessions">
+      <clr-dg-pagination
+        #pagination
+        [clrDgTotalItems]="totalSessions"
+        [clrDgPageSize]="pageSize"
+        [clrDgPage]="currentPage"
+      >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
           'pages.sessions.per_page' | translate
         }}</clr-dg-page-size>
@@ -194,3 +232,24 @@
     </clr-dg-footer>
   </clr-datagrid>
 </section>
+
+<clr-modal [(clrModalOpen)]="isModalOpen">
+  <h3 class="modal-title">{{ 'pages.sessions.cancel.title' | translate }}</h3>
+  <div class="modal-body">
+    <p>
+      {{
+        'pages.sessions.cancel.text'
+          | translate: { id: sessionToCancel?._id ?? '' }
+      }}
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="cancelSession(sessionToCancel?._id ?? '')"
+    >
+      {{ 'pages.sessions.cancel.button' | translate }}
+    </button>
+  </div>
+</clr-modal>

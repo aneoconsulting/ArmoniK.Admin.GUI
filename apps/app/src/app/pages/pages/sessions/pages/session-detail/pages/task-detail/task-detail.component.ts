@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RawTask } from '@armonik.admin.gui/armonik-typing';
+import { Subscription } from 'rxjs';
 import {
   BrowserTitleService,
   LanguageService,
@@ -11,27 +12,37 @@ import {
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.scss'],
 })
-export class TaskDetailComponent implements OnInit {
+export class TaskDetailComponent implements OnInit, OnDestroy {
+  routeDataSubscription: Subscription | null = null;
   task: RawTask | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService
-  ) {
-    this.browserTitleService.setTitle(
-      this.languageService.instant(
-        'pages.sessions.session-detail.task-detail.title'
-      )
-    );
-  }
+  ) {}
 
   ngOnInit() {
-    this.route.data.subscribe((data) => {
+    this.routeDataSubscription = this.route.data.subscribe((data) => {
       if (data['task']) {
         this.task = data['task'];
       }
     });
+
+    this.browserTitleService.setTitle(
+      this.languageService.instant(
+        'pages.sessions.session-detail.task-detail.tab_title',
+        {
+          id: this.taskId,
+        }
+      )
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.routeDataSubscription) {
+      this.routeDataSubscription.unsubscribe();
+    }
   }
 
   /**

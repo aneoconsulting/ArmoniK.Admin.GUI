@@ -5,6 +5,11 @@ import { SettingsService } from './settings.service';
 describe('SettingsService', () => {
   let service: SettingsService;
 
+  let spyGetItem: jasmine.Spy;
+  let spySetItem: jasmine.Spy;
+  let spyRemoveItem: jasmine.Spy;
+  let spyClear: jasmine.Spy;
+
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(SettingsService);
@@ -26,14 +31,27 @@ describe('SettingsService', () => {
       },
     };
 
-    spyOn(localStorage, 'getItem').and.callFake(mockLocalStorage.getItem);
-    spyOn(localStorage, 'setItem').and.callFake(mockLocalStorage.setItem);
-    spyOn(localStorage, 'removeItem').and.callFake(mockLocalStorage.removeItem);
-    spyOn(localStorage, 'clear').and.callFake(mockLocalStorage.clear);
+    spyGetItem = spyOn(localStorage, 'getItem').and.callFake(
+      mockLocalStorage.getItem
+    );
+    spySetItem = spyOn(localStorage, 'setItem').and.callFake(
+      mockLocalStorage.setItem
+    );
+    spyRemoveItem = spyOn(localStorage, 'removeItem').and.callFake(
+      mockLocalStorage.removeItem
+    );
+    spyClear = spyOn(localStorage, 'clear').and.callFake(
+      mockLocalStorage.clear
+    );
   });
 
   afterEach(() => {
     localStorage.removeItem('currentApplications');
+
+    spyGetItem.calls.reset();
+    spySetItem.calls.reset();
+    spyRemoveItem.calls.reset();
+    spyClear.calls.reset();
   });
 
   it('should be created', () => {
@@ -73,6 +91,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application);
       expect(service.currentApplications.size).toEqual(1);
@@ -84,12 +103,14 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       const application2: Application = {
         _id: {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application1);
       service.addCurrentApplication(application2);
@@ -102,12 +123,14 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       const application2: Application = {
         _id: {
           applicationName: 'test2',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application1);
       service.addCurrentApplication(application2);
@@ -120,6 +143,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.removeCurrentApplication(application._id);
       expect(service.currentApplications.size).toEqual(0);
@@ -131,6 +155,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application);
 
@@ -144,12 +169,14 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       const application2: Application = {
         _id: {
           applicationName: 'test2',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application1);
       service.addCurrentApplication(application2);
@@ -165,6 +192,7 @@ describe('SettingsService', () => {
           applicationName: 'test',
           applicationVersion: '1.0.0',
         },
+        sessions: [],
       };
       service.addCurrentApplication(application);
       expect(localStorage.getItem('currentApplications')).toEqual(

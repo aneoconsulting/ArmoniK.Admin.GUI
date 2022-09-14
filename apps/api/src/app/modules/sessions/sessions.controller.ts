@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
 import { catchError } from 'rxjs';
-import { GrpcErrorService } from '../../core';
+import { GrpcErrorService } from '../../common';
 import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 
@@ -84,6 +84,6 @@ export class SessionsController {
   async cancel(@Param('id') sessionId: string) {
     return this.sessionsService
       .cancel(sessionId)
-      .pipe(catchError(this.grpcErrorService.handleError));
+      .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }

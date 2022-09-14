@@ -13,6 +13,7 @@
     }
   },
   "navigation": {
+    "how_to_use": "How to use",
     "dashboard": "Dashboard",
     "applications": "Return to applications",
     "sessions": "Return to sessions",
@@ -31,6 +32,7 @@
         "title": "Errors"
       },
       "applications": {
+        "last_sessions": "Last sessions",
         "title": "Applications",
         "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
         "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",
@@ -70,14 +72,16 @@
       "per_page": "Sessions per page",
       "title": "All sessions",
       "cancel": {
-        "text": "Cancel session",
-        "confirm": "Are you sure you want to cancel this session?"
+        "title": "Close the session",
+        "text": "Are you sure you want to close the session '{{id}}'?",
+        "button": "Validate"
       },
       "table": {
         "id": "Session ID",
         "refresh": "Refresh",
+        "delete_state": "Delete table state",
         "last_activity_at": "Last activity at",
-        "cancel": "Cancel",
+        "cancel": "Close",
         "count": {
           "title": "Tasks count",
           "tooltip": "{{countError}} error, {{countPending}} pending, {{countProcessing}} processing, {{countCompleted}} completed"
@@ -94,13 +98,14 @@
         "cancelledAt": "Cancelled at",
         "filters": {
           "last_activity_at": {
-            "title": "Last activity since",
+            "label": "Last activity since",
             "default": "Always",
             "text": "Last {{value}} day(s)"
           }
         }
       },
       "session-detail": {
+        "tab_title": "Session {{id}}",
         "title": "Session detail",
         "created_at": "Created at",
         "see-more": "See more",
@@ -111,11 +116,20 @@
           "title": "Associated tasks",
           "id": "Task ID",
           "refresh": "Refresh",
+          "delete_state": "Delete table state",
           "per_page": "Per page",
           "tasks": "{{value}} tasks",
           "task": "{{value}} task",
           "started_at": "Started at",
           "ended_at": "Ended at",
+          "duration": {
+            "title": "Duration",
+            "milliseconds": "{{value}}ms",
+            "seconds": "{{value}}s",
+            "minutes": "{{value}}m",
+            "hours": "{{value}}h",
+            "days": "{{value}}d"
+          },
           "status": {
             "title": "Status",
             "pending": "Pending",
@@ -152,6 +166,7 @@
           }
         },
         "task-detail": {
+          "tab_title": "Task {{id}}",
           "title": "Task detail",
           "created_at": "Created at",
           "ended_at": "Ended at",

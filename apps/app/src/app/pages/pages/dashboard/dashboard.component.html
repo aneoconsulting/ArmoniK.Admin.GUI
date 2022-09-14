@@ -1,6 +1,6 @@
 <h1>{{ 'pages.dashboard.title' | translate }}</h1>
 
-<section>
+<section class="applications-list">
   <h2>{{ 'pages.dashboard.applications.title' | translate }}</h2>
 
   <div class="clr-row">
@@ -13,13 +13,14 @@
   </div>
 </section>
 
-<section>
+<section class="errors-list">
   <h2>
     {{ 'pages.dashboard.errors.title' | translate }}
   </h2>
 
   <app-alert-error [errors]="errors"></app-alert-error>
   <app-pages-dashboard-applications-errors-list
+    [stateKey]="applicationsErrorsStateKey"
     [loading]="applicationsErrorsLoading"
     [applications]="applicationsErrors"
     [isSeqUp]="isSeqUp"

@@ -8,18 +8,19 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   OnModuleInit,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
-import { PaginationService, Submitter } from '../../core';
-import { SettingsService } from '../../shared';
+import { PaginationService, SettingsService, Submitter } from '../../common';
 import { Task, TaskDocument } from '../tasks/schemas';
 import { Session, SessionDocument } from './schemas';
 
 @Injectable()
 export class SessionsService implements OnModuleInit {
+  private readonly logger = new Logger(SessionsService.name);
   private submitterService: Submitter;
 
   constructor(
@@ -102,12 +103,18 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.sessionModel.collection.collectionName,
-              localField: '_id',
-              foreignField: '_id',
+              let: {
+                id: '$_id',
+              },
               as: 'session',
               pipeline: [
                 {
-                  $match: sessionMatch,
+                  $match: {
+                    $expr: {
+                      $eq: ['$$id', '$_id'],
+                    },
+                    ...sessionMatch,
+                  },
                 },
               ],
             },
@@ -192,12 +199,18 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.sessionModel.collection.collectionName,
-              localField: '_id',
-              foreignField: '_id',
+              let: {
+                id: '$_id',
+              },
               as: 'session',
               pipeline: [
                 {
-                  $match: sessionMatch,
+                  $match: {
+                    $expr: {
+                      $eq: ['$$id', '$_id'],
+                    },
+                    ...sessionMatch,
+                  },
                 },
               ],
             },
@@ -209,10 +222,18 @@ export class SessionsService implements OnModuleInit {
           {
             $lookup: {
               from: this.taskModel.collection.collectionName,
-              localField: '_id',
-              foreignField: 'SessionId',
+              let: {
+                id: '$_id',
+              },
               as: 'task',
               pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$id', '$SessionId'],
+                    },
+                  },
+                },
                 {
                   $sort: {
                     CreationDate: -1,
@@ -268,6 +289,7 @@ export class SessionsService implements OnModuleInit {
 
       return { meta, data };
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException(error);
     }
   }

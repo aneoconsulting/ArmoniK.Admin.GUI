@@ -3,7 +3,8 @@ import {
   ApplicationError,
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { StatesService } from '../../../../../shared';
 
 /**
  * Display applications errors in list
@@ -14,6 +15,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
   styleUrls: ['./applications-errors-list.component.scss'],
 })
 export class ApplicationsErrorsListComponent {
+  @Input() stateKey = '';
   @Input() applications: Pagination<ApplicationError> | null = null;
   @Input() loading = true;
 
@@ -21,6 +23,70 @@ export class ApplicationsErrorsListComponent {
 
   @Input() isSeqUp = false;
   @Output() clickSeqLink = new EventEmitter<string>();
+
+  constructor(private statesService: StatesService) {}
+
+  /**
+   * Get current page
+   *
+   * @returns current page
+   */
+  get currentPage(): number {
+    return this.statesService.getCurrentPage(this.stateKey);
+  }
+
+  /**
+   * Get page size
+   *
+   * @returns page size
+   */
+  get pageSize(): number {
+    return this.statesService.getPageSize(this.stateKey);
+  }
+
+  /**
+   * Get filter value from the filters store
+   *
+   * @param key Key to find the filter value
+   *
+   * @returns filter value
+   */
+  getFilterValue(key: string): string {
+    return this.statesService.getFilterValue(this.stateKey, key);
+  }
+
+  /**
+   * Get sort order from the filters store
+   *
+   * @param key Key to find the sort order
+   *
+   * @returns sort order
+   */
+  getSortOrder(key: string): ClrDatagridSortOrder {
+    return this.statesService.getSortOrder(this.stateKey, key);
+  }
+
+  /**
+   * Delete state from the filters store
+   *
+   */
+  deleteState(): void {
+    this.statesService.deleteState(this.stateKey);
+    this.refresh.emit({});
+  }
+
+  /**
+   * Except text using ellipsis when longer than 100 characters
+   *
+   * @param text
+   */
+  excerpt(text?: string): string {
+    if (text && text.length > 100) {
+      return text.substring(0, 100) + '...';
+    }
+
+    return text ?? '';
+  }
 
   /**
    * Emit event when click on seq link

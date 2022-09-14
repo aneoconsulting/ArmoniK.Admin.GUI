@@ -16,4 +16,8 @@ export class ApplicationCardComponent {
   onClick() {
     this.applicationChange.emit(this.application);
   }
+
+  trackBySession(index: number, session: { _id: string }) {
+    return session._id;
+  }
 }

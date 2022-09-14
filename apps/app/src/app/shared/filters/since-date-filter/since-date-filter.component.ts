@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({
@@ -7,22 +7,17 @@ import { ClrDatagridFilterInterface } from '@clr/angular';
   styleUrls: ['./since-date-filter.component.scss'],
 })
 export class SinceDateFilterComponent
-  implements ClrDatagridFilterInterface<string>, OnInit
+  implements ClrDatagridFilterInterface<string>
 {
   @Input() label = '';
   @Input() defaultText = '';
   @Input() text = '';
   @Input() name = '';
-  @Input() defaultValue = 7;
 
   sinceDays: number[] = [1, 3, 7, 15, 30, 60, 90, 180, 365];
 
-  selectedValue: string | null = null;
+  @Input() selectedValue: string | null = null;
   changes = new EventEmitter<boolean>(false);
-
-  ngOnInit() {
-    this.selectedValue = this.getDate(this.createDateSince(this.defaultValue));
-  }
 
   onChange(event: any) {
     this.selectedValue = event.target.value;

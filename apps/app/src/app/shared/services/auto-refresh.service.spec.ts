@@ -97,9 +97,10 @@ describe('AutoRefreshService', () => {
     it('should clear interval when "disable" is called', () => {
       service.interval = setInterval(() => null, 10_000);
       const intervalId = service.interval;
-      spyOn(window, 'clearInterval');
+      const spy = spyOn(window, 'clearInterval');
       service.disable();
       expect(window.clearInterval).toHaveBeenCalledWith(intervalId);
+      spy.calls.reset();
     });
   });
 });

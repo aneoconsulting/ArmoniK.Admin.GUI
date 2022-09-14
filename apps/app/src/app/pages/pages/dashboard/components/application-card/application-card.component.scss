@@ -13,7 +13,12 @@
   }
 }
 
-.card-block {
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-block.dots {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -33,4 +38,18 @@
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
+}
+
+.card-block.last-sessions {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.last-sessions ul {
+  margin-top: 0.4rem;
+  list-style: none;
+
+  font-weight: 600;
+  font-family: 'Courier New', Courier, monospace;
 }

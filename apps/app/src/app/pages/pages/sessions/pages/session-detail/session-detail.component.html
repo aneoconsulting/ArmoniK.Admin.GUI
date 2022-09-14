@@ -30,7 +30,7 @@
       <label>{{ 'pages.sessions.session-detail.created_at' | translate }}</label
       >&nbsp;
       <span class="font-bold">{{
-        session?.CreationDate | date: 'medium'
+        session?.CreationDate | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
       }}</span>
     </div>
   </div>
@@ -56,13 +56,14 @@
     [autoRefreshTimer]="autoRefreshService.timer"
     (autoRefreshTimerChange)="autoRefreshService.setTimer($event)"
     [isSeqUp]="isSeqUp"
+    [stateKey]="tasksStateKey"
     [tasks]="tasks"
     [loading]="loadingTasks"
     [(selection)]="selectedTasks"
     (cancelTasksChange)="onCancelTasks()"
     [cancelButtonState]="cancelTasksButtonState"
     (clickSeqLink)="redirectToSeq($event)"
-    (refresh)="refresh($event)"
+    (refresh)="onRefreshTasks($event)"
     (manualRefresh)="refresh()"
   ></app-pages-sessions-tasks-list>
 </section>

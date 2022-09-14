@@ -45,11 +45,6 @@ describe('SinceDateFilterComponent', () => {
       const name = component.name;
       expect(name).toBeDefined();
     });
-
-    it('should have a default value set to 7', () => {
-      const defaultValue = component.defaultValue;
-      expect(defaultValue).toBe(7);
-    });
   });
 
   it('should return the name with "property"', () => {
@@ -79,13 +74,6 @@ describe('SinceDateFilterComponent', () => {
     expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
-  it('should be init with a default date (7 days ago)', () => {
-    component.ngOnInit();
-    const date = component.selectedValue;
-    expect(date).toBeDefined();
-    expect(date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-  });
-
   it('should change the selected value', () => {
     component.onChange({ target: { value: 'test' } });
     expect(component.selectedValue).toBe('test');
@@ -111,9 +99,12 @@ describe('SinceDateFilterComponent', () => {
       expect(date).toBeDefined();
     });
 
-    it('should create a new date subtracting the number of days from now', () => {
-      const date = component.createDateSince(7);
-      expect(date.getUTCDate()).toBe(new Date().getUTCDate() - 7);
+    it('should create a new date removing the number of days from now', () => {
+      const daysFromNow = 7;
+      const date = component.createDateSince(daysFromNow);
+      expect(date.getUTCDate()).toBe(
+        new Date(Date.now() - daysFromNow * 24 * 60 * 60 * 1000).getUTCDate()
+      );
     });
   });
 

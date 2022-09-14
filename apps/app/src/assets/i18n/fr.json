@@ -13,6 +13,7 @@
     }
   },
   "navigation": {
+    "how_to_use": "Utiliser l'application",
     "dashboard": "Tableau de bord",
     "applications": "Retourner aux applications",
     "sessions": "Retourner aux sessions",
@@ -31,6 +32,7 @@
         "title": "Les erreurs"
       },
       "applications": {
+        "last_sessions": "Dernières sessions",
         "title": "Les applications",
         "completed": "{{countTasksCompleted}} tâches complétées sur les 7 derniers jours",
         "processing": "{{countTasksProcessing}} tâches en cours sur les 7 derniers jours",
@@ -70,12 +72,14 @@
       "per_page": "Sessions par page",
       "title": "Toutes les sessions",
       "cancel": {
-        "text": "Annuler la session",
-        "confirm": "Êtes-vous sûr de vouloir annuler cette session ?"
+        "title": "Fermer la session",
+        "text": "Vous êtes sur le point de fermer la session '{{id}}'. Voulez-vous continuer ?",
+        "button": "Valider la fermeture"
       },
       "table": {
         "id": "Session ID",
         "refresh": "Rafraîchir",
+        "delete_state": "Supprimer l'état de la table",
         "last_activity_at": "Dernière activité le",
         "cancel": "Annuler",
         "count": {
@@ -101,6 +105,7 @@
         }
       },
       "session-detail": {
+        "tab_title": "Session {{id}}",
         "title": "Détail de la session",
         "created_at": "Créée le",
         "see-more": "En voir plus",
@@ -111,11 +116,20 @@
           "title": "Tâches associées",
           "id": "Tâche ID",
           "refresh": "Rafraîchir",
+          "delete_state": "Supprimer l'état de la table",
           "per_page": "Par page",
           "tâches": "{{value}} tâches",
           "tâche": "{{value}} tâche",
           "started_at": "Démarrée le",
           "ended_at": "Terminée le",
+          "duration": {
+            "title": "Durée",
+            "milliseconds": "{{value}}ms",
+            "seconds": "{{value}}s",
+            "minutes": "{{value}}m",
+            "hours": "{{value}}h",
+            "days": "{{value}}j"
+          },
           "status": {
             "title": "Statut",
             "pending": "En attente",
@@ -152,6 +166,7 @@
           }
         },
         "task-detail": {
+          "tab_title": "Tâche {{id}}",
           "title": "Détail de la tâche",
           "created_at": "Créée le",
           "ended_at": "Terminée le",

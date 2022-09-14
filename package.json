@@ -1,6 +1,6 @@
 {
   "name": "armonik.admin.gui",
-  "version": "0.3.0",
+  "version": "0.6.0",
   "license": "MIT",
   "scripts": {
     "proto:generate": "protoc --plugin=protoc-gen-ng=$(which protoc-gen-ng) --ng_out=./apps/app/src/app/core/types/proto -I ./apps/app/src/assets/ArmoniK.Api/Protos/V1 submitter_service.proto",
@@ -30,9 +30,9 @@
     "@angular/platform-browser": "~13.3.0",
     "@angular/platform-browser-dynamic": "~13.3.0",
     "@angular/router": "~13.3.0",
-    "@clr/angular": "^13.3.0",
+    "@clr/angular": "^13.8.2",
     "@clr/icons": "^13.0.2",
-    "@clr/ui": "^13.3.0",
+    "@clr/ui": "^13.8.2",
     "@grpc/grpc-js": "^1.6.7",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.1",

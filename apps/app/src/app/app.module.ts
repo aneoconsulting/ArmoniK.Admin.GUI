@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
-import { CoreModule, LanguageService, CustomRouteReuseStrategy } from './core';
+import { CoreModule, LanguageService, RemoveRouteReuseStrategy } from './core';
 
 /**
  * Load app data
@@ -14,7 +14,7 @@ import { CoreModule, LanguageService, CustomRouteReuseStrategy } from './core';
   imports: [CoreModule, AppRoutingModule, AppTranslateModule],
   providers: [
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
+    { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

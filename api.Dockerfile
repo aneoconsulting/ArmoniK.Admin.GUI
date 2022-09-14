@@ -1,4 +1,4 @@
-FROM node:16.15-alpine as build
+FROM node:lts-alpine as build
 
 ARG configuration=production
 
@@ -15,7 +15,7 @@ COPY . .
 
 RUN nx build api --prod
 
-FROM node:16.15-alpine as production
+FROM node:lts-alpine as production
 
 ARG configuration=production
 ENV NODE_ENV=${configuration}

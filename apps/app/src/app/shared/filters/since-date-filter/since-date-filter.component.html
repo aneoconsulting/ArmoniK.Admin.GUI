@@ -9,7 +9,7 @@
     <option
       *ngFor="let item of sinceDays"
       [value]="getDate(createDateSince(item))"
-      [selected]="item === defaultValue"
+      [selected]="selectedValue === getDate(createDateSince(item))"
     >
       {{ text | translate: { value: item } }}
     </option>
