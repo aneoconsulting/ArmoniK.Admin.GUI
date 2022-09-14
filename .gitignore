@@ -45,3 +45,5 @@ apps/api/src/database/fixtures/*
 !.gitkeep
 apps/app/src/app/core/types/proto/*
 !apps/app/src/app/core/types/proto/.gitkeep
+
+apps/app/proxy.conf.json

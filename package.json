@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "proto:generate": "protoc --plugin=protoc-gen-ng=$(which protoc-gen-ng) --ng_out=./apps/app/src/app/core/types/proto -I ./apps/app/src/assets/ArmoniK.Api/Protos/V1 submitter_service.proto",
-    "proto:generate:win": "for /f %G in ('dir /b .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1\\submitter_service.proto') do grpc_tools_node_protoc --plugin=protoc-gen-ng=.\\node_modules\\.bin\\protoc-gen-ng.cmd --ng_out=.\\apps\\app\\src\\app\\core\\types\\proto -I .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1 .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1\\%G",
+    "proto:generate:win": "for /f %G in ('dir /b .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1\\*.proto') do grpc_tools_node_protoc --plugin=protoc-gen-ng=.\\node_modules\\.bin\\protoc-gen-ng.cmd --ng_out=.\\apps\\app\\src\\app\\core\\types\\proto -I .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1 .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1\\%G",
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
     "start": "nx run-many --target=serve --all",

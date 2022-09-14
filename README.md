@@ -1,4 +1,5 @@
 <!-- TODO: Essayer de faire un cancel session via une connexion au submitter, c'est en cours via le submitter et core qui va devoir être revu -->
+<!-- Todo: add proxy conf creation et le fait d'avoir armonik en local -->
 # ArmoniK GUI
 
 ArmoniK GUI add an administration interface to the ArmoniK project.
@@ -58,7 +59,7 @@ _A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is
 
 ### Generate types from Proto files
 
-These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK` and use to request the gRPC services.
+These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK.Api` and use to request the gRPC services.
 
 ```sh
 # For Linux
