@@ -5,7 +5,7 @@ export const TaskStub: RawTask = {
   SessionId: '992b9227-da15-4fe3-985b-fcf56c1e848e',
   Options: {
     ApplicationName: 'Armonik',
-    ApplicationVersion: 'alpha',
+    ApplicationVersion: 'armonik',
     ApplicationNamespace: 'armonik',
     ApplicationService: 'armonik',
     EngineType: 'armonik',

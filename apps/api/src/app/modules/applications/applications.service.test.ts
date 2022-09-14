@@ -76,7 +76,7 @@ describe('ApplicationsService', () => {
       {
         _id: {
           applicationName: TaskStub.Options.ApplicationName,
-          applicationVersion: TaskStub.Options.ApplicationService,
+          applicationVersion: TaskStub.Options.ApplicationVersion,
         },
         countTasksProcessing: 0,
         countTasksPending: 0,
