@@ -34,6 +34,7 @@ export class SessionsService {
   getAllPaginated(
     params: HttpParams = new HttpParams()
   ): Observable<Pagination<FormattedSession>> {
+    // TODO: rework params, return the observable and update the component
     const options = new ListSessionsRequest({
       page: Number(params.get('page') || '1'),
       pageSize: Number(params.get('limit') || '10'),

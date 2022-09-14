@@ -149,14 +149,19 @@ To be able to communicate with the gRPC services, you need to use the `ArmoniK.A
 
 The route to use is `/armonik.api.grpc.v1`.
 
-
-
 ### Sessions
+
+The route to use is `/armonik.api.grpc.v1.sessions`.
 
 Used files:
 - `session_status.proto` contains the definition of the session status.
-- `sessions_common.proto` contains the definition of the session, the session request and the response used in the service for sessions.
-- `sessions_service.proto` contains the definition of the service for sessions.
+- `sessions_common.proto` contains the definition of the session, sessions requests and responses used in the sessions service.
+- `sessions_service.proto` contains the definition of sessions service.
+
+Sessions Service allows you to:
+- List sessions using `Sessions/ListSessions` using `ListSessionsRequest` and `ListSessionsResponse`.
+- Get a session using `Sessions/GetSession` using `GetSessionRequest` and `GetSessionResponse`.
+- Cancel a session using `Sessions/CancelSession` using `CancelSessionRequest` and `CancelSessionResponse`.
 
 
 
