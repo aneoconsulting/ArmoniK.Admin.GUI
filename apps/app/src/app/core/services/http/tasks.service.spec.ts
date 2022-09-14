@@ -97,8 +97,8 @@ describe('TasksService', () => {
     it('should cancel many tasks', (done) => {
       http.put.and.returnValue(of({}));
 
-      const tasks = [{ _id: taskId }, { _id: taskId_2 }] as Task[];
-      const tasksId = tasks.map((task) => task._id);
+      const tasks = [{ id: taskId }, { id: taskId_2 }] as Task[];
+      const tasksId = tasks.map((task) => task.id);
       subscription = service.cancelMany(tasks).subscribe({
         next: () => {
           expect(http.put).toHaveBeenCalledWith('/api/tasks/cancel-many', {

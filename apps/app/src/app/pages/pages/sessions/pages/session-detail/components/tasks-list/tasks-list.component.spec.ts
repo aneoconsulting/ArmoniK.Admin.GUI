@@ -131,7 +131,7 @@ describe('TasksListComponent', () => {
     });
 
     it('should return task id when track by', () => {
-      const task = { _id: taskId } as Task;
+      const task = { id: taskId } as Task;
       expect(component.trackByTask(0, task)).toEqual(taskId);
     });
 
@@ -220,7 +220,7 @@ describe('TasksListComponent', () => {
         // Seq must be up to enable this feature
         component.isSeqUp = true;
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.ERROR }],
+          data: [{ id: taskId, status: TaskStatus.ERROR }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -238,7 +238,7 @@ describe('TasksListComponent', () => {
         // Seq must be up to enable this feature
         component.isSeqUp = true;
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.ERROR }],
+          data: [{ id: taskId, status: TaskStatus.ERROR }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -252,7 +252,7 @@ describe('TasksListComponent', () => {
         // Seq must be up to enable this feature
         component.isSeqUp = true;
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.COMPLETED }],
+          data: [{ id: taskId, status: TaskStatus.COMPLETED }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -265,7 +265,7 @@ describe('TasksListComponent', () => {
     describe('modal', () => {
       it('should have a disabled detail button when task is not in error', () => {
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.COMPLETED }],
+          data: [{ id: taskId, status: TaskStatus.COMPLETED }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -276,7 +276,7 @@ describe('TasksListComponent', () => {
 
       it('should have a enabled detail button when task is in error', () => {
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.ERROR }],
+          data: [{ id: taskId, status: TaskStatus.ERROR }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -286,7 +286,7 @@ describe('TasksListComponent', () => {
       });
 
       it('should open modal when click on detail button', () => {
-        const task = { _id: taskId, status: TaskStatus.ERROR } as Task;
+        const task = { id: taskId, status: TaskStatus.ERROR } as Task;
         component.tasks = {
           data: [task],
           meta: { total: 1 },
