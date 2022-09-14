@@ -84,6 +84,6 @@ export class TasksController {
   cancel(@Body('tasksId') tasksId: string[]) {
     return this.tasksService
       .cancelMany(tasksId)
-      .pipe(catchError(this.grpcErrorService.handleError));
+      .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }

@@ -84,6 +84,6 @@ export class SessionsController {
   async cancel(@Param('id') sessionId: string) {
     return this.sessionsService
       .cancel(sessionId)
-      .pipe(catchError(this.grpcErrorService.handleError));
+      .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }
