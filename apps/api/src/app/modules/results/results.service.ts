@@ -18,7 +18,7 @@ export class ResultsService {
   ) {}
 
   /**
-   * Get all results from the database using pagination and filters
+   * Find all results from the database using pagination and filters
    *
    * @param page Page number
    * @param limit Number of items per page
@@ -54,7 +54,11 @@ export class ResultsService {
     try {
       const [total, results] = await Promise.all([getTotal(), getResults()]);
 
-      const meta = this.paginationService.createMeta(total, page, limit);
+      const meta = this.paginationService.createMeta(
+        total, // Total number of sessions
+        page, // Current page
+        limit // Items per page
+      );
 
       return { meta, data: results };
     } catch (error) {
