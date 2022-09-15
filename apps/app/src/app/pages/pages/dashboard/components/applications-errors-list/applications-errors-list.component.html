@@ -12,8 +12,8 @@
   </clr-dg-action-bar>
 
   <clr-dg-column
-    clrDgField="Options.Options.GridAppName"
-    [clrDgSortOrder]="getSortOrder('Options.Options.GridAppName')"
+    clrDgField="Options.ApplicationName"
+    [clrDgSortOrder]="getSortOrder('Options.ApplicationName')"
   >
     {{ 'pages.dashboard.table.application_name' | translate }}
     <clr-dg-filter>
@@ -21,8 +21,8 @@
     </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column
-    clrDgField="Options.Options.GridAppVersion"
-    [clrDgSortOrder]="getSortOrder('Options.Options.GridAppVersion')"
+    clrDgField="Options.ApplicationVersion"
+    [clrDgSortOrder]="getSortOrder('Options.ApplicationVersion')"
   >
     {{ 'pages.dashboard.table.application_version' | translate }}
     <clr-dg-filter>

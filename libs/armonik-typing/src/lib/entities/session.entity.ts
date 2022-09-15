@@ -1,4 +1,5 @@
 import { SessionStatus } from '../enums';
+import { TaskOptions } from './task.entity';
 
 export type FormattedSession = {
   _id: string;
@@ -13,26 +14,10 @@ export type FormattedSession = {
   lastActivityAt?: string;
 };
 
-export type SessionOptions = {
-  [key: string]: any;
-  MaxDuration: string;
-  MaxRetries: number;
-  Priority: number;
-  Options: {
-    [key: string]: any;
-    MaxDuration: string;
-    MaxRetries: number;
-    Priority: string;
-    GridAppName: string;
-    GridAppVersion: string;
-    GridAppNamespace: string;
-  };
-};
-
 export type RawSession = {
   _id: string;
   Status: SessionStatus;
-  Options: SessionOptions;
+  Options: TaskOptions;
   CreationDate: string;
   CancellationDate: string;
 };
