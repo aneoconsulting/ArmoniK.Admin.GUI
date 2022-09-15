@@ -9,7 +9,6 @@ import {
   Application,
   TaskStatus,
   ErrorStatus,
-  PendingStatus,
   Pagination,
   ApplicationError,
 } from '@armonik.admin.gui/armonik-typing';
@@ -57,7 +56,14 @@ export class ApplicationsService {
               $sum: {
                 $cond: {
                   if: {
-                    $in: ['$Status', PendingStatus],
+                    $in: [
+                      '$Status',
+                      [
+                        TaskStatus.CREATING,
+                        TaskStatus.SUBMITTED,
+                        TaskStatus.DISPATCHED,
+                      ],
+                    ],
                   },
                   then: 1,
                   else: 0,

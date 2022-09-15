@@ -1,4 +1,4 @@
-import { Pagination, PendingStatus } from '@armonik.admin.gui/armonik-typing';
+import { Pagination, TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import {
   Inject,
   Injectable,
@@ -143,7 +143,13 @@ export class TasksService implements OnModuleInit {
     return this.submitterService.CancelTasks({
       task: { ids },
       // only tasks that can be cancelled
-      included: { statuses: PendingStatus },
+      included: {
+        statuses: [
+          TaskStatus.CREATING,
+          TaskStatus.SUBMITTED,
+          TaskStatus.DISPATCHED,
+        ],
+      },
     });
   }
 }
