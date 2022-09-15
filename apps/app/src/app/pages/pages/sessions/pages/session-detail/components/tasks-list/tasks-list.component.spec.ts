@@ -142,6 +142,36 @@ describe('TasksListComponent', () => {
         });
       });
 
+      it('should return "true" when status is creating', () => {
+        const task = { status: TaskStatus.CREATING } as Task;
+        expect(component.isCreating(task)).toBeTruthy();
+      });
+
+      it('should return "false" when status is not creating', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isCreating(task)).toBeFalsy();
+      });
+
+      it('should return "true" when status is submitted', () => {
+        const task = { status: TaskStatus.SUBMITTED } as Task;
+        expect(component.isSubmitted(task)).toBeTruthy();
+      });
+
+      it('should return "false" when status is not submitted', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isSubmitted(task)).toBeFalsy();
+      });
+
+      it('should return "true" when status is dispatched', () => {
+        const task = { status: TaskStatus.DISPATCHED } as Task;
+        expect(component.isDispatched(task)).toBeTruthy();
+      });
+
+      it('should return "false" when status is not dispatched', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isDispatched(task)).toBeFalsy();
+      });
+
       it('should return "true" when status is completed', () => {
         const task = { status: TaskStatus.COMPLETED } as Task;
         expect(component.isCompleted(task)).toBeTruthy();
