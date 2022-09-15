@@ -1,7 +1,6 @@
 import {
   ErrorStatus,
   FormattedSession,
-  PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import {
@@ -153,7 +152,14 @@ export class SessionsService implements OnModuleInit {
                 $sum: {
                   $cond: {
                     if: {
-                      $in: ['$Status', PendingStatus],
+                      $in: [
+                        '$Status',
+                        [
+                          TaskStatus.CREATING,
+                          TaskStatus.SUBMITTED,
+                          TaskStatus.DISPATCHED,
+                        ],
+                      ],
                     },
                     then: 1,
                     else: 0,
