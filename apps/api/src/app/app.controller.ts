@@ -10,7 +10,7 @@ export class AppController {
   index(): { message: string; version: string } {
     return {
       message: 'Welcome to ArmoniK GUI API',
-      version: '0.6.0',
+      version: '0.7.0',
     };
   }
 
