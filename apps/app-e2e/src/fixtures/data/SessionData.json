@@ -4,15 +4,11 @@
     "Options": {
       "MaxDuration": "00: 05: 00",
       "MaxRetries": 5,
-      "Options": {
-        "MaxDuration": "300",
-        "MaxRetries": "5",
-        "Priority": "1",
-        "GridAppName": "ArmoniK.Samples.SymphonyPackage",
-        "GridAppVersion": "1.0.0",
-        "GridAppNamespace": "ArmoniK.Samples.Symphony.Packages"
-      },
-      "Priority": 1
+      "Priority": 1,
+      "ApplicationName": "ArmoniK.Samples.SymphonyPackage",
+      "ApplicationVersion": "1.0.0",
+      "ApplicationService": "",
+      "ApplicationNamespace": "ArmoniK.Samples.Symphony.Packages"
     },
     "Status": 2,
     "CreationDate": {

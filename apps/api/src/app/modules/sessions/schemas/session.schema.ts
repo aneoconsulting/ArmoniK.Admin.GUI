@@ -11,7 +11,7 @@ export class Session {
   _id: string;
 
   @Prop({ type: Object })
-  Options: { Options: { GridAppName: string } };
+  Options: { ApplicationName: string; ApplicationVersion: string };
 
   @Prop()
   Status: string;

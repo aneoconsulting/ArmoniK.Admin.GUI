@@ -13,9 +13,9 @@ interface TaskFilter {
     ids: string[];
   };
   included: {
-    Statuses: readonly TaskStatus[];
+    statuses: readonly TaskStatus[];
   };
 }
 interface Session {
-  Id: string;
+  id: string;
 }

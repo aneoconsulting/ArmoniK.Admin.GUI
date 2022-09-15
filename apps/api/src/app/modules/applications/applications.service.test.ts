@@ -75,8 +75,8 @@ describe('ApplicationsService', () => {
     expect(result).toEqual([
       {
         _id: {
-          applicationName: TaskStub.Options.Options.GridAppName,
-          applicationVersion: TaskStub.Options.Options.GridAppVersion,
+          applicationName: TaskStub.Options.ApplicationName,
+          applicationVersion: TaskStub.Options.ApplicationVersion,
         },
         countTasksProcessing: 0,
         countTasksPending: 0,
