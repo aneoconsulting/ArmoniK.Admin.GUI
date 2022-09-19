@@ -163,6 +163,22 @@ Sessions Service allows you to:
 - Get a session using `Sessions/GetSession` using `GetSessionRequest` and `GetSessionResponse`.
 - Cancel a session using `Sessions/CancelSession` using `CancelSessionRequest` and `CancelSessionResponse`.
 
+Pagination start at 0.
+
+### Tasks
+
+The route to use is `/armonik.api.grpc.v1.tasks`.
+
+Used files:
+- `task_status.proto` contains the definition of the task status.
+- `tasks_common.proto` contains the definition of the task, tasks requests and responses used in the tasks service.
+
+Tasks Service allows you to:
+- List tasks using `Tasks/ListTasks` using `ListTasksRequest` and `ListTasksResponse`.
+- Get a task using `Tasks/GetTask` using `GetTaskRequest` and `GetTaskResponse`.
+
+Pagination start at 0.
+
 
 
 
