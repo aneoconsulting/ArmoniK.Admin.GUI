@@ -14,6 +14,10 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
+import {
+  ListSessionsResponse,
+  SessionSummary,
+} from '../../../core/types/proto/sessions-common.pb';
 import { AutoRefreshService, StatesService } from '../../../shared';
 
 @Component({
@@ -29,7 +33,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
   private state: ClrDatagridStateInterface = {};
   loadingSessions = true;
-  sessions: Pagination<FormattedSession> | null = null;
+  sessionsResponse: ListSessionsResponse | null = null;
 
   sessionToCancel: FormattedSession | null = null;
   isModalOpen = false;
@@ -50,6 +54,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
     );
     // Activate auto refresh
     this.autoRefreshService.setFn(() => this.refresh());
+    this.onRefreshSessions({});
   }
 
   ngOnDestroy(): void {
@@ -193,7 +198,16 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @returns total number of sessions
    */
   get totalSessions(): number {
-    return this.sessions ? this.sessions.meta.total : 0;
+    return this.sessionsResponse?.totalCount ?? 0;
+  }
+
+  /**
+   * Return sessions from response
+   *
+   * @returns sessions
+   */
+  get sessions(): SessionSummary[] {
+    return this.sessionsResponse?.sessions ?? [];
   }
 
   /**
@@ -232,9 +246,12 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    * @param data
    */
-  private onNextSessions(data: Pagination<FormattedSession>) {
-    this.statesService.saveState(this.sessionsStateKey, this.state);
-    this.sessions = data;
+  private onNextSessions(data: ListSessionsResponse) {
+    // this.statesService.saveState(this.sessionsStateKey, this.state);
+    console.log(
+      (data.sessions as SessionSummary[])[0].createdAt?.toISOString()
+    );
+    this.sessionsResponse = data;
     this.loadingSessions = false;
   }
 
@@ -266,7 +283,10 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    * @returns session id
    */
-  trackSessions(_: number, session: FormattedSession): FormattedSession['_id'] {
-    return session._id;
+  trackSessions(
+    _: number,
+    session: SessionSummary
+  ): SessionSummary['sessionId'] {
+    return session.sessionId;
   }
 }

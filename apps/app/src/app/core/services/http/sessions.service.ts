@@ -8,7 +8,10 @@ import { Observable } from 'rxjs';
 import { Session } from '../../models';
 // import { Session as SessionRequest } from '../../types/proto/submitter-service.pb';
 import { SubmitterClient } from '../../types/proto/submitter-service.pbsc';
-import { ListSessionsRequest } from '../../types/proto/sessions-common.pb';
+import {
+  ListSessionsRequest,
+  ListSessionsResponse,
+} from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 import { ApiService } from './api.service';
 
@@ -33,19 +36,23 @@ export class SessionsService {
    */
   getAllPaginated(
     params: HttpParams = new HttpParams()
-  ): Observable<Pagination<FormattedSession>> {
+  ): Observable<ListSessionsResponse> {
+    console.log('params', params);
     // TODO: rework params, return the observable and update the component
+    console.log(params.get('applicationName'));
     const options = new ListSessionsRequest({
-      page: Number(params.get('page') || '1'),
+      page: Number(params.get('page') || '0'),
       pageSize: Number(params.get('limit') || '10'),
-      filter: {},
+      filter: {
+        // applicationName: params.get('applicationName') || '',
+        // applicationVersion: params.get('applicationVersion') || '',
+      },
       sort: {
         field: ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
         direction: ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
       },
     });
-    this.grpcSessionClient.listSessions(options).subscribe(console.log);
-    return this.apiService.get<Pagination<FormattedSession>>(this.url, params);
+    return this.grpcSessionClient.listSessions(options);
   }
 
   /**

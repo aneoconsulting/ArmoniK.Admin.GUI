@@ -113,19 +113,16 @@
       {{ 'pages.sessions.table.cancel' | translate }}
     </clr-dg-column>
 
-    <clr-dg-row
-      *ngFor="let session of sessions?.data"
-      [ngForTrackBy]="trackSessions"
-    >
+    <clr-dg-row *ngFor="let session of sessions" [ngForTrackBy]="trackSessions">
       <clr-dg-cell>
-        <a [routerLink]="[session._id]">
+        <a [routerLink]="[session.sessionId]">
           <span>
-            {{ session._id }}
+            {{ session.sessionId }}
           </span>
         </a>
       </clr-dg-cell>
       <clr-dg-cell>
-        <span
+        <!-- <span
           title="{{
             'pages.sessions.table.count.tooltip'
               | translate
@@ -138,10 +135,10 @@
           }}"
         >
           {{ session.countTasks ?? '-' }}
-        </span>
+        </span> -->
       </clr-dg-cell>
       <clr-dg-cell>
-        <span class="text-danger" *ngIf="isCancelled(session)">
+        <!-- <span class="text-danger" *ngIf="isCancelled(session)">
           {{ 'pages.sessions.table.status.cancelled' | translate }}
         </span>
         <span
@@ -182,23 +179,26 @@
           "
         >
           {{ 'pages.sessions.table.status.completed' | translate }}
-        </span>
+        </span> -->
       </clr-dg-cell>
       <clr-dg-cell>
         <span>
-          {{ session.createdAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+          {{
+            session.createdAt?.toISOString()
+              | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+          }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        <span *ngIf="isCancelled(session)">
+        <!-- <span *ngIf="isCancelled(session)">
           {{ session.cancelledAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
-        </span>
+        </span> -->
       </clr-dg-cell>
       <clr-dg-cell>
-        {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+        <!-- {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }} -->
       </clr-dg-cell>
       <clr-dg-cell>
-        <button
+        <!-- <button
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
           [disabled]="isCancelled(session)"
@@ -208,12 +208,12 @@
             'pages.sessions.cancel.text' | translate
           }}</span>
           <clr-icon shape="times" size="20"></clr-icon>
-        </button>
+        </button> -->
       </clr-dg-cell>
     </clr-dg-row>
 
     <clr-dg-footer>
-      <clr-dg-pagination
+      <!-- <clr-dg-pagination
         #pagination
         [clrDgTotalItems]="totalSessions"
         [clrDgPageSize]="pageSize"
@@ -228,12 +228,12 @@
             : 'pages.sessions.session'
           ) | translate: { value: totalSessions }
         }}
-      </clr-dg-pagination>
+      </clr-dg-pagination> -->
     </clr-dg-footer>
   </clr-datagrid>
 </section>
 
-<clr-modal [(clrModalOpen)]="isModalOpen">
+<!-- <clr-modal [(clrModalOpen)]="isModalOpen">
   <h3 class="modal-title">{{ 'pages.sessions.cancel.title' | translate }}</h3>
   <div class="modal-body">
     <p>
@@ -252,4 +252,4 @@
       {{ 'pages.sessions.cancel.button' | translate }}
     </button>
   </div>
-</clr-modal>
+</clr-modal> -->

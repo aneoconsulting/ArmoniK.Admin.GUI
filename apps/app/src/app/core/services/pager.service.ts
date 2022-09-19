@@ -4,7 +4,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 
 @Injectable()
 export class PagerService {
-  private defaultNextPage = 1;
+  private defaultNextPage = 0;
   private defaultLimit = 10;
 
   /**
