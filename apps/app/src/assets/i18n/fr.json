@@ -81,7 +81,10 @@
         "refresh": "Rafraîchir",
         "delete_state": "Supprimer l'état de la table",
         "last_activity_at": "Dernière activité le",
-        "cancel": "Annuler",
+        "actions": {
+          "title": "Actions",
+          "close_session": "Fermer la session"
+        },
         "count": {
           "title": "Total des tâches",
           "tooltip": "{{countError}} erreurs, {{countProcessing}} en cours, {{countPending}} en attente, {{countCompleted}} complétées"
