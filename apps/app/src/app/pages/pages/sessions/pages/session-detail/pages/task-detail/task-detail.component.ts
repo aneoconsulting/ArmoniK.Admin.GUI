@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RawTask } from '@armonik.admin.gui/armonik-typing';
 import { Subscription } from 'rxjs';
 import {
   BrowserTitleService,
   LanguageService,
 } from '../../../../../../../core';
+import { TaskRaw } from '../../../../../../../core/types/proto/tasks-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-task-detail',
@@ -14,7 +14,7 @@ import {
 })
 export class TaskDetailComponent implements OnInit, OnDestroy {
   routeDataSubscription: Subscription | null = null;
-  task: RawTask | null = null;
+  task: TaskRaw | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,7 +25,7 @@ export class TaskDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.routeDataSubscription = this.route.data.subscribe((data) => {
       if (data['task']) {
-        this.task = data['task'];
+        this.task = data['task'].task;
       }
     });
 

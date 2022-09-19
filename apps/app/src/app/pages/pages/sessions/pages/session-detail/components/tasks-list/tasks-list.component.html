@@ -88,11 +88,16 @@
     {{ 'pages.sessions.session-detail.table.error.seq' | translate }}
   </clr-dg-column>
 
-  <clr-dg-row
+  <!-- <clr-dg-row
     *ngFor="let task of tasks?.data ?? []"
     [clrDgItem]="task"
     [ngForTrackBy]="trackByTask"
     [clrDgSelectable]="!isCompleted(task)"
+  > -->
+  <clr-dg-row
+    *ngFor="let task of tasks ?? []"
+    [clrDgItem]="task"
+    [ngForTrackBy]="trackByTask"
   >
     <clr-dg-cell>
       <a [routerLink]="['tasks', task.id]">
@@ -103,25 +108,33 @@
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ (task.startedAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
+        {{
+          (task?.startedAt?.toISOString()
+            | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-'
+        }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ (task.endedAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
+        {{
+          (task?.endedAt?.toISOString()
+            | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-'
+        }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
         {{
           task.startedAt && task.endedAt
-            ? printTime(duration(toDate(task.startedAt), toDate(task.endedAt)))
+            ? printTime(
+                duration(task.startedAt.toDate(), task.endedAt.toDate())
+              )
             : '-'
         }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
-      <span class="text-danger" *ngIf="isError(task)">
+      <!-- <span class="text-danger" *ngIf="isError(task)">
         {{ 'pages.sessions.session-detail.table.status.error' | translate }}
       </span>
       <span class="text-creating" *ngIf="isCreating(task)">
@@ -164,19 +177,19 @@
         "
       >
         -
-      </span>
+      </span> -->
     </clr-dg-cell>
     <clr-dg-cell>
-      <button
+      <!-- <button
         class="btn-detail btn btn-sm"
         [disabled]="!isError(task)"
         (click)="openModal(task)"
       >
         {{ 'pages.sessions.session-detail.table.see-more' | translate }}
-      </button>
+      </button> -->
     </clr-dg-cell>
     <clr-dg-cell *ngIf="isSeqUp">
-      <a
+      <!-- <a
         *ngIf="isError(task)"
         href
         (click)="onClickSeqLink($event, task.id)"
@@ -184,12 +197,12 @@
       >
         {{ 'pages.sessions.session-detail.table.error.seq_link' | translate }}
       </a>
-      <span *ngIf="!isError(task)">-</span>
+      <span *ngIf="!isError(task)">-</span> -->
     </clr-dg-cell>
   </clr-dg-row>
 
   <clr-dg-footer>
-    <clr-dg-pagination
+    <!-- <clr-dg-pagination
       #pagination
       [clrDgTotalItems]="totalTasks"
       [clrDgPageSize]="pageSize"
@@ -204,11 +217,11 @@
           : 'pages.sessions.session-detail.table.task'
         ) | translate: { value: totalTasks }
       }}
-    </clr-dg-pagination>
+    </clr-dg-pagination> -->
   </clr-dg-footer>
 </clr-datagrid>
 
-<clr-modal [(clrModalOpen)]="isModalOpen" clrModalSize="xl">
+<!-- <clr-modal [(clrModalOpen)]="isModalOpen" clrModalSize="xl">
   <h3 class="modal-title">
     {{
       'pages.sessions.session-detail.modal.title'
@@ -216,4 +229,4 @@
     }}
   </h3>
   <pre class="modal-body">{{ activeTask?.output?.error }}</pre>
-</clr-modal>
+</clr-modal> -->

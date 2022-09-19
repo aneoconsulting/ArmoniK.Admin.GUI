@@ -49,16 +49,17 @@
       }}</label
       >&nbsp;
       <span class="font-bold">{{
-        task?.StartDate | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+        task?.startedAt?.toISOString() | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
       }}</span>
     </div>
+    &nbsp;
     <div class="clr-col-12 clr-col-md-6 clr-col-lg-4">
       <label>{{
         'pages.sessions.session-detail.task-detail.ended_at' | translate
       }}</label
       >&nbsp;
       <span class="font-bold">{{
-        task?.EndDate | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+        task?.endedAt?.toISOString() | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
       }}</span>
     </div>
   </div>

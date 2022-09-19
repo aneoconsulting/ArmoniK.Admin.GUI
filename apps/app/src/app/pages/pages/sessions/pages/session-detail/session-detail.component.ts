@@ -5,7 +5,6 @@ import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
 import { AutoRefreshService } from '../../../../../shared';
 import {
   TasksService,
-  Task,
   AppError,
   BrowserTitleService,
   LanguageService,
@@ -15,6 +14,10 @@ import {
 import { StatesService } from '../../../../../shared';
 import { Subscription } from 'rxjs';
 import { SessionRaw } from 'apps/app/src/app/core/types/proto/sessions-common.pb';
+import {
+  ListTasksResponse,
+  Task,
+} from 'apps/app/src/app/core/types/proto/tasks-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-session-detail',
@@ -29,11 +32,11 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
 
   errors: AppError[] = [];
 
-  selectedTasks: Task[] = [];
+  // selectedTasks: Task[] = [];
 
   private state: ClrDatagridStateInterface = {};
   loadingTasks = true;
-  tasks: Pagination<Task> | null = null;
+  tasksResponse: ListTasksResponse | null = null;
 
   cancelTasksButtonState = ClrLoadingState.DEFAULT;
 
@@ -132,10 +135,10 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
    */
   onCancelTasks() {
     this.cancelTasksButtonState = ClrLoadingState.LOADING;
-    this.tasksService.cancelMany(this.selectedTasks).subscribe({
-      error: this.onErrorCancelTasks.bind(this),
-      next: this.onNextCancelTasks.bind(this),
-    });
+    // this.tasksService.cancelMany(this.selectedTasks).subscribe({
+    //   error: this.onErrorCancelTasks.bind(this),
+    //   next: this.onNextCancelTasks.bind(this),
+    // });
   }
 
   /**
@@ -153,9 +156,10 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
    *
    * @param tasks Tasks
    */
-  private onNextTasks(tasks: Pagination<Task>) {
-    this.statesService.saveState(this.tasksStateKey, this.state);
-    this.tasks = tasks;
+  private onNextTasks(data: ListTasksResponse) {
+    // this.statesService.saveState(this.tasksStateKey, this.state);
+    console.log(data);
+    this.tasksResponse = data;
     this.loadingTasks = false;
   }
 
@@ -176,7 +180,11 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
    */
   private onNextCancelTasks() {
     this.cancelTasksButtonState = ClrLoadingState.SUCCESS;
-    this.selectedTasks = [];
+    // this.selectedTasks = [];
+  }
+
+  get tasks(): Task[] {
+    return this.tasksResponse?.tasks || [];
   }
 
   /**

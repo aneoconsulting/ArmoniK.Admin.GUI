@@ -5,15 +5,13 @@ import {
   GetSessionRequest,
   GetSessionResponse,
   ListSessionsRequest,
-  ListSessionsResponse
+  ListSessionsResponse,
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 
 @Injectable()
 export class SessionsService {
-  constructor(
-    private grpcSessionClient: SessionsClient,
-  ) {}
+  constructor(private grpcSessionClient: SessionsClient) {}
 
   /**
    * Used to get the list of sessions from the api using pagination and filters
@@ -31,8 +29,8 @@ export class SessionsService {
     // TODO: rework params, return the observable and update the component
     console.log(params.get('applicationName'));
     const options = new ListSessionsRequest({
-      page: Number(params.get('page') || '0'),
-      pageSize: Number(params.get('limit') || '10'),
+      page: Number(params.get('page')),
+      pageSize: Number(params.get('limit')),
       filter: {
         // applicationName: params.get('applicationName') || '',
         // applicationVersion: params.get('applicationVersion') || '',

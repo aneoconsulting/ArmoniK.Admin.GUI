@@ -1,16 +1,7 @@
-import {
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Controller, Param, Put } from '@nestjs/common';
+import { ApiNotFoundResponse } from '@nestjs/swagger';
 import { catchError } from 'rxjs';
 import { GrpcErrorService } from '../../common';
-import { Session } from './schemas';
 import { SessionsService } from './sessions.service';
 
 @Controller('sessions')

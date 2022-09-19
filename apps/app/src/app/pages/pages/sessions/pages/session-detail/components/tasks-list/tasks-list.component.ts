@@ -9,8 +9,9 @@ import {
   ClrDatagridStateInterface,
   ClrLoadingState,
 } from '@clr/angular';
-import { LanguageService, Task } from '../../../../../../../core';
+import { LanguageService } from '../../../../../../../core';
 import { StatesService } from '../../../../../../../shared';
+import { Task } from 'apps/app/src/app/core/types/proto/tasks-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -25,7 +26,7 @@ export class TasksListComponent {
   @Output() autoRefreshTimerChange = new EventEmitter<number>();
 
   @Input() stateKey = 'tasks';
-  @Input() tasks: Pagination<Task> | null = null;
+  @Input() tasks: Task[] | null = null;
   @Input() loading = true;
 
   @Input() selection: Task[] = [];
@@ -151,9 +152,9 @@ export class TasksListComponent {
   /**
    * Return total number of tasks event if there is no task (return 0)
    */
-  get totalTasks(): number {
-    return this.tasks ? this.tasks.meta.total : 0;
-  }
+  // get totalTasks(): number {
+  //   return this.tasks ? this.tasks.meta.total : 0;
+  // }
 
   /**
    * Calculate duration between start and end date
@@ -262,79 +263,79 @@ export class TasksListComponent {
     return new Date(date);
   }
 
-  /**
-   * Used to check if task status is in error
-   *
-   * @param task Task to check
-   */
-  isError(task: Task): boolean {
-    return ErrorStatus.includes(task.status);
-  }
+  // /**
+  //  * Used to check if task status is in error
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isError(task: Task): boolean {
+  //   return ErrorStatus.includes(task.status);
+  // }
 
-  /**
-   * Used to check if task status is in creating
-   *
-   * @param task Task to check
-   */
-  isCreating(task: Task): boolean {
-    return task.status === TaskStatus.CREATING;
-  }
+  // /**
+  //  * Used to check if task status is in creating
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isCreating(task: Task): boolean {
+  //   return task.status === TaskStatus.CREATING;
+  // }
 
-  /**
-   * Used to check if task status is in submitted
-   *
-   * @param task Task to check
-   */
-  isSubmitted(task: Task): boolean {
-    return task.status === TaskStatus.SUBMITTED;
-  }
+  // /**
+  //  * Used to check if task status is in submitted
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isSubmitted(task: Task): boolean {
+  //   return task.status === TaskStatus.SUBMITTED;
+  // }
 
-  /**
-   * Used to check if task status is in dispatched
-   *
-   * @param task Task to check
-   */
-  isDispatched(task: Task): boolean {
-    return task.status === TaskStatus.DISPATCHED;
-  }
+  // /**
+  //  * Used to check if task status is in dispatched
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isDispatched(task: Task): boolean {
+  //   return task.status === TaskStatus.DISPATCHED;
+  // }
 
-  /**
-   * Used to check if task status is in completed
-   *
-   * @param task Task to check
-   */
-  isCompleted(task: Task): boolean {
-    return task.status === TaskStatus.COMPLETED;
-  }
+  // /**
+  //  * Used to check if task status is in completed
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isCompleted(task: Task): boolean {
+  //   return task.status === TaskStatus.COMPLETED;
+  // }
 
-  /**
-   * Used to check if task status is cancelling
-   *
-   * @param task Task to check
-   *
-   * @returns true if task is cancelling
-   */
-  isCancelling(task: Task): boolean {
-    return task.status === TaskStatus.CANCELLING;
-  }
+  // /**
+  //  * Used to check if task status is cancelling
+  //  *
+  //  * @param task Task to check
+  //  *
+  //  * @returns true if task is cancelling
+  //  */
+  // isCancelling(task: Task): boolean {
+  //   return task.status === TaskStatus.CANCELLING;
+  // }
 
-  /**
-   * Used to check if task status is in cancelled
-   *
-   * @param task Task to check
-   */
-  isCancelled(task: Task): boolean {
-    return task.status === TaskStatus.CANCELLED;
-  }
+  // /**
+  //  * Used to check if task status is in cancelled
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isCancelled(task: Task): boolean {
+  //   return task.status === TaskStatus.CANCELLED;
+  // }
 
-  /**
-   * Used to check if task status is in processing
-   *
-   * @param task Task to check
-   */
-  isProcessing(task: Task): boolean {
-    return task.status === TaskStatus.PROCESSING;
-  }
+  // /**
+  //  * Used to check if task status is in processing
+  //  *
+  //  * @param task Task to check
+  //  */
+  // isProcessing(task: Task): boolean {
+  //   return task.status === TaskStatus.PROCESSING;
+  // }
 
   /**
    * Used to track error for ngFor
