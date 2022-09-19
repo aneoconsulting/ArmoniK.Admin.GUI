@@ -2,6 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
+  CancelSessionRequest,
+  CancelSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
   ListSessionsRequest,
@@ -61,12 +63,13 @@ export class SessionsService {
   /**
    * Cancel a session
    *
-   * @param id Id of the session
+   * @param sessionId Id of the session
    */
-  cancel(id: string) {
-    // const session = new SessionRequest({
-    //   id,
-    // });
-    // this.client.cancelSession(session).subscribe(console.log);
+  cancel(sessionId: string): Observable<CancelSessionResponse> {
+    const options = new CancelSessionRequest({
+      sessionId,
+    });
+
+    return this.grpcSessionClient.cancelSession(options);
   }
 }

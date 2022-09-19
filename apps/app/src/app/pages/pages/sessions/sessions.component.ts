@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
-  SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import { Subscription } from 'rxjs';
@@ -14,6 +13,7 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
+import { SessionStatus } from '../../../core/types/proto/session-status.pb';
 import {
   ListSessionsResponse,
   SessionSummary,
@@ -35,7 +35,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
   loadingSessions = true;
   sessionsResponse: ListSessionsResponse | null = null;
 
-  sessionToCancel: FormattedSession | null = null;
+  sessionToCancel: SessionSummary | null = null;
   isModalOpen = false;
 
   constructor(
@@ -168,7 +168,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    * @param session
    */
-  confirmCancelSession(session: FormattedSession) {
+  confirmCancelSession(session: SessionSummary) {
     this.isModalOpen = true;
     this.sessionToCancel = session;
   }
@@ -178,8 +178,9 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    * @param session
    */
-  cancelSession(sessionId: Session['_id']) {
-    this.sessionsService.cancel(sessionId);
+  cancelSession(sessionId: SessionSummary['sessionId'] = '') {
+    // TODO: use the returned value to update the session status
+    this.sessionsService.cancel(sessionId).subscribe(console.log);
   }
 
   /**
@@ -188,8 +189,8 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @param session
    * @returns true if the session is cancelled
    */
-  isCancelled(session: FormattedSession): boolean {
-    return session.status === SessionStatus.CANCELLED;
+  isCancelled(session: SessionSummary): boolean {
+    return session.status === SessionStatus.SESSION_STATUS_CANCELED;
   }
 
   /**

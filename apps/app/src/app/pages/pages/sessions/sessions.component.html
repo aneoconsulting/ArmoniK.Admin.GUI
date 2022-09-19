@@ -198,7 +198,7 @@
         <!-- {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }} -->
       </clr-dg-cell>
       <clr-dg-cell>
-        <!-- <button
+        <button
           type="button"
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
           [disabled]="isCancelled(session)"
@@ -208,7 +208,7 @@
             'pages.sessions.cancel.text' | translate
           }}</span>
           <clr-icon shape="times" size="20"></clr-icon>
-        </button> -->
+        </button>
       </clr-dg-cell>
     </clr-dg-row>
 
@@ -233,13 +233,13 @@
   </clr-datagrid>
 </section>
 
-<!-- <clr-modal [(clrModalOpen)]="isModalOpen">
+<clr-modal [(clrModalOpen)]="isModalOpen">
   <h3 class="modal-title">{{ 'pages.sessions.cancel.title' | translate }}</h3>
   <div class="modal-body">
     <p>
       {{
         'pages.sessions.cancel.text'
-          | translate: { id: sessionToCancel?._id ?? '' }
+          | translate: { id: sessionToCancel?.sessionId ?? '' }
       }}
     </p>
   </div>
@@ -247,9 +247,9 @@
     <button
       type="button"
       class="btn btn-primary"
-      (click)="cancelSession(sessionToCancel?._id ?? '')"
+      (click)="cancelSession(sessionToCancel?.sessionId)"
     >
       {{ 'pages.sessions.cancel.button' | translate }}
     </button>
   </div>
-</clr-modal> -->
+</clr-modal>
