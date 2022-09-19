@@ -1,28 +1,18 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  FormattedSession,
-  Pagination,
-} from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
-import { Session } from '../../models';
-// import { Session as SessionRequest } from '../../types/proto/submitter-service.pb';
-import { SubmitterClient } from '../../types/proto/submitter-service.pbsc';
 import {
+  GetSessionRequest,
+  GetSessionResponse,
   ListSessionsRequest,
-  ListSessionsResponse,
+  ListSessionsResponse
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
-import { ApiService } from './api.service';
 
 @Injectable()
 export class SessionsService {
-  private url = '/api/sessions';
-
   constructor(
-    private apiService: ApiService,
     private grpcSessionClient: SessionsClient,
-    private client: SubmitterClient
   ) {}
 
   /**
@@ -58,14 +48,16 @@ export class SessionsService {
   /**
    * Used to get one session by id
    *
-   * @param id Id of the session
+   * @param sessionId Id of the session
    *
    * @returns Session
    */
-  getOne(id: string): Observable<Session> {
-    return this.apiService.get<Session>(
-      `${this.url}/${encodeURIComponent(id)}`
-    );
+  getOne(sessionId: string): Observable<GetSessionResponse> {
+    const options = new GetSessionRequest({
+      sessionId,
+    });
+
+    return this.grpcSessionClient.getSession(options);
   }
 
   /**

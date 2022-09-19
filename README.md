@@ -1,5 +1,3 @@
-<!-- TODO: Essayer de faire un cancel session via une connexion au submitter, c'est en cours via le submitter et core qui va devoir être revu -->
-<!-- Todo: add proxy conf creation et le fait d'avoir armonik en local -->
 # ArmoniK GUI
 
 ArmoniK GUI add an administration interface to the ArmoniK project.

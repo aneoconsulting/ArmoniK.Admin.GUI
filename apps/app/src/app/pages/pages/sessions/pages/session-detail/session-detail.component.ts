@@ -14,6 +14,7 @@ import {
 } from '../../../../../core';
 import { StatesService } from '../../../../../shared';
 import { Subscription } from 'rxjs';
+import { SessionRaw } from 'apps/app/src/app/core/types/proto/sessions-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-session-detail',
@@ -24,7 +25,7 @@ import { Subscription } from 'rxjs';
 export class SessionDetailComponent implements OnInit, OnDestroy {
   tasksSubscription = new Subscription();
 
-  session?: RawSession;
+  session?: SessionRaw;
 
   errors: AppError[] = [];
 
@@ -53,7 +54,7 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.data.subscribe((data) => {
       if (data['session']) {
-        this.session = data['session'];
+        this.session = data['session'].session;
       }
     });
 
