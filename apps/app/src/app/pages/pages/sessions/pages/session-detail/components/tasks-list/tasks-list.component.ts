@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   ErrorStatus,
   Pagination,
-  PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import {
@@ -273,12 +272,30 @@ export class TasksListComponent {
   }
 
   /**
-   * Used to check if task status is in pending
+   * Used to check if task status is in creating
    *
    * @param task Task to check
    */
-  isPending(task: Task): boolean {
-    return PendingStatus.includes(task.status);
+  isCreating(task: Task): boolean {
+    return task.status === TaskStatus.CREATING;
+  }
+
+  /**
+   * Used to check if task status is in submitted
+   *
+   * @param task Task to check
+   */
+  isSubmitted(task: Task): boolean {
+    return task.status === TaskStatus.SUBMITTED;
+  }
+
+  /**
+   * Used to check if task status is in dispatched
+   *
+   * @param task Task to check
+   */
+  isDispatched(task: Task): boolean {
+    return task.status === TaskStatus.DISPATCHED;
   }
 
   /**
@@ -328,6 +345,6 @@ export class TasksListComponent {
    * @returns Task id
    */
   trackByTask(_: number, task: Task) {
-    return task._id;
+    return task.id;
   }
 }

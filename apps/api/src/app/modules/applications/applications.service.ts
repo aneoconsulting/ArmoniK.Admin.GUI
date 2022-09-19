@@ -9,7 +9,6 @@ import {
   Application,
   TaskStatus,
   ErrorStatus,
-  PendingStatus,
   Pagination,
   ApplicationError,
 } from '@armonik.admin.gui/armonik-typing';
@@ -47,17 +46,24 @@ export class ApplicationsService {
           },
         },
         {
-          // Groupe by Options.Options.GridAppName and sum tasks using Status
+          // Groupe by Options.ApplicationName and Options.ApplicationVersion and sum tasks using Status
           $group: {
             _id: {
-              applicationName: '$Options.Options.GridAppName',
-              applicationVersion: '$Options.Options.GridAppVersion',
+              applicationName: '$Options.ApplicationName',
+              applicationVersion: '$Options.ApplicationVersion',
             },
             countTasksPending: {
               $sum: {
                 $cond: {
                   if: {
-                    $in: ['$Status', PendingStatus],
+                    $in: [
+                      '$Status',
+                      [
+                        TaskStatus.CREATING,
+                        TaskStatus.SUBMITTED,
+                        TaskStatus.DISPATCHED,
+                      ],
+                    ],
                   },
                   then: 1,
                   else: 0,
@@ -109,14 +115,11 @@ export class ApplicationsService {
                   $expr: {
                     $and: [
                       {
-                        $eq: [
-                          '$Options.Options.GridAppName',
-                          '$$applicationName',
-                        ],
+                        $eq: ['$Options.ApplicationName', '$$applicationName'],
                       },
                       {
                         $eq: [
-                          '$Options.Options.GridAppVersion',
+                          '$Options.ApplicationVersion',
                           '$$applicationVersion',
                         ],
                       },
@@ -201,7 +204,7 @@ export class ApplicationsService {
     if (applicationName) {
       match.$expr.$and.push({
         $eq: [
-          '$Options.Options.GridAppName',
+          '$Options.ApplicationName',
           this.settingsService.getApplicationName(applicationName),
         ],
       });
@@ -210,7 +213,7 @@ export class ApplicationsService {
     if (applicationVersion) {
       match.$expr.$and.push({
         $eq: [
-          '$Options.Options.GridAppVersion',
+          '$Options.ApplicationVersion',
           this.settingsService.getApplicationVersion(applicationVersion),
         ],
       });
@@ -268,8 +271,8 @@ export class ApplicationsService {
           {
             $project: {
               _id: 0,
-              applicationName: '$Options.Options.GridAppName',
-              applicationVersion: '$Options.Options.GridAppVersion',
+              applicationName: '$Options.ApplicationName',
+              applicationVersion: '$Options.ApplicationVersion',
               taskId: '$_id',
               sessionId: '$SessionId',
               errorAt: '$EndDate',

@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   ErrorStatus,
   Pagination,
-  PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
@@ -131,7 +130,7 @@ describe('TasksListComponent', () => {
     });
 
     it('should return task id when track by', () => {
-      const task = { _id: taskId } as Task;
+      const task = { id: taskId } as Task;
       expect(component.trackByTask(0, task)).toEqual(taskId);
     });
 
@@ -143,11 +142,34 @@ describe('TasksListComponent', () => {
         });
       });
 
-      PendingStatus.forEach((status) => {
-        it(`should return "true" when status is in pending ${status}`, () => {
-          const task = { status } as Task;
-          expect(component.isPending(task)).toBeTruthy();
-        });
+      it('should return "true" when status is creating', () => {
+        const task = { status: TaskStatus.CREATING } as Task;
+        expect(component.isCreating(task)).toBeTruthy();
+      });
+
+      it('should return "false" when status is not creating', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isCreating(task)).toBeFalsy();
+      });
+
+      it('should return "true" when status is submitted', () => {
+        const task = { status: TaskStatus.SUBMITTED } as Task;
+        expect(component.isSubmitted(task)).toBeTruthy();
+      });
+
+      it('should return "false" when status is not submitted', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isSubmitted(task)).toBeFalsy();
+      });
+
+      it('should return "true" when status is dispatched', () => {
+        const task = { status: TaskStatus.DISPATCHED } as Task;
+        expect(component.isDispatched(task)).toBeTruthy();
+      });
+
+      it('should return "false" when status is not dispatched', () => {
+        const task = { status: TaskStatus.CANCELLED } as Task;
+        expect(component.isDispatched(task)).toBeFalsy();
       });
 
       it('should return "true" when status is completed', () => {
@@ -220,7 +242,7 @@ describe('TasksListComponent', () => {
         // Seq must be up to enable this feature
         component.isSeqUp = true;
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.ERROR }],
+          data: [{ id: taskId, status: TaskStatus.ERROR }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -238,7 +260,7 @@ describe('TasksListComponent', () => {
         // Seq must be up to enable this feature
         component.isSeqUp = true;
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.ERROR }],
+          data: [{ id: taskId, status: TaskStatus.ERROR }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -252,7 +274,7 @@ describe('TasksListComponent', () => {
         // Seq must be up to enable this feature
         component.isSeqUp = true;
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.COMPLETED }],
+          data: [{ id: taskId, status: TaskStatus.COMPLETED }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -265,7 +287,7 @@ describe('TasksListComponent', () => {
     describe('modal', () => {
       it('should have a disabled detail button when task is not in error', () => {
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.COMPLETED }],
+          data: [{ id: taskId, status: TaskStatus.COMPLETED }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -276,7 +298,7 @@ describe('TasksListComponent', () => {
 
       it('should have a enabled detail button when task is in error', () => {
         component.tasks = {
-          data: [{ _id: taskId, status: TaskStatus.ERROR }],
+          data: [{ id: taskId, status: TaskStatus.ERROR }],
           meta: { total: 1 },
         } as Pagination<Task>;
         fixture.detectChanges();
@@ -286,7 +308,7 @@ describe('TasksListComponent', () => {
       });
 
       it('should open modal when click on detail button', () => {
-        const task = { _id: taskId, status: TaskStatus.ERROR } as Task;
+        const task = { id: taskId, status: TaskStatus.ERROR } as Task;
         component.tasks = {
           data: [task],
           meta: { total: 1 },

@@ -44,9 +44,9 @@
   </clr-dg-action-bar>
 
   <clr-dg-column
-    clrDgField="taskId"
-    [clrFilterValue]="getFilterValue('taskId')"
-    [clrDgSortOrder]="getSortOrder('taskId')"
+    clrDgField="_id"
+    [clrFilterValue]="getFilterValue('_id')"
+    [clrDgSortOrder]="getSortOrder('_id')"
   >
     {{ 'pages.sessions.session-detail.table.id' | translate }}
   </clr-dg-column>
@@ -95,9 +95,9 @@
     [clrDgSelectable]="!isCompleted(task)"
   >
     <clr-dg-cell>
-      <a [routerLink]="['tasks', task._id]">
+      <a [routerLink]="['tasks', task.id]">
         <span>
-          {{ task._id }}
+          {{ task.id }}
         </span>
       </a>
     </clr-dg-cell>
@@ -124,8 +124,16 @@
       <span class="text-danger" *ngIf="isError(task)">
         {{ 'pages.sessions.session-detail.table.status.error' | translate }}
       </span>
-      <span class="text-pending" *ngIf="isPending(task)">
-        {{ 'pages.sessions.session-detail.table.status.pending' | translate }}
+      <span class="text-creating" *ngIf="isCreating(task)">
+        {{ 'pages.sessions.session-detail.table.status.creating' | translate }}
+      </span>
+      <span class="text-submitted" *ngIf="isSubmitted(task)">
+        {{ 'pages.sessions.session-detail.table.status.submitted' | translate }}
+      </span>
+      <span class="text-dispatched" *ngIf="isDispatched(task)">
+        {{
+          'pages.sessions.session-detail.table.status.dispatched' | translate
+        }}
       </span>
       <span class="text-warn" *ngIf="isProcessing(task)">
         {{
@@ -146,7 +154,9 @@
       <span
         *ngIf="
           !isError(task) &&
-          !isPending(task) &&
+          !isCreating(task) &&
+          !isSubmitted(task) &&
+          !isDispatched(task) &&
           !isProcessing(task) &&
           !isCancelling(task) &&
           !isCancelled(task) &&
@@ -169,7 +179,7 @@
       <a
         *ngIf="isError(task)"
         href
-        (click)="onClickSeqLink($event, task._id)"
+        (click)="onClickSeqLink($event, task.id)"
         class="seq-link"
       >
         {{ 'pages.sessions.session-detail.table.error.seq_link' | translate }}
@@ -202,7 +212,7 @@
   <h3 class="modal-title">
     {{
       'pages.sessions.session-detail.modal.title'
-        | translate: { id: activeTask?._id }
+        | translate: { id: activeTask?.id }
     }}
   </h3>
   <pre class="modal-body">{{ activeTask?.output?.error }}</pre>

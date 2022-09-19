@@ -1,4 +1,4 @@
-import { Pagination, PendingStatus } from '@armonik.admin.gui/armonik-typing';
+import { Pagination, TaskStatus } from '@armonik.admin.gui/armonik-typing';
 import {
   Inject,
   Injectable,
@@ -34,6 +34,10 @@ export class TasksService implements OnModuleInit {
    * @param page Page number
    * @param limit Number of items per page
    * @param sessionId Id of the session
+   * @param orderBy Order by field
+   * @param order Order direction
+   * @param id Id of the task
+   * @param status Status of the task
    *
    * @returns Pagination of tasks
    */
@@ -43,7 +47,7 @@ export class TasksService implements OnModuleInit {
     sessionId: string,
     orderBy?: string,
     order?: string,
-    taskId?: string,
+    id?: string,
     status?: number[]
   ): Promise<Pagination<Task>> {
     const startIndex = (page - 1) * limit;
@@ -52,8 +56,8 @@ export class TasksService implements OnModuleInit {
       SessionId: sessionId,
     };
 
-    if (taskId) {
-      match['_id'] = taskId;
+    if (id) {
+      match['_id'] = id;
     }
 
     if (status?.length > 0) {
@@ -65,7 +69,7 @@ export class TasksService implements OnModuleInit {
     if (orderBy) {
       taskSort[orderBy] = Number(order) as -1 | 1;
     } else {
-      taskSort['startedAt'] = -1;
+      taskSort['StartDate'] = -1;
       taskSort['_id'] = 1;
     }
 
@@ -84,7 +88,7 @@ export class TasksService implements OnModuleInit {
     const getTasks = async (): Promise<Task[]> => {
       return this.taskModel
         .find(match, {
-          _id: 1,
+          id: '$_id',
           startedAt: '$StartDate',
           endedAt: '$EndDate',
           status: '$Status',
@@ -139,7 +143,13 @@ export class TasksService implements OnModuleInit {
     return this.submitterService.CancelTasks({
       task: { ids },
       // only tasks that can be cancelled
-      included: { Statuses: PendingStatus },
+      included: {
+        statuses: [
+          TaskStatus.CREATING,
+          TaskStatus.SUBMITTED,
+          TaskStatus.DISPATCHED,
+        ],
+      },
     });
   }
 }

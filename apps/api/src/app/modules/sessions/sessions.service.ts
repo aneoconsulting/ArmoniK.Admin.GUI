@@ -1,7 +1,6 @@
 import {
   ErrorStatus,
   FormattedSession,
-  PendingStatus,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import {
@@ -59,9 +58,9 @@ export class SessionsService implements OnModuleInit {
     const startIndex = (page - 1) * limit;
 
     const match: { [key: string]: any } = {
-      'Options.Options.GridAppName':
+      'Options.ApplicationName':
         this.settingsService.getApplicationName(applicationName),
-      'Options.Options.GridAppVersion':
+      'Options.ApplicationVersion':
         this.settingsService.getApplicationVersion(applicationVersion),
       $expr: {},
     };
@@ -153,7 +152,14 @@ export class SessionsService implements OnModuleInit {
                 $sum: {
                   $cond: {
                     if: {
-                      $in: ['$Status', PendingStatus],
+                      $in: [
+                        '$Status',
+                        [
+                          TaskStatus.CREATING,
+                          TaskStatus.SUBMITTED,
+                          TaskStatus.DISPATCHED,
+                        ],
+                      ],
                     },
                     then: 1,
                     else: 0,
@@ -311,6 +317,6 @@ export class SessionsService implements OnModuleInit {
    * @param sessionId Id of the session
    */
   cancel(sessionId: string) {
-    return this.submitterService.CancelSession({ Id: sessionId });
+    return this.submitterService.CancelSession({ id: sessionId });
   }
 }
