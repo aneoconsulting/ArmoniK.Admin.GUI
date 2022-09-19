@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { CommonModule } from '../../common/common.module';
 import { grpcClientOptions } from '../../common/options';
-
-import { TasksMongooseModule } from './tasks-mongoose.module';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
 
@@ -13,7 +11,6 @@ import { TasksService } from './tasks.service';
 @Module({
   imports: [
     CommonModule,
-    TasksMongooseModule,
     ClientsModule.register([
       {
         name: 'Submitter',
