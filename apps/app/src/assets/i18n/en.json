@@ -145,8 +145,10 @@
             "seq": "Link to Seq error",
             "seq_link": "See in Seq"
           },
-          "detail": "Error detail",
-          "see-more": "See more",
+          "actions": {
+            "title": "Actions",
+            "see_error": "See error"
+          },
           "cancel": "Cancel selection",
           "filters": {
             "status": {

@@ -82,7 +82,7 @@
     </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column>
-    {{ 'pages.sessions.session-detail.table.detail' | translate }}
+    {{ 'pages.sessions.session-detail.table.actions.title' | translate }}
   </clr-dg-column>
   <clr-dg-column *ngIf="isSeqUp">
     {{ 'pages.sessions.session-detail.table.error.seq' | translate }}
@@ -172,7 +172,9 @@
         [disabled]="!isError(task)"
         (click)="openModal(task)"
       >
-        {{ 'pages.sessions.session-detail.table.see-more' | translate }}
+        {{
+          'pages.sessions.session-detail.table.actions.see_error' | translate
+        }}
       </button>
     </clr-dg-cell>
     <clr-dg-cell *ngIf="isSeqUp">
