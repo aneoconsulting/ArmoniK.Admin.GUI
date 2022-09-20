@@ -28,18 +28,28 @@ export class SessionsService {
     params: HttpParams = new HttpParams()
   ): Observable<ListSessionsResponse> {
     console.log('params', params);
-    // TODO: rework params, return the observable and update the component
     console.log(params.get('applicationName'));
     const options = new ListSessionsRequest({
       page: Number(params.get('page')),
       pageSize: Number(params.get('limit')),
+      // Use OrderByField enum because of Clarity and how it works
+      // In fact, the filter field name is the same as the sort field name
       filter: {
-        // applicationName: params.get('applicationName') || '',
-        // applicationVersion: params.get('applicationVersion') || '',
+        sessionId:
+          params.get(
+            ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()
+          ) ?? undefined,
       },
       sort: {
-        field: ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction: ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        field: params.has('orderBy')
+          ? (Number(
+              params.get('orderBy')
+            ) as unknown as ListSessionsRequest.OrderByField)
+          : ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+        direction:
+          Number(params.get('order')) === 1
+            ? ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
+            : ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
     });
     return this.grpcSessionClient.listSessions(options);

@@ -39,10 +39,19 @@ export class TasksService {
     const options = new ListTasksRequest({
       page: Number(params.get('page')),
       pageSize: Number(params.get('limit')),
+      // Use OrderByField enum because of Clarity and how it works
+      // In fact, the filter field name is the same as the sort field name
       filter: {
-        sessionId: params.get('sessionId') ?? undefined,
+        sessionId:
+          params.get(
+            ListTasksRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()
+          ) ?? undefined,
         status:
-          Number(params.get('status') as unknown as TaskStatus) ?? undefined,
+          Number(
+            params.get(
+              ListTasksRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()
+            ) as unknown as TaskStatus
+          ) ?? undefined,
       },
       sort: {
         field: params.has('orderBy')
