@@ -15,6 +15,8 @@ import {
 } from '../../../core';
 import { SessionStatus } from '../../../core/types/proto/session-status.pb';
 import {
+  CancelSessionResponse,
+  ListSessionsRequest,
   ListSessionsResponse,
   SessionSummary,
 } from '../../../core/types/proto/sessions-common.pb';
@@ -65,6 +67,10 @@ export class SessionsComponent implements OnInit, OnDestroy {
     return ['sessions', this.applicationName, this.applicationVersion].join(
       '-'
     );
+  }
+
+  get orderByField() {
+    return ListSessionsRequest.OrderByField;
   }
 
   /**
@@ -180,8 +186,10 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @param session
    */
   cancelSession(sessionId: SessionSummary['sessionId'] = '') {
-    // TODO: use the returned value to update the session status
-    this.sessionsService.cancel(sessionId).subscribe(console.log);
+    this.sessionsService.cancel(sessionId).subscribe({
+      error: this.onCancelSessionNext.bind(this),
+      next: this.onCancelSessionNext.bind(this),
+    });
   }
 
   /**
@@ -249,10 +257,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @param data
    */
   private onNextSessions(data: ListSessionsResponse) {
-    // this.statesService.saveState(this.sessionsStateKey, this.state);
-    console.log(
-      (data.sessions as SessionSummary[])[0].createdAt?.toISOString()
-    );
+    this.statesService.saveState(this.sessionsStateKey, this.state);
     this.sessionsResponse = data;
     this.loadingSessions = false;
   }
@@ -260,9 +265,18 @@ export class SessionsComponent implements OnInit, OnDestroy {
   /**
    * Handle next response when loading sessions
    */
-  private onCancelSessionNext() {
+  private onCancelSessionNext(data: CancelSessionResponse) {
     this.sessionToCancel = null;
     this.isModalOpen = false;
+
+    // Find the session in the list and update it using data
+    const session = this.sessions.find(
+      (session) => session.sessionId === data.session?.sessionId
+    );
+    if (session) {
+      session.status = data.session?.status;
+      session.cancelledAt = data.session?.cancelledAt;
+    }
   }
 
   /**

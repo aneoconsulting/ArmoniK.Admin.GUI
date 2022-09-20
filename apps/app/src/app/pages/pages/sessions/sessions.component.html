@@ -50,9 +50,13 @@
     </clr-dg-action-bar>
 
     <clr-dg-column
-      clrDgField="_id"
-      [clrDgSortOrder]="getSortOrder('_id')"
-      [clrFilterValue]="getFilterValue('_id')"
+      [clrDgField]="orderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
+      [clrDgSortOrder]="
+        getSortOrder(orderByField.ORDER_BY_FIELD_SESSION_ID.toString())
+      "
+      [clrFilterValue]="
+        getFilterValue(orderByField.ORDER_BY_FIELD_SESSION_ID.toString())
+      "
     >
       {{ 'pages.sessions.table.id' | translate }}
     </clr-dg-column>
@@ -75,8 +79,10 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      clrDgField="createdAt"
-      [clrDgSortOrder]="getSortOrder('createdAt')"
+      [clrDgField]="orderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
+      [clrDgSortOrder]="
+        getSortOrder(orderByField.ORDER_BY_FIELD_CREATED_AT.toString())
+      "
     >
       {{ 'pages.sessions.table.createdAt' | translate }}
       <clr-dg-filter>
@@ -84,8 +90,10 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      clrDgField="cancelledAt"
-      [clrDgSortOrder]="getSortOrder('cancelledAt')"
+      [clrDgField]="orderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
+      [clrDgSortOrder]="
+        getSortOrder(orderByField.ORDER_BY_FIELD_CANCELLED_AT.toString())
+      "
     >
       {{ 'pages.sessions.table.cancelledAt' | translate }}
       <clr-dg-filter>
@@ -190,9 +198,12 @@
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        <!-- <span *ngIf="isCancelled(session)">
-          {{ session.cancelledAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
-        </span> -->
+        <span *ngIf="isCancelled(session)">
+          {{
+            session?.cancelledAt?.toISOString()
+              | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+          }}
+        </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <!-- {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }} -->
@@ -213,7 +224,7 @@
     </clr-dg-row>
 
     <clr-dg-footer>
-      <!-- <clr-dg-pagination
+      <clr-dg-pagination
         #pagination
         [clrDgTotalItems]="totalSessions"
         [clrDgPageSize]="pageSize"
@@ -228,7 +239,7 @@
             : 'pages.sessions.session'
           ) | translate: { value: totalSessions }
         }}
-      </clr-dg-pagination> -->
+      </clr-dg-pagination>
     </clr-dg-footer>
   </clr-datagrid>
 </section>
