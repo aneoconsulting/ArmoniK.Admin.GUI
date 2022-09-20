@@ -28,9 +28,7 @@ export class TasksService {
   /**
    * Used to get the list of tasks from the api using pagination and filters
    *
-   * @param page Page number
-   * @param limit Number of items per page
-   * @param sessionId Id of the session
+   * @param params Params of the request
    *
    * @returns Pagination of tasks
    */

@@ -18,9 +18,7 @@ export class SessionsService {
   /**
    * Used to get the list of sessions from the api using pagination and filters
    *
-   * @param applicationId Id of the application
-   * @param page Page number
-   * @param limit Number of items per page
+   * @param params Params of the request
    *
    * @returns Pagination of sessions
    */
