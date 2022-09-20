@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Pagination } from '@armonik.admin.gui/armonik-typing';
 import { Observable } from 'rxjs';
 import { Task } from '../../models';
+import { TaskStatus } from '../../types/proto/task-status.pb';
 import {
   GetTaskRequest,
   GetTaskResponse,
@@ -34,16 +35,28 @@ export class TasksService {
    * @returns Pagination of tasks
    */
   getAllPaginated(params: HttpParams): Observable<ListTasksResponse> {
+    console.log('params', params);
     const options = new ListTasksRequest({
       page: Number(params.get('page')),
       pageSize: Number(params.get('limit')),
-      filter: {},
+      filter: {
+        sessionId: params.get('sessionId') ?? undefined,
+        status:
+          Number(params.get('status') as unknown as TaskStatus) ?? undefined,
+      },
       sort: {
-        field: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        field: params.has('orderBy')
+          ? (Number(
+              params.get('orderBy')
+            ) as unknown as ListTasksRequest.OrderByField)
+          : ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
+        direction:
+          Number(params.get('order')) === 1
+            ? ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC
+            : ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
     });
-
+    console.log('options', options);
     return this.grpcTaskClient.listTasks(options);
   }
 

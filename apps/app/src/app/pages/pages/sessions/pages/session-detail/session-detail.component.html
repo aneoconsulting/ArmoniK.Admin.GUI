@@ -59,6 +59,7 @@
     [isSeqUp]="isSeqUp"
     [stateKey]="tasksStateKey"
     [tasks]="tasks"
+    [total]="tasksResponse?.total ?? 0"
     [loading]="loadingTasks"
     (cancelTasksChange)="onCancelTasks()"
     [cancelButtonState]="cancelTasksButtonState"

@@ -4,7 +4,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 
 @Injectable()
 export class PagerService {
-  private defaultNextPage = 0;
+  private defaultPage = 0;
   private defaultLimit = 10;
 
   /**
@@ -41,11 +41,26 @@ export class PagerService {
     state: ClrDatagridStateInterface,
     params: Map<string, string>
   ) {
-    const nextPage = state.page?.current ?? this.defaultNextPage;
+    const page = state.page?.current ?? this.defaultPage;
     const limit = state.page?.size ?? this.defaultLimit;
 
-    params.set('page', nextPage.toString());
+    params.set('page', this.uniformizePage(page).toString());
     params.set('limit', limit.toString());
+  }
+
+  /**
+   * Uniformize page depending of the API
+   *
+   * @param page page number
+   *
+   * @returns uniformized page number
+   */
+  private uniformizePage(page: number): number {
+    if (page !== 0) {
+      // API start at 0
+      page = page - 1;
+    }
+    return page;
   }
 
   /**

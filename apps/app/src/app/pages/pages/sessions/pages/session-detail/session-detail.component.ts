@@ -157,9 +157,9 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
    * @param tasks Tasks
    */
   private onNextTasks(data: ListTasksResponse) {
-    // this.statesService.saveState(this.tasksStateKey, this.state);
-    console.log(data);
+    this.statesService.saveState(this.tasksStateKey, this.state);
     this.tasksResponse = data;
+    console.log('tasksResponse', this.tasksResponse);
     this.loadingTasks = false;
   }
 

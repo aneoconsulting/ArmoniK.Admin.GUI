@@ -135,6 +135,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
       applicationName: this.applicationName,
       applicationVersion: this.applicationVersion,
     };
+
     const params = this.pagerService.createHttpParams(state, data);
 
     this.sessionsSubscription = this.sessionsService

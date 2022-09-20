@@ -11,7 +11,10 @@ import {
 } from '@clr/angular';
 import { LanguageService } from '../../../../../../../core';
 import { StatesService } from '../../../../../../../shared';
-import { Task } from 'apps/app/src/app/core/types/proto/tasks-common.pb';
+import {
+  ListTasksRequest,
+  Task,
+} from 'apps/app/src/app/core/types/proto/tasks-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-tasks-list',
@@ -26,6 +29,7 @@ export class TasksListComponent {
   @Output() autoRefreshTimerChange = new EventEmitter<number>();
 
   @Input() stateKey = 'tasks';
+  @Input() total = 0;
   @Input() tasks: Task[] | null = null;
   @Input() loading = true;
 
@@ -48,6 +52,10 @@ export class TasksListComponent {
     private statesService: StatesService,
     private languageService: LanguageService
   ) {}
+
+  get orderByField() {
+    return ListTasksRequest.OrderByField;
+  }
 
   /**
    * Get currant page

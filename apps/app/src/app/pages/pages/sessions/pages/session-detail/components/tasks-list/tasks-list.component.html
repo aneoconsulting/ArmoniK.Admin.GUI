@@ -44,15 +44,21 @@
   </clr-dg-action-bar>
 
   <clr-dg-column
-    clrDgField="_id"
-    [clrFilterValue]="getFilterValue('_id')"
-    [clrDgSortOrder]="getSortOrder('_id')"
+    [clrDgField]="orderByField.ORDER_BY_FIELD_TASK_ID.toString()"
+    [clrFilterValue]="
+      getFilterValue(orderByField.ORDER_BY_FIELD_TASK_ID.toString())
+    "
+    [clrDgSortOrder]="
+      getSortOrder(orderByField.ORDER_BY_FIELD_TASK_ID.toString())
+    "
   >
-    {{ 'pages.sessions.session-detail.table.id' | translate }}
+    {{ 'pages.sessions.session-detail.table.task_id' | translate }}
   </clr-dg-column>
   <clr-dg-column
-    clrDgField="StartDate"
-    [clrDgSortOrder]="getSortOrder('StartDate')"
+    [clrDgField]="orderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
+    [clrDgSortOrder]="
+      getSortOrder(orderByField.ORDER_BY_FIELD_STARTED_AT.toString())
+    "
   >
     {{ 'pages.sessions.session-detail.table.started_at' | translate }}
     <clr-dg-filter>
@@ -60,8 +66,10 @@
     </clr-dg-filter>
   </clr-dg-column>
   <clr-dg-column
-    clrDgField="EndDate"
-    [clrDgSortOrder]="getSortOrder('EndDate')"
+    [clrDgField]="orderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
+    [clrDgSortOrder]="
+      getSortOrder(orderByField.ORDER_BY_FIELD_ENDED_AT.toString())
+    "
   >
     {{ 'pages.sessions.session-detail.table.ended_at' | translate }}
     <clr-dg-filter>
@@ -71,15 +79,20 @@
   <clr-dg-column>
     {{ 'pages.sessions.session-detail.table.duration.title' | translate }}
   </clr-dg-column>
-  <clr-dg-column clrDgField="Status" [clrDgSortOrder]="getSortOrder('Status')">
+  <clr-dg-column
+    [clrDgField]="orderByField.ORDER_BY_FIELD_STATUS.toString()"
+    [clrDgSortOrder]="
+      getSortOrder(orderByField.ORDER_BY_FIELD_STATUS.toString())
+    "
+  >
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
-    <clr-dg-filter [clrDgFilter]="taskStatusFilter">
+    <!-- <clr-dg-filter [clrDgFilter]="taskStatusFilter">
       <app-task-status-filter
         [value]="getFilterValue('status')"
         #taskStatusFilter
         name="status"
       ></app-task-status-filter>
-    </clr-dg-filter>
+    </clr-dg-filter> -->
   </clr-dg-column>
   <clr-dg-column>
     {{ 'pages.sessions.session-detail.table.detail' | translate }}
@@ -202,9 +215,9 @@
   </clr-dg-row>
 
   <clr-dg-footer>
-    <!-- <clr-dg-pagination
+    <clr-dg-pagination
       #pagination
-      [clrDgTotalItems]="totalTasks"
+      [clrDgTotalItems]="total"
       [clrDgPageSize]="pageSize"
       [clrDgPage]="currentPage"
     >
@@ -212,12 +225,12 @@
         'pages.sessions.session-detail.table.per_page' | translate
       }}</clr-dg-page-size>
       {{
-        (totalTasks > 1
+        (total > 1
           ? 'pages.sessions.session-detail.table.tasks'
           : 'pages.sessions.session-detail.table.task'
-        ) | translate: { value: totalTasks }
+        ) | translate: { value: total }
       }}
-    </clr-dg-pagination> -->
+    </clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>
 
