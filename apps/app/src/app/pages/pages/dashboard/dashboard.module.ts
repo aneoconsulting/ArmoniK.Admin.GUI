@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../../../shared';
 import {
   ApplicationCardComponent,
-  ApplicationsErrorsListComponent,
+  TasksErrorsListComponent,
 } from './components';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
@@ -15,7 +15,7 @@ import { DashboardComponent } from './dashboard.component';
   declarations: [
     DashboardComponent,
     ApplicationCardComponent,
-    ApplicationsErrorsListComponent,
+    TasksErrorsListComponent,
   ],
   imports: [SharedModule, DashboardRoutingModule],
 })

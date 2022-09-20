@@ -19,12 +19,12 @@
   </h2>
 
   <app-alert-error [errors]="errors"></app-alert-error>
-  <app-pages-dashboard-applications-errors-list
-    [stateKey]="applicationsErrorsStateKey"
-    [loading]="applicationsErrorsLoading"
-    [applications]="applicationsErrors"
+  <app-pages-dashboard-tasks-errors-list
+    [stateKey]="tasksErrorsStateKey"
+    [loading]="tasksErrorsLoading"
+    [tasksResponse]="tasksErrorsResponse"
     [isSeqUp]="isSeqUp"
     (clickSeqLink)="redirectToSeq($event)"
-    (refresh)="onRefreshApplicationsErrors($event)"
-  ></app-pages-dashboard-applications-errors-list>
+    (refresh)="onRefreshTasksErrors($event)"
+  ></app-pages-dashboard-tasks-errors-list>
 </section>

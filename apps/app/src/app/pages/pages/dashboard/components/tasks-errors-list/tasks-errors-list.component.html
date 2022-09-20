@@ -64,17 +64,17 @@
   </clr-dg-column>
 
   <clr-dg-row
-    *ngFor="let error of applications?.data"
+    *ngFor="let error of tasksResponse?.tasks"
     [ngForTrackBy]="trackErrors"
   >
     <clr-dg-cell>
       <span>
-        {{ error.applicationName }}
+        {{ error.options?.applicationName }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ error.applicationVersion }}
+        {{ error.options?.applicationVersion }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
@@ -82,8 +82,8 @@
         [routerLink]="[
           '/',
           'applications',
-          error.applicationName,
-          error.applicationVersion,
+          error.options?.applicationName,
+          error.options?.applicationVersion,
           'sessions',
           error.sessionId
         ]"
@@ -92,22 +92,22 @@
       </a>
     </clr-dg-cell>
     <clr-dg-cell>
-      {{ error.errorAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+      <!-- {{ error.errorAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }} -->
     </clr-dg-cell>
-    <clr-dg-cell [title]="error.error.message">
+    <!-- <clr-dg-cell [title]="error.error.message">
       <span>
         {{ excerpt(error.error.message) }}
       </span>
-    </clr-dg-cell>
+    </clr-dg-cell> -->
     <clr-dg-cell *ngIf="isSeqUp">
-      <a href (click)="onClickSeqLink($event, error.taskId)">
+      <a href (click)="onClickSeqLink($event, error.id)">
         {{ 'pages.dashboard.table.error.seq_link' | translate }}
       </a>
     </clr-dg-cell>
   </clr-dg-row>
 
   <clr-dg-footer>
-    <clr-dg-pagination
+    <!-- <clr-dg-pagination
       #pagination
       [clrDgTotalItems]="totalApplications"
       [clrDgPageSize]="pageSize"
@@ -122,6 +122,6 @@
           : 'pages.dashboard.table.application'
         ) | translate: { value: totalApplications }
       }}
-    </clr-dg-pagination>
+    </clr-dg-pagination> -->
   </clr-dg-footer>
 </clr-datagrid>

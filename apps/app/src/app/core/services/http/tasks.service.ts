@@ -32,7 +32,7 @@ export class TasksService {
    *
    * @returns Pagination of tasks
    */
-  getAllPaginated(params: HttpParams): Observable<ListTasksResponse> {
+  list(params: HttpParams): Observable<ListTasksResponse> {
     console.log('params', params);
     const options = new ListTasksRequest({
       page: Number(params.get('page')),
@@ -47,7 +47,7 @@ export class TasksService {
         status:
           Number(
             params.get(
-              ListTasksRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()
+              ListTasksRequest.OrderByField.ORDER_BY_FIELD_STATUS.toString()
             ) as unknown as TaskStatus
           ) ?? undefined,
       },

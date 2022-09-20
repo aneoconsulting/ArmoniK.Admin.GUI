@@ -14,7 +14,13 @@ import {
   LanguageService,
   PagerService,
   SettingsService,
+  TasksService,
 } from '../../../core';
+import { TaskStatus } from '../../../core/types/proto/task-status.pb';
+import {
+  ListTasksRequest,
+  ListTasksResponse,
+} from '../../../core/types/proto/tasks-common.pb';
 import { StatesService } from '../../../shared';
 
 /**
@@ -26,17 +32,17 @@ import { StatesService } from '../../../shared';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  applicationsErrorsSubscription = new Subscription();
+  tasksErrorsSubscription = new Subscription();
   subscriptions: Subscription = new Subscription();
 
   applications: Application[] = [];
 
   errors: AppError[] = [];
 
-  applicationsErrorsStateKey = 'applications-errors';
+  tasksErrorsStateKey = 'tasks-errors';
   private state: ClrDatagridStateInterface = {};
-  applicationsErrorsLoading = true;
-  applicationsErrors: Pagination<ApplicationError> | null = null;
+  tasksErrorsLoading = true;
+  tasksErrorsResponse: ListTasksResponse | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private statesService: StatesService,
     private pagerService: PagerService,
     private applicationsService: ApplicationsService,
+    private tasksService: TasksService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -65,7 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.applicationsErrorsSubscription.unsubscribe();
+    this.tasksErrorsSubscription.unsubscribe();
     this.subscriptions.unsubscribe();
   }
 
@@ -93,23 +100,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
    *
    * @param state Clarity datagrid state
    */
-  onRefreshApplicationsErrors(state: ClrDatagridStateInterface) {
-    this.applicationsErrorsLoading = true;
+  onRefreshTasksErrors(state: ClrDatagridStateInterface) {
+    this.tasksErrorsLoading = true;
 
     // Stop current request to avoid multiple requests at the same time
-    this.applicationsErrorsSubscription.unsubscribe();
+    this.tasksErrorsSubscription.unsubscribe();
 
-    // Store the current state to be saved when the request completes
+    // Force status to be error
+    if (!state.filters) {
+      state.filters = [];
+    }
+
+    state.filters.push({
+      property: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STATUS,
+      value: TaskStatus.TASK_STATUS_ERROR,
+    });
+
     this.state = state;
 
+    // Store the current state to be saved when the request completes
     const params = this.pagerService.createHttpParams(state);
 
-    this.applicationsErrorsSubscription = this.applicationsService
-      .getAllWithErrorsPaginated(params)
-      .subscribe({
-        error: this.onErrorApplicationsErrors.bind(this),
-        next: this.onNextApplicationsErrors.bind(this),
-      });
+    console.log(params);
+
+    this.tasksErrorsSubscription = this.tasksService.list(params).subscribe({
+      error: this.onErrorTasksErrors.bind(this),
+      next: this.onNextTasksErrors.bind(this),
+    });
     // Refresh the datagrid
     this.cdr.detectChanges();
   }
@@ -148,8 +165,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
    *
    * @param error Error
    */
-  private onErrorApplicationsErrors(error: AppError) {
-    this.applicationsErrorsLoading = false;
+  private onErrorTasksErrors(error: AppError) {
+    this.tasksErrorsLoading = false;
     this.errors.push(error);
   }
 
@@ -158,9 +175,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
    *
    * @param applications Applications
    */
-  private onNextApplicationsErrors(applications: Pagination<ApplicationError>) {
-    this.statesService.saveState(this.applicationsErrorsStateKey, this.state);
-    this.applicationsErrorsLoading = false;
-    this.applicationsErrors = applications;
+  private onNextTasksErrors(data: ListTasksResponse) {
+    this.statesService.saveState(this.tasksErrorsStateKey, this.state);
+    this.tasksErrorsLoading = false;
+    this.tasksErrorsResponse = data;
   }
 }

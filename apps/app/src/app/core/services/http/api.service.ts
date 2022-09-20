@@ -40,6 +40,10 @@ export class ApiService {
       .pipe(catchError(this.formatErrors));
   }
 
+  head<T>(path: string): Observable<T> {
+    return this.http.head<T>(path).pipe(catchError(this.formatErrors));
+  }
+
   put<T>(path: string, body: Record<string, unknown> = {}): Observable<T> {
     return this.http.put<T>(path, body).pipe(catchError(this.formatErrors));
   }

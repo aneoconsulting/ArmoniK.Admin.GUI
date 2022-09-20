@@ -4,19 +4,23 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import {
+  ListTasksResponse,
+  Task,
+} from 'apps/app/src/app/core/types/proto/tasks-common.pb';
 import { StatesService } from '../../../../../shared';
 
 /**
- * Display applications errors in list
+ * Display tasks errors in list
  */
 @Component({
-  selector: 'app-pages-dashboard-applications-errors-list',
-  templateUrl: './applications-errors-list.component.html',
-  styleUrls: ['./applications-errors-list.component.scss'],
+  selector: 'app-pages-dashboard-tasks-errors-list',
+  templateUrl: './tasks-errors-list.component.html',
+  styleUrls: ['./tasks-errors-list.component.scss'],
 })
-export class ApplicationsErrorsListComponent {
+export class TasksErrorsListComponent {
   @Input() stateKey = '';
-  @Input() applications: Pagination<ApplicationError> | null = null;
+  @Input() tasksResponse: ListTasksResponse | null = null;
   @Input() loading = true;
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
@@ -93,7 +97,7 @@ export class ApplicationsErrorsListComponent {
    *
    * @param taskId Task id
    */
-  onClickSeqLink(event: Event, taskId: string) {
+  onClickSeqLink(event: Event, taskId: string | undefined): void {
     event.preventDefault();
     this.clickSeqLink.emit(taskId);
   }
@@ -102,7 +106,8 @@ export class ApplicationsErrorsListComponent {
    * Return total number of applications event if there is no task (return 0)
    */
   get totalApplications(): number {
-    return this.applications ? this.applications.meta.total : 0;
+    // return this.applications ? this.applications.meta.total : 0;
+    return 0;
   }
 
   /**
@@ -113,7 +118,7 @@ export class ApplicationsErrorsListComponent {
    *
    * @returns task id
    */
-  trackErrors(_: number, error: ApplicationError): string {
-    return error.taskId;
+  trackErrors(_: number, error: Task): string {
+    return error.id ?? '';
   }
 }

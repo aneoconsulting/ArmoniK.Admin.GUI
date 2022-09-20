@@ -113,12 +113,10 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
     };
     const params = this.pagerService.createHttpParams(state, data);
 
-    this.tasksSubscription = this.tasksService
-      .getAllPaginated(params)
-      .subscribe({
-        error: this.onErrorTasks.bind(this),
-        next: this.onNextTasks.bind(this),
-      });
+    this.tasksSubscription = this.tasksService.list(params).subscribe({
+      error: this.onErrorTasks.bind(this),
+      next: this.onNextTasks.bind(this),
+    });
   }
 
   /**

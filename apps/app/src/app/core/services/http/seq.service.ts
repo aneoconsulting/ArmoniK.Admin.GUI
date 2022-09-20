@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 
 @Injectable()
 export class SeqService {
-  private url = '/api/seq';
+  private url = '/seq';
 
   constructor(private apiService: ApiService) {}
 
@@ -12,6 +12,6 @@ export class SeqService {
    * Check if seq is up and running
    */
   ping(): Observable<{ status: string }> {
-    return this.apiService.get<{ status: string }>(this.url + '/ping');
+    return this.apiService.head<{ status: string }>(this.url);
   }
 }
