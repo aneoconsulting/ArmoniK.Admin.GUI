@@ -104,8 +104,9 @@ export class TasksController {
    * @param taskId Task id
    */
   @Get('/:taskId/results')
+  @ApiOkResponse({ description: 'Results found' })
   @ApiNotFoundResponse({ description: 'Not found' })
-  async findResults(@Param('taskId') taskId: string) {
+  async findAllResultsByTasksId(@Param('taskId') taskId: string) {
     const results = await this.tasksService.findResults(taskId);
 
     if (!results || results.length === 0) {

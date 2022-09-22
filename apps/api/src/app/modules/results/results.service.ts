@@ -55,7 +55,7 @@ export class ResultsService {
       const [total, results] = await Promise.all([getTotal(), getResults()]);
 
       const meta = this.paginationService.createMeta(
-        total, // Total number of sessions
+        total, // Total number of results
         page, // Current page
         limit // Items per page
       );

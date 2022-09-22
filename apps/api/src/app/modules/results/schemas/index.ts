@@ -1,1 +1,1 @@
-export * from './results.schema';
+export * from './result.schema';
