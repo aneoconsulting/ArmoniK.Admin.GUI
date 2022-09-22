@@ -148,8 +148,10 @@
             "seq": "Lien vers Seq de l'erreur",
             "seq_link": "Voir dans Seq"
           },
-          "detail": "Détail de l'erreur",
-          "see-more": "Voir plus",
+          "actions": {
+            "title": "Actions",
+            "see_error": "Voir l'erreur"
+          },
           "cancel": "Annuler la sélection",
           "filters": {
             "status": {
