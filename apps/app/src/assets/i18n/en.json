@@ -81,7 +81,10 @@
         "refresh": "Refresh",
         "delete_state": "Delete table state",
         "last_activity_at": "Last activity at",
-        "cancel": "Close",
+        "actions": {
+          "title": "Actions",
+          "close_session": "Close the session"
+        },
         "count": {
           "title": "Tasks count",
           "tooltip": "{{countError}} error, {{countPending}} pending, {{countProcessing}} processing, {{countCompleted}} completed"

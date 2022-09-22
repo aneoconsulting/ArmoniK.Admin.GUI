@@ -110,7 +110,7 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
-      {{ 'pages.sessions.table.cancel' | translate }}
+      {{ 'pages.sessions.table.actions.title' | translate }}
     </clr-dg-column>
 
     <clr-dg-row
@@ -203,9 +203,10 @@
           class="btn-cancel btn btn-sm btn-icon btn-danger-outline"
           [disabled]="isCancelled(session)"
           (click)="confirmCancelSession(session)"
+          [title]="'pages.sessions.table.actions.close_session' | translate"
         >
           <span class="sr-only">{{
-            'pages.sessions.cancel.text' | translate
+            'pages.sessions.table.actions.close_session' | translate
           }}</span>
           <clr-icon shape="times" size="20"></clr-icon>
         </button>
