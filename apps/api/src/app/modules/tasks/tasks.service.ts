@@ -21,7 +21,6 @@ export class TasksService implements OnModuleInit {
   constructor(
     @InjectModel(Task.name)
     private readonly taskModel: Model<TaskDocument>,
-    @InjectModel(Result.name)
     private readonly paginationService: PaginationService,
     @Inject('Submitter') private readonly client: ClientGrpc,
     @InjectConnection() private connection: Connection
