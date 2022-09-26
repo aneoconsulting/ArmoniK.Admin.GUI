@@ -60,8 +60,6 @@ export class ResultsService {
       match.Status = status;
     }
 
-    console.log(match);
-
     const sort: { [key: string]: 1 | -1 } = {};
 
     if (orderBy) {
