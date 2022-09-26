@@ -97,22 +97,4 @@ export class TasksController {
       .cancelMany(tasksId)
       .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
-
-  /**
-   * Find results by task id
-   *
-   * @param taskId Task id
-   */
-  @Get('/:taskId/results')
-  @ApiOkResponse({ description: 'Results found' })
-  @ApiNotFoundResponse({ description: 'Not found' })
-  async findAllResultsByTasksId(@Param('taskId') taskId: string) {
-    const results = await this.tasksService.findResults(taskId);
-
-    if (!results || results.length === 0) {
-      throw new NotFoundException();
-    }
-
-    return results;
-  }
 }

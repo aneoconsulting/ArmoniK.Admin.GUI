@@ -10,7 +10,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import { PaginationService, Submitter } from '../../common';
-import { Result, ResultDocument } from '../results/schemas';
+import { Result } from '../results/schemas';
 import { Task, TaskDocument } from './schemas';
 
 @Injectable()
@@ -22,7 +22,6 @@ export class TasksService implements OnModuleInit {
     @InjectModel(Task.name)
     private readonly taskModel: Model<TaskDocument>,
     @InjectModel(Result.name)
-    private readonly resultModel: Model<ResultDocument>,
     private readonly paginationService: PaginationService,
     @Inject('Submitter') private readonly client: ClientGrpc,
     @InjectConnection() private connection: Connection
@@ -154,14 +153,5 @@ export class TasksService implements OnModuleInit {
         ],
       },
     });
-  }
-
-  /**
-   * Find results by task id
-   *
-   * @param taskId Id of the task
-   */
-  findResults(taskId: string) {
-    return this.resultModel.find({ OwnerTaskId: taskId }).exec();
   }
 }

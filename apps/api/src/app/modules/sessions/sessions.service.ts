@@ -14,7 +14,6 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import { PaginationService, SettingsService, Submitter } from '../../common';
-import { Result } from '../results/schemas';
 import { Task, TaskDocument } from '../tasks/schemas';
 import { Session, SessionDocument } from './schemas';
 
@@ -28,7 +27,6 @@ export class SessionsService implements OnModuleInit {
     private readonly sessionModel: Model<SessionDocument>,
     @InjectConnection() private connection: Connection,
     @InjectModel(Task.name) private readonly taskModel: Model<TaskDocument>,
-    @InjectModel(Result.name) private readonly resultModel: Model<Result>,
     private readonly settingsService: SettingsService,
     private readonly paginationService: PaginationService,
     @Inject('Submitter') private client: ClientGrpc
@@ -320,65 +318,5 @@ export class SessionsService implements OnModuleInit {
    */
   cancel(sessionId: string) {
     return this.submitterService.CancelSession({ id: sessionId });
-  }
-
-  /**
-   * Find all results paginated for a session
-   *
-   * @param SessionId Id of the session
-   * @param page Page number
-   * @param limit Number of items per page
-   * @param orderBy Order by field
-   * @param order Order direction
-   * @param OwnerTaskId Id of the owner task
-   * @param Status
-   *
-   * @returns Paginated results
-   */
-  async findAllResultsPaginated(
-    SessionId: string,
-    page: number,
-    limit: number,
-    orderBy?: string,
-    order?: string,
-    OwnerTaskId?: string,
-    Status?: string
-  ) {
-    const startIndex = (page - 1) * limit;
-
-    // Implement filters
-
-    const getTotal = async () => {
-      return this.resultModel
-        .countDocuments({
-          SessionId,
-        })
-        .exec();
-    };
-
-    const getResults = async () => {
-      return this.resultModel
-        .find({
-          SessionId,
-        })
-        .skip(startIndex)
-        .limit(limit)
-        .exec();
-    };
-
-    try {
-      const [total, data] = await Promise.all([getTotal(), getResults()]);
-
-      const meta = this.paginationService.createMeta(
-        total, // Total number of sessions
-        page, // Current page
-        limit // Items per page
-      );
-
-      return { meta, data };
-    } catch (error) {
-      this.logger.error(error);
-      throw new InternalServerErrorException(error);
-    }
   }
 }

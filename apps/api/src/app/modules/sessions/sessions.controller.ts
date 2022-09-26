@@ -86,37 +86,4 @@ export class SessionsController {
       .cancel(sessionId)
       .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
-  /**
-   * Find all results by session id
-   *
-   * @param sessionId Id of the session
-   * @param page Page number
-   * @param limit Number of items per page
-   * @param orderBy Order by field
-   * @param order Order direction
-   * @param OwnerTaskId
-   * @param Status
-   *
-   * @returns Pagination of results
-   */
-  @Get(':sessionId/results')
-  async findAllResultsBySessionId(
-    @Param('sessionId') sessionId: string,
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
-    @Query('orderBy') orderBy?: string,
-    @Query('order') order?: string,
-    @Query('OwnerTaskId') OwnerTaskId?: string,
-    @Query('Status') Status?: string
-  ) {
-    return this.sessionsService.findAllResultsPaginated(
-      sessionId,
-      page,
-      limit,
-      orderBy,
-      order,
-      OwnerTaskId,
-      Status
-    );
-  }
 }
