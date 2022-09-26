@@ -11,18 +11,20 @@ export class ResultsController {
     @Query('limit', ParseIntPipe) limit: number,
     @Query('orderBy') orderBy: string,
     @Query('order') order: string,
-    @Query('SessionId') SessionId: string,
-    @Query('OwnerTaskId') OwnerTaskId: string,
-    @Query('Status') Status: string
+    @Query('_id') id: string,
+    @Query('SessionId') sessionId: string,
+    @Query('OwnerTaskId') ownerTaskId: string,
+    @Query('Status') status: string
   ) {
     return this.resultsService.findAllPaginated(
       page,
       limit,
       orderBy,
       order,
-      SessionId,
-      OwnerTaskId,
-      Status
+      id,
+      sessionId,
+      ownerTaskId,
+      status
     );
   }
 }

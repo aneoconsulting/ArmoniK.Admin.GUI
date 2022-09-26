@@ -35,20 +35,53 @@ export class ResultsService {
     limit: number,
     orderBy?: string,
     order?: string,
-    SessionId?: string,
-    OwnerTaskId?: string,
-    Status?: string
+    id?: string,
+    sessionId?: string,
+    ownerTaskId?: string,
+    status?: string
   ) {
     const startIndex = (page - 1) * limit;
 
-    // TODO: Implement filters
+    const match: { [key: string]: any } = {};
+
+    if (id) {
+      match._id = id;
+    }
+
+    if (sessionId) {
+      match.SessionId = sessionId;
+    }
+
+    if (ownerTaskId) {
+      match.OwnerTaskId = ownerTaskId;
+    }
+
+    if (status) {
+      match.Status = status;
+    }
+
+    console.log(match);
+
+    const sort: { [key: string]: 1 | -1 } = {};
+
+    if (orderBy) {
+      sort[orderBy] = Number(order) as 1 | -1;
+    } else {
+      sort['CreationDate'] = -1;
+      sort['_id'] = 1;
+    }
 
     const getTotal = async () => {
-      return this.resultModel.countDocuments({}).exec();
+      return this.resultModel.countDocuments(match).exec();
     };
 
     const getResults = async () => {
-      return this.resultModel.find().skip(startIndex).limit(limit).exec();
+      return this.resultModel
+        .find(match)
+        .sort(sort)
+        .skip(startIndex)
+        .limit(limit)
+        .exec();
     };
 
     try {
