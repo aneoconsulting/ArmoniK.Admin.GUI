@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationService } from '../../common';
-import { Result } from './schemas';
+import { Result, ResultDocument } from './schemas';
 
 @Injectable()
 export class ResultsService {
@@ -42,7 +42,7 @@ export class ResultsService {
   ) {
     const startIndex = (page - 1) * limit;
 
-    const match: { [key: string]: any } = {};
+    const match: Record<string, any> = {};
 
     if (id) {
       match._id = id;
@@ -60,7 +60,7 @@ export class ResultsService {
       match.Status = status;
     }
 
-    const sort: { [key: string]: 1 | -1 } = {};
+    const sort: Record<string, 1 | -1> = {};
 
     if (orderBy) {
       sort[orderBy] = Number(order) as 1 | -1;
