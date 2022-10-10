@@ -1,0 +1,14 @@
+<h1>{{ 'pages.sessions.session-detail.task-results.title' | translate }}</h1>
+
+<section class="results-list">
+  <h2>
+    {{ 'pages.sessions.session-detail.task-results.list.title' | translate }}
+  </h2>
+
+  <app-pages-results-list
+    [stateKey]="resultsStateKey"
+    [loading]="resultsLoading"
+    [data]="results"
+    (refresh)="onRefreshResults($event)"
+  ></app-pages-results-list>
+</section>

@@ -16,6 +16,13 @@ const routes: Routes = [
       task: TaskDetailResolver,
     },
   },
+  {
+    path: 'tasks/:task/results',
+    loadChildren: () =>
+      import('./pages/task-results/task-results.module').then(
+        (m) => m.TaskResultsModule
+      ),
+  },
 ];
 
 @NgModule({

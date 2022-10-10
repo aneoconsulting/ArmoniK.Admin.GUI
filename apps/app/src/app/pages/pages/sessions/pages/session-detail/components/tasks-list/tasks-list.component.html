@@ -167,15 +167,27 @@
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
-      <button
-        class="btn-detail btn btn-sm"
-        [disabled]="!isError(task)"
-        (click)="openModal(task)"
-      >
-        {{
-          'pages.sessions.session-detail.table.actions.see_error' | translate
-        }}
-      </button>
+      <div class="actions">
+        <button
+          class="btn-detail btn btn-sm"
+          [disabled]="!isError(task)"
+          (click)="openModal(task)"
+        >
+          {{
+            'pages.sessions.session-detail.table.actions.see_error' | translate
+          }}
+        </button>
+        <a
+          [routerLink]="['tasks', task.id, 'results']"
+          class="btn btn-sm"
+          [title]="
+            'pages.sessions.session-detail.table.actions.view_results'
+              | translate
+          "
+        >
+          <clr-icon shape="tasks" class="is-solid"></clr-icon>
+        </a>
+      </div>
     </clr-dg-cell>
     <clr-dg-cell *ngIf="isSeqUp">
       <a

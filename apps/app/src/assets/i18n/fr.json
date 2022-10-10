@@ -178,6 +178,29 @@
           "created_at": "Créée le",
           "ended_at": "Terminée le",
           "see_more": "En voir plus"
+        },
+        "task-results": {
+          "title": "Les résultats",
+          "list": {
+            "title": "Liste des résultats",
+            "table": {
+              "name": "Nom",
+              "owner_task_id": "ID de la tâche",
+              "session_id": "ID de la session",
+              "status": {
+                "label": "Statut",
+                "values": {
+                  "1": "Créé",
+                  "2": "Complété",
+                  "3": "Annulé"
+                }
+              },
+              "created_at": "Créé le",
+              "per_page": "Par page",
+              "results": "{{value}} résultats",
+              "result": "{{value}} résultat"
+            }
+          }
         }
       }
     }

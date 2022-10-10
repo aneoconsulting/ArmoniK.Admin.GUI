@@ -12,6 +12,10 @@ import {
 import { LanguageService, Task } from '../../../../../../../core';
 import { StatesService } from '../../../../../../../shared';
 
+import '@clr/icons';
+import '@clr/icons/shapes/essential-shapes';
+import '@clr/icons/shapes/media-shapes';
+
 @Component({
   selector: 'app-pages-sessions-tasks-list',
   templateUrl: './tasks-list.component.html',

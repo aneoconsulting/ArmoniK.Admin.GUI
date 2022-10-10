@@ -1,0 +1,82 @@
+<clr-datagrid (clrDgRefresh)="refresh.emit($event)" [clrDgLoading]="loading">
+  <clr-dg-column>
+    {{
+      'pages.sessions.session-detail.task-results.list.table.name' | translate
+    }}
+  </clr-dg-column>
+  <clr-dg-column>
+    {{
+      'pages.sessions.session-detail.task-results.list.table.owner_task_id'
+        | translate
+    }}
+  </clr-dg-column>
+  <clr-dg-column>
+    {{
+      'pages.sessions.session-detail.task-results.list.table.session_id'
+        | translate
+    }}
+  </clr-dg-column>
+  <clr-dg-column>
+    {{
+      'pages.sessions.session-detail.task-results.list.table.status.label'
+        | translate
+    }}
+  </clr-dg-column>
+  <clr-dg-column>
+    {{
+      'pages.sessions.session-detail.task-results.list.table.created_at'
+        | translate
+    }}
+  </clr-dg-column>
+
+  <clr-dg-row *ngFor="let item of data?.data" [ngForTrackBy]="trackByItem">
+    <clr-dg-cell>
+      <span>
+        {{ item.Name }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{ item.OwnerTaskId }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{ item.SessionId }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{
+          'pages.sessions.session-detail.task-results.list.table.status.values.' +
+            item.Status.toString() | translate
+        }}
+      </span>
+    </clr-dg-cell>
+    <clr-dg-cell>
+      <span>
+        {{ item.CreationDate | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+      </span>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination
+      #pagination
+      [clrDgTotalItems]="total"
+      [clrDgPageSize]="pageSize"
+      [clrDgPage]="currentPage"
+    >
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
+        'pages.sessions.session-detail.task-results.list.table.per_page'
+          | translate
+      }}</clr-dg-page-size>
+      {{
+        (total > 1
+          ? 'pages.sessions.session-detail.task-results.list.table.sessions.session-detail.task-results'
+          : 'pages.sessions.session-detail.task-results.list.table.result'
+        ) | translate: { value: total }
+      }}
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

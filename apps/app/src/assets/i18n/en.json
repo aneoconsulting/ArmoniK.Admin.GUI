@@ -178,6 +178,29 @@
           "created_at": "Created at",
           "ended_at": "Ended at",
           "see_more": "See more"
+        },
+        "task-results": {
+          "title": "Results",
+          "list": {
+            "title": "List of results",
+            "table": {
+              "name": "Name",
+              "owner_task_id": "Owner task ID",
+              "session_id": "Session ID",
+              "status": {
+                "label": "Status",
+                "values": {
+                  "1": "Created",
+                  "2": "Completed",
+                  "3": "Aborted"
+                }
+              },
+              "created_at": "Created at",
+              "per_page": "Per page",
+              "results": "{{value}} Results",
+              "result": "{{value}} Result"
+            }
+          }
         }
       }
     }
