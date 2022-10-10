@@ -36,6 +36,33 @@ export class TaskResultsComponent implements OnInit, OnDestroy {
   ) {}
 
   /**
+   * Return the current application name from the route
+   *
+   * @returns string
+   */
+  get applicationName(): string {
+    return this.route.snapshot.paramMap.get('applicationName') || '';
+  }
+
+  /**
+   * Return the application version from the route
+   *
+   * @returns string
+   */
+  get applicationVersion(): string {
+    return this.route.snapshot.paramMap.get('applicationVersion') || '';
+  }
+
+  /**
+   * Return the session id from the route
+   *
+   * @returns string
+   */
+  get sessionId(): string {
+    return this.route.snapshot.paramMap.get('session') || '';
+  }
+
+  /**
    * Return the current task id form the route
    *
    * @returns Id for the task

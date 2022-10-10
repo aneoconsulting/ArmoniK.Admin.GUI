@@ -1,4 +1,41 @@
-<h1>{{ 'pages.sessions.session-detail.task-results.title' | translate }}</h1>
+<ui-page-header>
+  <ng-container subtitle>
+    <a [routerLink]="['/', 'dashboard']">{{
+      'navigation.applications' | translate
+    }}</a>
+  </ng-container>
+</ui-page-header>
+<ui-page-header>
+  <ng-container subtitle>
+    <a
+      [routerLink]="[
+        '/',
+        'applications',
+        applicationName,
+        applicationVersion,
+        'sessions'
+      ]"
+      >{{ 'navigation.sessions' | translate }}</a
+    >&nbsp;-&nbsp;
+    <span>{{ applicationName }} - {{ applicationVersion }}</span>
+  </ng-container>
+</ui-page-header>
+<ui-page-header>
+  <ng-container subtitle>
+    <a
+      [routerLink]="[
+        '/',
+        'applications',
+        applicationName,
+        applicationVersion,
+        'sessions',
+        sessionId
+      ]"
+      >{{ 'navigation.tasks' | translate }}</a
+    >&nbsp;-&nbsp;<span>{{ sessionId }}</span>
+  </ng-container>
+  Results of tasks {{ taskId }}
+</ui-page-header>
 
 <section class="results-list">
   <h2>
