@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormattedResult, Pagination } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { StatesService } from 'apps/app/src/app/shared';
+import { StatesService } from '../../../../../shared';
 
 @Component({
   selector: 'app-pages-results-list',
