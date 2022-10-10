@@ -22,6 +22,10 @@ export class PagesComponent implements OnInit {
       path: ['/', 'dashboard'],
       label: this.languageService.instant('navigation.dashboard'),
     },
+    {
+      path: ['/', 'results'],
+      label: this.languageService.instant('navigation.results'),
+    },
   ];
 
   constructor(

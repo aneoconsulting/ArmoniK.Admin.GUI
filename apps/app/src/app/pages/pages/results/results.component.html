@@ -1,0 +1,12 @@
+<h1>{{ 'pages.results.title' | translate }}</h1>
+
+<section class="results-list">
+  <h2>{{ 'pages.results.list.title' | translate }}</h2>
+
+  <app-pages-results-list
+    [stateKey]="resultsStateKey"
+    [loading]="resultsLoading"
+    [data]="results"
+    (refresh)="onRefreshResults($event)"
+  ></app-pages-results-list>
+</section>
