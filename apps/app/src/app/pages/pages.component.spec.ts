@@ -5,6 +5,7 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Application } from '@armonik.admin.gui/armonik-typing';
@@ -32,6 +33,7 @@ describe('PagesComponent', () => {
     TestBed.configureTestingModule({
       declarations: [PagesComponent],
       imports: [
+        NoopAnimationsModule,
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
         UiModule,
