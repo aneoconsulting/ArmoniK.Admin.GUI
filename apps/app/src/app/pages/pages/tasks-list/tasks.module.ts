@@ -3,8 +3,8 @@ import { SharedModule } from '../../../shared';
 import { TasksListRoutingModule } from './tasks-list-routing.module';
 import { TasksListComponent } from './tasks-list.component';
 
-/**./tasks-list.component
- * Tasks page
+/**
+ * Tasks list module
  */
 @NgModule({
   declarations: [TasksListComponent],

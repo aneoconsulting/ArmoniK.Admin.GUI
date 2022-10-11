@@ -4,7 +4,7 @@ import { TasksListRoutingModule } from '../tasks-list/tasks-list-routing.module'
 import { TasksErrorsListComponent } from './tasks-errors-list.component';
 
 /**
- * Tasks errors list page
+ * Tasks errors list module
  */
 @NgModule({
   declarations: [TasksErrorsListComponent],

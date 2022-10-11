@@ -4,7 +4,7 @@ import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.component';
 
 /**
- * Sessions list page
+ * Sessions list module
  */
 @NgModule({
   declarations: [SessionsListComponent],
