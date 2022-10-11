@@ -80,6 +80,18 @@
         routerLinkActive="active"
         >{{ 'navigation.how_to_use' | translate }}</a
       >
+      <div class="nav-divider"></div>
+      <clr-vertical-nav-group>
+        <clr-icon clrVerticalNavIcon shape="history"></clr-icon>
+        History
+        <clr-vertical-nav-group-children>
+          <ng-container *ngFor="let url of history">
+            <a clrVerticalNavLink [routerLink]="[url]" [title]="url">
+              {{ url }}
+            </a>
+          </ng-container>
+        </clr-vertical-nav-group-children>
+      </clr-vertical-nav-group>
       <div class="version">
         <span> v0.7.0 </span>
       </div>

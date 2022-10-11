@@ -16,6 +16,7 @@ import {
   SettingsService,
   TasksService,
 } from './services';
+import { HistoryService } from './services/history.service';
 
 /**
  * Contain the code that is specific to the application
@@ -32,6 +33,7 @@ import {
     LocaleProvider,
     LanguageService,
     SettingsService,
+    HistoryService,
     ApiService,
     ErrorService,
     ApplicationsService,
