@@ -17,7 +17,10 @@
     "sessions": "Sessions",
     "tasks": "Tasks",
     "errors": "Errors",
-    "how_to_use": "How to use"
+    "how_to_use": "How to use",
+    "return_to_applications": "Return to applications",
+    "return_to_sessions": "Return to sessions",
+    "return_to_tasks": "Return to tasks"
   },
   "header": {
     "subnav": {
