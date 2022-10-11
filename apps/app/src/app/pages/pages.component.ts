@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import {
@@ -7,6 +8,7 @@ import {
   LanguageCode,
   AppNavLink,
   SettingsService,
+  FavoritesService,
 } from '../core';
 
 @Component({
@@ -24,10 +26,55 @@ export class PagesComponent implements OnInit {
     },
   ];
 
+  opened = false;
+  favoriteName = '';
+
+  public get favorites() {
+    const favorites = [];
+    for (const [key, value] of this.favoritesService.favorites) {
+      favorites.push({ key, value });
+    }
+    return favorites;
+  }
+
+  public get currentUrl(): string {
+    return this.router.url;
+  }
+
+  handleFavorite() {
+    if (this.favoritesService.has(this.currentUrl)) {
+      this.removeFavorite();
+    } else {
+      this.openModal();
+    }
+  }
+
+  openModal(): void {
+    this.opened = true;
+  }
+
+  closeModal(): void {
+    this.opened = false;
+  }
+
+  hasFavorite(): boolean {
+    return this.favoritesService.has(this.currentUrl);
+  }
+
+  addFavorite(): void {
+    this.favoritesService.add(this.currentUrl, this.favoriteName);
+    this.closeModal();
+  }
+
+  removeFavorite(): void {
+    this.favoritesService.remove(this.currentUrl);
+  }
+
   constructor(
     private router: Router,
     private languageService: LanguageService,
     public settingsService: SettingsService,
+    private favoritesService: FavoritesService,
     public window: Window
   ) {}
 
