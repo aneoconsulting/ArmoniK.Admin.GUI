@@ -12,6 +12,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import {
+  FavoritesService,
   Language,
   LanguageCode,
   LanguageService,
@@ -36,7 +37,7 @@ describe('PagesComponent', () => {
         UiModule,
         ClarityModule,
       ],
-      providers: [{ provide: Window, useValue: WindowMock }],
+      providers: [FavoritesService, { provide: Window, useValue: WindowMock }],
     }).compileComponents();
   });
 
