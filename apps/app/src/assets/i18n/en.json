@@ -13,11 +13,11 @@
     }
   },
   "navigation": {
-    "how_to_use": "How to use",
     "dashboard": "Dashboard",
-    "applications": "Return to applications",
-    "sessions": "Return to sessions",
-    "tasks": "Return to tasks"
+    "sessions": "Sessions",
+    "tasks": "Tasks",
+    "errors": "Errors",
+    "how_to_use": "How to use"
   },
   "header": {
     "subnav": {
