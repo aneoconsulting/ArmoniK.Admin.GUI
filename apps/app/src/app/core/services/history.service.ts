@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
 export class HistoryService {
   #history: Set<string> = new Set<string>();
   #maxHistorySize = 3;
+
   /**
    * Add a new url to the history
    *
    * @param url
    */
   public add(url: string) {
-    // Use to up a URL already in the history
+    // Used to pull up a URL already in the history
     if (this.#history.has(url)) {
       this.#history.delete(url);
     }
