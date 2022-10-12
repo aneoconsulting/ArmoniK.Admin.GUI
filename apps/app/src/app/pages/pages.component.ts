@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Event, NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { filter } from 'rxjs';
 import {
-  LanguageService,
+  AppNavLink,
   Language,
   LanguageCode,
-  AppNavLink,
+  LanguageService,
   SettingsService,
 } from '../core';
 import { HistoryService } from '../core/services/history.service';
@@ -38,6 +39,9 @@ export class PagesComponent implements OnInit {
       this.now = Date.now();
     }, 1000 * 60);
 
+    // Add current url to history
+    this.historyService.add(this.router.url);
+    // Subscribe to router events to track url changes
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.historyService.add(event.urlAfterRedirects);
