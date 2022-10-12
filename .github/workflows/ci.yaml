@@ -96,7 +96,7 @@ jobs:
       - name: Upload Artifact (App)
         # Store report created on main
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-apps-app
           path: ./coverage/apps/app/
@@ -104,7 +104,7 @@ jobs:
       - name: Upload Artifact (Api)
         # Store report created on main
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-apps-api
           path: ./coverage/apps/api/
@@ -146,16 +146,16 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: cypress-screenshots
           path: ./dist/cypress/apps/app-e2e/screenshots
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
