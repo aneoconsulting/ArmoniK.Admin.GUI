@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Event, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
-import { filter } from 'rxjs';
 import {
   AppNavLink,
   Language,
@@ -55,10 +54,6 @@ export class PagesComponent implements OnInit {
 
   public get currentApplications(): Set<Application['_id']> {
     return this.settingsService.currentApplications;
-  }
-
-  public get history() {
-    return this.historyService.history;
   }
 
   /**

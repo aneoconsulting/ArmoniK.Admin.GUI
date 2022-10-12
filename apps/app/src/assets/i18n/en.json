@@ -17,7 +17,8 @@
     "dashboard": "Dashboard",
     "applications": "Return to applications",
     "sessions": "Return to sessions",
-    "tasks": "Return to tasks"
+    "tasks": "Return to tasks",
+    "history": "History"
   },
   "header": {
     "subnav": {

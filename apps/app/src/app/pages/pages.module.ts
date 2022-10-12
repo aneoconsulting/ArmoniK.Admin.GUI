@@ -6,12 +6,13 @@ import { PagesComponent } from './pages.component';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
+import { NavigationHistoryComponent } from './components';
 
 /**
  * Load app pages
  */
 @NgModule({
-  declarations: [PagesComponent, ErrorComponent],
+  declarations: [PagesComponent, ErrorComponent, NavigationHistoryComponent],
   imports: [SharedModule, PagesRoutingModule],
   providers: [
     {
