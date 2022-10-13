@@ -3,17 +3,17 @@
   <button
     class="btn btn-inverse btn-link"
     title="{{
-      (hasCurrentPageFavorite()
+      ((hasCurrentPageFavorite$() | async)
         ? 'favorites.button.remove'
         : 'favorites.button.add'
       ) | translate
     }}"
-    (click)="onFavoriteClick()"
+    (click)="togglePageFavorite()"
   >
     <clr-icon
       shape="star"
       size="24"
-      [ngClass]="{ 'is-solid': hasCurrentPageFavorite() }"
+      [ngClass]="{ 'is-solid': hasCurrentPageFavorite$() | async }"
     ></clr-icon>
   </button>
   <clr-modal [(clrModalOpen)]="isOpened">

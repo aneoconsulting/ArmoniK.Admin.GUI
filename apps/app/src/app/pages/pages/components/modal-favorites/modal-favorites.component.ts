@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { finalize, first, Observable } from 'rxjs';
 import { FavoritesService } from '../../../../core';
 
 @Component({
@@ -50,20 +51,24 @@ export class ModalFavoritesComponent {
   }
 
   /**
-   * Check if a favorite exists
+   * Toggle a favorite
    */
-  hasCurrentPageFavorite(): boolean {
-    return this._favoritesService.has(this.currentUrl);
+  togglePageFavorite(): void {
+    this.hasCurrentPageFavorite$()
+      .pipe(first())
+      .subscribe((has) => {
+        if (has) {
+          this.removePageFavorite();
+        } else {
+          this.openModal();
+        }
+      });
   }
 
   /**
-   * Handle favorite click
+   * Check if a favorite exists
    */
-  onFavoriteClick(): void {
-    if (this.hasCurrentPageFavorite()) {
-      this.removePageFavorite();
-    } else {
-      this.openModal();
-    }
+  hasCurrentPageFavorite$(): Observable<boolean> {
+    return this._favoritesService.has$(this.currentUrl);
   }
 }

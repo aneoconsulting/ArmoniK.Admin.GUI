@@ -57,8 +57,14 @@ export class FavoritesService {
    *
    * @param key key to find
    */
-  has(key: string): boolean {
-    return this._favorites.has(key);
+  has$(key: string): Observable<boolean> {
+    const _favorites$ = this._favorites$.asObservable();
+
+    return _favorites$.pipe(
+      map((favorites) => {
+        return favorites.has(key);
+      })
+    );
   }
 
   /**
