@@ -6,6 +6,7 @@ import { PagesComponent } from './pages.component';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
+import '@clr/icons/shapes/chart-shapes';
 
 /**
  * Load app pages
