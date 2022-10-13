@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ErrorComponent } from './pages';
 import { PagesComponent } from './pages.component';
+import { ErrorComponent } from './pages/error/error.component';
 
 const routes: Routes = [
   {
@@ -34,7 +34,7 @@ const routes: Routes = [
       {
         path: 'tasks',
         loadChildren: () =>
-          import('./pages/tasks-list/tasks.module').then(
+          import('./pages/tasks-list/tasks-liste.module').then(
             (m) => m.TasksListModule
           ),
       },
