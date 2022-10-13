@@ -39,7 +39,11 @@ describe('PagesComponent', () => {
         UiModule,
         ClarityModule,
       ],
-      providers: [HistoryService, { provide: Window, useValue: WindowMock }],
+      providers: [
+        HistoryService,
+        { provide: Window, useValue: WindowMock },
+        { provide: Storage, useValue: localStorage },
+      ],
     }).compileComponents();
   });
 
