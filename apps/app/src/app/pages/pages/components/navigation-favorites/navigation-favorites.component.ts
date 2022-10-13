@@ -11,6 +11,6 @@ export class NavigationFavoritesComponent {
   constructor(private _favoritesService: FavoritesService) {}
 
   public get favorites$(): Observable<{ path: string; label: string }[]> {
-    return this._favoritesService.favorites;
+    return this._favoritesService.favorites$;
   }
 }

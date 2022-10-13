@@ -12,7 +12,7 @@ export class FavoritesService {
     this._favorites$.next(this._favorites);
   }
 
-  public get favorites(): Observable<{ path: string; label: string }[]> {
+  public get favorites$(): Observable<{ path: string; label: string }[]> {
     const _favorites$ = this._favorites$.asObservable();
 
     return _favorites$.pipe(
