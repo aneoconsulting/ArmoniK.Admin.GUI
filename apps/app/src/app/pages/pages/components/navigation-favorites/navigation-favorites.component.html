@@ -1,0 +1,9 @@
+<clr-vertical-nav-group>
+  <clr-icon clrVerticalNavIcon shape="star"></clr-icon>
+  {{ 'navigation.favorites' | translate }}
+  <clr-vertical-nav-group-children *ngIf="favorites$ | async as favorites">
+    <div *ngFor="let favorite of favorites">
+      <a class="nav-link" [routerLink]="favorite.path">{{ favorite.label }}</a>
+    </div>
+  </clr-vertical-nav-group-children>
+</clr-vertical-nav-group>

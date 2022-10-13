@@ -7,12 +7,21 @@ import { PagesComponent } from './pages.component';
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/social-shapes';
+import {
+  ModalFavoritesComponent,
+  NavigationFavoritesComponent,
+} from './pages/components';
 
 /**
  * Load app pages
  */
 @NgModule({
-  declarations: [PagesComponent, ErrorComponent],
+  declarations: [
+    PagesComponent,
+    ErrorComponent,
+    NavigationFavoritesComponent,
+    ModalFavoritesComponent,
+  ],
   imports: [SharedModule, PagesRoutingModule],
   providers: [
     {

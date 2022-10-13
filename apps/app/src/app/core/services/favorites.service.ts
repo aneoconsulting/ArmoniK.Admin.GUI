@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 @Injectable()
 export class FavoritesService {
@@ -13,8 +13,19 @@ export class FavoritesService {
     this.favorites$.next(this._favorites);
   }
 
-  public get favorites(): Observable<Map<string, string>> {
-    return this.favorites$.asObservable();
+  public get favorites(): Observable<{ path: string; label: string }[]> {
+    const favorites$ = this.favorites$.asObservable();
+
+    return favorites$.pipe(
+      map((favorites) => {
+        return Array.from(favorites.entries()).map(([path, label]) => {
+          return {
+            path,
+            label,
+          };
+        });
+      })
+    );
   }
 
   /**

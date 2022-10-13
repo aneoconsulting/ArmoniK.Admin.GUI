@@ -1,0 +1,34 @@
+<div class="favorites-container">
+  <button
+    class="btn btn-inverse btn-link"
+    title="{{ 'favorites.button' | translate }}"
+    (click)="onFavoriteClick()"
+  >
+    <clr-icon
+      shape="star"
+      size="24"
+      [ngClass]="{ 'is-solid': hasCurrentPageFavorite() }"
+    ></clr-icon>
+  </button>
+  <clr-modal [(clrModalOpen)]="isOpened">
+    <h3 class="modal-title">{{ 'favorites.title' | translate }}</h3>
+    <div class="modal-body">
+      <clr-input-container>
+        <label>{{ 'favorites.modal.input.label' | translate }}</label>
+        <input
+          clrInput
+          type="text"
+          name="favoriteName"
+          [(ngModel)]="favoriteName"
+          placeholder="{{ 'favorites.modal.input.placeholder' | translate }}"
+          required
+        />
+      </clr-input-container>
+    </div>
+    <div class="modal-footer">
+      <button type="button" (click)="addPageFavorite()" class="btn btn-primary">
+        {{ 'favorites.modal.button' | translate }}
+      </button>
+    </div>
+  </clr-modal>
+</div>
