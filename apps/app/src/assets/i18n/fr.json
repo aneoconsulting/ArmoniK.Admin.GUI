@@ -17,7 +17,8 @@
     "dashboard": "Tableau de bord",
     "applications": "Retourner aux applications",
     "sessions": "Retourner aux sessions",
-    "tasks": "Retourner aux tâches"
+    "tasks": "Retourner aux tâches",
+    "favorites": "Favoris"
   },
   "header": {
     "subnav": {

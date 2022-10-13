@@ -14,7 +14,7 @@ import { CoreModule, LanguageService, RemoveRouteReuseStrategy } from './core';
   imports: [CoreModule, AppRoutingModule, AppTranslateModule],
   providers: [
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
+    // { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

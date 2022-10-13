@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
 export class FavoritesService {
-  #favorites: Map<string, string> = new Map();
+  private _favorites: Map<string, string> = new Map();
+
+  private favorites$: BehaviorSubject<Map<string, string>> =
+    new BehaviorSubject<Map<string, string>>(this._favorites);
 
   constructor() {
-    this.#favorites = this.#recover();
+    this._favorites = this.#recover();
+    this.favorites$.next(this._favorites);
+  }
+
+  public get favorites(): Observable<Map<string, string>> {
+    return this.favorites$.asObservable();
   }
 
   /**
@@ -14,8 +23,10 @@ export class FavoritesService {
    * @param url Url to add
    * @param favoriteName name to give to an URL
    */
-  add(url: string, favoriteName?: string): void {
-    this.#favorites.set(url, favoriteName || url);
+  add(url: string, favoriteName: string): void {
+    this._favorites.set(url, favoriteName);
+    this.favorites$.next(this._favorites);
+
     this.#store();
   }
 
@@ -25,7 +36,9 @@ export class FavoritesService {
    * @param key Key to remove
    */
   remove(key: string): void {
-    this.#favorites.delete(key);
+    this._favorites.delete(key);
+    this.favorites$.next(this._favorites);
+
     this.#store();
   }
 
@@ -35,16 +48,7 @@ export class FavoritesService {
    * @param key key to find
    */
   has(key: string): boolean {
-    return this.#favorites.has(key);
-  }
-
-  /**
-   * Get all favorites
-   *
-   * @returns All favorites
-   */
-  get favorites(): Map<string, string> {
-    return this.#favorites;
+    return this._favorites.has(key);
   }
 
   /**
@@ -53,7 +57,7 @@ export class FavoritesService {
   #store(): void {
     localStorage.setItem(
       'favorites',
-      JSON.stringify(Array.from(this.#favorites.entries()))
+      JSON.stringify(Array.from(this._favorites.entries()))
     );
   }
 

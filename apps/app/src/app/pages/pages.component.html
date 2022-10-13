@@ -83,16 +83,15 @@
       <div class="nav-divider"></div>
       <clr-vertical-nav-group>
         <clr-icon clrVerticalNavIcon shape="star"></clr-icon>
-        Favorites
-        <clr-vertical-nav-group-children>
-          <a
-            *ngFor="let favorite of favorites"
-            clrVerticalNavLink
-            [routerLink]="[favorite.key]"
-            [title]="favorite.value"
-          >
-            {{ favorite.value }}
-          </a>
+        {{ 'navigation.favorites' | translate }}
+        <clr-vertical-nav-group-children
+          *ngIf="favorites$ | async as favorites"
+        >
+          <div *ngFor="let favorite of favorites">
+            <a class="nav-link" [routerLink]="favorite.path">{{
+              favorite.name
+            }}</a>
+          </div>
         </clr-vertical-nav-group-children>
       </clr-vertical-nav-group>
       <div class="version">

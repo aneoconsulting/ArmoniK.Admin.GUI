@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { map } from 'rxjs';
 import {
   LanguageService,
   Language,
@@ -29,11 +30,18 @@ export class PagesComponent implements OnInit {
   opened = false;
   favoriteName = '';
 
-  public get favorites() {
-    const favorites = [];
-    for (const [key, value] of this.favoritesService.favorites) {
-      favorites.push({ key, value });
-    }
+  public get favorites$() {
+    const favorites = this.favoritesService.favorites.pipe(
+      map((favorites) => {
+        return Array.from(favorites.entries()).map(([path, name]) => {
+          return {
+            path,
+            name,
+          };
+        });
+      })
+    );
+
     return favorites;
   }
 
