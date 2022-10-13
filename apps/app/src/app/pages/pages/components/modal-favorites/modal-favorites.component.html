@@ -1,7 +1,13 @@
 <div class="favorites-container">
+  <!-- update title dependant of status -->
   <button
     class="btn btn-inverse btn-link"
-    title="{{ 'favorites.button' | translate }}"
+    title="{{
+      (hasCurrentPageFavorite()
+        ? 'favorites.button.remove'
+        : 'favorites.button.add'
+      ) | translate
+    }}"
     (click)="onFavoriteClick()"
   >
     <clr-icon
@@ -11,7 +17,7 @@
     ></clr-icon>
   </button>
   <clr-modal [(clrModalOpen)]="isOpened">
-    <h3 class="modal-title">{{ 'favorites.title' | translate }}</h3>
+    <h3 class="modal-title">{{ 'favorites.modal.title' | translate }}</h3>
     <div class="modal-body">
       <clr-input-container>
         <label>{{ 'favorites.modal.input.label' | translate }}</label>

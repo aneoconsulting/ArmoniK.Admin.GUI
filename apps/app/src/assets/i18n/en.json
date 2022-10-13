@@ -20,6 +20,20 @@
     "tasks": "Return to tasks",
     "favorites": "Favorites"
   },
+  "favorites": {
+    "button": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites"
+    },
+    "modal": {
+      "title": "Create a new favorite",
+      "input": {
+        "label": "Name",
+        "placeholder": "Enter a name"
+      },
+      "button": "Create"
+    }
+  },
   "header": {
     "subnav": {
       "no-current-applications": "No current application",

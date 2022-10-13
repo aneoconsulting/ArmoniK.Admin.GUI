@@ -26,6 +26,20 @@
       "close-tab": "Fermer l'onglet"
     }
   },
+  "favorites": {
+    "button": {
+      "add": "Ajouter aux favoris",
+      "remove": "Retirer des favoris"
+    },
+    "modal": {
+      "title": "Créer un favori",
+      "input": {
+        "label": "Nom",
+        "placeholder": "Saisir le nom"
+      },
+      "button": "Créer"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",

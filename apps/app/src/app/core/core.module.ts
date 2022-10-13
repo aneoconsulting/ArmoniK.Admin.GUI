@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocaleProvider } from './providers';
@@ -41,6 +40,10 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    {
+      provide: Storage,
+      useFactory: () => localStorage,
+    },
   ],
 })
 export class CoreModule {}

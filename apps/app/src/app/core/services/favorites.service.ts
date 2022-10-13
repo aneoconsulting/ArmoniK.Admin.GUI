@@ -4,19 +4,18 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 @Injectable()
 export class FavoritesService {
   private _favorites: Map<string, string> = new Map();
-
-  private favorites$: BehaviorSubject<Map<string, string>> =
+  private _favorites$: BehaviorSubject<Map<string, string>> =
     new BehaviorSubject<Map<string, string>>(this._favorites);
 
-  constructor() {
-    this._favorites = this.#recover();
-    this.favorites$.next(this._favorites);
+  constructor(private _storage: Storage) {
+    this._favorites = this._recover();
+    this._favorites$.next(this._favorites);
   }
 
   public get favorites(): Observable<{ path: string; label: string }[]> {
-    const favorites$ = this.favorites$.asObservable();
+    const _favorites$ = this._favorites$.asObservable();
 
-    return favorites$.pipe(
+    return _favorites$.pipe(
       map((favorites) => {
         return Array.from(favorites.entries()).map(([path, label]) => {
           return {
@@ -36,9 +35,9 @@ export class FavoritesService {
    */
   add(url: string, favoriteName: string): void {
     this._favorites.set(url, favoriteName);
-    this.favorites$.next(this._favorites);
+    this._favorites$.next(this._favorites);
 
-    this.#store();
+    this._store();
   }
 
   /**
@@ -48,9 +47,9 @@ export class FavoritesService {
    */
   remove(key: string): void {
     this._favorites.delete(key);
-    this.favorites$.next(this._favorites);
+    this._favorites$.next(this._favorites);
 
-    this.#store();
+    this._store();
   }
 
   /**
@@ -65,8 +64,8 @@ export class FavoritesService {
   /**
    * Store favorites in local storage
    */
-  #store(): void {
-    localStorage.setItem(
+  private _store(): void {
+    this._storage.setItem(
       'favorites',
       JSON.stringify(Array.from(this._favorites.entries()))
     );
@@ -75,8 +74,8 @@ export class FavoritesService {
   /**
    * Recover favorites from local storage
    */
-  #recover(): Map<string, string> {
-    const favorites = localStorage.getItem('favorites');
+  private _recover(): Map<string, string> {
+    const favorites = this._storage.getItem('favorites');
     if (favorites) {
       return new Map(JSON.parse(favorites));
     } else {
