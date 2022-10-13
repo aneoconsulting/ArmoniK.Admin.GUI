@@ -38,6 +38,7 @@ export class HistoryService {
       this._history.delete(this._history.values().next().value);
     }
 
+    this._history$.next(this._history);
     this._store();
   }
 
