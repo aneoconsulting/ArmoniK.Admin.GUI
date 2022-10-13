@@ -45,3 +45,14 @@
 .content-area {
   position: relative;
 }
+
+app-pages-modal-favorites {
+  position: absolute;
+  top: 1rem;
+  right: 0.5rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
