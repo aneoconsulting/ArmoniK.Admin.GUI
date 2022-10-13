@@ -41,6 +41,10 @@ import { HistoryService } from './services/history.service';
     TasksService,
     PagerService,
     SeqService,
+    {
+      provide: Storage,
+      useFactory: () => localStorage,
+    },
   ],
 })
 export class CoreModule {}

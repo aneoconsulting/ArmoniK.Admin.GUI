@@ -7,9 +7,9 @@ import { HistoryService } from '../../../core/services/history.service';
   styleUrls: ['./navigation-history.component.scss'],
 })
 export class NavigationHistoryComponent {
-  constructor(private historyService: HistoryService) {}
+  constructor(private _historyService: HistoryService) {}
 
-  public get history() {
-    return this.historyService.history;
+  public get history$() {
+    return this._historyService.history;
   }
 }

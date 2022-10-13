@@ -2,7 +2,7 @@
   <clr-icon clrVerticalNavIcon shape="history"></clr-icon>
   {{ 'navigation.history' | translate }}
   <clr-vertical-nav-group-children>
-    <ng-container *ngFor="let url of history">
+    <ng-container *ngFor="let url of history$ | async">
       <a clrVerticalNavLink [routerLink]="[url]" [title]="url">
         {{ url }}
       </a>
