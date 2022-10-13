@@ -15,7 +15,7 @@ export class HistoryService {
     this._history$.next(this._history);
   }
 
-  public get history(): Observable<string[]> {
+  public get history$(): Observable<string[]> {
     const history$ = this._history$.asObservable();
     return history$.pipe(map((history) => [...history].reverse()));
   }

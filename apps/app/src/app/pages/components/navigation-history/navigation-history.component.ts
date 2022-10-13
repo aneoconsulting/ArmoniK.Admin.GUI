@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { HistoryService } from '../../../core/services/history.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { HistoryService } from '../../../core/services/history.service';
 export class NavigationHistoryComponent {
   constructor(private _historyService: HistoryService) {}
 
-  public get history$() {
-    return this._historyService.history;
+  public get history$(): Observable<string[]> {
+    return this._historyService.history$;
   }
 }
