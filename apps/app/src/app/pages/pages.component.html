@@ -66,19 +66,14 @@
   </ui-header>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
-      <a
-        *ngFor="let link of links"
-        clrVerticalNavLink
-        [routerLink]="link.path"
-        routerLinkActive="active"
-        >{{ link.label }}</a
+      <a clrVerticalNavLink routerLink="/dashboard" routerLinkActive="active">
+        <clr-icon shape="home" clrVerticalNavIcon></clr-icon>
+        {{ 'navigation.dashboard' | translate }}</a
       >
       <div class="nav-divider"></div>
-      <a
-        clrVerticalNavLink
-        routerLink="/how-to-use"
-        routerLinkActive="active"
-        >{{ 'navigation.how_to_use' | translate }}</a
+      <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
+        <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
+        {{ 'navigation.how_to_use' | translate }}</a
       >
       <div class="version">
         <span> v0.7.0 </span>

@@ -5,7 +5,6 @@ import {
   LanguageService,
   Language,
   LanguageCode,
-  AppNavLink,
   SettingsService,
 } from '../core';
 
@@ -16,13 +15,6 @@ import {
 })
 export class PagesComponent implements OnInit {
   now = Date.now();
-
-  links: AppNavLink[] = [
-    {
-      path: ['/', 'dashboard'],
-      label: this.languageService.instant('navigation.dashboard'),
-    },
-  ];
 
   constructor(
     private router: Router,
@@ -74,17 +66,6 @@ export class PagesComponent implements OnInit {
    */
   isSelected(lang: LanguageCode): boolean {
     return this.languageService.currentLang === lang;
-  }
-
-  /** Used to track label
-   *
-   * @param index
-   * @param item
-   *
-   * @returns value
-   */
-  trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
-    return item.label;
   }
 
   /**
