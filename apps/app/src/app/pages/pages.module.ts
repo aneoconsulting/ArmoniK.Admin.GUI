@@ -6,12 +6,13 @@ import { PagesComponent } from './pages.component';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
+import { ApplicationsSubnavComponent } from './components';
 
 /**
  * Load app pages
  */
 @NgModule({
-  declarations: [PagesComponent, ErrorComponent],
+  declarations: [PagesComponent, ErrorComponent, ApplicationsSubnavComponent],
   imports: [SharedModule, PagesRoutingModule],
   providers: [
     {
