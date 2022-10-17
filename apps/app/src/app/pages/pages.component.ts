@@ -14,9 +14,7 @@ import {
   templateUrl: './pages.component.html',
   styleUrls: ['./pages.component.scss'],
 })
-export class PagesComponent implements OnInit {
-  now = Date.now();
-
+export class PagesComponent {
   links: AppNavLink[] = [
     {
       path: ['/', 'dashboard'],
@@ -30,12 +28,6 @@ export class PagesComponent implements OnInit {
     public settingsService: SettingsService,
     public window: Window
   ) {}
-
-  ngOnInit(): void {
-    setInterval(() => {
-      this.now = Date.now();
-    }, 1000 * 60);
-  }
 
   public get languages() {
     return this.languageService.availableLanguages;
