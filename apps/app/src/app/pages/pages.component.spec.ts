@@ -5,18 +5,11 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Application } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  Language,
-  LanguageCode,
-  LanguageService,
-  SettingsService,
-} from '../core';
+import { Language, LanguageCode, LanguageService } from '../core';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -71,16 +64,6 @@ describe('PagesComponent', () => {
       const lang = { code: LanguageCode.en, name: 'English' } as Language;
       expect(component.trackByLanguageName(0, lang)).toBe(lang.name);
     });
-
-    it('should return application name and version for application', () => {
-      const applicationId = {
-        applicationName: 'Test',
-        applicationVersion: '1.0.0',
-      } as Application['_id'];
-      expect(component.trackByApplicationId(0, applicationId)).toBe(
-        `${applicationId.applicationName}${applicationId.applicationVersion}`
-      );
-    });
   });
 
   describe('changeLanguage', () => {
@@ -105,28 +88,6 @@ describe('PagesComponent', () => {
       component.changeLanguage(lang.code);
 
       expect(window.location.reload).toHaveBeenCalled();
-    });
-  });
-
-  describe('removeApplication', () => {
-    it('should remove application', () => {
-      const application = {
-        applicationName: 'Test',
-        applicationVersion: '1.0.0',
-      } as Application['_id'];
-
-      const settingsService = TestBed.inject(SettingsService);
-      spyOn(settingsService, 'removeCurrentApplication');
-
-      const router = TestBed.inject(Router);
-      spyOn(router, 'navigate');
-
-      component.removeApplication(application);
-
-      expect(settingsService.removeCurrentApplication).toHaveBeenCalledWith(
-        application
-      );
-      expect(router.navigate).toHaveBeenCalledWith(['/', 'dashboard']);
     });
   });
 });
