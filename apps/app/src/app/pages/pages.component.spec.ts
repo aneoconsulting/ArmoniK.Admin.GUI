@@ -11,12 +11,7 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  Language,
-  LanguageCode,
-  LanguageService,
-  SettingsService,
-} from '../core';
+import { SettingsService } from '../core';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -67,11 +62,6 @@ describe('PagesComponent', () => {
       expect(component.trackByLabel(0, link)).toBe(label);
     });
 
-    it('should return name for language', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-      expect(component.trackByLanguageName(0, lang)).toBe(lang.name);
-    });
-
     it('should return application name and version for application', () => {
       const applicationId = {
         applicationName: 'Test',
@@ -80,31 +70,6 @@ describe('PagesComponent', () => {
       expect(component.trackByApplicationId(0, applicationId)).toBe(
         `${applicationId.applicationName}${applicationId.applicationVersion}`
       );
-    });
-  });
-
-  describe('changeLanguage', () => {
-    it('should update language in storage', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-
-      const languageService = TestBed.inject(LanguageService);
-      spyOn(languageService, 'setLanguageInStorage');
-
-      component.changeLanguage(lang.code);
-
-      expect(languageService.setLanguageInStorage).toHaveBeenCalledWith(
-        lang.code
-      );
-    });
-
-    it('should reload page', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-
-      const window = TestBed.inject(Window);
-
-      component.changeLanguage(lang.code);
-
-      expect(window.location.reload).toHaveBeenCalled();
     });
   });
 
