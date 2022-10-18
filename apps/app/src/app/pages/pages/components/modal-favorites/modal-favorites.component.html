@@ -13,7 +13,7 @@
     <clr-icon
       shape="star"
       size="24"
-      [ngClass]="{ 'is-solid': hasCurrentPageFavorite$() | async }"
+      [class.is-solid]="hasCurrentPageFavorite$() | async"
     ></clr-icon>
   </button>
   <clr-modal [(clrModalOpen)]="isOpened">

@@ -13,4 +13,17 @@ export class NavigationFavoritesComponent {
   public get favorites$(): Observable<{ path: string; label: string }[]> {
     return this._favoritesService.favorites$;
   }
+
+  /**
+   * Track by favorites
+   *
+   * @param index
+   * @param favorite
+   */
+  public trackByFavorites(
+    _: number,
+    item: { path: string; label: string }
+  ): string {
+    return item.path;
+  }
 }
