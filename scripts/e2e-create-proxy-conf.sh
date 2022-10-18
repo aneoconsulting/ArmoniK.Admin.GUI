@@ -1,7 +1,7 @@
 #!/bin/bash
 # check if -h or --help was passed
 
-if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+if [ "$1" == "-h" -o  "$1" == "--help" ]; then
     echo "Usage: $0"
     echo ""
 
@@ -9,10 +9,12 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     exit 1
 fi
 
+dir=$(dirname $0)
+
 # create proxy.conf.json
 echo "{
   \"/api\": {
-    \"target\": \"http://localhost:3000\",
-    \"secure\": false,
+    \"target\": \"http://localhost:3333\",
+    \"secure\": false
   }
-}" > ./apps/app/proxy.conf.json
+}" > $dir/../apps/app-e2e/proxy.conf.json
