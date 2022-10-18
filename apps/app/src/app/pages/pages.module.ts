@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
-import { ErrorComponent } from './pages';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
+import { ErrorComponent } from './pages/error/error.component';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
+import '@clr/icons/shapes/technology-shapes';
 
 /**
  * Load app pages
