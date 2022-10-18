@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ErrorComponent } from './pages';
 import { PagesComponent } from './pages.component';
+import { ErrorComponent } from './pages/error/error.component';
 
 const routes: Routes = [
   {
@@ -10,6 +10,14 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
+        path: 'dashboard',
+        data: { key: 'dashboard' },
+        loadChildren: () =>
+          import('./pages/dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
+      },
+      {
         path: 'applications',
         loadChildren: () =>
           import('./pages/sessions/sessions.module').then(
@@ -17,11 +25,24 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'dashboard',
-        data: { key: 'dashboard' },
+        path: 'sessions',
         loadChildren: () =>
-          import('./pages/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
+          import('./pages/sessions-list/sessions-list.module').then(
+            (m) => m.SessionsListModule
+          ),
+      },
+      {
+        path: 'tasks',
+        loadChildren: () =>
+          import('./pages/tasks-list/tasks-list.module').then(
+            (m) => m.TasksListModule
+          ),
+      },
+      {
+        path: 'errors',
+        loadChildren: () =>
+          import('./pages/tasks-errors-list/tasks-errors-list.module').then(
+            (m) => m.TasksErrorsListModule
           ),
       },
       {

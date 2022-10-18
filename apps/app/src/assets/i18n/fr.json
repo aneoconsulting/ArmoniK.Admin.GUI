@@ -13,11 +13,14 @@
     }
   },
   "navigation": {
-    "how_to_use": "Utiliser l'application",
     "dashboard": "Tableau de bord",
-    "applications": "Retourner aux applications",
-    "sessions": "Retourner aux sessions",
-    "tasks": "Retourner aux tâches"
+    "sessions": "Sessions",
+    "tasks": "Tâches",
+    "errors": "Erreurs",
+    "how_to_use": "Utiliser l'application",
+    "return_to_applications": "Retour aux applications",
+    "return_to_sessions": "Retour aux sessions",
+    "return_to_tasks": "Retour aux tâches"
   },
   "header": {
     "subnav": {
