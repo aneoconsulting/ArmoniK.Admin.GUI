@@ -34,7 +34,7 @@ const routes: Routes = [
       {
         path: 'tasks',
         loadChildren: () =>
-          import('./pages/tasks-list/tasks-liste.module').then(
+          import('./pages/tasks-list/tasks-list.module').then(
             (m) => m.TasksListModule
           ),
       },
