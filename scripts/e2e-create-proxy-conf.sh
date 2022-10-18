@@ -15,4 +15,4 @@ echo "{
     \"target\": \"http://localhost:3333\",
     \"secure\": false
   }
-}" > ./apps/app-e2e/proxy.conf.json
+}" > ./apps/app/proxy.conf.json
