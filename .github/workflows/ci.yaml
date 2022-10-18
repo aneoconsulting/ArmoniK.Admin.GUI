@@ -135,6 +135,9 @@ jobs:
       - name: Populate MongoDB
         run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
+      - name: Create proxy.conf.json
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-create-proxy-conf.sh
+
       - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v3
@@ -146,7 +149,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
+          start: "npx nx serve api"
           command: npx nx e2e app-e2e
 
       - uses: actions/upload-artifact@v3
