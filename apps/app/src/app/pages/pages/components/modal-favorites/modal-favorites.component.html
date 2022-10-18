@@ -1,7 +1,6 @@
 <div class="favorites-container">
-  <!-- update title dependant of status -->
   <button
-    class="btn btn-inverse btn-link"
+    class="btn-star btn btn-inverse btn-link"
     title="{{
       ((hasCurrentPageFavorite$() | async)
         ? 'favorites.button.remove'
@@ -15,6 +14,9 @@
       size="24"
       [class.is-solid]="hasCurrentPageFavorite$() | async"
     ></clr-icon>
+    <span *ngIf="getFavoriteName$() | async as name">
+      {{ name }}
+    </span>
   </button>
   <clr-modal [(clrModalOpen)]="isOpened">
     <h3 class="modal-title">{{ 'favorites.modal.title' | translate }}</h3>

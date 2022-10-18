@@ -68,6 +68,21 @@ export class FavoritesService {
   }
 
   /**
+   * Get favorites name using a key
+   *
+   * @param key key to find
+   */
+  get$(key: string): Observable<string | undefined> {
+    const _favorites$ = this._favorites$.asObservable();
+
+    return _favorites$.pipe(
+      map((favorites) => {
+        return favorites.get(key);
+      })
+    );
+  }
+
+  /**
    * Store favorites in local storage
    */
   private _store(): void {

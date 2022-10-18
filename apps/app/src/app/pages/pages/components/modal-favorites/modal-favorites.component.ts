@@ -71,4 +71,11 @@ export class ModalFavoritesComponent {
   hasCurrentPageFavorite$(): Observable<boolean> {
     return this._favoritesService.has$(this.currentUrl);
   }
+
+  /**
+   * Get the favorite name
+   */
+  getFavoriteName$(): Observable<string | undefined> {
+    return this._favoritesService.get$(this.currentUrl);
+  }
 }
