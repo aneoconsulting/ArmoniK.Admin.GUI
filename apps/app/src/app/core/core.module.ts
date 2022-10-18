@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocaleProvider } from './providers';
@@ -9,6 +8,7 @@ import {
   ApiService,
   ApplicationsService,
   ErrorService,
+  HistoryService,
   LanguageService,
   PagerService,
   SeqService,
@@ -16,7 +16,6 @@ import {
   SettingsService,
   TasksService,
 } from './services';
-import { HistoryService } from './services/history.service';
 
 /**
  * Contain the code that is specific to the application

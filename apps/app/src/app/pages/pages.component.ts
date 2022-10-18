@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { distinctUntilChanged, filter } from 'rxjs';
 import {
   AppNavLink,
   Language,
@@ -41,11 +42,16 @@ export class PagesComponent implements OnInit {
     // Add current url to history
     this.historyService.add(this.router.url);
     // Subscribe to router events to track url changes
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.historyService.add(event.urlAfterRedirects);
-      }
-    });
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        distinctUntilChanged((previous: any, current: any) => {
+          return previous.url === current.url;
+        })
+      )
+      .subscribe((event) => {
+        this.historyService.add((event as NavigationEnd).urlAfterRedirects);
+      });
   }
 
   public get languages() {
