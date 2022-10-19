@@ -17,7 +17,7 @@ export class LanguagesSelectorComponent {
   }
 
   /**
-   * Change currant language of application
+   * Change current language of application
    *
    * @param lang
    */
