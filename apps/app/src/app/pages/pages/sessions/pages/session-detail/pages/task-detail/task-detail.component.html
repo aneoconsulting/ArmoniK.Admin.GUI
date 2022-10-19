@@ -2,7 +2,7 @@
   <ui-page-header>
     <ng-container subtitle>
       <a [routerLink]="['/', 'dashboard']">{{
-        'navigation.applications' | translate
+        'navigation.return_to_applications' | translate
       }}</a>
     </ng-container>
   </ui-page-header>
@@ -16,7 +16,7 @@
           applicationVersion,
           'sessions'
         ]"
-        >{{ 'navigation.sessions' | translate }}</a
+        >{{ 'navigation.return_to_sessions' | translate }}</a
       >&nbsp;-&nbsp;
       <span>{{ applicationName }} - {{ applicationVersion }}</span>
     </ng-container>
@@ -32,7 +32,7 @@
           'sessions',
           sessionId
         ]"
-        >{{ 'navigation.tasks' | translate }}</a
+        >{{ 'navigation.return_to_tasks' | translate }}</a
       >&nbsp;-&nbsp;<span>{{ sessionId }}</span>
     </ng-container>
     {{ taskId }}
