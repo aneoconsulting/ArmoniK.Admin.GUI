@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
 import { ApplicationsSubnavComponent } from './components';
+import { LanguagesSelectorComponent } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 import { ErrorComponent } from './pages/error/error.component';
@@ -13,7 +14,12 @@ import '@clr/icons/shapes/essential-shapes';
  * Load app pages
  */
 @NgModule({
-  declarations: [PagesComponent, ErrorComponent, ApplicationsSubnavComponent],
+  declarations: [
+    PagesComponent,
+    ErrorComponent,
+    ApplicationsSubnavComponent,
+    LanguagesSelectorComponent,
+  ],
   imports: [SharedModule, PagesRoutingModule],
   providers: [
     {

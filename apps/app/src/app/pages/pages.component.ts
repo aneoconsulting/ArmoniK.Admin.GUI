@@ -48,20 +48,6 @@ export class PagesComponent implements OnInit {
     }, 1000 * 60);
   }
 
-  public get languages() {
-    return this.languageService.availableLanguages;
-  }
-
-  /**
-   * Change currant lange of application
-   *
-   * @param lang
-   */
-  changeLanguage(lang: LanguageCode): void {
-    this.languageService.setLanguageInStorage(lang);
-    this.window.location.reload();
-  }
-
   /**
    * Used to know if a language is current
    *
@@ -82,17 +68,5 @@ export class PagesComponent implements OnInit {
    */
   trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
     return item.label;
-  }
-
-  /**
-   * Used to track language for ngFor
-   *
-   * @param index
-   * @param item
-   *
-   * @returns value
-   */
-  trackByLanguageName(_: number, item: Language): Language['name'] {
-    return item.name;
   }
 }

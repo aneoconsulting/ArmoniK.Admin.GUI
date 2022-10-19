@@ -59,35 +59,5 @@ describe('PagesComponent', () => {
       const link = { path: ['/', 'dashboard'], label };
       expect(component.trackByLabel(0, link)).toBe(label);
     });
-
-    it('should return name for language', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-      expect(component.trackByLanguageName(0, lang)).toBe(lang.name);
-    });
-  });
-
-  describe('changeLanguage', () => {
-    it('should update language in storage', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-
-      const languageService = TestBed.inject(LanguageService);
-      spyOn(languageService, 'setLanguageInStorage');
-
-      component.changeLanguage(lang.code);
-
-      expect(languageService.setLanguageInStorage).toHaveBeenCalledWith(
-        lang.code
-      );
-    });
-
-    it('should reload page', () => {
-      const lang = { code: LanguageCode.en, name: 'English' } as Language;
-
-      const window = TestBed.inject(Window);
-
-      component.changeLanguage(lang.code);
-
-      expect(window.location.reload).toHaveBeenCalled();
-    });
   });
 });
