@@ -34,12 +34,22 @@
         >{{ link.label }}</a
       >
       <div class="nav-divider"></div>
+      <a clrVerticalNavLink href="/seq/" target="_blank">
+        <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
+        Seq</a
+      >
+      <a clrVerticalNavLink href="/grafana/" target="_blank">
+        <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
+        Grafana</a
+      >
+      <div class="nav-divider"></div>
       <a
         clrVerticalNavLink
         routerLink="/how-to-use"
         routerLinkActive="active"
         >{{ 'navigation.how_to_use' | translate }}</a
       >
+
       <div class="version">
         <span> v0.7.0 </span>
       </div>

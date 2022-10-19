@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
-import { ErrorComponent } from './pages';
+import { ApplicationsSubnavComponent } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
+import { ErrorComponent } from './pages/error/error.component';
 
 import '@clr/icons';
+import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
-import { ApplicationsSubnavComponent } from './components';
 
 /**
  * Load app pages

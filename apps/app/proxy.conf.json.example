@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "target": "<protocol>://<host>:<port>",
+    "secure": false
+  },
+  "/armonik.api.grpc.v1": {
+    "target": "<protocol>://<host>:<port>",
+    "secure": false
+  }
+}

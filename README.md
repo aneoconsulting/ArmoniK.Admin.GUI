@@ -32,7 +32,7 @@ Go to the project directory
   npm install
 ```
 
-### Install Nx globally
+### Install Nx globally (Optional)
 
 ```bash
   npm install -g nx
@@ -54,6 +54,17 @@ _A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is
 2. Export database using ArmoniK/tools/export-mongo.sh
 3. Move exported files to apps/api/src/database/fixtures
 4. Import database using the [MongoDB Compass](https://www.mongodb.com/docs/compass/master/install/).
+
+### Generate types from Proto files
+
+These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK.Api` and use to request the gRPC services.
+
+```sh
+# For Linux
+npm run proto:generate
+# For Windows
+npm run proto:generate:win
+```
 
 ### Commandes available
 
@@ -95,7 +106,7 @@ If Angular tells that the dist folder is too heavy, you can analyze the app and 
 
 Using this, you can optimize the way the dependencies are loaded and reduce initial load.
 
-### Server
+### Server (Deprecated)
 
 First, you need to install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
 Then, you must copy `.env.example` to `.env` and fill host, port and database name to use it locally.
@@ -180,7 +191,7 @@ ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not 
 
 With each push on _main_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
-### Docker
+### Docker (Deprecated for API)
 
 To build docker images, you need to run on linux this command
 
