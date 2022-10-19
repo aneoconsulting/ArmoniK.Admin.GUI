@@ -9,6 +9,7 @@ import {
   ApiService,
   ApplicationsService,
   ErrorService,
+  GrafanaService,
   LanguageService,
   PagerService,
   SeqService,
@@ -39,6 +40,7 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    GrafanaService,
   ],
 })
 export class CoreModule {}

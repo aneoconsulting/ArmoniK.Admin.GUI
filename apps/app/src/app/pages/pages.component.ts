@@ -53,6 +53,14 @@ export class PagesComponent implements OnInit {
     return this.settingsService.currentApplications;
   }
 
+  public get isSeqEnabled(): boolean {
+    return this.settingsService.isSeqUp();
+  }
+
+  public get isGrafanaEnabled(): boolean {
+    return this.settingsService.isGrafanaUp();
+  }
+
   /**
    * Remove current application from the list
    *
