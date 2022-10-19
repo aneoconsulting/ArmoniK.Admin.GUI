@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
+import { LanguagesSelectorComponent } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 import { ErrorComponent } from './pages/error/error.component';
 
 import '@clr/icons';
-import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/chart-shapes';
+import '@clr/icons/shapes/essential-shapes';
 
 /**
  * Load app pages
  */
 @NgModule({
-  declarations: [PagesComponent, ErrorComponent],
+  declarations: [PagesComponent, ErrorComponent, LanguagesSelectorComponent],
   imports: [SharedModule, PagesRoutingModule],
   providers: [
     {
