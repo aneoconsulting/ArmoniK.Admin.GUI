@@ -1,10 +1,4 @@
-import {
-  ComponentFixture,
-  discardPeriodicTasks,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Application } from '@armonik.admin.gui/armonik-typing';
@@ -43,16 +37,6 @@ describe('PagesComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('ngOnInit', () => {
-    it('should update date every minute', fakeAsync(() => {
-      const initialNow = component.now;
-      component.ngOnInit();
-      tick(2000 * 60);
-      discardPeriodicTasks();
-      expect(component.now).toBeGreaterThan(initialNow);
-    }));
   });
 
   describe('track by', () => {
