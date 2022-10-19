@@ -18,8 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Ping Seq to check if it is up and running
-    this.pingSubscription = this.seqService.ping().subs;
-    cribe({
+    this.pingSubscription = this.seqService.ping().subscribe({
       next: () => {
         // Enable Seq in settings
         this.settingsService.seqEnabled = true;
