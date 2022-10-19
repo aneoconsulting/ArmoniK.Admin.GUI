@@ -59,4 +59,24 @@ describe('LanguagesSelectorComponent', () => {
       expect(window.location.reload).toHaveBeenCalled();
     });
   });
+
+  describe('isSelected', () => {
+    it('should return true if language is selected', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
+
+      const languageService = TestBed.inject(LanguageService);
+      languageService.currentLang = lang.code;
+
+      expect(component.isSelected(lang.code)).toBeTruthy();
+    });
+
+    it('should return false if language is not selected', () => {
+      const lang = { code: LanguageCode.en, name: 'English' } as Language;
+
+      const languageService = TestBed.inject(LanguageService);
+      languageService.currentLang = LanguageCode.fr;
+
+      expect(component.isSelected(lang.code)).toBeFalsy();
+    });
+  });
 });
