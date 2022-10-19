@@ -22,11 +22,9 @@
     "return_to_sessions": "Return to sessions",
     "return_to_tasks": "Return to tasks"
   },
-  "header": {
-    "subnav": {
-      "no-current-applications": "No current application",
-      "close-tab": "Close tab"
-    }
+  "applications_subnav": {
+    "no_current_applications": "No current application",
+    "close_tab": "Close tab"
   },
   "pages": {
     "dashboard": {
