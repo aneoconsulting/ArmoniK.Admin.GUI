@@ -15,7 +15,7 @@ export class AppComponent {
   ) {}
 
   ngOnInit(): void {
-    merge(this._grafanaService.healthCheck$(), this._seqService.healthCheck$())
+    merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
       .pipe(first())
       .subscribe(({ ok, service }) => {
         if (ok && service === 'seq') {
