@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { Application } from '@armonik.admin.gui/armonik-typing';
 import {
-  LanguageService,
-  Language,
-  LanguageCode,
   AppNavLink,
+  LanguageCode,
+  LanguageService,
   SettingsService,
 } from '../core';
 
@@ -35,24 +32,20 @@ export class PagesComponent {
   ];
 
   constructor(
-    private router: Router,
     private languageService: LanguageService,
     public settingsService: SettingsService,
     public window: Window
   ) {}
 
-  public get currentApplications(): Set<Application['_id']> {
-    return this.settingsService.currentApplications;
-  }
-
   /**
-   * Remove current application from the list
+   * Used to know if a language is current
    *
-   * @param application
+   * @param lang
+   *
+   * @returns boolean
    */
-  removeApplication(application: Application['_id']): void {
-    this.settingsService.removeCurrentApplication(application);
-    this.router.navigate(['/', 'dashboard']);
+  isSelected(lang: LanguageCode): boolean {
+    return this.languageService.currentLang === lang;
   }
 
   /** Used to track label
@@ -64,17 +57,5 @@ export class PagesComponent {
    */
   trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
     return item.label;
-  }
-
-  /**
-   * Used to tack current application Id for ngFor
-   *
-   * @param index
-   * @param item
-   *
-   * @returns value
-   */
-  trackByApplicationId(_: number, item: Application['_id']): string {
-    return `${item.applicationName}${item.applicationVersion}`;
   }
 }

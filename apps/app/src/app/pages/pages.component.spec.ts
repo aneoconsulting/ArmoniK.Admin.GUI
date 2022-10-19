@@ -1,11 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Application } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { SettingsService } from '../core';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -44,38 +41,6 @@ describe('PagesComponent', () => {
       const label = 'Dashboard';
       const link = { path: ['/', 'dashboard'], label };
       expect(component.trackByLabel(0, link)).toBe(label);
-    });
-
-    it('should return application name and version for application', () => {
-      const applicationId = {
-        applicationName: 'Test',
-        applicationVersion: '1.0.0',
-      } as Application['_id'];
-      expect(component.trackByApplicationId(0, applicationId)).toBe(
-        `${applicationId.applicationName}${applicationId.applicationVersion}`
-      );
-    });
-  });
-
-  describe('removeApplication', () => {
-    it('should remove application', () => {
-      const application = {
-        applicationName: 'Test',
-        applicationVersion: '1.0.0',
-      } as Application['_id'];
-
-      const settingsService = TestBed.inject(SettingsService);
-      spyOn(settingsService, 'removeCurrentApplication');
-
-      const router = TestBed.inject(Router);
-      spyOn(router, 'navigate');
-
-      component.removeApplication(application);
-
-      expect(settingsService.removeCurrentApplication).toHaveBeenCalledWith(
-        application
-      );
-      expect(router.navigate).toHaveBeenCalledWith(['/', 'dashboard']);
     });
   });
 });

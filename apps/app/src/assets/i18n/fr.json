@@ -22,11 +22,9 @@
     "return_to_sessions": "Retour aux sessions",
     "return_to_tasks": "Retour aux tâches"
   },
-  "header": {
-    "subnav": {
-      "no-current-applications": "Aucune application sélectionnée",
-      "close-tab": "Fermer l'onglet"
-    }
+  "applications_subnav": {
+    "no_current_applications": "Aucune application sélectionnée",
+    "close_tab": "Fermer l'onglet"
   },
   "pages": {
     "dashboard": {

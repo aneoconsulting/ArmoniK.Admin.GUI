@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
-import { LanguagesSelectorComponent, TimeComponent } from './components';
+import {
+  ApplicationsSubnavComponent,
+  LanguagesSelectorComponent,
+  TimeComponent,
+} from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 import { ErrorComponent } from './pages/error/error.component';
@@ -16,6 +20,7 @@ import '@clr/icons/shapes/essential-shapes';
   declarations: [
     PagesComponent,
     ErrorComponent,
+    ApplicationsSubnavComponent,
     LanguagesSelectorComponent,
     TimeComponent,
   ],
