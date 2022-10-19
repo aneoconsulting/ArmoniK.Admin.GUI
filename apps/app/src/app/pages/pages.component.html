@@ -9,17 +9,7 @@
         <app-pages-time></app-pages-time>
       </span>
     </a>
-    <ul actions class="list-unstyled language">
-      <li *ngFor="let language of languages; trackBy: trackByLanguageName">
-        <button
-          class="btn btn-link"
-          (click)="changeLanguage(language.code)"
-          [disabled]="isSelected(language.code)"
-        >
-          {{ language.name | uppercase }}
-        </button>
-      </li>
-    </ul>
+    <app-pages-languages-selector actions></app-pages-languages-selector>
     <ul subnav class="nav" role="tablist">
       <li class="nav-item" role="tab" *ngIf="currentApplications.size === 0">
         {{ 'header.subnav.no-current-applications' | translate }}

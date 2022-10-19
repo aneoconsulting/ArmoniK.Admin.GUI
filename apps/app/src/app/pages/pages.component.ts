@@ -41,10 +41,6 @@ export class PagesComponent {
     public window: Window
   ) {}
 
-  public get languages() {
-    return this.languageService.availableLanguages;
-  }
-
   public get currentApplications(): Set<Application['_id']> {
     return this.settingsService.currentApplications;
   }
@@ -59,27 +55,6 @@ export class PagesComponent {
     this.router.navigate(['/', 'dashboard']);
   }
 
-  /**
-   * Change currant lange of application
-   *
-   * @param lang
-   */
-  changeLanguage(lang: LanguageCode): void {
-    this.languageService.setLanguageInStorage(lang);
-    this.window.location.reload();
-  }
-
-  /**
-   * Used to know if a language is current
-   *
-   * @param lang
-   *
-   * @returns boolean
-   */
-  isSelected(lang: LanguageCode): boolean {
-    return this.languageService.currentLang === lang;
-  }
-
   /** Used to track label
    *
    * @param index
@@ -89,18 +64,6 @@ export class PagesComponent {
    */
   trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
     return item.label;
-  }
-
-  /**
-   * Used to track language for ngFor
-   *
-   * @param index
-   * @param item
-   *
-   * @returns value
-   */
-  trackByLanguageName(_: number, item: Language): Language['name'] {
-    return item.name;
   }
 
   /**

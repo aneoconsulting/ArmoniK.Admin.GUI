@@ -43,3 +43,4 @@ Thumbs.db
 
 apps/api/src/database/fixtures/*
 !.gitkeep
+proxy.conf.json

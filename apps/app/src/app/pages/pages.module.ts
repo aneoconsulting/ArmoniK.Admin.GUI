@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
-import { TimeComponent } from './components';
+import { LanguagesSelectorComponent, TimeComponent } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 import { ErrorComponent } from './pages/error/error.component';
@@ -13,7 +13,12 @@ import '@clr/icons/shapes/essential-shapes';
  * Load app pages
  */
 @NgModule({
-  declarations: [PagesComponent, ErrorComponent, TimeComponent],
+  declarations: [
+    PagesComponent,
+    ErrorComponent,
+    LanguagesSelectorComponent,
+    TimeComponent,
+  ],
   imports: [SharedModule, PagesRoutingModule],
   providers: [
     {
