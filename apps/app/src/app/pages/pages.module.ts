@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
-import { ErrorComponent } from './pages';
+import { TimeComponent } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
-import { TimeComponent } from './components';
+import { ErrorComponent } from './pages/error/error.component';
 
 import '@clr/icons';
+import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
 
 /**
