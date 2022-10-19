@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { first, merge, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { first, merge } from 'rxjs';
 import { GrafanaService, SeqService, SettingsService } from './core';
 
 @Component({
@@ -7,7 +7,7 @@ import { GrafanaService, SeqService, SettingsService } from './core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   constructor(
     private _seqService: SeqService,
     private _grafanaService: GrafanaService,
