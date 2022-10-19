@@ -14,6 +14,7 @@ import {
   SeqService,
   SessionsService,
   SettingsService,
+  StorageService,
   TasksService,
 } from './services';
 
@@ -32,6 +33,7 @@ import {
     LocaleProvider,
     LanguageService,
     SettingsService,
+    StorageService,
     ApiService,
     ErrorService,
     ApplicationsService,
@@ -39,6 +41,10 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    {
+      provide: Storage,
+      useValue: localStorage,
+    },
   ],
 })
 export class CoreModule {}
