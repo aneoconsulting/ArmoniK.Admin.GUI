@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import {
-  LanguageService,
-  Language,
-  LanguageCode,
   AppNavLink,
+  LanguageCode,
+  LanguageService,
   SettingsService,
 } from '../core';
 
@@ -13,9 +11,7 @@ import {
   templateUrl: './pages.component.html',
   styleUrls: ['./pages.component.scss'],
 })
-export class PagesComponent implements OnInit {
-  now = Date.now();
-
+export class PagesComponent {
   links: AppNavLink[] = [
     {
       path: ['/', 'dashboard'],
@@ -36,17 +32,10 @@ export class PagesComponent implements OnInit {
   ];
 
   constructor(
-    private router: Router,
     private languageService: LanguageService,
     public settingsService: SettingsService,
     public window: Window
   ) {}
-
-  ngOnInit(): void {
-    setInterval(() => {
-      this.now = Date.now();
-    }, 1000 * 60);
-  }
 
   /**
    * Used to know if a language is current

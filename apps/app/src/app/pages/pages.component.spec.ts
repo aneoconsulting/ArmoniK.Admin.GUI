@@ -1,15 +1,8 @@
-import {
-  ComponentFixture,
-  discardPeriodicTasks,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { Language, LanguageCode, LanguageService } from '../core';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -41,16 +34,6 @@ describe('PagesComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('ngOnInit', () => {
-    it('should update date every minute', fakeAsync(() => {
-      const initialNow = component.now;
-      component.ngOnInit();
-      tick(2000 * 60);
-      discardPeriodicTasks();
-      expect(component.now).toBeGreaterThan(initialNow);
-    }));
   });
 
   describe('track by', () => {
