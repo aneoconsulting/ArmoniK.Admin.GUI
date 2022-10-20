@@ -17,8 +17,10 @@ export class NavigationFavoritesComponent {
   /**
    * Track by favorites
    *
-   * @param index
-   * @param favorite
+   * @param _
+   * @param item
+   *
+   * @returns Item path
    */
   public trackByFavorites(
     _: number,
