@@ -1,1 +1,67 @@
-<clr-datagrid></clr-datagrid>
+<section>
+  <clr-datagrid
+    (clrDgRefresh)="refreshSessions$($event)"
+    [clrDgLoading]="(loadingSessions$ | async) ?? false"
+  >
+    <clr-dg-column>
+      {{ 'sessions.column.session_id' | translate }}
+    </clr-dg-column>
+    <clr-dg-column> {{ 'sessions.column.status' | translate }} </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.column.created_at' | translate }}
+    </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.column.cancelled_at' | translate }}
+    </clr-dg-column>
+    <ng-container *ngIf="loadSessions$ | async as list">
+      <clr-dg-row *ngFor="let session of list.sessions">
+        <clr-dg-cell>
+          {{ session.sessionId }}
+        </clr-dg-cell>
+        <clr-dg-cell>
+          {{ session.status }}
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <span *ngIf="session.createdAt; else empty">
+            {{
+              session.createdAt.toISOString()
+                | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+            }}
+          </span>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <span *ngIf="session.cancelledAt; else empty">
+            {{
+              session.cancelledAt.toISOString()
+                | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+            }}
+          </span>
+          <ng-template #empty> - </ng-template>
+        </clr-dg-cell>
+      </clr-dg-row>
+    </ng-container>
+    <clr-dg-footer>
+      <clr-dg-pagination
+        #pagination
+        [clrDgPage]="1"
+        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgTotalItems]="(totalSessions$ | async) ?? 0"
+      >
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
+          'sessions.pagination.per_page' | translate
+        }}</clr-dg-page-size>
+        <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total">
+          {{
+            (total ?? 0 > 1
+              ? 'sessions.pagination.sessions'
+              : 'sessions.pagination.session'
+            ) | translate: { value: total }
+          }}
+          {{ total }}
+        </span>
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+</section>
+
+{{ queryParam$('pageSize') | async }}
