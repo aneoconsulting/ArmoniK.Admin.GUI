@@ -16,18 +16,22 @@ export class PagesComponent {
     {
       path: ['/', 'dashboard'],
       label: this.languageService.instant('navigation.dashboard'),
+      queryParams: {},
     },
     {
       path: ['/', 'sessions'],
       label: this.languageService.instant('navigation.sessions'),
+      queryParams: { page: 0, pageSize: 10 },
     },
     {
       path: ['/', 'tasks'],
       label: this.languageService.instant('navigation.tasks'),
+      queryParams: {},
     },
     {
       path: ['/', 'errors'],
       label: this.languageService.instant('navigation.errors'),
+      queryParams: {},
     },
   ];
 

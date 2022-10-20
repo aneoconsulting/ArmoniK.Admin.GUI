@@ -1,16 +1,20 @@
+import { HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  concatMap,
   distinctUntilChanged,
+  first,
   map,
   Observable,
   Subject,
   switchMap,
+  takeWhile,
   tap,
 } from 'rxjs';
-import { GrpcSessionsService } from '../../../core';
+import { GrpcPagerService, GrpcSessionsService } from '../../../core';
 import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.pb';
 
 @Component({
@@ -19,6 +23,8 @@ import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.
   styleUrls: ['./sessions-list.component.scss'],
 })
 export class SessionsListComponent {
+  private _state: ClrDatagridStateInterface = {};
+
   trigger$ = new Subject<ClrDatagridStateInterface>();
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
@@ -26,38 +32,39 @@ export class SessionsListComponent {
 
   loadSessions$ = this.trigger$.pipe(
     tap(() => this.loadingSessions$.next(true)),
-    tap((state) => {
-      // update url
-      this._router.navigate([], {
-        queryParams: {
-          page: state?.page?.current ?? 1,
-          pageSize: state?.page?.size ?? 10,
-        },
+    map((state) => this._grpcPagerService.createParams(state)),
+    concatMap(async (params) => {
+      await this._router.navigate([], {
+        queryParams: params,
         queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
+
+      return params;
     }),
-    map((state) => {
-      console.log('Transform state', state);
-      return state;
-    }),
-    switchMap(() => this.listSessions$() /* Give params */)
+    map((params) => this._grpcPagerService.createHttpParams(params)),
+    switchMap((httpParams) => this.listSessions$(httpParams))
   );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _grpcSessionsService: GrpcSessionsService
-  ) {
-    console.log('SessionsListComponent');
-  }
+    private _grpcSessionsService: GrpcSessionsService,
+    private _grpcPagerService: GrpcPagerService
+  ) {}
 
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
+  /**
+   * Cancel a session
+   *
+   * @param sessionId
+   */
+  public cancelSession(sessionId: string): void {
+    this._grpcSessionsService
+      .cancel$(sessionId)
+      .pipe(first())
+      .subscribe({
+        next: () => this.refreshSessions$(),
+      });
   }
 
   /**
@@ -67,8 +74,26 @@ export class SessionsListComponent {
    *
    * @returns void
    */
-  public refreshSessions$(state: ClrDatagridStateInterface): void {
-    this.trigger$.next(state);
+  public refreshSessions$(state?: ClrDatagridStateInterface): void {
+    if (state) {
+      this._state = state;
+    }
+    this.trigger$.next(this._state);
+  }
+
+  /**
+   * Get query params from route
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryParam$(param: string): Observable<number> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((params) => params.get(param)),
+      map((value) => Number(value)),
+      distinctUntilChanged()
+    );
   }
 
   /**
@@ -76,13 +101,13 @@ export class SessionsListComponent {
    *
    * @returns Observable<ListSessionsResponse>
    */
-  private listSessions$(): Observable<ListSessionsResponse> {
-    return this._grpcSessionsService.list$().pipe(
+  private listSessions$(params: HttpParams): Observable<ListSessionsResponse> {
+    console.log('SessionsListComponent.listSessions$');
+    return this._grpcSessionsService.list$(params).pipe(
       tap((sessions) => {
         this.loadingSessions$.next(false);
         this.totalSessions$.next(sessions.totalCount ?? 0);
-      }),
-      tap((sessions) => console.log('Sessions', sessions))
+      })
     );
   }
 }

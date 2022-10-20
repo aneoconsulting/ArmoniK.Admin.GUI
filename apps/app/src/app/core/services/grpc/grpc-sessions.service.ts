@@ -2,6 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
+  CancelSessionRequest,
+  CancelSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
 } from '../../types/proto/sessions-common.pb';
@@ -11,7 +13,8 @@ import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 export class GrpcSessionsService {
   constructor(private _sessionsClient: SessionsClient) {}
 
-  public list$(): Observable<ListSessionsResponse> {
+  public list$(params: HttpParams): Observable<ListSessionsResponse> {
+    console.log('GrpcSessionsService.list$', params);
     const options = new ListSessionsRequest({
       page: 0,
       pageSize: 10,
@@ -23,5 +26,13 @@ export class GrpcSessionsService {
     });
 
     return this._sessionsClient.listSessions(options);
+  }
+
+  public cancel$(sessionId: string): Observable<CancelSessionResponse> {
+    const options = new CancelSessionRequest({
+      sessionId,
+    });
+
+    return this._sessionsClient.cancelSession(options);
   }
 }

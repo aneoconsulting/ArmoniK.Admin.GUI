@@ -10,6 +10,7 @@ import {
   ApiService,
   ApplicationsService,
   ErrorService,
+  GrpcPagerService,
   GrpcSessionsService,
   LanguageService,
   PagerService,
@@ -48,6 +49,7 @@ import {
     PagerService,
     SeqService,
     GrpcSessionsService,
+    GrpcPagerService,
   ],
 })
 export class CoreModule {}

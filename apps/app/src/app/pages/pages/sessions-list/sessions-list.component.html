@@ -13,10 +13,19 @@
     <clr-dg-column>
       {{ 'sessions.column.cancelled_at' | translate }}
     </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.column.actions' | translate }}
+    </clr-dg-column>
+
     <ng-container *ngIf="loadSessions$ | async as list">
       <clr-dg-row *ngFor="let session of list.sessions">
         <clr-dg-cell>
-          {{ session.sessionId }}
+          <a
+            [routerLink]="['/', 'tasks']"
+            [queryParams]="{ sessionId: session.sessionId }"
+          >
+            {{ session.sessionId }}
+          </a>
         </clr-dg-cell>
         <clr-dg-cell>
           {{ session.status }}
@@ -38,30 +47,36 @@
           </span>
           <ng-template #empty> - </ng-template>
         </clr-dg-cell>
+        <clr-dg-cell>
+          <button
+            class="btn btn-sm btn-outline-danger"
+            (click)="cancelSession(session.sessionId!)"
+            [disabled]="session.cancelledAt"
+          >
+            {{ 'sessions.actions.cancel' | translate }}
+          </button>
+        </clr-dg-cell>
       </clr-dg-row>
     </ng-container>
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPage]="1"
         [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
         [clrDgTotalItems]="(totalSessions$ | async) ?? 0"
+        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
           'sessions.pagination.per_page' | translate
         }}</clr-dg-page-size>
         <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total">
           {{
-            (total ?? 0 > 1
+            (total > 1
               ? 'sessions.pagination.sessions'
               : 'sessions.pagination.session'
             ) | translate: { value: total }
           }}
-          {{ total }}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
   </clr-datagrid>
 </section>
-
-{{ queryParam$('pageSize') | async }}
