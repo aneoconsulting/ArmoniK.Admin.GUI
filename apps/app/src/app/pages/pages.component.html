@@ -6,63 +6,11 @@
           <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
         </figure>
         &nbsp; - &nbsp;
-        <span class="title--date">
-          {{ now | date: 'short' }}
-        </span>
+        <app-pages-time></app-pages-time>
       </span>
     </a>
-    <ul actions class="list-unstyled language">
-      <li *ngFor="let language of languages; trackBy: trackByLanguageName">
-        <button
-          class="btn btn-link"
-          (click)="changeLanguage(language.code)"
-          [disabled]="isSelected(language.code)"
-        >
-          {{ language.name | uppercase }}
-        </button>
-      </li>
-    </ul>
-    <ul subnav class="nav" role="tablist">
-      <li class="nav-item" role="tab" *ngIf="currentApplications.size === 0">
-        {{ 'header.subnav.no-current-applications' | translate }}
-      </li>
-      <li
-        class="nav-item"
-        role="tab"
-        *ngFor="
-          let current of currentApplications;
-          trackBy: trackByApplicationId
-        "
-      >
-        <a
-          class="btn btn-link nav-link"
-          [routerLink]="[
-            '/',
-            'applications',
-            current.applicationName,
-            current.applicationVersion,
-            'sessions'
-          ]"
-          routerLinkActive="active"
-        >
-          {{ current.applicationName }} - {{ current.applicationVersion }}</a
-        >
-        <button
-          type="button"
-          class="close-btn"
-          [title]="'header.subnav.close-tab' | translate"
-        >
-          <span class="sr-only">{{
-            'header.subnav.close-tab' | translate
-          }}</span>
-          <clr-icon
-            shape="times"
-            class="is-error"
-            (click)="removeApplication(current)"
-          ></clr-icon>
-        </button>
-      </li>
-    </ul>
+    <app-pages-languages-selector actions></app-pages-languages-selector>
+    <app-pages-applications-subnav subnav></app-pages-applications-subnav>
   </ui-header>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
@@ -74,14 +22,23 @@
         >{{ link.label }}</a
       >
       <div class="nav-divider"></div>
+      <a clrVerticalNavLink href="/seq/" target="_blank">
+        <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
+        Seq</a
+      >
+      <a clrVerticalNavLink href="/grafana/" target="_blank">
+        <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
+        Grafana</a
+      >
+      <div class="nav-divider"></div>
+      <app-pages-navigation-favorites></app-pages-navigation-favorites>
+      <div class="nav-divider"></div>
       <a
         clrVerticalNavLink
         routerLink="/how-to-use"
         routerLinkActive="active"
         >{{ 'navigation.how_to_use' | translate }}</a
       >
-      <div class="nav-divider"></div>
-      <app-pages-navigation-favorites></app-pages-navigation-favorites>
       <div class="version">
         <span> v0.7.0 </span>
       </div>

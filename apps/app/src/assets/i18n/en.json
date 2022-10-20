@@ -13,12 +13,19 @@
     }
   },
   "navigation": {
-    "how_to_use": "How to use",
     "dashboard": "Dashboard",
-    "applications": "Return to applications",
-    "sessions": "Return to sessions",
-    "tasks": "Return to tasks",
-    "favorites": "Favorites"
+    "sessions": "Sessions",
+    "tasks": "Tasks",
+    "errors": "Errors",
+    "favorites": "Favorites",
+    "how_to_use": "How to use",
+    "return_to_applications": "Return to applications",
+    "return_to_sessions": "Return to sessions",
+    "return_to_tasks": "Return to tasks"
+  },
+  "applications_subnav": {
+    "no_current_applications": "No current application",
+    "close_tab": "Close tab"
   },
   "favorites": {
     "button": {
@@ -32,12 +39,6 @@
         "placeholder": "Enter a name"
       },
       "button": "Create"
-    }
-  },
-  "header": {
-    "subnav": {
-      "no-current-applications": "No current application",
-      "close-tab": "Close tab"
     }
   },
   "pages": {
