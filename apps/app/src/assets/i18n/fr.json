@@ -26,6 +26,27 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
+  "sessions": {
+    "columns": {
+      "session_id": "ID de la session",
+      "status": "Statut",
+      "created_at": "Créée le",
+      "cancelled_at": "Annulée le",
+      "actions": "Actions"
+    },
+    "cells": {
+      "1": "Ouverte",
+      "2": "Annulée"
+    },
+    "actions": {
+      "cancel": "Annuler"
+    },
+    "pagination": {
+      "per_page": "Sessions par page",
+      "sessions": "{{value}} sessions",
+      "session": "{{value}} session"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",

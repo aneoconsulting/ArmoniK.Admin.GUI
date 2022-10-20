@@ -4,17 +4,17 @@
     [clrDgLoading]="(loadingSessions$ | async) ?? false"
   >
     <clr-dg-column>
-      {{ 'sessions.column.session_id' | translate }}
+      {{ 'sessions.columns.session_id' | translate }}
     </clr-dg-column>
-    <clr-dg-column> {{ 'sessions.column.status' | translate }} </clr-dg-column>
+    <clr-dg-column> {{ 'sessions.columns.status' | translate }} </clr-dg-column>
     <clr-dg-column>
-      {{ 'sessions.column.created_at' | translate }}
-    </clr-dg-column>
-    <clr-dg-column>
-      {{ 'sessions.column.cancelled_at' | translate }}
+      {{ 'sessions.columns.created_at' | translate }}
     </clr-dg-column>
     <clr-dg-column>
-      {{ 'sessions.column.actions' | translate }}
+      {{ 'sessions.columns.cancelled_at' | translate }}
+    </clr-dg-column>
+    <clr-dg-column>
+      {{ 'sessions.columns.actions' | translate }}
     </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
@@ -28,7 +28,7 @@
           </a>
         </clr-dg-cell>
         <clr-dg-cell>
-          {{ session.status }}
+          {{ 'sessions.cells.' + session.status | translate }}
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="session.createdAt; else empty">

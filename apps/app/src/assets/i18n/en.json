@@ -26,6 +26,27 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
+  "sessions": {
+    "columns": {
+      "session_id": "Session ID",
+      "status": "Status",
+      "created_at": "Created at",
+      "cancelled_at": "Cancelled at",
+      "actions": "Actions"
+    },
+    "cells": {
+      "1": "Open",
+      "2": "Cancelled"
+    },
+    "actions": {
+      "cancel": "Cancel"
+    },
+    "pagination": {
+      "per_page": "Sessions per page",
+      "sessions": "{{value}} sessions",
+      "session": "{{value}} session"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Dashboard",
