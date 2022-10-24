@@ -30,11 +30,13 @@ import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
+  private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
   private _subjectStopInterval = new Subject<void>();
 
   /** Triggers to reload data */
+  private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
@@ -58,7 +60,11 @@ export class SessionsListComponent {
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
 
-  loadSessions$ = merge(this._triggerDatagrid$, this._triggerInterval$).pipe(
+  loadSessions$ = merge(
+    this._triggerManual$,
+    this._triggerDatagrid$,
+    this._triggerInterval$
+  ).pipe(
     tap(() => this.loadingSessions$.next(true)),
     switchMap(() => this._listSessions$())
   );
@@ -122,22 +128,28 @@ export class SessionsListComponent {
       .cancel$(sessionId)
       .pipe(first())
       .subscribe({
-        next: () => this.refreshSessions(),
+        next: () => this.manualRefreshSessions(),
       });
   }
 
   /**
-   * Refresh sessions using new state
+   * Refresh sessions using a new state
    *
    * @param state
    *
    * @returns void
    */
-  public refreshSessions(state?: ClrDatagridStateInterface): void {
-    if (state) {
-      this._state = state;
-    }
-    this._subjectDatagrid.next(this._state);
+  public refreshSessions(state: ClrDatagridStateInterface): void {
+    this._subjectDatagrid.next(state);
+  }
+
+  /**
+   * Refresh manually sessions using new state
+   *
+   * @returns void
+   */
+  public manualRefreshSessions(): void {
+    this._subjectManual.next();
   }
 
   /**
@@ -157,9 +169,20 @@ export class SessionsListComponent {
 
   /**
    * Save state
+   *
+   * @param state
    */
   private _saveState(state: ClrDatagridStateInterface): void {
     this._state = state;
+  }
+
+  /**
+   * Restore state
+   *
+   * @returns State
+   */
+  private _restoreState(): ClrDatagridStateInterface {
+    return this._state;
   }
 
   /**
@@ -168,7 +191,7 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    const params = this._grpcPagerService.createParams(this._state);
+    const params = this._grpcPagerService.createParams(this._restoreState());
     const httpParams = this._grpcPagerService.createHttpParams(params);
     return this._grpcSessionsService.list$(httpParams).pipe(
       tap((sessions) => {
