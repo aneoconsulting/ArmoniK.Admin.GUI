@@ -14,7 +14,6 @@ export class GrpcSessionsService {
   constructor(private _sessionsClient: SessionsClient) {}
 
   public list$(params: HttpParams): Observable<ListSessionsResponse> {
-    console.log('GrpcSessionsService.list$', params);
     const options = new ListSessionsRequest({
       page: 0,
       pageSize: 10,

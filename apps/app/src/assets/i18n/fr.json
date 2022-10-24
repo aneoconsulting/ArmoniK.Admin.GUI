@@ -27,11 +27,12 @@
     "close_tab": "Fermer l'onglet"
   },
   "sessions": {
+    "title": "Sessions",
     "columns": {
       "session_id": "ID de la session",
       "status": "Statut",
       "created_at": "Créée le",
-      "cancelled_at": "Annulée le",
+      "cancelled_at": "Fermée le",
       "actions": "Actions"
     },
     "cells": {
@@ -39,7 +40,7 @@
       "2": "Annulée"
     },
     "actions": {
-      "cancel": "Annuler"
+      "cancel": "Fermer"
     },
     "pagination": {
       "per_page": "Sessions par page",

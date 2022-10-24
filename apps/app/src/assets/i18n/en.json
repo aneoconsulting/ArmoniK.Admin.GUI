@@ -27,11 +27,12 @@
     "close_tab": "Close tab"
   },
   "sessions": {
+    "title": "Sessions",
     "columns": {
       "session_id": "Session ID",
       "status": "Status",
       "created_at": "Created at",
-      "cancelled_at": "Cancelled at",
+      "cancelled_at": "Closed at",
       "actions": "Actions"
     },
     "cells": {
@@ -39,7 +40,7 @@
       "2": "Cancelled"
     },
     "actions": {
-      "cancel": "Cancel"
+      "cancel": "Close"
     },
     "pagination": {
       "per_page": "Sessions per page",

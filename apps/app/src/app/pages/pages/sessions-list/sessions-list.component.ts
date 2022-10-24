@@ -4,11 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  catchError,
   concatMap,
   distinctUntilChanged,
   first,
   map,
   Observable,
+  of,
   Subject,
   switchMap,
   takeWhile,
@@ -43,7 +45,12 @@ export class SessionsListComponent {
       return params;
     }),
     map((params) => this._grpcPagerService.createHttpParams(params)),
-    switchMap((httpParams) => this.listSessions$(httpParams))
+    switchMap((httpParams) => this.listSessions$(httpParams)),
+    catchError(() => {
+      // TODO: handle errors
+      this.loadingSessions$.next(false);
+      return of();
+    })
   );
 
   constructor(
@@ -102,7 +109,6 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private listSessions$(params: HttpParams): Observable<ListSessionsResponse> {
-    console.log('SessionsListComponent.listSessions$');
     return this._grpcSessionsService.list$(params).pipe(
       tap((sessions) => {
         this.loadingSessions$.next(false);

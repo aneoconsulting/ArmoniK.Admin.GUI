@@ -1,4 +1,6 @@
 <section>
+  <h1>{{ 'sessions.title' | translate }}</h1>
+
   <clr-datagrid
     (clrDgRefresh)="refreshSessions$($event)"
     [clrDgLoading]="(loadingSessions$ | async) ?? false"
