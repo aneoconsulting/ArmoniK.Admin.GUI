@@ -216,6 +216,12 @@ jobs:
           fetch-depth: 0
           submodules: true
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
