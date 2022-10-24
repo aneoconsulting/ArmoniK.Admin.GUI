@@ -70,6 +70,9 @@ jobs:
         with:
           main-branch-name: main
 
+      - name: Build proto
+        run: npm run proto:generate
+
       - name: Run Unit Tests
         run: npx nx affected --target=test --parallel=3 --code-coverage
 
