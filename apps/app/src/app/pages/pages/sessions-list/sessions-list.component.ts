@@ -48,12 +48,13 @@ export class SessionsListComponent {
       return state;
     })
   );
-  private _triggerInterval$ = this.subjectInterval.asObservable().pipe(
-    tap((value) => console.log(value)),
-    switchMap((time) =>
-      interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
-    )
-  );
+  private _triggerInterval$ = this.subjectInterval
+    .asObservable()
+    .pipe(
+      switchMap((time) =>
+        interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
+      )
+    );
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
