@@ -30,13 +30,11 @@ import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
-  private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
   private _subjectStopInterval = new Subject<void>();
 
   /** Triggers to reload data */
-  private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
@@ -49,21 +47,18 @@ export class SessionsListComponent {
       return state;
     })
   );
-  private _triggerInterval$ = this.subjectInterval.asObservable().pipe(
-    tap((value) => console.log(value)),
-    switchMap((time) =>
-      interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
-    )
-  );
+  private _triggerInterval$ = this.subjectInterval
+    .asObservable()
+    .pipe(
+      switchMap((time) =>
+        interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
+      )
+    );
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
 
-  loadSessions$ = merge(
-    this._triggerManual$,
-    this._triggerDatagrid$,
-    this._triggerInterval$
-  ).pipe(
+  loadSessions$ = merge(this._triggerDatagrid$, this._triggerInterval$).pipe(
     tap(() => this.loadingSessions$.next(true)),
     switchMap(() => this._listSessions$())
   );

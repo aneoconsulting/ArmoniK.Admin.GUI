@@ -36,8 +36,6 @@ export class GrpcPagerService {
     state: ClrDatagridStateInterface,
     data: Record<string, string> = {}
   ): Record<string, string> {
-    console.log('state', state);
-
     const params = new Map();
 
     this._createPage(state, params);
