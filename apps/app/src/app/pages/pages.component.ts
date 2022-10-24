@@ -21,7 +21,7 @@ export class PagesComponent {
     {
       path: ['/', 'sessions'],
       label: this.languageService.instant('navigation.sessions'),
-      queryParams: { autoRefresh: true, page: 0, pageSize: 10 },
+      queryParams: { page: 0, pageSize: 10 },
     },
     {
       path: ['/', 'tasks'],
