@@ -40,6 +40,14 @@
       "2": "Annulée"
     },
     "actions": {
+      "refresh": "Rafraîchir",
+      "auto_refresh": {
+        "button": {
+          "title": "Rafraîchissement automatique",
+          "disabled": "Désactivé"
+        },
+        "disable": "Désactiver"
+      },
       "cancel": "Fermer"
     },
     "pagination": {

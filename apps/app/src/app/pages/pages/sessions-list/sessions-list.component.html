@@ -2,9 +2,52 @@
   <h1>{{ 'sessions.title' | translate }}</h1>
 
   <clr-datagrid
-    (clrDgRefresh)="refreshSessions$($event)"
+    (clrDgRefresh)="refreshSessions($event)"
     [clrDgLoading]="(loadingSessions$ | async) ?? false"
   >
+    <clr-dg-action-bar>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="refreshSessions()"
+      >
+        {{ 'sessions.actions.refresh' | translate }}
+      </button>
+
+      <clr-dropdown class="auto-refresh">
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          clrDropdownTrigger
+        >
+          {{ 'sessions.actions.auto_refresh.button.title' | translate }}
+          <span *ngIf="subjectInterval | async as value">
+            &nbsp;-&nbsp;
+            {{
+              value > 0
+                ? value / 1_000 + 's'
+                : ('sessions.actions.auto_refresh.button.disabled' | translate)
+            }}
+          </span>
+
+          <clr-icon shape="caret down"></clr-icon>
+        </button>
+        <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+          <button type="button" clrDropdownItem (click)="stopInterval()">
+            {{ 'sessions.actions.auto_refresh.disable' | translate }}
+          </button>
+          <button
+            type="button"
+            clrDropdownItem
+            *ngFor="let item of intervals; trackBy: trackByInterval"
+            (click)="changeInterval(item)"
+          >
+            {{ item / 1_000 }}s
+          </button>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </clr-dg-action-bar>
+
     <clr-dg-column>
       {{ 'sessions.columns.session_id' | translate }}
     </clr-dg-column>

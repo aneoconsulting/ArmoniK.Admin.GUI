@@ -1,22 +1,25 @@
-import { HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
-  catchError,
   concatMap,
   distinctUntilChanged,
   first,
+  interval,
   map,
+  merge,
   Observable,
-  of,
   Subject,
   switchMap,
-  takeWhile,
+  takeUntil,
   tap,
 } from 'rxjs';
-import { GrpcPagerService, GrpcSessionsService } from '../../../core';
+import {
+  GrpcPagerService,
+  GrpcSessionsService,
+  SettingsService,
+} from '../../../core';
 import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.pb';
 
 @Component({
@@ -27,38 +30,91 @@ import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
-  trigger$ = new Subject<ClrDatagridStateInterface>();
+  private _subjectManual = new Subject<void>();
+  private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
+  private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
+  private _subjectStopInterval = new Subject<void>();
 
-  loadingSessions$ = new BehaviorSubject<boolean>(true);
-  totalSessions$ = new BehaviorSubject<number>(0);
-
-  loadSessions$ = this.trigger$.pipe(
-    tap(() => this.loadingSessions$.next(true)),
-    map((state) => this._grpcPagerService.createParams(state)),
-    concatMap(async (params) => {
+  private _triggerManual$ = this._subjectManual.asObservable();
+  private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
+    tap((state) => this._saveState(state)),
+    concatMap(async (state) => {
+      const params = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: params,
         queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
-
-      return params;
-    }),
-    map((params) => this._grpcPagerService.createHttpParams(params)),
-    switchMap((httpParams) => this.listSessions$(httpParams)),
-    catchError(() => {
-      // TODO: handle errors
-      this.loadingSessions$.next(false);
-      return of();
+      return state;
     })
+  );
+  private _triggerInterval$ = this.subjectInterval.asObservable().pipe(
+    tap((value) => console.log(value)),
+    switchMap((time) =>
+      interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
+    )
+  );
+
+  loadingSessions$ = new BehaviorSubject<boolean>(true);
+  totalSessions$ = new BehaviorSubject<number>(0);
+
+  loadSessions$ = merge(
+    this._triggerManual$,
+    this._triggerDatagrid$,
+    this._triggerInterval$
+  ).pipe(
+    tap(() => this.loadingSessions$.next(true)),
+    switchMap(() => this._listSessions$())
   );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
+    private _settingsService: SettingsService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
+
+  public get subjectInterval() {
+    return this._subjectInterval;
+  }
+
+  public get intervals() {
+    return this._settingsService.intervals;
+  }
+
+  public get initialInterval() {
+    return this._settingsService.initialInterval;
+  }
+
+  /**
+   * Change interval
+   *
+   * @param number
+   */
+  public changeInterval(value: number): void {
+    this.subjectInterval.next(value);
+  }
+
+  /**
+   * Stop interval
+   */
+  public stopInterval(): void {
+    this.subjectInterval.next(-1);
+    this._subjectStopInterval.next();
+  }
+
+  /**
+   * Track by interval
+   *
+   * @param _
+   * @param interval
+   *
+   * @returns Interval
+   */
+  public trackByInterval(_: number, interval: number): string {
+    return interval.toString();
+  }
 
   /**
    * Cancel a session
@@ -70,7 +126,7 @@ export class SessionsListComponent {
       .cancel$(sessionId)
       .pipe(first())
       .subscribe({
-        next: () => this.refreshSessions$(),
+        next: () => this.refreshSessions(),
       });
   }
 
@@ -81,11 +137,11 @@ export class SessionsListComponent {
    *
    * @returns void
    */
-  public refreshSessions$(state?: ClrDatagridStateInterface): void {
+  public refreshSessions(state?: ClrDatagridStateInterface): void {
     if (state) {
       this._state = state;
     }
-    this.trigger$.next(this._state);
+    this._subjectDatagrid.next(this._state);
   }
 
   /**
@@ -104,12 +160,21 @@ export class SessionsListComponent {
   }
 
   /**
+   * Save state
+   */
+  private _saveState(state: ClrDatagridStateInterface): void {
+    this._state = state;
+  }
+
+  /**
    * List sessions
    *
    * @returns Observable<ListSessionsResponse>
    */
-  private listSessions$(params: HttpParams): Observable<ListSessionsResponse> {
-    return this._grpcSessionsService.list$(params).pipe(
+  private _listSessions$(): Observable<ListSessionsResponse> {
+    const params = this._grpcPagerService.createParams(this._state);
+    const httpParams = this._grpcPagerService.createHttpParams(params);
+    return this._grpcSessionsService.list$(httpParams).pipe(
       tap((sessions) => {
         this.loadingSessions$.next(false);
         this.totalSessions$.next(sessions.totalCount ?? 0);

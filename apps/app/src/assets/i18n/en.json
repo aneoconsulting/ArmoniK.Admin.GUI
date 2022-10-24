@@ -40,6 +40,14 @@
       "2": "Cancelled"
     },
     "actions": {
+      "refresh": "Refresh",
+      "auto_refresh": {
+        "button": {
+          "title": "Auto-refresh",
+          "disabled": "Disabled"
+        },
+        "disable": "Disable"
+      },
       "cancel": "Close"
     },
     "pagination": {
