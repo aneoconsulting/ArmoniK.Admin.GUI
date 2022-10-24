@@ -3,9 +3,9 @@ name: CD Docker
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   docker:
@@ -23,6 +23,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
 
       - name: Docker meta
         id: meta
