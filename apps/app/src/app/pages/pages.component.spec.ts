@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { SettingsService } from '../core';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -22,7 +23,7 @@ describe('PagesComponent', () => {
         UiModule,
         ClarityModule,
       ],
-      providers: [{ provide: Window, useValue: WindowMock }],
+      providers: [{ provide: Window, useValue: WindowMock }, SettingsService],
     }).compileComponents();
   });
 
