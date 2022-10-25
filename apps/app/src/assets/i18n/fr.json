@@ -26,6 +26,47 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
+  "tasks": {
+    "title": "Tasks",
+    "columns": {
+      "task_id": "Task ID",
+      "session_id": "Session ID",
+      "status": "Statut",
+      "created_at": "Créée le",
+      "started_at": "Démarrée le",
+      "ended_at": "Fin le"
+    },
+    "cells": {
+      "status": {
+        "0": "Non spécifié",
+        "1": "En création",
+        "2": "Soumise",
+        "3": "Envoyée",
+        "4": "Complète",
+        "5": "Error",
+        "6": "Arrêt",
+        "7": "En annulation",
+        "8": "Annulée",
+        "9": "En traitement",
+        "10": "Traitée"
+      }
+    },
+    "actions": {
+      "refresh": "Rafraîchir",
+      "auto_refresh": {
+        "button": {
+          "title": "Rafraîchissement automatique",
+          "disabled": "Désactivé"
+        },
+        "disable": "Désactiver"
+      }
+    },
+    "pagination": {
+      "per_page": "Per page",
+      "tasks": "{{value}} tasks",
+      "task": "{{value}} task"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",

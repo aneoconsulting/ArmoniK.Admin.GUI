@@ -6,11 +6,20 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
   providedIn: 'root',
 })
 export class SettingsService {
+  private _intervals = [10_000, 30_000, 60_000, 120_000];
   seqEnabled = false;
   currentApplications: Set<Application['_id']>;
 
   constructor() {
     this.currentApplications = new Set(this.getCurrentApplicationsFromStore());
+  }
+
+  public get intervals() {
+    return this._intervals;
+  }
+
+  public get initialInterval() {
+    return this._intervals[0];
   }
 
   /**

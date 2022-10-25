@@ -26,6 +26,48 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
+  "tasks": {
+    "title": "Tasks",
+    "columns": {
+      "task_id": "Task ID",
+      "session_id": "Session ID",
+      "status": "Status",
+      "created_at": "Created at",
+      "started_at": "Started at",
+      "ended_at": "Ended at"
+    },
+    "cells": {
+      "status": {
+        "0": "Unspecified",
+        "1": "Creating",
+        "2": "Submitted",
+        "3": "Dispatched",
+        "4": "Completed",
+        "5": "Error",
+        "6": "Timeout",
+        "7": "Cancelling",
+        "8": "Cancelled",
+        "9": "Processing",
+        "10": "Processed"
+      }
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "auto_refresh": {
+        "button": {
+          "title": "Auto-refresh",
+          "disabled": "Disabled"
+        },
+        "disable": "Disable"
+      },
+      "cancel": "Close"
+    },
+    "pagination": {
+      "per_page": "Per page",
+      "tasks": "{{value}} tasks",
+      "task": "{{value}} task"
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Dashboard",
