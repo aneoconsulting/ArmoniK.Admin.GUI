@@ -99,7 +99,7 @@ If Angular tells that the dist folder is too heavy, you can analyze the app and 
   # Install a source map explorer
   npm install -g source-map-explorer
   # Build app and generate source maps
-  nx build app --prod --sourceMaps=true
+  nx build app --prod --sourceMap=true
   # Analyze source maps
   source-map-explorer dist/apps/app/main.<hash>.js
 ```
