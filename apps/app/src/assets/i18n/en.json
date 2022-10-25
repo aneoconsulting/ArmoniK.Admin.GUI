@@ -16,6 +16,7 @@
     "dashboard": "Dashboard",
     "sessions": "Sessions",
     "tasks": "Tasks",
+    "results": "Results",
     "errors": "Errors",
     "how_to_use": "How to use",
     "return_to_applications": "Return to applications",
@@ -25,6 +26,40 @@
   "applications_subnav": {
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
+  },
+  "results": {
+    "title": "Results",
+    "columns": {
+      "name": "Name",
+      "task_id": "Task ID",
+      "session_id": "Session ID",
+      "status": "Status",
+      "created_at": "Created at"
+    },
+    "cells": {
+      "status": {
+        "0": "Unspecified",
+        "1": "Creating",
+        "2": "Completed",
+        "3": "Aborted",
+        "127": "Not found"
+      }
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "auto_refresh": {
+        "button": {
+          "title": "Auto-refresh",
+          "disabled": "Disabled"
+        },
+        "disable": "Disable"
+      }
+    },
+    "pagination": {
+      "per_page": "Per page",
+      "results": "{{value}} results",
+      "result": "{{value}} result"
+    }
   },
   "pages": {
     "dashboard": {

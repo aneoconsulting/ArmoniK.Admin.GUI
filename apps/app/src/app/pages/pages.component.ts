@@ -26,6 +26,10 @@ export class PagesComponent {
       label: this.languageService.instant('navigation.tasks'),
     },
     {
+      path: ['/', 'results'],
+      label: this.languageService.instant('navigation.results'),
+    },
+    {
       path: ['/', 'errors'],
       label: this.languageService.instant('navigation.errors'),
     },

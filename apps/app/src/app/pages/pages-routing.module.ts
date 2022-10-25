@@ -39,6 +39,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'results',
+        loadChildren: () =>
+          import('./pages/results-list/results-list.module').then(
+            (m) => m.ResultsListModule
+          ),
+      },
+      {
         path: 'errors',
         loadChildren: () =>
           import('./pages/tasks-errors-list/tasks-errors-list.module').then(

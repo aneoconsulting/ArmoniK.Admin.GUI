@@ -16,6 +16,7 @@
     "dashboard": "Tableau de bord",
     "sessions": "Sessions",
     "tasks": "Tâches",
+    "results": "Résultats",
     "errors": "Erreurs",
     "how_to_use": "Utiliser l'application",
     "return_to_applications": "Retour aux applications",
@@ -25,6 +26,40 @@
   "applications_subnav": {
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
+  },
+  "results": {
+    "title": "Résultats",
+    "columns": {
+      "name": "Nom",
+      "task_id": "Task ID",
+      "session_id": "Session ID",
+      "status": "Statut",
+      "created_at": "Créé le"
+    },
+    "cells": {
+      "status": {
+        "0": "Non spécifié",
+        "1": "En création",
+        "2": "Complet",
+        "3": "Interrompu",
+        "127": "Non trouvé"
+      }
+    },
+    "actions": {
+      "refresh": "Rafraîchir",
+      "auto_refresh": {
+        "button": {
+          "title": "Rafraîchissement automatique",
+          "disabled": "Désactivé"
+        },
+        "disable": "Désactiver"
+      }
+    },
+    "pagination": {
+      "per_page": "Par page",
+      "results": "{{value}} résultats",
+      "result": "{{value}} résultat"
+    }
   },
   "pages": {
     "dashboard": {
