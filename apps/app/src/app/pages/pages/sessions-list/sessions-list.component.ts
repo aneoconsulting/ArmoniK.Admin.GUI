@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  catchError,
   concatMap,
   distinctUntilChanged,
   first,
@@ -10,6 +11,7 @@ import {
   map,
   merge,
   Observable,
+  of,
   Subject,
   switchMap,
   takeUntil,
@@ -194,6 +196,10 @@ export class SessionsListComponent {
     const params = this._grpcPagerService.createParams(this._restoreState());
     const httpParams = this._grpcPagerService.createHttpParams(params);
     return this._grpcSessionsService.list$(httpParams).pipe(
+      catchError((error) => {
+        console.error(error);
+        return of({} as ListSessionsResponse);
+      }),
       tap((sessions) => {
         this.loadingSessions$.next(false);
         this.totalSessions$.next(sessions.totalCount ?? 0);
