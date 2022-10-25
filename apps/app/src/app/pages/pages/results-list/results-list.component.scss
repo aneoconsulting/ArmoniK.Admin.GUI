@@ -2,7 +2,7 @@
   margin-top: 0;
 }
 
-.auto-refresh>button>span {
+.auto-refresh > button > span {
   text-transform: capitalize;
 }
 
@@ -16,11 +16,7 @@ clr-dg-cell {
   }
 }
 
-$textTypes: (
-  'success',
-  'danger',
-  'created',
-);
+$textTypes: ('success', 'danger', 'created');
 
 @each $type in $textTypes {
   .text-#{$type} {
