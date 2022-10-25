@@ -73,21 +73,33 @@
           {{ task.id }}
         </clr-dg-cell>
         <clr-dg-cell>
-          {{ task.sessionId }}
+          <a
+            [routerLink]="['/', 'tasks']"
+            [queryParams]="{ sessionId: task.sessionId }"
+          >
+            {{ task.sessionId }}
+          </a>
         </clr-dg-cell>
-        <clr-dg-cell
-          [ngClass]="{
-            'text-success': task.status === 4,
-            'text-warn': [9, 10].includes(task.status ?? 0),
-            'text-danger': [5, 6].includes(task.status ?? 0),
-            'text-creating': task.status === 1,
-            'text-submitted': task.status === 2,
-            'text-dispatched': task.status === 3
-          }"
-        >
-          {{ 'tasks.cells.status.' + task.status | translate }} ({{
-            task.status
-          }})
+        <clr-dg-cell class="status">
+          <a
+            [routerLink]="['/', 'tasks']"
+            [queryParams]="{ status: task.status }"
+          >
+            <span
+              [ngClass]="{
+                'text-success': task.status === 4,
+                'text-warn': [9, 10].includes(task.status ?? 0),
+                'text-danger': [5, 6].includes(task.status ?? 0),
+                'text-creating': task.status === 1,
+                'text-submitted': task.status === 2,
+                'text-dispatched': task.status === 3
+              }"
+            >
+              {{ 'tasks.cells.status.' + task.status | translate }} ({{
+                task.status
+              }})
+            </span>
+          </a>
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="task.createdAt; else empty">

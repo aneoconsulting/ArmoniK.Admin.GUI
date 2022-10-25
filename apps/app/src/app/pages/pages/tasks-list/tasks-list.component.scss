@@ -10,6 +10,10 @@ clr-dg-cell {
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  & a:hover span {
+    text-decoration: inherit;
+  }
 }
 
 $textTypes: (
