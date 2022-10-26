@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
   catchError,
@@ -24,6 +24,7 @@ import {
 } from '../../../core';
 import {
   GetSessionResponse,
+  ListSessionsRequest,
   ListSessionsResponse,
 } from '../../../core/types/proto/sessions-common.pb';
 
@@ -94,6 +95,10 @@ export class SessionsListComponent {
     private _grpcPagerService: GrpcPagerService
   ) {}
 
+  public get OrderByField() {
+    return ListSessionsRequest.OrderByField;
+  }
+
   public get subjectInterval() {
     return this._subjectInterval;
   }
@@ -104,6 +109,23 @@ export class SessionsListComponent {
 
   public get initialInterval() {
     return this._settingsService.initialInterval;
+  }
+
+  public defaultSortOrder(
+    field: ListSessionsRequest.OrderByField
+  ): ClrDatagridSortOrder {
+    const orderBy = Number(
+      this._activatedRoute.snapshot.queryParamMap.get('orderBy')
+    );
+
+    if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
+
+    const order =
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+
+    if (order === -1) return ClrDatagridSortOrder.DESC;
+
+    return ClrDatagridSortOrder.ASC;
   }
 
   /**

@@ -48,14 +48,34 @@
       </clr-dropdown>
     </clr-dg-action-bar>
 
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
+      [clrDgSortOrder]="
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
+      "
+    >
       {{ 'sessions.columns.session_id' | translate }}
     </clr-dg-column>
-    <clr-dg-column> {{ 'sessions.columns.status' | translate }} </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+    >
+      {{ 'sessions.columns.status' | translate }}
+    </clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
+      [clrDgSortOrder]="
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
+      "
+    >
       {{ 'sessions.columns.created_at' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
+      [clrDgSortOrder]="
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
+      "
+    >
       {{ 'sessions.columns.cancelled_at' | translate }}
     </clr-dg-column>
     <clr-dg-column>
