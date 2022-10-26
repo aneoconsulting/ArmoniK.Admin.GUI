@@ -34,7 +34,8 @@
       "status": "Statut",
       "created_at": "Créée le",
       "started_at": "Démarrée le",
-      "ended_at": "Fin le"
+      "ended_at": "Fin le",
+      "actions": "Actions"
     },
     "cells": {
       "status": {
@@ -52,19 +53,28 @@
       }
     },
     "actions": {
+      "cancel_selection": "Annuler la sélection",
       "refresh": "Rafraîchir",
       "auto_refresh": {
         "button": {
           "title": "Rafraîchissement automatique",
           "disabled": "Désactivé"
         },
-        "disable": "Désactiver"
+        "disable": "Désactiver",
+        "details": "Détails",
+        "related_results": "Résultats liés",
+        "parent_session": "Session",
+        "view_seq": "Voir dans SEQ"
       }
     },
     "pagination": {
       "per_page": "Per page",
       "tasks": "{{value}} tasks",
       "task": "{{value}} task"
+    },
+    "modal": {
+      "title": "Task",
+      "close": "Fermer"
     }
   },
   "pages": {

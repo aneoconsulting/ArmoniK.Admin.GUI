@@ -2,10 +2,20 @@
   <h1>{{ 'tasks.title' | translate }}</h1>
 
   <clr-datagrid
+    [(clrDgSelected)]="selected"
     (clrDgRefresh)="refreshTasks($event)"
     [clrDgLoading]="(loadingTasks$ | async) ?? false"
   >
     <clr-dg-action-bar>
+      <button
+        [clrLoading]="loadingCancelTasks$ | async"
+        type="button"
+        class="btn btn-sm btn-outline-danger"
+        (click)="cancelSelection()"
+      >
+        {{ 'tasks.actions.cancel_selection' | translate }}
+      </button>
+
       <button
         type="button"
         class="btn btn-sm btn-secondary"
@@ -66,9 +76,16 @@
     <clr-dg-column>
       {{ 'tasks.columns.ended_at' | translate }}
     </clr-dg-column>
+    <clr-dg-column>
+      {{ 'tasks.columns.actions' | translate }}
+    </clr-dg-column>
 
     <ng-container *ngIf="loadTasks$ | async as list">
-      <clr-dg-row *ngFor="let task of list.tasks">
+      <clr-dg-row
+        *ngFor="let task of list.tasks; trackBy: trackByTask"
+        [clrDgItem]="task"
+        [clrDgSelectable]="!isCompleted(task)"
+      >
         <clr-dg-cell>
           {{ task.id }}
         </clr-dg-cell>
@@ -125,6 +142,43 @@
             }}
           </span>
         </clr-dg-cell>
+        <clr-dg-cell>
+          <button
+            type="button"
+            [clrLoading]="(loadingSingleTask$ | async) === task.id"
+            class="btn btn-sm btn-secondary"
+            (click)="viewTaskDetail(task.id!)"
+          >
+            <clr-icon shape="eye"></clr-icon>
+            {{ 'tasks.actions.details' | translate }}
+          </button>
+          <a
+            class="btn btn-sm btn-secondary"
+            [routerLink]="['/', 'results']"
+            [queryParams]="{ ownerTaskId: task.sessionId }"
+          >
+            <clr-icon shape="certificate"></clr-icon>
+            {{ 'tasks.actions.related_results' | translate }}
+          </a>
+          <a
+            class="btn btn-sm btn-secondary"
+            [routerLink]="['/', 'sessions']"
+            [queryParams]="{ sessionId: task.sessionId }"
+          >
+            <clr-icon shape="nodes"></clr-icon>
+            {{ 'tasks.actions.parent_session' | translate }}
+          </a>
+          <a
+            *ngIf="isSeqUp"
+            class="btn btn-sm btn-secondary"
+            target="_blank"
+            [title]="'tasks.actions.view_seq' | translate"
+            [href]="generateSeqUrl(task.id!)"
+          >
+            <clr-icon shape="crosshairs"></clr-icon>
+            SEQ
+          </a>
+        </clr-dg-cell>
         <ng-template #empty> - </ng-template>
       </clr-dg-row>
     </ng-container>
@@ -148,3 +202,21 @@
     </clr-dg-footer>
   </clr-datagrid>
 </section>
+
+<clr-modal
+  [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  *ngIf="loadSingleTask$ | async as task"
+>
+  <h3 class="modal-title">
+    {{ 'tasks.modal.title' | translate }} {{ task.task!.id }}
+  </h3>
+  <div class="modal-body">
+    <pre>{{ task.task! | json }}</pre>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="opened = false">
+      {{ 'tasks.modal.close' | translate }}
+    </button>
+  </div>
+</clr-modal>

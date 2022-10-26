@@ -2,6 +2,10 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
+  CancelTasksRequest,
+  CancelTasksResponse,
+  GetTaskRequest,
+  GetTaskResponse,
   ListTasksRequest,
   ListTasksResponse,
 } from '../../types/proto/tasks-common.pb';
@@ -23,5 +27,21 @@ export class GrpcTasksService {
     });
 
     return this._tasksClient.listTasks(options);
+  }
+
+  public get$(taskId: string): Observable<GetTaskResponse> {
+    const options = new GetTaskRequest({
+      taskId,
+    });
+
+    return this._tasksClient.getTask(options);
+  }
+
+  public cancel$(taskIds: string[]): Observable<CancelTasksResponse> {
+    const options = new CancelTasksRequest({
+      taskIds,
+    });
+
+    return this._tasksClient.cancelTasks(options);
   }
 }

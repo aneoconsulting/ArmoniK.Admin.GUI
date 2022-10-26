@@ -6,6 +6,7 @@ import {
   catchError,
   concatMap,
   distinctUntilChanged,
+  first,
   interval,
   map,
   merge,
@@ -18,7 +19,13 @@ import {
 } from 'rxjs';
 import { GrpcPagerService, SettingsService } from '../../../core';
 import { GrpcTasksService } from '../../../core/services/grpc/grpc-tasks.service';
-import { ListTasksResponse } from '../../../core/types/proto/tasks-common.pb';
+import { TaskStatus } from '../../../core/types/proto/task-status.pb';
+import {
+  GetTaskResponse,
+  ListTasksResponse,
+  CancelTasksResponse,
+  TaskSummary,
+} from '../../../core/types/proto/tasks-common.pb';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -28,12 +35,13 @@ import { ListTasksResponse } from '../../../core/types/proto/tasks-common.pb';
 export class TasksListComponent {
   private _state: ClrDatagridStateInterface = {};
 
+  /** Get tasks */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _subjectInterval = new BehaviorSubject<number>(10_000);
   private _subjectStopInterval = new Subject<void>();
 
-  /** Triggers to reload data */
+  /** Triggers to reload tasks */
   private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
@@ -67,6 +75,21 @@ export class TasksListComponent {
     switchMap(() => this._listTasks$())
   );
 
+  /** Get a single task */
+  opened = false;
+  private _subjectSingleTask = new Subject<string>();
+  private _triggerSingleTask = this._subjectSingleTask.asObservable();
+
+  loadingSingleTask$ = new BehaviorSubject<string | null>(null);
+  loadSingleTask$ = this._triggerSingleTask.pipe(
+    tap((taskId) => this.loadingSingleTask$.next(taskId)),
+    switchMap((taskId) => this._getTask$(taskId))
+  );
+
+  /** Cancel many tasks */
+  selected: TaskSummary[] = [];
+  loadingCancelTasks$ = new BehaviorSubject<boolean>(false);
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -75,16 +98,30 @@ export class TasksListComponent {
     private _grpcPagerService: GrpcPagerService
   ) {}
 
-  public get subjectInterval() {
+  public get isSeqUp(): boolean {
+    return this._settingsService.isSeqUp();
+  }
+
+  public get subjectInterval(): BehaviorSubject<number> {
     return this._subjectInterval;
   }
 
-  public get intervals() {
+  public get intervals(): number[] {
     return this._settingsService.intervals;
   }
 
-  public get initialInterval() {
+  public get initialInterval(): number {
     return this._settingsService.initialInterval;
+  }
+
+  public generateSeqUrl(taskId: string): string {
+    return this._settingsService.generateSeqUrl({
+      filter: `taskId='${taskId}'`,
+    });
+  }
+
+  public isCompleted(task: TaskSummary): boolean {
+    return task.status === TaskStatus.TASK_STATUS_COMPLETED;
   }
 
   /**
@@ -105,18 +142,6 @@ export class TasksListComponent {
   }
 
   /**
-   * Track by interval
-   *
-   * @param _
-   * @param interval
-   *
-   * @returns Interval
-   */
-  public trackByInterval(_: number, interval: number): string {
-    return interval.toString();
-  }
-
-  /**
    * Refresh tasks using a new state
    *
    * @param state
@@ -128,12 +153,35 @@ export class TasksListComponent {
   }
 
   /**
-   * Refresh manually tasks using new state
+   * Refresh manually tasks without a new state
    *
    * @returns void
    */
   public manualRefreshTasks(): void {
     this._subjectManual.next();
+  }
+
+  /**
+   *  Get a single task
+   *
+   * @param taskId
+   */
+  public viewTaskDetail(taskId: string): void {
+    this._subjectSingleTask.next(taskId);
+  }
+
+  /*
+   *  Cancel many tasks
+   */
+  public cancelSelection(): void {
+    this.loadingCancelTasks$.next(true);
+
+    const selectionIds = this.selected.map((value) => value.id ?? '');
+    this._cancelTasks$(selectionIds)
+      .pipe(first())
+      .subscribe({
+        complete: () => this.manualRefreshTasks(),
+      });
   }
 
   /**
@@ -149,6 +197,30 @@ export class TasksListComponent {
       map((value) => Number(value)),
       distinctUntilChanged()
     );
+  }
+
+  /**
+   * Track by interval
+   *
+   * @param _
+   * @param interval
+   *
+   * @returns Interval
+   */
+  public trackByInterval(_: number, interval: number): string {
+    return interval.toString();
+  }
+
+  /**
+   * Track by task
+   *
+   * @param _
+   * @param task
+   *
+   * @returns Id
+   */
+  public trackByTask(_: number, task: TaskSummary): string {
+    return task.id ?? '';
   }
 
   /**
@@ -187,5 +259,25 @@ export class TasksListComponent {
         this.totalTasks$.next(tasks.total ?? 0);
       })
     );
+  }
+
+  /**
+   * Get single task
+   *
+   * @returns Observable<GetTaskResponse>
+   */
+  private _getTask$(taskId: string): Observable<GetTaskResponse> {
+    return this._grpcTasksService.get$(taskId).pipe(
+      tap(() => {
+        this.opened = true;
+        this.loadingSingleTask$.next(null);
+      })
+    );
+  }
+
+  private _cancelTasks$(taskIds: string[]): Observable<CancelTasksResponse> {
+    return this._grpcTasksService
+      .cancel$(taskIds)
+      .pipe(tap(() => this.loadingCancelTasks$.next(false)));
   }
 }
