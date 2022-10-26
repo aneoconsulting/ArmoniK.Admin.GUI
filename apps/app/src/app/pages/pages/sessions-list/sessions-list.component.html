@@ -103,10 +103,29 @@
         </clr-dg-cell>
         <clr-dg-cell>
           <button
+            type="button"
+            [clrLoading]="(loadingSingleSession$ | async) === session.sessionId"
+            class="btn btn-sm btn-secondary"
+            (click)="viewSessionDetail(session.sessionId!)"
+          >
+            <clr-icon shape="eye"></clr-icon>
+            {{ 'sessions.actions.details' | translate }}
+          </button>
+          <a
+            class="btn btn-sm btn-secondary"
+            [routerLink]="['/', 'tasks']"
+            [queryParams]="{ sessionId: session.sessionId }"
+          >
+            <clr-icon shape="node"></clr-icon>
+            {{ 'sessions.actions.related_tasks' | translate }}
+          </a>
+          <button
+            type="button"
             class="btn btn-sm btn-outline-danger"
             (click)="cancelSession(session.sessionId!)"
             [disabled]="session.cancelledAt"
           >
+            <clr-icon shape="times"></clr-icon>
             {{ 'sessions.actions.cancel' | translate }}
           </button>
         </clr-dg-cell>
@@ -134,3 +153,21 @@
     </clr-dg-footer>
   </clr-datagrid>
 </section>
+
+<clr-modal
+  [(clrModalOpen)]="opened"
+  [clrModalSize]="'lg'"
+  *ngIf="loadSingleSession$ | async as session"
+>
+  <h3 class="modal-title">
+    {{ 'sessions.modal.title' | translate }} {{ session.session!.sessionId }}
+  </h3>
+  <div class="modal-body">
+    <pre>{{ session.session! | json }}</pre>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="opened = false">
+      {{ 'sessions.modal.close' | translate }}
+    </button>
+  </div>
+</clr-modal>

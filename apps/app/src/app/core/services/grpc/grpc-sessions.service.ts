@@ -4,6 +4,8 @@ import { catchError, Observable, of } from 'rxjs';
 import {
   CancelSessionRequest,
   CancelSessionResponse,
+  GetSessionRequest,
+  GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
 } from '../../types/proto/sessions-common.pb';
@@ -25,6 +27,14 @@ export class GrpcSessionsService {
     });
 
     return this._sessionsClient.listSessions(options);
+  }
+
+  public get$(sessionId: string): Observable<GetSessionResponse> {
+    const options = new GetSessionRequest({
+      sessionId,
+    });
+
+    return this._sessionsClient.getSession(options);
   }
 
   public cancel$(sessionId: string): Observable<CancelSessionResponse> {

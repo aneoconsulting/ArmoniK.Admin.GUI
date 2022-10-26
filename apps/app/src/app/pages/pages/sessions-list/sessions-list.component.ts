@@ -4,7 +4,9 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
   catchError,
+  combineLatest,
   concatMap,
+  delay,
   distinctUntilChanged,
   first,
   interval,
@@ -16,13 +18,17 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 import {
   GrpcPagerService,
   GrpcSessionsService,
   SettingsService,
 } from '../../../core';
-import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.pb';
+import {
+  GetSessionResponse,
+  ListSessionsResponse,
+} from '../../../core/types/proto/sessions-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -32,12 +38,24 @@ import { ListSessionsResponse } from '../../../core/types/proto/sessions-common.
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
+  /** Get a single session */
+  opened = false;
+  private _subjectSingleSession = new Subject<string>();
+  private _triggerSingleSession = this._subjectSingleSession.asObservable();
+
+  loadingSingleSession$ = new BehaviorSubject<string | null>(null);
+  loadSingleSession$ = this._triggerSingleSession.pipe(
+    tap((sessionId) => this.loadingSingleSession$.next(sessionId)),
+    switchMap((sessionId) => this._getSession$(sessionId))
+  );
+
+  /** Get sessions */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
   private _subjectStopInterval = new Subject<void>();
 
-  /** Triggers to reload data */
+  /** Triggers to reload sessions */
   private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
@@ -135,6 +153,14 @@ export class SessionsListComponent {
   }
 
   /**
+   *
+   * @param sessionId
+   */
+  public viewSessionDetail(sessionId: string): void {
+    this._subjectSingleSession.next(sessionId);
+  }
+
+  /**
    * Refresh sessions using a new state
    *
    * @param state
@@ -203,6 +229,20 @@ export class SessionsListComponent {
       tap((sessions) => {
         this.loadingSessions$.next(false);
         this.totalSessions$.next(sessions.total ?? 0);
+      })
+    );
+  }
+
+  /**
+   * Get single session
+   *
+   * @returns Observable<GetSessionResponse>
+   */
+  private _getSession$(sessionId: string): Observable<GetSessionResponse> {
+    return this._grpcSessionsService.get$(sessionId).pipe(
+      tap(() => {
+        this.opened = true;
+        this.loadingSingleSession$.next(null);
       })
     );
   }

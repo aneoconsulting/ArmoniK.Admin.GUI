@@ -50,12 +50,18 @@
         },
         "disable": "Disable"
       },
+      "details": "Details",
+      "related_tasks": "Related Tasks",
       "cancel": "Close"
     },
     "pagination": {
       "per_page": "Sessions per page",
       "sessions": "{{value}} sessions",
       "session": "{{value}} session"
+    },
+    "modal": {
+      "title": "Session",
+      "close": "Close"
     }
   },
   "pages": {
