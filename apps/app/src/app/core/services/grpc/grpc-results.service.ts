@@ -12,7 +12,6 @@ export class GrpcResultsService {
   constructor(private _resultsClient: ResultsClient) {}
 
   public list$(params: HttpParams): Observable<ListResultsResponse> {
-    console.log(params);
     const options = new ListResultsRequest({
       page: Number(params.get('page')) || 0,
       pageSize: Number(params.get('pageSize')) || 10,
