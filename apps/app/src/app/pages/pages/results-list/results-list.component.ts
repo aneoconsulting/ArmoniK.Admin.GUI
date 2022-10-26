@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
   catchError,
@@ -21,7 +21,10 @@ import {
   GrpcResultsService,
   SettingsService,
 } from '../../../core';
-import { ListResultsResponse } from '../../../core/types/proto/results-common.pb';
+import {
+  ListResultsRequest,
+  ListResultsResponse,
+} from '../../../core/types/proto/results-common.pb';
 
 @Component({
   selector: 'app-pages-results-list',
@@ -78,6 +81,10 @@ export class ResultsListComponent {
     private _grpcPagerService: GrpcPagerService
   ) {}
 
+  public get OrderByField() {
+    return ListResultsRequest.OrderByField;
+  }
+
   public get subjectInterval() {
     return this._subjectInterval;
   }
@@ -88,6 +95,23 @@ export class ResultsListComponent {
 
   public get initialInterval() {
     return this._settingsService.initialInterval;
+  }
+
+  public defaultSortOrder(
+    field: ListResultsRequest.OrderByField
+  ): ClrDatagridSortOrder {
+    const orderBy = Number(
+      this._activatedRoute.snapshot.queryParamMap.get('orderBy')
+    );
+
+    if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
+
+    const order =
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+
+    if (order === -1) return ClrDatagridSortOrder.DESC;
+
+    return ClrDatagridSortOrder.ASC;
   }
 
   /**

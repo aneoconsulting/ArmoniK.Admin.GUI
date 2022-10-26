@@ -12,12 +12,18 @@ export class GrpcResultsService {
   constructor(private _resultsClient: ResultsClient) {}
 
   public list$(params: HttpParams): Observable<ListResultsResponse> {
+    console.log(params);
     const options = new ListResultsRequest({
-      page: 0,
-      pageSize: 10,
+      page: Number(params.get('page')) || 0,
+      pageSize: Number(params.get('pageSize')) || 10,
       sort: {
-        field: ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction: ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        field:
+          Number(params.get('orderBy')) ||
+          ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+        direction:
+          Number(params.get('order')) === 1
+            ? ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
+            : ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {},
     });
