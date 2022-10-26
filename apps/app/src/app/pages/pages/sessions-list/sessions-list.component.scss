@@ -16,10 +16,7 @@ clr-dg-cell {
   }
 }
 
-$textTypes: (
-  'success',
-  'danger',
-);
+$textTypes: ('success', 'danger');
 
 @each $type in $textTypes {
   .text-#{$type} {
