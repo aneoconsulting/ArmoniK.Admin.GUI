@@ -36,8 +36,10 @@
       "actions": "Actions"
     },
     "cells": {
-      "1": "Open",
-      "2": "Cancelled"
+      "status": {
+        "1": "Opened",
+        "2": "Cancelled"
+      }
     },
     "actions": {
       "refresh": "Refresh",

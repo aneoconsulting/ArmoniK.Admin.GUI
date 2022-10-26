@@ -65,15 +65,24 @@
     <ng-container *ngIf="loadSessions$ | async as list">
       <clr-dg-row *ngFor="let session of list.sessions">
         <clr-dg-cell>
-          <a
-            [routerLink]="['/', 'tasks']"
-            [queryParams]="{ sessionId: session.sessionId }"
-          >
-            {{ session.sessionId }}
-          </a>
+          {{ session.sessionId }}
         </clr-dg-cell>
         <clr-dg-cell>
-          {{ 'sessions.cells.' + session.status | translate }}
+          <a
+            [routerLink]="['/', 'sessions']"
+            [queryParams]="{ status: session.status }"
+          >
+            <span
+              [ngClass]="{
+                'text-success': session.status === 1,
+                'text-danger': session.status === 2
+              }"
+            >
+              {{ 'sessions.cells.status.' + session.status | translate }} ({{
+                session.status
+              }})
+            </span>
+          </a>
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="session.createdAt; else empty">

@@ -202,7 +202,7 @@ export class SessionsListComponent {
       }),
       tap((sessions) => {
         this.loadingSessions$.next(false);
-        this.totalSessions$.next(sessions.totalCount ?? 0);
+        this.totalSessions$.next(sessions.total ?? 0);
       })
     );
   }

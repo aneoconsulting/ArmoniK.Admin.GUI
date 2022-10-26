@@ -36,8 +36,10 @@
       "actions": "Actions"
     },
     "cells": {
-      "1": "Ouverte",
-      "2": "Annulée"
+      "status": {
+        "1": "Ouverte",
+        "2": "Annulée"
+      }
     },
     "actions": {
       "refresh": "Rafraîchir",
