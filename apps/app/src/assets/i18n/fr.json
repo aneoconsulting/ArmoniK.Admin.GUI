@@ -34,7 +34,8 @@
       "task_id": "Task ID",
       "session_id": "Session ID",
       "status": "Statut",
-      "created_at": "Créé le"
+      "created_at": "Créé le",
+      "actions": "Actions"
     },
     "cells": {
       "status": {
@@ -52,7 +53,8 @@
           "title": "Rafraîchissement automatique",
           "disabled": "Désactivé"
         },
-        "disable": "Désactiver"
+        "disable": "Désactiver",
+        "parent_task": "Task"
       }
     },
     "pagination": {

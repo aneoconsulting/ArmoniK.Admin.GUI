@@ -63,6 +63,9 @@
     <clr-dg-column>
       {{ 'results.columns.created_at' | translate }}
     </clr-dg-column>
+    <clr-dg-column>
+      {{ 'results.columns.actions' | translate }}
+    </clr-dg-column>
 
     <ng-container *ngIf="loadResults$ | async as list">
       <clr-dg-row *ngFor="let result of list.results">
@@ -110,6 +113,16 @@
                 | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
             }}
           </span>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <a
+            class="btn btn-sm btn-secondary"
+            [routerLink]="['/', 'tasks']"
+            [queryParams]="{ taskId: result.ownerTaskId }"
+          >
+            <clr-icon shape="node"></clr-icon>
+            {{ 'results.actions.parent_task' | translate }}
+          </a>
         </clr-dg-cell>
         <ng-template #empty> - </ng-template>
       </clr-dg-row>
