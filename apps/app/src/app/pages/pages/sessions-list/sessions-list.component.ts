@@ -4,9 +4,7 @@ import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
   catchError,
-  combineLatest,
   concatMap,
-  delay,
   distinctUntilChanged,
   first,
   interval,
@@ -18,7 +16,6 @@ import {
   switchMap,
   takeUntil,
   tap,
-  timer,
 } from 'rxjs';
 import {
   GrpcPagerService,
