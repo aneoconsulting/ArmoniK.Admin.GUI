@@ -17,11 +17,16 @@ export class GrpcTasksService {
 
   public list$(params: HttpParams): Observable<ListTasksResponse> {
     const options = new ListTasksRequest({
-      page: 0,
-      pageSize: 10,
+      page: Number(params.get('page')) || 0,
+      pageSize: Number(params.get('pageSize')) || 10,
       sort: {
-        field: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
-        direction: ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        field:
+          Number(params.get('orderBy')) ||
+          ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+        direction:
+          Number(params.get('order')) === 1
+            ? ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC
+            : ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {},
     });

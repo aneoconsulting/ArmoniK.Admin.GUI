@@ -22,7 +22,8 @@ $textTypes: (
   'danger',
   'creating',
   'submitted',
-  'dispatched'
+  'dispatched',
+  'cancelled'
 );
 
 @each $type in $textTypes {

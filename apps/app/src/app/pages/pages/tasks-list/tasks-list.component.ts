@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
   catchError,
@@ -25,6 +25,7 @@ import {
   ListTasksResponse,
   CancelTasksResponse,
   TaskSummary,
+  ListTasksRequest,
 } from '../../../core/types/proto/tasks-common.pb';
 
 @Component({
@@ -98,6 +99,10 @@ export class TasksListComponent {
     private _grpcPagerService: GrpcPagerService
   ) {}
 
+  public get OrderByField() {
+    return ListTasksRequest.OrderByField;
+  }
+
   public get isSeqUp(): boolean {
     return this._settingsService.isSeqUp();
   }
@@ -122,6 +127,23 @@ export class TasksListComponent {
 
   public isCompleted(task: TaskSummary): boolean {
     return task.status === TaskStatus.TASK_STATUS_COMPLETED;
+  }
+
+  public defaultSortOrder(
+    field: ListTasksRequest.OrderByField
+  ): ClrDatagridSortOrder {
+    const orderBy = Number(
+      this._activatedRoute.snapshot.queryParamMap.get('orderBy')
+    );
+
+    if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
+
+    const order =
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+
+    if (order === -1) return ClrDatagridSortOrder.DESC;
+
+    return ClrDatagridSortOrder.ASC;
   }
 
   /**

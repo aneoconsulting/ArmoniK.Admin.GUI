@@ -58,22 +58,46 @@
       </clr-dropdown>
     </clr-dg-action-bar>
 
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_TASK_ID.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
+    >
       {{ 'tasks.columns.task_id' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
+      [clrDgSortOrder]="
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
+      "
+    >
       {{ 'tasks.columns.session_id' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+    >
       {{ 'tasks.columns.status' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
+      [clrDgSortOrder]="
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
+      "
+    >
       {{ 'tasks.columns.created_at' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
+      [clrDgSortOrder]="
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_STARTED_AT)
+      "
+    >
       {{ 'tasks.columns.started_at' | translate }}
     </clr-dg-column>
-    <clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
+    >
       {{ 'tasks.columns.ended_at' | translate }}
     </clr-dg-column>
     <clr-dg-column>
@@ -109,7 +133,8 @@
                 'text-danger': [5, 6].includes(task.status ?? 0),
                 'text-creating': task.status === 1,
                 'text-submitted': task.status === 2,
-                'text-dispatched': task.status === 3
+                'text-dispatched': task.status === 3,
+                'text-cancelled': [7, 8].includes(task.status ?? 0)
               }"
             >
               {{ 'tasks.cells.status.' + task.status | translate }} ({{
