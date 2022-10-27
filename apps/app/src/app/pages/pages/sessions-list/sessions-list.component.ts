@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -18,8 +18,10 @@ import {
   tap,
 } from 'rxjs';
 import {
+  BrowserTitleService,
   GrpcPagerService,
   GrpcSessionsService,
+  LanguageService,
   SettingsService,
 } from '../../../core';
 import {
@@ -33,7 +35,7 @@ import {
   templateUrl: './sessions-list.component.html',
   styleUrls: ['./sessions-list.component.scss'],
 })
-export class SessionsListComponent {
+export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
@@ -90,10 +92,18 @@ export class SessionsListComponent {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
+    private _browserTitleService: BrowserTitleService,
+    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
+
+  ngOnInit(): void {
+    this._browserTitleService.setTitle(
+      this._languageService.instant('sessions.title')
+    );
+  }
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
