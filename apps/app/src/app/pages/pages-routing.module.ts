@@ -25,6 +25,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'applications-2',
+        loadChildren: () =>
+          import('./pages/applications-list/applications-list.module').then(
+            (m) => m.ApplicationsListModule
+          ),
+      },
+      {
         path: 'sessions',
         loadChildren: () =>
           import('./pages/sessions-list/sessions-list.module').then(

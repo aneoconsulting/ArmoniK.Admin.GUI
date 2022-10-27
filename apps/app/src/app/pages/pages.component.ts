@@ -18,6 +18,10 @@ export class PagesComponent {
       label: this.languageService.instant('navigation.dashboard'),
     },
     {
+      path: ['/', 'applications-2'],
+      label: this.languageService.instant('navigation.applications'),
+    },
+    {
       path: ['/', 'sessions'],
       label: this.languageService.instant('navigation.sessions'),
     },

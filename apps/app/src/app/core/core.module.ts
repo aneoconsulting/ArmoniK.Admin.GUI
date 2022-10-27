@@ -5,10 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocaleProvider } from './providers';
+import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
+import { GrpcCoreModule } from '@ngx-grpc/core';
 import {
   ApiService,
   ApplicationsService,
   ErrorService,
+  GrpcPagerService,
   LanguageService,
   PagerService,
   SeqService,
@@ -16,6 +19,7 @@ import {
   SettingsService,
   TasksService,
 } from './services';
+import { GrpcApplicationsService } from './services/grpc/grpc-applications.service';
 
 /**
  * Contain the code that is specific to the application
@@ -27,6 +31,12 @@ import {
     BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
+    GrpcCoreModule.forRoot(),
+    GrpcWebClientModule.forRoot({
+      settings: {
+        host: '',
+      },
+    }),
   ],
   providers: [
     LocaleProvider,
@@ -39,6 +49,8 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    GrpcPagerService,
+    GrpcApplicationsService,
   ],
 })
 export class CoreModule {}

@@ -12,6 +12,7 @@ import { ErrorComponent } from './pages/error/error.component';
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
+import '@clr/icons/shapes/technology-shapes';
 
 /**
  * Load app pages

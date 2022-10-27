@@ -14,6 +14,7 @@
   },
   "navigation": {
     "dashboard": "Tableau de bord",
+    "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tâches",
     "errors": "Erreurs",
@@ -25,6 +26,29 @@
   "applications_subnav": {
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
+  },
+  "applications": {
+    "title": "Applications",
+    "columns": {
+      "name": "Name",
+      "version": "Version",
+      "namespace": "Espace de noms",
+      "service": "Service"
+    },
+    "actions": {
+      "refresh": "Rafraîchir",
+      "auto_refresh": {
+        "button": {
+          "title": "Rafraîchissement automatique",
+          "disabled": "Désactivé"
+        }
+      }
+    },
+    "pagination": {
+      "per_page": "Par page",
+      "applications": "{{value}} résultats",
+      "application": "{{value}} résultat"
+    }
   },
   "pages": {
     "dashboard": {
