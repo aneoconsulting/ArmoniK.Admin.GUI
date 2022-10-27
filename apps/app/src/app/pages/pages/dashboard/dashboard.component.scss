@@ -1,3 +1,25 @@
+.applications {
+  &__grid {
+    position: relative;
+
+    &__spinner {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background-color: rgba($color: #000000, $alpha: 0.5);
+    }
+  }
+
+  &__pagination {
+    margin-top: 1.2rem;
+  }
+}
+
+
 app-pages-dashboard-application-card {
   display: flex;
 }

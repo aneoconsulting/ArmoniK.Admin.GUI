@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { HttpParams } from '@angular/common/http';
+import {
+  AfterContentInit,
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Application,
@@ -6,15 +14,27 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  first,
+  Observable,
+  Subject,
+  Subscription,
+  switchMap,
+  tap,
+  timer,
+} from 'rxjs';
 import {
   AppError,
   ApplicationsService,
   BrowserTitleService,
+  GrpcApplicationsService,
   LanguageService,
   PagerService,
   SettingsService,
 } from '../../../core';
+import { ListApplicationsResponse } from '../../../core/types/proto/applications-common.pb';
 import { StatesService } from '../../../shared';
 
 /**
@@ -25,7 +45,21 @@ import { StatesService } from '../../../shared';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+  page = 0;
+  pageSize = 9;
+  total = 0;
+
+  private _subjectManual = new Subject<void>();
+  private _triggerManual$ = this._subjectManual.asObservable();
+
+  loadingApplications$ = new BehaviorSubject<boolean>(true);
+  applications$ = this._triggerManual$.pipe(
+    tap(() => this.loadingApplications$.next(true)),
+    switchMap(() => this._listApplications$())
+  );
+
+  // past
   applicationsErrorsSubscription = new Subscription();
   subscriptions: Subscription = new Subscription();
 
@@ -47,7 +81,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private statesService: StatesService,
     private pagerService: PagerService,
     private applicationsService: ApplicationsService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _grpcApplicationsService: GrpcApplicationsService
   ) {}
 
   ngOnInit() {
@@ -64,9 +99,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
   }
 
+  ngAfterViewInit(): void {
+    this._subjectManual.next();
+  }
+
   ngOnDestroy() {
     this.applicationsErrorsSubscription.unsubscribe();
     this.subscriptions.unsubscribe();
+  }
+
+  manualRefreshApplications() {
+    this._subjectManual.next();
+  }
+
+  nextPage() {
+    this.page += 1;
+    this._subjectManual.next();
+  }
+
+  previousPage() {
+    this.page -= 1;
+    this._subjectManual.next();
+  }
+
+  get isFirstPage() {
+    return this.page === 0;
+  }
+
+  get isLastPage() {
+    return this.page === this.lastPage;
+  }
+
+  get lastPage() {
+    return Math.ceil(this.total / this.pageSize) - 1;
   }
 
   get isSeqUp(): boolean {
@@ -162,5 +227,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.statesService.saveState(this.applicationsErrorsStateKey, this.state);
     this.applicationsErrorsLoading = false;
     this.applicationsErrors = applications;
+  }
+
+  private _listApplications$(): Observable<ListApplicationsResponse> {
+    const httpParams = new HttpParams({
+      fromObject: {
+        page: this.page,
+        pageSize: this.pageSize,
+      },
+    });
+    return this._grpcApplicationsService.list$(httpParams).pipe(
+      tap((applications) => console.log(applications)),
+      tap((applications) => {
+        this.total = applications.total ?? 0;
+      }),
+      tap(() => this.loadingApplications$.next(false))
+    );
   }
 }

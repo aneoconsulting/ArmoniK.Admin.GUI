@@ -26,6 +26,16 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
+  "dashboard": {
+    "applications": {
+      "related_sessions": "Sessions liées",
+      "actions": {
+        "refresh": "Rafraîchir",
+        "previous_page": "Précédente",
+        "next_page": "Suivante"
+      }
+    }
+  },
   "pages": {
     "dashboard": {
       "title": "Tableau de bord",
