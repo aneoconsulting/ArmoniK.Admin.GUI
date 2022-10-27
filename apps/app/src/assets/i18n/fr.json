@@ -33,7 +33,8 @@
       "name": "Name",
       "version": "Version",
       "namespace": "Espace de noms",
-      "service": "Service"
+      "service": "Service",
+      "actions": "Actions"
     },
     "actions": {
       "refresh": "Rafraîchir",
@@ -41,8 +42,10 @@
         "button": {
           "title": "Rafraîchissement automatique",
           "disabled": "Désactivé"
-        }
-      }
+        },
+        "disable": "Désactiver"
+      },
+      "related_sessions": "Sessions liées"
     },
     "pagination": {
       "per_page": "Par page",

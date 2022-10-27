@@ -33,7 +33,8 @@
       "name": "Name",
       "version": "Version",
       "namespace": "Namespace",
-      "service": "Service"
+      "service": "Service",
+      "actions": "Actions"
     },
     "actions": {
       "refresh": "Refresh",
@@ -41,8 +42,10 @@
         "button": {
           "title": "Auto-refresh",
           "disabled": "Disabled"
-        }
-      }
+        },
+        "disable": "Disable"
+      },
+      "related_sessions": "Related sessions"
     },
     "pagination": {
       "per_page": "Per page",

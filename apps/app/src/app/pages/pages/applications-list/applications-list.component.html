@@ -73,6 +73,9 @@
     >
       {{ 'applications.columns.service' | translate }}
     </clr-dg-column>
+    <clr-dg-column>
+      {{ 'applications.columns.actions' | translate }}
+    </clr-dg-column>
 
     <ng-container *ngIf="loadApplications$ | async as list">
       <clr-dg-row *ngFor="let application of list.application">
@@ -86,8 +89,24 @@
           {{ application.namespace }}
         </clr-dg-cell>
         <clr-dg-cell>
-          {{ application.service }}
+          <span *ngIf="application.service; else empty">
+            {{ application.service }}
+          </span>
         </clr-dg-cell>
+        <clr-dg-cell>
+          <a
+            class="btn btn-sm btn-secondary"
+            [routerLink]="['/', 'sessions']"
+            [queryParams]="{
+              applicationName: application.name,
+              applicationVersion: application.version
+            }"
+          >
+            <clr-icon shape="nodes"></clr-icon>
+            {{ 'applications.actions.related_sessions' | translate }}
+          </a>
+        </clr-dg-cell>
+        <ng-template #empty> - </ng-template>
       </clr-dg-row>
     </ng-container>
     <clr-dg-footer>

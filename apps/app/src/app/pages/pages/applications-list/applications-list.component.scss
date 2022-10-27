@@ -1,0 +1,13 @@
+.datagrid-action-bar {
+  margin-top: 0;
+}
+
+.auto-refresh>button>span {
+  text-transform: capitalize;
+}
+
+clr-dg-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
