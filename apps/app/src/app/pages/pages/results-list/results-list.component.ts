@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -17,8 +17,10 @@ import {
   tap,
 } from 'rxjs';
 import {
+  BrowserTitleService,
   GrpcPagerService,
   GrpcResultsService,
+  LanguageService,
   SettingsService,
 } from '../../../core';
 import {
@@ -31,7 +33,7 @@ import {
   templateUrl: './results-list.component.html',
   styleUrls: ['./results-list.component.scss'],
 })
-export class ResultsListComponent {
+export class ResultsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   private _subjectManual = new Subject<void>();
@@ -76,10 +78,18 @@ export class ResultsListComponent {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
+    private _browserTitleService: BrowserTitleService,
+    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcResultsService: GrpcResultsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
+
+  ngOnInit(): void {
+    this._browserTitleService.setTitle(
+      this._languageService.instant('results.title')
+    );
+  }
 
   public get OrderByField() {
     return ListResultsRequest.OrderByField;
