@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -17,7 +17,12 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { GrpcPagerService, SettingsService } from '../../../core';
+import {
+  BrowserTitleService,
+  GrpcPagerService,
+  LanguageService,
+  SettingsService,
+} from '../../../core';
 import { GrpcTasksService } from '../../../core/services/grpc/grpc-tasks.service';
 import { TaskStatus } from '../../../core/types/proto/task-status.pb';
 import {
@@ -33,7 +38,7 @@ import {
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.scss'],
 })
-export class TasksListComponent {
+export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get tasks */
@@ -94,10 +99,18 @@ export class TasksListComponent {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
+    private _browserTitleService: BrowserTitleService,
+    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
     private _grpcPagerService: GrpcPagerService
   ) {}
+
+  ngOnInit(): void {
+    this._browserTitleService.setTitle(
+      this._languageService.instant('tasks.title')
+    );
+  }
 
   public get OrderByField() {
     return ListTasksRequest.OrderByField;
