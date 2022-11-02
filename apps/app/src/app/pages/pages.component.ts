@@ -6,6 +6,7 @@ import {
   Language,
   LanguageCode,
   SettingsService,
+  AppNavLink,
 } from '../core';
 
 @Component({
@@ -15,6 +16,29 @@ import {
 })
 export class PagesComponent implements OnInit {
   now = Date.now();
+
+  links: AppNavLink[] = [
+    {
+      path: ['/', 'dashboard'],
+      label: this.languageService.instant('navigation.dashboard'),
+      shape: 'home',
+    },
+    {
+      path: ['/', 'sessions'],
+      label: this.languageService.instant('navigation.sessions'),
+      shape: 'nodes',
+    },
+    {
+      path: ['/', 'tasks'],
+      label: this.languageService.instant('navigation.tasks'),
+      shape: 'node',
+    },
+    {
+      path: ['/', 'errors'],
+      label: this.languageService.instant('navigation.errors'),
+      shape: 'error-standard',
+    },
+  ];
 
   constructor(
     private router: Router,
@@ -90,5 +114,16 @@ export class PagesComponent implements OnInit {
    */
   trackByApplicationId(_: number, item: Application['_id']): string {
     return `${item.applicationName}${item.applicationVersion}`;
+  }
+
+  /** Used to track label
+   *
+   * @param index
+   * @param item
+   *
+   * @returns value
+   */
+  trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
+    return item.label;
   }
 }
