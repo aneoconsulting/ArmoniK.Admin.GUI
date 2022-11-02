@@ -5,6 +5,7 @@ import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { FavoritesService } from '../core';
+import { HistoryService } from '../core/services/history.service';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -25,7 +26,12 @@ describe('PagesComponent', () => {
         UiModule,
         ClarityModule,
       ],
-      providers: [FavoritesService, { provide: Window, useValue: WindowMock }],
+      providers: [
+        FavoritesService,
+        HistoryService,
+        { provide: Window, useValue: WindowMock },
+        { provide: Storage, useValue: localStorage },
+      ],
     }).compileComponents();
   });
 
