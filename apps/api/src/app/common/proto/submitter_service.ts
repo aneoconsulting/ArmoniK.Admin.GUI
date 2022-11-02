@@ -6,7 +6,10 @@ import { Observable } from 'rxjs';
 
 export interface Submitter {
   CancelSession(Session: Session, metadata: Metadata): Observable<unknown>;
-  CancelTasks(TaskFilter: TaskFilter): Observable<Record<string, never>>;
+  CancelTasks(
+    TaskFilter: TaskFilter,
+    metadata: Metadata
+  ): Observable<Record<string, never>>;
 }
 
 interface TaskFilter {

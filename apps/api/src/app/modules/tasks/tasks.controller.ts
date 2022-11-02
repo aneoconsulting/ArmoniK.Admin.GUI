@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -92,9 +93,13 @@ export class TasksController {
    */
   @Put('/cancel-many')
   @ApiNotFoundResponse({ description: 'Not found' })
-  cancel(@Body('tasksId') tasksId: string[]) {
+  cancel(@Body('tasksId') tasksId: string[], @Headers() headers) {
     return this.tasksService
-      .cancelMany(tasksId)
+      .cancelMany(
+        tasksId,
+        headers['X-Certificate-Client-CN'] ?? '',
+        headers['X-Certificate-Client-Fingerprint'] ?? ''
+      )
       .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }

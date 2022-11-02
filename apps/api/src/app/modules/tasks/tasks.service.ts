@@ -1,4 +1,5 @@
 import { Pagination, TaskStatus } from '@armonik.admin.gui/armonik-typing';
+import { Metadata } from '@grpc/grpc-js';
 import {
   Inject,
   Injectable,
@@ -139,17 +140,25 @@ export class TasksService implements OnModuleInit {
    *
    * @param ids Ids of the tasks
    */
-  cancelMany(ids: string[]) {
-    return this.submitterService.CancelTasks({
-      task: { ids },
-      // only tasks that can be cancelled
-      included: {
-        statuses: [
-          TaskStatus.CREATING,
-          TaskStatus.SUBMITTED,
-          TaskStatus.DISPATCHED,
-        ],
+  cancelMany(ids: string[], clientCN, clientFingerprint) {
+    // Must pass headers to the request to enable authentication
+    const metadata = new Metadata();
+    metadata.add('X-Certificate-Client-CN', clientCN);
+    metadata.add('X-Certificate-Client-Fingerprint', clientFingerprint);
+
+    return this.submitterService.CancelTasks(
+      {
+        task: { ids },
+        // only tasks that can be cancelled
+        included: {
+          statuses: [
+            TaskStatus.CREATING,
+            TaskStatus.SUBMITTED,
+            TaskStatus.DISPATCHED,
+          ],
+        },
       },
-    });
+      metadata
+    );
   }
 }
