@@ -17,15 +17,28 @@
     "sessions": "Sessions",
     "tasks": "Tâches",
     "errors": "Erreurs",
+    "favorites": "Favoris",
     "how_to_use": "Utiliser l'application",
     "return_to_applications": "Retour aux applications",
     "return_to_sessions": "Retour aux sessions",
     "return_to_tasks": "Retour aux tâches"
   },
-  "header": {
-    "subnav": {
-      "no-current-applications": "Aucune application sélectionnée",
-      "close-tab": "Fermer l'onglet"
+  "applications_subnav": {
+    "no_current_applications": "Aucune application sélectionnée",
+    "close_tab": "Fermer l'onglet"
+  },
+  "favorites": {
+    "button": {
+      "add": "Ajouter aux favoris",
+      "remove": "Retirer des favoris"
+    },
+    "modal": {
+      "title": "Créer un favori",
+      "input": {
+        "label": "Nom",
+        "placeholder": "Saisir le nom"
+      },
+      "button": "Créer"
     }
   },
   "pages": {

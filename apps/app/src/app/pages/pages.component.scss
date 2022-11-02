@@ -17,18 +17,15 @@
   }
 }
 
-.language {
+app-pages-languages-selector {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
-.close-btn {
-  background-color: transparent;
-
-  cursor: pointer;
-  border: unset;
+app-pages-applications-subnav {
+  width: 100%;
 }
 
 .version {
@@ -40,4 +37,19 @@
   justify-content: center;
 
   margin-bottom: 0.9rem;
+}
+
+.content-area {
+  position: relative;
+}
+
+app-pages-modal-favorites {
+  position: absolute;
+  top: 1rem;
+  right: 0.5rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 }
