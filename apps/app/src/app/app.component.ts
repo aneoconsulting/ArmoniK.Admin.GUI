@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { first, merge } from 'rxjs';
-import { GrafanaService, SeqService, SettingsService } from './core';
+import {
+  ExternalServices,
+  GrafanaService,
+  SeqService,
+  SettingsService,
+} from './core';
 
 @Component({
   selector: 'app-root',
@@ -18,10 +23,10 @@ export class AppComponent implements OnInit {
     merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
       .pipe(first())
       .subscribe(({ ok, service }) => {
-        if (ok && service === 'seq') {
+        if (ok && service === ExternalServices.SEQ) {
           this.settingsService.seqEnabled = true;
         }
-        if (ok && service === 'grafana') {
+        if (ok && service === ExternalServices.GRAFANA) {
           this.settingsService.grafanaEnabled = true;
         }
       });

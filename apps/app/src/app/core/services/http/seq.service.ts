@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
+import { ExternalServices } from '../../enums';
 import { ApiService } from './api.service';
+import { HealthCheckResponse } from './types';
 
 @Injectable()
 export class SeqService {
@@ -13,13 +15,14 @@ export class SeqService {
    *
    * @returns Observable
    */
-  healthCheck$(): Observable<{ ok: boolean; service: 'seq' }> {
+  healthCheck$(): Observable<HealthCheckResponse> {
+    const service = ExternalServices.SEQ;
     return this._apiService.head(this.url).pipe(
       catchError(() => {
-        return of({ ok: false });
+        return of({ ok: false, service });
       }),
       map((res) => {
-        return { ok: res.ok, service: 'seq' };
+        return { ok: res.ok, service };
       })
     );
   }

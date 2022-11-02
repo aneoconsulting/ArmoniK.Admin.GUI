@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
+import { ExternalServices } from '../../enums';
 import { ApiService } from './api.service';
+import { HealthCheckResponse } from './types';
 
 @Injectable()
 export class GrafanaService {
@@ -13,13 +15,14 @@ export class GrafanaService {
    *
    * @returns Observable
    */
-  healthCheck$(): Observable<{ ok: boolean; service: 'grafana' }> {
+  healthCheck$(): Observable<HealthCheckResponse> {
+    const service = ExternalServices.GRAFANA;
     return this._apiService.head(this.url).pipe(
       catchError(() => {
-        return of({ ok: false });
+        return of({ ok: false, service });
       }),
       map((res) => {
-        return { ok: res.ok, service: 'grafana' };
+        return { ok: res.ok, service };
       })
     );
   }
