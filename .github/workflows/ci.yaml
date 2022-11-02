@@ -9,14 +9,14 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Cache Node Modules
         id: node-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -29,14 +29,14 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Restore Node Modules
         id: node-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -54,14 +54,14 @@ jobs:
     needs: validate-code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Restore Node Modules
         id: node-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -96,7 +96,7 @@ jobs:
       - name: Upload Artifact (App)
         # Store report created on main
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-apps-app
           path: ./coverage/apps/app/
@@ -104,7 +104,7 @@ jobs:
       - name: Upload Artifact (Api)
         # Store report created on main
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-apps-api
           path: ./coverage/apps/api/
@@ -113,13 +113,13 @@ jobs:
     needs: validate-code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Use Node.js 16.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
@@ -135,9 +135,12 @@ jobs:
       - name: Populate MongoDB
         run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
+      - name: Create proxy.conf.json
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-create-proxy-conf.sh
+
       - name: Restore Node Modules
         id: node-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -149,13 +152,13 @@ jobs:
           start: 'npx nx serve api'
           command: npx nx e2e app-e2e
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: cypress-screenshots
           path: ./dist/cypress/apps/app-e2e/screenshots
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
@@ -165,14 +168,14 @@ jobs:
     needs: [unit-tests, e2e-tests]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Restore Node Modules
         id: node-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -196,7 +199,7 @@ jobs:
             file: api.Dockerfile
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: true
@@ -214,13 +217,13 @@ jobs:
 
       - name: Login to DockerHub
         if: github.event_name != 'push'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: ${{ github.event_name != 'push' }}

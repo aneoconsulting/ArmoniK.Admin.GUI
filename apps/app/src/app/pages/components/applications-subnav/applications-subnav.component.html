@@ -1,0 +1,38 @@
+<ul class="nav" role="tablist">
+  <li class="nav-item" role="tab" *ngIf="currentApplications.size === 0">
+    {{ 'applications_subnav.no_current_applications' | translate }}
+  </li>
+  <li
+    class="nav-item"
+    role="tab"
+    *ngFor="let current of currentApplications; trackBy: trackByApplicationId"
+  >
+    <a
+      class="btn btn-link nav-link"
+      [routerLink]="[
+        '/',
+        'applications',
+        current.applicationName,
+        current.applicationVersion,
+        'sessions'
+      ]"
+      routerLinkActive="active"
+    >
+      {{ current.applicationName }} - {{ current.applicationVersion }}</a
+    >
+    <button
+      type="button"
+      class="close-btn"
+      [title]="'applications_subnav.close_tab' | translate"
+    >
+      <span class="sr-only">{{
+        'applications_subnav.close_tab' | translate
+      }}</span>
+      <clr-icon
+        shape="times"
+        class="is-error"
+        (click)="removeApplication(current)"
+      ></clr-icon>
+    </button>
+  </li>
+</ul>
