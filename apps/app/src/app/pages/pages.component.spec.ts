@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { FavoritesService } from '../core';
+import { FavoritesService, SettingsService } from '../core';
 import { HistoryService } from '../core/services/history.service';
 import { PagesComponent } from './pages.component';
 
@@ -27,6 +27,7 @@ describe('PagesComponent', () => {
         ClarityModule,
       ],
       providers: [
+        SettingsService,
         FavoritesService,
         HistoryService,
         { provide: Window, useValue: WindowMock },
@@ -43,6 +44,60 @@ describe('PagesComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('external services links', () => {
+    it('should render if SEQ is up', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.seqEnabled = true;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/seq/"]');
+
+      expect(anchor).toBeTruthy();
+    });
+
+    it('should render if Grafana is up', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.grafanaEnabled = true;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/grafana/"]');
+
+      expect(anchor).toBeTruthy();
+    });
+
+    it('should not render if SEQ is down', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.seqEnabled = false;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/seq/"]');
+
+      expect(anchor).toBeFalsy();
+    });
+
+    it('should not render if Grafana is down', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.grafanaEnabled = false;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/grafana/"]');
+
+      expect(anchor).toBeFalsy();
+    });
   });
 
   describe('track by', () => {
