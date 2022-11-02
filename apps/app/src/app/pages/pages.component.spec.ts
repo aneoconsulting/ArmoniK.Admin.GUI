@@ -61,6 +61,12 @@ describe('PagesComponent', () => {
   });
 
   describe('track by', () => {
+    it('should return label for navigation link', () => {
+      const label = 'Dashboard';
+      const link = { path: ['/', 'dashboard'], label, shape: 'Home' };
+      expect(component.trackByLabel(0, link)).toBe(label);
+    });
+
     it('should return name for language', () => {
       const lang = { code: LanguageCode.en, name: 'English' } as Language;
       expect(component.trackByLanguageName(0, lang)).toBe(lang.name);
