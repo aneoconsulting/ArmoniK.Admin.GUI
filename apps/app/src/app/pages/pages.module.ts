@@ -12,6 +12,7 @@ import { ErrorComponent } from './pages/error/error.component';
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
+import { NavigationHistoryComponent } from './components';
 import '@clr/icons/shapes/social-shapes';
 import {
   ModalFavoritesComponent,
@@ -27,6 +28,7 @@ import {
     ErrorComponent,
     ApplicationsSubnavComponent,
     LanguagesSelectorComponent,
+    NavigationHistoryComponent,
     ModalFavoritesComponent,
     NavigationFavoritesComponent,
     TimeComponent,
