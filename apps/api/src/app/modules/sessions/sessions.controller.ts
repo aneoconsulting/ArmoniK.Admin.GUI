@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Header,
+  Headers,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -81,9 +83,16 @@ export class SessionsController {
    */
   @Put('/:id/cancel')
   @ApiNotFoundResponse({ description: 'Not found' })
-  async cancel(@Param('id') sessionId: string) {
+  async cancel(
+    @Param('id') sessionId: string,
+    @Headers() headers: Record<string, string>
+  ) {
     return this.sessionsService
-      .cancel(sessionId)
+      .cancel(
+        sessionId,
+        headers['X-Certificate-Client-CN'] ?? '',
+        headers['X-Certificate-Client-Fingerprint'] ?? ''
+      )
       .pipe(catchError((err) => this.grpcErrorService.handleError(err)));
   }
 }

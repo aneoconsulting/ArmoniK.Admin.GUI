@@ -3,6 +3,7 @@ import {
   FormattedSession,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
+import { Metadata } from '@grpc/grpc-js';
 import {
   Inject,
   Injectable,
@@ -316,7 +317,12 @@ export class SessionsService implements OnModuleInit {
    *
    * @param sessionId Id of the session
    */
-  cancel(sessionId: string) {
-    return this.submitterService.CancelSession({ id: sessionId });
+  cancel(sessionId: string, clientCN: string, clientFingerprint: string) {
+    // Must pass headers to the request to enable authentication
+    const metadata = new Metadata();
+    metadata.add('X-Certificate-Client-CN', clientCN);
+    metadata.add('X-Certificate-Client-Fingerprint', clientFingerprint);
+
+    return this.submitterService.CancelSession({ id: sessionId }, metadata);
   }
 }
