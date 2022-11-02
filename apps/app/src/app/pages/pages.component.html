@@ -31,19 +31,21 @@
         Grafana</a
       >
       <div class="nav-divider"></div>
+      <app-pages-navigation-favorites></app-pages-navigation-favorites>
+      <div class="nav-divider"></div>
       <a
         clrVerticalNavLink
         routerLink="/how-to-use"
         routerLinkActive="active"
         >{{ 'navigation.how_to_use' | translate }}</a
       >
-
       <div class="version">
         <span> v0.7.0 </span>
       </div>
     </clr-vertical-nav>
 
     <div class="content-area">
+      <app-pages-modal-favorites> </app-pages-modal-favorites>
       <router-outlet></router-outlet>
     </div>
   </div>

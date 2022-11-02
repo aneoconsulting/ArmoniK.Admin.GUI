@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  AppNavLink,
-  LanguageCode,
-  LanguageService,
-  SettingsService,
-} from '../core';
+import { AppNavLink, LanguageService, SettingsService } from '../core';
 
 @Component({
   selector: 'app-pages',
@@ -36,17 +31,6 @@ export class PagesComponent {
     public settingsService: SettingsService,
     public window: Window
   ) {}
-
-  /**
-   * Used to know if a language is current
-   *
-   * @param lang
-   *
-   * @returns boolean
-   */
-  isSelected(lang: LanguageCode): boolean {
-    return this.languageService.currentLang === lang;
-  }
 
   /** Used to track label
    *
