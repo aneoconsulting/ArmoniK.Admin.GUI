@@ -16,6 +16,8 @@ describe('sessions', () => {
         );
 
         cy.get('.datagrid clr-dg-row a').first().click();
+
+        cy.location('pathname').should('include', '/sessions/');
       });
   });
 

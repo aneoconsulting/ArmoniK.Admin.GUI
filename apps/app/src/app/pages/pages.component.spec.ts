@@ -1,17 +1,10 @@
-import {
-  ComponentFixture,
-  discardPeriodicTasks,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Application } from '@armonik.admin.gui/armonik-typing';
 import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { SettingsService } from '../core';
+import { FavoritesService } from '../core';
 import { PagesComponent } from './pages.component';
 
 const WindowMock = {
@@ -26,12 +19,13 @@ describe('PagesComponent', () => {
     TestBed.configureTestingModule({
       declarations: [PagesComponent],
       imports: [
+        NoopAnimationsModule,
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
         UiModule,
         ClarityModule,
       ],
-      providers: [{ provide: Window, useValue: WindowMock }],
+      providers: [FavoritesService, { provide: Window, useValue: WindowMock }],
     }).compileComponents();
   });
 
@@ -45,53 +39,11 @@ describe('PagesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('ngOnInit', () => {
-    it('should update date every minute', fakeAsync(() => {
-      const initialNow = component.now;
-      component.ngOnInit();
-      tick(2000 * 60);
-      discardPeriodicTasks();
-      expect(component.now).toBeGreaterThan(initialNow);
-    }));
-  });
-
   describe('track by', () => {
     it('should return label for navigation link', () => {
       const label = 'Dashboard';
       const link = { path: ['/', 'dashboard'], label };
       expect(component.trackByLabel(0, link)).toBe(label);
-    });
-
-    it('should return application name and version for application', () => {
-      const applicationId = {
-        applicationName: 'Test',
-        applicationVersion: '1.0.0',
-      } as Application['_id'];
-      expect(component.trackByApplicationId(0, applicationId)).toBe(
-        `${applicationId.applicationName}${applicationId.applicationVersion}`
-      );
-    });
-  });
-
-  describe('removeApplication', () => {
-    it('should remove application', () => {
-      const application = {
-        applicationName: 'Test',
-        applicationVersion: '1.0.0',
-      } as Application['_id'];
-
-      const settingsService = TestBed.inject(SettingsService);
-      spyOn(settingsService, 'removeCurrentApplication');
-
-      const router = TestBed.inject(Router);
-      spyOn(router, 'navigate');
-
-      component.removeApplication(application);
-
-      expect(settingsService.removeCurrentApplication).toHaveBeenCalledWith(
-        application
-      );
-      expect(router.navigate).toHaveBeenCalledWith(['/', 'dashboard']);
     });
   });
 });
