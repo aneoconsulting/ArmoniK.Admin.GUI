@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Application } from '@armonik.admin.gui/armonik-typing';
-import {
-  LanguageService,
-  Language,
-  LanguageCode,
-  AppNavLink,
-  SettingsService,
-} from '../core';
+import { NavigationEnd, Router } from '@angular/router';
+import { distinctUntilChanged, filter } from 'rxjs';
+import { AppNavLink, LanguageService, SettingsService } from '../core';
+import { HistoryService } from '../core/services/history.service';
 
 @Component({
   selector: 'app-pages',
@@ -15,8 +10,6 @@ import {
   styleUrls: ['./pages.component.scss'],
 })
 export class PagesComponent implements OnInit {
-  now = Date.now();
-
   links: AppNavLink[] = [
     {
       path: ['/', 'dashboard'],
@@ -37,30 +30,27 @@ export class PagesComponent implements OnInit {
   ];
 
   constructor(
-    private router: Router,
+    private _router: Router,
     private languageService: LanguageService,
     public settingsService: SettingsService,
+    public historyService: HistoryService,
     public window: Window
   ) {}
 
   ngOnInit(): void {
-    setInterval(() => {
-      this.now = Date.now();
-    }, 1000 * 60);
-  }
-
-  public get currentApplications(): Set<Application['_id']> {
-    return this.settingsService.currentApplications;
-  }
-
-  /**
-   * Remove current application from the list
-   *
-   * @param application
-   */
-  removeApplication(application: Application['_id']): void {
-    this.settingsService.removeCurrentApplication(application);
-    this.router.navigate(['/', 'dashboard']);
+    // Add current url to history
+    this.historyService.add(this._router.url);
+    // Subscribe to router events to track url changes
+    this._router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        distinctUntilChanged((previous: any, current: any) => {
+          return previous.url === current.url;
+        })
+      )
+      .subscribe((event) => {
+        this.historyService.add((event as NavigationEnd).urlAfterRedirects);
+      });
   }
 
   /** Used to track label
@@ -72,17 +62,5 @@ export class PagesComponent implements OnInit {
    */
   trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
     return item.label;
-  }
-
-  /**
-   * Used to tack current application Id for ngFor
-   *
-   * @param index
-   * @param item
-   *
-   * @returns value
-   */
-  trackByApplicationId(_: number, item: Application['_id']): string {
-    return `${item.applicationName}${item.applicationVersion}`;
   }
 }

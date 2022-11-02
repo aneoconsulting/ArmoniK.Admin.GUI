@@ -6,58 +6,16 @@
           <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
         </figure>
         &nbsp; - &nbsp;
-        <span class="title--date">
-          {{ now | date: 'short' }}
-        </span>
+        <app-pages-time></app-pages-time>
       </span>
     </a>
     <app-pages-languages-selector actions></app-pages-languages-selector>
-    <ul subnav class="nav" role="tablist">
-      <li class="nav-item" role="tab" *ngIf="currentApplications.size === 0">
-        {{ 'header.subnav.no-current-applications' | translate }}
-      </li>
-      <li
-        class="nav-item"
-        role="tab"
-        *ngFor="
-          let current of currentApplications;
-          trackBy: trackByApplicationId
-        "
-      >
-        <a
-          class="btn btn-link nav-link"
-          [routerLink]="[
-            '/',
-            'applications',
-            current.applicationName,
-            current.applicationVersion,
-            'sessions'
-          ]"
-          routerLinkActive="active"
-        >
-          {{ current.applicationName }} - {{ current.applicationVersion }}</a
-        >
-        <button
-          type="button"
-          class="close-btn"
-          [title]="'header.subnav.close-tab' | translate"
-        >
-          <span class="sr-only">{{
-            'header.subnav.close-tab' | translate
-          }}</span>
-          <clr-icon
-            shape="times"
-            class="is-error"
-            (click)="removeApplication(current)"
-          ></clr-icon>
-        </button>
-      </li>
-    </ul>
+    <app-pages-applications-subnav subnav></app-pages-applications-subnav>
   </ui-header>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
       <a
-        *ngFor="let link of links"
+        *ngFor="let link of links; trackBy: trackByLabel"
         clrVerticalNavLink
         [routerLink]="link.path"
         routerLinkActive="active"
@@ -73,19 +31,22 @@
         Grafana</a
       >
       <div class="nav-divider"></div>
+      <app-pages-navigation-favorites></app-pages-navigation-favorites>
+      <app-pages-navigation-history></app-pages-navigation-history>
+      <div class="nav-divider"></div>
       <a
         clrVerticalNavLink
         routerLink="/how-to-use"
         routerLinkActive="active"
         >{{ 'navigation.how_to_use' | translate }}</a
       >
-
       <div class="version">
         <span> v0.7.0 </span>
       </div>
     </clr-vertical-nav>
 
     <div class="content-area">
+      <app-pages-modal-favorites> </app-pages-modal-favorites>
       <router-outlet></router-outlet>
     </div>
   </div>
