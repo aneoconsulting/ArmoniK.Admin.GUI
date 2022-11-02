@@ -52,4 +52,15 @@ export class PagesComponent implements OnInit {
         this.historyService.add((event as NavigationEnd).urlAfterRedirects);
       });
   }
+
+  /** Used to track label
+   *
+   * @param index
+   * @param item
+   *
+   * @returns value
+   */
+  trackByLabel(_: number, item: AppNavLink): AppNavLink['label'] {
+    return item.label;
+  }
 }
