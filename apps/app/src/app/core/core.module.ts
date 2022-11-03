@@ -12,6 +12,8 @@ import {
   ErrorService,
   GrpcPagerService,
   GrpcSessionsService,
+  HistoryService,
+  FavoritesService,
   LanguageService,
   PagerService,
   SeqService,
@@ -41,7 +43,9 @@ import {
     LocaleProvider,
     LanguageService,
     SettingsService,
+    HistoryService,
     ApiService,
+    FavoritesService,
     ErrorService,
     ApplicationsService,
     SessionsService,
@@ -50,6 +54,10 @@ import {
     SeqService,
     GrpcSessionsService,
     GrpcPagerService,
+    {
+      provide: Storage,
+      useFactory: () => localStorage,
+    },
   ],
 })
 export class CoreModule {}
