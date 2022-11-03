@@ -14,7 +14,6 @@ export class PagesComponent implements OnInit {
     {
       path: ['/', 'dashboard'],
       label: this.languageService.instant('navigation.dashboard'),
-      queryParams: {},
     },
     {
       path: ['/', 'sessions'],
@@ -24,12 +23,10 @@ export class PagesComponent implements OnInit {
     {
       path: ['/', 'tasks'],
       label: this.languageService.instant('navigation.tasks'),
-      queryParams: {},
     },
     {
       path: ['/', 'errors'],
       label: this.languageService.instant('navigation.errors'),
-      queryParams: {},
     },
   ];
 

@@ -24,6 +24,7 @@ import {
   LanguageService,
   SettingsService,
 } from '../../../core';
+import { SessionStatus } from '../../../core/types/proto/session-status.pb';
 import {
   GetSessionResponse,
   ListSessionsRequest,
@@ -107,6 +108,10 @@ export class SessionsListComponent implements OnInit {
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
+  }
+
+  public get SessionStatusEnum() {
+    return SessionStatus;
   }
 
   public get subjectInterval() {
@@ -249,8 +254,7 @@ export class SessionsListComponent implements OnInit {
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
-    const httpParams = this._grpcPagerService.createHttpParams(params);
-    return this._grpcSessionsService.list$(httpParams).pipe(
+    return this._grpcSessionsService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
         return of({} as ListSessionsResponse);

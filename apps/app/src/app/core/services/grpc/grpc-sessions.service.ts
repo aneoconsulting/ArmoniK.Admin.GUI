@@ -1,6 +1,6 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { GrpcParams } from '../../types/grpc-params.type';
 import {
   CancelSessionRequest,
   CancelSessionResponse,
@@ -22,18 +22,22 @@ export class GrpcSessionsService {
    *
    * @returns Observable<ListSessionsResponse>
    */
-  public list$(params: HttpParams): Observable<ListSessionsResponse> {
+  public list$(
+    params: GrpcParams<
+      ListSessionsRequest.OrderByField,
+      ListSessionsRequest.OrderDirection
+    >
+  ): Observable<ListSessionsResponse> {
     const options = new ListSessionsRequest({
-      page: Number(params.get('page')) || 0,
-      pageSize: Number(params.get('pageSize')) || 10,
+      page: params.page || 0,
+      pageSize: params.pageSize || 10,
       sort: {
         field:
-          Number(params.get('orderBy')) ||
+          params.orderBy ||
           ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
         direction:
-          Number(params.get('order')) === 1
-            ? ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
-            : ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          params.order ||
+          ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {},
     });

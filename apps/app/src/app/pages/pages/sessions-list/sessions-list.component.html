@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'sessions.title' | translate }}</h1>
+  <h1>{{ 'pages.sessions-list.title' | translate }}</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshSessions($event)"
@@ -11,7 +11,7 @@
         class="btn btn-sm btn-secondary"
         (click)="manualRefreshSessions()"
       >
-        {{ 'sessions.actions.refresh' | translate }}
+        {{ 'pages.sessions-list.actions.refresh' | translate }}
       </button>
 
       <clr-dropdown class="auto-refresh">
@@ -20,13 +20,16 @@
           class="btn btn-sm btn-secondary"
           clrDropdownTrigger
         >
-          {{ 'sessions.actions.auto_refresh.button.title' | translate }}
+          {{
+            'pages.sessions-list.actions.auto_refresh.button.title' | translate
+          }}
           <span *ngIf="subjectInterval | async as value">
             &nbsp;-&nbsp;
             {{
               value > 0
                 ? value / 1_000 + 's'
-                : ('sessions.actions.auto_refresh.button.disabled' | translate)
+                : ('pages.sessions-list.actions.auto_refresh.button.disabled'
+                  | translate)
             }}
           </span>
 
@@ -34,7 +37,7 @@
         </button>
         <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
           <button type="button" clrDropdownItem (click)="stopInterval()">
-            {{ 'sessions.actions.auto_refresh.disable' | translate }}
+            {{ 'pages.sessions-list.actions.auto_refresh.disable' | translate }}
           </button>
           <button
             type="button"
@@ -54,13 +57,13 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
     >
-      {{ 'sessions.columns.session_id' | translate }}
+      {{ 'pages.sessions-list.columns.session_id' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
-      {{ 'sessions.columns.status' | translate }}
+      {{ 'pages.sessions-list.columns.status' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -68,7 +71,7 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
     >
-      {{ 'sessions.columns.created_at' | translate }}
+      {{ 'pages.sessions-list.columns.created_at' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
@@ -76,10 +79,10 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
       "
     >
-      {{ 'sessions.columns.cancelled_at' | translate }}
+      {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
     </clr-dg-column>
     <clr-dg-column>
-      {{ 'sessions.columns.actions' | translate }}
+      {{ 'pages.sessions-list.columns.actions' | translate }}
     </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
@@ -94,13 +97,16 @@
           >
             <span
               [ngClass]="{
-                'text-success': session.status === 1,
-                'text-danger': session.status === 2
+                'text-success':
+                  session.status === SessionStatusEnum.SESSION_STATUS_RUNNING,
+                'text-danger':
+                  session.status === SessionStatusEnum.SESSION_STATUS_CANCELLED
               }"
             >
-              {{ 'sessions.cells.status.' + session.status | translate }} ({{
-                session.status
-              }})
+              {{
+                'pages.sessions-list.cells.status.' + session.status | translate
+              }}
+              ({{ session.status }})
             </span>
           </a>
         </clr-dg-cell>
@@ -119,7 +125,6 @@
                 | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
             }}
           </span>
-          <ng-template #empty> - </ng-template>
         </clr-dg-cell>
         <clr-dg-cell>
           <button
@@ -129,7 +134,7 @@
             (click)="viewSessionDetail(session.sessionId!)"
           >
             <clr-icon shape="eye"></clr-icon>
-            {{ 'sessions.actions.details' | translate }}
+            {{ 'pages.sessions-list.actions.details' | translate }}
           </button>
           <a
             class="btn btn-sm btn-secondary"
@@ -137,7 +142,7 @@
             [queryParams]="{ sessionId: session.sessionId }"
           >
             <clr-icon shape="node"></clr-icon>
-            {{ 'sessions.actions.related_tasks' | translate }}
+            {{ 'pages.sessions-list.actions.related_tasks' | translate }}
           </a>
           <button
             type="button"
@@ -146,7 +151,7 @@
             [disabled]="session.cancelledAt"
           >
             <clr-icon shape="times"></clr-icon>
-            {{ 'sessions.actions.cancel' | translate }}
+            {{ 'pages.sessions-list.actions.cancel' | translate }}
           </button>
         </clr-dg-cell>
       </clr-dg-row>
@@ -180,14 +185,17 @@
   *ngIf="loadSingleSession$ | async as session"
 >
   <h3 class="modal-title">
-    {{ 'sessions.modal.title' | translate }} {{ session.session!.sessionId }}
+    {{ 'pages.sessions-list.modal.title' | translate }}
+    {{ session.session!.sessionId }}
   </h3>
   <div class="modal-body">
     <pre>{{ session.session! | json }}</pre>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="opened = false">
-      {{ 'sessions.modal.close' | translate }}
+      {{ 'pages.sessions-list.modal.close' | translate }}
     </button>
   </div>
 </clr-modal>
+
+<ng-template #empty> - </ng-template>
