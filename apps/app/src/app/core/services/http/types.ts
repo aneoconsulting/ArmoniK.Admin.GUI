@@ -1,6 +1,6 @@
-import { ExternalServices } from '../../enums';
+import { ExternalServicesEnum } from '../../enums';
 
 export type HealthCheckResponse = {
-  ok: boolean;
-  service: ExternalServices;
+  isResponseOk: boolean;
+  service: ExternalServicesEnum;
 };

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { ExternalServices } from '../../enums';
+import { ExternalServicesEnum } from '../../enums';
 import { ApiService } from './api.service';
 import { HealthCheckResponse } from './types';
 
@@ -16,13 +16,13 @@ export class GrafanaService {
    * @returns Observable
    */
   healthCheck$(): Observable<HealthCheckResponse> {
-    const service = ExternalServices.GRAFANA;
+    const service = ExternalServicesEnum.GRAFANA;
     return this._apiService.head(this.url).pipe(
-      catchError(() => {
-        return of({ ok: false, service });
-      }),
       map((res) => {
-        return { ok: res.ok, service };
+        return { isResponseOk: res.ok, service };
+      }),
+      catchError(() => {
+        return of({ isResponseOk: false, service });
       })
     );
   }

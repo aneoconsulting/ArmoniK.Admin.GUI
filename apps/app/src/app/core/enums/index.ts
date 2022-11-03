@@ -1,3 +1,3 @@
 export * from './language-code.enum';
 
-export * from './external-services';
+export * from './external-services.enum';

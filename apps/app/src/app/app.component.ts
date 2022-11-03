@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { first, merge } from 'rxjs';
 import {
-  ExternalServices,
+  ExternalServicesEnum,
   GrafanaService,
   SeqService,
   SettingsService,
@@ -22,11 +22,11 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
       .pipe(first())
-      .subscribe(({ ok, service }) => {
-        if (ok && service === ExternalServices.SEQ) {
+      .subscribe(({ isResponseOk, service }) => {
+        if (isResponseOk && service === ExternalServicesEnum.SEQ) {
           this.settingsService.seqEnabled = true;
         }
-        if (ok && service === ExternalServices.GRAFANA) {
+        if (isResponseOk && service === ExternalServicesEnum.GRAFANA) {
           this.settingsService.grafanaEnabled = true;
         }
       });
