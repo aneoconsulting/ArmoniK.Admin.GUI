@@ -8,8 +8,9 @@ import {
   ApiService,
   ApplicationsService,
   ErrorService,
-  HistoryService,
   FavoritesService,
+  GrafanaService,
+  HistoryService,
   LanguageService,
   PagerService,
   SeqService,
@@ -42,6 +43,7 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    GrafanaService,
     {
       provide: Storage,
       useFactory: () => localStorage,
