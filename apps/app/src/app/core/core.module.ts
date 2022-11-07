@@ -57,6 +57,7 @@ import { GrpcApplicationsService } from './services/grpc/grpc-applications.servi
     GrpcPagerService,
     GrpcApplicationsService,
     {
+      provide: Storage,
       useFactory: () => localStorage,
     },
   ],
