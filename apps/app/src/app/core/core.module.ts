@@ -61,3 +61,4 @@ import { GrpcApplicationsService } from './services/grpc/grpc-applications.servi
     },
   ],
 })
+export class CoreModule {}
