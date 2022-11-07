@@ -43,4 +43,8 @@ export class ApiService {
   put<T>(path: string, body: Record<string, unknown> = {}): Observable<T> {
     return this.http.put<T>(path, body).pipe(catchError(this.formatErrors));
   }
+
+  head(path: string) {
+    return this.http.head(path, { observe: 'response', responseType: 'json' });
+  }
 }

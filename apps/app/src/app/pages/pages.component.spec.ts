@@ -46,6 +46,60 @@ describe('PagesComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('external services links', () => {
+    it('should render if SEQ is up', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.seqEnabled = true;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/seq/"]');
+
+      expect(anchor).toBeTruthy();
+    });
+
+    it('should render if Grafana is up', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.grafanaEnabled = true;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/grafana/"]');
+
+      expect(anchor).toBeTruthy();
+    });
+
+    it('should not render if SEQ is down', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.seqEnabled = false;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/seq/"]');
+
+      expect(anchor).toBeFalsy();
+    });
+
+    it('should not render if Grafana is down', () => {
+      const settingsService = TestBed.inject(SettingsService);
+
+      settingsService.grafanaEnabled = false;
+      // Refresh component
+      fixture.detectChanges();
+
+      // Get anchor to seq using nativeElement
+      const anchor = fixture.nativeElement.querySelector('a[href="/grafana/"]');
+
+      expect(anchor).toBeFalsy();
+    });
+  });
+
   describe('track by', () => {
     it('should return label for navigation link', () => {
       const label = 'Dashboard';

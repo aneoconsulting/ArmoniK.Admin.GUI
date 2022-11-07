@@ -14,6 +14,7 @@ import {
   GrpcSessionsService,
   HistoryService,
   FavoritesService,
+  GrafanaService,
   LanguageService,
   PagerService,
   SeqService,
@@ -52,6 +53,7 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    GrafanaService,
     GrpcSessionsService,
     GrpcPagerService,
     {
