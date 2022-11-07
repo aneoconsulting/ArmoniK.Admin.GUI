@@ -17,6 +17,8 @@
     "sessions": "Sessions",
     "tasks": "Tasks",
     "errors": "Errors",
+    "history": "History",
+    "favorites": "Favorites",
     "how_to_use": "How to use",
     "return_to_applications": "Return to applications",
     "return_to_sessions": "Return to sessions",
@@ -34,6 +36,20 @@
         "previous_page": "Previous",
         "next_page": "Next"
       }
+    }
+  },
+  "favorites": {
+    "button": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites"
+    },
+    "modal": {
+      "title": "Create a new favorite",
+      "input": {
+        "label": "Name",
+        "placeholder": "Enter a name"
+      },
+      "button": "Create"
     }
   },
   "pages": {

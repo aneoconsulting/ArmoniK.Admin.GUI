@@ -9,3 +9,5 @@ export * from './sessions.service';
 export * from './tasks.service';
 
 export * from './seq.service';
+
+export * from './grafana.service';
