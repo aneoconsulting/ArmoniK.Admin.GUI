@@ -3,14 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SeqService } from './core';
+import { GrafanaService, SeqService } from './core';
 import { HttpClientModule } from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      providers: [SeqService],
+      providers: [SeqService, GrafanaService],
       imports: [
         RouterTestingModule.withRoutes([]),
         ClarityModule,

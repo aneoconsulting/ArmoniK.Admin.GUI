@@ -18,6 +18,8 @@
     "sessions": "Sessions",
     "tasks": "Tâches",
     "errors": "Erreurs",
+    "history": "Historique",
+    "favorites": "Favoris",
     "how_to_use": "Utiliser l'application",
     "return_to_applications": "Retour aux applications",
     "return_to_sessions": "Retour aux sessions",
@@ -51,6 +53,20 @@
       "per_page": "Par page",
       "applications": "{{value}} résultats",
       "application": "{{value}} résultat"
+    }
+  },
+  "favorites": {
+    "button": {
+      "add": "Ajouter aux favoris",
+      "remove": "Retirer des favoris"
+    },
+    "modal": {
+      "title": "Créer un favori",
+      "input": {
+        "label": "Nom",
+        "placeholder": "Saisir le nom"
+      },
+      "button": "Créer"
     }
   },
   "pages": {

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocaleProvider } from './providers';
@@ -12,6 +11,9 @@ import {
   ApplicationsService,
   ErrorService,
   GrpcPagerService,
+  FavoritesService,
+  GrafanaService,
+  HistoryService,
   LanguageService,
   PagerService,
   SeqService,
@@ -42,15 +44,20 @@ import { GrpcApplicationsService } from './services/grpc/grpc-applications.servi
     LocaleProvider,
     LanguageService,
     SettingsService,
+    HistoryService,
     ApiService,
+    FavoritesService,
     ErrorService,
     ApplicationsService,
     SessionsService,
     TasksService,
     PagerService,
     SeqService,
+    GrafanaService,
     GrpcPagerService,
     GrpcApplicationsService,
+    {
+      useFactory: () => localStorage,
+    },
   ],
 })
-export class CoreModule {}
