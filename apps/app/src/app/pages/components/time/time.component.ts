@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { map, Observable, tap, timer } from 'rxjs';
+import { map, Observable, timer } from 'rxjs';
 
 @Component({
   selector: 'app-pages-time',
