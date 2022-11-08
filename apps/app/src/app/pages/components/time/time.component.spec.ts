@@ -40,7 +40,9 @@ describe('TimeComponent', () => {
         } else {
           secondDate = date;
           expect(secondDate).not.toEqual(firstDate);
-          expect(secondDate.getTime() - firstDate.getTime()).toBe(1000);
+          expect(
+            secondDate.getTime() - firstDate.getTime() >= 1000
+          ).toBeTruthy();
           done();
         }
       });

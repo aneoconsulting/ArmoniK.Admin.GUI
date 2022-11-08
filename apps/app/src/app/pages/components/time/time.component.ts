@@ -11,6 +11,6 @@ export class TimeComponent implements OnInit {
   time$: Observable<Date>;
 
   ngOnInit() {
-    this.time$ = timer(0, 100).pipe(map(() => new Date()));
+    this.time$ = timer(0, 1000).pipe(map(() => new Date()));
   }
 }
