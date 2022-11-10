@@ -22,30 +22,26 @@
         >{{ link.label }}</a
       >
       <div
-        class="nav-divider"
-        *ngIf="
-          (settingsService.seqSubject$ | async) ||
-          (settingsService.grafanaSubject$ | async)
-        "
-      ></div>
-      <a
-        clrVerticalNavLink
-        href="/seq/"
-        target="_blank"
-        *ngIf="settingsService.seqSubject$ | async"
+        *ngIf="{
+          seq: settingsService.seqSubject$ | async,
+          grafana: settingsService.grafanaSubject$ | async
+        } as isUp"
       >
-        <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
-        Seq</a
-      >
-      <a
-        clrVerticalNavLink
-        href="/grafana/"
-        target="_blank"
-        *ngIf="settingsService.grafanaSubject$ | async"
-      >
-        <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
-        Grafana</a
-      >
+        <div class="nav-divider" *ngIf="isUp.seq || isUp.grafana"></div>
+        <a clrVerticalNavLink href="/seq/" target="_blank" *ngIf="isUp.seq">
+          <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
+          Seq</a
+        >
+        <a
+          clrVerticalNavLink
+          href="/grafana/"
+          target="_blank"
+          *ngIf="isUp.grafana"
+        >
+          <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
+          Grafana</a
+        >
+      </div>
       <div class="nav-divider"></div>
       <app-pages-navigation-favorites></app-pages-navigation-favorites>
       <app-pages-navigation-history></app-pages-navigation-history>
