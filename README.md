@@ -103,7 +103,7 @@ Then, you must copy `.env.example` to `.env` and fill host, port and database na
 Example
 
 ```txt
-MongoDB__Host=localhost
+MongoDB__Host=127.0.0.1
 MongoDB__Port=27017
 MongoDB__DatabaseName=armonik
 ```

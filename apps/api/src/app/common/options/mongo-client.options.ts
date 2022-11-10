@@ -8,7 +8,7 @@ const mongoClientVar = {
   env: process.env.NODE_ENV ?? 'development',
   user: process.env.MongoDB__User,
   pass: process.env.MongoDB__Password,
-  host: process.env.MongoDB__Host ?? 'localhost',
+  host: process.env.MongoDB__Host ?? '127.0.0.1',
   port: process.env.MongoDB__Port ?? '27017',
   databaseName: process.env.MongoDB__DatabaseName ?? 'test',
   directConnection: process.env.MongoDB__DirectConnection,
