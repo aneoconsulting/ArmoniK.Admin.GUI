@@ -38,14 +38,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   applicationsErrorsLoading = true;
   applicationsErrors: Pagination<ApplicationError> | null = null;
 
-  isSeqUp = false;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private languageService: LanguageService,
     private browserTitleService: BrowserTitleService,
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     private statesService: StatesService,
     private pagerService: PagerService,
     private applicationsService: ApplicationsService,
@@ -64,8 +62,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       })
     );
-
-    this.settingsService.seqSubject$.subscribe((v) => (this.isSeqUp = v));
   }
 
   ngOnDestroy() {
