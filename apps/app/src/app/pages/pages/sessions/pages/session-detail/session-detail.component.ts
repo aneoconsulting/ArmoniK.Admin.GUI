@@ -36,8 +36,6 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
 
   cancelTasksButtonState = ClrLoadingState.DEFAULT;
 
-  isSeqUp = false;
-
   constructor(
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
@@ -45,7 +43,7 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
     private tasksService: TasksService,
     private statesService: StatesService,
     private pagerService: PagerService,
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     public autoRefreshService: AutoRefreshService
   ) {
     // Activate auto refresh
@@ -64,8 +62,6 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
         id: this.sessionId,
       })
     );
-
-    this.settingsService.seqSubject$.subscribe(v => this.isSeqUp = v);
   }
 
   ngOnDestroy() {

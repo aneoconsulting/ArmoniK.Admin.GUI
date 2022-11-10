@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.settingsService.seqSubject$.subscribe(v => this.isSeqUp = v);
+    this.settingsService.seqSubject$.subscribe((v) => (this.isSeqUp = v));
   }
 
   ngOnDestroy() {

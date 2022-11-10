@@ -21,8 +21,19 @@
         routerLinkActive="active"
         >{{ link.label }}</a
       >
-      <div class="nav-divider" *ngIf="isSeqEnabled || isGrafanaEnabled"></div>
-      <a clrVerticalNavLink href="/seq/" target="_blank" *ngIf="isSeqEnabled">
+      <div
+        class="nav-divider"
+        *ngIf="
+          (settingsService.seqSubject$ | async) ||
+          (settingsService.grafanaSubject$ | async)
+        "
+      ></div>
+      <a
+        clrVerticalNavLink
+        href="/seq/"
+        target="_blank"
+        *ngIf="settingsService.seqSubject$ | async"
+      >
         <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
         Seq</a
       >
@@ -30,7 +41,7 @@
         clrVerticalNavLink
         href="/grafana/"
         target="_blank"
-        *ngIf="isGrafanaEnabled"
+        *ngIf="settingsService.grafanaSubject$ | async"
       >
         <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
         Grafana</a

@@ -7,8 +7,9 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class SettingsService {
-
-  grafanaSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  grafanaSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
   seqSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   currentApplications: Set<Application['_id']>;

@@ -29,9 +29,6 @@ export class PagesComponent implements OnInit {
     },
   ];
 
-  isSeqEnabled = false;
-  isGrafanaEnabled = false;
-
   constructor(
     private _router: Router,
     private languageService: LanguageService,
@@ -54,9 +51,6 @@ export class PagesComponent implements OnInit {
       .subscribe((event) => {
         this.historyService.add((event as NavigationEnd).urlAfterRedirects);
       });
-
-      this.settingsService.seqSubject$.subscribe(v => this.isSeqEnabled = v);
-      this.settingsService.grafanaSubject$.subscribe(v => this.isGrafanaEnabled = v);
   }
 
   /** Used to track label
