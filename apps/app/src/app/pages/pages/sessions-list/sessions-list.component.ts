@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -35,6 +35,7 @@ import {
   selector: 'app-pages-sessions-list',
   templateUrl: './sessions-list.component.html',
   styleUrls: ['./sessions-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
@@ -254,9 +255,12 @@ export class SessionsListComponent implements OnInit {
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
+
     return this._grpcSessionsService.list$(params).pipe(
-      catchError((error) => {
+      catchError((error: Error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListSessionsResponse);
       }),
       tap((sessions) => {
