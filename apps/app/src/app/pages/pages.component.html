@@ -21,7 +21,7 @@
         routerLinkActive="active"
         >{{ link.label }}</a
       >
-      <div
+      <ng-container
         *ngIf="{
           seq: settingsService.seqSubject$ | async,
           grafana: settingsService.grafanaSubject$ | async
@@ -41,7 +41,7 @@
           <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
           Grafana</a
         >
-      </div>
+      </ng-container>
       <div class="nav-divider"></div>
       <app-pages-navigation-favorites></app-pages-navigation-favorites>
       <app-pages-navigation-history></app-pages-navigation-history>
