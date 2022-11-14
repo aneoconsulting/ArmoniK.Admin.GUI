@@ -14,6 +14,7 @@ import {
 } from '../../../../../core';
 import { StatesService } from '../../../../../shared';
 import { Subscription } from 'rxjs';
+import { GrpcTasksService } from '../../../../../core';
 
 @Component({
   selector: 'app-pages-sessions-session-detail',
@@ -41,6 +42,7 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
     private browserTitleService: BrowserTitleService,
     private languageService: LanguageService,
     private tasksService: TasksService,
+    private _grpcTasksService: GrpcTasksService,
     private statesService: StatesService,
     private pagerService: PagerService,
     private settingsService: SettingsService,
@@ -131,7 +133,9 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
    */
   onCancelTasks() {
     this.cancelTasksButtonState = ClrLoadingState.LOADING;
-    this.tasksService.cancelMany(this.selectedTasks).subscribe({
+
+    const tasksId = this.selectedTasks.map((task) => task.id);
+    this._grpcTasksService.cancel$(tasksId).subscribe({
       error: this.onErrorCancelTasks.bind(this),
       next: this.onNextCancelTasks.bind(this),
     });
