@@ -116,6 +116,10 @@ export class TasksListComponent implements OnInit {
     return ListTasksRequest.OrderByField;
   }
 
+  public get TaskStatusEnum() {
+    return TaskStatus;
+  }
+
   public get isSeqUp(): boolean {
     return this._settingsService.isSeqUp();
   }
