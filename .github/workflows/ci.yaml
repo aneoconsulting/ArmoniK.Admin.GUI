@@ -141,6 +141,9 @@ jobs:
       - name: Populate MongoDB
         run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
+      - name: Create proxy.conf.json
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-create-proxy-conf.sh
+
       - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v2
