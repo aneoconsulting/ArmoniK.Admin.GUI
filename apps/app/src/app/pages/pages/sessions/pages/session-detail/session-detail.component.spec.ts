@@ -9,10 +9,16 @@ import {
   StatesService,
   TaskStatusFilterComponent,
 } from '../../../../../shared';
-import { PagerService, TasksService } from '../../../../../core';
+import {
+  GrpcTasksService,
+  PagerService,
+  TasksService,
+} from '../../../../../core';
 import { TasksListComponent } from './components';
 import { SessionDetailComponent } from './session-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GrpcCoreModule } from '@ngx-grpc/core';
+import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 
 describe('SessionDetailComponent', () => {
   let component: SessionDetailComponent;
@@ -33,8 +39,14 @@ describe('SessionDetailComponent', () => {
         ClarityModule,
         HttpClientModule,
         BrowserAnimationsModule,
+        GrpcCoreModule.forRoot(),
+        GrpcWebClientModule.forRoot({
+          settings: {
+            host: '',
+          },
+        }),
       ],
-      providers: [TasksService, PagerService, StatesService],
+      providers: [TasksService, PagerService, StatesService, GrpcTasksService],
     }).compileComponents();
   });
 
