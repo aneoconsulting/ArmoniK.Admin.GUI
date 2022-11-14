@@ -19,6 +19,7 @@ export class PagesComponent implements OnInit {
     {
       path: ['/', 'sessions'],
       label: this.languageService.instant('navigation.sessions'),
+      queryParams: { page: 0, pageSize: 10 },
       shape: 'nodes',
     },
     {

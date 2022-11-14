@@ -18,6 +18,7 @@
         *ngFor="let link of links; trackBy: trackByLabel"
         clrVerticalNavLink
         [routerLink]="link.path"
+        [queryParams]="link.queryParams"
         routerLinkActive="active"
       >
         <clr-icon [attr.shape]="link.shape" clrVerticalNavIcon></clr-icon>

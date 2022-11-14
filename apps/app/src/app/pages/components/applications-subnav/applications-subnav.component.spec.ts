@@ -13,6 +13,7 @@ describe('ApplicationsSubnavComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ApplicationsSubnavComponent],
+      providers: [SettingsService],
       imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
     }).compileComponents();
   });

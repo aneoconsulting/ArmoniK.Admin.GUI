@@ -3,6 +3,7 @@ import { SharedModule } from '../shared';
 import {
   ApplicationsSubnavComponent,
   LanguagesSelectorComponent,
+  NavigationHistoryComponent,
   TimeComponent,
 } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
@@ -16,7 +17,6 @@ import { ErrorComponent } from './pages/error/error.component';
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
-import { NavigationHistoryComponent } from './components';
 import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/technology-shapes';
 
