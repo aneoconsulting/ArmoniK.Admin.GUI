@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'tasks.title' | translate }}</h1>
+  <h1>{{ 'pages.tasks-list.title' | translate }}</h1>
 
   <clr-datagrid
     [(clrDgSelected)]="selected"
@@ -13,7 +13,7 @@
         class="btn btn-sm btn-outline-danger"
         (click)="cancelSelection()"
       >
-        {{ 'tasks.actions.cancel_selection' | translate }}
+        {{ 'pages.tasks-list.actions.cancel_selection' | translate }}
       </button>
 
       <button
@@ -21,7 +21,7 @@
         class="btn btn-sm btn-secondary"
         (click)="manualRefreshTasks()"
       >
-        {{ 'tasks.actions.refresh' | translate }}
+        {{ 'pages.tasks-list.actions.refresh' | translate }}
       </button>
 
       <clr-dropdown class="auto-refresh">
@@ -30,13 +30,14 @@
           class="btn btn-sm btn-secondary"
           clrDropdownTrigger
         >
-          {{ 'tasks.actions.auto_refresh.button.title' | translate }}
+          {{ 'pages.tasks-list.actions.auto_refresh.button.title' | translate }}
           <span *ngIf="subjectInterval | async as value">
             &nbsp;-&nbsp;
             {{
               value > 0
                 ? value / 1_000 + 's'
-                : ('tasks.actions.auto_refresh.button.disabled' | translate)
+                : ('pages.tasks-list.actions.auto_refresh.button.disabled'
+                  | translate)
             }}
           </span>
 
@@ -44,7 +45,7 @@
         </button>
         <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
           <button type="button" clrDropdownItem (click)="stopInterval()">
-            {{ 'tasks.actions.auto_refresh.disable' | translate }}
+            {{ 'pages.tasks-list.actions.auto_refresh.disable' | translate }}
           </button>
           <button
             type="button"
@@ -62,7 +63,7 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_TASK_ID.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
-      {{ 'tasks.columns.task_id' | translate }}
+      {{ 'pages.tasks-list.columns.task_id' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -70,13 +71,13 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
     >
-      {{ 'tasks.columns.session_id' | translate }}
+      {{ 'pages.tasks-list.columns.session_id' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
-      {{ 'tasks.columns.status' | translate }}
+      {{ 'pages.tasks-list.columns.status' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -84,7 +85,7 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
     >
-      {{ 'tasks.columns.created_at' | translate }}
+      {{ 'pages.tasks-list.columns.created_at' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
@@ -92,16 +93,16 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_STARTED_AT)
       "
     >
-      {{ 'tasks.columns.started_at' | translate }}
+      {{ 'pages.tasks-list.columns.started_at' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
     >
-      {{ 'tasks.columns.ended_at' | translate }}
+      {{ 'pages.tasks-list.columns.ended_at' | translate }}
     </clr-dg-column>
     <clr-dg-column>
-      {{ 'tasks.columns.actions' | translate }}
+      {{ 'pages.tasks-list.columns.actions' | translate }}
     </clr-dg-column>
 
     <ng-container *ngIf="loadTasks$ | async as list">
@@ -115,7 +116,7 @@
         </clr-dg-cell>
         <clr-dg-cell>
           <a
-            [routerLink]="['/', 'tasks']"
+            [routerLink]="['/', 'pages.tasks-list']"
             [queryParams]="{ sessionId: task.sessionId }"
           >
             {{ task.sessionId }}
@@ -123,7 +124,7 @@
         </clr-dg-cell>
         <clr-dg-cell class="status">
           <a
-            [routerLink]="['/', 'tasks']"
+            [routerLink]="['/', 'pages.tasks-list']"
             [queryParams]="{ status: task.status }"
           >
             <span
@@ -137,9 +138,8 @@
                 'text-cancelled': [7, 8].includes(task.status ?? 0)
               }"
             >
-              {{ 'tasks.cells.status.' + task.status | translate }} ({{
-                task.status
-              }})
+              {{ 'pages.tasks-list.cells.status.' + task.status | translate }}
+              ({{ task.status }})
             </span>
           </a>
         </clr-dg-cell>
@@ -175,7 +175,7 @@
             (click)="viewTaskDetail(task.id!)"
           >
             <clr-icon shape="eye"></clr-icon>
-            {{ 'tasks.actions.details' | translate }}
+            {{ 'pages.tasks-list.actions.details' | translate }}
           </button>
           <a
             class="btn btn-sm btn-secondary"
@@ -183,7 +183,7 @@
             [queryParams]="{ ownerTaskId: task.sessionId }"
           >
             <clr-icon shape="certificate"></clr-icon>
-            {{ 'tasks.actions.related_results' | translate }}
+            {{ 'pages.tasks-list.actions.related_results' | translate }}
           </a>
           <a
             class="btn btn-sm btn-secondary"
@@ -191,13 +191,13 @@
             [queryParams]="{ sessionId: task.sessionId }"
           >
             <clr-icon shape="nodes"></clr-icon>
-            {{ 'tasks.actions.parent_session' | translate }}
+            {{ 'pages.tasks-list.actions.parent_session' | translate }}
           </a>
           <a
             *ngIf="isSeqUp"
             class="btn btn-sm btn-secondary"
             target="_blank"
-            [title]="'tasks.actions.view_seq' | translate"
+            [title]="'pages.tasks-list.actions.view_seq' | translate"
             [href]="generateSeqUrl(task.id!)"
           >
             <clr-icon shape="crosshairs"></clr-icon>
@@ -215,12 +215,14 @@
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
-          'tasks.pagination.per_page' | translate
+          'pages.tasks-list.pagination.per_page' | translate
         }}</clr-dg-page-size>
         <span *ngIf="(totalTasks$ | async) ?? 0 > 1 as total">
           {{
-            (total > 1 ? 'tasks.pagination.tasks' : 'tasks.pagination.task')
-              | translate: { value: total }
+            (total > 1
+              ? 'pages.tasks-list.pagination.tasks'
+              : 'pages.tasks-list.pagination.task'
+            ) | translate: { value: total }
           }}
         </span>
       </clr-dg-pagination>
@@ -229,19 +231,20 @@
 </section>
 
 <clr-modal
-  [(clrModalOpen)]="opened"
+  [clrModalOpen]="(isGetTaskModalOpened$ | async) || false"
+  [clrModalClosable]="false"
   [clrModalSize]="'lg'"
   *ngIf="loadSingleTask$ | async as task"
 >
   <h3 class="modal-title">
-    {{ 'tasks.modal.title' | translate }} {{ task.task!.id }}
+    {{ 'pages.tasks-list.modal.title' | translate }} {{ task.task!.id }}
   </h3>
   <div class="modal-body">
     <pre>{{ task.task! | json }}</pre>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="opened = false">
-      {{ 'tasks.modal.close' | translate }}
+    <button type="button" class="btn btn-primary" (click)="closeGetTaskModal()">
+      {{ 'pages.tasks-list.modal.close' | translate }}
     </button>
   </div>
 </clr-modal>

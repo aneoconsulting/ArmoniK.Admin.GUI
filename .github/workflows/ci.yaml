@@ -202,6 +202,12 @@ jobs:
         with:
           main-branch-name: main
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
+
       - name: Build all
         run: npx nx affected --target=build --parallel=3
 

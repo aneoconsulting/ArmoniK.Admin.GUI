@@ -1,6 +1,6 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
+import { GrpcParams } from '../../types/grpc-params.type';
 import {
   CancelTasksRequest,
   CancelTasksResponse,
@@ -13,25 +13,32 @@ import { TasksClient } from '../../types/proto/tasks-service.pbsc';
 
 @Injectable()
 export class GrpcTasksService {
+  private _timeout$ = timer(8_000).pipe(
+    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
+  );
+
   constructor(private _tasksClient: TasksClient) {}
 
-  public list$(params: HttpParams): Observable<ListTasksResponse> {
+  public list$(
+    params: GrpcParams<
+      ListTasksRequest.OrderByField,
+      ListTasksRequest.OrderDirection
+    >
+  ): Observable<ListTasksResponse> {
     const options = new ListTasksRequest({
-      page: Number(params.get('page')) || 0,
-      pageSize: Number(params.get('pageSize')) || 10,
+      page: params.page || 0,
+      pageSize: params.pageSize || 10,
       sort: {
         field:
-          Number(params.get('orderBy')) ||
+          params.orderBy ||
           ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
         direction:
-          Number(params.get('order')) === 1
-            ? ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC
-            : ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          params.order || ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {},
     });
 
-    return this._tasksClient.listTasks(options);
+    return this._tasksClient.listTasks(options).pipe(takeUntil(this._timeout$));
   }
 
   public get$(taskId: string): Observable<GetTaskResponse> {
@@ -39,7 +46,7 @@ export class GrpcTasksService {
       taskId,
     });
 
-    return this._tasksClient.getTask(options);
+    return this._tasksClient.getTask(options).pipe(takeUntil(this._timeout$));
   }
 
   public cancel$(taskIds: string[]): Observable<CancelTasksResponse> {
@@ -47,6 +54,8 @@ export class GrpcTasksService {
       taskIds,
     });
 
-    return this._tasksClient.cancelTasks(options);
+    return this._tasksClient
+      .cancelTasks(options)
+      .pipe(takeUntil(this._timeout$));
   }
 }

@@ -15,35 +15,44 @@
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
       <a
-        *ngFor="let link of links"
+        *ngFor="let link of links; trackBy: trackByLabel"
         clrVerticalNavLink
         [routerLink]="link.path"
+        [queryParams]="link.queryParams"
         routerLinkActive="active"
-        >{{ link.label }}</a
       >
-      <div class="nav-divider"></div>
-      <a clrVerticalNavLink href="/seq/" target="_blank">
+        <clr-icon [attr.shape]="link.shape" clrVerticalNavIcon></clr-icon>
+        {{ link.label }}</a
+      >
+      <div class="nav-divider" *ngIf="isSeqEnabled || isGrafanaEnabled"></div>
+      <a clrVerticalNavLink href="/seq/" target="_blank" *ngIf="isSeqEnabled">
         <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
         Seq</a
       >
-      <a clrVerticalNavLink href="/grafana/" target="_blank">
+      <a
+        clrVerticalNavLink
+        href="/grafana/"
+        target="_blank"
+        *ngIf="isGrafanaEnabled"
+      >
         <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
         Grafana</a
       >
       <div class="nav-divider"></div>
-      <a
-        clrVerticalNavLink
-        routerLink="/how-to-use"
-        routerLinkActive="active"
-        >{{ 'navigation.how_to_use' | translate }}</a
-      >
-
+      <app-pages-navigation-favorites></app-pages-navigation-favorites>
+      <app-pages-navigation-history></app-pages-navigation-history>
+      <div class="nav-divider"></div>
+      <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
+        <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
+        {{ 'navigation.how_to_use' | translate }}
+      </a>
       <div class="version">
         <span> v0.7.0 </span>
       </div>
     </clr-vertical-nav>
 
     <div class="content-area">
+      <app-pages-modal-favorites> </app-pages-modal-favorites>
       <router-outlet></router-outlet>
     </div>
   </div>

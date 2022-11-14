@@ -82,7 +82,7 @@ export class TasksListComponent implements OnInit {
   );
 
   /** Get a single task */
-  opened = false;
+  private _opened$ = new BehaviorSubject<boolean>(false);
   private _subjectSingleTask = new Subject<string>();
   private _triggerSingleTask = this._subjectSingleTask.asObservable();
 
@@ -108,7 +108,7 @@ export class TasksListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('tasks.title')
+      this._languageService.instant('pages.tasks-list.title')
     );
   }
 
@@ -205,6 +205,24 @@ export class TasksListComponent implements OnInit {
     this._subjectSingleTask.next(taskId);
   }
 
+  /**
+   * Open modal to view details
+   */
+  public openGetTaskModal(): void {
+    this._opened$.next(true);
+  }
+
+  /**
+   * Close modal to view details
+   */
+  public closeGetTaskModal(): void {
+    this._opened$.next(false);
+  }
+
+  public get isGetTaskModalOpened$(): Observable<boolean> {
+    return this._opened$.asObservable();
+  }
+
   /*
    *  Cancel many tasks
    */
@@ -283,10 +301,12 @@ export class TasksListComponent implements OnInit {
    */
   private _listTasks$(): Observable<ListTasksResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
-    const httpParams = this._grpcPagerService.createHttpParams(params);
-    return this._grpcTasksService.list$(httpParams).pipe(
+
+    return this._grpcTasksService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListTasksResponse);
       }),
       tap((tasks) => {
@@ -303,16 +323,26 @@ export class TasksListComponent implements OnInit {
    */
   private _getTask$(taskId: string): Observable<GetTaskResponse> {
     return this._grpcTasksService.get$(taskId).pipe(
+      catchError((error: Error) => {
+        console.log(error);
+
+        return of({} as GetTaskResponse);
+      }),
       tap(() => {
-        this.opened = true;
+        this.openGetTaskModal();
         this.loadingSingleTask$.next(null);
       })
     );
   }
 
   private _cancelTasks$(taskIds: string[]): Observable<CancelTasksResponse> {
-    return this._grpcTasksService
-      .cancel$(taskIds)
-      .pipe(tap(() => this.loadingCancelTasks$.next(false)));
+    return this._grpcTasksService.cancel$(taskIds).pipe(
+      catchError((error: Error) => {
+        console.log(error);
+
+        return of({} as CancelTasksResponse);
+      }),
+      tap(() => this.loadingCancelTasks$.next(false))
+    );
   }
 }

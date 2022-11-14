@@ -1,34 +1,34 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { SeqService, SettingsService } from './core';
+import { Component, OnInit } from '@angular/core';
+import { first, merge } from 'rxjs';
+import {
+  ExternalServicesEnum,
+  GrafanaService,
+  SeqService,
+  SettingsService,
+} from './core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, OnDestroy {
-  // Unsubscribe from ping
-  private pingSubscription: Subscription | null = null;
-
+export class AppComponent implements OnInit {
   constructor(
-    private seqService: SeqService,
+    private _seqService: SeqService,
+    private _grafanaService: GrafanaService,
     private settingsService: SettingsService
   ) {}
 
   ngOnInit(): void {
-    // Ping Seq to check if it is up and running
-    this.pingSubscription = this.seqService.ping().subscribe({
-      next: () => {
-        // Enable Seq in settings
-        this.settingsService.seqEnabled = true;
-      },
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.pingSubscription) {
-      this.pingSubscription.unsubscribe();
-    }
+    merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
+      .pipe(first())
+      .subscribe(({ isResponseOk, service }) => {
+        if (isResponseOk && service === ExternalServicesEnum.SEQ) {
+          this.settingsService.seqEnabled = true;
+        }
+        if (isResponseOk && service === ExternalServicesEnum.GRAFANA) {
+          this.settingsService.grafanaEnabled = true;
+        }
+      });
   }
 }

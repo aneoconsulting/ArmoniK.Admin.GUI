@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["armonik", "Armonik", "Gitflow"]
+  "cSpell.words": ["armonik", "Armonik", "Gitflow"],
+  "githubPullRequests.ignoredPullRequestBranches": ["main"]
 }

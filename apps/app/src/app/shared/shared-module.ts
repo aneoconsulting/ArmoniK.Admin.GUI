@@ -37,6 +37,7 @@ import { StatesService } from './services';
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
     ClarityModule,
+    FormsModule,
     CommonModule,
     RouterModule,
     TranslateModule,
