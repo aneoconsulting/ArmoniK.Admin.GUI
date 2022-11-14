@@ -103,7 +103,7 @@ export class SessionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('sessions.title')
+      this._languageService.instant('pages.sessions-list.title')
     );
   }
 
@@ -295,6 +295,11 @@ export class SessionsListComponent implements OnInit {
    */
   private _getSession$(sessionId: string): Observable<GetSessionResponse> {
     return this._grpcSessionsService.get$(sessionId).pipe(
+      catchError((error: Error) => {
+        console.error(error);
+
+        return of({} as GetSessionResponse);
+      }),
       tap(() => {
         this.openGetSessionModal();
         this.loadingSingleSession$.next(null);
