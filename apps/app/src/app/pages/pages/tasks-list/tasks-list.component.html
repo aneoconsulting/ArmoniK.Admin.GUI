@@ -116,7 +116,7 @@
         </clr-dg-cell>
         <clr-dg-cell>
           <a
-            [routerLink]="['/', 'pages.tasks-list']"
+            [routerLink]="['/', 'tasks']"
             [queryParams]="{ sessionId: task.sessionId }"
           >
             {{ task.sessionId }}
@@ -124,7 +124,7 @@
         </clr-dg-cell>
         <clr-dg-cell class="status">
           <a
-            [routerLink]="['/', 'pages.tasks-list']"
+            [routerLink]="['/', 'tasks']"
             [queryParams]="{ status: task.status }"
           >
             <span

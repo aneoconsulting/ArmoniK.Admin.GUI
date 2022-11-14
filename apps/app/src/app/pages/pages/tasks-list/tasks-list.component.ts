@@ -328,7 +328,7 @@ export class TasksListComponent implements OnInit {
   private _getTask$(taskId: string): Observable<GetTaskResponse> {
     return this._grpcTasksService.get$(taskId).pipe(
       catchError((error: Error) => {
-        console.log(error);
+        console.error(error);
 
         return of({} as GetTaskResponse);
       }),
@@ -342,7 +342,7 @@ export class TasksListComponent implements OnInit {
   private _cancelTasks$(taskIds: string[]): Observable<CancelTasksResponse> {
     return this._grpcTasksService.cancel$(taskIds).pipe(
       catchError((error: Error) => {
-        console.log(error);
+        console.error(error);
 
         return of({} as CancelTasksResponse);
       }),
