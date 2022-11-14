@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  CancelTasksRequest,
-  CancelTasksResponse,
-} from '../../types/proto/tasks-common.pb';
-import { TasksClient } from '../../types/proto/tasks-service.pbsc';
+import { Empty } from '../../types/proto/objects.pb';
+import { TaskFilter } from '../../types/proto/submitter-common.pb';
+import { SubmitterClient } from '../../types/proto/submitter-service.pbsc';
 
 @Injectable()
 export class GrpcTasksService {
-  constructor(private _tasksClient: TasksClient) {}
+  constructor(private _tasksClient: SubmitterClient) {}
 
-  public cancel$(taskIds: string[]): Observable<CancelTasksResponse> {
-    const options = new CancelTasksRequest({
-      taskIds,
+  public cancel$(taskIds: string[]): Observable<Empty> {
+    const options = new TaskFilter({
+      task: { ids: taskIds },
     });
 
     return this._tasksClient.cancelTasks(options);
