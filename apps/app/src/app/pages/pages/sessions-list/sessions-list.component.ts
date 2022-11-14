@@ -41,7 +41,7 @@ export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
-  opened = false;
+  private _opened$ = new BehaviorSubject<boolean>(false);
   private _subjectSingleSession = new Subject<string>();
   private _triggerSingleSession = this._subjectSingleSession.asObservable();
 
@@ -196,6 +196,24 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
+   * Open modal to view details
+   */
+  public openGetSessionModal(): void {
+    this._opened$.next(true);
+  }
+
+  /**
+   * Close modal to view details
+   */
+  public closeGetSessionModal(): void {
+    this._opened$.next(false);
+  }
+
+  public get isGetSessionModalOpened$(): Observable<boolean> {
+    return this._opened$.asObservable();
+  }
+
+  /**
    * Refresh sessions using a new state
    *
    * @param state
@@ -278,7 +296,7 @@ export class SessionsListComponent implements OnInit {
   private _getSession$(sessionId: string): Observable<GetSessionResponse> {
     return this._grpcSessionsService.get$(sessionId).pipe(
       tap(() => {
-        this.opened = true;
+        this.openGetSessionModal();
         this.loadingSingleSession$.next(null);
       })
     );
