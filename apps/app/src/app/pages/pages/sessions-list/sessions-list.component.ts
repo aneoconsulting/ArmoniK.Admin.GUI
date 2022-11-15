@@ -41,7 +41,7 @@ export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
-  private _opened$ = new BehaviorSubject<boolean>(false);
+  opened = false;
   private _subjectSingleSession = new Subject<string>();
   private _triggerSingleSession = this._subjectSingleSession.asObservable();
 
@@ -103,7 +103,7 @@ export class SessionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('pages.sessions-list.title')
+      this._languageService.instant('sessions.title')
     );
   }
 
@@ -181,7 +181,14 @@ export class SessionsListComponent implements OnInit {
   public cancelSession(sessionId: string): void {
     this._grpcSessionsService
       .cancel$(sessionId)
-      .pipe(first())
+      .pipe(
+        first(),
+        catchError((error: Error) => {
+          console.error(error);
+
+          return of({} as ListSessionsResponse);
+        })
+      )
       .subscribe({
         next: () => this.manualRefreshSessions(),
       });
@@ -193,24 +200,6 @@ export class SessionsListComponent implements OnInit {
    */
   public viewSessionDetail(sessionId: string): void {
     this._subjectSingleSession.next(sessionId);
-  }
-
-  /**
-   * Open modal to view details
-   */
-  public openGetSessionModal(): void {
-    this._opened$.next(true);
-  }
-
-  /**
-   * Close modal to view details
-   */
-  public closeGetSessionModal(): void {
-    this._opened$.next(false);
-  }
-
-  public get isGetSessionModalOpened$(): Observable<boolean> {
-    return this._opened$.asObservable();
   }
 
   /**
@@ -301,7 +290,7 @@ export class SessionsListComponent implements OnInit {
         return of({} as GetSessionResponse);
       }),
       tap(() => {
-        this.openGetSessionModal();
+        this.opened = true;
         this.loadingSingleSession$.next(null);
       })
     );
