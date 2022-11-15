@@ -63,6 +63,21 @@ export class LanguageService {
    * @param key Key to translate
    * @param params Parameters to use in the translation
    *
+   * @returns Translated observable
+   */
+  get(
+    key: string,
+    params?: Record<string, string | undefined>
+  ): Observable<string> {
+    return this.translateService.get(key, params);
+  }
+
+  /**
+   * Get the translated value of a key, asynchronously
+   *
+   * @param key Key to translate
+   * @param params Parameters to use in the translation
+   *
    * @returns Observable for the translated string
    */
   translate(
