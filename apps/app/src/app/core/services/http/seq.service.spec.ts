@@ -1,3 +1,4 @@
+import { HttpResponse } from '@angular/common/http';
 import { of, Subscription, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 import { SeqService } from './seq.service';
@@ -8,7 +9,7 @@ describe('SeqService', () => {
   let subscription: Subscription;
 
   beforeEach(() => {
-    http = jasmine.createSpyObj('ApiService', ['get']);
+    http = jasmine.createSpyObj('ApiService', ['head']);
     service = new SeqService(http);
   });
 
@@ -22,33 +23,17 @@ describe('SeqService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('ping', () => {
-    it('should ping', (done) => {
-      http.get.and.returnValue(of({}));
+  describe('health check', () => {
+    it('should health check', (done) => {
+      http.head.and.returnValue(of({} as HttpResponse<object>));
 
-      subscription = service.ping().subscribe({
+      subscription = service.healthCheck$().subscribe({
         next: () => {
-          expect(http.get).toHaveBeenCalledWith('/api/seq/ping');
+          expect(http.head).toHaveBeenCalledWith('/seq');
           done();
         },
         error: () => {
           done.fail('should not be called');
-        },
-      });
-    });
-
-    it('should ping error', (done) => {
-      const error = { status: 404 };
-
-      http.get.and.returnValue(throwError(() => error));
-
-      subscription = service.ping().subscribe({
-        next: () => {
-          done.fail('should not be called');
-        },
-        error: (err) => {
-          expect(err).toEqual(error);
-          done();
         },
       });
     });

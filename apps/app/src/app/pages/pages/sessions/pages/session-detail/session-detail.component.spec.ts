@@ -9,7 +9,11 @@ import {
   StatesService,
   TaskStatusFilterComponent,
 } from '../../../../../shared';
-import { PagerService, TasksService } from '../../../../../core';
+import {
+  PagerService,
+  SettingsService,
+  TasksService,
+} from '../../../../../core';
 import { TasksListComponent } from './components';
 import { SessionDetailComponent } from './session-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,7 +38,7 @@ describe('SessionDetailComponent', () => {
         HttpClientModule,
         BrowserAnimationsModule,
       ],
-      providers: [TasksService, PagerService, StatesService],
+      providers: [TasksService, PagerService, StatesService, SettingsService],
     }).compileComponents();
   });
 

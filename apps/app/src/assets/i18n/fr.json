@@ -18,6 +18,8 @@
     "tasks": "Tâches",
     "results": "Résultats",
     "errors": "Erreurs",
+    "history": "Historique",
+    "favorites": "Favoris",
     "how_to_use": "Utiliser l'application",
     "return_to_applications": "Retour aux applications",
     "return_to_sessions": "Retour aux sessions",
@@ -27,43 +29,95 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
-  "results": {
-    "title": "Résultats",
-    "columns": {
-      "name": "Nom",
-      "task_id": "Task ID",
-      "session_id": "Session ID",
-      "status": "Statut",
-      "created_at": "Créé le",
-      "actions": "Actions"
+  "favorites": {
+    "button": {
+      "add": "Ajouter aux favoris",
+      "remove": "Retirer des favoris"
     },
-    "cells": {
-      "status": {
-        "0": "Non spécifié",
-        "1": "En création",
-        "2": "Complet",
-        "3": "Interrompu",
-        "127": "Non trouvé"
-      }
-    },
-    "actions": {
-      "refresh": "Rafraîchir",
-      "auto_refresh": {
-        "button": {
-          "title": "Rafraîchissement automatique",
-          "disabled": "Désactivé"
-        },
-        "disable": "Désactiver",
-        "parent_task": "Task"
-      }
-    },
-    "pagination": {
-      "per_page": "Par page",
-      "results": "{{value}} résultats",
-      "result": "{{value}} résultat"
+    "modal": {
+      "title": "Créer un favori",
+      "input": {
+        "label": "Nom",
+        "placeholder": "Saisir le nom"
+      },
+      "button": "Créer"
     }
   },
   "pages": {
+    "sessions-list": {
+      "title": "Sessions",
+      "columns": {
+        "session_id": "ID de la session",
+        "status": "Statut",
+        "created_at": "Créée le",
+        "cancelled_at": "Fermée le",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "1": "Ouverte",
+          "2": "Annulée"
+        }
+      },
+      "actions": {
+        "refresh": "Rafraîchir",
+        "auto_refresh": {
+          "button": {
+            "title": "Rafraîchissement automatique",
+            "disabled": "Désactivé"
+          },
+          "disable": "Désactiver"
+        },
+        "details": "Détails",
+        "related_tasks": "Tâches liées",
+        "cancel": "Fermer"
+      },
+      "pagination": {
+        "per_page": "Sessions par page",
+        "sessions": "{{value}} sessions",
+        "session": "{{value}} session"
+      },
+      "modal": {
+        "title": "Session",
+        "close": "Fermer"
+      }
+    },
+    "results": {
+      "title": "Résultats",
+      "columns": {
+        "name": "Nom",
+        "task_id": "Task ID",
+        "session_id": "Session ID",
+        "status": "Statut",
+        "created_at": "Créé le",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "0": "Non spécifié",
+          "1": "En création",
+          "2": "Complet",
+          "3": "Interrompu",
+          "127": "Non trouvé"
+        }
+      },
+      "actions": {
+        "refresh": "Rafraîchir",
+        "auto_refresh": {
+          "button": {
+            "title": "Rafraîchissement automatique",
+            "disabled": "Désactivé"
+          },
+          "disable": "Désactiver",
+          "parent_task": "Task"
+        }
+      },
+      "pagination": {
+        "per_page": "Par page",
+        "results": "{{value}} résultats",
+        "result": "{{value}} résultat"
+      }
+    },
     "dashboard": {
       "title": "Tableau de bord",
       "errors": {

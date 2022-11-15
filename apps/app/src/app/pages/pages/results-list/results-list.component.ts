@@ -23,6 +23,7 @@ import {
   LanguageService,
   SettingsService,
 } from '../../../core';
+import { ResultStatus } from '../../../core/types/proto/result-status.pb';
 import {
   ListResultsRequest,
   ListResultsResponse,
@@ -93,6 +94,10 @@ export class ResultsListComponent implements OnInit {
 
   public get OrderByField() {
     return ListResultsRequest.OrderByField;
+  }
+
+  public get ResultsStatusEnum() {
+    return ResultStatus;
   }
 
   public get subjectInterval() {
@@ -213,10 +218,12 @@ export class ResultsListComponent implements OnInit {
    */
   private _listResults$(): Observable<ListResultsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
-    const httpParams = this._grpcPagerService.createHttpParams(params);
-    return this._grpcResultsService.list$(httpParams).pipe(
+
+    return this._grpcResultsService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListResultsResponse);
       }),
       tap((results) => {

@@ -1,6 +1,6 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
+import { GrpcParams } from '../../types/grpc-params.type';
 import {
   ListResultsRequest,
   ListResultsResponse,
@@ -9,24 +9,34 @@ import { ResultsClient } from '../../types/proto/results-service.pbsc';
 
 @Injectable()
 export class GrpcResultsService {
+  private _timeout$ = timer(8_000).pipe(
+    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
+  );
+
   constructor(private _resultsClient: ResultsClient) {}
 
-  public list$(params: HttpParams): Observable<ListResultsResponse> {
+  public list$(
+    params: GrpcParams<
+      ListResultsRequest.OrderByField,
+      ListResultsRequest.OrderDirection
+    >
+  ): Observable<ListResultsResponse> {
     const options = new ListResultsRequest({
-      page: Number(params.get('page')) || 0,
-      pageSize: Number(params.get('pageSize')) || 10,
+      page: params.page || 0,
+      pageSize: params.pageSize || 10,
       sort: {
         field:
-          Number(params.get('orderBy')) ||
+          params.orderBy ||
           ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
         direction:
-          Number(params.get('order')) === 1
-            ? ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
-            : ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          params.order ||
+          ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {},
     });
 
-    return this._resultsClient.listResults(options);
+    return this._resultsClient
+      .listResults(options)
+      .pipe(takeUntil(this._timeout$));
   }
 }

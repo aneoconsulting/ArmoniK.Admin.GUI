@@ -18,6 +18,8 @@
     "tasks": "Tasks",
     "results": "Results",
     "errors": "Errors",
+    "history": "History",
+    "favorites": "Favorites",
     "how_to_use": "How to use",
     "return_to_applications": "Return to applications",
     "return_to_sessions": "Return to sessions",
@@ -27,43 +29,95 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
-  "results": {
-    "title": "Results",
-    "columns": {
-      "name": "Name",
-      "task_id": "Task ID",
-      "session_id": "Session ID",
-      "status": "Status",
-      "created_at": "Created at",
-      "actions": "Actions"
+  "favorites": {
+    "button": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites"
     },
-    "cells": {
-      "status": {
-        "0": "Unspecified",
-        "1": "Creating",
-        "2": "Completed",
-        "3": "Aborted",
-        "127": "Not found"
-      }
-    },
-    "actions": {
-      "refresh": "Refresh",
-      "auto_refresh": {
-        "button": {
-          "title": "Auto-refresh",
-          "disabled": "Disabled"
-        },
-        "disable": "Disable"
+    "modal": {
+      "title": "Create a new favorite",
+      "input": {
+        "label": "Name",
+        "placeholder": "Enter a name"
       },
-      "parent_task": "Task"
-    },
-    "pagination": {
-      "per_page": "Per page",
-      "results": "{{value}} results",
-      "result": "{{value}} result"
+      "button": "Create"
     }
   },
   "pages": {
+    "sessions-list": {
+      "title": "Sessions",
+      "columns": {
+        "session_id": "Session ID",
+        "status": "Status",
+        "created_at": "Created at",
+        "cancelled_at": "Closed at",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "1": "Opened",
+          "2": "Cancelled"
+        }
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "auto_refresh": {
+          "button": {
+            "title": "Auto-refresh",
+            "disabled": "Disabled"
+          },
+          "disable": "Disable"
+        },
+        "details": "Details",
+        "related_tasks": "Related Tasks",
+        "cancel": "Close"
+      },
+      "pagination": {
+        "per_page": "Sessions per page",
+        "sessions": "{{value}} sessions",
+        "session": "{{value}} session"
+      },
+      "modal": {
+        "title": "Session",
+        "close": "Close"
+      }
+    },
+    "results-list": {
+      "title": "Results",
+      "columns": {
+        "name": "Name",
+        "task_id": "Task ID",
+        "session_id": "Session ID",
+        "status": "Status",
+        "created_at": "Created at",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "0": "Unspecified",
+          "1": "Creating",
+          "2": "Completed",
+          "3": "Aborted",
+          "127": "Not found"
+        }
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "auto_refresh": {
+          "button": {
+            "title": "Auto-refresh",
+            "disabled": "Disabled"
+          },
+          "disable": "Disable"
+        },
+        "parent_task": "Task"
+      },
+      "pagination": {
+        "per_page": "Per page",
+        "results": "{{value}} results",
+        "result": "{{value}} result"
+      }
+    },
     "dashboard": {
       "title": "Dashboard",
       "errors": {

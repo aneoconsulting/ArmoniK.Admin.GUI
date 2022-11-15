@@ -5,7 +5,9 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
 @Injectable()
 export class SettingsService {
   private _intervals = [10_000, 30_000, 60_000, 120_000];
+
   seqEnabled = false;
+  grafanaEnabled = false;
   currentApplications: Set<Application['_id']>;
 
   constructor() {
@@ -27,6 +29,15 @@ export class SettingsService {
    */
   isSeqUp(): boolean {
     return this.seqEnabled;
+  }
+
+  /**
+   * Verify if Grafana is up and running
+   *
+   * @returns True if Grafana is up and running, false otherwise
+   */
+  isGrafanaUp(): boolean {
+    return this.grafanaEnabled;
   }
 
   /**
