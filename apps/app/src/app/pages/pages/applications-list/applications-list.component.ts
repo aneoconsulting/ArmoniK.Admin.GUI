@@ -213,10 +213,12 @@ export class ApplicationsListComponent implements OnInit {
    */
   private _listApplications$(): Observable<ListApplicationsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
-    const httpParams = this._grpcPagerService.createHttpParams(params);
-    return this._grpcApplicationsService.list$(httpParams).pipe(
+
+    return this._grpcApplicationsService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListApplicationsResponse);
       }),
       tap((applications) => {

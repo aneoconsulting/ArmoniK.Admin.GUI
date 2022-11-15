@@ -1,6 +1,6 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
+import { GrpcParams } from '../../types/grpc-params.type';
 import {
   ListApplicationsRequest,
   ListApplicationsResponse,
@@ -9,6 +9,10 @@ import { ApplicationsClient } from '../../types/proto/applications-service.pbsc'
 
 @Injectable()
 export class GrpcApplicationsService {
+  private _timeout$ = timer(8_000).pipe(
+    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
+  );
+
   constructor(private _applicationsService: ApplicationsClient) {}
 
   /**
@@ -18,22 +22,28 @@ export class GrpcApplicationsService {
    *
    * @returns Observable<ListApplicationsResponse>
    */
-  public list$(params: HttpParams): Observable<ListApplicationsResponse> {
+  public list$(
+    params: GrpcParams<
+      ListApplicationsRequest.OrderByField,
+      ListApplicationsRequest.OrderDirection
+    >
+  ): Observable<ListApplicationsResponse> {
     const options = new ListApplicationsRequest({
-      page: Number(params.get('page')) || 0,
-      pageSize: Number(params.get('pageSize')) || 10,
+      page: params.page || 0,
+      pageSize: params.pageSize || 10,
       sort: {
         field:
-          Number(params.get('orderBy')) ||
+          params.orderBy ||
           ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
         direction:
-          Number(params.get('order')) === 1
-            ? ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
-            : ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          params.order ||
+          ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {},
     });
 
-    return this._applicationsService.listApplications(options);
+    return this._applicationsService
+      .listApplications(options)
+      .pipe(takeUntil(this._timeout$));
   }
 }

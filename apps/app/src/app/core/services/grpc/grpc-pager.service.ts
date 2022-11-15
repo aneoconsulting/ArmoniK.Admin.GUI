@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
 
@@ -8,35 +7,18 @@ export class GrpcPagerService {
   private defaultLimit = 10;
 
   /**
-   * Create HttpParams from ClrDatagridStateInterface and data
-   *
-   * @param params Record<string, string>
-   * @param data data to be added to HttpParams, can overrides params
-   *
-   * @returns HttpParams
-   */
-  public createHttpParams(
-    params: Record<string, string>,
-    data: Record<string, string> = {}
-  ): HttpParams {
-    return new HttpParams({
-      fromObject: { ...params, ...data },
-    });
-  }
-
-  /**
    * Create object from ClrDatagridStateInterface and data
    *
    * @param state ClrDatagridStateInterface
    * @param data data to be added to object, can overrides state
    *
-   * @returns Record<string, string>
+   * @returns Record<string, string | number>
    */
   public createParams(
     state: ClrDatagridStateInterface,
-    data: Record<string, string> = {}
-  ): Record<string, string> {
-    const params = new Map();
+    data: Record<string, string | number> = {}
+  ): Record<string, string | number> {
+    const params = new Map<string, string | number>();
 
     this._createPage(state, params);
     this._createOrder(state, params);
@@ -49,37 +31,37 @@ export class GrpcPagerService {
    * Set page in Map
    *
    * @param state ClrDatagridStateInterface
-   * @param params Map<string, string>
+   * @param params Map<string, string | number>
    *
    */
   private _createPage(
     state: ClrDatagridStateInterface,
-    params: Map<string, string>
+    params: Map<string, string | number>
   ) {
     const page = state.page?.current
       ? state.page.current - 1
       : this.defaultCurrentPage;
     const limit = state.page?.size ?? this.defaultLimit;
 
-    params.set('page', page.toString());
-    params.set('pageSize', limit.toString());
+    params.set('page', page);
+    params.set('pageSize', limit);
   }
 
   /**
    * Set order in Map
    *
    * @param state ClrDatagridStateInterface
-   * @param params Map<string, string>
+   * @param params Map<string, string | number>
    */
   private _createOrder(
     state: ClrDatagridStateInterface,
-    params: Map<string, string>
+    params: Map<string, string | number>
   ) {
     const orderBy = state.sort?.by as string;
     const order = state.sort?.reverse ? -1 : 1;
     if (orderBy) {
       params.set('orderBy', orderBy);
-      params.set('order', order.toString());
+      params.set('order', order);
     }
   }
 
@@ -87,11 +69,11 @@ export class GrpcPagerService {
    * Set filters in Map
    *
    * @param state ClrDatagridStateInterface
-   * @param params Map<string, string>
+   * @param params Map<string, string | number>
    */
   private _createFilters(
     state: ClrDatagridStateInterface,
-    params: Map<string, string>
+    params: Map<string, string | number>
   ) {
     const filters = state.filters ?? [];
     // filters is an array of filter

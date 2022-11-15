@@ -18,8 +18,11 @@
         *ngFor="let link of links; trackBy: trackByLabel"
         clrVerticalNavLink
         [routerLink]="link.path"
+        [queryParams]="link.queryParams"
         routerLinkActive="active"
-        >{{ link.label }}</a
+      >
+        <clr-icon [attr.shape]="link.shape" clrVerticalNavIcon></clr-icon>
+        {{ link.label }}</a
       >
       <div class="nav-divider" *ngIf="isSeqEnabled || isGrafanaEnabled"></div>
       <a clrVerticalNavLink href="/seq/" target="_blank" *ngIf="isSeqEnabled">
@@ -39,12 +42,10 @@
       <app-pages-navigation-favorites></app-pages-navigation-favorites>
       <app-pages-navigation-history></app-pages-navigation-history>
       <div class="nav-divider"></div>
-      <a
-        clrVerticalNavLink
-        routerLink="/how-to-use"
-        routerLinkActive="active"
-        >{{ 'navigation.how_to_use' | translate }}</a
-      >
+      <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
+        <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
+        {{ 'navigation.how_to_use' | translate }}
+      </a>
       <div class="version">
         <span> v0.7.0 </span>
       </div>

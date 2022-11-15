@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'applications.title' | translate }}</h1>
+  <h1>{{ 'pages.applications-list.title' | translate }}</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshApplications($event)"
@@ -11,7 +11,7 @@
         class="btn btn-sm btn-secondary"
         (click)="manualRefreshApplications()"
       >
-        {{ 'applications.actions.refresh' | translate }}
+        {{ 'pages.applications-list.actions.refresh' | translate }}
       </button>
 
       <clr-dropdown class="auto-refresh">
@@ -20,13 +20,16 @@
           class="btn btn-sm btn-secondary"
           clrDropdownTrigger
         >
-          {{ 'applications.actions.auto_refresh.button.title' | translate }}
+          {{
+            'pages.applications-list.actions.auto_refresh.button.title'
+              | translate
+          }}
           <span *ngIf="subjectInterval | async as value">
             &nbsp;-&nbsp;
             {{
               value > 0
                 ? value / 1_000 + 's'
-                : ('applications.actions.auto_refresh.button.disabled'
+                : ('pages.applications-list.actions.auto_refresh.button.disabled'
                   | translate)
             }}
           </span>
@@ -35,7 +38,9 @@
         </button>
         <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
           <button type="button" clrDropdownItem (click)="stopInterval()">
-            {{ 'applications.actions.auto_refresh.disable' | translate }}
+            {{
+              'pages.applications-list.actions.auto_refresh.disable' | translate
+            }}
           </button>
           <button
             type="button"
@@ -53,28 +58,28 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAME.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
-      {{ 'applications.columns.name' | translate }}
+      {{ 'pages.applications-list.columns.name' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_VERSION.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_VERSION)"
     >
-      {{ 'applications.columns.version' | translate }}
+      {{ 'pages.applications-list.columns.version' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAMESPACE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAMESPACE)"
     >
-      {{ 'applications.columns.namespace' | translate }}
+      {{ 'pages.applications-list.columns.namespace' | translate }}
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SERVICE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_SERVICE)"
     >
-      {{ 'applications.columns.service' | translate }}
+      {{ 'pages.applications-list.columns.service' | translate }}
     </clr-dg-column>
     <clr-dg-column>
-      {{ 'applications.columns.actions' | translate }}
+      {{ 'pages.applications-list.columns.actions' | translate }}
     </clr-dg-column>
 
     <ng-container *ngIf="loadApplications$ | async as list">
@@ -103,7 +108,7 @@
             }"
           >
             <clr-icon shape="nodes"></clr-icon>
-            {{ 'applications.actions.related_sessions' | translate }}
+            {{ 'pages.applications-list.actions.related_sessions' | translate }}
           </a>
         </clr-dg-cell>
         <ng-template #empty> - </ng-template>
@@ -117,13 +122,13 @@
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
-          'applications.pagination.per_page' | translate
+          'pages.applications-list.pagination.per_page' | translate
         }}</clr-dg-page-size>
         <span *ngIf="(totalApplications$ | async) ?? 0 > 1 as total">
           {{
             (total > 1
-              ? 'applications.pagination.applications'
-              : 'applications.pagination.application'
+              ? 'pages.applications-list.pagination.applications'
+              : 'pages.applications-list.pagination.application'
             ) | translate: { value: total }
           }}
         </span>

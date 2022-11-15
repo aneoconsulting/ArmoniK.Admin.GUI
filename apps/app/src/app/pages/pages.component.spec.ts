@@ -103,7 +103,7 @@ describe('PagesComponent', () => {
   describe('track by', () => {
     it('should return label for navigation link', () => {
       const label = 'Dashboard';
-      const link = { path: ['/', 'dashboard'], label };
+      const link = { path: ['/', 'dashboard'], label, shape: 'Home' };
       expect(component.trackByLabel(0, link)).toBe(label);
     });
   });

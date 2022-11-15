@@ -5,6 +5,7 @@ import { Application } from '@armonik.admin.gui/armonik-typing';
 @Injectable()
 export class SettingsService {
   private _intervals = [10_000, 30_000, 60_000, 120_000];
+
   seqEnabled = false;
   grafanaEnabled = false;
   currentApplications: Set<Application['_id']>;

@@ -1,16 +1,16 @@
 // import { Component } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { ClarityModule } from '@clr/angular';
-import { RouterTestingModule } from '@angular/router/testing';
-import { GrafanaService, SeqService } from './core';
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ClarityModule } from '@clr/angular';
+import { AppComponent } from './app.component';
+import { GrafanaService, SeqService, SettingsService } from './core';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      providers: [SeqService, GrafanaService],
+      providers: [SeqService, GrafanaService, SettingsService],
       imports: [
         RouterTestingModule.withRoutes([]),
         ClarityModule,

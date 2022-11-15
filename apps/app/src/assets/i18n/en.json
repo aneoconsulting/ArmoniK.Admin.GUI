@@ -29,32 +29,6 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
-  "applications": {
-    "title": "Applications",
-    "columns": {
-      "name": "Name",
-      "version": "Version",
-      "namespace": "Namespace",
-      "service": "Service",
-      "actions": "Actions"
-    },
-    "actions": {
-      "refresh": "Refresh",
-      "auto_refresh": {
-        "button": {
-          "title": "Auto-refresh",
-          "disabled": "Disabled"
-        },
-        "disable": "Disable"
-      },
-      "related_sessions": "Related sessions"
-    },
-    "pagination": {
-      "per_page": "Per page",
-      "applications": "{{value}} applications",
-      "application": "{{value}} application"
-    }
-  },
   "favorites": {
     "button": {
       "add": "Add to favorites",
@@ -70,6 +44,70 @@
     }
   },
   "pages": {
+    "applications-list": {
+      "title": "Applications",
+      "columns": {
+        "name": "Name",
+        "version": "Version",
+        "namespace": "Namespace",
+        "service": "Service",
+        "actions": "Actions"
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "auto_refresh": {
+          "button": {
+            "title": "Auto-refresh",
+            "disabled": "Disabled"
+          },
+          "disable": "Disable"
+        },
+        "related_sessions": "Related sessions"
+      },
+      "pagination": {
+        "per_page": "Per page",
+        "applications": "{{value}} applications",
+        "application": "{{value}} application"
+      }
+    },
+    "sessions-list": {
+      "title": "Sessions",
+      "columns": {
+        "session_id": "Session ID",
+        "status": "Status",
+        "created_at": "Created at",
+        "cancelled_at": "Closed at",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "1": "Opened",
+          "2": "Cancelled"
+        }
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "auto_refresh": {
+          "button": {
+            "title": "Auto-refresh",
+            "disabled": "Disabled"
+          },
+          "disable": "Disable"
+        },
+        "details": "Details",
+        "related_tasks": "Related Tasks",
+        "cancel": "Close"
+      },
+      "pagination": {
+        "per_page": "Sessions per page",
+        "sessions": "{{value}} sessions",
+        "session": "{{value}} session"
+      },
+      "modal": {
+        "title": "Session",
+        "close": "Close"
+      }
+    },
     "dashboard": {
       "title": "Dashboard",
       "errors": {
