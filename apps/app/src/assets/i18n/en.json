@@ -50,6 +50,7 @@
         "status": "Status",
         "created_at": "Created at",
         "cancelled_at": "Closed at",
+        "custom": "Custom column",
         "actions": "Actions"
       },
       "cells": {
@@ -69,7 +70,9 @@
         },
         "details": "Details",
         "related_tasks": "Related Tasks",
-        "cancel": "Close"
+        "cancel": "Close",
+        "manage_columns": "Manage columns",
+        "add_column": "Add a column"
       },
       "pagination": {
         "per_page": "Sessions per page",
@@ -77,8 +80,26 @@
         "session": "{{value}} session"
       },
       "modal": {
-        "title": "Session",
-        "close": "Close"
+        "view_session": {
+          "title": "Session",
+          "close": "Close"
+        },
+        "add_column": {
+          "title": "Add a column",
+          "close": "Close",
+          "add": "Add",
+          "name_input": {
+            "label": "Name",
+            "placeholder": "Enter a name",
+            "helper_text": "Name must be unique. You can use '.' to access nested properties."
+          }
+        },
+        "manage_columns": {
+          "title": "Manage columns",
+          "close": "Close",
+          "empty": "No custom columns",
+          "remove": "Remove"
+        }
       }
     },
     "dashboard": {

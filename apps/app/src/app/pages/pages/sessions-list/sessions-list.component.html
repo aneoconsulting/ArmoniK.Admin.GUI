@@ -6,49 +6,71 @@
     [clrDgLoading]="(loadingSessions$ | async) ?? false"
   >
     <clr-dg-action-bar>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshSessions()"
-      >
-        {{ 'pages.sessions-list.actions.refresh' | translate }}
-      </button>
-
-      <clr-dropdown class="auto-refresh">
+      <div class="btn-group">
         <button
           type="button"
           class="btn btn-sm btn-secondary"
-          clrDropdownTrigger
+          (click)="manualRefreshSessions()"
         >
-          {{
-            'pages.sessions-list.actions.auto_refresh.button.title' | translate
-          }}
-          <span *ngIf="subjectInterval | async as value">
-            &nbsp;-&nbsp;
-            {{
-              value > 0
-                ? value / 1_000 + 's'
-                : ('pages.sessions-list.actions.auto_refresh.button.disabled'
-                  | translate)
-            }}
-          </span>
-
-          <clr-icon shape="caret down"></clr-icon>
+          {{ 'pages.sessions-list.actions.refresh' | translate }}
         </button>
-        <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-          <button type="button" clrDropdownItem (click)="stopInterval()">
-            {{ 'pages.sessions-list.actions.auto_refresh.disable' | translate }}
-          </button>
+
+        <clr-dropdown class="auto-refresh">
           <button
             type="button"
-            clrDropdownItem
-            *ngFor="let item of intervals; trackBy: trackByInterval"
-            (click)="changeInterval(item)"
+            class="btn btn-sm btn-secondary"
+            clrDropdownTrigger
           >
-            {{ item / 1_000 }}s
+            {{
+              'pages.sessions-list.actions.auto_refresh.button.title'
+                | translate
+            }}
+            <span *ngIf="subjectInterval | async as value">
+              &nbsp;-&nbsp;
+              {{
+                value > 0
+                  ? value / 1_000 + 's'
+                  : ('pages.sessions-list.actions.auto_refresh.button.disabled'
+                    | translate)
+              }}
+            </span>
+
+            <clr-icon shape="caret down"></clr-icon>
           </button>
-        </clr-dropdown-menu>
-      </clr-dropdown>
+          <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+            <button type="button" clrDropdownItem (click)="stopInterval()">
+              {{
+                'pages.sessions-list.actions.auto_refresh.disable' | translate
+              }}
+            </button>
+            <button
+              type="button"
+              clrDropdownItem
+              *ngFor="let item of intervals; trackBy: trackByInterval"
+              (click)="changeInterval(item)"
+            >
+              {{ item / 1_000 }}s
+            </button>
+          </clr-dropdown-menu>
+        </clr-dropdown>
+      </div>
+
+      <div class="btn-group" s>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          (click)="openModalManageColumns()"
+        >
+          {{ 'pages.sessions-list.actions.manage_columns' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          (click)="openModalAddColumn()"
+        >
+          {{ 'pages.sessions-list.actions.add_column' | translate }}
+        </button>
+      </div>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -81,6 +103,16 @@
     >
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
     </clr-dg-column>
+    <ng-container *ngIf="customColumns$ | async as columns">
+      <clr-dg-column
+        *ngFor="let column of columns"
+        [title]="'pages.sessions-list.columns.custom' | translate"
+      >
+        <clr-icon shape="bolt" size="xs"></clr-icon>
+        &nbsp;
+        {{ column }}
+      </clr-dg-column>
+    </ng-container>
     <clr-dg-column>
       {{ 'pages.sessions-list.columns.actions' | translate }}
     </clr-dg-column>
@@ -126,6 +158,13 @@
             }}
           </span>
         </clr-dg-cell>
+        <ng-container *ngIf="customColumns$ | async as columns">
+          <clr-dg-cell
+            *ngFor="let column of columns; trackBy: trackByCustomColumn"
+          >
+            {{ findCustomColumnValue(session, column) }}
+          </clr-dg-cell>
+        </ng-container>
         <clr-dg-cell>
           <button
             type="button"
@@ -185,7 +224,7 @@
   *ngIf="loadSingleSession$ | async as session"
 >
   <h3 class="modal-title">
-    {{ 'pages.sessions-list.modal.title' | translate }}
+    {{ 'pages.sessions-list.modal.view_session.title' | translate }}
     {{ session.session!.sessionId }}
   </h3>
   <div class="modal-body">
@@ -193,9 +232,95 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="opened = false">
-      {{ 'pages.sessions-list.modal.close' | translate }}
+      {{ 'pages.sessions-list.modal.view_session.close' | translate }}
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal
+  [clrModalOpen]="(isModalAddColumnOpened$ | async) || false"
+  [clrModalClosable]="false"
+  [clrModalSize]="'lg'"
+>
+  <h3 class="modal-title">
+    {{ 'pages.sessions-list.modal.add_column.title' | translate }}
+  </h3>
+  <div class="modal-body">
+    <form clrForm>
+      <clr-input-container>
+        <label>
+          {{
+            'pages.sessions-list.modal.add_column.name_input.label' | translate
+          }}</label
+        >
+        <input
+          [placeholder]="
+            'pages.sessions-list.modal.add_column.name_input.placeholder'
+              | translate
+          "
+          clrInput
+          name="name"
+          [(ngModel)]="newColumnName"
+        />
+        <clr-control-helper>{{
+          'pages.sessions-list.modal.add_column.name_input.helper_text'
+            | translate
+        }}</clr-control-helper>
+      </clr-input-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeModalAddColumn()"
+    >
+      {{ 'pages.sessions-list.modal.add_column.close' | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="addColumn()">
+      {{ 'pages.sessions-list.modal.add_column.add' | translate }}
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal
+  [clrModalOpen]="(isModalManageColumnsOpened$ | async) || false"
+  [clrModalClosable]="false"
+  [clrModalSize]="'lg'"
+>
+  <h3 class="modal-title">
+    {{ 'pages.sessions-list.modal.manage_columns.title' | translate }}
+  </h3>
+  <div class="modal-body">
+    <ng-container *ngIf="customColumns$ | async as columns">
+      <ol class="list" *ngIf="columns.size > 0; else emptyCustomColumns">
+        <li *ngFor="let column of columns">
+          {{ column }}
+          &nbsp;
+          <button
+            class="btn btn-sm btn-danger-outline"
+            type="button"
+            (click)="removeColumn(column)"
+          >
+            {{ 'pages.sessions-list.modal.manage_columns.remove' | translate }}
+          </button>
+        </li>
+      </ol>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="closeModalManageColumns()"
+    >
+      {{ 'pages.sessions-list.modal.manage_columns.close' | translate }}
     </button>
   </div>
 </clr-modal>
 
 <ng-template #empty> - </ng-template>
+
+<ng-template #emptyCustomColumns>
+  {{ 'pages.sessions-list.modal.manage_columns.empty' | translate }}
+</ng-template>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import {
   BehaviorSubject,
   catchError,
@@ -29,15 +30,26 @@ import {
   GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
+  SessionSummary,
 } from '../../../core/types/proto/sessions-common.pb';
 
 @Component({
   selector: 'app-pages-sessions-list',
   templateUrl: './sessions-list.component.html',
   styleUrls: ['./sessions-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
+
+  /** Manage columns */
+  private _modalManageColumnsOpened$ = new BehaviorSubject<boolean>(false);
+
+  /** Add a column */
+  private _customColumns = new Set<string>();
+  public customColumns$ = new BehaviorSubject<Set<string>>(this._customColumns);
+  public newColumnName = '';
+  private _modalAddColumnOpened$ = new BehaviorSubject<boolean>(false);
 
   /** Get a single session */
   opened = false;
@@ -126,6 +138,78 @@ export class SessionsListComponent implements OnInit {
     return this._settingsService.initialInterval;
   }
 
+  /**
+   * Open modal manage columns
+   */
+  public openModalManageColumns(): void {
+    this._modalManageColumnsOpened$.next(true);
+  }
+
+  /**
+   * Close modal to manage columns
+   */
+  public closeModalManageColumns(): void {
+    this.newColumnName = '';
+    this._modalManageColumnsOpened$.next(false);
+  }
+
+  public get isModalManageColumnsOpened$(): Observable<boolean> {
+    return this._modalManageColumnsOpened$.asObservable();
+  }
+
+  /**
+   * Open modal add a column
+   */
+  public openModalAddColumn(): void {
+    this._modalAddColumnOpened$.next(true);
+  }
+
+  /**
+   * Close modal to add a column
+   */
+  public closeModalAddColumn(): void {
+    this.newColumnName = '';
+    this._modalAddColumnOpened$.next(false);
+  }
+
+  public get isModalAddColumnOpened$(): Observable<boolean> {
+    return this._modalAddColumnOpened$.asObservable();
+  }
+
+  public addColumn(): void {
+    this._customColumns.add(this.newColumnName);
+    this.customColumns$.next(this._customColumns);
+
+    this.closeModalAddColumn();
+  }
+
+  public removeColumn(column: string): void {
+    this._customColumns.delete(column);
+    this.customColumns$.next(this._customColumns);
+  }
+
+  public findCustomColumnValue(session: SessionSummary, key: string) {
+    const sessionData = session.toObject();
+
+    const value = key.split('.').reduce((acc: any, key) => {
+      if (!acc) {
+        return null;
+      }
+      return acc[key];
+    }, sessionData);
+
+    if (!value) {
+      return '-';
+    }
+
+    const valueKeys = Object.keys(value);
+    if (valueKeys.includes('seconds') && valueKeys.includes('nanos')) {
+      return new Timestamp(value).toISOString();
+    }
+
+    return value;
+  }
+
   public defaultSortOrder(
     field: ListSessionsRequest.OrderByField
   ): ClrDatagridSortOrder {
@@ -172,6 +256,10 @@ export class SessionsListComponent implements OnInit {
     return interval.toString();
   }
 
+  public trackByCustomColumn(_: number, column: string): string {
+    return column;
+  }
+
   /**
    * Cancel a session
    *
@@ -180,7 +268,14 @@ export class SessionsListComponent implements OnInit {
   public cancelSession(sessionId: string): void {
     this._grpcSessionsService
       .cancel$(sessionId)
-      .pipe(first())
+      .pipe(
+        first(),
+        catchError((error: Error) => {
+          console.error(error);
+
+          return of({} as ListSessionsResponse);
+        })
+      )
       .subscribe({
         next: () => this.manualRefreshSessions(),
       });
@@ -254,12 +349,17 @@ export class SessionsListComponent implements OnInit {
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
+
     return this._grpcSessionsService.list$(params).pipe(
-      catchError((error) => {
+      catchError((error: Error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListSessionsResponse);
       }),
       tap((sessions) => {
+        console.log(sessions);
+
         this.loadingSessions$.next(false);
         this.totalSessions$.next(sessions.total ?? 0);
       })
@@ -273,6 +373,11 @@ export class SessionsListComponent implements OnInit {
    */
   private _getSession$(sessionId: string): Observable<GetSessionResponse> {
     return this._grpcSessionsService.get$(sessionId).pipe(
+      catchError((error: Error) => {
+        console.error(error);
+
+        return of({} as GetSessionResponse);
+      }),
       tap(() => {
         this.opened = true;
         this.loadingSingleSession$.next(null);
