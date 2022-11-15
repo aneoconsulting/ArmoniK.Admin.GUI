@@ -92,7 +92,7 @@
         </clr-dg-cell>
         <clr-dg-cell>
           <a
-            [routerLink]="['/', 'pages.sessions-list']"
+            [routerLink]="['/', 'sessions']"
             [queryParams]="{ status: session.status }"
           >
             <span
@@ -181,7 +181,6 @@
 
 <clr-modal
   [(clrModalOpen)]="opened"
-  [clrModalClosable]="false"
   [clrModalSize]="'lg'"
   *ngIf="loadSingleSession$ | async as session"
 >
