@@ -103,7 +103,7 @@ export class SessionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('sessions.title')
+      this._languageService.instant('pages.sessions-list.title')
     );
   }
 
