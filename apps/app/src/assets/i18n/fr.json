@@ -43,6 +43,44 @@
     }
   },
   "pages": {
+    "sessions-list": {
+      "title": "Sessions",
+      "columns": {
+        "session_id": "ID de la session",
+        "status": "Statut",
+        "created_at": "Créée le",
+        "cancelled_at": "Fermée le",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "1": "Ouverte",
+          "2": "Annulée"
+        }
+      },
+      "actions": {
+        "refresh": "Rafraîchir",
+        "auto_refresh": {
+          "button": {
+            "title": "Rafraîchissement automatique",
+            "disabled": "Désactivé"
+          },
+          "disable": "Désactiver"
+        },
+        "details": "Détails",
+        "related_tasks": "Tâches liées",
+        "cancel": "Fermer"
+      },
+      "pagination": {
+        "per_page": "Sessions par page",
+        "sessions": "{{value}} sessions",
+        "session": "{{value}} session"
+      },
+      "modal": {
+        "title": "Session",
+        "close": "Fermer"
+      }
+    },
     "dashboard": {
       "title": "Tableau de bord",
       "errors": {

@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SettingsService {
+  private _intervals = [10_000, 30_000, 60_000, 120_000];
+
   grafanaSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
@@ -16,6 +16,14 @@ export class SettingsService {
 
   constructor() {
     this.currentApplications = new Set(this.getCurrentApplicationsFromStore());
+  }
+
+  public get intervals() {
+    return this._intervals;
+  }
+
+  public get initialInterval() {
+    return this._intervals[0];
   }
 
   /**

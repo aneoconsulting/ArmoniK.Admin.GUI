@@ -3,14 +3,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GrpcCoreModule } from '@ngx-grpc/core';
+import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { LocaleProvider } from './providers';
 import {
   ApiService,
   ApplicationsService,
   ErrorService,
+  GrpcPagerService,
+  GrpcSessionsService,
+  HistoryService,
   FavoritesService,
   GrafanaService,
-  HistoryService,
   LanguageService,
   PagerService,
   SeqService,
@@ -29,6 +33,12 @@ import {
     BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
+    GrpcCoreModule.forRoot(),
+    GrpcWebClientModule.forRoot({
+      settings: {
+        host: '',
+      },
+    }),
   ],
   providers: [
     LocaleProvider,
@@ -44,6 +54,8 @@ import {
     PagerService,
     SeqService,
     GrafanaService,
+    GrpcSessionsService,
+    GrpcPagerService,
     {
       provide: Storage,
       useFactory: () => localStorage,

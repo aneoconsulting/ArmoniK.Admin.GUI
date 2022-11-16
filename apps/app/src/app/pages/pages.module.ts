@@ -3,21 +3,22 @@ import { SharedModule } from '../shared';
 import {
   ApplicationsSubnavComponent,
   LanguagesSelectorComponent,
+  NavigationHistoryComponent,
   TimeComponent,
 } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
+import {
+  ModalFavoritesComponent,
+  NavigationFavoritesComponent,
+} from './pages/components';
 import { ErrorComponent } from './pages/error/error.component';
 
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
-import { NavigationHistoryComponent } from './components';
 import '@clr/icons/shapes/social-shapes';
-import {
-  ModalFavoritesComponent,
-  NavigationFavoritesComponent,
-} from './pages/components';
+import '@clr/icons/shapes/technology-shapes';
 
 /**
  * Load app pages
