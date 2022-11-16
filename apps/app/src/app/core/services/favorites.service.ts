@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 
 @Injectable()
 export class FavoritesService {
   private _favorites: Map<string, string> = new Map();
-  private _favorites$: BehaviorSubject<Map<string, string>> =
-    new BehaviorSubject<Map<string, string>>(this._favorites);
+  private _favoritesSubject = new BehaviorSubject<Map<string, string>>(
+    this._favorites
+  );
+  private _favorites$ = this._favoritesSubject.pipe(
+    tap((favorites) => this._store(favorites))
+  );
 
   constructor(private _storage: Storage) {
     this._favorites = this._recover();
-    this._favorites$.next(this._favorites);
+    this._favoritesSubject.next(this._favorites);
   }
 
   public get favorites$(): Observable<{ path: string; label: string }[]> {
-    const _favorites$ = this._favorites$.asObservable();
-
-    return _favorites$.pipe(
+    return this._favorites$.pipe(
       map((favorites) => {
         return Array.from(favorites.entries()).map(([path, label]) => {
           return {
@@ -35,9 +37,7 @@ export class FavoritesService {
    */
   add(url: string, favoriteName: string): void {
     this._favorites.set(url, favoriteName);
-    this._favorites$.next(this._favorites);
-
-    this._store();
+    this._favoritesSubject.next(this._favorites);
   }
 
   /**
@@ -47,9 +47,7 @@ export class FavoritesService {
    */
   remove(key: string): void {
     this._favorites.delete(key);
-    this._favorites$.next(this._favorites);
-
-    this._store();
+    this._favoritesSubject.next(this._favorites);
   }
 
   /**
@@ -58,9 +56,7 @@ export class FavoritesService {
    * @param key key to find
    */
   has$(key: string): Observable<boolean> {
-    const _favorites$ = this._favorites$.asObservable();
-
-    return _favorites$.pipe(
+    return this._favorites$.pipe(
       map((favorites) => {
         return favorites.has(key);
       })
@@ -73,9 +69,7 @@ export class FavoritesService {
    * @param key key to find
    */
   get$(key: string): Observable<string | undefined> {
-    const _favorites$ = this._favorites$.asObservable();
-
-    return _favorites$.pipe(
+    return this._favorites$.pipe(
       map((favorites) => {
         return favorites.get(key);
       })
@@ -85,10 +79,10 @@ export class FavoritesService {
   /**
    * Store favorites in local storage
    */
-  private _store(): void {
+  private _store(favorites: Map<string, string>): void {
     this._storage.setItem(
       'favorites',
-      JSON.stringify(Array.from(this._favorites.entries()))
+      JSON.stringify(Array.from(favorites.entries()))
     );
   }
 
