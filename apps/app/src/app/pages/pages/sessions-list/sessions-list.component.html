@@ -15,7 +15,7 @@
       </button>
 
       <app-auto-refresh-dropdown
-        [manualStop]="stopInterval$"
+        [manualStop$]="stopInterval$"
         (refreshIntervalChange)="onUpdateInterval($event)"
       >
       </app-auto-refresh-dropdown>
