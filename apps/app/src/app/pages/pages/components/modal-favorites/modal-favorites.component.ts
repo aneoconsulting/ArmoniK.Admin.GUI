@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize, first, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import { FavoritesService } from '../../../../core';
 
 @Component({
   selector: 'app-pages-modal-favorites',
   templateUrl: './modal-favorites.component.html',
   styleUrls: ['./modal-favorites.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalFavoritesComponent {
-  isOpened = false;
-  favoriteName = '';
+  private _modalFavoriteOpened = new BehaviorSubject<boolean>(false);
+
+  public favoriteName = '';
 
   constructor(
     private _router: Router,
@@ -21,18 +23,22 @@ export class ModalFavoritesComponent {
     return this._router.url;
   }
 
+  public get isModalFavoriteOpened$(): Observable<boolean> {
+    return this._modalFavoriteOpened.asObservable();
+  }
+
   /**
    * Open the modal to add a favorite
    */
-  openModal(): void {
-    this.isOpened = true;
+  openModalFavorites(): void {
+    this._modalFavoriteOpened.next(true);
   }
 
   /**
    * Close the modal to add a favorite
    */
-  closeModal(): void {
-    this.isOpened = false;
+  closeModalFavorites(): void {
+    this._modalFavoriteOpened.next(false);
   }
 
   /**
@@ -40,7 +46,7 @@ export class ModalFavoritesComponent {
    */
   addPageFavorite(): void {
     this._favoritesService.add(this.currentUrl, this.favoriteName);
-    this.closeModal();
+    this.closeModalFavorites();
   }
 
   /**
@@ -60,7 +66,7 @@ export class ModalFavoritesComponent {
         if (has) {
           this.removePageFavorite();
         } else {
-          this.openModal();
+          this.openModalFavorites();
         }
       });
   }

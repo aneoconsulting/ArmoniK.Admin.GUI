@@ -28,21 +28,26 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
-  "favorites": {
-    "button": {
-      "add": "Add to favorites",
-      "remove": "Remove from favorites"
-    },
-    "modal": {
-      "title": "Create a new favorite",
-      "input": {
-        "label": "Name",
-        "placeholder": "Enter a name"
-      },
-      "button": "Create"
-    }
-  },
   "pages": {
+    "components": {
+      "modal_favorites": {
+        "favorites": {
+          "button": {
+            "add": "Add to favorites",
+            "remove": "Remove from favorites"
+          },
+          "modal": {
+            "title": "Create a new favorite",
+            "input": {
+              "label": "Name of the favorite",
+              "placeholder": "Enter a name"
+            },
+            "close": "Close",
+            "add": "Add"
+          }
+        }
+      }
+    },
     "sessions-list": {
       "title": "Sessions",
       "columns": {

@@ -3,8 +3,8 @@
     class="btn-star btn btn-inverse btn-link"
     title="{{
       ((hasCurrentPageFavorite$() | async)
-        ? 'favorites.button.remove'
-        : 'favorites.button.add'
+        ? 'pages.components.modal_favorites.button.remove'
+        : 'pages.components.modal_favorites.button.add'
       ) | translate
     }}"
     (click)="togglePageFavorite()"
@@ -18,24 +18,44 @@
       {{ name }}
     </span>
   </button>
-  <clr-modal [(clrModalOpen)]="isOpened">
-    <h3 class="modal-title">{{ 'favorites.modal.title' | translate }}</h3>
+  <clr-modal
+    [clrModalOpen]="(isModalFavoriteOpened$ | async) || false"
+    [clrModalClosable]="false"
+    [clrModalSize]="'lg'"
+  >
+    <h3 class="modal-title">
+      {{ 'pages.components.modal_favorites.modal.title' | translate }}
+    </h3>
     <div class="modal-body">
-      <clr-input-container>
-        <label>{{ 'favorites.modal.input.label' | translate }}</label>
-        <input
-          clrInput
-          type="text"
-          name="favoriteName"
-          [(ngModel)]="favoriteName"
-          placeholder="{{ 'favorites.modal.input.placeholder' | translate }}"
-          required
-        />
-      </clr-input-container>
+      <form clrForm>
+        <clr-input-container>
+          <label>{{
+            'pages.components.modal_favorites.modal.input.label' | translate
+          }}</label>
+          <input
+            clrInput
+            type="text"
+            name="favoriteName"
+            [(ngModel)]="favoriteName"
+            placeholder="{{
+              'pages.components.modal_favorites.modal.input.placeholder'
+                | translate
+            }}"
+            required
+          />
+        </clr-input-container>
+      </form>
     </div>
     <div class="modal-footer">
+      <button
+        type="button"
+        (click)="closeModalFavorites()"
+        class="btn btn-secondary"
+      >
+        {{ 'pages.components.modal_favorites.modal.close' | translate }}
+      </button>
       <button type="button" (click)="addPageFavorite()" class="btn btn-primary">
-        {{ 'favorites.modal.button' | translate }}
+        {{ 'pages.components.modal_favorites.modal.add' | translate }}
       </button>
     </div>
   </clr-modal>
