@@ -9,6 +9,7 @@ import {
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
 import {
+  AutoRefreshDropdownComponent,
   ModalFavoritesComponent,
   NavigationFavoritesComponent,
 } from './pages/components';

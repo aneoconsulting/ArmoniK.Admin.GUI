@@ -1,0 +1,29 @@
+<clr-dropdown class="auto-refresh">
+  <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+    {{ 'pages.components.auto_refresh_dropdown.button.title' | translate }}
+    <span *ngIf="currentInterval$ | async as interval">
+      &nbsp;-&nbsp;
+      {{
+        interval.value > 0
+          ? interval.label
+          : ('pages.components.auto_refresh_dropdown.button.disabled'
+            | translate)
+      }}
+    </span>
+
+    <clr-icon shape="caret down"></clr-icon>
+  </button>
+  <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+    <button type="button" clrDropdownItem (click)="onIntervalStop()">
+      {{ 'pages.components.auto_refresh_dropdown.disable' | translate }}
+    </button>
+    <button
+      type="button"
+      clrDropdownItem
+      *ngFor="let interval of intervals; trackBy: trackByInterval"
+      (click)="onIntervalChange(interval)"
+    >
+      {{ interval.label }}
+    </button>
+  </clr-dropdown-menu>
+</clr-dropdown>
