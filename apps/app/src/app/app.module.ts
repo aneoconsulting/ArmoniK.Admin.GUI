@@ -1,4 +1,4 @@
-import { APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF, CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouteReuseStrategy } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -17,27 +17,26 @@ import {
   NavigationFavoritesComponent,
 } from './pages/pages/components';
 import { ErrorComponent } from './pages/pages/error/error.component';
-import { SharedModule } from './shared';
-
-import '@clr/icons';
-import '@clr/icons/shapes/chart-shapes';
-import '@clr/icons/shapes/essential-shapes';
-import '@clr/icons/shapes/social-shapes';
-import '@clr/icons/shapes/technology-shapes';
+import {
+  ClrIconModule,
+  ClrMainContainerModule,
+  ClrVerticalNavModule,
+} from '@clr/angular';
+import { HeaderComponent } from '@armonik.admin.gui/ui';
 
 /**
  * Load app data
  */
 @NgModule({
-  imports: [CoreModule, SharedModule, AppRoutingModule, AppTranslateModule],
-  providers: [
-    { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
-    { provide: Window, useFactory: () => window },
-  ],
-  declarations: [
-    AppComponent,
-    ErrorComponent,
+  imports: [
+    CoreModule,
+    HeaderComponent,
+    CommonModule,
+    ClrMainContainerModule,
+    ClrVerticalNavModule,
+    ClrIconModule,
+    AppRoutingModule,
+    AppTranslateModule,
     ApplicationsSubnavComponent,
     LanguagesSelectorComponent,
     NavigationHistoryComponent,
@@ -45,6 +44,12 @@ import '@clr/icons/shapes/technology-shapes';
     NavigationFavoritesComponent,
     TimeComponent,
   ],
+  providers: [
+    { provide: APP_BASE_HREF, useValue: environment.baseHref },
+    { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
+    { provide: Window, useFactory: () => window },
+  ],
+  declarations: [AppComponent, ErrorComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {

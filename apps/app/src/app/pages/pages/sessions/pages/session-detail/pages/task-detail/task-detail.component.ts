@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RawTask } from '@armonik.admin.gui/armonik-typing';
+import { ClrAccordionModule, ClrModalModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import {
   BrowserTitleService,
@@ -8,9 +10,11 @@ import {
 } from '../../../../../../../core';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-sessions-task-detail',
   templateUrl: './task-detail.component.html',
   styleUrls: ['./task-detail.component.scss'],
+  imports: [ClrAccordionModule, ClrModalModule, TranslateModule],
 })
 export class TaskDetailComponent implements OnInit, OnDestroy {
   routeDataSubscription: Subscription | null = null;

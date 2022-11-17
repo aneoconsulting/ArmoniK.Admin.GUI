@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Language, LanguageCode, LanguageService } from '../../../core';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-languages-selector',
   templateUrl: './languages-selector.component.html',
   styleUrls: ['./languages-selector.component.scss'],
+  imports: [CommonModule],
 })
 export class LanguagesSelectorComponent {
   constructor(

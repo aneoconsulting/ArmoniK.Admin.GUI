@@ -7,44 +7,44 @@ const routes: Routes = [
   {
     path: 'dashboard',
     data: { key: 'dashboard' },
-    loadChildren: () =>
-      import('./pages/pages/dashboard/dashboard.module').then(
-        (m) => m.DashboardModule
+    loadComponent: () =>
+      import('./pages/pages/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
       ),
   },
   {
     path: 'applications',
-    loadChildren: () =>
-      import('./pages/pages/sessions/sessions.module').then(
-        (m) => m.SessionsModule
+    loadComponent: () =>
+      import('./pages/pages/sessions/sessions.component').then(
+        (m) => m.SessionsComponent
       ),
   },
   {
     path: 'sessions',
-    loadChildren: () =>
-      import('./pages/pages/sessions-list/sessions-list.module').then(
-        (m) => m.SessionsListModule
+    loadComponent: () =>
+      import('./pages/pages/sessions-list/sessions-list.component').then(
+        (m) => m.SessionsListComponent
       ),
   },
   {
     path: 'tasks',
-    loadChildren: () =>
-      import('./pages/pages/tasks-list/tasks-list.module').then(
-        (m) => m.TasksListModule
+    loadComponent: () =>
+      import('./pages/pages/tasks-list/tasks-list.component').then(
+        (m) => m.TasksListComponent
       ),
   },
   {
     path: 'errors',
-    loadChildren: () =>
-      import('./pages/pages/tasks-errors-list/tasks-errors-list.module').then(
-        (m) => m.TasksErrorsListModule
-      ),
+    loadComponent: () =>
+      import(
+        './pages/pages/tasks-errors-list/tasks-errors-list.component'
+      ).then((m) => m.TasksErrorsListComponent),
   },
   {
     path: 'how-to-use',
-    loadChildren: () =>
-      import('./pages/pages/how-to-use/how-to-use.module').then(
-        (m) => m.HowToUseModule
+    loadComponent: () =>
+      import('./pages/pages/how-to-use/how-to-use.component').then(
+        (m) => m.HowToUseComponent
       ),
   },
   {

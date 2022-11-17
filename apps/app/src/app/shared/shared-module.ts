@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { UiModule } from '@armonik.admin.gui/ui';
-import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   AlertErrorComponent,
@@ -16,27 +15,24 @@ import { StatesService } from './services';
 @NgModule({
   imports: [
     FormsModule,
-    ClarityModule,
     CommonModule,
     RouterModule,
     TranslateModule,
     UiModule,
-  ],
-  providers: [StatesService],
-  declarations: [
+    TaskStatusFilterComponent,
+    SinceDateFilterComponent,
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
     AutoRefreshActivatorComponent,
-    TaskStatusFilterComponent,
-    SinceDateFilterComponent,
   ],
+  providers: [StatesService],
+  declarations: [],
   exports: [
     AlertErrorComponent,
     TimerIntervalSelectorComponent,
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
-    ClarityModule,
     FormsModule,
     CommonModule,
     RouterModule,

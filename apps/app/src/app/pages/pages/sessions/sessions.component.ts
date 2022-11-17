@@ -1,11 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   FormattedSession,
   Pagination,
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { UiModule } from '@armonik.admin.gui/ui';
+import {
+  ClrDatagridModule,
+  ClrDatagridSortOrder,
+  ClrDatagridStateInterface,
+  ClrModalModule,
+} from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import {
   AppError,
@@ -14,12 +22,34 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
-import { AutoRefreshService, StatesService } from '../../../shared';
+import {
+  AlertErrorComponent,
+  AutoRefreshActivatorComponent,
+  AutoRefreshService,
+  SinceDateFilterComponent,
+  StatesService,
+  TimerIntervalSelectorComponent,
+} from '../../../shared';
+import { SessionsRoutingModule } from './sessions-routing.module';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-sessions',
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
+  imports: [
+    SessionsRoutingModule,
+    ClrDatagridModule,
+    ClrModalModule,
+    UiModule,
+    AlertErrorComponent,
+    AutoRefreshActivatorComponent,
+    TimerIntervalSelectorComponent,
+    SinceDateFilterComponent,
+    TranslateModule,
+    RouterModule,
+    CommonModule,
+  ],
   providers: [AutoRefreshService],
 })
 export class SessionsComponent implements OnInit, OnDestroy {

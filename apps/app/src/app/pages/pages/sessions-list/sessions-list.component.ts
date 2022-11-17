@@ -1,6 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  ClrDatagridModule,
+  ClrDatagridSortOrder,
+  ClrDatagridStateInterface,
+  ClrDropdownModule,
+  ClrLoadingModule,
+  ClrModalModule,
+} from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   BehaviorSubject,
   catchError,
@@ -32,10 +41,20 @@ import {
 } from '../../../core/types/proto/sessions-common.pb';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-sessions-list',
   templateUrl: './sessions-list.component.html',
   styleUrls: ['./sessions-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ClrLoadingModule,
+    ClrDatagridModule,
+    ClrModalModule,
+    ClrDropdownModule,
+    CommonModule,
+    TranslateModule,
+    RouterModule,
+  ],
 })
 export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};

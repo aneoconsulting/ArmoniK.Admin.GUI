@@ -1,18 +1,33 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import {
   ApplicationError,
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
-import { StatesService } from '../../../../../shared';
+import {
+  ClrDatagridModule,
+  ClrDatagridSortOrder,
+  ClrDatagridStateInterface,
+} from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { SinceDateFilterComponent, StatesService } from '../../../../../shared';
 
 /**
  * Display applications errors in list
  */
 @Component({
+  standalone: true,
   selector: 'app-pages-dashboard-applications-errors-list',
   templateUrl: './applications-errors-list.component.html',
   styleUrls: ['./applications-errors-list.component.scss'],
+  imports: [
+    SinceDateFilterComponent,
+    ClrDatagridModule,
+    TranslateModule,
+    RouterModule,
+    CommonModule,
+  ],
 })
 export class ApplicationsErrorsListComponent {
   @Input() stateKey = '';

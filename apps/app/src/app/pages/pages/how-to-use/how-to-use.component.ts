@@ -1,14 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { ClrIconModule } from '@clr/angular';
 import {
   BrowserTitleService,
   LanguageCode,
   LanguageService,
 } from '../../../core';
+import { HowToUseRoutingModule } from './how-to-use-routing.module';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-how-to-use',
   templateUrl: './how-to-use.component.html',
   styleUrls: ['./how-to-use.component.scss'],
+  imports: [CommonModule, ClrIconModule, HowToUseRoutingModule],
 })
 export class HowToUseComponent implements OnInit {
   constructor(

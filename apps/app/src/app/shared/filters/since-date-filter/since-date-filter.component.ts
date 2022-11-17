@@ -1,10 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input } from '@angular/core';
-import { ClrDatagridFilterInterface } from '@clr/angular';
+import { ClrDatagridFilterInterface, ClrSelectModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
+  standalone: true,
   selector: 'app-since-date-filter',
   templateUrl: './since-date-filter.component.html',
   styleUrls: ['./since-date-filter.component.scss'],
+  imports: [CommonModule, ClrSelectModule, TranslateModule],
 })
 export class SinceDateFilterComponent
   implements ClrDatagridFilterInterface<string>

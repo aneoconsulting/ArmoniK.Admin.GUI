@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -6,6 +7,7 @@ import {
   Pagination,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridStateInterface } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import {
   AppError,
@@ -15,15 +17,27 @@ import {
   PagerService,
   SettingsService,
 } from '../../../core';
-import { StatesService } from '../../../shared';
+import { AlertErrorComponent, StatesService } from '../../../shared';
+import {
+  ApplicationCardComponent,
+  ApplicationsErrorsListComponent,
+} from './components';
 
 /**
  *  Display the dashboard
  */
 @Component({
+  standalone: true,
   selector: 'app-pages-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  imports: [
+    AlertErrorComponent,
+    ApplicationCardComponent,
+    ApplicationsErrorsListComponent,
+    TranslateModule,
+    CommonModule,
+  ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   applicationsErrorsSubscription = new Subscription();

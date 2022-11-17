@@ -10,9 +10,9 @@ const routes: Routes = [
   },
   {
     path: ':applicationName/:applicationVersion/sessions/:session',
-    loadChildren: () =>
-      import('./pages/session-detail/session-detail.module').then(
-        (m) => m.SessionDetailModule
+    loadComponent: () =>
+      import('./pages/session-detail/session-detail.component').then(
+        (m) => m.SessionDetailComponent
       ),
     resolve: {
       session: SessionsSessionResolver,

@@ -1,12 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize, first, Observable } from 'rxjs';
+import { ClrIconModule, ClrInputModule, ClrModalModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { first, Observable } from 'rxjs';
 import { FavoritesService } from '../../../../core';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-modal-favorites',
   templateUrl: './modal-favorites.component.html',
   styleUrls: ['./modal-favorites.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ClrInputModule,
+    ClrModalModule,
+    ClrIconModule,
+    TranslateModule,
+  ],
 })
 export class ModalFavoritesComponent {
   isOpened = false;

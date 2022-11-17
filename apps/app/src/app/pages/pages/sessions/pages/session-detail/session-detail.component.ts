@@ -1,8 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Pagination, RawSession } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridStateInterface, ClrLoadingState } from '@clr/angular';
-import { AutoRefreshService } from '../../../../../shared';
+import {
+  ClrAccordionDescription,
+  ClrAccordionModule,
+  ClrDatagridModule,
+  ClrDatagridStateInterface,
+  ClrLoadingState,
+} from '@clr/angular';
+import { AlertErrorComponent, AutoRefreshService } from '../../../../../shared';
 import {
   TasksService,
   Task,
@@ -14,11 +20,28 @@ import {
 } from '../../../../../core';
 import { StatesService } from '../../../../../shared';
 import { Subscription } from 'rxjs';
+import { TasksListComponent } from './components';
+import { TranslateModule } from '@ngx-translate/core';
+import { SessionsRoutingModule } from '../../sessions-routing.module';
+import { CommonModule } from '@angular/common';
+import { HeaderComponent, UiModule } from '@armonik.admin.gui/ui';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-sessions-session-detail',
   templateUrl: './session-detail.component.html',
   styleUrls: ['./session-detail.component.scss'],
+  imports: [
+    UiModule,
+    HeaderComponent,
+    CommonModule,
+    SessionsRoutingModule,
+    ClrAccordionModule,
+    ClrDatagridModule,
+    AlertErrorComponent,
+    TasksListComponent,
+    TranslateModule,
+  ],
   providers: [AutoRefreshService],
 })
 export class SessionDetailComponent implements OnInit, OnDestroy {

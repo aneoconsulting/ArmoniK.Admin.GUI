@@ -1,21 +1,45 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import {
   ErrorStatus,
   Pagination,
   TaskStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import {
+  ClrButtonModule,
+  ClrDatagridModule,
   ClrDatagridSortOrder,
   ClrDatagridStateInterface,
+  ClrLoadingModule,
   ClrLoadingState,
+  ClrModalModule,
 } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService, Task } from '../../../../../../../core';
-import { StatesService } from '../../../../../../../shared';
+import {
+  AutoRefreshActivatorComponent,
+  StatesService,
+  TaskStatusFilterComponent,
+  TimerIntervalSelectorComponent,
+} from '../../../../../../../shared';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-sessions-tasks-list',
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.scss'],
+  imports: [
+    ClrLoadingModule,
+    ClrDatagridModule,
+    ClrModalModule,
+    CommonModule,
+    TranslateModule,
+    RouterModule,
+    TaskStatusFilterComponent,
+    TimerIntervalSelectorComponent,
+    AutoRefreshActivatorComponent,
+  ],
 })
 export class TasksListComponent {
   @Input() isAutoRefreshEnabled: boolean | null = null;

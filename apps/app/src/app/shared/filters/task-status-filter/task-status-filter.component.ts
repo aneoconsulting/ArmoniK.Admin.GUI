@@ -1,11 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TaskStatus } from '@armonik.admin.gui/armonik-typing';
-import { ClrDatagridFilterInterface } from '@clr/angular';
+import { ClrComboboxModule, ClrDatagridFilterInterface } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
+  standalone: true,
   selector: 'app-task-status-filter',
   templateUrl: './task-status-filter.component.html',
   styleUrls: ['./task-status-filter.component.scss'],
+  imports: [ClrComboboxModule, TranslateModule, FormsModule],
 })
 export class TaskStatusFilterComponent
   implements ClrDatagridFilterInterface<TaskStatus>

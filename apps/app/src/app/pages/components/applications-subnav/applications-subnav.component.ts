@@ -1,12 +1,17 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { ClrIconModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { SettingsService } from '../../../core';
 
 @Component({
+  standalone: true,
   selector: 'app-pages-applications-subnav',
   templateUrl: './applications-subnav.component.html',
   styleUrls: ['./applications-subnav.component.scss'],
+  imports: [CommonModule, RouterModule, ClrIconModule, TranslateModule],
 })
 export class ApplicationsSubnavComponent {
   constructor(
