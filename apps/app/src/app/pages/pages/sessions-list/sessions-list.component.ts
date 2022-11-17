@@ -181,7 +181,14 @@ export class SessionsListComponent implements OnInit {
   public cancelSession(sessionId: string): void {
     this._grpcSessionsService
       .cancel$(sessionId)
-      .pipe(first())
+      .pipe(
+        first(),
+        catchError((error: Error) => {
+          console.error(error);
+
+          return of({} as ListSessionsResponse);
+        })
+      )
       .subscribe({
         next: () => this.manualRefreshSessions(),
       });
@@ -274,9 +281,12 @@ export class SessionsListComponent implements OnInit {
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
+
     return this._grpcSessionsService.list$(params).pipe(
-      catchError((error) => {
+      catchError((error: Error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListSessionsResponse);
       }),
       tap((sessions) => {
@@ -293,6 +303,11 @@ export class SessionsListComponent implements OnInit {
    */
   private _getSession$(sessionId: string): Observable<GetSessionResponse> {
     return this._grpcSessionsService.get$(sessionId).pipe(
+      catchError((error: Error) => {
+        console.error(error);
+
+        return of({} as GetSessionResponse);
+      }),
       tap(() => {
         this.openGetSessionModal();
         this.loadingSingleSession$.next(null);
