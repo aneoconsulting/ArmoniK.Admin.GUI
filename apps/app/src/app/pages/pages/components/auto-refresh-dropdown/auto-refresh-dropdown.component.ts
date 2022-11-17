@@ -14,7 +14,7 @@ type Interval = {
   label: string;
 };
 
-export const DisabledIntervalValue = -1;
+export const DisabledIntervalValue = -1; // Use -1 to stop interval because 0 is a valid interval.
 
 @Component({
   selector: 'app-auto-refresh-dropdown',
@@ -64,7 +64,7 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Stop interval. Use -1 to stop interval because 0 is a valid interval.
+   * Stop interval.
    */
   public onIntervalStop(): void {
     this._disableCurrentInterval();
