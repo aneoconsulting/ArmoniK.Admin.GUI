@@ -6,14 +6,13 @@ import {
   LanguageCode,
   LanguageService,
 } from '../../../core';
-import { HowToUseRoutingModule } from './how-to-use-routing.module';
 
 @Component({
   standalone: true,
   selector: 'app-pages-how-to-use',
   templateUrl: './how-to-use.component.html',
   styleUrls: ['./how-to-use.component.scss'],
-  imports: [CommonModule, ClrIconModule, HowToUseRoutingModule],
+  imports: [CommonModule, ClrIconModule],
 })
 export class HowToUseComponent implements OnInit {
   constructor(

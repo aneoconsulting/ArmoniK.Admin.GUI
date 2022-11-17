@@ -14,11 +14,6 @@ import { StatesService } from './services';
 
 @NgModule({
   imports: [
-    FormsModule,
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    UiModule,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
     AlertErrorComponent,
@@ -33,11 +28,6 @@ import { StatesService } from './services';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
-    FormsModule,
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    UiModule,
   ],
 })
 export class SharedModule {}

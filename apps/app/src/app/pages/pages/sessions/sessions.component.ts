@@ -30,7 +30,6 @@ import {
   StatesService,
   TimerIntervalSelectorComponent,
 } from '../../../shared';
-import { SessionsRoutingModule } from './sessions-routing.module';
 
 @Component({
   standalone: true,
@@ -38,7 +37,7 @@ import { SessionsRoutingModule } from './sessions-routing.module';
   templateUrl: './sessions.component.html',
   styleUrls: ['./sessions.component.scss'],
   imports: [
-    SessionsRoutingModule,
+    RouterModule,
     ClrDatagridModule,
     ClrModalModule,
     UiModule,
@@ -47,7 +46,6 @@ import { SessionsRoutingModule } from './sessions-routing.module';
     TimerIntervalSelectorComponent,
     SinceDateFilterComponent,
     TranslateModule,
-    RouterModule,
     CommonModule,
   ],
   providers: [AutoRefreshService],

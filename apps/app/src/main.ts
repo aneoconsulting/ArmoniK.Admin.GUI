@@ -1,13 +1,30 @@
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import {
+  DEFAULT_LANGUAGE,
+  FakeMissingTranslationHandler,
+  MissingTranslationHandler,
+  TranslateCompiler,
+  TranslateDefaultParser,
+  TranslateFakeCompiler,
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateParser,
+  TranslateService,
+  TranslateStore,
+  USE_DEFAULT_LANG,
+  USE_EXTEND,
+  USE_STORE,
+} from '@ngx-translate/core';
+import { AppComponent } from './app/app.component';
 
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [],
+}).catch((err) => console.error(err));

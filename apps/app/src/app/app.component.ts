@@ -1,8 +1,34 @@
+import { APP_BASE_HREF, CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { HeaderComponent } from '@armonik.admin.gui/ui';
+import {
+  ClrIconModule,
+  ClrMainContainerModule,
+  ClrVerticalNavModule,
+} from '@clr/angular';
+import {
+  DEFAULT_LANGUAGE,
+  FakeMissingTranslationHandler,
+  MissingTranslationHandler,
+  TranslateCompiler,
+  TranslateDefaultParser,
+  TranslateFakeCompiler,
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateParser,
+  TranslateService,
+  TranslateStore,
+  USE_DEFAULT_LANG,
+  USE_EXTEND,
+  USE_STORE,
+} from '@ngx-translate/core';
 import { distinctUntilChanged, filter, first, merge } from 'rxjs';
+import { environment } from '../environments/environment';
 import {
   AppNavLink,
+  CoreModule,
   ExternalServicesEnum,
   GrafanaService,
   HistoryService,
@@ -10,12 +36,56 @@ import {
   SeqService,
   SettingsService,
 } from './core';
+import {
+  ApplicationsSubnavComponent,
+  LanguagesSelectorComponent,
+  NavigationHistoryComponent,
+  TimeComponent,
+} from './pages/components';
+import {
+  ModalFavoritesComponent,
+  NavigationFavoritesComponent,
+} from './pages/pages/components';
 
 @Component({
+  standalone: true,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterModule,
+    CoreModule,
+    HeaderComponent,
+    CommonModule,
+    ModalFavoritesComponent,
+    NavigationFavoritesComponent,
+    TimeComponent,
+    LanguagesSelectorComponent,
+    TranslateModule,
+    ClrIconModule,
+    NavigationHistoryComponent,
+    ApplicationsSubnavComponent,
+    ClrVerticalNavModule,
+    ClrMainContainerModule,
+  ],
+  providers: [
+    TranslateService,
+    TranslateStore,
+    { provide: TranslateLoader, useClass: TranslateFakeLoader },
+    { provide: TranslateCompiler, useClass: TranslateFakeCompiler },
+    { provide: TranslateParser, useClass: TranslateDefaultParser },
+    {
+      provide: MissingTranslationHandler,
+      useClass: FakeMissingTranslationHandler,
+    },
+    { provide: USE_STORE, useValue: {} },
+    { provide: USE_DEFAULT_LANG, useValue: {} },
+    { provide: USE_EXTEND, useValue: {} },
+    { provide: DEFAULT_LANGUAGE, useValue: {} },
+    { provide: APP_BASE_HREF, useValue: environment.baseHref },
+    { provide: Window, useFactory: () => window },
+  ],
 })
 export class AppComponent implements OnInit {
   links: AppNavLink[] = [
@@ -61,6 +131,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this._languageService.init();
+
     merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
       .pipe(first())
       .subscribe(({ isResponseOk, service }) => {

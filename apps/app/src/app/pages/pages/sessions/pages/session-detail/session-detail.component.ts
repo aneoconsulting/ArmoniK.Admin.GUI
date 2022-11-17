@@ -22,7 +22,6 @@ import { StatesService } from '../../../../../shared';
 import { Subscription } from 'rxjs';
 import { TasksListComponent } from './components';
 import { TranslateModule } from '@ngx-translate/core';
-import { SessionsRoutingModule } from '../../sessions-routing.module';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent, UiModule } from '@armonik.admin.gui/ui';
 
@@ -35,7 +34,6 @@ import { HeaderComponent, UiModule } from '@armonik.admin.gui/ui';
     UiModule,
     HeaderComponent,
     CommonModule,
-    SessionsRoutingModule,
     ClrAccordionModule,
     ClrDatagridModule,
     AlertErrorComponent,
