@@ -81,31 +81,32 @@ describe('ModalFavoritesComponent', () => {
     expect(favoritesService.remove).toHaveBeenCalled();
   });
 
-  it('should remove page from favorites when toggle button', () => {
-    const favoritesService = TestBed.inject(FavoritesService);
-    favoritesService.has$ = jasmine
-      .createSpy('has$')
-      .and.returnValue(
-        new Observable<boolean>((observer) => observer.next(true))
-      );
+  describe('togglePageFavorite', () => {
+    it('should remove the favorite when already set', () => {
+      const favoritesService = TestBed.inject(FavoritesService);
+      favoritesService.has$ = jasmine
+        .createSpy('has$')
+        .and.returnValue(
+          new Observable<boolean>((observer) => observer.next(true))
+        );
 
-    component.togglePageFavorite();
+      component.togglePageFavorite();
 
-    expect(favoritesService.remove).toHaveBeenCalled();
-  });
+      expect(favoritesService.remove).toHaveBeenCalled();
+    });
+    it('should open modal if the favorite is not set', () => {
+      const favoritesService = TestBed.inject(FavoritesService);
+      favoritesService.has$ = jasmine
+        .createSpy('has$')
+        .and.returnValue(
+          new Observable<boolean>((observer) => observer.next(false))
+        );
 
-  it('should open modal when toggle button', () => {
-    const favoritesService = TestBed.inject(FavoritesService);
-    favoritesService.has$ = jasmine
-      .createSpy('has$')
-      .and.returnValue(
-        new Observable<boolean>((observer) => observer.next(false))
-      );
+      component.togglePageFavorite();
 
-    component.togglePageFavorite();
-
-    component.isModalFavoriteOpened$.pipe(first()).subscribe((value) => {
-      expect(value).toBe(true);
+      component.isModalFavoriteOpened$.pipe(first()).subscribe((value) => {
+        expect(value).toBe(true);
+      });
     });
   });
 });
