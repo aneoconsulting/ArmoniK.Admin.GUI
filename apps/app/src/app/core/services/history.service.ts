@@ -54,8 +54,6 @@ export class HistoryService {
   private _recover(): Set<string> {
     const history = this._localStorage.getItem('history');
 
-    console.log(history);
-
     if (history) {
       return new Set<string>(JSON.parse(history));
     }
