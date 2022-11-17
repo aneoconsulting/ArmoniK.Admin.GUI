@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
 import {
   CancelSessionRequest,
@@ -13,6 +13,10 @@ import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 
 @Injectable()
 export class GrpcSessionsService {
+  private _timeout$ = timer(8_000).pipe(
+    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
+  );
+
   constructor(private _sessionsClient: SessionsClient) {}
 
   /**
@@ -42,7 +46,9 @@ export class GrpcSessionsService {
       filter: {},
     });
 
-    return this._sessionsClient.listSessions(options);
+    return this._sessionsClient
+      .listSessions(options)
+      .pipe(takeUntil(this._timeout$));
   }
 
   /**
@@ -57,7 +63,9 @@ export class GrpcSessionsService {
       sessionId,
     });
 
-    return this._sessionsClient.getSession(options);
+    return this._sessionsClient
+      .getSession(options)
+      .pipe(takeUntil(this._timeout$));
   }
 
   /**
