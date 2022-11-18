@@ -12,6 +12,8 @@ import {
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
+import { EditedAtFilterComponent } from './filters/edited-at-filter/edited-at-filter.component';
+import { SessionsStatusFilterComponent } from './filters/sessions-status-filter/sessions-status-filter.component';
 
 @NgModule({
   imports: [
@@ -29,6 +31,8 @@ import { StatesService } from './services';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
+    EditedAtFilterComponent,
+    SessionsStatusFilterComponent,
   ],
   exports: [
     AlertErrorComponent,
@@ -36,6 +40,8 @@ import { StatesService } from './services';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
+    EditedAtFilterComponent,
+    SessionsStatusFilterComponent,
     ClarityModule,
     FormsModule,
     CommonModule,

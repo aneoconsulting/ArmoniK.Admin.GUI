@@ -64,6 +64,11 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       {{ 'pages.sessions-list.columns.status' | translate }}
+      <clr-dg-filter [clrDgFilter]="sessionStatusFilter">
+        <app-sessions-status-filter
+          [selection$]="status$"
+        ></app-sessions-status-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -72,6 +77,13 @@
       "
     >
       {{ 'pages.sessions-list.columns.created_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="sessionCreatedFilter">
+        <app-edited-at-filter
+          name="created_at_filter"
+          [beforeDate$]="createdBeforeDate$"
+          [afterDate$]="createdAfterDate$"
+        ></app-edited-at-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
@@ -80,6 +92,13 @@
       "
     >
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="sessionClosedFilter">
+        <app-edited-at-filter
+          name="closed_at_filter"
+          [beforeDate$]="closedBeforeDate$"
+          [afterDate$]="closedAfterDate$"
+        ></app-edited-at-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions-list.columns.actions' | translate }}

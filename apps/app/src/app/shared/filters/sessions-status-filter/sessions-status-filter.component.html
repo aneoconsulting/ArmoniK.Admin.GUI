@@ -1,0 +1,22 @@
+<clr-combobox-container>
+  <label>Select a status</label>
+  <clr-combobox
+    [ngModel]="selection"
+    (ngModelChange)="onSelectionChange($event)"
+    clrMulti="true"
+  >
+    <ng-container *clrOptionSelected="let selected">
+      {{ sessionStatus[selected] }}
+    </ng-container>
+    <clr-options>
+      <clr-option
+        *clrOptionItems="let item of status"
+        clrOptionItemsField="label"
+        [clrValue]="item.value"
+      >
+        <!-- {{'pages.sessions.filters.status.' + item.label | translate}} -->
+        {{ item.label }}
+      </clr-option>
+    </clr-options>
+  </clr-combobox>
+</clr-combobox-container>

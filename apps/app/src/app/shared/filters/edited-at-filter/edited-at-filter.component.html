@@ -1,0 +1,20 @@
+<clr-input-container>
+  <label>Before</label>
+  <input
+    clrInput
+    placeholder="Enter a date here"
+    name="beforeDate"
+    [(ngModel)]="beforeValue"
+    (input)="setBeforeValue()"
+  />
+</clr-input-container>
+<clr-input-container>
+  <label>After</label>
+  <input
+    clrInput
+    placeholder="Enter a date here"
+    name="afterDate"
+    [(ngModel)]="afterValue"
+    (input)="setAfterValue()"
+  />
+</clr-input-container>

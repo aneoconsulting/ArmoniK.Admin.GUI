@@ -5,6 +5,7 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
+  debounceTime,
   distinctUntilChanged,
   first,
   interval,
@@ -30,6 +31,8 @@ import {
   ListSessionsRequest,
   ListSessionsResponse,
 } from '../../../core/types/proto/sessions-common.pb';
+import { EditedAtFilterComponent } from '../../../shared/filters/edited-at-filter/edited-at-filter.component';
+import { SessionsStatusFilterComponent } from '../../../shared/filters/sessions-status-filter/sessions-status-filter.component';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -91,6 +94,19 @@ export class SessionsListComponent implements OnInit {
     switchMap(() => this._listSessions$())
   );
 
+  /** Filters */
+  sessionClosedFilter: EditedAtFilterComponent;
+  sessionCreatedFilter: EditedAtFilterComponent;
+  sessionStatusFilter: SessionsStatusFilterComponent;
+
+  status$: Subject<string[]> = new Subject();
+
+  createdBeforeDate$: Subject<string> = new Subject();
+  createdAfterDate$: Subject<string> = new Subject();
+
+  closedBeforeDate$: Subject<string> = new Subject();
+  closedAfterDate$: Subject<string> = new Subject();
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -105,6 +121,36 @@ export class SessionsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('pages.sessions-list.title')
     );
+
+    this.status$.subscribe((value) => {
+      this._removeStatusFilters();
+      this._addStatusFilters(value);
+    });
+
+    this.createdBeforeDate$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this._filterState('createdBefore', value);
+      });
+
+    this.createdAfterDate$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this._filterState('createdAfter', value);
+      });
+
+    this.closedBeforeDate$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this._filterState('closedBefore', value);
+      });
+
+    this.closedAfterDate$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this._filterState('closedAfter', value);
+        console.log(this._state);
+      });
   }
 
   public get OrderByField() {
@@ -275,6 +321,61 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
+   * Add or replace a filter field to the state
+   *
+   * @param filterValue
+   */
+  private _filterState(filterProperty: string, filterValue: string): void {
+    if (this._state.filters) {
+      const res = this._state.filters.findIndex(
+        (e) => e.property === filterProperty
+      );
+      if (res !== -1) {
+        this._state.filters[res] = {
+          property: filterProperty,
+          value: filterValue,
+        };
+      } else {
+        this._state.filters.push({
+          property: filterProperty,
+          value: filterValue,
+        });
+      }
+    } else {
+      this._state.filters = [];
+      this._state.filters.push({
+        property: filterProperty,
+        value: filterValue,
+      });
+    }
+  }
+
+  /**
+   * Remove all status filters from the state
+   *
+   * @param statusFilters
+   */
+  private _removeStatusFilters(): void {
+    this._state.filters = this._state.filters?.filter(
+      (filter) => filter.property !== 'status'
+    );
+  }
+
+  /**
+   * Add status filter to the state
+   *
+   * @param statusFilters
+   */
+  private _addStatusFilters(statusFilters: string[]): void {
+    if (!this._state.filters) {
+      this._state.filters = [];
+    }
+    statusFilters.forEach((filter) => {
+      this._state.filters?.push({ property: 'status', value: filter });
+    });
+  }
+
+  /**
    * List sessions
    *
    * @returns Observable<ListSessionsResponse>
@@ -313,5 +414,9 @@ export class SessionsListComponent implements OnInit {
         this.loadingSingleSession$.next(null);
       })
     );
+  }
+
+  getFilterValue(key: object): void {
+    console.log(key);
   }
 }
