@@ -1,6 +1,6 @@
-export * from './http/';
+export * from './http';
 
-export * from './grpc/';
+export * from './grpc';
 
 export * from './browser-title.service';
 

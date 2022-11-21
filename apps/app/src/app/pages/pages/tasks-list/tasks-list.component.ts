@@ -42,26 +42,30 @@ export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get tasks */
-  private _subjectManual = new Subject<void>();
-  private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _subjectInterval = new BehaviorSubject<number>(10_000);
-  private _subjectStopInterval = new Subject<void>();
+  private _subjectManual: Subject<void> = new Subject<void>();
+  private _subjectDatagrid: Subject<ClrDatagridStateInterface> =
+    new Subject<ClrDatagridStateInterface>();
+  private _subjectInterval: BehaviorSubject<number> =
+    new BehaviorSubject<number>(10_000);
+  private _subjectStopInterval: Subject<void> = new Subject<void>();
 
   /** Triggers to reload tasks */
-  private _triggerManual$ = this._subjectManual.asObservable();
-  private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
-    tap((state) => this._saveState(state)),
-    concatMap(async (state) => {
-      const params = this._grpcPagerService.createParams(state);
-      await this._router.navigate([], {
-        queryParams: params,
-        queryParamsHandling: 'merge',
-        relativeTo: this._activatedRoute,
-      });
-      return state;
-    })
-  );
-  private _triggerInterval$ = this.subjectInterval
+  private _triggerManual$: Observable<void> =
+    this._subjectManual.asObservable();
+  private _triggerDatagrid$: Observable<ClrDatagridStateInterface> =
+    this._subjectDatagrid.asObservable().pipe(
+      tap((state) => this._saveState(state)),
+      concatMap(async (state) => {
+        const params = this._grpcPagerService.createParams(state);
+        await this._router.navigate([], {
+          queryParams: params,
+          queryParamsHandling: 'merge',
+          relativeTo: this._activatedRoute,
+        });
+        return state;
+      })
+    );
+  private _triggerInterval$: Observable<number> = this.subjectInterval
     .asObservable()
     .pipe(
       switchMap((time) =>
@@ -69,10 +73,10 @@ export class TasksListComponent implements OnInit {
       )
     );
 
-  loadingTasks$ = new BehaviorSubject<boolean>(true);
-  totalTasks$ = new BehaviorSubject<number>(0);
+  loadingTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  totalTasks$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  loadTasks$ = merge(
+  loadTasks$: Observable<ListTasksResponse> = merge(
     this._triggerManual$,
     this._triggerDatagrid$,
     this._triggerInterval$
@@ -82,11 +86,16 @@ export class TasksListComponent implements OnInit {
   );
 
   /** Get a single task */
-  private _opened$ = new BehaviorSubject<boolean>(false);
-  private _subjectSingleTask = new Subject<string>();
-  private _triggerSingleTask = this._subjectSingleTask.asObservable();
+  private _opened$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  private _subjectSingleTask: Subject<string> = new Subject<string>();
+  private _triggerSingleTask: Observable<string> =
+    this._subjectSingleTask.asObservable();
 
-  loadingSingleTask$ = new BehaviorSubject<string | null>(null);
+  loadingSingleTask$: BehaviorSubject<string | null> = new BehaviorSubject<
+    string | null
+  >(null);
   loadSingleTask$ = this._triggerSingleTask.pipe(
     tap((taskId) => this.loadingSingleTask$.next(taskId)),
     switchMap((taskId) => this._getTask$(taskId))
@@ -94,7 +103,9 @@ export class TasksListComponent implements OnInit {
 
   /** Cancel many tasks */
   selected: TaskSummary[] = [];
-  loadingCancelTasks$ = new BehaviorSubject<boolean>(false);
+  loadingCancelTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
 
   constructor(
     private _router: Router,
@@ -112,11 +123,11 @@ export class TasksListComponent implements OnInit {
     );
   }
 
-  public get OrderByField() {
+  public get OrderByField(): typeof ListTasksRequest.OrderByField {
     return ListTasksRequest.OrderByField;
   }
 
-  public get TaskStatusEnum() {
+  public get TaskStatusEnum(): typeof TaskStatus {
     return TaskStatus;
   }
 

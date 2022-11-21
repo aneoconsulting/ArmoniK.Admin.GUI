@@ -14,6 +14,7 @@ import {
   GrafanaService,
   GrpcPagerService,
   GrpcSessionsService,
+  GrpcTasksService,
   HistoryService,
   LanguageService,
   PagerService,
@@ -22,7 +23,6 @@ import {
   SettingsService,
   TasksService,
 } from './services';
-import { GrpcTasksService } from './services/grpc/grpc-tasks.service';
 
 /**
  * Contain the code that is specific to the application
