@@ -27,6 +27,7 @@ import { ResultStatus } from '../../../core/types/proto/result-status.pb';
 import {
   ListResultsRequest,
   ListResultsResponse,
+  ResultRaw,
 } from '../../../core/types/proto/results-common.pb';
 
 @Component({
@@ -191,6 +192,18 @@ export class ResultsListComponent implements OnInit {
       map((value) => Number(value)),
       distinctUntilChanged()
     );
+  }
+
+  /**
+   * Track by result
+   *
+   * @param _
+   * @param result
+   *
+   * @returns Id
+   */
+  public trackByResult(_: number, result: ResultRaw): string {
+    return result.name ?? '';
   }
 
   /**

@@ -82,7 +82,7 @@
         "close": "Fermer"
       }
     },
-    "results": {
+    "results-list": {
       "title": "Résultats",
       "columns": {
         "name": "Nom",
@@ -108,9 +108,9 @@
             "title": "Rafraîchissement automatique",
             "disabled": "Désactivé"
           },
-          "disable": "Désactiver",
-          "parent_task": "Task"
-        }
+          "disable": "Désactiver"
+        },
+        "parent_task": "Task"
       },
       "pagination": {
         "per_page": "Par page",

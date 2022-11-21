@@ -92,7 +92,7 @@
     </clr-dg-column>
 
     <ng-container *ngIf="loadResults$ | async as list">
-      <clr-dg-row *ngFor="let result of list.results">
+      <clr-dg-row *ngFor="let result of list.results; trackBy: trackByResult">
         <clr-dg-cell>
           {{ result.name }}
         </clr-dg-cell>
