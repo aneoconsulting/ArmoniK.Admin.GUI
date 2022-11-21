@@ -59,8 +59,10 @@ export class SessionsListComponent implements OnInit {
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
   private _subjectStopInterval = new Subject<void>();
+  private _subjectFilter = new Subject<void>();
 
   /** Triggers to reload sessions */
+  private _triggerNewFilter$ = this._subjectFilter.asObservable();
   private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
@@ -88,7 +90,8 @@ export class SessionsListComponent implements OnInit {
   loadSessions$ = merge(
     this._triggerManual$,
     this._triggerDatagrid$,
-    this._triggerInterval$
+    this._triggerInterval$,
+    this._triggerNewFilter$
   ).pipe(
     tap(() => this.loadingSessions$.next(true)),
     switchMap(() => this._listSessions$())
@@ -99,13 +102,55 @@ export class SessionsListComponent implements OnInit {
   sessionCreatedFilter: EditedAtFilterComponent;
   sessionStatusFilter: SessionsStatusFilterComponent;
 
-  status$: Subject<string[]> = new Subject();
+  subjectSessionId: Subject<string> = new Subject();
+  subjectStatus: Subject<string[]> = new Subject();
 
-  createdBeforeDate$: Subject<string> = new Subject();
-  createdAfterDate$: Subject<string> = new Subject();
+  subjectCreatedBeforeDate: Subject<string> = new Subject();
+  subjectCreatedAfterDate: Subject<string> = new Subject();
 
-  closedBeforeDate$: Subject<string> = new Subject();
-  closedAfterDate$: Subject<string> = new Subject();
+  subjectClosedBeforeDate: Subject<string> = new Subject();
+  subjectClosedAfterDate: Subject<string> = new Subject();
+
+  sessionId$ = this.subjectSessionId
+    .pipe(debounceTime(300), distinctUntilChanged())
+    .subscribe((value) => {
+      this._filterState('sessionId', value);
+      this._subjectFilter.next();
+    });
+
+  status$ = this.subjectStatus.subscribe((value) => {
+    this._removeStatusFilters();
+    if (value) this._addStatusFilters(value);
+    this._subjectFilter.next();
+  });
+
+  createdBeforeDate$ = this.subjectCreatedBeforeDate
+    .pipe(debounceTime(300), distinctUntilChanged())
+    .subscribe((value) => {
+      this._filterState('createdBefore', value);
+      this._subjectFilter.next();
+    });
+
+  createdAfterDate$ = this.subjectCreatedAfterDate
+    .pipe(debounceTime(300), distinctUntilChanged())
+    .subscribe((value) => {
+      this._filterState('createdAfter', value);
+      this._subjectFilter.next();
+    });
+
+  closedBeforeDate$ = this.subjectClosedBeforeDate
+    .pipe(debounceTime(300), distinctUntilChanged())
+    .subscribe((value) => {
+      this._filterState('closedBefore', value);
+      this._subjectFilter.next();
+    });
+
+  closedAfterDate$ = this.subjectClosedAfterDate
+    .pipe(debounceTime(300), distinctUntilChanged())
+    .subscribe((value) => {
+      this._filterState('closedAfter', value);
+      this._subjectFilter.next();
+    });
 
   constructor(
     private _router: Router,
@@ -121,36 +166,6 @@ export class SessionsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('pages.sessions-list.title')
     );
-
-    this.status$.subscribe((value) => {
-      this._removeStatusFilters();
-      this._addStatusFilters(value);
-    });
-
-    this.createdBeforeDate$
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((value) => {
-        this._filterState('createdBefore', value);
-      });
-
-    this.createdAfterDate$
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((value) => {
-        this._filterState('createdAfter', value);
-      });
-
-    this.closedBeforeDate$
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((value) => {
-        this._filterState('closedBefore', value);
-      });
-
-    this.closedAfterDate$
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((value) => {
-        this._filterState('closedAfter', value);
-        console.log(this._state);
-      });
   }
 
   public get OrderByField() {
@@ -331,10 +346,7 @@ export class SessionsListComponent implements OnInit {
         (e) => e.property === filterProperty
       );
       if (res !== -1) {
-        this._state.filters[res] = {
-          property: filterProperty,
-          value: filterValue,
-        };
+        this._state.filters[res].value = filterValue;
       } else {
         this._state.filters.push({
           property: filterProperty,
@@ -373,6 +385,11 @@ export class SessionsListComponent implements OnInit {
     statusFilters.forEach((filter) => {
       this._state.filters?.push({ property: 'status', value: filter });
     });
+  }
+
+  sessionFilter(key: string): void {
+    console.log(key);
+    //this.subjectSessionId.next(key);
   }
 
   /**

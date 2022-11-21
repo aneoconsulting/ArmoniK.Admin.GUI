@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
+import { SessionStatus } from '../../types/proto/session-status.pb';
 import {
   CancelSessionRequest,
   CancelSessionResponse,
@@ -43,9 +44,16 @@ export class GrpcSessionsService {
           params.order ||
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {},
+      filter: {
+        status:
+          params.filter?.status || SessionStatus.SESSION_STATUS_UNSPECIFIED,
+        sessionId: params.filter?.sessionId,
+        createdBefore: params.filter?.createdBefore,
+        createdAfter: params.filter?.createdAfter,
+        cancelledBefore: params.filter?.closedBefore,
+        cancelledAfter: params.filter?.closedAfter,
+      },
     });
-
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));

@@ -13,17 +13,21 @@ export class EditedAtFilterComponent
   @Input() beforeDate$: Subject<string>;
   @Input() afterDate$: Subject<string>;
 
-  beforeValue: string;
-  afterValue: string;
+  beforeValue: Date;
+  afterValue: Date;
 
   changes: Observable<any>;
 
   setBeforeValue(): void {
-    this.beforeDate$.next(this.beforeValue);
+    if (this.beforeValue)
+      this.beforeDate$.next((this.beforeValue.getTime() / 1000).toString());
+    else this.beforeDate$.next('');
   }
 
   setAfterValue(): void {
-    this.afterDate$.next(this.afterValue);
+    if (this.afterValue)
+      this.afterDate$.next((this.afterValue.getTime() / 1000).toString());
+    else this.afterDate$.next('');
   }
 
   accepts(): boolean {
