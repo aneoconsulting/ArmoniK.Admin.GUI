@@ -164,13 +164,13 @@
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">{{
-          'sessions.pagination.per_page' | translate
+          'pages.sessions-list.pagination.per_page' | translate
         }}</clr-dg-page-size>
         <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total">
           {{
             (total > 1
-              ? 'sessions.pagination.sessions'
-              : 'sessions.pagination.session'
+              ? 'pages.sessions-list.pagination.sessions'
+              : 'pages.sessions-list.pagination.session'
             ) | translate: { value: total }
           }}
         </span>
@@ -180,7 +180,8 @@
 </section>
 
 <clr-modal
-  [(clrModalOpen)]="opened"
+  [clrModalOpen]="(isGetSessionModalOpened$ | async) || false"
+  [clrModalClosable]="false"
   [clrModalSize]="'lg'"
   *ngIf="loadSingleSession$ | async as session"
 >
@@ -192,7 +193,11 @@
     <pre>{{ session.session! | json }}</pre>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="opened = false">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="closeGetSessionModal()"
+    >
       {{ 'pages.sessions-list.modal.close' | translate }}
     </button>
   </div>

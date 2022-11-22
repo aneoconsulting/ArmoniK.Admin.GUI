@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -35,12 +35,13 @@ import {
   selector: 'app-pages-sessions-list',
   templateUrl: './sessions-list.component.html',
   styleUrls: ['./sessions-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
-  opened = false;
+  private _opened$ = new BehaviorSubject<boolean>(false);
   private _subjectSingleSession = new Subject<string>();
   private _triggerSingleSession = this._subjectSingleSession.asObservable();
 
@@ -102,7 +103,7 @@ export class SessionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('sessions.title')
+      this._languageService.instant('pages.sessions-list.title')
     );
   }
 
@@ -180,18 +181,44 @@ export class SessionsListComponent implements OnInit {
   public cancelSession(sessionId: string): void {
     this._grpcSessionsService
       .cancel$(sessionId)
-      .pipe(first())
+      .pipe(
+        first(),
+        catchError((error: Error) => {
+          console.error(error);
+
+          return of({} as ListSessionsResponse);
+        })
+      )
       .subscribe({
         next: () => this.manualRefreshSessions(),
       });
   }
 
   /**
+   * Call a new session
    *
    * @param sessionId
    */
   public viewSessionDetail(sessionId: string): void {
     this._subjectSingleSession.next(sessionId);
+  }
+
+  /**
+   * Open modal to view details
+   */
+  public openGetSessionModal(): void {
+    this._opened$.next(true);
+  }
+
+  /**
+   * Close modal to view details
+   */
+  public closeGetSessionModal(): void {
+    this._opened$.next(false);
+  }
+
+  public get isGetSessionModalOpened$(): Observable<boolean> {
+    return this._opened$.asObservable();
   }
 
   /**
@@ -254,9 +281,12 @@ export class SessionsListComponent implements OnInit {
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
+
     return this._grpcSessionsService.list$(params).pipe(
-      catchError((error) => {
+      catchError((error: Error) => {
         console.error(error);
+        this.stopInterval();
+
         return of({} as ListSessionsResponse);
       }),
       tap((sessions) => {
@@ -273,8 +303,13 @@ export class SessionsListComponent implements OnInit {
    */
   private _getSession$(sessionId: string): Observable<GetSessionResponse> {
     return this._grpcSessionsService.get$(sessionId).pipe(
+      catchError((error: Error) => {
+        console.error(error);
+
+        return of({} as GetSessionResponse);
+      }),
       tap(() => {
-        this.opened = true;
+        this.openGetSessionModal();
         this.loadingSingleSession$.next(null);
       })
     );
