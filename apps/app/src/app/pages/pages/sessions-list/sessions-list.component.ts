@@ -98,18 +98,19 @@ export class SessionsListComponent implements OnInit {
   );
 
   /** Filters */
+  sessionIdFilter = '';
   sessionClosedFilter: EditedAtFilterComponent;
   sessionCreatedFilter: EditedAtFilterComponent;
   sessionStatusFilter: SessionsStatusFilterComponent;
 
-  subjectSessionId: Subject<string> = new Subject();
-  subjectStatus: Subject<string[]> = new Subject();
+  subjectSessionId = new Subject<string>();
+  subjectStatus = new Subject<string[]>();
 
-  subjectCreatedBeforeDate: Subject<string> = new Subject();
-  subjectCreatedAfterDate: Subject<string> = new Subject();
+  subjectCreatedBeforeDate = new Subject<string>();
+  subjectCreatedAfterDate = new Subject<string>();
 
-  subjectClosedBeforeDate: Subject<string> = new Subject();
-  subjectClosedAfterDate: Subject<string> = new Subject();
+  subjectClosedBeforeDate = new Subject<string>();
+  subjectClosedAfterDate = new Subject<string>();
 
   sessionId$ = this.subjectSessionId
     .pipe(debounceTime(300), distinctUntilChanged())
@@ -385,11 +386,6 @@ export class SessionsListComponent implements OnInit {
     statusFilters.forEach((filter) => {
       this._state.filters?.push({ property: 'status', value: filter });
     });
-  }
-
-  sessionFilter(key: string): void {
-    console.log(key);
-    //this.subjectSessionId.next(key);
   }
 
   /**

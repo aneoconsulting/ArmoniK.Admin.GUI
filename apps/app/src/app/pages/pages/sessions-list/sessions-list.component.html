@@ -56,6 +56,8 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
+      [(clrFilterValue)]="sessionIdFilter"
+      (clrFilterValueChange)="subjectSessionId.next(sessionIdFilter)"
     >
       {{ 'pages.sessions-list.columns.session_id' | translate }}
     </clr-dg-column>
