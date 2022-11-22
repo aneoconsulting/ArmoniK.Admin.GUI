@@ -29,7 +29,7 @@ Go to the project directory
 ### Install dependencies
 
 ```bash
-  npm install
+  yarn
 ```
 
 ### Install Nx globally (Optional)
@@ -61,26 +61,26 @@ These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK.
 
 ```sh
 # For Linux
-npm run proto:generate
+yarn run proto:generate
 # For Windows
-npm run proto:generate:win
+yarn run proto:generate:win
 ```
 
 ### Commandes available
 
 ```sh
 # Start the project (App and Server)
-npm run start
+yarn start
 # Build the project (App and Server)
-npm run build
+yarn build
 # Run test on the project (App, Server and libs)
-npm run test
+yarn test
 # Format the project (App, Server and libs)
-npm run format
+yarn format
 # Check format of the project (App, Server and libs)
-npm run format:check
+yarn format:check
 # Lint the project (App, Server and libs)
-npm run lint
+yarn lint
 ```
 
 ### App
