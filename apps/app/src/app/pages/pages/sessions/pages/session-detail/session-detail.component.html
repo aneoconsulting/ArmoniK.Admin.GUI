@@ -55,7 +55,7 @@
     (autoRefreshChange)="autoRefreshService.toggle()"
     [autoRefreshTimer]="autoRefreshService.timer"
     (autoRefreshTimerChange)="autoRefreshService.setTimer($event)"
-    [isSeqUp]="isSeqUp"
+    [isSeqUp]="settingsService.seqSubject$ | async"
     [stateKey]="tasksStateKey"
     [tasks]="tasks"
     [loading]="loadingTasks"

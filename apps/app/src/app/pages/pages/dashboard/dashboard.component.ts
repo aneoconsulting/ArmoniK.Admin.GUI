@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private router: Router,
     private languageService: LanguageService,
     private browserTitleService: BrowserTitleService,
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     private statesService: StatesService,
     private pagerService: PagerService,
     private applicationsService: ApplicationsService,
@@ -67,10 +67,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.applicationsErrorsSubscription.unsubscribe();
     this.subscriptions.unsubscribe();
-  }
-
-  get isSeqUp(): boolean {
-    return this.settingsService.isSeqUp();
   }
 
   /**
