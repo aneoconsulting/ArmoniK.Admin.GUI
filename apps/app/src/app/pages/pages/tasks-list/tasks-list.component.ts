@@ -131,8 +131,8 @@ export class TasksListComponent implements OnInit {
     return TaskStatus;
   }
 
-  public get isSeqUp(): boolean {
-    return this._settingsService.isSeqUp();
+  public get isSeqUp$() {
+    return this._settingsService.seqSubject$.asObservable();
   }
 
   public get subjectInterval(): BehaviorSubject<number> {

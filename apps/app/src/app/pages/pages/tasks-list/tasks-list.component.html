@@ -207,7 +207,7 @@
             {{ 'pages.tasks-list.actions.parent_session' | translate }}
           </a>
           <a
-            *ngIf="isSeqUp"
+            *ngIf="isSeqUp$ | async"
             class="btn btn-sm btn-secondary"
             target="_blank"
             [title]="'pages.tasks-list.actions.view_seq' | translate"
