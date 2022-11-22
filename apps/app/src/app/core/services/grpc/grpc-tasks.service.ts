@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
 import {
   CancelTasksRequest,
@@ -10,14 +10,13 @@ import {
   ListTasksResponse,
 } from '../../types/proto/tasks-common.pb';
 import { TasksClient } from '../../types/proto/tasks-service.pbsc';
+import { BaseGrpc } from './base-grpc.service';
 
 @Injectable()
-export class GrpcTasksService {
-  private _timeout$ = timer(8_000).pipe(
-    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
-  );
-
-  constructor(private _tasksClient: TasksClient) {}
+export class GrpcTasksService extends BaseGrpc {
+  constructor(private _tasksClient: TasksClient) {
+    super();
+  }
 
   public list$(
     params: GrpcParams<
