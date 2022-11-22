@@ -77,7 +77,7 @@
     "@nrwl/jest": "13.10.3",
     "@nrwl/linter": "15.2.1",
     "@nrwl/nest": "13.10.3",
-    "@nrwl/node": "15.2.1",
+    "@nrwl/node": "13.10.3",
     "@nrwl/workspace": "15.2.1",
     "@types/google-protobuf": "^3.15.6",
     "@types/jasmine": "~3.5.0",
