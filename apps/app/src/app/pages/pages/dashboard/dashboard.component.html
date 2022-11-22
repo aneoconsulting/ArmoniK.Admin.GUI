@@ -23,7 +23,7 @@
     [stateKey]="applicationsErrorsStateKey"
     [loading]="applicationsErrorsLoading"
     [applications]="applicationsErrors"
-    [isSeqUp]="(settingsService.seqSubject$ | async) || false"
+    [isSeqUp]="settingsService.seqSubject$ | async"
     (clickSeqLink)="redirectToSeq($event)"
     (refresh)="onRefreshApplicationsErrors($event)"
   ></app-pages-dashboard-applications-errors-list>
