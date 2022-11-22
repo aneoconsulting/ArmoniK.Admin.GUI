@@ -68,7 +68,7 @@
       {{ 'pages.sessions-list.columns.status' | translate }}
       <clr-dg-filter [clrDgFilter]="sessionStatusFilter">
         <app-sessions-status-filter
-          [selection$]="subjectStatus"
+          [subjectSelection]="subjectStatus"
         ></app-sessions-status-filter>
       </clr-dg-filter>
     </clr-dg-column>

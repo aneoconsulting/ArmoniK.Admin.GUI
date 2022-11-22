@@ -1,20 +1,20 @@
 <clr-date-container>
-  <label>Before</label>
+  <label>{{ 'pages.sessions-list.filters.date.before' | translate }}</label>
   <input
     type="date"
     clrDate
     name="beforeDate"
     [(clrDate)]="beforeValue"
-    (clrDateChange)="setBeforeValue()"
+    (clrDateChange)="sendBeforeValue()"
   />
 </clr-date-container>
 <clr-date-container>
-  <label>After</label>
+  <label>{{ 'pages.sessions-list.filters.date.after' | translate }}</label>
   <input
     type="date"
     clrDate
     name="afterDate"
     [(clrDate)]="afterValue"
-    (clrDateChange)="setAfterValue()"
+    (clrDateChange)="sendAfterValue()"
   />
 </clr-date-container>

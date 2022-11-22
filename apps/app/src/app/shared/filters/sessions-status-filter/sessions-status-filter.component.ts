@@ -11,12 +11,13 @@ import { Observable, Subject } from 'rxjs';
 export class SessionsStatusFilterComponent
   implements ClrDatagridFilterInterface<string>
 {
-  @Input() selection$: Subject<string[]>;
+  @Input() subjectSelection: Subject<string[]> = new Subject<string[]>();
   selection: string[] = [];
-  sessionStatus = SessionStatus;
 
   changes: Observable<any>;
 
+  sessionStatus = SessionStatus;
+  // Retrieve all status type
   status = [
     ...Object.keys(SessionStatus)
       .filter((key) => !Number.isInteger(parseInt(key)))
@@ -28,14 +29,17 @@ export class SessionsStatusFilterComponent
 
   onSelectionChange(items: string[]): void {
     this.selection = items;
-    this.selection$.next(items);
+    this.subjectSelection.next(items);
   }
 
   accepts(): boolean {
     return true;
   }
 
+  /**
+   * Checks if the filter is active.
+   */
   isActive(): boolean {
-    return true;
+    return this.selection.length != 0;
   }
 }

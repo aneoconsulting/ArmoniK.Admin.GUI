@@ -79,6 +79,18 @@
       "modal": {
         "title": "Session",
         "close": "Fermer"
+      },
+      "filters": {
+        "status": {
+          "title": "Sélectionner un statut",
+          "UNSPECIFIED": "Non spécifié",
+          "RUNNING": "En cours",
+          "CANCELLED": "Annulée"
+        },
+        "date": {
+          "before": "Avant le",
+          "after": "Après le"
+        }
       }
     },
     "dashboard": {

@@ -18,13 +18,13 @@ export class EditedAtFilterComponent
 
   changes: Observable<any>;
 
-  setBeforeValue(): void {
+  sendBeforeValue(): void {
     if (this.beforeValue)
       this.beforeDate$.next((this.beforeValue.getTime() / 1000).toString());
     else this.beforeDate$.next('');
   }
 
-  setAfterValue(): void {
+  sendAfterValue(): void {
     if (this.afterValue)
       this.afterDate$.next((this.afterValue.getTime() / 1000).toString());
     else this.afterDate$.next('');
@@ -34,7 +34,10 @@ export class EditedAtFilterComponent
     return true;
   }
 
+  /**
+   * Check if the filter is active
+   */
   isActive(): boolean {
-    return true;
+    return !!this.beforeValue || !!this.afterValue;
   }
 }

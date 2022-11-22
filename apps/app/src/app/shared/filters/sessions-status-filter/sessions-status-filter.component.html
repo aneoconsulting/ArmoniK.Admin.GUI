@@ -1,5 +1,5 @@
 <clr-combobox-container>
-  <label>Select a status</label>
+  <label>{{ 'pages.sessions-list.filters.status.title' | translate }}</label>
   <clr-combobox
     [ngModel]="selection"
     (ngModelChange)="onSelectionChange($event)"
@@ -14,8 +14,7 @@
         clrOptionItemsField="label"
         [clrValue]="item.value"
       >
-        <!-- {{'pages.sessions.filters.status.' + item.label | translate}} -->
-        {{ item.label }}
+        {{ 'pages.sessions-list.filters.status.' + item.label | translate }}
       </clr-option>
     </clr-options>
   </clr-combobox>
