@@ -1,0 +1,10 @@
+<clr-date-container>
+  <label>Filter</label>
+  <input
+    type="date"
+    clrDate
+    name="beforeDate"
+    [(clrDate)]="date"
+    (clrDateChange)="sendDate()"
+  />
+</clr-date-container>

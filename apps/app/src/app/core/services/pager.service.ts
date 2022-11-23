@@ -79,9 +79,11 @@ export class PagerService {
     const filters = state.filters ?? [];
     // filters is an array of filter
     for (const filter of filters) {
-      const filterName = filter.property as string;
-      const filterValue = filter.value as string;
-      params.set(filterName, filterValue);
+      if (filter.value !== '') {
+        const filterName = filter.property as string;
+        const filterValue = filter.value as string;
+        params.set(filterName, filterValue);
+      }
     }
   }
 }

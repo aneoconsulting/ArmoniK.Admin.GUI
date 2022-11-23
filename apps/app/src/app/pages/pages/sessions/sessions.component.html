@@ -70,8 +70,9 @@
       [clrDgSortOrder]="getSortOrder('status')"
     >
       {{ 'pages.sessions.table.status.title' | translate }}
-      <clr-dg-filter>
-        {{ 'global.filters.no-filter-available' | translate }}
+      <clr-dg-filter [clrDgFilter]="statusFilter">
+        <app-sessions-status-filter [changes]="subjectStatus" #statusFilter>
+        </app-sessions-status-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -79,8 +80,12 @@
       [clrDgSortOrder]="getSortOrder('createdAt')"
     >
       {{ 'pages.sessions.table.createdAt' | translate }}
-      <clr-dg-filter>
-        {{ 'global.filters.no-filter-available' | translate }}
+      <clr-dg-filter [clrDgFilter]="createdDateFilter">
+        <app-session-date-filter
+          [changes]="subjectCreatedDate"
+          #createdDateFilter
+        >
+        </app-session-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -88,8 +93,12 @@
       [clrDgSortOrder]="getSortOrder('cancelledAt')"
     >
       {{ 'pages.sessions.table.cancelledAt' | translate }}
-      <clr-dg-filter>
-        {{ 'global.filters.no-filter-available' | translate }}
+      <clr-dg-filter [clrDgFilter]="cancelledDateFilter">
+        <app-session-date-filter
+          [changes]="subjectCancelledDate"
+          #cancelledDateFilter
+        >
+        </app-session-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column

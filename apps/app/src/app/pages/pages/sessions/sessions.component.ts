@@ -6,7 +6,7 @@ import {
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import {
   AppError,
   BrowserTitleService,
@@ -33,6 +33,28 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
   sessionToCancel: FormattedSession | null = null;
   isModalOpen = false;
+
+  // Filters
+  subjectCreatedDate = new Subject<string>();
+  subjectCancelledDate = new Subject<string>();
+  subjectStatus = new Subject<string[]>();
+
+  createdDate$ = this.subjectCreatedDate.subscribe((date) => {
+    this.setFilterValue('createdAt', date);
+    this.refresh();
+  });
+
+  cancelledDate$ = this.subjectCancelledDate.subscribe((date) => {
+    this.setFilterValue('cancelledAt', date);
+    this.refresh();
+  });
+
+  statusFilter$ = this.subjectStatus.subscribe((statuses) => {
+    statuses.forEach((status) => {
+      this.setFilterValue('status', status);
+    });
+    this.refresh();
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -89,6 +111,20 @@ export class SessionsComponent implements OnInit, OnDestroy {
    */
   getFilterValue(key: string): string {
     return this.statesService.getFilterValue(this.sessionsStateKey, key);
+  }
+
+  /**
+   * Set a filter value
+   *
+   * @param key filter property
+   * @param value filter value
+   */
+  setFilterValue(key: string, value: string): void {
+    this.state = this.statesService.setFilterValue(
+      this.sessionsStateKey,
+      key,
+      value
+    );
   }
 
   /**

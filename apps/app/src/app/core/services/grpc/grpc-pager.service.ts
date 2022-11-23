@@ -84,7 +84,6 @@ export class GrpcPagerService {
     for (const filter of filters) {
       const filterName = filter.property as string;
       if (filterName.includes('created') || filterName.includes('closed')) {
-        // console.log(filter.value)
         const selectedTime =
           filter.value.length !== 0 ? new Timestamp() : undefined;
         if (selectedTime) selectedTime.seconds = filter.value;

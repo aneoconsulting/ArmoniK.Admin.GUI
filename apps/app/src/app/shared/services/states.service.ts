@@ -46,7 +46,7 @@ export class StatesService {
   }
 
   /**
-   * Get currant page
+   * Get current page
    *
    * @param stateName State name
    *
@@ -79,6 +79,33 @@ export class StatesService {
     const state = this.findState(stateName);
     const filter = state.filters?.find((f) => f?.property === key);
     return filter?.value ?? '';
+  }
+
+  /**
+   * Set a filter value or replace it for a given state.
+   *
+   * @param stateName State name
+   * @param key Filter property
+   * @param value Filter value
+   */
+  setFilterValue(
+    stateName: string,
+    key: string,
+    value: string
+  ): ClrDatagridStateInterface {
+    const state = this.findState(stateName);
+    if (state.filters) {
+      const index = state.filters?.findIndex((f) => f?.property === key);
+      if (index != -1) {
+        state.filters[index].value = value;
+      } else {
+        state.filters.push({ property: key, value: value });
+      }
+    } else {
+      state.filters = [];
+      state.filters.push({ property: key, value: value });
+    }
+    return state;
   }
 
   /**

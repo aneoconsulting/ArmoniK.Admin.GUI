@@ -31,21 +31,19 @@ describe('SessionsStatusFilterComponent', () => {
   });
 
   it('should have a subjectSelection property', () => {
-    expect(component.subjectSelection).toBeDefined();
+    expect(component.changes).toBeDefined();
   });
 
   it('should send a value to the subject when selection change', () => {
     const subjectSelectionSpy = { next: jasmine.createSpy('changed') };
-    component.subjectSelection = subjectSelectionSpy as unknown as Subject<
-      string[]
-    >;
+    component.changes = subjectSelectionSpy as unknown as Subject<string[]>;
     component.onSelectionChange(['testValue']);
     expect(subjectSelectionSpy.next).toHaveBeenCalled();
   });
 
   it('should send the selection when the selection change', () => {
     let returnedValue: string[] = [];
-    const selection$ = component.subjectSelection.subscribe((value) => {
+    component.changes.subscribe((value) => {
       returnedValue = value;
     });
     component.onSelectionChange(['testValue']);

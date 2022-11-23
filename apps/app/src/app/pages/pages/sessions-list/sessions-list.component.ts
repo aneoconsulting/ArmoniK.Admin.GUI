@@ -31,8 +31,6 @@ import {
   ListSessionsRequest,
   ListSessionsResponse,
 } from '../../../core/types/proto/sessions-common.pb';
-import { EditedAtFilterComponent } from '../../../shared/filters/edited-at-filter/edited-at-filter.component';
-import { SessionsStatusFilterComponent } from '../../../shared/filters/sessions-status-filter/sessions-status-filter.component';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -99,18 +97,12 @@ export class SessionsListComponent implements OnInit {
 
   /** Filters */
   sessionIdFilter = '';
-  sessionClosedFilter: EditedAtFilterComponent;
-  sessionCreatedFilter: EditedAtFilterComponent;
-  sessionStatusFilter: SessionsStatusFilterComponent;
 
   subjectSessionId = new Subject<string>();
   subjectStatus = new Subject<string[]>();
 
-  subjectCreatedBeforeDate = new Subject<string>();
-  subjectCreatedAfterDate = new Subject<string>();
-
-  subjectClosedBeforeDate = new Subject<string>();
-  subjectClosedAfterDate = new Subject<string>();
+  subjectCreatedDate = new Subject<{ property: string; value: string }>();
+  subjectClosedDate = new Subject<{ property: string; value: string }>();
 
   sessionId$ = this.subjectSessionId
     .pipe(debounceTime(300), distinctUntilChanged())
@@ -125,31 +117,21 @@ export class SessionsListComponent implements OnInit {
     this._subjectFilter.next();
   });
 
-  createdBeforeDate$ = this.subjectCreatedBeforeDate
+  createdDate$ = this.subjectCreatedDate
     .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((value) => {
-      this._filterState('createdBefore', value);
+    .subscribe((date) => {
+      date.property =
+        date.property == 'before' ? 'createdBefore' : 'createdAfter';
+      this._filterState(date.property, date.value);
       this._subjectFilter.next();
     });
 
-  createdAfterDate$ = this.subjectCreatedAfterDate
+  closedDate$ = this.subjectClosedDate
     .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((value) => {
-      this._filterState('createdAfter', value);
-      this._subjectFilter.next();
-    });
-
-  closedBeforeDate$ = this.subjectClosedBeforeDate
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((value) => {
-      this._filterState('closedBefore', value);
-      this._subjectFilter.next();
-    });
-
-  closedAfterDate$ = this.subjectClosedAfterDate
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((value) => {
-      this._filterState('closedAfter', value);
+    .subscribe((date) => {
+      date.property =
+        date.property == 'before' ? 'closedBefore' : 'closedAfter';
+      this._filterState(date.property, date.value);
       this._subjectFilter.next();
     });
 

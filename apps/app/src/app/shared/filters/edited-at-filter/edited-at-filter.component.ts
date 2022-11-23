@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-edited-at-filter',
@@ -10,24 +10,31 @@ import { Observable, Subject } from 'rxjs';
 export class EditedAtFilterComponent
   implements ClrDatagridFilterInterface<string>
 {
-  @Input() beforeDate$: Subject<string>;
-  @Input() afterDate$: Subject<string>;
+  @Input() changes = new Subject<{ property: string; value: string }>();
 
-  beforeValue: Date;
-  afterValue: Date;
+  beforeDate: Date;
+  afterDate: Date;
 
-  changes: Observable<any>;
-
-  sendBeforeValue(): void {
-    if (this.beforeValue)
-      this.beforeDate$.next((this.beforeValue.getTime() / 1000).toString());
-    else this.beforeDate$.next('');
+  sendBeforeDate(): void {
+    if (this.beforeDate) {
+      this.changes.next({
+        property: 'before',
+        value: (this.beforeDate.getTime() / 1000).toString(),
+      });
+    } else {
+      this.changes.next({ property: 'before', value: '' });
+    }
   }
 
-  sendAfterValue(): void {
-    if (this.afterValue)
-      this.afterDate$.next((this.afterValue.getTime() / 1000).toString());
-    else this.afterDate$.next('');
+  sendAfterDate(): void {
+    if (this.beforeDate) {
+      this.changes.next({
+        property: 'after',
+        value: (this.beforeDate.getTime() / 1000).toString(),
+      });
+    } else {
+      this.changes.next({ property: 'after', value: '' });
+    }
   }
 
   accepts(): boolean {
@@ -38,6 +45,6 @@ export class EditedAtFilterComponent
    * Check if the filter is active
    */
   isActive(): boolean {
-    return !!this.beforeValue || !!this.afterValue;
+    return !!this.beforeDate || !!this.afterDate;
   }
 }
