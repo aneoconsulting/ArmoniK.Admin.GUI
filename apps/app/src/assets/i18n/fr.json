@@ -178,6 +178,7 @@
     }
   },
   "errors": {
+    "403": "Interdit",
     "404": "Non trouvée",
     "500": "Erreur interne",
     "504": "Erreur de connexion"
