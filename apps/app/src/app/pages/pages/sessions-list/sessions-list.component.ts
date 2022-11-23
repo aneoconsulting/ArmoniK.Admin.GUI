@@ -29,7 +29,7 @@ import {
   ListSessionsRequest,
   ListSessionsResponse,
 } from '../../../core/types/proto/sessions-common.pb';
-import { DisabledIntervalValue } from '../components';
+import { DisabledIntervalValue } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions-list',
