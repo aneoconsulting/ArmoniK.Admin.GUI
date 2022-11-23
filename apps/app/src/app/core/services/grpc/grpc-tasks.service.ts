@@ -10,10 +10,10 @@ import {
   ListTasksResponse,
 } from '../../types/proto/tasks-common.pb';
 import { TasksClient } from '../../types/proto/tasks-service.pbsc';
-import { BaseGrpc } from './base-grpc.service';
+import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
-export class GrpcTasksService extends BaseGrpc {
+export class GrpcTasksService extends BaseGrpcService {
   constructor(private _tasksClient: TasksClient) {
     super();
   }

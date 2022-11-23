@@ -10,10 +10,10 @@ import {
   ListSessionsResponse,
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
-import { BaseGrpc } from './base-grpc.service';
+import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
-export class GrpcSessionsService extends BaseGrpc {
+export class GrpcSessionsService extends BaseGrpcService {
   constructor(private _sessionsClient: SessionsClient) {
     super();
   }
