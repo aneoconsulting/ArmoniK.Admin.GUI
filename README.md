@@ -31,13 +31,6 @@ Go to the project directory
 ```bash
   yarn
 ```
-
-### Install Nx globally (Optional)
-
-```bash
-  npm install -g nx
-```
-
 ### Install mongoDB
 
 See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
@@ -61,9 +54,9 @@ These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK.
 
 ```sh
 # For Linux
-yarn run proto:generate
+yarn proto:generate
 # For Windows
-yarn run proto:generate:win
+yarn proto:generate:win
 ```
 
 ### Commandes available
@@ -88,7 +81,7 @@ yarn lint
 Start the app (front-end using Angular)
 
 ```bash
-  nx serve app
+  yarn ng serve app
 ```
 
 #### Analyze the app
@@ -99,7 +92,7 @@ If Angular tells that the dist folder is too heavy, you can analyze the app and 
   # Install a source map explorer
   npm install -g source-map-explorer
   # Build app and generate source maps
-  nx build app --prod --sourceMap=true
+  yarn ng build app --prod --sourceMap=true
   # Analyze source maps
   source-map-explorer dist/apps/app/main.<hash>.js
 ```
@@ -122,7 +115,7 @@ MongoDB__DatabaseName=armonik
 And finally, you can start the server (REST API using Nest)
 
 ```bash
-  nx serve api
+  yarn ng serve api
 ```
 
 ### App and Server
@@ -130,7 +123,7 @@ And finally, you can start the server (REST API using Nest)
 Start the GUI (app and server)
 
 ```bash
-  nx run-many --target=serve --all
+  yarn ng run-many --target=serve --all
 ```
 
 ## Contributing
@@ -164,25 +157,25 @@ But, it is possible to run tests locally (only on affected files).
 Format code
 
 ```bash
-  npx nx affected --target=format --parallel=3 --base=main
+  yarn ng affected --target=format --parallel=3 --base=main
 ```
 
 Check lint
 
 ```bash
-  npx nx affected --target=lint --parallel=3 --base=main
+  yarn ng affected --target=lint --parallel=3 --base=main
 ```
 
 Run tests
 
 ```bash
-  npx nx affected --target=test --parallel=3 --code-coverage --base=main
+  yarn ng affected --target=test --parallel=3 --code-coverage --base=main
 ```
 
 Build project
 
 ```bash
-  npx nx affected --target=build --parallel=3 --base=main
+  yarn ng affected --target=build --parallel=3 --base=main
 ```
 
 ## Deployment
