@@ -31,6 +31,7 @@ Go to the project directory
 ```bash
   yarn
 ```
+
 ### Install mongoDB
 
 See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
