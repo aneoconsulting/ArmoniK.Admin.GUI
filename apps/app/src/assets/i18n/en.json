@@ -31,20 +31,18 @@
   "pages": {
     "components": {
       "modal_favorites": {
-        "favorites": {
-          "button": {
-            "add": "Add to favorites",
-            "remove": "Remove from favorites"
+        "button": {
+          "add": "Add to favorites",
+          "remove": "Remove from favorites"
+        },
+        "modal": {
+          "title": "Create a new favorite",
+          "input": {
+            "label": "Name of the favorite",
+            "placeholder": "Enter a name"
           },
-          "modal": {
-            "title": "Create a new favorite",
-            "input": {
-              "label": "Name of the favorite",
-              "placeholder": "Enter a name"
-            },
-            "close": "Close",
-            "add": "Add"
-          }
+          "close": "Close",
+          "add": "Add"
         }
       }
     },
