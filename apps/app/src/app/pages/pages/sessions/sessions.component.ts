@@ -6,6 +6,7 @@ import {
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Subscription } from 'rxjs';
 import {
   AppError,
@@ -256,11 +257,14 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    * @param error
    */
-  private onCancelSessionError(error: AppError) {
+  private onCancelSessionError(error: GrpcStatusEvent) {
     this.sessionToCancel = null;
     this.isModalOpen = false;
 
-    this.errors.push(error);
+    this.errors.push({
+      status: error.statusCode,
+      operation: 'Cancel Session',
+    });
   }
 
   /**

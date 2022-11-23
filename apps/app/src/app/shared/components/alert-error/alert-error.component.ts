@@ -19,7 +19,7 @@ export class AlertErrorComponent {
    * @returns translated error message
    */
   translateError(error: AppError): string {
-    return this.languageService.instant(`errors.${error.status}`);
+    return `errors.${error.status}`;
   }
 
   /**

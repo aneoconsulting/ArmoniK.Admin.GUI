@@ -178,7 +178,9 @@
     }
   },
   "errors": {
-    "403": "Forbidden",
+    "4": "Deadline exceeded",
+    "7": "Permission denied",
+    "16": "Unauthenticated",
     "404": "Not found",
     "500": "Internal server error",
     "504": "Gateway timeout"
