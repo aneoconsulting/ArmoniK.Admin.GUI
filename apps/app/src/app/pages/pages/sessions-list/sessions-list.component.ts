@@ -47,7 +47,7 @@ export class SessionsListComponent implements OnInit {
   public customColumns$ = new BehaviorSubject<Set<string>>(this._customColumns);
 
   /** Get a single session */
-  opened = false;
+  private _opened$ = new BehaviorSubject<boolean>(false);
   private _subjectSingleSession = new Subject<string>();
   private _triggerSingleSession = this._subjectSingleSession.asObservable();
 
@@ -110,7 +110,7 @@ export class SessionsListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('sessions.title')
+      this._languageService.instant('pages.sessions-list.title')
     );
 
     this._customColumns = this._restoreCustomColumns();
@@ -245,11 +245,30 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
+   * Call a new session
    *
    * @param sessionId
    */
   public viewSessionDetail(sessionId: string): void {
     this._subjectSingleSession.next(sessionId);
+  }
+
+  /**
+   * Open modal to view details
+   */
+  public openGetSessionModal(): void {
+    this._opened$.next(true);
+  }
+
+  /**
+   * Close modal to view details
+   */
+  public closeGetSessionModal(): void {
+    this._opened$.next(false);
+  }
+
+  public get isGetSessionModalOpened$(): Observable<boolean> {
+    return this._opened$.asObservable();
   }
 
   /**
@@ -340,7 +359,7 @@ export class SessionsListComponent implements OnInit {
         return of({} as GetSessionResponse);
       }),
       tap(() => {
-        this.opened = true;
+        this.openGetSessionModal();
         this.loadingSingleSession$.next(null);
       })
     );

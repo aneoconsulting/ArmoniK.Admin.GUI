@@ -24,10 +24,10 @@ export class AppComponent implements OnInit {
       .pipe(first())
       .subscribe(({ isResponseOk, service }) => {
         if (isResponseOk && service === ExternalServicesEnum.SEQ) {
-          this.settingsService.seqEnabled = true;
+          this.settingsService.seqSubject$.next(true);
         }
         if (isResponseOk && service === ExternalServicesEnum.GRAFANA) {
-          this.settingsService.grafanaEnabled = true;
+          this.settingsService.grafanaSubject$.next(true);
         }
       });
   }
