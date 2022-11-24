@@ -42,14 +42,9 @@ import {
 export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
-  /** Manage columns */
-  private _modalManageColumnsOpened$ = new BehaviorSubject<boolean>(false);
-
   /** Add a column */
   private _customColumns = new Set<string>();
   public customColumns$ = new BehaviorSubject<Set<string>>(this._customColumns);
-  public newColumnName = '';
-  private _modalAddColumnOpened$ = new BehaviorSubject<boolean>(false);
 
   /** Get a single session */
   opened = false;
@@ -104,6 +99,7 @@ export class SessionsListComponent implements OnInit {
 
   constructor(
     private _router: Router,
+    private _storage: Storage,
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
@@ -116,6 +112,9 @@ export class SessionsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('sessions.title')
     );
+
+    this._customColumns = this._restoreCustomColumns();
+    this.customColumns$.next(this._customColumns);
   }
 
   public get OrderByField() {
@@ -138,54 +137,18 @@ export class SessionsListComponent implements OnInit {
     return this._settingsService.initialInterval;
   }
 
-  /**
-   * Open modal manage columns
-   */
-  public openModalManageColumns(): void {
-    this._modalManageColumnsOpened$.next(true);
-  }
-
-  /**
-   * Close modal to manage columns
-   */
-  public closeModalManageColumns(): void {
-    this.newColumnName = '';
-    this._modalManageColumnsOpened$.next(false);
-  }
-
-  public get isModalManageColumnsOpened$(): Observable<boolean> {
-    return this._modalManageColumnsOpened$.asObservable();
-  }
-
-  /**
-   * Open modal add a column
-   */
-  public openModalAddColumn(): void {
-    this._modalAddColumnOpened$.next(true);
-  }
-
-  /**
-   * Close modal to add a column
-   */
-  public closeModalAddColumn(): void {
-    this.newColumnName = '';
-    this._modalAddColumnOpened$.next(false);
-  }
-
-  public get isModalAddColumnOpened$(): Observable<boolean> {
-    return this._modalAddColumnOpened$.asObservable();
-  }
-
-  public addColumn(): void {
-    this._customColumns.add(this.newColumnName);
+  public addColumn(column: string): void {
+    this._customColumns.add(column);
     this.customColumns$.next(this._customColumns);
 
-    this.closeModalAddColumn();
+    this._storeCustomColumns();
   }
 
   public removeColumn(column: string): void {
     this._customColumns.delete(column);
     this.customColumns$.next(this._customColumns);
+
+    this._storeCustomColumns();
   }
 
   public findCustomColumnValue(session: SessionSummary, key: string) {
@@ -358,8 +321,6 @@ export class SessionsListComponent implements OnInit {
         return of({} as ListSessionsResponse);
       }),
       tap((sessions) => {
-        console.log(sessions);
-
         this.loadingSessions$.next(false);
         this.totalSessions$.next(sessions.total ?? 0);
       })
@@ -383,5 +344,21 @@ export class SessionsListComponent implements OnInit {
         this.loadingSingleSession$.next(null);
       })
     );
+  }
+
+  private _storeCustomColumns(): void {
+    this._storage.setItem(
+      'custom_columns',
+      JSON.stringify(Array.from(this._customColumns))
+    );
+  }
+
+  private _restoreCustomColumns(): Set<string> {
+    const columns = this._storage.getItem('custom_columns');
+    if (columns) {
+      return new Set(JSON.parse(columns));
+    }
+
+    return new Set();
   }
 }

@@ -55,22 +55,11 @@
         </clr-dropdown>
       </div>
 
-      <div class="btn-group" s>
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary"
-          (click)="openModalManageColumns()"
-        >
-          {{ 'pages.sessions-list.actions.manage_columns' | translate }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary"
-          (click)="openModalAddColumn()"
-        >
-          {{ 'pages.sessions-list.actions.add_column' | translate }}
-        </button>
-      </div>
+      <app-custom-columns-manager
+        [columns$]="customColumns$"
+        (addColumnChange)="addColumn($event)"
+        (removeColumnChange)="removeColumn($event)"
+      ></app-custom-columns-manager>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -103,16 +92,17 @@
     >
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
     </clr-dg-column>
-    <ng-container *ngIf="customColumns$ | async as columns">
-      <clr-dg-column
-        *ngFor="let column of columns"
-        [title]="'pages.sessions-list.columns.custom' | translate"
-      >
-        <clr-icon shape="bolt" size="xs"></clr-icon>
-        &nbsp;
-        {{ column }}
-      </clr-dg-column>
-    </ng-container>
+    <clr-dg-column
+      *ngFor="
+        let column of customColumns$ | async;
+        trackBy: trackByCustomColumn
+      "
+      [title]="'pages.sessions-list.columns.custom' | translate"
+    >
+      <clr-icon shape="bolt" size="xs"></clr-icon>
+      &nbsp;
+      {{ column }}
+    </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.sessions-list.columns.actions' | translate }}
     </clr-dg-column>
@@ -237,90 +227,4 @@
   </div>
 </clr-modal>
 
-<clr-modal
-  [clrModalOpen]="(isModalAddColumnOpened$ | async) || false"
-  [clrModalClosable]="false"
-  [clrModalSize]="'lg'"
->
-  <h3 class="modal-title">
-    {{ 'pages.sessions-list.modal.add_column.title' | translate }}
-  </h3>
-  <div class="modal-body">
-    <form clrForm>
-      <clr-input-container>
-        <label>
-          {{
-            'pages.sessions-list.modal.add_column.name_input.label' | translate
-          }}</label
-        >
-        <input
-          [placeholder]="
-            'pages.sessions-list.modal.add_column.name_input.placeholder'
-              | translate
-          "
-          clrInput
-          name="name"
-          [(ngModel)]="newColumnName"
-        />
-        <clr-control-helper>{{
-          'pages.sessions-list.modal.add_column.name_input.helper_text'
-            | translate
-        }}</clr-control-helper>
-      </clr-input-container>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-secondary"
-      (click)="closeModalAddColumn()"
-    >
-      {{ 'pages.sessions-list.modal.add_column.close' | translate }}
-    </button>
-    <button type="button" class="btn btn-primary" (click)="addColumn()">
-      {{ 'pages.sessions-list.modal.add_column.add' | translate }}
-    </button>
-  </div>
-</clr-modal>
-
-<clr-modal
-  [clrModalOpen]="(isModalManageColumnsOpened$ | async) || false"
-  [clrModalClosable]="false"
-  [clrModalSize]="'lg'"
->
-  <h3 class="modal-title">
-    {{ 'pages.sessions-list.modal.manage_columns.title' | translate }}
-  </h3>
-  <div class="modal-body">
-    <ng-container *ngIf="customColumns$ | async as columns">
-      <ol class="list" *ngIf="columns.size > 0; else emptyCustomColumns">
-        <li *ngFor="let column of columns">
-          {{ column }}
-          &nbsp;
-          <button
-            class="btn btn-sm btn-danger-outline"
-            type="button"
-            (click)="removeColumn(column)"
-          >
-            {{ 'pages.sessions-list.modal.manage_columns.remove' | translate }}
-          </button>
-        </li>
-      </ol>
-    </ng-container>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-primary"
-      (click)="closeModalManageColumns()"
-    >
-      {{ 'pages.sessions-list.modal.manage_columns.close' | translate }}
-    </button>
-  </div>
-</clr-modal>
-
 <ng-template #empty> - </ng-template>
-
-<ng-template #emptyCustomColumns>
-  {{ 'pages.sessions-list.modal.manage_columns.empty' | translate }}
-</ng-template>

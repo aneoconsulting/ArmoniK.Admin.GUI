@@ -42,6 +42,30 @@
       "button": "Create"
     }
   },
+  "components": {
+    "custom_columns_manager": {
+      "manage_columns": "Manage columns",
+      "add_column": "Add a column",
+      "modals": {
+        "add_column": {
+          "title": "Add a column",
+          "close": "Close",
+          "add": "Add",
+          "name_input": {
+            "label": "Name",
+            "placeholder": "Enter a name",
+            "helper_text": "Name must be unique. You can use '.' to access nested properties. You must have data to view custom column."
+          }
+        },
+        "manage_columns": {
+          "title": "Manage columns",
+          "close": "Close",
+          "empty": "No custom columns",
+          "remove": "Remove"
+        }
+      }
+    }
+  },
   "pages": {
     "sessions-list": {
       "title": "Sessions",
@@ -70,9 +94,7 @@
         },
         "details": "Details",
         "related_tasks": "Related Tasks",
-        "cancel": "Close",
-        "manage_columns": "Manage columns",
-        "add_column": "Add a column"
+        "cancel": "Close"
       },
       "pagination": {
         "per_page": "Sessions per page",
@@ -83,22 +105,6 @@
         "view_session": {
           "title": "Session",
           "close": "Close"
-        },
-        "add_column": {
-          "title": "Add a column",
-          "close": "Close",
-          "add": "Add",
-          "name_input": {
-            "label": "Name",
-            "placeholder": "Enter a name",
-            "helper_text": "Name must be unique. You can use '.' to access nested properties."
-          }
-        },
-        "manage_columns": {
-          "title": "Manage columns",
-          "close": "Close",
-          "empty": "No custom columns",
-          "remove": "Remove"
         }
       }
     },
