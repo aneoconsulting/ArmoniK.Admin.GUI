@@ -54,7 +54,7 @@
           "name_input": {
             "label": "Nom",
             "placeholder": "Saisir le nom",
-            "helper_text": "Le nom de la colonne doit être unique. Il est possible d'utiliser '.' pour accéder aux propriétés imbriquées. Vous devez avoir des données pour voir les colonnes personnalisées"
+            "helper_text": "Le nom de la colonne doit être unique. Il est possible d'utiliser '.' pour accéder aux propriétés imbriquées. Vous devez avoir des données pour voir les colonnes personnalisées."
           }
         },
         "manage_columns": {

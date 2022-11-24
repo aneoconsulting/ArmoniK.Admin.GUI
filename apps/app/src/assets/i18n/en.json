@@ -54,7 +54,7 @@
           "name_input": {
             "label": "Name",
             "placeholder": "Enter a name",
-            "helper_text": "Name must be unique. You can use '.' to access nested properties. You must have data to view custom column."
+            "helper_text": "Name must be unique. You can use '.' to access nested properties. You must have data to view custom columns."
           }
         },
         "manage_columns": {
