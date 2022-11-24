@@ -101,7 +101,7 @@
         "sessions": "{{value}} sessions",
         "session": "{{value}} session"
       },
-      "modal": {
+      "modals": {
         "view_session": {
           "title": "Session",
           "close": "Close"

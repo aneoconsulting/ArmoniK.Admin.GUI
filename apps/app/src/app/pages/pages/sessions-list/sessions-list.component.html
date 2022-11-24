@@ -216,7 +216,7 @@
   *ngIf="loadSingleSession$ | async as session"
 >
   <h3 class="modal-title">
-    {{ 'pages.sessions-list.modal.view_session.title' | translate }}
+    {{ 'pages.sessions-list.modals.view_session.title' | translate }}
     {{ session.session!.sessionId }}
   </h3>
   <div class="modal-body">
@@ -228,7 +228,7 @@
       class="btn btn-primary"
       (click)="closeGetSessionModal()"
     >
-      {{ 'pages.sessions-list.modal.view_session.close' | translate }}
+      {{ 'pages.sessions-list.modals.view_session.close' | translate }}
     </button>
   </div>
 </clr-modal>
