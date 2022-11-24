@@ -148,13 +148,14 @@
             }}
           </span>
         </clr-dg-cell>
-        <ng-container *ngIf="customColumns$ | async as columns">
-          <clr-dg-cell
-            *ngFor="let column of columns; trackBy: trackByCustomColumn"
-          >
-            {{ findCustomColumnValue(session, column) }}
-          </clr-dg-cell>
-        </ng-container>
+        <clr-dg-cell
+          *ngFor="
+            let column of customColumns$ | async;
+            trackBy: trackByCustomColumn
+          "
+        >
+          {{ findCustomColumnValue(session, column) }}
+        </clr-dg-cell>
         <clr-dg-cell>
           <button
             type="button"
