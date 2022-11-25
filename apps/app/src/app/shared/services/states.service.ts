@@ -88,11 +88,7 @@ export class StatesService {
    * @param key Filter property
    * @param value Filter value
    */
-  setFilterValue(
-    stateName: string,
-    key: string,
-    value: string
-  ): ClrDatagridStateInterface {
+  setFilterValue(stateName: string, key: string, value: string) {
     const state = this.findState(stateName);
     if (state.filters) {
       const index = state.filters?.findIndex((f) => f?.property === key);
@@ -105,7 +101,6 @@ export class StatesService {
       state.filters = [];
       state.filters.push({ property: key, value: value });
     }
-    return state;
   }
 
   /**

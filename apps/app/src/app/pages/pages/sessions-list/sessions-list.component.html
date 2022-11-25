@@ -57,7 +57,6 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
       [(clrFilterValue)]="sessionIdFilter"
-      (clrFilterValueChange)="subjectSessionId.next(sessionIdFilter)"
     >
       {{ 'pages.sessions-list.columns.session_id' | translate }}
     </clr-dg-column>
@@ -67,7 +66,11 @@
     >
       {{ 'pages.sessions-list.columns.status' | translate }}
       <clr-dg-filter [clrDgFilter]="statusFilter">
-        <app-sessions-status-filter [changes]="subjectStatus" #statusFilter>
+        <app-sessions-status-filter
+          [name]="'status'"
+          [selectedValue]="(queryParam$('status') | async) || 0"
+          #statusFilter
+        >
         </app-sessions-status-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -79,12 +82,13 @@
     >
       {{ 'pages.sessions-list.columns.created_at' | translate }}
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
-        <app-edited-at-filter
-          name="created_at_filter"
-          [changes]="subjectCreatedDate"
+        <app-sessions-list-filter
+          [name]="'createdAt'"
+          [beforeDate]="(queryDateParam$('createdAtBefore') | async) || null"
+          [afterDate]="(queryDateParam$('createdAtAfter') | async) || null"
           #createdDateFilter
         >
-        </app-edited-at-filter>
+        </app-sessions-list-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -95,11 +99,12 @@
     >
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
-        <app-edited-at-filter
-          name="closed_at_filter"
-          [changes]="subjectClosedDate"
+        <app-sessions-list-filter
+          [name]="'closedAt'"
+          [beforeDate]="(queryDateParam$('closedAtBefore') | async) || null"
+          [afterDate]="(queryDateParam$('closedAtAfter') | async) || null"
           #closedDateFilter
-        ></app-edited-at-filter>
+        ></app-sessions-list-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>

@@ -1,21 +1,11 @@
-<clr-combobox-container>
+<clr-select-container>
   <label>{{ 'pages.sessions-list.filters.status.title' | translate }}</label>
-  <clr-combobox
-    [ngModel]="selection"
-    (ngModelChange)="onSelectionChange($event)"
-    clrMulti="true"
-  >
-    <ng-container *clrOptionSelected="let selected">
-      {{ sessionStatus[selected] }}
-    </ng-container>
-    <clr-options>
-      <clr-option
-        *clrOptionItems="let item of status"
-        clrOptionItemsField="label"
-        [clrValue]="item.value"
-      >
-        {{ 'pages.sessions-list.filters.status.' + item.label | translate }}
-      </clr-option>
-    </clr-options>
-  </clr-combobox>
-</clr-combobox-container>
+  <select clrSelect (change)="onSelectionChange()" [(ngModel)]="selectedValue">
+    <option *ngFor="let item of status" [value]="item.value">
+      {{ 'pages.sessions-list.filters.status.' + item.label | translate }}
+    </option>
+  </select>
+</clr-select-container>
+<button class="btn btn-sm" *ngIf="isActive()" (click)="clear()">
+  Clear filter
+</button>

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
 
 import { SessionsStatusFilterComponent } from './sessions-status-filter.component';
 
@@ -25,38 +24,28 @@ describe('SessionsStatusFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should change the selection', () => {
-    component.onSelectionChange(['testValue']);
-    expect(component.selection).toEqual(['testValue']);
+  it('should have a name', () => {
+    expect(component.name).toBeDefined();
   });
 
-  it('should have a subjectSelection property', () => {
-    expect(component.changes).toBeDefined();
+  it('should emit a value when selection change', () => {
+    component.changes.emit = jasmine.createSpy();
+    component.onSelectionChange();
+    expect(component.changes.emit).toHaveBeenCalled();
   });
 
-  it('should send a value to the subject when selection change', () => {
-    const subjectSelectionSpy = { next: jasmine.createSpy('changed') };
-    component.changes = subjectSelectionSpy as unknown as Subject<string[]>;
-    component.onSelectionChange(['testValue']);
-    expect(subjectSelectionSpy.next).toHaveBeenCalled();
-  });
-
-  it('should send the selection when the selection change', () => {
-    let returnedValue: string[] = [];
-    component.changes.subscribe((value) => {
-      returnedValue = value;
-    });
-    component.onSelectionChange(['testValue']);
-    expect(returnedValue).toEqual(['testValue']);
+  it('should return its value as a number', () => {
+    component.selectedValue = 1;
+    expect(component.value).toEqual(1);
   });
 
   describe('is Active', () => {
     it('should be true when the value is active', () => {
-      component.selection = ['testValue'];
+      component.selectedValue = 1;
       expect(component.isActive()).toBeTruthy();
     });
 
-    it('should be false when the valye is inactive', () => {
+    it('should be false when the value is inactive', () => {
       expect(component.isActive()).toBeFalsy();
     });
   });

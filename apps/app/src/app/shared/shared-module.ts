@@ -12,7 +12,7 @@ import {
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
-import { EditedAtFilterComponent } from './filters/edited-at-filter/edited-at-filter.component';
+import { SessionListFilterComponent } from './filters/sessions-list-filter/sessions-list-filter.component';
 import { SessionsStatusFilterComponent } from './filters/sessions-status-filter/sessions-status-filter.component';
 import { SessionDateFilterComponent } from './filters/session-date-filter/session-date-filter.component';
 
@@ -32,7 +32,7 @@ import { SessionDateFilterComponent } from './filters/session-date-filter/sessio
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
-    EditedAtFilterComponent,
+    SessionListFilterComponent,
     SessionsStatusFilterComponent,
     SessionDateFilterComponent,
   ],
@@ -42,7 +42,7 @@ import { SessionDateFilterComponent } from './filters/session-date-filter/sessio
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
-    EditedAtFilterComponent,
+    SessionListFilterComponent,
     SessionsStatusFilterComponent,
     SessionDateFilterComponent,
     ClarityModule,

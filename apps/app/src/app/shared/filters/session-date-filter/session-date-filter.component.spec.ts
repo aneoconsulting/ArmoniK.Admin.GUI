@@ -22,16 +22,6 @@ describe('SessionDateFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should send date when a date is picked', () => {
-    let result = '';
-    component.date = new Date();
-    component.changes.subscribe((stringDate) => {
-      result = stringDate;
-    });
-    component.sendDate();
-    expect(result).toEqual(component.date.toJSON());
-  });
-
   describe('Is active', () => {
     it('should be active when a date is picked', () => {
       component.date = new Date();

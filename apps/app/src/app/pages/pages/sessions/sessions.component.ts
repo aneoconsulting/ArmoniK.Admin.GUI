@@ -6,7 +6,7 @@ import {
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   AppError,
   BrowserTitleService,
@@ -33,28 +33,6 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
   sessionToCancel: FormattedSession | null = null;
   isModalOpen = false;
-
-  // Filters
-  subjectCreatedDate = new Subject<string>();
-  subjectCancelledDate = new Subject<string>();
-  subjectStatus = new Subject<string[]>();
-
-  createdDate$ = this.subjectCreatedDate.subscribe((date) => {
-    this.setFilterValue('createdAt', date);
-    this.refresh();
-  });
-
-  cancelledDate$ = this.subjectCancelledDate.subscribe((date) => {
-    this.setFilterValue('cancelledAt', date);
-    this.refresh();
-  });
-
-  statusFilter$ = this.subjectStatus.subscribe((statuses) => {
-    statuses.forEach((status) => {
-      this.setFilterValue('status', status);
-    });
-    this.refresh();
-  });
 
   constructor(
     private route: ActivatedRoute,
@@ -113,18 +91,9 @@ export class SessionsComponent implements OnInit, OnDestroy {
     return this.statesService.getFilterValue(this.sessionsStateKey, key);
   }
 
-  /**
-   * Set a filter value
-   *
-   * @param key filter property
-   * @param value filter value
-   */
-  setFilterValue(key: string, value: string): void {
-    this.state = this.statesService.setFilterValue(
-      this.sessionsStateKey,
-      key,
-      value
-    );
+  getDateFilterValue(key: string): Date | null {
+    const jsonDate = this.getFilterValue(key);
+    return jsonDate !== '' ? new Date(jsonDate) : null;
   }
 
   /**
@@ -161,13 +130,12 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
     // Store the current state to be saved when the request completes or for manual and auto refresh
     this.state = state;
-
     const data = {
       applicationName: this.applicationName,
       applicationVersion: this.applicationVersion,
     };
     const params = this.pagerService.createHttpParams(state, data);
-
+    console.log(params);
     this.sessionsSubscription = this.sessionsService
       .getAllPaginated(params)
       .subscribe({

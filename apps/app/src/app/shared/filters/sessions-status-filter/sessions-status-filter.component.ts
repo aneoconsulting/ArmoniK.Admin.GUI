@@ -1,7 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { SessionStatus } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridFilterInterface } from '@clr/angular';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-sessions-status-filter',
@@ -9,11 +8,11 @@ import { Subject } from 'rxjs';
   styleUrls: ['./sessions-status-filter.component.scss'],
 })
 export class SessionsStatusFilterComponent
-  implements ClrDatagridFilterInterface<string>
+  implements ClrDatagridFilterInterface<number>
 {
-  selection: string[];
+  @Input() selectedValue: number | null = null;
 
-  @Input() changes = new Subject<string[]>();
+  @Input() name = '';
 
   sessionStatus = SessionStatus;
   // Retrieve all status type
@@ -26,13 +25,23 @@ export class SessionsStatusFilterComponent
       })),
   ];
 
-  onSelectionChange(items: string[]): void {
-    this.selection = items;
-    if (items) {
-      this.changes.next(items);
-    } else {
-      this.changes.next([]);
-    }
+  changes = new EventEmitter<boolean>(false);
+
+  get property(): string {
+    return this.name;
+  }
+
+  get value(): number | null {
+    return this.selectedValue;
+  }
+
+  onSelectionChange(): void {
+    this.changes.emit(true);
+  }
+
+  clear() {
+    this.selectedValue = 0;
+    this.changes.emit(false);
   }
 
   accepts(): boolean {
@@ -43,6 +52,6 @@ export class SessionsStatusFilterComponent
    * Checks if the filter is active.
    */
   isActive(): boolean {
-    return !!this.selection;
+    return !!this.selectedValue && this.selectedValue !== 0;
   }
 }

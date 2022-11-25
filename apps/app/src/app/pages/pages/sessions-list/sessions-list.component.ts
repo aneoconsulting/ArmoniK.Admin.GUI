@@ -5,7 +5,6 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
-  debounceTime,
   distinctUntilChanged,
   first,
   interval,
@@ -57,18 +56,16 @@ export class SessionsListComponent implements OnInit {
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
   private _subjectStopInterval = new Subject<void>();
-  private _subjectFilter = new Subject<void>();
 
   /** Triggers to reload sessions */
-  private _triggerNewFilter$ = this._subjectFilter.asObservable();
   private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
       const params = this._grpcPagerService.createParams(state);
+      console.log(params);
       await this._router.navigate([], {
         queryParams: params,
-        queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -88,8 +85,7 @@ export class SessionsListComponent implements OnInit {
   loadSessions$ = merge(
     this._triggerManual$,
     this._triggerDatagrid$,
-    this._triggerInterval$,
-    this._triggerNewFilter$
+    this._triggerInterval$
   ).pipe(
     tap(() => this.loadingSessions$.next(true)),
     switchMap(() => this._listSessions$())
@@ -97,43 +93,6 @@ export class SessionsListComponent implements OnInit {
 
   /** Filters */
   sessionIdFilter = '';
-
-  subjectSessionId = new Subject<string>();
-  subjectStatus = new Subject<string[]>();
-
-  subjectCreatedDate = new Subject<{ property: string; value: string }>();
-  subjectClosedDate = new Subject<{ property: string; value: string }>();
-
-  sessionId$ = this.subjectSessionId
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((value) => {
-      this._filterState('sessionId', value);
-      this._subjectFilter.next();
-    });
-
-  status$ = this.subjectStatus.subscribe((value) => {
-    this._removeStatusFilters();
-    if (value) this._addStatusFilters(value);
-    this._subjectFilter.next();
-  });
-
-  createdDate$ = this.subjectCreatedDate
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((date) => {
-      date.property =
-        date.property == 'before' ? 'createdBefore' : 'createdAfter';
-      this._filterState(date.property, date.value);
-      this._subjectFilter.next();
-    });
-
-  closedDate$ = this.subjectClosedDate
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((date) => {
-      date.property =
-        date.property == 'before' ? 'closedBefore' : 'closedAfter';
-      this._filterState(date.property, date.value);
-      this._subjectFilter.next();
-    });
 
   constructor(
     private _router: Router,
@@ -300,6 +259,20 @@ export class SessionsListComponent implements OnInit {
     );
   }
 
+  public queryDateParam$(param: string): Observable<Date | null> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((params) => {
+        return params.get(param);
+      }),
+      map((value) => {
+        return value !== null && !isNaN(Number(value))
+          ? new Date(Number(value))
+          : null;
+      }),
+      distinctUntilChanged()
+    );
+  }
+
   /**
    * Save state
    *
@@ -319,65 +292,12 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
-   * Add or replace a filter field to the state
-   *
-   * @param filterValue
-   */
-  private _filterState(filterProperty: string, filterValue: string): void {
-    if (this._state.filters) {
-      const res = this._state.filters.findIndex(
-        (e) => e.property === filterProperty
-      );
-      if (res !== -1) {
-        this._state.filters[res].value = filterValue;
-      } else {
-        this._state.filters.push({
-          property: filterProperty,
-          value: filterValue,
-        });
-      }
-    } else {
-      this._state.filters = [];
-      this._state.filters.push({
-        property: filterProperty,
-        value: filterValue,
-      });
-    }
-  }
-
-  /**
-   * Remove all status filters from the state
-   *
-   * @param statusFilters
-   */
-  private _removeStatusFilters(): void {
-    this._state.filters = this._state.filters?.filter(
-      (filter) => filter.property !== 'status'
-    );
-  }
-
-  /**
-   * Add status filter to the state
-   *
-   * @param statusFilters
-   */
-  private _addStatusFilters(statusFilters: string[]): void {
-    if (!this._state.filters) {
-      this._state.filters = [];
-    }
-    statusFilters.forEach((filter) => {
-      this._state.filters?.push({ property: 'status', value: filter });
-    });
-  }
-
-  /**
    * List sessions
    *
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
-
     return this._grpcSessionsService.list$(params).pipe(
       catchError((error: Error) => {
         console.error(error);
@@ -409,9 +329,5 @@ export class SessionsListComponent implements OnInit {
         this.loadingSingleSession$.next(null);
       })
     );
-  }
-
-  getFilterValue(key: object): void {
-    console.log(key);
   }
 }

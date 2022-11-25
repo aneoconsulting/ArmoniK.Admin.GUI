@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-session-date-filter',
@@ -10,15 +9,25 @@ import { Subject } from 'rxjs';
 export class SessionDateFilterComponent
   implements ClrDatagridFilterInterface<string>
 {
-  @Input() changes = new Subject<string>();
-  date: Date;
+  changes = new EventEmitter<boolean>(false);
+  @Input() name: string;
+  @Input() date: Date | null;
 
-  sendDate() {
-    if (this.date) {
-      this.changes.next(this.date.toJSON());
-    } else {
-      this.changes.next('');
-    }
+  get property(): string {
+    return this.name;
+  }
+
+  get value(): string | undefined {
+    return this.date?.toJSON();
+  }
+
+  onChange() {
+    this.changes.emit(true);
+  }
+
+  clear() {
+    this.date = null;
+    this.changes.emit(false);
   }
 
   accepts(): boolean {

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SessionStatus } from '../../types/proto/session-status.pb';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { Timestamp } from '@ngx-grpc/well-known-types';
 import { SessionFilter } from '../../types/session-filter.type';
 @Injectable()
 export class GrpcPagerService {
@@ -19,8 +17,8 @@ export class GrpcPagerService {
   public createParams(
     state: ClrDatagridStateInterface,
     data: Record<string, string | number> = {}
-  ): Record<string, string | number | SessionFilter> {
-    const params = new Map<string, string | SessionFilter>();
+  ): Record<string, string | number> {
+    const params = new Map<string, string>();
 
     this._createPage(state, params);
     this._createOrder(state, params);
@@ -75,39 +73,26 @@ export class GrpcPagerService {
    */
   private _createFilters(
     state: ClrDatagridStateInterface,
-    params: Map<string, string | number | SessionFilter>
+    params: Map<string, string | number>
   ) {
     const filters = state.filters ?? [];
-    const sessionFilter: SessionFilter = {};
-
     // filters is an array of filter
     for (const filter of filters) {
-      const filterName = filter.property as string;
-      if (filterName.includes('created') || filterName.includes('closed')) {
-        const selectedTime =
-          filter.value.length !== 0 ? new Timestamp() : undefined;
-        if (selectedTime) selectedTime.seconds = filter.value;
-        if (filterName === 'createdBefore') {
-          sessionFilter.createdBefore = selectedTime;
-        } else if (filterName === 'createdAfter') {
-          sessionFilter.createdAfter = selectedTime;
-        } else if (filterName === 'closedBefore') {
-          sessionFilter.closedBefore = selectedTime;
-        } else {
-          sessionFilter.closedAfter = selectedTime;
+      if (filter.property.includes('At')) {
+        const filterDate = JSON.parse(filter.value);
+        if (filterDate.before !== 'null') {
+          const filterName = filter.property + 'Before';
+          params.set(filterName, filterDate.before);
         }
-      } else if (filterName === 'status') {
-        if (filter.value == '0') {
-          sessionFilter.status = SessionStatus.SESSION_STATUS_UNSPECIFIED;
-        } else if (filter.value == '1') {
-          sessionFilter.status = SessionStatus.SESSION_STATUS_RUNNING;
-        } else {
-          sessionFilter.status = SessionStatus.SESSION_STATUS_CANCELLED;
+        if (filterDate.after !== 'null') {
+          const filterName = filter.property + 'After';
+          params.set(filterName, filterDate.after);
         }
-      } else if (filterName == 'sessionId') {
-        sessionFilter.sessionId = filter.value;
+      } else {
+        const filterName = filter.property as string;
+        const filterValue = filter.value as string;
+        params.set(filterName, filterValue);
       }
     }
-    params.set('filter', sessionFilter);
   }
 }
