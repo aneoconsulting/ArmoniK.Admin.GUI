@@ -59,6 +59,14 @@
       [(clrFilterValue)]="sessionIdFilter"
     >
       {{ 'pages.sessions-list.columns.session_id' | translate }}
+      <clr-dg-filter [clrDgFilter]="sessionFilter">
+        <app-id-filter
+          [name]="'sessionId'"
+          [inputValue]="(queryStringParam$('sessionId') | async) || ''"
+          #sessionFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"

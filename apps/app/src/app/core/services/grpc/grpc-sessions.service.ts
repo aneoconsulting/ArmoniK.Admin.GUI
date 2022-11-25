@@ -55,7 +55,6 @@ export class GrpcSessionsService {
         cancelledAfter: filterValue.closedAfter,
       },
     });
-    console.log(options);
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));

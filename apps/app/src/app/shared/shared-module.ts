@@ -14,7 +14,7 @@ import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
 import { SessionListFilterComponent } from './filters/sessions-list-filter/sessions-list-filter.component';
 import { SessionsStatusFilterComponent } from './filters/sessions-status-filter/sessions-status-filter.component';
-import { SessionDateFilterComponent } from './filters/session-date-filter/session-date-filter.component';
+import { IdFilterComponent } from './id-filter/id-filter.component';
 
 @NgModule({
   imports: [
@@ -34,7 +34,7 @@ import { SessionDateFilterComponent } from './filters/session-date-filter/sessio
     SinceDateFilterComponent,
     SessionListFilterComponent,
     SessionsStatusFilterComponent,
-    SessionDateFilterComponent,
+    IdFilterComponent,
   ],
   exports: [
     AlertErrorComponent,
@@ -44,7 +44,7 @@ import { SessionDateFilterComponent } from './filters/session-date-filter/sessio
     SinceDateFilterComponent,
     SessionListFilterComponent,
     SessionsStatusFilterComponent,
-    SessionDateFilterComponent,
+    IdFilterComponent,
     ClarityModule,
     FormsModule,
     CommonModule,

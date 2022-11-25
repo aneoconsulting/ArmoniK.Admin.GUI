@@ -1,0 +1,12 @@
+<clr-input-container>
+  <input
+    clrInput
+    (input)="onChange()"
+    type="text"
+    [(ngModel)]="inputValue"
+    placeholder="Filter value"
+  />
+</clr-input-container>
+<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
+  Clear Filter
+</button>

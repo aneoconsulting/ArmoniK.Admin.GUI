@@ -63,7 +63,6 @@ export class SessionsListComponent implements OnInit {
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
       const params = this._grpcPagerService.createParams(state);
-
       await this._router.navigate([], {
         queryParams: params,
         relativeTo: this._activatedRoute,
@@ -255,6 +254,14 @@ export class SessionsListComponent implements OnInit {
     return this._activatedRoute.queryParamMap.pipe(
       map((params) => params.get(param)),
       map((value) => Number(value)),
+      distinctUntilChanged()
+    );
+  }
+
+  public queryStringParam$(param: string): Observable<string> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((params) => params.get(param)),
+      map((value) => (value !== null ? value : '')),
       distinctUntilChanged()
     );
   }
