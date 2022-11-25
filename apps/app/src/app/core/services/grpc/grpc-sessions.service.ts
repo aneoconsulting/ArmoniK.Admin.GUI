@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
-import { SessionStatus } from '../../types/proto/session-status.pb';
 import {
   CancelSessionRequest,
   CancelSessionResponse,
@@ -11,6 +11,7 @@ import {
   ListSessionsResponse,
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
+import { SessionFilter } from '../../types/session-filter.type';
 
 @Injectable()
 export class GrpcSessionsService {
@@ -33,6 +34,7 @@ export class GrpcSessionsService {
       ListSessionsRequest.OrderDirection
     >
   ): Observable<ListSessionsResponse> {
+    const filterValue = this.createFilterObject(params);
     const options = new ListSessionsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
@@ -45,18 +47,50 @@ export class GrpcSessionsService {
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {
-        status:
-          params.filter?.status || SessionStatus.SESSION_STATUS_UNSPECIFIED,
-        sessionId: params.filter?.sessionId,
-        createdBefore: params.filter?.createdBefore,
-        createdAfter: params.filter?.createdAfter,
-        cancelledBefore: params.filter?.closedBefore,
-        cancelledAfter: params.filter?.closedAfter,
+        sessionId: filterValue.sessionId,
+        status: filterValue.status,
+        createdBefore: filterValue.createdBefore,
+        createdAfter: filterValue.createdAfter,
+        cancelledBefore: filterValue.closedBefore,
+        cancelledAfter: filterValue.closedAfter,
       },
     });
+    console.log(options);
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));
+  }
+
+  createFilterObject(
+    params: GrpcParams<
+      ListSessionsRequest.OrderByField,
+      ListSessionsRequest.OrderDirection
+    >
+  ): SessionFilter {
+    const filter: SessionFilter = {};
+    filter.sessionId = params.sessionId;
+    filter.status = params.status || 0;
+
+    const timestamp = new Timestamp();
+
+    if (params.createdAtBefore) {
+      timestamp.seconds = (params.createdAtBefore / 1000).toString();
+      filter.createdBefore = timestamp;
+    }
+    if (params.createdAtAfter) {
+      timestamp.seconds = (params.createdAtAfter / 1000).toString();
+      filter.createdAfter = timestamp;
+    }
+    if (params.closedAtBefore) {
+      timestamp.seconds = (params.closedAtBefore / 1000).toString();
+      filter.closedBefore = timestamp;
+    }
+    if (params.closedAtAfter) {
+      timestamp.seconds = (params.closedAtAfter / 1000).toString();
+      filter.closedAfter = timestamp;
+    }
+
+    return filter;
   }
 
   /**

@@ -63,7 +63,7 @@ export class SessionsListComponent implements OnInit {
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
       const params = this._grpcPagerService.createParams(state);
-      console.log(params);
+
       await this._router.navigate([], {
         queryParams: params,
         relativeTo: this._activatedRoute,
