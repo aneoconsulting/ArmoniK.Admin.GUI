@@ -12,7 +12,7 @@ import {
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
-import { SessionListFilterComponent } from './filters/sessions-list-filter/sessions-list-filter.component';
+import { DateFilterComponent } from './filters/date-filter/date-filter.component';
 import { SessionsStatusFilterComponent } from './filters/sessions-status-filter/sessions-status-filter.component';
 import { IdFilterComponent } from './filters/id-filter/id-filter.component';
 
@@ -32,7 +32,7 @@ import { IdFilterComponent } from './filters/id-filter/id-filter.component';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
-    SessionListFilterComponent,
+    DateFilterComponent,
     SessionsStatusFilterComponent,
     IdFilterComponent,
   ],
@@ -42,7 +42,7 @@ import { IdFilterComponent } from './filters/id-filter/id-filter.component';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
-    SessionListFilterComponent,
+    DateFilterComponent,
     SessionsStatusFilterComponent,
     IdFilterComponent,
     ClarityModule,

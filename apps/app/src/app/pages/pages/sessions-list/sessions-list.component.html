@@ -90,13 +90,13 @@
     >
       {{ 'pages.sessions-list.columns.created_at' | translate }}
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
-        <app-sessions-list-filter
+        <app-date-filter
           [name]="'createdAt'"
           [beforeDate]="(queryDateParam$('createdAtBefore') | async) || null"
           [afterDate]="(queryDateParam$('createdAtAfter') | async) || null"
           #createdDateFilter
         >
-        </app-sessions-list-filter>
+        </app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -107,12 +107,12 @@
     >
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
-        <app-sessions-list-filter
+        <app-date-filter
           [name]="'cancelledAt'"
           [beforeDate]="(queryDateParam$('cancelledAtBefore') | async) || null"
           [afterDate]="(queryDateParam$('cancelledAtAfter') | async) || null"
           #closedDateFilter
-        ></app-sessions-list-filter>
+        ></app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>

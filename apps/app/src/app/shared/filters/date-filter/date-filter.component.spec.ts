@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { SessionListFilterComponent } from './sessions-list-filter.component';
+import { DateFilterComponent } from './date-filter.component';
 
 describe('CreatedAtFilterComponent', () => {
-  let component: SessionListFilterComponent;
-  let fixture: ComponentFixture<SessionListFilterComponent>;
+  let component: DateFilterComponent;
+  let fixture: ComponentFixture<DateFilterComponent>;
   let dateTest: Date;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [SessionListFilterComponent],
+      declarations: [DateFilterComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SessionListFilterComponent);
+    fixture = TestBed.createComponent(DateFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     dateTest = new Date();

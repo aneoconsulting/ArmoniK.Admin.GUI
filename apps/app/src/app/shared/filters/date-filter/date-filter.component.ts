@@ -2,13 +2,11 @@ import { Component, EventEmitter, Input } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({
-  selector: 'app-sessions-list-filter',
-  templateUrl: './sessions-list-filter.component.html',
-  styleUrls: ['./sessions-list-filter.component.scss'],
+  selector: 'app-date-filter',
+  templateUrl: './date-filter.component.html',
+  styleUrls: ['./date-filter.component.scss'],
 })
-export class SessionListFilterComponent
-  implements ClrDatagridFilterInterface<string>
-{
+export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
   changes = new EventEmitter<boolean>(false);
 
   @Input() name = '';
