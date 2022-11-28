@@ -36,14 +36,12 @@ describe('FavoritesService', () => {
       .subscribe((has) => expect(has).toBeTruthy());
   });
 
-  it('should store favorites in local storage when subscribe', () => {
+  it('should store favorites in local storage', () => {
     const url = 'https://www.angular.io';
     const favoriteName = 'Angular';
 
     const storage = TestBed.inject(Storage);
     service.add(url, favoriteName);
-
-    service.favorites$.pipe(first()).subscribe();
 
     expect(storage.setItem).toHaveBeenCalledWith(
       'favorites',
@@ -63,15 +61,13 @@ describe('FavoritesService', () => {
       .subscribe((has) => expect(has).toBeFalsy());
   });
 
-  it('should remove a favorite from local storage when subscribe', () => {
+  it('should remove a favorite from local storage', () => {
     const url = 'https://www.angular.io';
     const favoriteName = 'Angular';
     service.add(url, favoriteName);
 
     const storage = TestBed.inject(Storage);
     service.remove(url);
-
-    service.favorites$.pipe(first()).subscribe();
 
     expect(storage.setItem).toHaveBeenCalledWith(
       'favorites',

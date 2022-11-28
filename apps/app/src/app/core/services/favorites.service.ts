@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 @Injectable()
 export class FavoritesService {
@@ -7,9 +7,7 @@ export class FavoritesService {
   private _favoritesSubject = new BehaviorSubject<Map<string, string>>(
     this._favorites
   );
-  private _favorites$ = this._favoritesSubject.pipe(
-    tap((favorites) => this._store(favorites))
-  );
+  private _favorites$ = this._favoritesSubject.asObservable();
 
   constructor(private _storage: Storage) {
     this._favorites = this._recover();
@@ -38,6 +36,8 @@ export class FavoritesService {
   add(url: string, favoriteName: string): void {
     this._favorites.set(url, favoriteName);
     this._favoritesSubject.next(this._favorites);
+
+    this._store();
   }
 
   /**
@@ -48,6 +48,8 @@ export class FavoritesService {
   remove(key: string): void {
     this._favorites.delete(key);
     this._favoritesSubject.next(this._favorites);
+
+    this._store();
   }
 
   /**
@@ -79,10 +81,10 @@ export class FavoritesService {
   /**
    * Store favorites in local storage
    */
-  private _store(favorites: Map<string, string>): void {
+  private _store(): void {
     this._storage.setItem(
       'favorites',
-      JSON.stringify(Array.from(favorites.entries()))
+      JSON.stringify(Array.from(this._favorites.entries()))
     );
   }
 
