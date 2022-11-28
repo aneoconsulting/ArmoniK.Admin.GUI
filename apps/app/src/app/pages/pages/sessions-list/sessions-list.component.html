@@ -49,6 +49,15 @@
           </button>
         </clr-dropdown-menu>
       </clr-dropdown>
+
+      <button
+        *ngIf="isFiltered()"
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="clearAllFilters()"
+      >
+        Clear all filters
+      </button>
     </clr-dg-action-bar>
 
     <clr-dg-column

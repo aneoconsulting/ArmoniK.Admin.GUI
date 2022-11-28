@@ -344,4 +344,21 @@ export class SessionsListComponent implements OnInit {
       })
     );
   }
+
+  /**
+   * Checks if one filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters() {
+    this._state.filters = undefined;
+    this.refreshSessions(this._state);
+  }
 }
