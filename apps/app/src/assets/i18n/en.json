@@ -43,6 +43,15 @@
     }
   },
   "pages": {
+    "components": {
+      "auto_refresh_dropdown": {
+        "button": {
+          "title": "Auto-refresh",
+          "disabled": "Disabled"
+        },
+        "disable": "Disable"
+      }
+    },
     "sessions-list": {
       "title": "Sessions",
       "columns": {
@@ -60,13 +69,6 @@
       },
       "actions": {
         "refresh": "Refresh",
-        "auto_refresh": {
-          "button": {
-            "title": "Auto-refresh",
-            "disabled": "Disabled"
-          },
-          "disable": "Disable"
-        },
         "details": "Details",
         "related_tasks": "Related Tasks",
         "cancel": "Close"

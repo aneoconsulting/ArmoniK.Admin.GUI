@@ -43,6 +43,15 @@
     }
   },
   "pages": {
+    "components": {
+      "auto_refresh_dropdown": {
+        "button": {
+          "title": "Rafraîchissement automatique",
+          "disabled": "Désactivé"
+        },
+        "disable": "Désactiver"
+      }
+    },
     "sessions-list": {
       "title": "Sessions",
       "columns": {
@@ -60,13 +69,6 @@
       },
       "actions": {
         "refresh": "Rafraîchir",
-        "auto_refresh": {
-          "button": {
-            "title": "Rafraîchissement automatique",
-            "disabled": "Désactivé"
-          },
-          "disable": "Désactiver"
-        },
         "details": "Détails",
         "related_tasks": "Tâches liées",
         "cancel": "Fermer"
