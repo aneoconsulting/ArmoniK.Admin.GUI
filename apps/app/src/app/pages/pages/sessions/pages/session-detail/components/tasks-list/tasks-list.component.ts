@@ -40,7 +40,7 @@ export class TasksListComponent {
   isModalOpen = false;
   activeTask: Task | null = null;
 
-  @Input() isSeqUp = false;
+  @Input() isSeqUp: boolean | null = false;
   @Output() clickSeqLink = new EventEmitter<string>();
 
   constructor(

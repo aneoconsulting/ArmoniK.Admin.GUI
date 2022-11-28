@@ -13,14 +13,13 @@ import {
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 import { SessionFilter } from '../../types/session-filter.type';
 import { SessionPageFilter } from '../../types/session-string-filter.type';
+import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
-export class GrpcSessionsService {
-  private _timeout$ = timer(8_000).pipe(
-    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
-  );
-
-  constructor(private _sessionsClient: SessionsClient) {}
+export class GrpcSessionsService extends BaseGrpcService {
+  constructor(private _sessionsClient: SessionsClient) {
+    super();
+  }
 
   /**
    * Get a list of sessions

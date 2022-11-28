@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: yarn
 
   validate-code:
     needs: setup
@@ -74,7 +74,7 @@ jobs:
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
-        run: npm run proto:generate
+        run: yarn proto:generate
 
       - name: Run Unit Tests
         run: npx nx affected --target=test --parallel=3 --code-coverage
@@ -155,7 +155,7 @@ jobs:
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
-        run: npm run proto:generate
+        run: yarn proto:generate
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -200,7 +200,7 @@ jobs:
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
-        run: npm run proto:generate
+        run: yarn proto:generate
 
       - name: Build all
         run: npx nx affected --target=build --parallel=3
@@ -233,7 +233,7 @@ jobs:
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
-        run: npm run proto:generate
+        run: yarn proto:generate
 
       - name: Docker meta
         id: meta
