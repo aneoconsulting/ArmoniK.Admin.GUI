@@ -58,7 +58,6 @@ import {
     PagerService,
     SeqService,
     GrafanaService,
-    GrpcSessionsService,
     GrpcResultsService,
     GrpcPagerService,
     GrpcSessionsService,
