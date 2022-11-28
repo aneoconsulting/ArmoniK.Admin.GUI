@@ -47,14 +47,6 @@ export class PagesComponent implements OnInit {
     public window: Window
   ) {}
 
-  public get isSeqEnabled(): boolean {
-    return this.settingsService.isSeqUp();
-  }
-
-  public get isGrafanaEnabled(): boolean {
-    return this.settingsService.isGrafanaUp();
-  }
-
   ngOnInit(): void {
     // Add current url to history
     this.historyService.add(this._router.url);

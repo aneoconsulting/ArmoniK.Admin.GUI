@@ -35,7 +35,7 @@ jobs:
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
-        run: npm run proto:generate
+        run: yarn proto:generate
 
       - name: Docker meta
         id: meta

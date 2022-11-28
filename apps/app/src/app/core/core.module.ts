@@ -9,12 +9,14 @@ import { LocaleProvider } from './providers';
 import {
   ApiService,
   ApplicationsService,
+  BrowserTitleService,
   ErrorService,
   FavoritesService,
   GrafanaService,
   GrpcPagerService,
   GrpcResultsService,
   GrpcSessionsService,
+  GrpcTasksService,
   HistoryService,
   LanguageService,
   PagerService,
@@ -42,6 +44,7 @@ import {
     }),
   ],
   providers: [
+    BrowserTitleService,
     LocaleProvider,
     LanguageService,
     SettingsService,
@@ -58,6 +61,8 @@ import {
     GrpcSessionsService,
     GrpcResultsService,
     GrpcPagerService,
+    GrpcSessionsService,
+    GrpcTasksService,
     {
       provide: Storage,
       useFactory: () => localStorage,

@@ -4,19 +4,18 @@ import { Title } from '@angular/platform-browser';
 /**
  * Used to manage the browser tab title
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class BrowserTitleService {
-  private suffix = ' | Armonik';
+  private _suffix = ' | Armonik';
 
-  constructor(private titleService: Title) {}
+  constructor(private _titleService: Title) {}
 
+  /**
+   * Set the browser title
+   *
+   * @param title The title to set
+   */
   setTitle(title: string): void {
-    this.titleService.setTitle(title + this.suffix);
-  }
-
-  get title() {
-    return this.titleService.getTitle();
+    this._titleService.setTitle(title + this._suffix);
   }
 }
