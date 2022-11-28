@@ -2,7 +2,9 @@
   "global": {
     "loading": "Loading...",
     "filters": {
-      "no-filter-available": "No filter available"
+      "no-filter-available": "No filter available",
+      "string-filter": "Filter value",
+      "clear-filter": "Clear the filter"
     }
   },
   "shared": {
@@ -67,6 +69,7 @@
           },
           "disable": "Disable"
         },
+        "clear_filters": "Clear all filters",
         "details": "Details",
         "related_tasks": "Related Tasks",
         "cancel": "Close"

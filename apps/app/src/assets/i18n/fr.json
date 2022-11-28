@@ -2,7 +2,9 @@
   "global": {
     "loading": "Chargement...",
     "filters": {
-      "no-filter-available": "Pas de filtre disponible"
+      "no-filter-available": "Pas de filtre disponible",
+      "string-filter": "Filtre",
+      "clear-filter": "Supprimer le filtre"
     }
   },
   "shared": {
@@ -67,6 +69,7 @@
           },
           "disable": "Désactiver"
         },
+        "clear_filters": "Supprimer tous les filtres",
         "details": "Détails",
         "related_tasks": "Tâches liées",
         "cancel": "Fermer"

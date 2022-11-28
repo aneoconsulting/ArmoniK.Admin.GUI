@@ -4,9 +4,9 @@
     (input)="onChange()"
     type="text"
     [(ngModel)]="inputValue"
-    placeholder="Filter value"
+    placeholder="{{ 'global.filters.string-filter' | translate }}"
   />
 </clr-input-container>
 <button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
-  Clear Filter
+  {{ 'global.filters.clear-filter' | translate }}
 </button>
