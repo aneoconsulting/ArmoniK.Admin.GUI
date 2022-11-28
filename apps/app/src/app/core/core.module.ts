@@ -22,6 +22,7 @@ import {
   SessionsService,
   SettingsService,
   TasksService,
+  BrowserTitleService,
 } from './services';
 
 /**
@@ -42,6 +43,7 @@ import {
     }),
   ],
   providers: [
+    BrowserTitleService,
     LocaleProvider,
     LanguageService,
     SettingsService,

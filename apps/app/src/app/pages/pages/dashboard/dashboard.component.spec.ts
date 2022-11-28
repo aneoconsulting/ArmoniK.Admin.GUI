@@ -130,6 +130,7 @@ describe('DashboardComponent', () => {
         PagerService,
         StatesService,
         SettingsService,
+        BrowserTitleService,
       ],
     }).compileComponents();
   });
