@@ -6,5 +6,9 @@
   "/armonik.api.grpc.v1": {
     "target": "<protocol>://<host>:<port>",
     "secure": false
+  },
+  "/seq": {
+    "target": "<protocol>://<host>:<port>",
+    "secure": false
   }
 }
