@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
 import {
   ListResultsRequest,
   ListResultsResponse,
 } from '../../types/proto/results-common.pb';
 import { ResultsClient } from '../../types/proto/results-service.pbsc';
+import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
-export class GrpcResultsService {
-  private _timeout$ = timer(8_000).pipe(
-    mergeMap(() => throwError(() => new Error('gRPC Timeout')))
-  );
-
-  constructor(private _resultsClient: ResultsClient) {}
+export class GrpcResultsService extends BaseGrpcService {
+  constructor(private _resultsClient: ResultsClient) {
+    super();
+  }
 
   public list$(
     params: GrpcParams<
