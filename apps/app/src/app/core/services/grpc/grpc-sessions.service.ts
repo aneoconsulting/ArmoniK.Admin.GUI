@@ -12,6 +12,7 @@ import {
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 import { SessionFilter } from '../../types/session-filter.type';
+import { SessionPageFilter } from '../../types/session-string-filter.type';
 
 @Injectable()
 export class GrpcSessionsService {
@@ -47,12 +48,7 @@ export class GrpcSessionsService {
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {
-        sessionId: filterValue.sessionId,
-        status: filterValue.status,
-        createdBefore: filterValue.createdBefore,
-        createdAfter: filterValue.createdAfter,
-        cancelledBefore: filterValue.closedBefore,
-        cancelledAfter: filterValue.closedAfter,
+        ...filterValue,
       },
     });
     return this._sessionsClient
@@ -67,26 +63,28 @@ export class GrpcSessionsService {
     >
   ): SessionFilter {
     const filter: SessionFilter = {};
-    filter.sessionId = params.sessionId;
-    filter.status = params.status || 0;
+    const paramsFilter = params as SessionPageFilter;
+
+    filter.sessionId = paramsFilter.sessionId;
+    filter.status = paramsFilter.status || 0;
 
     const timestamp = new Timestamp();
 
-    if (params.createdAtBefore) {
-      timestamp.seconds = (params.createdAtBefore / 1000).toString();
-      filter.createdBefore = timestamp;
+    if (paramsFilter.createdAtBefore) {
+      timestamp.seconds = (paramsFilter.createdAtBefore / 1000).toString();
+      filter.createdBefore = new Timestamp(timestamp);
     }
-    if (params.createdAtAfter) {
-      timestamp.seconds = (params.createdAtAfter / 1000).toString();
-      filter.createdAfter = timestamp;
+    if (paramsFilter.createdAtAfter) {
+      timestamp.seconds = (paramsFilter.createdAtAfter / 1000).toString();
+      filter.createdAfter = new Timestamp(timestamp);
     }
-    if (params.closedAtBefore) {
-      timestamp.seconds = (params.closedAtBefore / 1000).toString();
-      filter.closedBefore = timestamp;
+    if (paramsFilter.cancelledAtBefore) {
+      timestamp.seconds = (paramsFilter.cancelledAtBefore / 1000).toString();
+      filter.cancelledBefore = new Timestamp(timestamp);
     }
-    if (params.closedAtAfter) {
-      timestamp.seconds = (params.closedAtAfter / 1000).toString();
-      filter.closedAfter = timestamp;
+    if (paramsFilter.cancelledAtAfter) {
+      timestamp.seconds = (paramsFilter.cancelledAtAfter / 1000).toString();
+      filter.cancelledAfter = new Timestamp(timestamp);
     }
 
     return filter;

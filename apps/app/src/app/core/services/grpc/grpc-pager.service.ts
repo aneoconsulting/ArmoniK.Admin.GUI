@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
-import { SessionFilter } from '../../types/session-filter.type';
 @Injectable()
 export class GrpcPagerService {
   private defaultCurrentPage = 0;
@@ -18,7 +17,7 @@ export class GrpcPagerService {
     state: ClrDatagridStateInterface,
     data: Record<string, string | number> = {}
   ): Record<string, string | number> {
-    const params = new Map<string, string>();
+    const params = new Map<string, string | number>();
 
     this._createPage(state, params);
     this._createOrder(state, params);
@@ -36,7 +35,7 @@ export class GrpcPagerService {
    */
   private _createPage(
     state: ClrDatagridStateInterface,
-    params: Map<string, string | number | SessionFilter>
+    params: Map<string, string | number>
   ) {
     const page = state.page?.current
       ? state.page.current - 1
@@ -55,7 +54,7 @@ export class GrpcPagerService {
    */
   private _createOrder(
     state: ClrDatagridStateInterface,
-    params: Map<string, string | number | SessionFilter>
+    params: Map<string, string | number>
   ) {
     const orderBy = state.sort?.by as string;
     const order = state.sort?.reverse ? -1 : 1;

@@ -1,22 +1,31 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  Subject,
+  Subscription,
+} from 'rxjs';
 
 @Component({
   selector: 'app-id-filter',
   templateUrl: './id-filter.component.html',
   styleUrls: ['./id-filter.component.scss'],
 })
-export class IdFilterComponent implements ClrDatagridFilterInterface<string> {
+export class IdFilterComponent
+  implements ClrDatagridFilterInterface<string>, OnInit, OnDestroy
+{
   @Input() name = '';
   @Input() inputValue = '';
 
   inputChangeSubject = new Subject<string>();
-  inputChange$ = this.inputChangeSubject
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe(() => {
-      this.changes.emit(true);
-    });
+  inputChange: Subscription;
 
   changes = new EventEmitter<boolean>(false);
 
@@ -26,6 +35,19 @@ export class IdFilterComponent implements ClrDatagridFilterInterface<string> {
 
   get value() {
     return this.inputValue;
+  }
+
+  ngOnInit(): void {
+    this.inputChange = this.inputChangeSubject
+      .asObservable()
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe(() => {
+        this.changes.emit(true);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.inputChange.unsubscribe();
   }
 
   onChange() {

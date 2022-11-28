@@ -45,7 +45,7 @@ describe('CreatedAtFilterComponent', () => {
 
   it('should send a date when a selection is made', () => {
     component.changes.emit = jasmine.createSpy();
-    component.onChange();
+    component.onDateChange();
     expect(component.changes.emit).toHaveBeenCalled();
   });
 

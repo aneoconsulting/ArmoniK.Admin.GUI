@@ -93,7 +93,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
 
   getDateFilterValue(key: string): Date | null {
     const jsonDate = this.getFilterValue(key);
-    return jsonDate !== '' ? new Date(jsonDate) : null;
+    return jsonDate === '' ? null : new Date(jsonDate);
   }
 
   /**
@@ -135,7 +135,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
       applicationVersion: this.applicationVersion,
     };
     const params = this.pagerService.createHttpParams(state, data);
-    console.log(params);
+
     this.sessionsSubscription = this.sessionsService
       .getAllPaginated(params)
       .subscribe({

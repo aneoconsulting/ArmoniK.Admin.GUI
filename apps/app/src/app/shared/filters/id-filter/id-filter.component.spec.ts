@@ -30,8 +30,8 @@ describe('IdFilterComponent', () => {
     expect(component.inputChangeSubject).toBeDefined();
   });
 
-  it('should have a observable', () => {
-    expect(component.inputChange$).toBeDefined();
+  it('should have a subscription', () => {
+    expect(component.inputChange).toBeDefined();
   });
 
   it('should have a value', () => {

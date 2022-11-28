@@ -14,7 +14,7 @@ import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
 import { SessionListFilterComponent } from './filters/sessions-list-filter/sessions-list-filter.component';
 import { SessionsStatusFilterComponent } from './filters/sessions-status-filter/sessions-status-filter.component';
-import { IdFilterComponent } from './id-filter/id-filter.component';
+import { IdFilterComponent } from './filters/id-filter/id-filter.component';
 
 @NgModule({
   imports: [

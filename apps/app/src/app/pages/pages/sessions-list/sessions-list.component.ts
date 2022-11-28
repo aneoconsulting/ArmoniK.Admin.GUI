@@ -272,9 +272,16 @@ export class SessionsListComponent implements OnInit {
         return params.get(param);
       }),
       map((value) => {
-        return value !== null && !isNaN(Number(value))
-          ? new Date(Number(value))
-          : null;
+        if (!value) {
+          return null;
+        }
+
+        const param = Number(value);
+        if (isNaN(param)) {
+          return null;
+        }
+
+        return new Date(param);
       }),
       distinctUntilChanged()
     );

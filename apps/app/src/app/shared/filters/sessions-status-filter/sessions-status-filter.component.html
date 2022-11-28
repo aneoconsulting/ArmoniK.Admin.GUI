@@ -1,7 +1,10 @@
 <clr-select-container>
   <label>{{ 'pages.sessions-list.filters.status.title' | translate }}</label>
   <select clrSelect (change)="onSelectionChange()" [(ngModel)]="selectedValue">
-    <option *ngFor="let item of status" [value]="item.value">
+    <option
+      *ngFor="let item of status; trackBy: trackByStatus"
+      [value]="item.value"
+    >
       {{ 'pages.sessions-list.filters.status.' + item.label | translate }}
     </option>
   </select>

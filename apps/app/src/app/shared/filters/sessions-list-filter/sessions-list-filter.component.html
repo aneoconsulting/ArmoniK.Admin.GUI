@@ -5,7 +5,7 @@
     clrDate
     name="beforeDate"
     [(clrDate)]="beforeDate"
-    (clrDateChange)="onChange()"
+    (clrDateChange)="onDateChange()"
   />
 </clr-date-container>
 <clr-date-container>
@@ -15,7 +15,7 @@
     clrDate
     name="afterDate"
     [(clrDate)]="afterDate"
-    (clrDateChange)="onChange()"
+    (clrDateChange)="onDateChange()"
   />
 </clr-date-container>
 <button class="btn btn-sm" *ngIf="isActive()" (click)="clear()">

@@ -15,18 +15,18 @@ export class SessionListFilterComponent
   @Input() beforeDate: Date | null = null;
   @Input() afterDate: Date | null = null;
 
-  get property() {
+  get property(): string {
     return this.name;
   }
 
-  get value() {
+  get value(): string {
     return JSON.stringify({
       before: this.beforeDate ? this.beforeDate.getTime() : null,
       after: this.afterDate ? this.afterDate.getTime() : null,
     });
   }
 
-  onChange() {
+  onDateChange() {
     this.changes.emit(true);
   }
 

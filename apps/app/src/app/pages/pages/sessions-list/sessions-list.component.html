@@ -108,9 +108,9 @@
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
         <app-sessions-list-filter
-          [name]="'closedAt'"
-          [beforeDate]="(queryDateParam$('closedAtBefore') | async) || null"
-          [afterDate]="(queryDateParam$('closedAtAfter') | async) || null"
+          [name]="'cancelledAt'"
+          [beforeDate]="(queryDateParam$('cancelledAtBefore') | async) || null"
+          [afterDate]="(queryDateParam$('cancelledAtAfter') | async) || null"
           #closedDateFilter
         ></app-sessions-list-filter>
       </clr-dg-filter>

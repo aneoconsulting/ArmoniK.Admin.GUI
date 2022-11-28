@@ -6,6 +6,6 @@ export type SessionFilter = {
   status?: SessionStatus;
   createdBefore?: Timestamp;
   createdAfter?: Timestamp;
-  closedBefore?: Timestamp;
-  closedAfter?: Timestamp;
+  cancelledBefore?: Timestamp;
+  cancelledAfter?: Timestamp;
 };
