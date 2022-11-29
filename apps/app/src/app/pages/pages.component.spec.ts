@@ -50,7 +50,7 @@ describe('PagesComponent', () => {
     it('should render if SEQ is up', () => {
       const settingsService = TestBed.inject(SettingsService);
 
-      settingsService.seqEnabled = true;
+      settingsService.seqSubject$.next(true);
       // Refresh component
       fixture.detectChanges();
 
@@ -63,7 +63,7 @@ describe('PagesComponent', () => {
     it('should render if Grafana is up', () => {
       const settingsService = TestBed.inject(SettingsService);
 
-      settingsService.grafanaEnabled = true;
+      settingsService.grafanaSubject$.next(true);
       // Refresh component
       fixture.detectChanges();
 
@@ -76,7 +76,7 @@ describe('PagesComponent', () => {
     it('should not render if SEQ is down', () => {
       const settingsService = TestBed.inject(SettingsService);
 
-      settingsService.seqEnabled = false;
+      settingsService.seqSubject$.next(false);
       // Refresh component
       fixture.detectChanges();
 
@@ -89,7 +89,7 @@ describe('PagesComponent', () => {
     it('should not render if Grafana is down', () => {
       const settingsService = TestBed.inject(SettingsService);
 
-      settingsService.grafanaEnabled = false;
+      settingsService.grafanaSubject$.next(false);
       // Refresh component
       fixture.detectChanges();
 
@@ -103,7 +103,7 @@ describe('PagesComponent', () => {
   describe('track by', () => {
     it('should return label for navigation link', () => {
       const label = 'Dashboard';
-      const link = { path: ['/', 'dashboard'], label };
+      const link = { path: ['/', 'dashboard'], label, shape: 'Home' };
       expect(component.trackByLabel(0, link)).toBe(label);
     });
   });

@@ -11,7 +11,9 @@ describe('SettingsService', () => {
   let spyClear: jasmine.Spy;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [SettingsService],
+    });
     service = TestBed.inject(SettingsService);
 
     // Fake storage

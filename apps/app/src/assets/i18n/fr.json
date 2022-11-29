@@ -53,6 +53,97 @@
     }
   },
   "pages": {
+    "components": {
+      "auto_refresh_dropdown": {
+        "button": {
+          "title": "Rafraîchissement automatique",
+          "disabled": "Désactivé"
+        },
+        "disable": "Désactiver"
+      }
+    },
+    "sessions-list": {
+      "title": "Sessions",
+      "columns": {
+        "session_id": "ID de la session",
+        "status": "Statut",
+        "created_at": "Créée le",
+        "cancelled_at": "Fermée le",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "1": "Ouverte",
+          "2": "Annulée"
+        }
+      },
+      "actions": {
+        "refresh": "Rafraîchir",
+        "details": "Détails",
+        "related_tasks": "Tâches liées",
+        "cancel": "Fermer"
+      },
+      "pagination": {
+        "per_page": "Sessions par page",
+        "sessions": "{{value}} sessions",
+        "session": "{{value}} session"
+      },
+      "modal": {
+        "title": "Session",
+        "close": "Fermer"
+      }
+    },
+    "tasks-list": {
+      "title": "Tâches",
+      "columns": {
+        "task_id": "Tâche ID",
+        "session_id": "Session ID",
+        "status": "Statut",
+        "created_at": "Créée le",
+        "started_at": "Démarrée le",
+        "ended_at": "Terminée le",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "0": "Non spécifié",
+          "1": "En création",
+          "2": "Soumise",
+          "3": "Envoyée",
+          "4": "Complète",
+          "5": "Erreur",
+          "6": "Arrêt",
+          "7": "En annulation",
+          "8": "Annulée",
+          "9": "En traitement",
+          "10": "Traitée"
+        }
+      },
+      "actions": {
+        "cancel_selection": "Annuler la sélection",
+        "refresh": "Rafraîchir",
+        "auto_refresh": {
+          "button": {
+            "title": "Rafraîchissement automatique",
+            "disabled": "Désactivé"
+          },
+          "disable": "Désactiver"
+        },
+        "details": "Détails",
+        "related_results": "Résultats liés",
+        "parent_session": "Session",
+        "view_seq": "Voir dans SEQ"
+      },
+      "pagination": {
+        "per_page": "Par page",
+        "tasks": "{{value}} tâches",
+        "task": "{{value}} tâche"
+      },
+      "modal": {
+        "title": "Tâche",
+        "close": "Fermer"
+      }
+    },
     "dashboard": {
       "title": "Tableau de bord",
       "errors": {

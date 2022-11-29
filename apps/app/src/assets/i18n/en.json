@@ -53,6 +53,97 @@
     }
   },
   "pages": {
+    "components": {
+      "auto_refresh_dropdown": {
+        "button": {
+          "title": "Auto-refresh",
+          "disabled": "Disabled"
+        },
+        "disable": "Disable"
+      }
+    },
+    "sessions-list": {
+      "title": "Sessions",
+      "columns": {
+        "session_id": "Session ID",
+        "status": "Status",
+        "created_at": "Created at",
+        "cancelled_at": "Closed at",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "1": "Opened",
+          "2": "Cancelled"
+        }
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "details": "Details",
+        "related_tasks": "Related Tasks",
+        "cancel": "Close"
+      },
+      "pagination": {
+        "per_page": "Sessions per page",
+        "sessions": "{{value}} sessions",
+        "session": "{{value}} session"
+      },
+      "modal": {
+        "title": "Session",
+        "close": "Close"
+      }
+    },
+    "tasks-list": {
+      "title": "Tasks",
+      "columns": {
+        "task_id": "Task ID",
+        "session_id": "Session ID",
+        "status": "Status",
+        "created_at": "Created at",
+        "started_at": "Started at",
+        "ended_at": "Ended at",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "0": "Unspecified",
+          "1": "Creating",
+          "2": "Submitted",
+          "3": "Dispatched",
+          "4": "Completed",
+          "5": "Error",
+          "6": "Timeout",
+          "7": "Cancelling",
+          "8": "Cancelled",
+          "9": "Processing",
+          "10": "Processed"
+        }
+      },
+      "actions": {
+        "cancel_selection": "Cancel selection",
+        "refresh": "Refresh",
+        "auto_refresh": {
+          "button": {
+            "title": "Auto-refresh",
+            "disabled": "Disabled"
+          },
+          "disable": "Disable"
+        },
+        "details": "Details",
+        "related_results": "Related Results",
+        "parent_session": "Session",
+        "view_seq": "See in SEQ"
+      },
+      "pagination": {
+        "per_page": "Per page",
+        "tasks": "{{value}} tasks",
+        "task": "{{value}} task"
+      },
+      "modal": {
+        "title": "Task",
+        "close": "Close"
+      }
+    },
     "dashboard": {
       "title": "Dashboard",
       "errors": {

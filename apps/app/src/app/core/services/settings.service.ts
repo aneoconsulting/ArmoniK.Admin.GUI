@@ -1,35 +1,29 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Application } from '@armonik.admin.gui/armonik-typing';
+import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SettingsService {
-  seqEnabled = false;
-  grafanaEnabled = false;
+  private _intervals = [10_000, 30_000, 60_000, 120_000];
+
+  grafanaSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  seqSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   currentApplications: Set<Application['_id']>;
 
   constructor() {
     this.currentApplications = new Set(this.getCurrentApplicationsFromStore());
   }
 
-  /**
-   * Verify if Seq is up and running
-   *
-   * @returns True if Seq is up and running, false otherwise
-   */
-  isSeqUp(): boolean {
-    return this.seqEnabled;
+  public get intervals() {
+    return this._intervals;
   }
 
-  /**
-   * Verify if Grafana is up and running
-   *
-   * @returns True if Grafana is up and running, false otherwise
-   */
-  isGrafanaUp(): boolean {
-    return this.grafanaEnabled;
+  public get initialInterval() {
+    return this._intervals[0];
   }
 
   /**

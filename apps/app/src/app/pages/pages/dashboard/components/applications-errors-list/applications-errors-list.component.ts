@@ -21,7 +21,7 @@ export class ApplicationsErrorsListComponent {
 
   @Output() refresh = new EventEmitter<ClrDatagridStateInterface>();
 
-  @Input() isSeqUp = false;
+  @Input() isSeqUp: boolean | null = false;
   @Output() clickSeqLink = new EventEmitter<string>();
 
   constructor(private statesService: StatesService) {}

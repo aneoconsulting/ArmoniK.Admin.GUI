@@ -1,6 +1,5 @@
 import { HttpParams } from '@angular/common/http';
 import {
-  AfterContentInit,
   AfterViewInit,
   ChangeDetectorRef,
   Component,
@@ -16,14 +15,11 @@ import {
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
-  combineLatest,
-  first,
   Observable,
   Subject,
   Subscription,
   switchMap,
   tap,
-  timer,
 } from 'rxjs';
 import {
   AppError,
@@ -77,7 +73,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private languageService: LanguageService,
     private browserTitleService: BrowserTitleService,
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     private statesService: StatesService,
     private pagerService: PagerService,
     private applicationsService: ApplicationsService,
@@ -132,10 +128,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get lastPage() {
     return Math.ceil(this.total / this.pageSize) - 1;
-  }
-
-  get isSeqUp(): boolean {
-    return this.settingsService.isSeqUp();
   }
 
   /**
