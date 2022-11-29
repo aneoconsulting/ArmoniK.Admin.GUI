@@ -28,16 +28,6 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
-  "dashboard": {
-    "applications": {
-      "related_sessions": "Related sessions",
-      "actions": {
-        "refresh": "Refresh",
-        "previous_page": "Previous",
-        "next_page": "Next"
-      }
-    }
-  },
   "favorites": {
     "button": {
       "add": "Add to favorites",
@@ -150,6 +140,12 @@
         "title": "Errors"
       },
       "applications": {
+        "related_sessions": "Related sessions",
+        "actions": {
+          "refresh": "Refresh",
+          "previous_page": "Previous",
+          "next_page": "Next"
+        },
         "no_applications": "No applications",
         "last_sessions": "Last sessions",
         "title": "Applications",

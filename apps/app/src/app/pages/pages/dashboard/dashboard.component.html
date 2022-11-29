@@ -4,7 +4,7 @@
     (click)="manualRefreshApplications()"
   >
     <clr-icon shape="refresh"></clr-icon>
-    {{ 'dashboard.applications.actions.refresh' | translate }}
+    {{ 'pages.dashboard.applications.actions.refresh' | translate }}
   </button>
 
   <div class="applications__grid clr-row">
@@ -35,7 +35,9 @@
                   applicationVersion: application.version
                 }"
               >
-                {{ 'dashboard.applications.related_sessions' | translate }}
+                {{
+                  'pages.dashboard.applications.related_sessions' | translate
+                }}
               </a>
             </footer>
           </article>
@@ -57,7 +59,7 @@
       *ngIf="loadingApplications$ | async"
       class="applications__grid__spinner"
     >
-      <clr-spinner>{{ 'dashboard.applications.loading' }}</clr-spinner>
+      <clr-spinner>{{ 'pages.dashboard.applications.loading' }}</clr-spinner>
     </div>
   </div>
 
@@ -75,7 +77,7 @@
         [disabled]="!hasApplications || isFirstPage"
       >
         <clr-icon shape="caret left"></clr-icon>
-        {{ 'dashboard.applications.actions.previous_page' | translate }}
+        {{ 'pages.dashboard.applications.actions.previous_page' | translate }}
       </button>
 
       <button
@@ -83,7 +85,7 @@
         (click)="nextPage()"
         [disabled]="!hasApplications || isLastPage"
       >
-        {{ 'dashboard.applications.actions.next_page' | translate }}
+        {{ 'pages.dashboard.applications.actions.next_page' | translate }}
         <clr-icon shape="caret right"></clr-icon>
       </button>
     </div>

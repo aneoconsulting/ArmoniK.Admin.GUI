@@ -28,16 +28,6 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
-  "dashboard": {
-    "applications": {
-      "related_sessions": "Sessions liées",
-      "actions": {
-        "refresh": "Rafraîchir",
-        "previous_page": "Précédente",
-        "next_page": "Suivante"
-      }
-    }
-  },
   "favorites": {
     "button": {
       "add": "Ajouter aux favoris",
@@ -150,6 +140,12 @@
         "title": "Les erreurs"
       },
       "applications": {
+        "related_sessions": "Sessions liées",
+        "actions": {
+          "refresh": "Rafraîchir",
+          "previous_page": "Précédente",
+          "next_page": "Suivante"
+        },
         "no_applications": "Aucune application",
         "last_sessions": "Dernières sessions",
         "title": "Les applications",
