@@ -61,13 +61,11 @@ describe('HistoryService', () => {
     });
   });
 
-  it('should store history in local storage when subscribe', () => {
+  it('should store history in local storage', () => {
     const url = 'https://www.angular.io';
     service.add(url);
 
     const storage = TestBed.inject(Storage);
-
-    service.history$.pipe(first()).subscribe();
 
     expect(storage.setItem).toHaveBeenCalledWith(
       'history',

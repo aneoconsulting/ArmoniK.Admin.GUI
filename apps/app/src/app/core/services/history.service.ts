@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 @Injectable()
 export class HistoryService {
@@ -7,9 +7,8 @@ export class HistoryService {
 
   private _history: Set<string> = new Set<string>();
   private _historySubject = new BehaviorSubject<Set<string>>(this._history);
-  private _history$: Observable<Set<string>> = this._historySubject.pipe(
-    tap((history) => this._store(history))
-  );
+  private _history$: Observable<Set<string>> =
+    this._historySubject.asObservable();
 
   constructor(private _localStorage: Storage) {
     this._history = this._recover();
@@ -39,13 +38,15 @@ export class HistoryService {
     }
 
     this._historySubject.next(this._history);
+
+    this._store();
   }
 
   /**
    * Store history in local storage
    */
-  private _store(history: Set<string>): void {
-    this._localStorage.setItem('history', JSON.stringify([...history]));
+  private _store(): void {
+    this._localStorage.setItem('history', JSON.stringify([...this._history]));
   }
 
   /**
