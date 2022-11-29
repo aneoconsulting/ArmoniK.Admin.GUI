@@ -1,11 +1,10 @@
-import { Timestamp } from '@ngx-grpc/well-known-types';
 import { SessionStatus } from './proto/session-status.pb';
 
 export type SessionFilter = {
   sessionId?: string;
   status?: SessionStatus;
-  createdBefore?: Timestamp;
-  createdAfter?: Timestamp;
-  cancelledBefore?: Timestamp;
-  cancelledAfter?: Timestamp;
+  createdBefore?: { nano: number; seconds: string };
+  createdAfter?: { nano: number; seconds: string };
+  cancelledBefore?: { nano: number; seconds: string };
+  cancelledAfter?: { nano: number; seconds: string };
 };

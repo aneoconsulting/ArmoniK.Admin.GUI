@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, takeUntil } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
 import {
@@ -77,24 +76,28 @@ export class GrpcSessionsService extends BaseGrpcService {
       filter.status = paramsFilter.status;
     }
     if (paramsFilter.createdAtBefore) {
-      filter.createdBefore = new Timestamp({
+      filter.createdBefore = {
+        nano: 0,
         seconds: paramsFilter.createdAtBefore.toString(),
-      });
+      };
     }
     if (paramsFilter.createdAtAfter) {
-      filter.createdAfter = new Timestamp({
+      filter.createdAfter = {
+        nano: 0,
         seconds: paramsFilter.createdAtAfter.toString(),
-      });
+      };
     }
     if (paramsFilter.cancelledAtBefore) {
-      filter.cancelledBefore = new Timestamp({
+      filter.cancelledBefore = {
+        nano: 0,
         seconds: paramsFilter.cancelledAtBefore.toString(),
-      });
+      };
     }
     if (paramsFilter.cancelledAtAfter) {
-      filter.cancelledAfter = new Timestamp({
+      filter.cancelledAfter = {
+        nano: 0,
         seconds: paramsFilter.cancelledAtAfter.toString(),
-      });
+      };
     }
     return filter;
   }
