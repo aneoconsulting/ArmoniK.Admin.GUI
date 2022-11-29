@@ -208,6 +208,7 @@ To create a release, you need to:
 
 - [@esoubiran-aneo](https://github.com/esoubiran-aneo)
 - [@maurelleaneo](https://github.com/maurelleaneo)
+- [@Faust1-2was-Aneo](https://github.com/Faust1-2was-Aneo)
 
 ## License
 
