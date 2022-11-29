@@ -150,6 +150,7 @@
         "title": "Errors"
       },
       "applications": {
+        "no_applications": "No applications",
         "last_sessions": "Last sessions",
         "title": "Applications",
         "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",

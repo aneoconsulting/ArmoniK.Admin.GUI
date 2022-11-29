@@ -1,15 +1,18 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import {
   ListApplicationsRequest,
   ListApplicationsResponse,
 } from '../../types/proto/applications-common.pb';
 import { ApplicationsClient } from '../../types/proto/applications-service.pbsc';
+import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
-export class GrpcApplicationsService {
-  constructor(private _applicationsService: ApplicationsClient) {}
+export class GrpcApplicationsService extends BaseGrpcService {
+  constructor(private _applicationsService: ApplicationsClient) {
+    super();
+  }
 
   /**
    * Get a list of applications
@@ -29,6 +32,8 @@ export class GrpcApplicationsService {
       filter: {},
     });
 
-    return this._applicationsService.listApplications(options);
+    return this._applicationsService
+      .listApplications(options)
+      .pipe(takeUntil(this._timeout$));
   }
 }

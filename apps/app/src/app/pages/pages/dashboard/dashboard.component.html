@@ -9,31 +9,38 @@
 
   <div class="applications__grid clr-row">
     <ng-container *ngIf="applications$ | async as applications; else loading">
-      <div
-        class="clr-col-12 clr-col-lg-4"
-        *ngFor="let application of applications.application!"
+      <ng-container
+        *ngIf="
+          applications.application && applications.application.length > 0;
+          else noApplications
+        "
       >
-        <article class="card">
-          <h3
-            class="card-header"
-            [title]="application.name + '-' + application.version"
-          >
-            {{ application.name }} - {{ application.version }}
-          </h3>
-          <footer class="card-footer">
-            <a
-              class="btn btn-sm btn-link"
-              [routerLink]="['/', 'sessions']"
-              [queryParams]="{
-                applicationName: application.name,
-                applicationVersion: application.version
-              }"
+        <div
+          class="clr-col-12 clr-col-lg-4"
+          *ngFor="let application of applications.application"
+        >
+          <article class="card">
+            <h3
+              class="card-header"
+              [title]="application.name + '-' + application.version"
             >
-              {{ 'dashboard.applications.related_sessions' | translate }}
-            </a>
-          </footer>
-        </article>
-      </div>
+              {{ application.name }} - {{ application.version }}
+            </h3>
+            <footer class="card-footer">
+              <a
+                class="btn btn-sm btn-link"
+                [routerLink]="['/', 'sessions']"
+                [queryParams]="{
+                  applicationName: application.name,
+                  applicationVersion: application.version
+                }"
+              >
+                {{ 'dashboard.applications.related_sessions' | translate }}
+              </a>
+            </footer>
+          </article>
+        </div>
+      </ng-container>
     </ng-container>
     <ng-template #loading>
       <article
@@ -58,13 +65,14 @@
     class="applications__pagination clr-row clr-justify-content-between clr-align-items-center"
   >
     <span>
-      {{ total }} applications - {{ page + 1 }} / {{ lastPage + 1 }}
+      {{ total }} applications - {{ total > 0 ? page + 1 : 0 }} /
+      {{ lastPage + 1 }}
     </span>
     <div>
       <button
         class="btn btn-secondary"
         (click)="previousPage()"
-        [disabled]="isFirstPage"
+        [disabled]="!hasApplications || isFirstPage"
       >
         <clr-icon shape="caret left"></clr-icon>
         {{ 'dashboard.applications.actions.previous_page' | translate }}
@@ -73,7 +81,7 @@
       <button
         class="btn btn-secondary"
         (click)="nextPage()"
-        [disabled]="isLastPage"
+        [disabled]="!hasApplications || isLastPage"
       >
         {{ 'dashboard.applications.actions.next_page' | translate }}
         <clr-icon shape="caret right"></clr-icon>
@@ -112,3 +120,7 @@
     (refresh)="onRefreshApplicationsErrors($event)"
   ></app-pages-dashboard-applications-errors-list>
 </section>
+
+<ng-template #noApplications>
+  <p>{{ 'pages.dashboard.applications.no_applications' | translate }}</p>
+</ng-template>

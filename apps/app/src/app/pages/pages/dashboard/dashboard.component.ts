@@ -15,7 +15,9 @@ import {
 import { ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  catchError,
   Observable,
+  of,
   Subject,
   Subscription,
   switchMap,
@@ -99,35 +101,39 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this._subjectManual.next();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.applicationsErrorsSubscription.unsubscribe();
     this.subscriptions.unsubscribe();
   }
 
-  manualRefreshApplications() {
+  manualRefreshApplications(): void {
     this._subjectManual.next();
   }
 
-  nextPage() {
+  nextPage(): void {
     this.page += 1;
     this._subjectManual.next();
   }
 
-  previousPage() {
+  previousPage(): void {
     this.page -= 1;
     this._subjectManual.next();
   }
 
-  get isFirstPage() {
+  get isFirstPage(): boolean {
     return this.page === 0;
   }
 
-  get isLastPage() {
+  get isLastPage(): boolean {
     return this.page === this.lastPage;
   }
 
-  get lastPage() {
+  get lastPage(): number {
     return Math.ceil(this.total / this.pageSize) - 1;
+  }
+
+  get hasApplications(): boolean {
+    return !!this.total;
   }
 
   /**
@@ -229,7 +235,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     });
     return this._grpcApplicationsService.list$(httpParams).pipe(
-      tap((applications) => console.log(applications)),
+      catchError((error: Error) => {
+        console.error(error);
+
+        return of({} as ListApplicationsResponse);
+      }),
       tap((applications) => {
         this.total = applications.total ?? 0;
       }),
