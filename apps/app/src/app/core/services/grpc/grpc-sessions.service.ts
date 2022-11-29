@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
 import {
   CancelSessionRequest,
@@ -10,10 +10,13 @@ import {
   ListSessionsResponse,
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
+import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
-export class GrpcSessionsService {
-  constructor(private _sessionsClient: SessionsClient) {}
+export class GrpcSessionsService extends BaseGrpcService {
+  constructor(private _sessionsClient: SessionsClient) {
+    super();
+  }
 
   /**
    * Get a list of sessions
@@ -42,7 +45,9 @@ export class GrpcSessionsService {
       filter: {},
     });
 
-    return this._sessionsClient.listSessions(options);
+    return this._sessionsClient
+      .listSessions(options)
+      .pipe(takeUntil(this._timeout$));
   }
 
   /**
@@ -57,7 +62,9 @@ export class GrpcSessionsService {
       sessionId,
     });
 
-    return this._sessionsClient.getSession(options);
+    return this._sessionsClient
+      .getSession(options)
+      .pipe(takeUntil(this._timeout$));
   }
 
   /**

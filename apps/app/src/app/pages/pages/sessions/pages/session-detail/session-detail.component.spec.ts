@@ -10,6 +10,7 @@ import {
   TaskStatusFilterComponent,
 } from '../../../../../shared';
 import {
+  BrowserTitleService,
   PagerService,
   SettingsService,
   TasksService,
@@ -38,7 +39,13 @@ describe('SessionDetailComponent', () => {
         HttpClientModule,
         BrowserAnimationsModule,
       ],
-      providers: [TasksService, PagerService, StatesService, SettingsService],
+      providers: [
+        TasksService,
+        PagerService,
+        StatesService,
+        SettingsService,
+        BrowserTitleService,
+      ],
     }).compileComponents();
   });
 
