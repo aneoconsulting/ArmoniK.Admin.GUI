@@ -45,6 +45,7 @@ import {
     }),
   ],
   providers: [
+    DefaultUrlSerializer,
     BrowserTitleService,
     LocaleProvider,
     LanguageService,

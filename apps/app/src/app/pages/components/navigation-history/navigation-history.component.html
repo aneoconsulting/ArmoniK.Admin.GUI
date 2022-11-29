@@ -2,10 +2,15 @@
   <clr-icon clrVerticalNavIcon shape="history"></clr-icon>
   {{ 'navigation.history' | translate }}
   <clr-vertical-nav-group-children>
-    <ng-container *ngFor="let url of history$ | async">
-      <!-- Workaround but we need to find a better way -->
-      <a clrVerticalNavLink (click)="navigate(url)" [title]="url">
-        {{ url }}
+    <ng-container *ngFor="let item of history$ | async">
+      <!-- On a un souci puisque la page s'auto relaod -->
+      <a
+        clrVerticalNavLink
+        [routerLink]="[item.url]"
+        [queryParams]="item.queryParams"
+        [title]="item.title"
+      >
+        {{ item.title }}
       </a>
     </ng-container>
   </clr-vertical-nav-group-children>

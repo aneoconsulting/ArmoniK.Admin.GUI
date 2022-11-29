@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DefaultUrlSerializer, UrlTree } from '@angular/router';
+import { DefaultUrlSerializer, Params, UrlTree } from '@angular/router';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 
 @Injectable()
@@ -11,13 +11,41 @@ export class HistoryService {
   private _history$: Observable<Set<string>> =
     this._historySubject.asObservable();
 
-  constructor(private _localStorage: Storage) {
+  constructor(
+    private _localStorage: Storage,
+    private _urlSerializer: DefaultUrlSerializer
+  ) {
     this._history = this._recover();
     this._historySubject.next(this._history);
   }
 
-  public get history$(): Observable<string[]> {
-    return this._history$.pipe(map((history) => [...history].reverse()));
+  public get history$(): Observable<
+    {
+      title: string;
+      url: string;
+      queryParams: Params;
+    }[]
+  > {
+    return this._history$.pipe(
+      map((history) => [...history].reverse()),
+      map((history) => {
+        // remove query params and transform to object
+        return history.map((url) => {
+          const urlTree = this._urlSerializer.parse(url);
+          const root = urlTree.root;
+          const queryParams = urlTree.queryParams;
+
+          return {
+            title: url,
+            url: root.children['primary'].segments
+              .map((segment) => segment.path)
+              .join('/'),
+            queryParams: queryParams,
+          };
+        });
+      }),
+      tap((history) => console.log(history))
+    );
   }
 
   /**

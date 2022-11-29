@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HistoryService } from '../../../core/services/history.service';
 
@@ -15,7 +15,13 @@ export class NavigationHistoryComponent {
     private _router: Router
   ) {}
 
-  public get history$(): Observable<string[]> {
+  public get history$(): Observable<
+    {
+      title: string;
+      url: string;
+      queryParams: Params;
+    }[]
+  > {
     return this._historyService.history$;
   }
 
