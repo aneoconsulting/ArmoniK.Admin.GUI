@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, first, Observable } from 'rxjs';
-import { FavoritesService } from '../../../../core';
+import { FavoritesService } from '../../../core';
 
 @Component({
   selector: 'app-pages-modal-favorites',
