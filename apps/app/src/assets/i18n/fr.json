@@ -178,6 +178,9 @@
     }
   },
   "errors": {
+    "4": "Dépassement de la limite",
+    "7": "Permission refusée",
+    "16": "Non authentifié",
     "404": "Non trouvée",
     "500": "Erreur interne",
     "504": "Erreur de connexion"

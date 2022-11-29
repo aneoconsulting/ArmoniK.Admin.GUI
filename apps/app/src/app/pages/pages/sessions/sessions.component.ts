@@ -6,6 +6,7 @@ import {
   SessionStatus,
 } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Subscription } from 'rxjs';
 import {
   AppError,
@@ -14,6 +15,7 @@ import {
   Session,
   SessionsService,
 } from '../../../core';
+import { GrpcSessionsService } from '../../../core/services/grpc';
 import { AutoRefreshService, StatesService } from '../../../shared';
 
 @Component({
@@ -38,6 +40,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private browserTitleService: BrowserTitleService,
     private sessionsService: SessionsService,
+    private _grpcSessionsService: GrpcSessionsService,
     private statesService: StatesService,
     private pagerService: PagerService,
     private cdr: ChangeDetectorRef,
@@ -174,7 +177,7 @@ export class SessionsComponent implements OnInit, OnDestroy {
    * @param session
    */
   cancelSession(sessionId: Session['_id']) {
-    this.sessionsService.cancel(sessionId).subscribe({
+    this._grpcSessionsService.cancel$(sessionId).subscribe({
       next: this.onCancelSessionNext.bind(this),
       error: this.onCancelSessionError.bind(this),
     });
@@ -254,11 +257,14 @@ export class SessionsComponent implements OnInit, OnDestroy {
    *
    * @param error
    */
-  private onCancelSessionError(error: AppError) {
+  private onCancelSessionError(error: GrpcStatusEvent) {
     this.sessionToCancel = null;
     this.isModalOpen = false;
 
-    this.errors.push(error);
+    this.errors.push({
+      status: error.statusCode,
+      operation: 'Cancel Session',
+    });
   }
 
   /**

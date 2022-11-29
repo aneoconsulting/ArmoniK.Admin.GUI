@@ -1,3 +1,6 @@
 [submodule "apps/api/src/assets/ArmoniK.Api"]
 	path = apps/api/src/assets/ArmoniK.Api
 	url = https://github.com/aneoconsulting/ArmoniK.Api.git
+[submodule "apps/app/src/assets/ArmoniK.Api"]
+	path = apps/app/src/assets/ArmoniK.Api
+	url = https://github.com/aneoconsulting/ArmoniK.Api

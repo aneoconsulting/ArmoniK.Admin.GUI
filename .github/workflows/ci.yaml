@@ -70,6 +70,12 @@ jobs:
         with:
           main-branch-name: main
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
+
       - name: Run Unit Tests
         run: npx nx affected --target=test --parallel=3 --code-coverage
 
@@ -135,12 +141,21 @@ jobs:
       - name: Populate MongoDB
         run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
+      - name: Create proxy.conf.json
+        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-create-proxy-conf.sh
+
       - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v2
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -181,6 +196,12 @@ jobs:
         with:
           main-branch-name: main
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
+
       - name: Build all
         run: npx nx affected --target=build --parallel=3
 
@@ -200,6 +221,19 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
+
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        run: npm run proto:generate
 
       - name: Docker meta
         id: meta

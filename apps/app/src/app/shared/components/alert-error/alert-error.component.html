@@ -5,7 +5,7 @@
     *ngFor="let error of errors; trackBy: trackByError"
   >
     <clr-alert-item>
-      <span class="alert-text"> {{ translateError(error) }} </span>
+      <span class="alert-text"> {{ translateError(error) | translate }} </span>
     </clr-alert-item>
   </clr-alert>
 </clr-alerts>

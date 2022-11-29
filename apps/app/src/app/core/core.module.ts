@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocaleProvider } from './providers';
@@ -16,6 +15,9 @@ import {
   SettingsService,
   TasksService,
 } from './services';
+import { GrpcSessionsService, GrpcTasksService } from './services/grpc';
+import { GrpcCoreModule } from '@ngx-grpc/core';
+import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 
 /**
  * Contain the code that is specific to the application
@@ -27,6 +29,12 @@ import {
     BrowserAnimationsModule,
     CommonModule,
     HttpClientModule,
+    GrpcCoreModule.forRoot(),
+    GrpcWebClientModule.forRoot({
+      settings: {
+        host: '',
+      },
+    }),
   ],
   providers: [
     LocaleProvider,
@@ -39,6 +47,8 @@ import {
     TasksService,
     PagerService,
     SeqService,
+    GrpcSessionsService,
+    GrpcTasksService,
   ],
 })
 export class CoreModule {}
