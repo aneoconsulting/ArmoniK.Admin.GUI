@@ -9,6 +9,7 @@ import {
   AlertErrorComponent,
   TimerIntervalSelectorComponent,
   AutoRefreshActivatorComponent,
+  ModalFavoritesComponent,
   AutoRefreshDropdownComponent,
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
@@ -36,6 +37,7 @@ import { IdFilterComponent } from './filters/id-filter/id-filter.component';
     DateFilterComponent,
     SessionsStatusFilterComponent,
     IdFilterComponent,
+    ModalFavoritesComponent,
     AutoRefreshDropdownComponent,
   ],
   exports: [
@@ -47,6 +49,7 @@ import { IdFilterComponent } from './filters/id-filter/id-filter.component';
     DateFilterComponent,
     SessionsStatusFilterComponent,
     IdFilterComponent,
+    ModalFavoritesComponent,
     AutoRefreshDropdownComponent,
     ClarityModule,
     FormsModule,

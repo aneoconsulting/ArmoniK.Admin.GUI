@@ -9,10 +9,12 @@ import { LocaleProvider } from './providers';
 import {
   ApiService,
   ApplicationsService,
+  BrowserTitleService,
   ErrorService,
   FavoritesService,
   GrafanaService,
   GrpcPagerService,
+  GrpcResultsService,
   GrpcSessionsService,
   GrpcTasksService,
   HistoryService,
@@ -22,7 +24,6 @@ import {
   SessionsService,
   SettingsService,
   TasksService,
-  BrowserTitleService,
 } from './services';
 
 /**
@@ -57,6 +58,7 @@ import {
     PagerService,
     SeqService,
     GrafanaService,
+    GrpcResultsService,
     GrpcPagerService,
     GrpcSessionsService,
     GrpcTasksService,

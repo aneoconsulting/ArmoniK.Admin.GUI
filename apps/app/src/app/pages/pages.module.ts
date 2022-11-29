@@ -8,10 +8,7 @@ import {
 } from './components';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
-import {
-  ModalFavoritesComponent,
-  NavigationFavoritesComponent,
-} from './pages/components';
+import { NavigationFavoritesComponent } from './pages/components';
 import { ErrorComponent } from './pages/error/error.component';
 
 import '@clr/icons';
@@ -30,7 +27,6 @@ import '@clr/icons/shapes/technology-shapes';
     ApplicationsSubnavComponent,
     LanguagesSelectorComponent,
     NavigationHistoryComponent,
-    ModalFavoritesComponent,
     NavigationFavoritesComponent,
     TimeComponent,
   ],

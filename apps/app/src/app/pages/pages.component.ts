@@ -28,6 +28,11 @@ export class PagesComponent implements OnInit {
       shape: 'node',
     },
     {
+      path: ['/', 'results'],
+      label: this.languageService.instant('navigation.results'),
+      shape: 'certificate',
+    },
+    {
       path: ['/', 'errors'],
       label: this.languageService.instant('navigation.errors'),
       shape: 'error-standard',

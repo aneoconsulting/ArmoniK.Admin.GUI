@@ -23,6 +23,7 @@
     "dashboard": "Dashboard",
     "sessions": "Sessions",
     "tasks": "Tasks",
+    "results": "Results",
     "errors": "Errors",
     "history": "History",
     "favorites": "Favorites",
@@ -35,22 +36,23 @@
     "no_current_applications": "No current application",
     "close_tab": "Close tab"
   },
-  "favorites": {
-    "button": {
-      "add": "Add to favorites",
-      "remove": "Remove from favorites"
-    },
-    "modal": {
-      "title": "Create a new favorite",
-      "input": {
-        "label": "Name",
-        "placeholder": "Enter a name"
-      },
-      "button": "Create"
-    }
-  },
   "pages": {
     "components": {
+      "modal_favorites": {
+        "button": {
+          "add": "Add to favorites",
+          "remove": "Remove from favorites"
+        },
+        "modal": {
+          "title": "Create a new favorite",
+          "input": {
+            "label": "Name of the favorite",
+            "placeholder": "Enter a name"
+          },
+          "close": "Close",
+          "add": "Add"
+        }
+      },
       "auto_refresh_dropdown": {
         "button": {
           "title": "Auto-refresh",
@@ -147,6 +149,42 @@
       "modal": {
         "title": "Task",
         "close": "Close"
+      }
+    },
+    "results-list": {
+      "title": "Results",
+      "columns": {
+        "name": "Name",
+        "task_id": "Task ID",
+        "session_id": "Session ID",
+        "status": "Status",
+        "created_at": "Created at",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "0": "Unspecified",
+          "1": "Creating",
+          "2": "Completed",
+          "3": "Aborted",
+          "127": "Not found"
+        }
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "auto_refresh": {
+          "button": {
+            "title": "Auto-refresh",
+            "disabled": "Disabled"
+          },
+          "disable": "Disable"
+        },
+        "parent_task": "Task"
+      },
+      "pagination": {
+        "per_page": "Per page",
+        "results": "{{value}} results",
+        "result": "{{value}} result"
       }
     },
     "dashboard": {

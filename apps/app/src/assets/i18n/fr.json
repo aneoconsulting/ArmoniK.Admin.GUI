@@ -23,6 +23,7 @@
     "dashboard": "Tableau de bord",
     "sessions": "Sessions",
     "tasks": "Tâches",
+    "results": "Résultats",
     "errors": "Erreurs",
     "history": "Historique",
     "favorites": "Favoris",
@@ -35,22 +36,23 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
-  "favorites": {
-    "button": {
-      "add": "Ajouter aux favoris",
-      "remove": "Retirer des favoris"
-    },
-    "modal": {
-      "title": "Créer un favori",
-      "input": {
-        "label": "Nom",
-        "placeholder": "Saisir le nom"
-      },
-      "button": "Créer"
-    }
-  },
   "pages": {
     "components": {
+      "modal_favorites": {
+        "button": {
+          "add": "Ajouter aux favoris",
+          "remove": "Retirer des favoris"
+        },
+        "modal": {
+          "title": "Ajouter un favori",
+          "input": {
+            "label": "Nom du favori",
+            "placeholder": "Saisir le nom"
+          },
+          "close": "Fermer",
+          "add": "Ajouter"
+        }
+      },
       "auto_refresh_dropdown": {
         "button": {
           "title": "Rafraîchissement automatique",
@@ -147,6 +149,42 @@
       "modal": {
         "title": "Tâche",
         "close": "Fermer"
+      }
+    },
+    "results-list": {
+      "title": "Résultats",
+      "columns": {
+        "name": "Nom",
+        "task_id": "Task ID",
+        "session_id": "Session ID",
+        "status": "Statut",
+        "created_at": "Créé le",
+        "actions": "Actions"
+      },
+      "cells": {
+        "status": {
+          "0": "Non spécifié",
+          "1": "En création",
+          "2": "Complet",
+          "3": "Interrompu",
+          "127": "Non trouvé"
+        }
+      },
+      "actions": {
+        "refresh": "Rafraîchir",
+        "auto_refresh": {
+          "button": {
+            "title": "Rafraîchissement automatique",
+            "disabled": "Désactivé"
+          },
+          "disable": "Désactiver"
+        },
+        "parent_task": "Task"
+      },
+      "pagination": {
+        "per_page": "Par page",
+        "results": "{{value}} résultats",
+        "result": "{{value}} résultat"
       }
     },
     "dashboard": {
