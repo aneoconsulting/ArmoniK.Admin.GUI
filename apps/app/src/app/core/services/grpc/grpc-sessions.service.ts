@@ -33,7 +33,7 @@ export class GrpcSessionsService extends BaseGrpcService {
       ListSessionsRequest.OrderDirection
     >
   ): Observable<ListSessionsResponse> {
-    const filterValue = this.createFilterObject(params);
+    const filter = this.createFilter(params);
     const options = new ListSessionsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
@@ -46,7 +46,7 @@ export class GrpcSessionsService extends BaseGrpcService {
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {
-        ...filterValue,
+        ...filter,
       },
     });
     return this._sessionsClient
@@ -60,7 +60,7 @@ export class GrpcSessionsService extends BaseGrpcService {
    * @param params
    * @returns SessionFilter
    */
-  createFilterObject(
+  createFilter(
     params: GrpcParams<
       ListSessionsRequest.OrderByField,
       ListSessionsRequest.OrderDirection
