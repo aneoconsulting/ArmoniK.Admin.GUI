@@ -78,25 +78,25 @@ export class GrpcSessionsService extends BaseGrpcService {
     if (paramsFilter.createdAtBefore) {
       filter.createdBefore = {
         nano: 0,
-        seconds: paramsFilter.createdAtBefore.toString(),
+        seconds: (paramsFilter.createdAtBefore / 1000).toString(),
       };
     }
     if (paramsFilter.createdAtAfter) {
       filter.createdAfter = {
         nano: 0,
-        seconds: paramsFilter.createdAtAfter.toString(),
+        seconds: (paramsFilter.createdAtAfter / 1000).toString(),
       };
     }
     if (paramsFilter.cancelledAtBefore) {
       filter.cancelledBefore = {
         nano: 0,
-        seconds: paramsFilter.cancelledAtBefore.toString(),
+        seconds: (paramsFilter.cancelledAtBefore / 1000).toString(),
       };
     }
     if (paramsFilter.cancelledAtAfter) {
       filter.cancelledAfter = {
         nano: 0,
-        seconds: paramsFilter.cancelledAtAfter.toString(),
+        seconds: (paramsFilter.cancelledAtAfter / 1000).toString(),
       };
     }
     return filter;

@@ -19,8 +19,8 @@ export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
 
   get value(): { before: number | null; after: number | null } {
     return {
-      before: this.beforeDate ? this.beforeDate.getTime() / 1000 : null,
-      after: this.afterDate ? this.afterDate.getTime() / 1000 : null,
+      before: this.beforeDate ? this.beforeDate.getTime() : null,
+      after: this.afterDate ? this.afterDate.getTime() : null,
     };
   }
 

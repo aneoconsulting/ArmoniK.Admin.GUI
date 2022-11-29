@@ -43,7 +43,7 @@ describe('DateFilterComponent', () => {
   it('should send an object with afterDate null when only beforeDate is picked', () => {
     component.beforeDate = dateTest;
     expect(component.value).toEqual({
-      before: dateTest.getTime() / 1000,
+      before: dateTest.getTime(),
       after: null,
     });
   });
@@ -52,7 +52,7 @@ describe('DateFilterComponent', () => {
     component.afterDate = dateTest;
     expect(component.value).toEqual({
       before: null,
-      after: dateTest.getTime() / 1000,
+      after: dateTest.getTime(),
     });
   });
 
