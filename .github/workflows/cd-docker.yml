@@ -31,6 +31,10 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
+      - name: Install Dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: yarn
+
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
 
