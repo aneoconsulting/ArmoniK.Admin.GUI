@@ -6,18 +6,17 @@ export class HistoryService {
   private _maxHistorySize = 3;
 
   private _history: Set<string> = new Set<string>();
-  private _history$: BehaviorSubject<Set<string>> = new BehaviorSubject<
-    Set<string>
-  >(this._history);
+  private _historySubject = new BehaviorSubject<Set<string>>(this._history);
+  private _history$: Observable<Set<string>> =
+    this._historySubject.asObservable();
 
   constructor(private _localStorage: Storage) {
     this._history = this._recover();
-    this._history$.next(this._history);
+    this._historySubject.next(this._history);
   }
 
   public get history$(): Observable<string[]> {
-    const history$ = this._history$.asObservable();
-    return history$.pipe(map((history) => [...history].reverse()));
+    return this._history$.pipe(map((history) => [...history].reverse()));
   }
 
   /**
@@ -38,7 +37,8 @@ export class HistoryService {
       this._history.delete(this._history.values().next().value);
     }
 
-    this._history$.next(this._history);
+    this._historySubject.next(this._history);
+
     this._store();
   }
 
