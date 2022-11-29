@@ -43,7 +43,7 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
     private tasksService: TasksService,
     private statesService: StatesService,
     private pagerService: PagerService,
-    private settingsService: SettingsService,
+    public settingsService: SettingsService,
     public autoRefreshService: AutoRefreshService
   ) {
     // Activate auto refresh
@@ -70,10 +70,6 @@ export class SessionDetailComponent implements OnInit, OnDestroy {
 
   get tasksStateKey(): string {
     return ['tasks', this.sessionId].join('-');
-  }
-
-  get isSeqUp(): boolean {
-    return this.settingsService.isSeqUp();
   }
 
   /**
