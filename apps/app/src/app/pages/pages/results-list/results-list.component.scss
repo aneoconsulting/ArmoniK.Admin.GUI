@@ -1,0 +1,25 @@
+.datagrid-action-bar {
+  margin-top: 0;
+}
+
+.auto-refresh > button > span {
+  text-transform: capitalize;
+}
+
+clr-dg-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  & a:hover span {
+    text-decoration: inherit;
+  }
+}
+
+$textTypes: ('success', 'danger', 'created');
+
+@each $type in $textTypes {
+  .text-#{$type} {
+    color: var(--#{$type}-500);
+  }
+}
