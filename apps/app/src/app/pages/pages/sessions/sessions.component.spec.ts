@@ -25,7 +25,6 @@ import {
   SinceDateFilterComponent,
   StatesService,
 } from '../../../shared';
-import { SessionsStatusFilterComponent } from '../../../shared/filters/sessions-status-filter/sessions-status-filter.component';
 import { SessionsComponent } from './sessions.component';
 
 @Component({
@@ -83,7 +82,6 @@ describe('SessionsComponent', () => {
         SessionsComponent,
         AlertErrorComponent,
         SinceDateFilterComponent,
-        SessionsStatusFilterComponent,
         MockTimerIntervalSelectorComponent,
         MockAutoRefreshActivatorComponent,
       ],

@@ -91,11 +91,6 @@ export class SessionsComponent implements OnInit, OnDestroy {
     return this.statesService.getFilterValue(this.sessionsStateKey, key);
   }
 
-  getDateFilterValue(key: string): Date | null {
-    const jsonDate = this.getFilterValue(key);
-    return jsonDate === '' ? null : new Date(jsonDate);
-  }
-
   /**
    * Get sort order from the filters store
    *
