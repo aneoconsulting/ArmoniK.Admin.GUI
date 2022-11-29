@@ -3,7 +3,8 @@
   {{ 'navigation.history' | translate }}
   <clr-vertical-nav-group-children>
     <ng-container *ngFor="let url of history$ | async">
-      <a clrVerticalNavLink [routerLink]="[url]" [title]="url">
+      <!-- Workaround but we need to find a better way -->
+      <a clrVerticalNavLink (click)="navigate(url)" [title]="url">
         {{ url }}
       </a>
     </ng-container>

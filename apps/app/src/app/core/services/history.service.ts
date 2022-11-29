@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { DefaultUrlSerializer, UrlTree } from '@angular/router';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 
 @Injectable()
 export class HistoryService {
