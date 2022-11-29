@@ -146,7 +146,7 @@ export class SessionsListComponent implements OnInit {
     this._storeCustomColumns();
   }
 
-  public findCustomColumnValue(session: SessionSummary, key: string) {
+  public findCustomColumnValue(session: SessionSummary, key: string): unknown {
     const sessionData = session.toObject();
 
     const value = key.split('.').reduce((acc: any, key) => {
@@ -341,13 +341,13 @@ export class SessionsListComponent implements OnInit {
 
   private _storeCustomColumns(): void {
     this._storage.setItem(
-      'custom_columns',
+      'sessions_list_custom_columns',
       JSON.stringify(Array.from(this._customColumns))
     );
   }
 
   private _restoreCustomColumns(): Set<string> {
-    const columns = this._storage.getItem('custom_columns');
+    const columns = this._storage.getItem('sessions_list_custom_columns');
     if (columns) {
       return new Set(JSON.parse(columns));
     }
