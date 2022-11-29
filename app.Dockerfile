@@ -7,9 +7,10 @@ WORKDIR /usr/src/app
 RUN npm install -g nx
 
 COPY package*.json ./
+COPY yarn.lock ./
 COPY decorate-angular-cli.js ./
 
-RUN npm ci
+RUN yarn
 
 COPY . .
 

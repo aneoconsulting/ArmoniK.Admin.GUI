@@ -10,17 +10,19 @@ import {
   ApiService,
   ApplicationsService,
   ErrorService,
-  GrpcPagerService,
-  GrpcSessionsService,
-  HistoryService,
   FavoritesService,
   GrafanaService,
+  GrpcPagerService,
+  GrpcSessionsService,
+  GrpcTasksService,
+  HistoryService,
   LanguageService,
   PagerService,
   SeqService,
   SessionsService,
   SettingsService,
   TasksService,
+  BrowserTitleService,
 } from './services';
 
 /**
@@ -41,6 +43,7 @@ import {
     }),
   ],
   providers: [
+    BrowserTitleService,
     LocaleProvider,
     LanguageService,
     SettingsService,
@@ -54,8 +57,9 @@ import {
     PagerService,
     SeqService,
     GrafanaService,
-    GrpcSessionsService,
     GrpcPagerService,
+    GrpcSessionsService,
+    GrpcTasksService,
     {
       provide: Storage,
       useFactory: () => localStorage,

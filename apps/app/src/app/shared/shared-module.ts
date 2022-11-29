@@ -7,9 +7,10 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   AlertErrorComponent,
-  TimerIntervalSelectorComponent,
   AutoRefreshActivatorComponent,
+  AutoRefreshDropdownComponent,
   CustomColumnsManagerComponent,
+  TimerIntervalSelectorComponent,
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
@@ -31,6 +32,7 @@ import { StatesService } from './services';
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
     CustomColumnsManagerComponent,
+    AutoRefreshDropdownComponent,
   ],
   exports: [
     AlertErrorComponent,
@@ -39,9 +41,8 @@ import { StatesService } from './services';
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
     CustomColumnsManagerComponent,
-    ClarityModule,
+    AutoRefreshDropdownComponent,
     FormsModule,
-    CommonModule,
     RouterModule,
     TranslateModule,
     UiModule,

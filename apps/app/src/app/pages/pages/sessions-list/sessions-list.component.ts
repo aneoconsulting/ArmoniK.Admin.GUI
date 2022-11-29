@@ -8,7 +8,6 @@ import {
   concatMap,
   distinctUntilChanged,
   first,
-  interval,
   map,
   merge,
   Observable,
@@ -17,13 +16,13 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 import {
   BrowserTitleService,
   GrpcPagerService,
   GrpcSessionsService,
   LanguageService,
-  SettingsService,
 } from '../../../core';
 import { SessionStatus } from '../../../core/types/proto/session-status.pb';
 import {
@@ -32,6 +31,7 @@ import {
   ListSessionsResponse,
   SessionSummary,
 } from '../../../core/types/proto/sessions-common.pb';
+import { DisabledIntervalValue } from '../../../shared';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -60,8 +60,9 @@ export class SessionsListComponent implements OnInit {
   /** Get sessions */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
-  private _subjectStopInterval = new Subject<void>();
+  private _intervalValue = new Subject<number>();
+  private _stopInterval = new Subject<void>();
+  public stopInterval$ = this._stopInterval.asObservable();
 
   /** Triggers to reload sessions */
   private _triggerManual$ = this._subjectManual.asObservable();
@@ -77,13 +78,11 @@ export class SessionsListComponent implements OnInit {
       return state;
     })
   );
-  private _triggerInterval$ = this.subjectInterval
-    .asObservable()
-    .pipe(
-      switchMap((time) =>
-        interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
-      )
-    );
+  private _triggerInterval$ = this._intervalValue.asObservable().pipe(
+    switchMap((time) => {
+      return timer(0, time).pipe(takeUntil(this._stopInterval.asObservable()));
+    })
+  );
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
@@ -103,7 +102,6 @@ export class SessionsListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
-    private _settingsService: SettingsService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
@@ -125,16 +123,13 @@ export class SessionsListComponent implements OnInit {
     return SessionStatus;
   }
 
-  public get subjectInterval() {
-    return this._subjectInterval;
-  }
+  public onUpdateInterval(value: number) {
+    this._intervalValue.next(value);
 
-  public get intervals() {
-    return this._settingsService.intervals;
-  }
-
-  public get initialInterval() {
-    return this._settingsService.initialInterval;
+    // Stop interval
+    if (value < DisabledIntervalValue) {
+      this._stopInterval.next();
+    }
   }
 
   public addColumn(column: string): void {
@@ -191,34 +186,13 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
-   * Change interval
-   *
-   * @param number
-   */
-  public changeInterval(value: number): void {
-    this.subjectInterval.next(value);
-  }
-
-  /**
-   * Stop interval
-   */
-  public stopInterval(): void {
-    this.subjectInterval.next(-1);
-    this._subjectStopInterval.next();
-  }
-
-  /**
-   * Track by interval
+   * Track by Custom Column
    *
    * @param _
-   * @param interval
+   * @param column
    *
-   * @returns Interval
+   * @returns column
    */
-  public trackByInterval(_: number, interval: number): string {
-    return interval.toString();
-  }
-
   public trackByCustomColumn(_: number, column: string): string {
     return column;
   }
@@ -335,7 +309,7 @@ export class SessionsListComponent implements OnInit {
     return this._grpcSessionsService.list$(params).pipe(
       catchError((error: Error) => {
         console.error(error);
-        this.stopInterval();
+        this._stopInterval.next();
 
         return of({} as ListSessionsResponse);
       }),
