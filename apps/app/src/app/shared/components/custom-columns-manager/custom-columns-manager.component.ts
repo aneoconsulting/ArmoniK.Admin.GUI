@@ -21,21 +21,17 @@ export class CustomColumnsManagerComponent {
     new EventEmitter<string>();
 
   /** Manage columns */
-  private _modalManageColumnsOpened = new Subject<boolean>();
-  public isModalManageColumnsOpened$: Observable<boolean> =
-    this._modalManageColumnsOpened.asObservable();
+  public modalAddColumnOpened = false;
 
   /** Add a column */
   public newColumnName = '';
-  private _modalAddColumnOpened: Subject<boolean> = new Subject<boolean>();
-  public isModalAddColumnOpened$: Observable<boolean> =
-    this._modalAddColumnOpened.asObservable();
+  public modalManageColumnsOpened = false;
 
   /**
    * Open modal add a column
    */
   public openModalAddColumn(): void {
-    this._modalAddColumnOpened.next(true);
+    this.modalAddColumnOpened = true;
   }
 
   /**
@@ -43,7 +39,7 @@ export class CustomColumnsManagerComponent {
    */
   public closeModalAddColumn(): void {
     this.newColumnName = '';
-    this._modalAddColumnOpened.next(false);
+    this.modalAddColumnOpened = false;
   }
 
   /**
@@ -58,7 +54,7 @@ export class CustomColumnsManagerComponent {
    * Open modal used to manage columns
    */
   public openModalManageColumns(): void {
-    this._modalManageColumnsOpened.next(true);
+    this.modalManageColumnsOpened = true;
   }
 
   /**
@@ -66,7 +62,7 @@ export class CustomColumnsManagerComponent {
    */
   public closeModalManageColumns(): void {
     this.newColumnName = '';
-    this._modalManageColumnsOpened.next(false);
+    this.modalManageColumnsOpened = false;
   }
 
   /**

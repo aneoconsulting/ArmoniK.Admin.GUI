@@ -16,7 +16,7 @@
 </div>
 
 <clr-modal
-  [clrModalOpen]="(isModalAddColumnOpened$ | async) || false"
+  [clrModalOpen]="modalAddColumnOpened"
   [clrModalClosable]="false"
   [clrModalSize]="'lg'"
 >
@@ -69,7 +69,7 @@
 </clr-modal>
 
 <clr-modal
-  [clrModalOpen]="(isModalManageColumnsOpened$ | async) || false"
+  [clrModalOpen]="modalManageColumnsOpened"
   [clrModalClosable]="false"
   [clrModalSize]="'lg'"
 >
