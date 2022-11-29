@@ -89,9 +89,6 @@ export class SessionsListComponent implements OnInit {
     switchMap(() => this._listSessions$())
   );
 
-  /** Filters */
-  sessionIdFilter = '';
-
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -214,7 +211,7 @@ export class SessionsListComponent implements OnInit {
    *
    * @param param
    *
-   * @returns Observable<string>
+   * @returns Observable<number>
    */
   public queryParam$(param: string): Observable<number> {
     return this._activatedRoute.queryParamMap.pipe(
@@ -224,6 +221,13 @@ export class SessionsListComponent implements OnInit {
     );
   }
 
+  /**
+   * Get query params from route and return them as string
+   *
+   * @param param
+   *
+   * @returns Observable<number>
+   */
   public queryStringParam$(param: string): Observable<string> {
     return this._activatedRoute.queryParamMap.pipe(
       map((params) => params.get(param)),
@@ -232,6 +236,13 @@ export class SessionsListComponent implements OnInit {
     );
   }
 
+  /**
+   * Get query params from route and return them as Date
+   *
+   * @param param
+   *
+   * @returns Observable<Date | null>
+   */
   public queryDateParam$(param: string): Observable<Date | null> {
     return this._activatedRoute.queryParamMap.pipe(
       map((params) => {
@@ -324,7 +335,7 @@ export class SessionsListComponent implements OnInit {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters() {
-    this._state.filters = undefined;
+    this._state.filters = [];
     this.refreshSessions(this._state);
   }
 }

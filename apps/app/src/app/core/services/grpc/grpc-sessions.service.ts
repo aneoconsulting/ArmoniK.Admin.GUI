@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Timestamp } from '@ngx-grpc/well-known-types';
-import { mergeMap, Observable, takeUntil, throwError, timer } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { GrpcParams } from '../../types/grpc-params.type';
 import {
   CancelSessionRequest,
@@ -55,6 +55,12 @@ export class GrpcSessionsService extends BaseGrpcService {
       .pipe(takeUntil(this._timeout$));
   }
 
+  /**
+   * Create a filter that can be passed to the ListSessionsResponse object.
+   *
+   * @param params
+   * @returns SessionFilter
+   */
   createFilterObject(
     params: GrpcParams<
       ListSessionsRequest.OrderByField,
@@ -62,30 +68,34 @@ export class GrpcSessionsService extends BaseGrpcService {
     >
   ): SessionFilter {
     const filter: SessionFilter = {};
-    const paramsFilter = params as SessionPageFilter;
+    const paramsFilter = params as SessionPageFilter; // Transform the params in order to have all required properties
 
-    filter.sessionId = paramsFilter.sessionId;
-    filter.status = paramsFilter.status || 0;
-
-    const timestamp = new Timestamp();
-
+    if (paramsFilter.sessionId) {
+      filter.sessionId = paramsFilter.sessionId;
+    }
+    if (paramsFilter.status) {
+      filter.status = paramsFilter.status;
+    }
     if (paramsFilter.createdAtBefore) {
-      timestamp.seconds = (paramsFilter.createdAtBefore / 1000).toString();
-      filter.createdBefore = new Timestamp(timestamp);
+      filter.createdBefore = new Timestamp({
+        seconds: paramsFilter.createdAtBefore.toString(),
+      });
     }
     if (paramsFilter.createdAtAfter) {
-      timestamp.seconds = (paramsFilter.createdAtAfter / 1000).toString();
-      filter.createdAfter = new Timestamp(timestamp);
+      filter.createdAfter = new Timestamp({
+        seconds: paramsFilter.createdAtAfter.toString(),
+      });
     }
     if (paramsFilter.cancelledAtBefore) {
-      timestamp.seconds = (paramsFilter.cancelledAtBefore / 1000).toString();
-      filter.cancelledBefore = new Timestamp(timestamp);
+      filter.cancelledBefore = new Timestamp({
+        seconds: paramsFilter.cancelledAtBefore.toString(),
+      });
     }
     if (paramsFilter.cancelledAtAfter) {
-      timestamp.seconds = (paramsFilter.cancelledAtAfter / 1000).toString();
-      filter.cancelledAfter = new Timestamp(timestamp);
+      filter.cancelledAfter = new Timestamp({
+        seconds: paramsFilter.cancelledAtAfter.toString(),
+      });
     }
-
     return filter;
   }
 

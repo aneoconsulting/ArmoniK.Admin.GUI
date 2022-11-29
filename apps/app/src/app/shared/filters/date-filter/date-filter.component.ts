@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({
@@ -7,7 +7,7 @@ import { ClrDatagridFilterInterface } from '@clr/angular';
   styleUrls: ['./date-filter.component.scss'],
 })
 export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
-  changes = new EventEmitter<boolean>(false);
+  @Output() changes = new EventEmitter();
 
   @Input() name = '';
   @Input() beforeDate: Date | null = null;
@@ -17,25 +17,21 @@ export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
     return this.name;
   }
 
-  get value(): string {
-    return JSON.stringify({
-      before: this.beforeDate ? this.beforeDate.getTime() : null,
-      after: this.afterDate ? this.afterDate.getTime() : null,
-    });
+  get value(): { before: number | null; after: number | null } {
+    return {
+      before: this.beforeDate ? this.beforeDate.getTime() / 1000 : null,
+      after: this.afterDate ? this.afterDate.getTime() / 1000 : null,
+    };
   }
 
   onDateChange() {
-    this.changes.emit(true);
+    this.changes.emit();
   }
 
   clear() {
     this.beforeDate = null;
     this.afterDate = null;
-    this.changes.emit(false);
-  }
-
-  accepts(): boolean {
-    return true;
+    this.changes.emit();
   }
 
   /**
@@ -43,5 +39,12 @@ export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
    */
   isActive(): boolean {
     return !!this.beforeDate || !!this.afterDate;
+  }
+
+  /**
+   * Required by the interface
+   */
+  accepts(): boolean {
+    return true;
   }
 }

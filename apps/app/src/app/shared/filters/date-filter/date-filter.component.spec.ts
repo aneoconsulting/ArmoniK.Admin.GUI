@@ -3,7 +3,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { DateFilterComponent } from './date-filter.component';
 
-describe('CreatedAtFilterComponent', () => {
+describe('DateFilterComponent', () => {
   let component: DateFilterComponent;
   let fixture: ComponentFixture<DateFilterComponent>;
   let dateTest: Date;
@@ -31,22 +31,53 @@ describe('CreatedAtFilterComponent', () => {
     expect(component.name).toBeDefined();
   });
 
-  it('should have null dates', () => {
+  it('should have null dates on initialisation', () => {
     expect(component.beforeDate).toBeNull();
     expect(component.afterDate).toBeNull();
   });
 
-  it('should send a stringified object', () => {
-    component.afterDate = dateTest;
-    expect(component.value).toEqual(
-      JSON.stringify({ before: null, after: dateTest.getTime() })
-    );
+  it('should send an object null values when no dates are picked', () => {
+    expect(component.value).toEqual({ before: null, after: null });
   });
 
-  it('should send a date when a selection is made', () => {
-    component.changes.emit = jasmine.createSpy();
+  it('should send an object with afterDate null when only beforeDate is picked', () => {
+    component.beforeDate = dateTest;
+    expect(component.value).toEqual({
+      before: dateTest.getTime() / 1000,
+      after: null,
+    });
+  });
+
+  it('should send an object with beforeDate null when only afterDate is picked', () => {
+    component.afterDate = dateTest;
+    expect(component.value).toEqual({
+      before: null,
+      after: dateTest.getTime() / 1000,
+    });
+  });
+
+  it('should emit when a selection is made', () => {
+    let testValue = false;
+    component.changes.subscribe(() => {
+      testValue = true;
+    });
     component.onDateChange();
-    expect(component.changes.emit).toHaveBeenCalled();
+    expect(testValue).toBeTruthy();
+  });
+
+  it('should emit when the filter is cleared', () => {
+    let testValue = false;
+    component.changes.subscribe(() => {
+      testValue = true;
+    });
+    component.clear();
+    expect(testValue).toBeTruthy();
+  });
+
+  it('should return an null object with value when the filter is cleared', () => {
+    component.afterDate = dateTest;
+    component.clear();
+    expect(component.value).toEqual({ before: null, after: null });
   });
 
   describe('Is Active', () => {
@@ -56,6 +87,12 @@ describe('CreatedAtFilterComponent', () => {
     });
 
     it('should be active when a "after date" is picked', () => {
+      component.afterDate = dateTest;
+      expect(component.isActive()).toBeTruthy();
+    });
+
+    it('should be active when "before" and "after" dates are picked', () => {
+      component.beforeDate = dateTest;
       component.afterDate = dateTest;
       expect(component.isActive()).toBeTruthy();
     });

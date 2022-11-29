@@ -4,6 +4,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Output,
 } from '@angular/core';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 import {
@@ -21,13 +22,13 @@ import {
 export class IdFilterComponent
   implements ClrDatagridFilterInterface<string>, OnInit, OnDestroy
 {
+  @Output() changes = new EventEmitter();
+
   @Input() name = '';
   @Input() inputValue = '';
 
   inputChangeSubject = new Subject<string>();
   inputChange: Subscription;
-
-  changes = new EventEmitter<boolean>(false);
 
   get property() {
     return this.name;
@@ -38,11 +39,12 @@ export class IdFilterComponent
   }
 
   ngOnInit(): void {
+    // The subscription permits us to prevent the string filter to reload at each input
     this.inputChange = this.inputChangeSubject
       .asObservable()
-      .pipe(debounceTime(500), distinctUntilChanged())
+      .pipe(debounceTime(700), distinctUntilChanged())
       .subscribe(() => {
-        this.changes.emit(true);
+        this.changes.emit();
       });
   }
 
@@ -56,13 +58,16 @@ export class IdFilterComponent
 
   clear() {
     this.inputValue = '';
-    this.changes.emit(false);
+    this.changes.emit();
   }
 
   isActive(): boolean {
     return this.inputValue.length != 0;
   }
 
+  /**
+   * Required by the interface
+   */
   accepts(): boolean {
     return true;
   }

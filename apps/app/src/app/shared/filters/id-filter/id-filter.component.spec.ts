@@ -41,11 +41,36 @@ describe('IdFilterComponent', () => {
     expect(component.value).toEqual('test');
   });
 
-  it('should send true on changed', () => {
-    component.inputChangeSubject.next = jasmine.createSpy();
+  it('should send the input value on change', () => {
+    let testValue = '';
+    component.inputChange = component.inputChangeSubject.subscribe(
+      (value) => (testValue = value)
+    );
     component.inputValue = 'test';
     component.onChange();
-    expect(component.inputChangeSubject.next).toHaveBeenCalled();
+    expect(testValue).toEqual(component.inputValue);
+  });
+
+  it('should emit an event on change', async () => {
+    let testValue = false;
+    component.changes.subscribe(() => (testValue = true));
+    component.onChange();
+    await setTimeout(() => {
+      expect(testValue).toBeTruthy();
+    }, 1000); // wait for the debounceTime
+  });
+
+  it('should have a empty inputValue when the filter is cleared', () => {
+    component.inputValue = 'Not empty value';
+    component.clear();
+    expect(component.inputValue).toEqual('');
+  });
+
+  it('should emit an event when the filter is cleared', () => {
+    let testValue = false;
+    component.changes.subscribe(() => (testValue = true));
+    component.clear();
+    expect(testValue).toBeTruthy();
   });
 
   describe('Is Active', () => {

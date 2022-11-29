@@ -20,7 +20,7 @@
         class="btn btn-sm btn-secondary"
         (click)="clearAllFilters()"
       >
-        {{ 'pages.sessions-list.actions.clear_filters' | translate }}
+        {{ 'global.filters.clear-all-filters' | translate }}
       </button>
 
       <app-auto-refresh-dropdown
@@ -35,7 +35,6 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
-      [(clrFilterValue)]="sessionIdFilter"
     >
       {{ 'pages.sessions-list.columns.session_id' | translate }}
       <clr-dg-filter [clrDgFilter]="sessionFilter">

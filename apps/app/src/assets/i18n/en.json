@@ -4,7 +4,12 @@
     "filters": {
       "no-filter-available": "No filter available",
       "string-filter": "Filter value",
-      "clear-filter": "Clear the filter"
+      "clear-filter": "Clear the filter",
+      "clear-all-filters": "Clear all filters",
+      "date": {
+        "before": "Before the",
+        "after": "After the"
+      }
     }
   },
   "shared": {
@@ -83,6 +88,14 @@
       "modal": {
         "title": "Session",
         "close": "Close"
+      },
+      "filters": {
+        "status": {
+          "title": "Select a status",
+          "UNSPECIFIED": "Unspecified",
+          "RUNNING": "Running",
+          "CANCELLED": "Cancelled"
+        }
       }
     },
     "tasks-list": {
@@ -121,7 +134,6 @@
           },
           "disable": "Disable"
         },
-        "clear_filters": "Clear all filters",
         "details": "Details",
         "related_results": "Related Results",
         "parent_session": "Session",
@@ -135,18 +147,6 @@
       "modal": {
         "title": "Task",
         "close": "Close"
-      },
-      "filters": {
-        "status": {
-          "title": "Select a status",
-          "UNSPECIFIED": "Unspecified",
-          "RUNNING": "Running",
-          "CANCELLED": "Cancelled"
-        },
-        "date": {
-          "before": "Before the",
-          "after": "After the"
-        }
       }
     },
     "dashboard": {

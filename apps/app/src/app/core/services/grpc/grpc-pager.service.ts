@@ -78,14 +78,13 @@ export class GrpcPagerService {
     // filters is an array of filter
     for (const filter of filters) {
       if (filter.property.includes('At')) {
-        const filterDate = JSON.parse(filter.value);
-        if (filterDate.before !== 'null') {
+        if (filter.value.before !== null) {
           const filterName = filter.property + 'Before';
-          params.set(filterName, filterDate.before);
+          params.set(filterName, filter.value.before);
         }
-        if (filterDate.after !== 'null') {
+        if (filter.value.after !== null) {
           const filterName = filter.property + 'After';
-          params.set(filterName, filterDate.after);
+          params.set(filterName, filter.value.after);
         }
       } else {
         const filterName = filter.property as string;

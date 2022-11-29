@@ -28,10 +28,26 @@ describe('SessionsStatusFilterComponent', () => {
     expect(component.name).toBeDefined();
   });
 
-  it('should emit a value when selection change', () => {
-    component.changes.emit = jasmine.createSpy();
+  it('should have an EventEmitter', () => {
+    expect(component.changes).toBeDefined();
+  });
+
+  it('should have a value equal to 0 when no selection is made', () => {
+    expect(component.value).toEqual(0);
+  });
+
+  it('should emit an Event when selection change', () => {
+    let testValue = false;
+    component.changes.subscribe(() => (testValue = true));
     component.onSelectionChange();
-    expect(component.changes.emit).toHaveBeenCalled();
+    expect(testValue).toBeTruthy();
+  });
+
+  it('should emit an Event when the filter is cleared', () => {
+    let testValue = false;
+    component.changes.subscribe(() => (testValue = true));
+    component.clear();
+    expect(testValue).toBeTruthy();
   });
 
   it('should return its value as a number', () => {

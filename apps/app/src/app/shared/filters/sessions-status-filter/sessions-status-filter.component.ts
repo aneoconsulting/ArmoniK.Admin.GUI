@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SessionStatus } from '@armonik.admin.gui/armonik-typing';
 import { ClrDatagridFilterInterface } from '@clr/angular';
 
@@ -10,20 +10,19 @@ import { ClrDatagridFilterInterface } from '@clr/angular';
 export class SessionsStatusFilterComponent
   implements ClrDatagridFilterInterface<number>, OnInit
 {
-  @Input() selectedValue: number | null = null;
+  @Output() changes = new EventEmitter();
 
+  @Input() selectedValue = 0;
   @Input() name = '';
 
   sessionStatus = SessionStatus;
   status: { value: SessionStatus; label: string }[];
 
-  changes = new EventEmitter<boolean>(false);
-
   get property(): string {
     return this.name;
   }
 
-  get value(): number | null {
+  get value(): number {
     return this.selectedValue;
   }
 
@@ -40,16 +39,25 @@ export class SessionsStatusFilterComponent
   }
 
   onSelectionChange(): void {
-    this.changes.emit(true);
+    this.changes.emit();
   }
 
   clear() {
     this.selectedValue = 0;
-    this.changes.emit(false);
+    this.changes.emit();
   }
 
-  accepts(): boolean {
-    return true;
+  /**
+   * Use to track status in ngFor loop.
+   *
+   * @param item
+   * @returns string
+   */
+  trackByStatus(
+    _: number,
+    item: { value: SessionStatus; label: string }
+  ): string {
+    return item.label;
   }
 
   /**
@@ -60,15 +68,9 @@ export class SessionsStatusFilterComponent
   }
 
   /**
-   * Use to track status in ngFor loop.
-   *
-   * @param item
-   * @returns
+   * Required by the interface
    */
-  trackByStatus(
-    _: number,
-    item: { value: SessionStatus; label: string }
-  ): string {
-    return item.label;
+  accepts(): boolean {
+    return true;
   }
 }
