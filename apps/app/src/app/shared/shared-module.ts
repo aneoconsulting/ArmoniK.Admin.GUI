@@ -9,6 +9,7 @@ import {
   AlertErrorComponent,
   TimerIntervalSelectorComponent,
   AutoRefreshActivatorComponent,
+  ModalFavoritesComponent,
   AutoRefreshDropdownComponent,
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
@@ -30,6 +31,7 @@ import { StatesService } from './services';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
+    ModalFavoritesComponent,
     AutoRefreshDropdownComponent,
   ],
   exports: [
@@ -38,6 +40,7 @@ import { StatesService } from './services';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
+    ModalFavoritesComponent,
     AutoRefreshDropdownComponent,
     ClarityModule,
     FormsModule,

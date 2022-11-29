@@ -29,22 +29,23 @@
     "no_current_applications": "Aucune application sélectionnée",
     "close_tab": "Fermer l'onglet"
   },
-  "favorites": {
-    "button": {
-      "add": "Ajouter aux favoris",
-      "remove": "Retirer des favoris"
-    },
-    "modal": {
-      "title": "Créer un favori",
-      "input": {
-        "label": "Nom",
-        "placeholder": "Saisir le nom"
-      },
-      "button": "Créer"
-    }
-  },
   "pages": {
     "components": {
+      "modal_favorites": {
+        "button": {
+          "add": "Ajouter aux favoris",
+          "remove": "Retirer des favoris"
+        },
+        "modal": {
+          "title": "Ajouter un favori",
+          "input": {
+            "label": "Nom du favori",
+            "placeholder": "Saisir le nom"
+          },
+          "close": "Fermer",
+          "add": "Ajouter"
+        }
+      },
       "auto_refresh_dropdown": {
         "button": {
           "title": "Rafraîchissement automatique",
