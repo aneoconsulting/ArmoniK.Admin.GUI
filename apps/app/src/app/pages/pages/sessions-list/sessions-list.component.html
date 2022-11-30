@@ -14,6 +14,13 @@
         {{ 'pages.sessions-list.actions.refresh' | translate }}
       </button>
 
+      
+      <app-auto-refresh-dropdown
+      [manualStop$]="stopInterval$"
+      (refreshIntervalChange)="onUpdateInterval($event)"
+      >
+      </app-auto-refresh-dropdown>
+    
       <button
         *ngIf="isFiltered()"
         type="button"
@@ -22,12 +29,6 @@
       >
         {{ 'global.filters.clear-all-filters' | translate }}
       </button>
-
-      <app-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </app-auto-refresh-dropdown>
     </clr-dg-action-bar>
 
     <clr-dg-column
