@@ -61,11 +61,16 @@ export class GrpcSessionsService extends BaseGrpcService {
         } else if (key === 'createdAtBefore') {
           filter.createdBefore = this.createTimeFilter(value as number);
         } else if (key === 'createdAtAfter') {
-          filter.createdAfter = this.createTimeFilter(value as number);
+          // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
+          filter.createdAfter = this.createTimeFilter(
+            (value as number) + 86400000
+          );
         } else if (key === 'cancelledAtBefore') {
           filter.cancelledBefore = this.createTimeFilter(value as number);
         } else if (key === 'cancelledAtAfter') {
-          filter.cancelledAfter = this.createTimeFilter(value as number);
+          filter.cancelledAfter = this.createTimeFilter(
+            (value as number) + 86400000
+          );
         }
       }
     }

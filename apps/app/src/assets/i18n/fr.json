@@ -9,6 +9,11 @@
       "date": {
         "before": "Avant le",
         "after": "Après le"
+      },
+      "warning": {
+        "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
+        "before-date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
+        "after-date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
       }
     }
   },
