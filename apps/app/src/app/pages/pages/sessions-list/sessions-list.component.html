@@ -14,13 +14,12 @@
         {{ 'pages.sessions-list.actions.refresh' | translate }}
       </button>
 
-      
       <app-auto-refresh-dropdown
-      [manualStop$]="stopInterval$"
-      (refreshIntervalChange)="onUpdateInterval($event)"
+        [manualStop$]="stopInterval$"
+        (refreshIntervalChange)="onUpdateInterval($event)"
       >
       </app-auto-refresh-dropdown>
-    
+
       <button
         *ngIf="isFiltered()"
         type="button"
