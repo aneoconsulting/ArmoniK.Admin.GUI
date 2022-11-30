@@ -139,7 +139,7 @@ export class GrpcSessionsService extends BaseGrpcService {
 
   private createTimeFilter(value: number): TimeFilter {
     return {
-      nano: 0,
+      nanos: 0,
       seconds: (value / 1000).toString(),
     };
   }

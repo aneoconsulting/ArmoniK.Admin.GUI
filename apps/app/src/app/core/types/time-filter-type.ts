@@ -1,4 +1,4 @@
 export type TimeFilter = {
-  nano: number;
+  nanos: number;
   seconds: string;
 };
