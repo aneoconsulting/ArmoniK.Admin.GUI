@@ -6,6 +6,7 @@ import {
   ListResultsResponse,
 } from '../../types/proto/results-common.pb';
 import { ResultsClient } from '../../types/proto/results-service.pbsc';
+import { ResultFilter } from '../../types/result-filter.type';
 import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
@@ -17,7 +18,8 @@ export class GrpcResultsService extends BaseGrpcService {
   public list$(
     params: GrpcParams<
       ListResultsRequest.OrderByField,
-      ListResultsRequest.OrderDirection
+      ListResultsRequest.OrderDirection,
+      ResultFilter
     >
   ): Observable<ListResultsResponse> {
     const options = new ListResultsRequest({

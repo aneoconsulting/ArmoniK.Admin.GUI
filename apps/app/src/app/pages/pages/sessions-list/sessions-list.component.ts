@@ -63,9 +63,9 @@ export class SessionsListComponent implements OnInit {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-      const params = this._grpcPagerService.createParams(state);
+      const urlParams = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
-        queryParams: params,
+        queryParams: urlParams,
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -215,7 +215,7 @@ export class SessionsListComponent implements OnInit {
    */
   public queryParam$(param: string): Observable<number> {
     return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
+      map((urlParams) => urlParams.get(param)),
       map((value) => Number(value)),
       distinctUntilChanged()
     );
@@ -230,7 +230,7 @@ export class SessionsListComponent implements OnInit {
    */
   public queryStringParam$(param: string): Observable<string> {
     return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
+      map((urlParams) => urlParams.get(param)),
       map((value) => (value !== null ? value : '')),
       distinctUntilChanged()
     );
@@ -245,20 +245,18 @@ export class SessionsListComponent implements OnInit {
    */
   public queryDateParam$(param: string): Observable<Date | null> {
     return this._activatedRoute.queryParamMap.pipe(
-      map((params) => {
-        return params.get(param);
-      }),
+      map((urlParams) => urlParams.get(param)),
       map((value) => {
         if (!value) {
           return null;
         }
 
-        const param = Number(value);
-        if (isNaN(param)) {
+        const numberDate = Number(value);
+        if (isNaN(numberDate)) {
           return null;
         }
 
-        return new Date(param);
+        return new Date(numberDate);
       }),
       distinctUntilChanged()
     );
@@ -288,8 +286,9 @@ export class SessionsListComponent implements OnInit {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    const params = this._grpcPagerService.createParams(this._restoreState());
-    return this._grpcSessionsService.list$(params).pipe(
+    const urlParams = this._grpcPagerService.createParams(this._restoreState());
+    const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
+    return this._grpcSessionsService.list$(grpcParams).pipe(
       catchError((error: Error) => {
         console.error(error);
         this._stopInterval.next();

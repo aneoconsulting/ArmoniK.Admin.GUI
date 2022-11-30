@@ -10,6 +10,7 @@ import {
   ListTasksResponse,
 } from '../../types/proto/tasks-common.pb';
 import { TasksClient } from '../../types/proto/tasks-service.pbsc';
+import { TaskFilter } from '../../types/task-filter.type';
 import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
@@ -21,7 +22,8 @@ export class GrpcTasksService extends BaseGrpcService {
   public list$(
     params: GrpcParams<
       ListTasksRequest.OrderByField,
-      ListTasksRequest.OrderDirection
+      ListTasksRequest.OrderDirection,
+      TaskFilter
     >
   ): Observable<ListTasksResponse> {
     const options = new ListTasksRequest({

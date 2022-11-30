@@ -11,13 +11,78 @@ import {
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 import { SessionFilter } from '../../types/session-filter.type';
-import { SessionPageFilter } from '../../types/session-string-filter.type';
 import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
 export class GrpcSessionsService extends BaseGrpcService {
   constructor(private _sessionsClient: SessionsClient) {
     super();
+  }
+
+  /**
+   * Transform an urlParams into a real GrpcParams object designed for retrieving session data
+   *
+   * @param urlParams Record<string, string | number>
+   * @returns GrpcParams<
+   *            ListSessionsRequest.OrderByField,
+   *            ListSessionsRequest.OrderDirection,
+   *             SessionFilter
+   *          >
+   */
+  public urlToGrpcParams(
+    urlParams: Record<string, string | number>
+  ): GrpcParams<
+    ListSessionsRequest.OrderByField,
+    ListSessionsRequest.OrderDirection,
+    SessionFilter
+  > {
+    const grpcParams: GrpcParams<
+      ListSessionsRequest.OrderByField,
+      ListSessionsRequest.OrderDirection,
+      SessionFilter
+    > = {};
+    const filter: SessionFilter = {};
+
+    for (const [key, value] of Object.entries(urlParams)) {
+      if (key === 'page') {
+        grpcParams.page = value as number;
+      } else if (key === 'pageSize') {
+        grpcParams.pageSize = value as number;
+      } else if (key === 'order') {
+        grpcParams.order = value as number;
+      } else if (key === 'orderBy') {
+        grpcParams.orderBy = value as number;
+      } else {
+        if (key === 'sessionId') {
+          filter.sessionId = value as string;
+        } else if (key === 'status') {
+          filter.status = value as number;
+        } else if (key === 'createdAtBefore') {
+          filter.createdBefore = {
+            nano: 0,
+            seconds: ((value as number) / 1000).toString(),
+          };
+        } else if (key === 'createdAtAfter') {
+          filter.createdAfter = {
+            nano: 0,
+            seconds: ((value as number) / 1000).toString(),
+          };
+        } else if (key === 'cancelledAtBefore') {
+          filter.cancelledBefore = {
+            nano: 0,
+            seconds: ((value as number) / 1000).toString(),
+          };
+        } else if (key === 'cancelledAtAfter') {
+          filter.cancelledAfter = {
+            nano: 0,
+            seconds: ((value as number) / 1000).toString(),
+          };
+        }
+      }
+    }
+
+    grpcParams.filter = filter;
+    return grpcParams;
   }
 
   /**
@@ -30,10 +95,10 @@ export class GrpcSessionsService extends BaseGrpcService {
   public list$(
     params: GrpcParams<
       ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection
+      ListSessionsRequest.OrderDirection,
+      SessionFilter
     >
   ): Observable<ListSessionsResponse> {
-    const filter = this.createFilter(params);
     const options = new ListSessionsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
@@ -45,61 +110,11 @@ export class GrpcSessionsService extends BaseGrpcService {
           params.order ||
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {
-        ...filter,
-      },
+      filter: params.filter,
     });
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));
-  }
-
-  /**
-   * Create a filter that can be passed to the ListSessionsResponse object.
-   *
-   * @param params
-   * @returns SessionFilter
-   */
-  createFilter(
-    params: GrpcParams<
-      ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection
-    >
-  ): SessionFilter {
-    const filter: SessionFilter = {};
-    const paramsFilter = params as SessionPageFilter; // Transform the params in order to have all required properties
-
-    if (paramsFilter.sessionId) {
-      filter.sessionId = paramsFilter.sessionId;
-    }
-    if (paramsFilter.status) {
-      filter.status = paramsFilter.status;
-    }
-    if (paramsFilter.createdAtBefore) {
-      filter.createdBefore = {
-        nano: 0,
-        seconds: (paramsFilter.createdAtBefore / 1000).toString(),
-      };
-    }
-    if (paramsFilter.createdAtAfter) {
-      filter.createdAfter = {
-        nano: 0,
-        seconds: (paramsFilter.createdAtAfter / 1000).toString(),
-      };
-    }
-    if (paramsFilter.cancelledAtBefore) {
-      filter.cancelledBefore = {
-        nano: 0,
-        seconds: (paramsFilter.cancelledAtBefore / 1000).toString(),
-      };
-    }
-    if (paramsFilter.cancelledAtAfter) {
-      filter.cancelledAfter = {
-        nano: 0,
-        seconds: (paramsFilter.cancelledAtAfter / 1000).toString(),
-      };
-    }
-    return filter;
   }
 
   /**
