@@ -10,7 +10,7 @@ import { ClrDatagridFilterInterface } from '@clr/angular';
 export class SessionsStatusFilterComponent
   implements ClrDatagridFilterInterface<number>, OnInit
 {
-  @Output() changes = new EventEmitter();
+  @Output() changes = new EventEmitter<never>();
 
   @Input() selectedValue = 0;
   @Input() name = '';

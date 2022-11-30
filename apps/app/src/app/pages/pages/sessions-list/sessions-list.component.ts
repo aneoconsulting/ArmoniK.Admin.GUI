@@ -226,7 +226,7 @@ export class SessionsListComponent implements OnInit {
    *
    * @param param
    *
-   * @returns Observable<number>
+   * @returns Observable<string>
    */
   public queryStringParam$(param: string): Observable<string> {
     return this._activatedRoute.queryParamMap.pipe(
@@ -334,7 +334,7 @@ export class SessionsListComponent implements OnInit {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters() {
-    this._state.filters = [];
+    delete this._state.filters;
     this.refreshSessions(this._state);
   }
 }

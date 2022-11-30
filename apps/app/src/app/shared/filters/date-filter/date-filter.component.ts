@@ -7,7 +7,7 @@ import { ClrDatagridFilterInterface } from '@clr/angular';
   styleUrls: ['./date-filter.component.scss'],
 })
 export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
-  @Output() changes = new EventEmitter();
+  @Output() changes = new EventEmitter<never>();
 
   @Input() name = '';
   @Input() beforeDate: Date | null = null;

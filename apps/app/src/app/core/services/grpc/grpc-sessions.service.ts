@@ -11,6 +11,7 @@ import {
 } from '../../types/proto/sessions-common.pb';
 import { SessionsClient } from '../../types/proto/sessions-service.pbsc';
 import { SessionFilter } from '../../types/session-filter.type';
+import { TimeFilter } from '../../types/time-filter-type';
 import { BaseGrpcService } from './base-grpc.service';
 
 @Injectable()
@@ -58,29 +59,16 @@ export class GrpcSessionsService extends BaseGrpcService {
         } else if (key === 'status') {
           filter.status = value as number;
         } else if (key === 'createdAtBefore') {
-          filter.createdBefore = {
-            nano: 0,
-            seconds: ((value as number) / 1000).toString(),
-          };
+          filter.createdBefore = this.createTimeFilter(value as number);
         } else if (key === 'createdAtAfter') {
-          filter.createdAfter = {
-            nano: 0,
-            seconds: ((value as number) / 1000).toString(),
-          };
+          filter.createdAfter = this.createTimeFilter(value as number);
         } else if (key === 'cancelledAtBefore') {
-          filter.cancelledBefore = {
-            nano: 0,
-            seconds: ((value as number) / 1000).toString(),
-          };
+          filter.cancelledBefore = this.createTimeFilter(value as number);
         } else if (key === 'cancelledAtAfter') {
-          filter.cancelledAfter = {
-            nano: 0,
-            seconds: ((value as number) / 1000).toString(),
-          };
+          filter.cancelledAfter = this.createTimeFilter(value as number);
         }
       }
     }
-
     grpcParams.filter = filter;
     return grpcParams;
   }
@@ -147,5 +135,12 @@ export class GrpcSessionsService extends BaseGrpcService {
     });
 
     return this._sessionsClient.cancelSession(options);
+  }
+
+  private createTimeFilter(value: number): TimeFilter {
+    return {
+      nano: 0,
+      seconds: (value / 1000).toString(),
+    };
   }
 }
