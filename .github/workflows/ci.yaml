@@ -89,16 +89,6 @@ jobs:
           lcov-file: ./coverage/apps/app/lcov.info
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Coverage for Api
-        # Can't publish on push on main
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: romeovs/lcov-reporter-action@v0.3.1
-        with:
-          title: Api - Coverage
-          delete-old-comments: true
-          lcov-file: ./coverage/apps/api/lcov.info
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload Artifact (App)
         # Store report created on main
         if: ${{ github.event_name != 'pull_request' }}
@@ -106,14 +96,6 @@ jobs:
         with:
           name: coverage-apps-app
           path: ./coverage/apps/app/
-
-      - name: Upload Artifact (Api)
-        # Store report created on main
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-apps-api
-          path: ./coverage/apps/api/
 
   e2e-tests:
     needs: validate-code
@@ -161,7 +143,6 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           install-command: npx cypress install
-          start: 'npx nx serve api'
           command: npx nx e2e app-e2e
 
       - uses: actions/upload-artifact@v3
@@ -213,8 +194,7 @@ jobs:
         dockerfile:
           - name: armonik_admin_app
             file: app.Dockerfile
-          - name: armonik_admin_api
-            file: api.Dockerfile
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
