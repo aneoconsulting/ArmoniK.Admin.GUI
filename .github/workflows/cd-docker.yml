@@ -3,9 +3,9 @@ name: CD Docker
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   docker:
@@ -30,6 +30,10 @@ jobs:
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
