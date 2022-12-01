@@ -1,0 +1,211 @@
+/**
+ * Messages describing tasks and associated requests and responses.
+ */
+syntax = "proto3";
+
+package armonik.api.grpc.v1.tasks;
+
+import "google/protobuf/timestamp.proto";
+import "objects.proto";
+import "task_status.proto";
+
+option csharp_namespace = "ArmoniK.Api.gRPC.V1.Tasks";
+
+/**
+ * A raw task object.
+ *
+ * Used when a single task is returned.
+ */
+message TaskRaw {
+  string id = 1; /** The task ID. */
+  string session_id = 2; /** The session ID. A task have only one related session but a session have many tasks. */
+  string owner_pod_id = 3; /** The owner pod ID. */
+
+  repeated string parent_task_ids = 4; /** The parent task IDs. A tasks can be a child of another task. */
+  repeated string data_dependencies = 5; /** The data dependencies. A task have data dependencies. */
+  repeated string expected_output_ids = 6; /** The expected output IDs. A task have expected output IDs. */
+  repeated string retry_of_ids = 7; /** The retry of IDs. When a task fail, retry will use these set of IDs. */
+
+  task_status.TaskStatus status = 8; /** The task status. */
+  string status_message = 9; /** The status message. */
+
+  TaskOptions options = 10; /** The task options. */
+
+  google.protobuf.Timestamp created_at = 11; /** The task creation date. */
+  google.protobuf.Timestamp submitted_at = 12; /** The task submission date. */
+  google.protobuf.Timestamp started_at = 13; /** The task start date. */
+  google.protobuf.Timestamp ended_at = 14; /** The task end date. Also used when task failed. */
+  google.protobuf.Timestamp pod_ttl = 15; /** The pod TTL (Time To Live). */
+
+  /**
+   * Represents the task output.
+   */
+  message Output {
+    bool success = 1; /** To know if a task have failed or succeed. */
+    string error = 2; /** The error message. Only set if task have failed. */
+  }
+
+  Output output = 16; /** The task output. */
+
+  string pod_hostname = 17; /** The hostname of the container running the task. */
+  google.protobuf.Timestamp received_at = 18; /** When the task is received by the agent. */
+  google.protobuf.Timestamp acquired_at = 19; /** When the task is acquired by the agent. */
+}
+
+/**
+ * A summary task object.
+ *
+ * It contains only a subset of the fields from the underlying task object.
+ * Used when a list of tasks are returned.
+ */
+message TaskSummary {
+  string id = 1; /** The task ID. */
+  string session_id = 2; /** The session ID. A task have only one related session but a session have many tasks. */
+  TaskOptions options = 3; /** The task options. */
+  task_status.TaskStatus status = 4; /** The task status. */
+
+  google.protobuf.Timestamp created_at = 5; /** The task creation date. */
+  google.protobuf.Timestamp started_at = 6; /** The task start date. */
+  google.protobuf.Timestamp ended_at = 7; /** The task end date. Also used when task failed. */
+
+  string error = 8; /** The error message. Only set if task have failed. */
+}
+
+/**
+ * Request to list tasks.
+ *
+ * Use pagination, filtering and sorting.
+ */
+message ListTasksRequest {
+  int32 page = 1; /** The page number. Start at 0.*/
+  int32 page_size = 2; /** The page size. */
+
+  /**
+   * Represents a filter with every available fields.
+   *
+   * Every field can be used as the same time.
+   */
+  message Filter {
+    string session_id = 1; /** The session ID of related tasks. */
+    task_status.TaskStatus status = 2; /** The task status. */
+    google.protobuf.Timestamp created_after = 3; /** Use the creation date of a task to filter tasks created after the input. */
+    google.protobuf.Timestamp created_before = 4; /** Use the creation date of a task to filter tasks created before the input. */
+    google.protobuf.Timestamp started_after = 5; /** Use the start date of a task to filter tasks started after the input. */
+    google.protobuf.Timestamp started_before = 6; /** Use the start date of a task to filter tasks started before the input. */
+    google.protobuf.Timestamp ended_after = 7; /** Use the end date of a task to filter tasks ended after the input. */
+    google.protobuf.Timestamp ended_before = 8; /** Use the end date of a task to filter tasks ended before the input. */
+  }
+
+  /** The filter.
+   *
+   * Must be set for every request but can be empty.
+   */
+  Filter filter = 3;
+
+  /**
+   * Represents every available field to use in order to sort tasks.
+   */
+  enum OrderByField {
+    ORDER_BY_FIELD_UNSPECIFIED = 0; /** Unspecified. */
+    ORDER_BY_FIELD_TASK_ID = 1; /** The task ID. */
+    ORDER_BY_FIELD_SESSION_ID = 2; /** The session ID. */
+    ORDER_BY_FIELD_STATUS = 3; /** The task status. */
+    ORDER_BY_FIELD_CREATED_AT = 4; /** The task creation date. */
+    ORDER_BY_FIELD_STARTED_AT = 5; /** The task start date. */
+    ORDER_BY_FIELD_ENDED_AT = 6; /** The task end date. */
+  }
+
+  /**
+   * Represents every available order directions.
+   */
+  enum OrderDirection {
+    ORDER_DIRECTION_UNSPECIFIED = 0; /** Unspecified. Do not use. */
+    ORDER_DIRECTION_ASC = 1; /** Ascending. */
+    ORDER_DIRECTION_DESC = 2; /** Descending. */
+  }
+
+  /**
+   * Represents the sort object.
+   */
+  message Sort {
+    OrderByField field = 1; /** The field to order by. */
+    OrderDirection direction = 2; /** The order direction. */
+  }
+
+  /** The sort.
+   *
+   * Must be set for every request.
+   */
+  Sort sort = 4;
+
+  // Request error message in case of error in task
+  bool with_errors = 5;
+}
+
+/**
+ * Response to list tasks.
+ *
+ * Use pagination, filtering and sorting from the request.
+ * Return a list of formated tasks.
+ */
+message ListTasksResponse {
+  repeated TaskSummary tasks = 1; /** The list of tasks. */
+
+  int32 page = 2; /** The page number. Start at 0. */
+  int32 page_size = 3; /** The page size. */
+  int32 total = 4; /** The total number of tasks. */
+}
+
+/**
+ * Request for getting a single task.
+ */
+message GetTaskRequest {
+  string task_id = 1; /** The task ID. */
+}
+
+/**
+ * Response for getting a single task.
+ *
+ * Return a raw task.
+ */
+message GetTaskResponse {
+  TaskRaw task = 1; /** The task. */
+}
+
+/**
+ * Request to cancel one or many tasks
+ */
+message CancelTasksRequest {
+  // Ids of the tasks to cancel
+  repeated string task_ids = 1;
+}
+
+/**
+ * Response from canceling one or many tasks
+ */
+message CancelTasksResponse {
+  // Tasks that have been asked to cancel
+  repeated TaskSummary tasks = 1;
+}
+
+/*
+*  Request for getting result ids of tasks ids.
+*/
+message GetResultIdsRequest {
+  repeated string task_id = 1; /** The task IDs. */
+}
+
+/*
+* Response for getting result ids of tasks ids.
+*/
+message GetResultIdsResponse {
+  /**
+   * Represents a task result.
+  */
+  message MapTaskResult {
+    string task_id = 1; /** The task ID. */
+    repeated string result_ids = 2; /** The result IDs. */
+  }
+
+  repeated MapTaskResult task_results = 1; /** The task results. */
+}

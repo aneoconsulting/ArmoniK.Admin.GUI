@@ -1,22 +1,15 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../../../shared';
-import {
-  ApplicationCardComponent,
-  ApplicationsErrorsListComponent,
-} from './components';
+import { TranslateModule } from '@ngx-translate/core';
+import { ApplicationCardComponent } from './components';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { DashboardComponent } from './dashboard.component';
+import { DashboardComponent } from './dashboard.page';
 
 /**
  * Dashboard page
  */
 @NgModule({
-  declarations: [
-    DashboardComponent,
-    ApplicationCardComponent,
-    ApplicationsErrorsListComponent,
-  ],
-  imports: [SharedModule, DashboardRoutingModule],
+  declarations: [DashboardComponent, ApplicationCardComponent],
+  imports: [TranslateModule, DashboardRoutingModule],
 })
 export class DashboardModule {}

@@ -1,8 +1,13 @@
+export { ResultStatus } from './lib/proto/generated/result-status.pb';
 export {
+  GetOwnerTaskIdRequest,
+  GetOwnerTaskIdResponse,
   ListResultsRequest,
   ListResultsResponse,
-} from './lib/shared-util/proto/generated/results-common.pb';
-export { ResultsClient } from './lib/shared-util/proto/generated/results-service.pbsc';
+  ResultRaw,
+} from './lib/proto/generated/results-common.pb';
+export { ResultsClient } from './lib/proto/generated/results-service.pbsc';
+export { SessionStatus } from './lib/proto/generated/session-status.pb';
 export {
   CancelSessionRequest,
   CancelSessionResponse,
@@ -10,8 +15,9 @@ export {
   GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
-} from './lib/shared-util/proto/generated/sessions-common.pb';
-export { SessionsClient } from './lib/shared-util/proto/generated/sessions-service.pbsc';
+} from './lib/proto/generated/sessions-common.pb';
+export { SessionsClient } from './lib/proto/generated/sessions-service.pbsc';
+export { TaskStatus } from './lib/proto/generated/task-status.pb';
 export {
   CancelTasksRequest,
   CancelTasksResponse,
@@ -23,7 +29,7 @@ export {
   ListTasksResponse,
   TaskRaw,
   TaskSummary,
-} from './lib/shared-util/proto/generated/tasks-common.pb';
-export { TasksClient } from './lib/shared-util/proto/generated/tasks-service.pbsc';
-export { BaseGrpcService } from './lib/shared-util/services';
-export { GrpcParams } from './lib/shared-util/types';
+} from './lib/proto/generated/tasks-common.pb';
+export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
+export { BaseGrpcService, GrpcPagerService } from './lib/services';
+export { GrpcParams } from './lib/types';

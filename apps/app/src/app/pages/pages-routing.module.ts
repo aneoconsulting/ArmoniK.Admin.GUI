@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PagesComponent } from './pages.component';
-import { ErrorComponent } from './pages/error/error.component';
 
 const routes: Routes = [
   {
@@ -18,39 +17,25 @@ const routes: Routes = [
           ),
       },
       {
-        path: 'applications',
-        loadChildren: () =>
-          import('./pages/sessions/sessions.module').then(
-            (m) => m.SessionsModule
-          ),
-      },
-      {
         path: 'sessions',
         loadChildren: () =>
-          import('./pages/sessions-list/sessions-list.module').then(
-            (m) => m.SessionsListModule
-          ),
+          import(
+            './pages/sessions/features/sessions-list/sessions-list.module'
+          ).then((m) => m.SessionsListModule),
       },
       {
         path: 'tasks',
         loadChildren: () =>
-          import('./pages/tasks-list/tasks-list.module').then(
+          import('./pages/tasks/features/tasks-list/tasks-list.module').then(
             (m) => m.TasksListModule
           ),
       },
       {
         path: 'results',
         loadChildren: () =>
-          import('./pages/results-list/results-list.module').then(
-            (m) => m.ResultsListModule
-          ),
-      },
-      {
-        path: 'errors',
-        loadChildren: () =>
-          import('./pages/tasks-errors-list/tasks-errors-list.module').then(
-            (m) => m.TasksErrorsListModule
-          ),
+          import(
+            './pages/results/features/results-list/results-list.module'
+          ).then((m) => m.ResultsListModule),
       },
       {
         path: 'how-to-use',
@@ -61,7 +46,10 @@ const routes: Routes = [
       },
       {
         path: 'error',
-        component: ErrorComponent,
+        loadChildren: () =>
+          import(
+            './pages/error/features/error-detail/error-detail.module'
+          ).then((m) => m.ErrorDetailModule),
       },
     ],
   },

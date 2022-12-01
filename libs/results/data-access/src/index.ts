@@ -1,1 +1,1 @@
-export { GrpcResultsService } from './lib/results-data-access/grpc-results.service';
+export { GrpcResultsService } from './lib/services/grpc-results.service';

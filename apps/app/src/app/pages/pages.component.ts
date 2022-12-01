@@ -32,11 +32,6 @@ export class PagesComponent implements OnInit {
       label: this.languageService.instant('navigation.results'),
       shape: 'certificate',
     },
-    {
-      path: ['/', 'errors'],
-      label: this.languageService.instant('navigation.errors'),
-      shape: 'error-standard',
-    },
   ];
 
   constructor(

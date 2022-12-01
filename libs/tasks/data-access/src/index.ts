@@ -1,1 +1,1 @@
-export { GrpcTasksService } from './lib/tasks-data-access/grpc-tasks.service';
+export { GrpcTasksService } from './lib/services/grpc-tasks.service';

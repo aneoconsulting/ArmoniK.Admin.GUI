@@ -17,14 +17,14 @@
   }
 }
 
-app-pages-languages-selector {
+app-layouts-the-languages-selector {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
-app-pages-applications-subnav {
+app-layouts-the-applications-subnav {
   width: 100%;
 }
 
@@ -43,7 +43,7 @@ app-pages-applications-subnav {
   position: relative;
 }
 
-app-pages-modal-favorites {
+app-layouts-the-favorites-modal {
   position: absolute;
   top: 1rem;
   right: 0.5rem;

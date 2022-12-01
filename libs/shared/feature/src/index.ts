@@ -1,1 +1,4 @@
-export * from './lib/shared-feature/shared-feature.component';
+export {
+  AutoRefreshDropdownComponent,
+  DisabledIntervalValue,
+} from './lib/auto-refresh-dropdown/auto-refresh-dropdown.component';
