@@ -1,0 +1,27 @@
+{
+  "name": "sessions-feature",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/sessions/feature/src",
+  "prefix": "armonik.admin.gui",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/sessions/feature/src/test.ts",
+        "tsConfig": "libs/sessions/feature/tsconfig.spec.json",
+        "karmaConfig": "libs/sessions/feature/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/sessions/feature/**/*.ts",
+          "libs/sessions/feature/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

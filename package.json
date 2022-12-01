@@ -4,19 +4,20 @@
   "license": "MIT",
   "scripts": {
     "ng": "nx",
-    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
-    "start": "nx run-many --target=serve --all",
-    "build": "nx run-many --target=build --all",
-    "test": "nx run-many --target=test --all",
-    "e2e": "nx run-many --target=e2e --all",
-    "e2e:watch": "nx run-many --target=e2e --all --watch",
+    "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main && yarn proto:generate",
+    "start": "yarn proto:generate && nx run-many --target=serve --all",
+    "build": "yarn proto:generate && nx run-many --target=build --all",
+    "test": "yarn proto:generate && nx run-many --target=test --all",
+    "e2e": "yarn proto:generate && nx run-many --target=e2e --all",
+    "e2e:watch": "yarn proto:generate && nx run-many --target=e2e --all --watch",
     "format": "nx format --base=main",
     "format:check": "nx format:check --base=main",
     "lint": "nx run-many --target=lint --all",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
-    "proto:generate": "protoc --plugin=protoc-gen-ng=$(which protoc-gen-ng) --ng_out=./apps/app/src/app/core/types/proto -I ./apps/app/src/assets/ArmoniK.Api/Protos/V1 ./apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto",
-    "proto:generate:win": "for /f %G in ('dir /b .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1\\*.proto') do grpc_tools_node_protoc --plugin=protoc-gen-ng=.\\node_modules\\.bin\\protoc-gen-ng.cmd --ng_out=.\\apps\\app\\src\\app\\core\\types\\proto -I .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1 .\\apps\\app\\src\\assets\\ArmoniK.Api\\Protos\\V1\\%G"
+    "proto:generate": "node ./scripts/generate-proto.mjs",
+    "proto:generate:linux": "protoc --plugin=protoc-gen-ng=$(which protoc-gen-ng) --ng_out=./libs/shared/util/src/lib/shared-util/proto/generated -I ./libs/shared/util/src/lib/shared-util/proto/ArmoniK.Api/Protos/V1 ./libs/shared/util/src/lib/shared-util/proto/ArmoniK.Api/Protos/V1/*.proto",
+    "proto:generate:win": "for /f %G in ('dir /b .\\libs\\shared\\util\\src\\lib\\shared-util\\proto\\ArmoniK.Api\\Protos\\V1\\*.proto') do grpc_tools_node_protoc --plugin=protoc-gen-ng=.\\node_modules\\.bin\\protoc-gen-ng.cmd --ng_out=.\\libs\\shared\\util\\src\\lib\\shared-util\\proto\\generated -I .\\libs\\shared\\util\\src\\lib\\shared-util\\proto\\ArmoniK.Api\\Protos\\V1 .\\libs\\shared\\util\\src\\lib\\shared-util\\proto\\ArmoniK.Api\\Protos\\V1\\%G"
   },
   "private": true,
   "dependencies": {
@@ -54,7 +55,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "~7.4.0",
     "swagger-ui-express": "^4.4.0",
-    "tslib": "^2.0.0",
+    "tslib": "^2.4.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

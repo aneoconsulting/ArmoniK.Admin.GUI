@@ -1,5 +1,5 @@
 {
-  "root": "libs/armonik-typing",
+  "name": "armonik-typing",
   "sourceRoot": "libs/armonik-typing/src",
   "projectType": "library",
   "targets": {

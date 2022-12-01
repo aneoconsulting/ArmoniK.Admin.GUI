@@ -46,6 +46,8 @@ apps/api/src/database/fixtures/*
 proxy.conf.json
 apps/app/src/app/core/types/proto/*.ts
 
+libs/shared/util/src/lib/shared-util/proto/generated/*.ts
+
 .yarn/*
 !.yarn/releases
 !yarn.lock

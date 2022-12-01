@@ -1,6 +1,6 @@
 {
+  "name": "app",
   "projectType": "application",
-  "root": "apps/app",
   "sourceRoot": "apps/app/src",
   "prefix": "armonik.admin.gui",
   "targets": {

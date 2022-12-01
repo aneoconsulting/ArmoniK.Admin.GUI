@@ -1,0 +1,27 @@
+{
+  "name": "tasks-feature",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/tasks/feature/src",
+  "prefix": "armonik.admin.gui",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/tasks/feature/src/test.ts",
+        "tsConfig": "libs/tasks/feature/tsconfig.spec.json",
+        "karmaConfig": "libs/tasks/feature/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/tasks/feature/**/*.ts",
+          "libs/tasks/feature/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
