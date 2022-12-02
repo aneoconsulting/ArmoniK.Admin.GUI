@@ -73,13 +73,13 @@
   </clr-dg-column>
   <clr-dg-column clrDgField="Status" [clrDgSortOrder]="getSortOrder('Status')">
     {{ 'pages.sessions.session-detail.table.status.title' | translate }}
-    <clr-dg-filter [clrDgFilter]="taskStatusFilter">
+    <!-- <clr-dg-filter [clrDgFilter]="taskStatusFilter">
       <app-task-status-filter
         [value]="getFilterValue('status')"
         #taskStatusFilter
         name="status"
       ></app-task-status-filter>
-    </clr-dg-filter>
+    </clr-dg-filter> -->
   </clr-dg-column>
   <clr-dg-column>
     {{ 'pages.sessions.session-detail.table.actions.title' | translate }}

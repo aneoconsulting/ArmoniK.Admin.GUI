@@ -57,6 +57,15 @@
           </button>
         </clr-dropdown-menu>
       </clr-dropdown>
+
+      <button
+        *ngIf="isFiltered()"
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="clearAllFilters()"
+      >
+        {{ 'global.filters.clear-all-filters' | translate }}
+      </button>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -64,6 +73,14 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
       {{ 'pages.tasks-list.columns.task_id' | translate }}
+      <!-- <clr-dg-filter [clrDgFilter]="idFilter">
+        <app-id-filter
+          [name]="'id'"
+          [inputValue]="(queryStringParam$('id') | async) || ''"
+          #idFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter> -->
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -72,12 +89,28 @@
       "
     >
       {{ 'pages.tasks-list.columns.session_id' | translate }}
+      <!-- <clr-dg-filter [clrDgFilter]="sessionFilter">
+        <app-id-filter
+          [name]="'sessionId'"
+          [inputValue]="(queryStringParam$('sessionId') | async) || ''"
+          #sessionFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter> -->
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       {{ 'pages.tasks-list.columns.status' | translate }}
+      <clr-dg-filter [clrDgFilter]="statusFilter">
+        <app-task-status-filter
+          [name]="'status'"
+          [selectedValue]="(queryParam$('status') | async) || 0"
+          #statusFilter
+        >
+        </app-task-status-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -86,6 +119,15 @@
       "
     >
       {{ 'pages.tasks-list.columns.created_at' | translate }}
+      <!-- <clr-dg-filter [clrDgFilter]="createdDateFilter">
+        <app-date-filter
+          [name]="'createdAt'"
+          [beforeDate]="(queryDateParam$('createdAtBefore') | async) || null"
+          [afterDate]="(queryDateParam$('createdAtAfter') | async) || null"
+          #createdDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter> -->
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
@@ -94,12 +136,30 @@
       "
     >
       {{ 'pages.tasks-list.columns.started_at' | translate }}
+      <!-- <clr-dg-filter [clrDgFilter]="startedDateFilter">
+        <app-date-filter
+          [name]="'startedAt'"
+          [beforeDate]="(queryDateParam$('startedAtBefore') | async) || null"
+          [afterDate]="(queryDateParam$('startedAtAfter') | async) || null"
+          #startedDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter> -->
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
     >
       {{ 'pages.tasks-list.columns.ended_at' | translate }}
+      <!-- <clr-dg-filter [clrDgFilter]="endedDateFilter">
+        <app-date-filter
+          [name]="'endedAt'"
+          [beforeDate]="(queryDateParam$('endedAtBefore') | async) || null"
+          [afterDate]="(queryDateParam$('endedAtAfter') | async) || null"
+          #endedDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter> -->
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.tasks-list.columns.actions' | translate }}

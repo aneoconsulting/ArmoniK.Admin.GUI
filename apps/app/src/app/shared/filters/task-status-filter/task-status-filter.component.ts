@@ -11,9 +11,9 @@ export class TaskStatusFilterComponent
   implements ClrDatagridFilterInterface<TaskStatus>
 {
   @Input() name = '';
-  @Input() selection: string[] = [];
+  @Input() selectedValue = 0;
 
-  @Output() changes = new EventEmitter<boolean>(false);
+  @Output() changes = new EventEmitter<never>();
 
   // Keep only ids
   taskStatus = TaskStatus;
@@ -27,34 +27,8 @@ export class TaskStatusFilterComponent
       })),
   ];
 
-  /**
-   * Update filter
-   *
-   * @param selection
-   *
-   * @returns void
-   */
-  onSelectionChange(item: string[]): void {
-    this.selection = item;
-    this.changes.emit(true);
-  }
-
-  @Input()
-  set value(value: string | string[]) {
-    if (!value) {
-      this.selection = [];
-      return;
-    }
-
-    if (Array.isArray(value)) {
-      this.selection = value;
-    } else {
-      this.selection = [value];
-    }
-  }
-
-  get value(): string[] {
-    return this.selection;
+  get value(): number {
+    return this.selectedValue;
   }
 
   get property() {
@@ -62,14 +36,54 @@ export class TaskStatusFilterComponent
   }
 
   /**
+   * Update filter
+   *
+   * @param selection
+   *
+   * @returns void
+   */
+  onSelectionChange(): void {
+    this.changes.emit();
+  }
+
+  clear(): void {
+    this.selectedValue = 0;
+    this.changes.emit();
+  }
+
+  // @Input()
+  // set value(value: string | string[]) {
+  //   if (!value) {
+  //     this.selection = [];
+  //     return;
+  //   }
+
+  //   if (Array.isArray(value)) {
+  //     this.selection = value;
+  //   } else {
+  //     this.selection = [value];
+  //   }
+  // }
+
+  /**
+   * Use to track status in ngFor loop.
+   *
+   * @param item
+   * @returns string
+   */
+  trackByStatus(_: number, item: { value: TaskStatus; label: string }): string {
+    return item.label;
+  }
+
+  /**
    * Check if item is selected.
    *
    * @param item item to check
    */
-  isSelected(item: string): boolean {
-    return !!this.selection?.includes(item);
-    // return this.selectedValue === Number(item);
-  }
+  // isSelected(item: string): boolean {
+  //   return !!this.selection?.includes(item);
+  //   // return this.selectedValue === Number(item);
+  // }
 
   /**
    * Unused but required by the interface.
@@ -82,6 +96,6 @@ export class TaskStatusFilterComponent
    * Verify if the filter is active.
    */
   isActive(): boolean {
-    return !!this.selection?.length;
+    return this.selectedValue !== 0;
   }
 }
