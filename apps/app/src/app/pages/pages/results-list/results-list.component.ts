@@ -51,7 +51,6 @@ export class ResultsListComponent implements OnInit {
       const params = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: params,
-        queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -195,6 +194,47 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
+   * Get query params from route and return them as string
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryStringParam$(param: string): Observable<string> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((urlParams) => urlParams.get(param)),
+      map((value) => (value !== null ? value : '')),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Get query params from route and return them as Date
+   *
+   * @param param
+   *
+   * @returns Observable<Date | null>
+   */
+  public queryDateParam$(param: string): Observable<Date | null> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((urlParams) => urlParams.get(param)),
+      map((value) => {
+        if (!value) {
+          return null;
+        }
+
+        const numberDate = Number(value);
+        if (isNaN(numberDate)) {
+          return null;
+        }
+
+        return new Date(numberDate);
+      }),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
    * Track by result
    *
    * @param _
@@ -230,9 +270,9 @@ export class ResultsListComponent implements OnInit {
    * @returns Observable<ListResultsResponse>
    */
   private _listResults$(): Observable<ListResultsResponse> {
-    const params = this._grpcPagerService.createParams(this._restoreState());
-
-    return this._grpcResultsService.list$(params).pipe(
+    const urlParams = this._grpcPagerService.createParams(this._restoreState());
+    // const grpcParams = this._grpcPagerService.urlToGrpcParams(urlParams);
+    return this._grpcResultsService.list$(urlParams).pipe(
       catchError((error) => {
         console.error(error);
         this.stopInterval();
@@ -244,5 +284,22 @@ export class ResultsListComponent implements OnInit {
         this.totalResults$.next(results.total ?? 0);
       })
     );
+  }
+
+  /**
+   * Checks if any filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

@@ -14,6 +14,7 @@ import {
 } from './components';
 import { SinceDateFilterComponent, TaskStatusFilterComponent } from './filters';
 import { StatesService } from './services';
+import { ResultsStatusFilterComponent } from './filters/results-status-filter/results-status-filter.component';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { StatesService } from './services';
     SinceDateFilterComponent,
     ModalFavoritesComponent,
     AutoRefreshDropdownComponent,
+    ResultsStatusFilterComponent,
   ],
   exports: [
     AlertErrorComponent,
@@ -40,6 +42,7 @@ import { StatesService } from './services';
     AutoRefreshActivatorComponent,
     TaskStatusFilterComponent,
     SinceDateFilterComponent,
+    ResultsStatusFilterComponent,
     ModalFavoritesComponent,
     AutoRefreshDropdownComponent,
     ClarityModule,

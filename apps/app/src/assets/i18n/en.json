@@ -170,6 +170,11 @@
         "per_page": "Per page",
         "results": "{{value}} results",
         "result": "{{value}} result"
+      },
+      "filters": {
+        "status": {
+          "title": "Select a status."
+        }
       }
     },
     "dashboard": {
