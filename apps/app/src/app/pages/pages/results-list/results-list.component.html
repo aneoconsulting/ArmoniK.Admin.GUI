@@ -126,7 +126,7 @@
                 'text-danger': [
                   ResultsStatusEnum.RESULT_STATUS_ABORTED,
                   ResultsStatusEnum.RESULT_STATUS_NOTFOUND
-                ].includes(result.status)
+                ].includes(result.status ?? 0)
               }"
             >
               {{
