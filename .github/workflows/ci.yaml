@@ -97,68 +97,68 @@ jobs:
           name: coverage-apps-app
           path: ./coverage/apps/app/
 
-  e2e-tests:
-    needs: validate-code
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
+  # e2e-tests:
+  #   needs: validate-code
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #         submodules: true
 
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
+  #     - name: Use Node.js 16.x
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16.x
 
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.7.0
-        with:
-          mongodb-version: 5.0
-          mongodb-db: test
+  #     - name: Start MongoDB
+  #       uses: supercharge/mongodb-github-action@1.7.0
+  #       with:
+  #         mongodb-version: 5.0
+  #         mongodb-db: test
 
-      - name: Update fixture
-        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-update-mongo-fixtures.sh
+  #     - name: Update fixture
+  #       run: bash ${GITHUB_WORKSPACE}/scripts/e2e-update-mongo-fixtures.sh
 
-      - name: Populate MongoDB
-        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
+  #     - name: Populate MongoDB
+  #       run: bash ${GITHUB_WORKSPACE}/scripts/e2e-populate-mongo.sh
 
-      - name: Create proxy.conf.json
-        run: bash ${GITHUB_WORKSPACE}/scripts/e2e-create-proxy-conf.sh
+  #     - name: Create proxy.conf.json
+  #       run: bash ${GITHUB_WORKSPACE}/scripts/e2e-create-proxy-conf.sh
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+  #     - name: Restore Node Modules
+  #       id: node-cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
+  #     - name: Install Protoc
+  #       uses: arduino/setup-protoc@v1
 
-      - name: Build proto
-        run: yarn proto:generate
+  #     - name: Build proto
+  #       run: yarn proto:generate
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
-        with:
-          install-command: npx cypress install
-          command: npx nx e2e app-e2e
+  #     - name: Cypress run
+  #       uses: cypress-io/github-action@v4
+  #       with:
+  #         install-command: npx cypress install
+  #         command: npx nx e2e app-e2e
 
-      - uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: ./dist/cypress/apps/app-e2e/screenshots
+  #     - uses: actions/upload-artifact@v3
+  #       if: failure()
+  #       with:
+  #         name: cypress-screenshots
+  #         path: ./dist/cypress/apps/app-e2e/screenshots
 
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: cypress-videos
-          path: ./dist/cypress/apps/app-e2e/videos
+  #     - uses: actions/upload-artifact@v3
+  #       if: always()
+  #       with:
+  #         name: cypress-videos
+  #         path: ./dist/cypress/apps/app-e2e/videos
 
   build:
-    needs: [unit-tests, e2e-tests]
+    needs: [unit-tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
