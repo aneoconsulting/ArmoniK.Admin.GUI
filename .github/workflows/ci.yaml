@@ -46,9 +46,9 @@ jobs:
           main-branch-name: main
 
       - name: Check code style
-        run: npx nx format:check
+        run: yarn ng format:check
       - name: Check code quality
-        run: npx nx affected --target=lint --parallel=3
+        run: yarn ng affected --target=lint --parallel=3
 
   unit-tests:
     needs: validate-code
@@ -77,7 +77,7 @@ jobs:
         run: yarn proto:generate
 
       - name: Run Unit Tests
-        run: npx nx affected --target=test --parallel=3 --code-coverage
+        run: yarn ng affected --target=test --parallel=3 --code-coverage
 
       - name: Coverage Report (App)
         # Can't publish on push on main
@@ -143,7 +143,7 @@ jobs:
   #       uses: cypress-io/github-action@v4
   #       with:
   #         install-command: npx cypress install
-  #         command: npx nx e2e app-e2e
+  #         command: yarn ng e2e app-e2e
 
   #     - uses: actions/upload-artifact@v3
   #       if: failure()
@@ -184,7 +184,7 @@ jobs:
         run: yarn proto:generate
 
       - name: Build all
-        run: npx nx affected --target=build --parallel=3
+        run: yarn ng affected --target=build --parallel=3
 
   build-push-docker-images:
     needs: build
