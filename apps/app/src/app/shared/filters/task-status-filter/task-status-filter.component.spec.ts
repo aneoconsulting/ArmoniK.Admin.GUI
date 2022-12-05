@@ -1,4 +1,3 @@
-import { EventEmitter } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,10 +34,10 @@ describe('TaskStatusFilterComponent', () => {
   });
 
   it('should emit an event when the selection change', () => {
-    const changes = { emit: jasmine.createSpy('changes') };
-    component.changes = changes as unknown as EventEmitter<never>;
+    let testValue = false;
+    component.changes.subscribe(() => (testValue = true));
     component.onSelectionChange();
-    expect(changes.emit).toHaveBeenCalled();
+    expect(testValue).toBeTruthy();
   });
 
   it('should return the selection with "value"', () => {
