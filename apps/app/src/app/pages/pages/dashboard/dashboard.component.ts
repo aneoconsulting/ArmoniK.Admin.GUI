@@ -32,7 +32,10 @@ import {
   PagerService,
   SettingsService,
 } from '../../../core';
-import { ListApplicationsResponse } from '../../../core/types/proto/applications-common.pb';
+import {
+  ApplicationRaw,
+  ListApplicationsResponse,
+} from '../../../core/types/proto/applications-common.pb';
 import { StatesService } from '../../../shared';
 
 /**
@@ -202,8 +205,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
    *
    * @returns value
    */
-  trackByApplication(_: number, application: Application): Application['_id'] {
-    return application._id;
+  trackByApplication(_: number, application: ApplicationRaw): string {
+    return application.name + application.version;
   }
 
   /**

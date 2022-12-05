@@ -29,7 +29,6 @@ export class GrpcApplicationsService extends BaseGrpcService {
         field: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
         direction: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
       },
-      filter: {},
     });
 
     return this._applicationsService

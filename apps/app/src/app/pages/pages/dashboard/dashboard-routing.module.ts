@@ -7,9 +7,6 @@ const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
-    resolve: {
-      applications: DashboardApplicationsResolver,
-    },
   },
 ];
 

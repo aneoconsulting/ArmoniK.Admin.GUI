@@ -42,7 +42,6 @@ export class GrpcSessionsService extends BaseGrpcService {
           params.order ||
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {},
     });
 
     return this._sessionsClient

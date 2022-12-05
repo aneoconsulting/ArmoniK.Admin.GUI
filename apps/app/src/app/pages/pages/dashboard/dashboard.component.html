@@ -1,4 +1,8 @@
+<h1>{{ 'pages.dashboard.title' | translate }}</h1>
+
 <section class="applications">
+  <h2>{{ 'pages.dashboard.applications.title' | translate }}</h2>
+
   <button
     class="btn btn-sm btn-secondary"
     (click)="manualRefreshApplications()"
@@ -8,16 +12,20 @@
   </button>
 
   <div class="applications__grid clr-row">
-    <ng-container *ngIf="applications$ | async as applications; else loading">
+    <ng-container *ngIf="applications$ | async as applications">
       <ng-container
         *ngIf="
-          applications.application && applications.application.length > 0;
-          else noApplications
+          applications.application &&
+          applications.application.length > 0 &&
+          !!(loadingApplications$ | async)
         "
       >
         <div
           class="clr-col-12 clr-col-lg-4"
-          *ngFor="let application of applications.application"
+          *ngFor="
+            let application of applications.application;
+            trackBy: trackByApplication
+          "
         >
           <article class="card">
             <h3
@@ -44,23 +52,9 @@
         </div>
       </ng-container>
     </ng-container>
-    <ng-template #loading>
-      <article
-        class="card clr-col-12 clr-col-lg-4"
-        *ngFor="let index of [].constructor(pageSize)"
-      >
-        <h3 class="card-header"></h3>
-        <footer class="card-footer">
-          <a class="btn btn-sm btn-link"> </a>
-        </footer>
-      </article>
-    </ng-template>
-    <div
-      *ngIf="loadingApplications$ | async"
-      class="applications__grid__spinner"
-    >
-      <clr-spinner>{{ 'pages.dashboard.applications.loading' }}</clr-spinner>
-    </div>
+    <ng-container *ngIf="loadingApplications$ | async">
+      <ng-container *ngTemplateOutlet="loading"> </ng-container>
+    </ng-container>
   </div>
 
   <div
@@ -92,21 +86,6 @@
   </div>
 </section>
 
-<h1>{{ 'pages.dashboard.title' | translate }}</h1>
-
-<section class="applications-list">
-  <h2>{{ 'pages.dashboard.applications.title' | translate }}</h2>
-
-  <div class="clr-row">
-    <app-pages-dashboard-application-card
-      *ngFor="let application of applications; trackBy: trackByApplication"
-      [application]="application"
-      (applicationChange)="onApplicationClick($event)"
-      ngClass="clr-col-12 clr-col-lg-6"
-    ></app-pages-dashboard-application-card>
-  </div>
-</section>
-
 <section class="errors-list">
   <h2>
     {{ 'pages.dashboard.errors.title' | translate }}
@@ -123,6 +102,17 @@
   ></app-pages-dashboard-applications-errors-list>
 </section>
 
-<ng-template #noApplications>
-  <p>{{ 'pages.dashboard.applications.no_applications' | translate }}</p>
+<ng-template #loading>
+  <article
+    class="card clr-col-12 clr-col-lg-4"
+    *ngFor="let index of [].constructor(pageSize)"
+  >
+    <h3 class="card-header"></h3>
+    <footer class="card-footer">
+      <a class="btn btn-sm btn-link"> </a>
+    </footer>
+  </article>
+  <div class="applications__grid__spinner">
+    <clr-spinner>{{ 'pages.dashboard.applications.loading' }}</clr-spinner>
+  </div>
 </ng-template>
