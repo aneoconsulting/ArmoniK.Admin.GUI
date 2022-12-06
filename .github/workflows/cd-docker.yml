@@ -15,8 +15,7 @@ jobs:
         dockerfile:
           - name: armonik_admin_app
             file: app.Dockerfile
-          - name: armonik_admin_api
-            file: api.Dockerfile
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3

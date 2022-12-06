@@ -8,22 +8,7 @@ const routes: Routes = [
     path: '',
     component: PagesComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      {
-        path: 'dashboard',
-        data: { key: 'dashboard' },
-        loadChildren: () =>
-          import('./pages/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
-          ),
-      },
-      {
-        path: 'applications',
-        loadChildren: () =>
-          import('./pages/sessions/sessions.module').then(
-            (m) => m.SessionsModule
-          ),
-      },
+      { path: '', redirectTo: 'sessions', pathMatch: 'full' },
       {
         path: 'sessions',
         loadChildren: () =>
@@ -43,13 +28,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('./pages/results-list/results-list.module').then(
             (m) => m.ResultsListModule
-          ),
-      },
-      {
-        path: 'errors',
-        loadChildren: () =>
-          import('./pages/tasks-errors-list/tasks-errors-list.module').then(
-            (m) => m.TasksErrorsListModule
           ),
       },
       {

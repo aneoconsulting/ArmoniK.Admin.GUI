@@ -31,7 +31,6 @@ export class GrpcResultsService extends BaseGrpcService {
           params.order ||
           ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {},
     });
 
     return this._resultsClient
