@@ -1,1 +1,1 @@
-export { GrpcSessionsService } from './lib/sessions-data-access/grpc-sessions.service';
+export { GrpcSessionsService } from './lib/services/grpc-sessions.service';
