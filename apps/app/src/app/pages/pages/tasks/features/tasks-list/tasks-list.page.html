@@ -152,19 +152,19 @@
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="task.createdAt; else empty">
-            {{ task.createdAt.toISOString() | date: 'yyyy-MM-dd &nbsp;
+            {{ task.createdAt.toISOString() | date : 'yyyy-MM-dd &nbsp;
             HH:mm:ss.SSS' }}
           </span>
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="task.startedAt; else empty">
-            {{ task.startedAt.toISOString() | date: 'yyyy-MM-dd &nbsp;
+            {{ task.startedAt.toISOString() | date : 'yyyy-MM-dd &nbsp;
             HH:mm:ss.SSS' }}
           </span>
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="task.endedAt; else empty">
-            {{ task.endedAt.toISOString() | date: 'yyyy-MM-dd &nbsp;
+            {{ task.endedAt.toISOString() | date : 'yyyy-MM-dd &nbsp;
             HH:mm:ss.SSS' }}
           </span>
         </clr-dg-cell>
@@ -221,7 +221,7 @@
         >
         <span *ngIf="(totalTasks$ | async) ?? 0 > 1 as total">
           {{ (total > 1 ? 'pages.tasks-list.pagination.tasks' :
-          'pages.tasks-list.pagination.task' ) | translate: { value: total } }}
+          'pages.tasks-list.pagination.task' ) | translate : { value: total } }}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>

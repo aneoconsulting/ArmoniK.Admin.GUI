@@ -129,7 +129,7 @@
         </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="result.createdAt; else empty">
-            {{ result.createdAt.toISOString() | date: 'yyyy-MM-dd &nbsp;
+            {{ result.createdAt.toISOString() | date : 'yyyy-MM-dd &nbsp;
             HH:mm:ss.SSS' }}
           </span>
         </clr-dg-cell>
@@ -159,8 +159,8 @@
         >
         <span *ngIf="(totalResults$ | async) ?? 0 > 1 as total">
           {{ (total > 1 ? 'pages.results-list.pagination.results' :
-          'pages.results-list.pagination.result' ) | translate: { value: total }
-          }}
+          'pages.results-list.pagination.result' ) | translate : { value: total
+          } }}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>

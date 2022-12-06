@@ -7,15 +7,7 @@ const routes: Routes = [
     path: '',
     component: PagesComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      {
-        path: 'dashboard',
-        data: { key: 'dashboard' },
-        loadChildren: () =>
-          import('./pages/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
-          ),
-      },
+      { path: '', redirectTo: 'sessions', pathMatch: 'full' },
       {
         path: 'sessions',
         loadChildren: () =>
