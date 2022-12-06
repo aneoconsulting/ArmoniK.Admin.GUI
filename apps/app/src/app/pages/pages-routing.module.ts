@@ -11,37 +11,37 @@ const routes: Routes = [
       {
         path: 'sessions',
         loadChildren: () =>
-          import(
-            './pages/sessions/features/sessions-list/sessions-list.module'
-          ).then((m) => m.SessionsListModule),
+          import('./sessions/features/sessions-list/sessions-list.module').then(
+            (m) => m.SessionsListModule
+          ),
       },
       {
         path: 'tasks',
         loadChildren: () =>
-          import('./pages/tasks/features/tasks-list/tasks-list.module').then(
+          import('./tasks/features/tasks-list/tasks-list.module').then(
             (m) => m.TasksListModule
           ),
       },
       {
         path: 'results',
         loadChildren: () =>
-          import(
-            './pages/results/features/results-list/results-list.module'
-          ).then((m) => m.ResultsListModule),
+          import('./results/features/results-list/results-list.module').then(
+            (m) => m.ResultsListModule
+          ),
       },
       {
         path: 'how-to-use',
         loadChildren: () =>
-          import('./pages/how-to-use/how-to-use.module').then(
+          import('./how-to-use/how-to-use.module').then(
             (m) => m.HowToUseModule
           ),
       },
       {
         path: 'error',
         loadChildren: () =>
-          import(
-            './pages/error/features/error-detail/error-detail.module'
-          ).then((m) => m.ErrorDetailModule),
+          import('./error/features/error-detail/error-detail.module').then(
+            (m) => m.ErrorDetailModule
+          ),
       },
     ],
   },

@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { Application } from '@armonik.admin.gui/armonik-typing';
 import { ClrIconModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingsService } from '../../../core';
@@ -20,7 +19,7 @@ export class TheApplicationsSubnavComponent {
     private _router: Router
   ) {}
 
-  public get currentApplications(): Set<Application['_id']> {
+  public get currentApplications(): Set<string> {
     return this._settingsService.currentApplications;
   }
 
@@ -29,7 +28,7 @@ export class TheApplicationsSubnavComponent {
    *
    * @param application
    */
-  removeApplication(application: Application['_id']): void {
+  removeApplication(application: string): void {
     this._settingsService.removeCurrentApplication(application);
     this._router.navigate(['/', 'dashboard']);
   }
@@ -42,7 +41,7 @@ export class TheApplicationsSubnavComponent {
    *
    * @returns value
    */
-  trackByApplicationId(_: number, item: Application['_id']): string {
-    return `${item.applicationName}${item.applicationVersion}`;
+  trackByApplicationId(_: number, item: string): string {
+    return item;
   }
 }

@@ -9,16 +9,10 @@
   >
     <a
       class="btn btn-link nav-link"
-      [routerLink]="[
-        '/',
-        'applications',
-        current.applicationName,
-        current.applicationVersion,
-        'sessions'
-      ]"
+      [routerLink]="['/', 'applications', current, current, 'sessions']"
       routerLinkActive="active"
     >
-      {{ current.applicationName }} - {{ current.applicationVersion }}</a
+      {{ current }} - {{ current }}</a
     >
     <button
       type="button"

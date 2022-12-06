@@ -1,3 +1,4 @@
+export { ApplicationRaw } from './lib/proto/generated/applications-common.pb';
 export { ResultStatus } from './lib/proto/generated/result-status.pb';
 export {
   GetOwnerTaskIdRequest,

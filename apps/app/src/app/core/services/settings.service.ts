@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Application } from '@armonik.admin.gui/armonik-typing';
+import { ApplicationRaw } from '@armonik.admin.gui/shared/util';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class SettingsService {
   );
   seqSubject$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  currentApplications: Set<Application['_id']>;
+  currentApplications: Set<string>;
 
   constructor() {
     this.currentApplications = new Set(this.getCurrentApplicationsFromStore());
@@ -61,11 +61,11 @@ export class SettingsService {
    *
    * @param application Application to add
    */
-  addCurrentApplication(application: Application): void {
-    if (!this.hasCurrentApplication(application._id)) {
-      this.currentApplications.add(application._id);
-      this.storeCurrentApplications();
-    }
+  addCurrentApplication(application: ApplicationRaw): void {
+    // if (!this.hasCurrentApplication(application._id)) {
+    //   this.currentApplications.add(application._id);
+    //   this.storeCurrentApplications();
+    // }
   }
 
   /**
@@ -73,7 +73,7 @@ export class SettingsService {
    *
    * @param application Application to remove
    */
-  removeCurrentApplication(applicationId: Application['_id']): void {
+  removeCurrentApplication(applicationId: string): void {
     if (this.hasCurrentApplication(applicationId)) {
       this.currentApplications.delete(applicationId);
       this.storeCurrentApplications();
@@ -88,22 +88,22 @@ export class SettingsService {
    *
    * @returns True if current applications contains application, false otherwise
    */
-  private hasCurrentApplication(applicationId: Application['_id']): boolean {
-    for (const id of this.currentApplications) {
-      if (
-        id.applicationName === applicationId.applicationName &&
-        id.applicationVersion === applicationId.applicationVersion
-      ) {
-        return true;
-      }
-    }
+  private hasCurrentApplication(applicationId: string): boolean {
+    // for (const id of this.currentApplications) {
+    //   if (
+    //     id.applicationName === applicationId.applicationName &&
+    //     id.applicationVersion === applicationId.applicationVersion
+    //   ) {
+    //     return true;
+    //   }
+    // }
     return false;
   }
 
   /**
    * Get current applications from local storage
    */
-  private getCurrentApplicationsFromStore(): Application['_id'][] {
+  private getCurrentApplicationsFromStore(): string[] {
     const data = localStorage.getItem('currentApplications');
 
     if (data) return JSON.parse(data);
