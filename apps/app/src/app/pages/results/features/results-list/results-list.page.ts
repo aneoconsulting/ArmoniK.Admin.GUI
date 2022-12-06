@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import {
   GrpcPagerService,
   ListResultsRequest,
@@ -14,7 +15,6 @@ import {
   catchError,
   concatMap,
   distinctUntilChanged,
-  interval,
   map,
   merge,
   Observable,
@@ -23,12 +23,9 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../../core';
+import { BrowserTitleService, LanguageService } from '../../../../core';
 
 @Component({
   selector: 'app-pages-results-list',
@@ -41,8 +38,9 @@ export class ResultsListComponent implements OnInit {
 
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _subjectInterval = new BehaviorSubject<number>(this.initialInterval);
-  private _subjectStopInterval = new Subject<void>();
+  private _intervalValue = new Subject<number>();
+  private _stopInterval = new Subject<void>();
+  public stopInterval$ = this._stopInterval.asObservable();
 
   /** Triggers to reload data */
   private _triggerManual$ = this._subjectManual.asObservable();
@@ -58,13 +56,11 @@ export class ResultsListComponent implements OnInit {
       return state;
     })
   );
-  private _triggerInterval$ = this.subjectInterval
-    .asObservable()
-    .pipe(
-      switchMap((time) =>
-        interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
-      )
-    );
+  private _triggerInterval$ = this._intervalValue.asObservable().pipe(
+    switchMap((time) => {
+      return timer(0, time).pipe(takeUntil(this._stopInterval.asObservable()));
+    })
+  );
 
   loadingResults$ = new BehaviorSubject<boolean>(true);
   totalResults$ = new BehaviorSubject<number>(0);
@@ -83,7 +79,6 @@ export class ResultsListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
-    private _settingsService: SettingsService,
     private _grpcResultsService: GrpcResultsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
@@ -102,16 +97,13 @@ export class ResultsListComponent implements OnInit {
     return ResultStatus;
   }
 
-  public get subjectInterval() {
-    return this._subjectInterval;
-  }
+  public onUpdateInterval(value: number) {
+    this._intervalValue.next(value);
 
-  public get intervals() {
-    return this._settingsService.intervals;
-  }
-
-  public get initialInterval() {
-    return this._settingsService.initialInterval;
+    // Stop interval
+    if (value === DisabledIntervalValue) {
+      this._stopInterval.next();
+    }
   }
 
   public defaultSortOrder(
@@ -129,23 +121,6 @@ export class ResultsListComponent implements OnInit {
     if (order === -1) return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
-  }
-
-  /**
-   * Change interval
-   *
-   * @param number
-   */
-  public changeInterval(value: number): void {
-    this.subjectInterval.next(value);
-  }
-
-  /**
-   * Stop interval
-   */
-  public stopInterval(): void {
-    this.subjectInterval.next(-1);
-    this._subjectStopInterval.next();
   }
 
   /**
@@ -236,7 +211,7 @@ export class ResultsListComponent implements OnInit {
     return this._grpcResultsService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
-        this.stopInterval();
+        this._stopInterval.next();
 
         return of({} as ListResultsResponse);
       }),

@@ -114,7 +114,7 @@ export class SessionsListComponent implements OnInit {
     this._intervalValue.next(value);
 
     // Stop interval
-    if (value < DisabledIntervalValue) {
+    if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
   }

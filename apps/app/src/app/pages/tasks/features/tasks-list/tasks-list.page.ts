@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import {
   CancelTasksResponse,
   GetTaskResponse,
@@ -26,6 +27,7 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 import {
   BrowserTitleService,
@@ -45,9 +47,9 @@ export class TasksListComponent implements OnInit {
   private _subjectManual: Subject<void> = new Subject<void>();
   private _subjectDatagrid: Subject<ClrDatagridStateInterface> =
     new Subject<ClrDatagridStateInterface>();
-  private _subjectInterval: BehaviorSubject<number> =
-    new BehaviorSubject<number>(10_000);
-  private _subjectStopInterval: Subject<void> = new Subject<void>();
+  private _intervalValue = new Subject<number>();
+  private _stopInterval = new Subject<void>();
+  public stopInterval$ = this._stopInterval.asObservable();
 
   /** Triggers to reload tasks */
   private _triggerManual$: Observable<void> =
@@ -65,12 +67,14 @@ export class TasksListComponent implements OnInit {
         return state;
       })
     );
-  private _triggerInterval$: Observable<number> = this.subjectInterval
+  private _triggerInterval$: Observable<number> = this._intervalValue
     .asObservable()
     .pipe(
-      switchMap((time) =>
-        interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
-      )
+      switchMap((time) => {
+        return timer(0, time).pipe(
+          takeUntil(this._stopInterval.asObservable())
+        );
+      })
     );
 
   loadingTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
@@ -135,16 +139,13 @@ export class TasksListComponent implements OnInit {
     return this._settingsService.seqSubject$.asObservable();
   }
 
-  public get subjectInterval(): BehaviorSubject<number> {
-    return this._subjectInterval;
-  }
+  public onUpdateInterval(value: number) {
+    this._intervalValue.next(value);
 
-  public get intervals(): number[] {
-    return this._settingsService.intervals;
-  }
-
-  public get initialInterval(): number {
-    return this._settingsService.initialInterval;
+    // Stop interval
+    if (value === DisabledIntervalValue) {
+      this._stopInterval.next();
+    }
   }
 
   public generateSeqUrl(taskId: string): string {
@@ -172,23 +173,6 @@ export class TasksListComponent implements OnInit {
     if (order === -1) return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
-  }
-
-  /**
-   * Change interval
-   *
-   * @param number
-   */
-  public changeInterval(value: number): void {
-    this.subjectInterval.next(value);
-  }
-
-  /**
-   * Stop interval
-   */
-  public stopInterval(): void {
-    this.subjectInterval.next(-1);
-    this._subjectStopInterval.next();
   }
 
   /**
@@ -320,7 +304,7 @@ export class TasksListComponent implements OnInit {
     return this._grpcTasksService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
-        this.stopInterval();
+        this._stopInterval.next();
 
         return of({} as ListTasksResponse);
       }),
