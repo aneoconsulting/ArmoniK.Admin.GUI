@@ -140,7 +140,7 @@
           <span *ngIf="result.createdAt; else empty">
             {{
               result.createdAt.toISOString()
-                | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+                | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
             }}
           </span>
         </clr-dg-cell>
@@ -172,7 +172,7 @@
             (total > 1
               ? 'pages.results-list.pagination.results'
               : 'pages.results-list.pagination.result'
-            ) | translate: { value: total }
+            ) | translate : { value: total }
           }}
         </span>
       </clr-dg-pagination>

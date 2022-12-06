@@ -36,7 +36,6 @@ export class GrpcTasksService extends BaseGrpcService {
         direction:
           params.order || ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {},
     });
 
     return this._tasksClient.listTasks(options).pipe(takeUntil(this._timeout$));

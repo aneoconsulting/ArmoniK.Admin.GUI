@@ -12,11 +12,6 @@ import { HistoryService } from '../core/services/history.service';
 export class PagesComponent implements OnInit {
   links: AppNavLink[] = [
     {
-      path: ['/', 'dashboard'],
-      label: this.languageService.instant('navigation.dashboard'),
-      shape: 'home',
-    },
-    {
       path: ['/', 'sessions'],
       label: this.languageService.instant('navigation.sessions'),
       queryParams: { page: 0, pageSize: 10 },
@@ -31,11 +26,6 @@ export class PagesComponent implements OnInit {
       path: ['/', 'results'],
       label: this.languageService.instant('navigation.results'),
       shape: 'certificate',
-    },
-    {
-      path: ['/', 'errors'],
-      label: this.languageService.instant('navigation.errors'),
-      shape: 'error-standard',
     },
   ];
 

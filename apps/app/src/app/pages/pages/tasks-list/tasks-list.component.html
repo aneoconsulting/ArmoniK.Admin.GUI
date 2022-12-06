@@ -160,7 +160,7 @@
           <span *ngIf="task.createdAt; else empty">
             {{
               task.createdAt.toISOString()
-                | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+                | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
             }}
           </span>
         </clr-dg-cell>
@@ -168,7 +168,7 @@
           <span *ngIf="task.startedAt; else empty">
             {{
               task.startedAt.toISOString()
-                | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+                | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
             }}
           </span>
         </clr-dg-cell>
@@ -176,7 +176,7 @@
           <span *ngIf="task.endedAt; else empty">
             {{
               task.endedAt.toISOString()
-                | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
+                | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS'
             }}
           </span>
         </clr-dg-cell>
@@ -235,7 +235,7 @@
             (total > 1
               ? 'pages.tasks-list.pagination.tasks'
               : 'pages.tasks-list.pagination.task'
-            ) | translate: { value: total }
+            ) | translate : { value: total }
           }}
         </span>
       </clr-dg-pagination>
