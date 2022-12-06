@@ -1,7 +1,3 @@
 # sessions-data-access
 
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test sessions-data-access` to execute the unit tests.
+This library is used to access the sessions data. It should store services and store.

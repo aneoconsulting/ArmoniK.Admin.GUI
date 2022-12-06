@@ -1,7 +1,3 @@
 # shared-util
 
-This library was generated with [Nx](https://nx.dev).
-
-## Running unit tests
-
-Run `nx test shared-util` to execute the unit tests.
+This library is used to store generated proto, utils functions and types.
