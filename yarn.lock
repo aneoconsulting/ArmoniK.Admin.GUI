@@ -2427,7 +2427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grpc/grpc-js@npm:^1.6.7":
+"@grpc/grpc-js@npm:^1.7.3":
   version: 1.7.3
   resolution: "@grpc/grpc-js@npm:1.7.3"
   dependencies:
@@ -2814,7 +2814,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-grpc/common@npm:^3.0.3":
+"@ngx-grpc/common@npm:^3.1.1":
   version: 3.1.1
   resolution: "@ngx-grpc/common@npm:3.1.1"
   dependencies:
@@ -2826,7 +2826,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-grpc/core@npm:^3.0.3":
+"@ngx-grpc/core@npm:^3.1.1":
   version: 3.1.1
   resolution: "@ngx-grpc/core@npm:3.1.1"
   dependencies:
@@ -2839,7 +2839,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-grpc/grpc-web-client@npm:^3.0.3":
+"@ngx-grpc/grpc-web-client@npm:^3.1.1":
   version: 3.1.1
   resolution: "@ngx-grpc/grpc-web-client@npm:3.1.1"
   dependencies:
@@ -2854,7 +2854,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-grpc/protoc-gen-ng@npm:^3.0.3":
+"@ngx-grpc/protoc-gen-ng@npm:^3.1.1":
   version: 3.1.1
   resolution: "@ngx-grpc/protoc-gen-ng@npm:3.1.1"
   dependencies:
@@ -2867,7 +2867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-grpc/well-known-types@npm:^3.0.3":
+"@ngx-grpc/well-known-types@npm:^3.1.1":
   version: 3.1.1
   resolution: "@ngx-grpc/well-known-types@npm:3.1.1"
   dependencies:
@@ -4707,12 +4707,12 @@ __metadata:
     "@clr/ui": ^13.8.2
     "@commitlint/cli": ^16.2.3
     "@commitlint/config-conventional": ^16.2.1
-    "@grpc/grpc-js": ^1.6.7
-    "@ngx-grpc/common": ^3.0.3
-    "@ngx-grpc/core": ^3.0.3
-    "@ngx-grpc/grpc-web-client": ^3.0.3
-    "@ngx-grpc/protoc-gen-ng": ^3.0.3
-    "@ngx-grpc/well-known-types": ^3.0.3
+    "@grpc/grpc-js": ^1.7.3
+    "@ngx-grpc/common": ^3.1.1
+    "@ngx-grpc/core": ^3.1.1
+    "@ngx-grpc/grpc-web-client": ^3.1.1
+    "@ngx-grpc/protoc-gen-ng": ^3.1.1
+    "@ngx-grpc/well-known-types": ^3.1.1
     "@ngx-translate/core": ^14.0.0
     "@ngx-translate/http-loader": ^7.0.0
     "@nrwl/angular": 15.2.4
@@ -4733,8 +4733,8 @@ __metadata:
     eslint-config-prettier: 8.5.0
     eslint-plugin-cypress: ^2.12.1
     google-protobuf: ^3.21.2
-    grpc-tools: ^1.11.3
-    grpc-web: ^1.4.1
+    grpc-tools: ^1.12.3
+    grpc-web: ^1.4.2
     husky: ^7.0.4
     jasmine-core: ~3.10.0
     jasmine-spec-reporter: ~5.0.0
@@ -8236,7 +8236,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grpc-tools@npm:^1.11.3":
+"grpc-tools@npm:^1.12.3":
   version: 1.12.3
   resolution: "grpc-tools@npm:1.12.3"
   dependencies:
@@ -8248,7 +8248,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grpc-web@npm:^1.4.1":
+"grpc-web@npm:^1.4.2":
   version: 1.4.2
   resolution: "grpc-web@npm:1.4.2"
   checksum: 624bb14bb3a5bcd5354cce6b4873b90b574a32227abdc29f241b2dbc81363492f49dcbd257a47963bdd8e61a49b69303bd03087f42d939d48148b4764bf2a2e6
