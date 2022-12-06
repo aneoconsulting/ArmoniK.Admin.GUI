@@ -10,7 +10,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": ["ES2022", "dom"],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -27,14 +30,25 @@
       "@armonik.admin.gui/sessions/feature": [
         "libs/sessions/feature/src/index.ts"
       ],
-      "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
-      "@armonik.admin.gui/shared/ui": ["libs/shared/ui/src/index.ts"],
-      "@armonik.admin.gui/shared/util": ["libs/shared/util/src/index.ts"],
+      "@armonik.admin.gui/shared/feature": [
+        "libs/shared/feature/src/index.ts"
+      ],
+      "@armonik.admin.gui/shared/ui": [
+        "libs/shared/ui/src/index.ts"
+      ],
+      "@armonik.admin.gui/shared/util": [
+        "libs/shared/util/src/index.ts"
+      ],
       "@armonik.admin.gui/tasks/data-access": [
         "libs/tasks/data-access/src/index.ts"
       ],
-      "@armonik.admin.gui/tasks/feature": ["libs/tasks/feature/src/index.ts"]
+      "@armonik.admin.gui/tasks/feature": [
+        "libs/tasks/feature/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
