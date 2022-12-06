@@ -14,8 +14,11 @@ describe('TheLanguagesSelectorComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [TheLanguagesSelectorComponent],
-      imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
+      imports: [
+        TheLanguagesSelectorComponent,
+        RouterTestingModule.withRoutes([]),
+        TranslateModule.forRoot(),
+      ],
       providers: [{ provide: Window, useValue: WindowMock }],
     }).compileComponents();
   });

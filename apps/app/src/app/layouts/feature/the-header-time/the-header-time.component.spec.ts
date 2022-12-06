@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { first, take } from 'rxjs';
-import { TheTimeComponent } from './the-header-time.component';
+import { TheHeaderTimeComponent } from './the-header-time.component';
 
-describe('TheTimeComponent', () => {
-  let component: TheTimeComponent;
-  let fixture: ComponentFixture<TheTimeComponent>;
+describe('TheHeaderTimeComponent', () => {
+  let component: TheHeaderTimeComponent;
+  let fixture: ComponentFixture<TheHeaderTimeComponent>;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [TheTimeComponent],
+      imports: [TheHeaderTimeComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TheTimeComponent);
+    fixture = TestBed.createComponent(TheHeaderTimeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

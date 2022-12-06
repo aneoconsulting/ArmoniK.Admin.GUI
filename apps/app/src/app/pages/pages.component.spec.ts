@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { UiModule } from '@armonik.admin.gui/ui';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { FavoritesService, SettingsService } from '../core';
+import { FavoritesService, LanguageService, SettingsService } from '../core';
 import { HistoryService } from '../core/services/history.service';
 import { PagesComponent } from './pages.component';
 
@@ -23,7 +22,6 @@ describe('PagesComponent', () => {
         NoopAnimationsModule,
         RouterTestingModule.withRoutes([]),
         TranslateModule.forRoot(),
-        UiModule,
         ClarityModule,
       ],
       providers: [

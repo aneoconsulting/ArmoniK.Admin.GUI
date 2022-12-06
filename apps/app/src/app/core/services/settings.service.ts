@@ -1,6 +1,5 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationRaw } from '@armonik.admin.gui/shared/util';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
@@ -61,7 +60,7 @@ export class SettingsService {
    *
    * @param application Application to add
    */
-  addCurrentApplication(application: ApplicationRaw): void {
+  addCurrentApplication(application: string): void {
     // if (!this.hasCurrentApplication(application._id)) {
     //   this.currentApplications.add(application._id);
     //   this.storeCurrentApplications();

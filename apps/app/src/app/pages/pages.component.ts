@@ -13,25 +13,24 @@ export class PagesComponent implements OnInit {
   links: AppNavLink[] = [
     {
       path: ['/', 'sessions'],
-      label: this.languageService.instant('navigation.sessions'),
+      label: 'navigation.sessions',
       queryParams: { page: 0, pageSize: 10 },
       shape: 'nodes',
     },
     {
       path: ['/', 'tasks'],
-      label: this.languageService.instant('navigation.tasks'),
+      label: 'navigation.tasks',
       shape: 'node',
     },
     {
       path: ['/', 'results'],
-      label: this.languageService.instant('navigation.results'),
+      label: 'navigation.results',
       shape: 'certificate',
     },
   ];
 
   constructor(
     private _router: Router,
-    private languageService: LanguageService,
     public settingsService: SettingsService,
     public historyService: HistoryService,
     public window: Window

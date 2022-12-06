@@ -13,8 +13,11 @@ describe('AutoRefreshDropdownComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [AutoRefreshDropdownComponent],
-      imports: [TranslateModule.forRoot(), ClarityModule],
+      imports: [
+        AutoRefreshDropdownComponent,
+        TranslateModule.forRoot(),
+        ClarityModule,
+      ],
     }).compileComponents();
   });
 
