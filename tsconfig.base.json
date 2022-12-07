@@ -18,22 +18,14 @@
       "@armonik.admin.gui/results/data-access": [
         "libs/results/data-access/src/index.ts"
       ],
-      "@armonik.admin.gui/results/feature": [
-        "libs/results/feature/src/index.ts"
-      ],
       "@armonik.admin.gui/sessions/data-access": [
         "libs/sessions/data-access/src/index.ts"
       ],
-      "@armonik.admin.gui/sessions/feature": [
-        "libs/sessions/feature/src/index.ts"
-      ],
       "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
-      "@armonik.admin.gui/shared/ui": ["libs/shared/ui/src/index.ts"],
       "@armonik.admin.gui/shared/util": ["libs/shared/util/src/index.ts"],
       "@armonik.admin.gui/tasks/data-access": [
         "libs/tasks/data-access/src/index.ts"
-      ],
-      "@armonik.admin.gui/tasks/feature": ["libs/tasks/feature/src/index.ts"]
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
