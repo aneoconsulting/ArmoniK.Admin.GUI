@@ -6,7 +6,8 @@ WORKDIR /usr/src/app
 
 RUN npm install -g nx
 
-COPY package*.json ./
+COPY .yarn ./
+COPY package.json ./
 COPY yarn.lock ./
 COPY decorate-angular-cli.js ./
 
