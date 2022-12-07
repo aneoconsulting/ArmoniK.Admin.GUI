@@ -15,7 +15,7 @@ RUN yarn
 
 COPY . .
 
-RUN yarn proto:generate
+RUN npm run proto:generate:linux
 
 RUN nx build app --prod --baseHref=/admin/
 
