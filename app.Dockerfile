@@ -15,8 +15,6 @@ RUN yarn
 
 COPY . .
 
-RUN npm run proto:generate:linux
-
 RUN nx build app --prod --baseHref=/admin/
 
 FROM nginx:stable as production
