@@ -195,6 +195,10 @@ export class SessionsListComponent implements OnInit {
     this._subjectDatagrid.next(state);
   }
 
+  public onRefreshChange(value: unknown): void {
+    console.log(value, 'new');
+  }
+
   /**
    * Refresh manually sessions using new state
    *

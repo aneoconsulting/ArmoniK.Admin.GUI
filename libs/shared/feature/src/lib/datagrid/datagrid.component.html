@@ -1,0 +1,19 @@
+<clr-datagrid (clrDgRefresh)="onDatagridRefresh($event)">
+  <clr-dg-action-bar>
+    <button
+      type="button"
+      class="btn btn-sm btn-secondary"
+      (click)="onManualRefresh()"
+    >
+      {{ 'pages.sessions-list.actions.refresh' | translate }}
+    </button>
+
+    <armonik-admin-gui-auto-refresh-dropdown
+      [manualStop$]="intervalStop$"
+      (refreshIntervalChange)="onIntervalRefresh($event)"
+    >
+    </armonik-admin-gui-auto-refresh-dropdown>
+  </clr-dg-action-bar>
+  <!-- il semble qu'on ne puisse pas créer des columns dans un enfant -->
+  <!-- du coup, on doit pouvoir sortir le header pour simplifier son utilisation et la compréhension des autres datagrid -->
+</clr-datagrid>

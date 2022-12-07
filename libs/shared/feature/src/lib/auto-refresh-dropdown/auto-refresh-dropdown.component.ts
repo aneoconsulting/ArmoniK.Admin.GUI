@@ -47,8 +47,6 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
   private _manualStopSubscription: Subscription | undefined;
 
   ngOnInit(): void {
-    this.refreshIntervalChange.emit(this._initialIntervalValue);
-
     this._manualStopSubscription = this.manualStop$.subscribe(() => {
       this._disableCurrentInterval();
     });
