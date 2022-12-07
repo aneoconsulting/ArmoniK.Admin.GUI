@@ -4,13 +4,9 @@
     "app": "apps/app",
     "app-e2e": "apps/app-e2e",
     "results-data-access": "libs/results/data-access",
-    "results-feature": "libs/results/feature",
     "sessions-data-access": "libs/sessions/data-access",
-    "sessions-feature": "libs/sessions/feature",
     "shared-feature": "libs/shared/feature",
-    "shared-ui": "libs/shared/ui",
     "shared-util": "libs/shared/util",
-    "tasks-data-access": "libs/tasks/data-access",
-    "tasks-feature": "libs/tasks/feature"
+    "tasks-data-access": "libs/tasks/data-access"
   }
 }

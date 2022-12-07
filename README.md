@@ -106,6 +106,12 @@ Start the GUI
   yarn ng run-many --target=serve --all
 ```
 
+### Generate a new lib
+
+```bash
+  yarn ng g @nrwl/angular:library --unitTestRunner karma --standalone --directory=<directory-name> --importPath=@armonik.admin.gui/<directory-name>/<lib-name> <lib-name>
+```
+
 ## Contributing
 
 Contributions are always welcome!
