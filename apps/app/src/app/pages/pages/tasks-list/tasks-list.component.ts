@@ -106,6 +106,17 @@ export class TasksListComponent implements OnInit {
     false
   );
 
+  /**
+   * Filters observables.
+   * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
+   */
+  filterStatus: Observable<number[]> = this.queryListParam$('status');
+  filterTaskId: Observable<string> = this.queryStringParam$('taskId');
+  filterSessionId: Observable<string> = this.queryStringParam$('SessionId');
+  filterCreated: Observable<Date | null> = this.queryDateParam$('createdAt');
+  filterStarted: Observable<Date | null> = this.queryDateParam$('startedAt');
+  filterEnded: Observable<Date | null> = this.queryDateParam$('endedAt');
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -262,6 +273,14 @@ export class TasksListComponent implements OnInit {
     return this._activatedRoute.queryParamMap.pipe(
       map((params) => params.get(param)),
       map((value) => Number(value)),
+      distinctUntilChanged()
+    );
+  }
+
+  public queryListParam$(param: string): Observable<number[]> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((params) => params.getAll(param)),
+      map((values) => values.flatMap((v) => Number(v))),
       distinctUntilChanged()
     );
   }

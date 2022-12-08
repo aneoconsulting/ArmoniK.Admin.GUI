@@ -48,7 +48,7 @@ export class GrpcTasksService extends BaseGrpcService {
   //       } else if (key === 'sessionId') {
   //         filter.sessionId = value as string;
   //       } else if (key === 'status') {
-  //         filter.status = value as number;
+  //         filter.status = value as number[];
   //       } else if (key === 'createdAtBefore') {
   //         filter.createdBefore = this.createTimeFilter(value as number);
   //       } else if (key === 'createdAtAfter') {

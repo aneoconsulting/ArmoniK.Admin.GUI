@@ -41,9 +41,9 @@ describe('TaskStatusFilterComponent', () => {
   });
 
   it('should return the selection with "value"', () => {
-    expect(component.value).toEqual(0);
-    component.selectedValue = 5;
-    expect(component.value).toEqual(5);
+    expect(component.value).toEqual([]);
+    component.selectedValues.push(5);
+    expect(component.value).toContain(5);
   });
 
   it('should accept all', () => {
@@ -52,12 +52,11 @@ describe('TaskStatusFilterComponent', () => {
 
   describe('isActive', () => {
     it('should return true if the value is active', () => {
-      component.selectedValue = 5;
+      component.selectedValues.push(5);
       expect(component.isActive()).toBeTruthy();
     });
 
     it('should return false if the value is not active', () => {
-      component.selectedValue = 0;
       expect(component.isActive()).toBeFalsy();
     });
   });
