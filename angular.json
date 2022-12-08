@@ -1,7 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "api": "apps/api",
     "app": "apps/app",
     "app-e2e": "apps/app-e2e",
     "armonik-typing": "libs/armonik-typing",
