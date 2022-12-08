@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { of, Subscription, throwError } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { ApiService } from './api.service';
 import { SeqService } from './seq.service';
 

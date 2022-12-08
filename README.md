@@ -32,23 +32,6 @@ Go to the project directory
   yarn
 ```
 
-### Install mongoDB
-
-See the [MongoDB website](https://www.mongodb.com/docs/manual/installation/) for the installation guide.
-
-You must use version **^4.4.15**. Be careful when using pipeline in aggregation to avoid errors because of an API change with version 5.x.x.
-
-- ["$lookup with 'pipeline' may not specify 'localField' or 'foreignField'"](https://stackoverflow.com/questions/66748716/lookup-with-pipeline-may-not-specify-localfield-or-foreignfield)
-
-### Populate DB (Optional)
-
-_A local installation of [ArmoniK](https://github.com/aneoconsulting/ArmoniK) is required_
-
-1. Run sample using ArmoniK.Sample
-2. Export database using ArmoniK/tools/export-mongo.sh
-3. Move exported files to apps/api/src/database/fixtures
-4. Import database using the [MongoDB Compass](https://www.mongodb.com/docs/compass/master/install/).
-
 ### Generate types from Proto files
 
 These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK.Api` and use to request the gRPC services.
@@ -100,28 +83,9 @@ If Angular tells that the dist folder is too heavy, you can analyze the app and 
 
 Using this, you can optimize the way the dependencies are loaded and reduce initial load.
 
-### Server (Deprecated)
+### App
 
-First, you need to install [MongoDB](https://www.mongodb.com/docs/manual/installation/).
-Then, you must copy `.env.example` to `.env` and fill host, port and database name to use it locally.
-
-Example
-
-```txt
-MongoDB__Host=127.0.0.1
-MongoDB__Port=27017
-MongoDB__DatabaseName=armonik
-```
-
-And finally, you can start the server (REST API using Nest)
-
-```bash
-  yarn ng serve api
-```
-
-### App and Server
-
-Start the GUI (app and server)
+Start the GUI
 
 ```bash
   yarn ng run-many --target=serve --all
@@ -132,22 +96,6 @@ Start the GUI (app and server)
 Contributions are always welcome!
 
 See `contributing.md` for ways to get started.
-
-## Documentation
-
-For the API, you can access to Swagger UI:
-
-```bash
-  http://localhost:4200/api/_swagger
-```
-
-To access to the json file:
-
-```bash
-  http://localhost:4200/api/_swagger-json
-```
-
-This is only available in development mode.
 
 ## Running Tests
 
@@ -185,12 +133,12 @@ ArmoniK GUI is intended to work within the ArmoniK project. It is therefore not 
 
 With each push on _main_ and a _tag_, a docker image is built and sent to the docker hub of aneo. The docker image is then used within the ArmoniK project.
 
-### Docker (Deprecated for API)
+### Docker
 
 To build docker images, you need to run on linux this command
 
 ```sh
-./scripts/create-container.sh <app|api> <version>
+./scripts/create-container.sh <app> <version>
 ```
 
 This is useful to try current GUI in a local deployment of ArmoniK and avoid name mistake.
