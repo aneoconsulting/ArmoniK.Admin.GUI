@@ -106,7 +106,7 @@
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-task-status-filter
           [name]="'status'"
-          [selectedValues]="(filterStatus | async) || []"
+          [selectedValues]="(filterStatus$ | async) || []"
           #statusFilter
         >
         </app-task-status-filter>
