@@ -3,9 +3,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { FavoritesService, LanguageService, SettingsService } from '../core';
-import { HistoryService } from '../core/services/history.service';
 import { PagesComponent } from './pages.component';
+import { FavoritesService, HistoryService, SettingsService } from './util';
 
 const WindowMock = {
   location: { reload: jasmine.createSpy('reload') },

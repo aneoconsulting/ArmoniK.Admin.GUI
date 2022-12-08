@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { first, Observable } from 'rxjs';
 import { TheFavoritesModalComponent } from './the-favorites-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { FavoritesService } from '../../util';
 
 describe('TheFavoritesModalComponent', () => {
   let component: TheFavoritesModalComponent;
