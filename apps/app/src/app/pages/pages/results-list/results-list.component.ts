@@ -76,6 +76,19 @@ export class ResultsListComponent implements OnInit {
     switchMap(() => this._listResults$())
   );
 
+  /**
+   * Observable filters
+   * Permits to avoid redundant calls of queryParams function due to async pipe.
+   */
+  nameFilter$: Observable<string> = this.queryStringParam$('name');
+  taskIdFilter$: Observable<string> = this.queryStringParam$('taskId');
+  sessionIdFilter$: Observable<string> = this.queryStringParam$('sessionId');
+  statusFilter$: Observable<number> = this.queryParam$('status');
+  createdBeforeFilter$: Observable<Date | null> =
+    this.queryDateParam$('createdAtBefore');
+  createdAfterFilter$: Observable<Date | null> =
+    this.queryDateParam$('createdAtAfter');
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
