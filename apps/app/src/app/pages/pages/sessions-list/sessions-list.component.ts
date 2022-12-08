@@ -89,6 +89,21 @@ export class SessionsListComponent implements OnInit {
     switchMap(() => this._listSessions$())
   );
 
+  /**
+   * Filter observables.
+   * They permit to avoid the endless loop due to the async pipe with the functions.
+   */
+  sessionFilter$: Observable<string> = this.queryStringParam$('sessionId');
+  statusFilter$: Observable<number> = this.queryParam$('status');
+  createdBeforeFilter$: Observable<Date | null> =
+    this.queryDateParam$('createdAtBefore');
+  createdAfterFilter$: Observable<Date | null> =
+    this.queryDateParam$('createdAtAfter');
+  cancelledBeforeFilter$: Observable<Date | null> =
+    this.queryDateParam$('cancelledAtBefore');
+  cancelledAfterFilter$: Observable<Date | null> =
+    this.queryDateParam$('cancelledAtAfter');
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
