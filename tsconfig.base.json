@@ -21,10 +21,10 @@
       "@armonik.admin.gui/sessions/data-access": [
         "libs/sessions/data-access/src/index.ts"
       ],
-      "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
       "@armonik.admin.gui/shared/data-access": [
         "libs/shared/data-access/src/index.ts"
       ],
+      "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
       "@armonik.admin.gui/tasks/data-access": [
         "libs/tasks/data-access/src/index.ts"
       ]

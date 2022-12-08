@@ -5,24 +5,24 @@ import {
   ClrVerticalNavModule,
 } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { PagesRoutingModule } from './pages-routing.module';
+import { PagesComponent } from './pages.component';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {
   TheApplicationsSubnavComponent,
   TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
-  TheHeaderComponent,
   TheHeaderTimeComponent,
   TheHistoryNavigationComponent,
   TheLanguagesSelectorComponent,
-} from '../layouts';
-import { PagesRoutingModule } from './pages-routing.module';
-import { PagesComponent } from './pages.component';
+} from './feature';
+import { TheHeaderComponent } from './ui';
 
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/technology-shapes';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 
 /**
  * Load app pages

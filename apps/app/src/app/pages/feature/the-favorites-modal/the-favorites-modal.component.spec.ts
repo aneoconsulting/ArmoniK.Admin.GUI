@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FavoritesService } from '../../../core';
 import { first, Observable } from 'rxjs';
 import { TheFavoritesModalComponent } from './the-favorites-modal.component';
 import { TranslateModule } from '@ngx-translate/core';

@@ -28,7 +28,7 @@ import {
   BrowserTitleService,
   LanguageService,
   SettingsService,
-} from '../../../../core';
+} from '../../../util';
 
 @Component({
   selector: 'app-pages-results-list',

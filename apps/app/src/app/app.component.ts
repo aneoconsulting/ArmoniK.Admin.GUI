@@ -5,7 +5,7 @@ import {
   GrafanaService,
   SeqService,
   SettingsService,
-} from './core';
+} from './pages';
 
 @Component({
   selector: 'app-root',

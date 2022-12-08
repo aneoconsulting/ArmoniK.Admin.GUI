@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ClrIconModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { SettingsService } from '../../../core';
+import { SettingsService } from '../../util';
 
 @Component({
   standalone: true,

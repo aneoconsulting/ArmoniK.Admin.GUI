@@ -18,9 +18,9 @@ import {
   ClrModalModule,
 } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { BrowserTitleService, LanguageService } from '../../../../core';
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
+import { BrowserTitleService, LanguageService } from '../../../util';
 
 /**
  * Sessions list module

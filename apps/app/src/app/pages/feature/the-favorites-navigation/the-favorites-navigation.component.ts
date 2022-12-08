@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ClrIconModule, ClrVerticalNavModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { FavoritesService } from '../../../core';
+import { FavoritesService } from '../../util';
 
 @Component({
   standalone: true,

@@ -26,7 +26,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import { BrowserTitleService, LanguageService } from '../../../../core';
+import { BrowserTitleService, LanguageService } from '../../../util';
 
 @Component({
   selector: 'app-pages-sessions-list',

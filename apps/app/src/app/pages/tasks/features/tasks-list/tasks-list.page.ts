@@ -28,10 +28,10 @@ import {
   tap,
 } from 'rxjs';
 import {
-  BrowserTitleService,
   LanguageService,
   SettingsService,
-} from '../../../../core';
+  BrowserTitleService,
+} from '../../../util';
 
 @Component({
   selector: 'app-pages-tasks-list',

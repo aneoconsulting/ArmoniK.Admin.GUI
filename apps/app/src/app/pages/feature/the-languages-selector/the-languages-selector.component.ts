@@ -1,6 +1,6 @@
 import { NgFor, UpperCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Language, LanguageCode, LanguageService } from '../../../core';
+import { Language, LanguageCode, LanguageService } from '../../util';
 
 @Component({
   standalone: true,

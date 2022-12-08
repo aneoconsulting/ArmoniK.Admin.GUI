@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { Language, LanguageCode, LanguageService } from '../../../core';
+import { Language, LanguageCode, LanguageService } from '../../util';
 import { TheLanguagesSelectorComponent } from './the-languages-selector.component';
 
 const WindowMock = {

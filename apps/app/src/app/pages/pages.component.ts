@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter } from 'rxjs';
-import { AppNavLink, LanguageService, SettingsService } from '../core';
-import { HistoryService } from '../core/services/history.service';
+import { AppNavLink, HistoryService, SettingsService } from './util';
 
 @Component({
   selector: 'app-pages',

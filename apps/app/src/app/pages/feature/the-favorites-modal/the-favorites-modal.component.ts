@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ClrInputModule, ClrModalModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, first, Observable } from 'rxjs';
-import { FavoritesService } from '../../../core';
+import { FavoritesService } from '../../util';
 
 @Component({
   standalone: true,

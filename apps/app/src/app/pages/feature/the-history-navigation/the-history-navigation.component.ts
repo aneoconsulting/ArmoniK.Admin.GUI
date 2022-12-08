@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ClrVerticalNavModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { HistoryService } from '../../../core/services/history.service';
+import { HistoryService } from '../../util';
 
 @Component({
   standalone: true,
