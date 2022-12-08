@@ -9,7 +9,7 @@ import {
   ListTasksRequest,
   ListTasksResponse,
   TasksClient,
-} from '@armonik.admin.gui/shared/util';
+} from '@armonik.admin.gui/shared/data-access';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()

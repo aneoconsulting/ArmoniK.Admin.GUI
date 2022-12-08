@@ -8,7 +8,7 @@ import {
   ListTasksResponse,
   TaskStatus,
   TaskSummary,
-} from '@armonik.admin.gui/shared/util';
+} from '@armonik.admin.gui/shared/data-access';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {

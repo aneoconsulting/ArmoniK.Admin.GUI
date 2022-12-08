@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ResultsClient } from '@armonik.admin.gui/shared/util';
+import { ResultsClient } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcResultsService } from './grpc-results.service';

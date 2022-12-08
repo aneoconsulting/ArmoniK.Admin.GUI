@@ -8,7 +8,7 @@ import {
   ListSessionsRequest,
   ListSessionsResponse,
   SessionStatus,
-} from '@armonik.admin.gui/shared/util';
+} from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,

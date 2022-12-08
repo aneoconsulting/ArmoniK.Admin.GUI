@@ -7,7 +7,7 @@ import {
   ListResultsResponse,
   ResultRaw,
   ResultStatus,
-} from '@armonik.admin.gui/shared/util';
+} from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,

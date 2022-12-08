@@ -1,7 +1,7 @@
 import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/util';
+import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridModule,
   ClrDropdownModule,

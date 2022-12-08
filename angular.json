@@ -6,7 +6,7 @@
     "results-data-access": "libs/results/data-access",
     "sessions-data-access": "libs/sessions/data-access",
     "shared-feature": "libs/shared/feature",
-    "shared-util": "libs/shared/util",
+    "shared-data-access": "libs/shared/data-access",
     "tasks-data-access": "libs/tasks/data-access"
   }
 }

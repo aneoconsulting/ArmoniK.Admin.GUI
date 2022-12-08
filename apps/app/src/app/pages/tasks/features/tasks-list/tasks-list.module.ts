@@ -8,7 +8,7 @@ import {
 } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/util';
+import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import {
   ClrDatagridModule,
