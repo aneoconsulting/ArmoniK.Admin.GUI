@@ -4,7 +4,7 @@ import { Language, LanguageCode, LanguageService } from '../../util';
 
 @Component({
   standalone: true,
-  selector: 'app-layouts-the-languages-selector',
+  selector: 'app-pages-the-languages-selector',
   templateUrl: './the-languages-selector.component.html',
   styleUrls: ['./the-languages-selector.component.scss'],
   imports: [NgFor, UpperCasePipe],

@@ -8,7 +8,7 @@ import { HistoryService } from '../../util';
 
 @Component({
   standalone: true,
-  selector: 'app-layouts-the-history-navigation',
+  selector: 'app-pages-the-history-navigation',
   templateUrl: './the-history-navigation.component.html',
   styleUrls: ['./the-history-navigation.component.scss'],
   imports: [

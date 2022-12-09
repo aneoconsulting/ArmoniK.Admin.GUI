@@ -8,17 +8,17 @@
               <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
             </figure>
             &nbsp; - &nbsp;
-            <app-layouts-the-header-time></app-layouts-the-header-time>
+            <app-pages-the-header-time></app-pages-the-header-time>
           </span>
         </a>
       </div>
     </div>
     <div class="header-actions">
-      <app-layouts-the-languages-selector></app-layouts-the-languages-selector>
+      <app-pages-the-languages-selector></app-pages-the-languages-selector>
     </div>
   </clr-header>
   <div class="subnav no-scrollbar">
-    <app-layouts-the-applications-subnav></app-layouts-the-applications-subnav>
+    <app-pages-the-applications-subnav></app-pages-the-applications-subnav>
   </div>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
@@ -54,8 +54,8 @@
         >
       </ng-container>
       <div class="nav-divider"></div>
-      <app-layouts-the-favorites-navigation></app-layouts-the-favorites-navigation>
-      <app-layouts-the-history-navigation></app-layouts-the-history-navigation>
+      <app-pages-the-favorites-navigation></app-pages-the-favorites-navigation>
+      <app-pages-the-history-navigation></app-pages-the-history-navigation>
       <div class="nav-divider"></div>
       <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
         <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
@@ -67,7 +67,7 @@
     </clr-vertical-nav>
 
     <div class="content-area">
-      <app-layouts-the-favorites-modal> </app-layouts-the-favorites-modal>
+      <app-pages-the-favorites-modal> </app-pages-the-favorites-modal>
       <router-outlet></router-outlet>
     </div>
   </div>

@@ -9,7 +9,7 @@ import { FavoritesService } from '../../util';
 
 @Component({
   standalone: true,
-  selector: 'app-layouts-the-favorites-modal',
+  selector: 'app-pages-the-favorites-modal',
   templateUrl: './the-favorites-modal.component.html',
   styleUrls: ['./the-favorites-modal.component.scss'],
   imports: [

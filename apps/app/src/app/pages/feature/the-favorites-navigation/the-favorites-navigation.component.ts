@@ -8,7 +8,7 @@ import { FavoritesService } from '../../util';
 
 @Component({
   standalone: true,
-  selector: 'app-layouts-the-favorites-navigation',
+  selector: 'app-pages-the-favorites-navigation',
   templateUrl: './the-favorites-navigation.component.html',
   styleUrls: ['./the-favorites-navigation.component.scss'],
   imports: [

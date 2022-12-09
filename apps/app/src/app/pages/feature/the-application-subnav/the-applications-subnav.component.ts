@@ -7,7 +7,7 @@ import { SettingsService } from '../../util';
 
 @Component({
   standalone: true,
-  selector: 'app-layouts-the-applications-subnav',
+  selector: 'app-pages-the-applications-subnav',
   templateUrl: './the-applications-subnav.component.html',
   styleUrls: ['./the-applications-subnav.component.scss'],
   imports: [RouterModule, ClrIconModule, TranslateModule, NgIf, NgFor],

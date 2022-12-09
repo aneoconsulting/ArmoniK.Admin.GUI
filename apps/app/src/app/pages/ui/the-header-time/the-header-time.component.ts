@@ -4,7 +4,7 @@ import { map, Observable, timer } from 'rxjs';
 
 @Component({
   standalone: true,
-  selector: 'app-layouts-the-header-time',
+  selector: 'app-pages-the-header-time',
   templateUrl: './the-header-time.component.html',
   styleUrls: ['./the-header-time.component.scss'],
   imports: [NgIf, AsyncPipe, DatePipe],
