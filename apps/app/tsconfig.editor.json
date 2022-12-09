@@ -1,10 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "**/*.ts",
-    "../../libs/shared/data-access/src/lib/services/grpc-pager.service.ts",
-    "../../libs/shared/data-access/src/lib/services/grpc-pager.service.ts"
-  ],
+  "include": ["**/*.ts"],
   "compilerOptions": {
     "types": ["jest", "node"]
   }
