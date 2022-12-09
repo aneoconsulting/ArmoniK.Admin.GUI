@@ -6,7 +6,9 @@ export {
   TheHistoryNavigationComponent,
   TheLanguagesSelectorComponent,
 } from './feature';
+
 export { TheHeaderComponent } from './ui';
+
 export {
   AppNavLink,
   BrowserTitleService,
