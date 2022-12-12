@@ -6,9 +6,7 @@ It is a monorepo containing the client, the server and shared libraries.
 
 ## Tech Stack
 
-**Client:** [Angular](https://angular.io), [Clarity](https://clarity.design/)
-
-**Server:** [Nest](https://nestjs.com)
+**Client:** [Angular](https://angular.io), [Clarity](https://clarity.design/), [gRCP](https://grpc.io/)
 
 **Build System:** [Nx](https://nx.dev/)
 
@@ -34,14 +32,17 @@ Go to the project directory
 
 ### Generate types from Proto files
 
-These types are generated from the Proto files in `/apps/app/src/assets/ArmoniK.Api` and use to request the gRPC services.
+These types are generated from the Proto files in `/libs/shared/data-access/src/lib/proto/generated` and use to request the gRPC services.
 
 ```sh
-# For Linux
-yarn proto:generate
-# For Windows
-yarn proto:generate:win
+yarn generate:proto
 ```
+
+### Create proxy configuration
+
+Duplicate the file `proxy.conf.json.example` to `proxy.conf.json` and change the `<protocol>://<host>:<port>` value to the url of the ArmoniK server.
+
+This file is necessary to have access to the gRPC services and in order to be able to build the project.
 
 ### Commandes available
 
@@ -62,13 +63,27 @@ yarn lint
 
 ### App
 
-Start the app (front-end using Angular)
+Start the app
 
 ```bash
   yarn ng serve app
 ```
 
+In order to have access to data, you must alors install [ArmoniK](https://github.com/aneoconsulting/ArmoniK) and start the server.
+
 #### Analyze the app
+
+##### Graph
+
+Nx provides a graph of the dependencies between the apps and libs. It's useful to understand the architecture of the project.
+
+```bash
+  yarn ng graph
+```
+
+In fact, this project is sliced into multiple apps and libs. This allow to have a better separation of concerns and a better maintainability. Also, we can use the power of Nx to build, test and lint only the affected files and libs thanks to caching. And, thanks this architecture, work with orthers is easier.
+
+##### Bundle Analyzer
 
 If Angular tells that the dist folder is too heavy, you can analyze the app and dependencies with the following command:
 
@@ -89,6 +104,12 @@ Start the GUI
 
 ```bash
   yarn ng run-many --target=serve --all
+```
+
+### Generate a new lib
+
+```bash
+  yarn ng g @nrwl/angular:library --unitTestRunner karma --standalone --directory=<directory-name> --importPath=@armonik.admin.gui/<directory-name>/<lib-name> <lib-name>
 ```
 
 ## Contributing
@@ -142,15 +163,6 @@ To build docker images, you need to run on linux this command
 ```
 
 This is useful to try current GUI in a local deployment of ArmoniK and avoid name mistake.
-
-<!-- ## Create a release
-
-In order to be able to release quickly, some tasks are automated.
-To create a release, you need to:
-
-1. Create a release (starting with a 'v' and following [Semver](https://semver.org), e.g.: v2.4.5) using GitHub
-2. Publish the release
-3. Wait for actions to finish -->
 
 ## Authors
 

@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
 import { AppComponent } from './app.component';
-import { GrafanaService, SeqService, SettingsService } from './core';
+import { GrafanaService, SeqService, SettingsService } from './pages';
 
 describe('AppComponent', () => {
   beforeEach(async () => {

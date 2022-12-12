@@ -3,7 +3,10 @@
   "projects": {
     "app": "apps/app",
     "app-e2e": "apps/app-e2e",
-    "armonik-typing": "libs/armonik-typing",
-    "ui": "libs/ui"
+    "results-data-access": "libs/results/data-access",
+    "sessions-data-access": "libs/sessions/data-access",
+    "shared-data-access": "libs/shared/data-access",
+    "shared-feature": "libs/shared/feature",
+    "tasks-data-access": "libs/tasks/data-access"
   }
 }
