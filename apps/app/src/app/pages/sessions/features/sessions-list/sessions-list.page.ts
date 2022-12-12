@@ -69,11 +69,11 @@ export class SessionsListComponent implements OnInit {
       return state;
     })
   );
-  private _triggerInterval$ = this._intervalValue.asObservable().pipe(
-    switchMap((time) => {
-      return timer(0, time).pipe(takeUntil(this._stopInterval.asObservable()));
-    })
-  );
+  private _triggerInterval$ = this._intervalValue
+    .asObservable()
+    .pipe(
+      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
+    );
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
@@ -114,7 +114,7 @@ export class SessionsListComponent implements OnInit {
     this._intervalValue.next(value);
 
     // Stop interval
-    if (value < DisabledIntervalValue) {
+    if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
   }

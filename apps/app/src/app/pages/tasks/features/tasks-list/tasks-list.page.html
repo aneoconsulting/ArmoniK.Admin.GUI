@@ -24,35 +24,11 @@
         {{ 'pages.tasks-list.actions.refresh' | translate }}
       </button>
 
-      <clr-dropdown class="auto-refresh">
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary"
-          clrDropdownTrigger
-        >
-          {{ 'pages.tasks-list.actions.auto_refresh.button.title' | translate }}
-          <span *ngIf="subjectInterval | async as value">
-            &nbsp;-&nbsp; {{ value > 0 ? value / 1_000 + 's' :
-            ('pages.tasks-list.actions.auto_refresh.button.disabled' |
-            translate) }}
-          </span>
-
-          <clr-icon shape="caret down"></clr-icon>
-        </button>
-        <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-          <button type="button" clrDropdownItem (click)="stopInterval()">
-            {{ 'pages.tasks-list.actions.auto_refresh.disable' | translate }}
-          </button>
-          <button
-            type="button"
-            clrDropdownItem
-            *ngFor="let item of intervals; trackBy: trackByInterval"
-            (click)="changeInterval(item)"
-          >
-            {{ item / 1_000 }}s
-          </button>
-        </clr-dropdown-menu>
-      </clr-dropdown>
+      <armonik-admin-gui-auto-refresh-dropdown
+        [manualStop$]="stopInterval$"
+        (refreshIntervalChange)="onUpdateInterval($event)"
+      >
+      </armonik-admin-gui-auto-refresh-dropdown>
     </clr-dg-action-bar>
 
     <clr-dg-column
