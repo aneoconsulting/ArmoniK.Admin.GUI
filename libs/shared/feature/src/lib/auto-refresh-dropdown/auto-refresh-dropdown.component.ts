@@ -1,100 +1,83 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { AutoRefreshService } from '@armonik.admin.gui/shared/util';
 import { ClrDropdownModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 type Interval = {
   value: number;
   label: string;
 };
 
-export const DisabledIntervalValue = -1; // Use -1 to stop interval because 0 is a valid interval.
-
 @Component({
   standalone: true,
   selector: 'armonik-admin-gui-auto-refresh-dropdown',
   templateUrl: './auto-refresh-dropdown.component.html',
   styleUrls: ['./auto-refresh-dropdown.component.scss'],
-  imports: [ClrDropdownModule, TranslateModule, NgIf, NgFor, AsyncPipe],
+  imports: [
+    RouterModule,
+    ClrDropdownModule,
+    TranslateModule,
+    NgIf,
+    NgFor,
+    AsyncPipe,
+  ],
+  providers: [AutoRefreshService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
-  @Input() manualStop$ = new Observable<void>();
-  @Output() refreshIntervalChange = new EventEmitter<number>();
-
+export class AutoRefreshDropdownComponent implements OnInit {
   private _intervalsValues = [10_000, 30_000, 60_000, 120_000];
-  private _initialIntervalValue = this._intervalsValues[0];
-  private _disabledIntervalValue = DisabledIntervalValue;
-
   public intervals: Interval[] = this._intervalsValues.map((interval) => ({
     value: interval,
     label: this._formatInterval(interval),
   }));
 
-  private _currentInterval = new BehaviorSubject<Interval>(this.intervals[0]);
+  public intervalQueryParam$: Observable<string | null> | undefined;
 
-  public currentInterval$ = this._currentInterval.asObservable();
-
-  private _manualStopSubscription: Subscription | undefined;
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private _router: Router,
+    private _autoRefreshService: AutoRefreshService
+  ) {}
 
   ngOnInit(): void {
-    this.refreshIntervalChange.emit(this._initialIntervalValue);
-
-    this._manualStopSubscription = this.manualStop$.subscribe(() => {
-      this._disableCurrentInterval();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this._manualStopSubscription?.unsubscribe();
+    this.intervalQueryParam$ =
+      this._autoRefreshService.intervalQueryParam$.pipe(
+        map((interval) => (interval ? this._formatInterval(interval) : null))
+      );
   }
 
   /**
-   * Emit refresh interval.
+   * Emit refresh interval
    *
    * @param interval Interval in milliseconds
    */
-  public onIntervalChange(interval: Interval): void {
-    this._currentInterval.next(interval);
-    this.refreshIntervalChange.emit(interval.value);
+  public async onIntervalChange(interval: Interval): Promise<void> {
+    await this._updateIntervalQueryParams(interval.value);
   }
 
   /**
    * Stop interval.
    */
-  public onIntervalStop(): void {
-    this._disableCurrentInterval();
-    this.refreshIntervalChange.emit(this._disabledIntervalValue);
+  public async onIntervalStop(): Promise<void> {
+    await this._updateIntervalQueryParams(null);
   }
 
   /**
-   * Track by function for intervals.
+   * Update interval in query params.
    *
-   * @param index
-   * @param item
-   *
-   * @returns interval value
+   * @param value Interval
    */
-  public trackByInterval(index: number, interval: Interval): number {
-    return interval.value;
-  }
-
-  /**
-   * Disable current interval.
-   */
-  private _disableCurrentInterval(): void {
-    this._currentInterval.next({
-      value: this._disabledIntervalValue,
-      label: '', // Label is not used when interval is stopped
+  private async _updateIntervalQueryParams(
+    value: number | null
+  ): Promise<void> {
+    console.log('updateIntervalQueryParams', value);
+    await this._router.navigate([], {
+      relativeTo: this._activatedRoute,
+      queryParams: { interval: value },
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -114,5 +97,17 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
     }
 
     return `${seconds}s`;
+  }
+
+  /**
+   * Track by function for intervals.
+   *
+   * @param index
+   * @param item
+   *
+   * @returns interval value
+   */
+  public trackByInterval(index: number, interval: Interval): number {
+    return interval.value;
   }
 }

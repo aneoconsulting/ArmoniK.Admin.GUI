@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import {
   GetSessionResponse,
   GrpcPagerService,
@@ -9,6 +8,7 @@ import {
   ListSessionsResponse,
   SessionStatus,
 } from '@armonik.admin.gui/shared/data-access';
+import { AutoRefreshService } from '@armonik.admin.gui/shared/util';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
@@ -16,6 +16,7 @@ import {
   concatMap,
   distinctUntilChanged,
   first,
+  interval,
   map,
   merge,
   Observable,
@@ -24,7 +25,6 @@ import {
   switchMap,
   takeUntil,
   tap,
-  timer,
 } from 'rxjs';
 import { BrowserTitleService, LanguageService } from '../../../util';
 
@@ -51,9 +51,6 @@ export class SessionsListComponent implements OnInit {
   /** Get sessions */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
-  private _stopInterval = new Subject<void>();
-  public stopInterval$ = this._stopInterval.asObservable();
 
   /** Triggers to reload sessions */
   private _triggerManual$ = this._subjectManual.asObservable();
@@ -69,11 +66,17 @@ export class SessionsListComponent implements OnInit {
       return state;
     })
   );
-  private _triggerInterval$ = this._intervalValue.asObservable().pipe(
-    switchMap((time) => {
-      return timer(0, time).pipe(takeUntil(this._stopInterval.asObservable()));
-    })
-  );
+  private _triggerInterval$ =
+    this._autoRefreshService.intervalQueryParamNotNull$.pipe(
+      switchMap((time) => {
+        console.log('interval', time);
+        return interval(time).pipe(
+          takeUntil(
+            this._autoRefreshService.intervalQueryParamNull$.pipe(first())
+          )
+        );
+      })
+    );
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
@@ -93,13 +96,18 @@ export class SessionsListComponent implements OnInit {
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
     private _grpcSessionsService: GrpcSessionsService,
-    private _grpcPagerService: GrpcPagerService
+    private _grpcPagerService: GrpcPagerService,
+    private _autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
       this._languageService.instant('pages.sessions-list.title')
     );
+
+    this._activatedRoute.queryParams.subscribe((params) => {
+      console.log('params', params);
+    });
   }
 
   public get OrderByField() {
@@ -108,15 +116,6 @@ export class SessionsListComponent implements OnInit {
 
   public get SessionStatusEnum() {
     return SessionStatus;
-  }
-
-  public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
-    if (value < DisabledIntervalValue) {
-      this._stopInterval.next();
-    }
   }
 
   public defaultSortOrder(
@@ -248,7 +247,7 @@ export class SessionsListComponent implements OnInit {
     return this._grpcSessionsService.list$(params).pipe(
       catchError((error: Error) => {
         console.error(error);
-        this._stopInterval.next();
+        // this._stopInterval.next();
 
         return of({} as ListSessionsResponse);
       }),

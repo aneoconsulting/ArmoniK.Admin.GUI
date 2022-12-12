@@ -25,6 +25,7 @@
         "libs/shared/data-access/src/index.ts"
       ],
       "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
+      "@armonik.admin.gui/shared/util": ["libs/shared/util/src/index.ts"],
       "@armonik.admin.gui/tasks/data-access": [
         "libs/tasks/data-access/src/index.ts"
       ]

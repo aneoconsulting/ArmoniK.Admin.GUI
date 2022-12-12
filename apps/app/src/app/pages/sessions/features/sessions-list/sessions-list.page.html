@@ -14,10 +14,7 @@
         {{ 'pages.sessions-list.actions.refresh' | translate }}
       </button>
 
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
+      <armonik-admin-gui-auto-refresh-dropdown>
       </armonik-admin-gui-auto-refresh-dropdown>
     </clr-dg-action-bar>
 

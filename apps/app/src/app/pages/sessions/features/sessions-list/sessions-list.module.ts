@@ -21,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
 import { BrowserTitleService, LanguageService } from '../../../util';
+import { AutoRefreshService } from '@armonik.admin.gui/shared/util';
 
 /**
  * Sessions list module
@@ -48,6 +49,7 @@ import { BrowserTitleService, LanguageService } from '../../../util';
     LanguageService,
     GrpcSessionsService,
     GrpcPagerService,
+    AutoRefreshService,
   ],
 })
 export class SessionsListModule {}
