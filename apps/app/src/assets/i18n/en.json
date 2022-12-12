@@ -99,9 +99,9 @@
       "filters": {
         "status": {
           "title": "Select a status",
-          "UNSPECIFIED": "Unspecified",
-          "RUNNING": "Running",
-          "CANCELLED": "Cancelled"
+          "SESSION_STATUS_UNSPECIFIED": "Unspecified",
+          "SESSION_STATUS_RUNNING": "Running",
+          "SESSION_STATUS_CANCELLED": "Cancelled"
         }
       }
     },

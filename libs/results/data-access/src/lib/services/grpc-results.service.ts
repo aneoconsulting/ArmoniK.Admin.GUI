@@ -7,6 +7,7 @@ import {
   ResultsClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { Observable, takeUntil } from 'rxjs';
+import { ResultFilter } from '../types/result-filter.type';
 
 @Injectable()
 export class GrpcResultsService extends BaseGrpcService {

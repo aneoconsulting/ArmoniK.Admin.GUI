@@ -9,9 +9,9 @@ import {
   ListSessionsRequest,
   ListSessionsResponse,
   SessionsClient,
+  TimeFilter,
 } from '@armonik.admin.gui/shared/data-access';
-import { SessionFilter } from '../../types/session-filter.type';
-import { TimeFilter } from '../../types/time-filter-type';
+import { SessionFilter } from '../types/session-filter.type';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
