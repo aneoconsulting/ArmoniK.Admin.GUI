@@ -1,15 +1,22 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../shared';
 import {
-  ApplicationsSubnavComponent,
-  LanguagesSelectorComponent,
-  NavigationHistoryComponent,
-  TimeComponent,
-} from './components';
+  ClrIconModule,
+  ClrLayoutModule,
+  ClrVerticalNavModule,
+} from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { PagesRoutingModule } from './pages-routing.module';
 import { PagesComponent } from './pages.component';
-import { NavigationFavoritesComponent } from './pages/components';
-import { ErrorComponent } from './pages/error/error.component';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import {
+  TheApplicationsSubnavComponent,
+  TheFavoritesModalComponent,
+  TheFavoritesNavigationComponent,
+  TheHeaderTimeComponent,
+  TheHistoryNavigationComponent,
+  TheLanguagesSelectorComponent,
+} from './feature';
+import { TheHeaderComponent } from './ui';
 
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
@@ -21,16 +28,24 @@ import '@clr/icons/shapes/technology-shapes';
  * Load app pages
  */
 @NgModule({
-  declarations: [
-    PagesComponent,
-    ErrorComponent,
-    ApplicationsSubnavComponent,
-    LanguagesSelectorComponent,
-    NavigationHistoryComponent,
-    NavigationFavoritesComponent,
-    TimeComponent,
+  declarations: [PagesComponent],
+  imports: [
+    ClrLayoutModule,
+    ClrVerticalNavModule,
+    ClrIconModule,
+    TranslateModule,
+    PagesRoutingModule,
+    TheApplicationsSubnavComponent,
+    TheLanguagesSelectorComponent,
+    TheHeaderComponent,
+    TheHistoryNavigationComponent,
+    TheFavoritesNavigationComponent,
+    TheFavoritesModalComponent,
+    TheHeaderTimeComponent,
+    AsyncPipe,
+    NgFor,
+    NgIf,
   ],
-  imports: [SharedModule, PagesRoutingModule],
   providers: [
     {
       provide: Window,

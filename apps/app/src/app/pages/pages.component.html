@@ -1,17 +1,25 @@
 <clr-main-container>
-  <ui-header>
-    <a routerLink="/" branding>
-      <span class="title">
-        <figure>
-          <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
-        </figure>
-        &nbsp; - &nbsp;
-        <app-pages-time></app-pages-time>
-      </span>
-    </a>
-    <app-pages-languages-selector actions></app-pages-languages-selector>
-    <app-pages-applications-subnav subnav></app-pages-applications-subnav>
-  </ui-header>
+  <clr-header>
+    <div class="header-nav">
+      <div class="branding">
+        <a routerLink="/">
+          <span class="title">
+            <figure>
+              <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
+            </figure>
+            &nbsp; - &nbsp;
+            <app-pages-the-header-time></app-pages-the-header-time>
+          </span>
+        </a>
+      </div>
+    </div>
+    <div class="header-actions">
+      <app-pages-the-languages-selector></app-pages-the-languages-selector>
+    </div>
+  </clr-header>
+  <div class="subnav no-scrollbar">
+    <app-pages-the-applications-subnav></app-pages-the-applications-subnav>
+  </div>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
       <a
@@ -22,7 +30,7 @@
         routerLinkActive="active"
       >
         <clr-icon [attr.shape]="link.shape" clrVerticalNavIcon></clr-icon>
-        {{ link.label }}</a
+        {{ link.label | translate }}</a
       >
       <ng-container
         *ngIf="{
@@ -46,8 +54,8 @@
         >
       </ng-container>
       <div class="nav-divider"></div>
-      <app-pages-navigation-favorites></app-pages-navigation-favorites>
-      <app-pages-navigation-history></app-pages-navigation-history>
+      <app-pages-the-favorites-navigation></app-pages-the-favorites-navigation>
+      <app-pages-the-history-navigation></app-pages-the-history-navigation>
       <div class="nav-divider"></div>
       <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
         <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
@@ -59,7 +67,7 @@
     </clr-vertical-nav>
 
     <div class="content-area">
-      <app-pages-modal-favorites> </app-pages-modal-favorites>
+      <app-pages-the-favorites-modal> </app-pages-the-favorites-modal>
       <router-outlet></router-outlet>
     </div>
   </div>

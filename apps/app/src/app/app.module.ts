@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
-import { CoreModule, LanguageService, RemoveRouteReuseStrategy } from './core';
+import { LanguageService, CoreModule, RemoveRouteReuseStrategy } from './pages';
 
 /**
  * Load app data
