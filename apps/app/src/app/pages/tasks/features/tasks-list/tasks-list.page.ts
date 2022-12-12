@@ -9,6 +9,7 @@ import {
   TaskStatus,
   TaskSummary,
 } from '@armonik.admin.gui/shared/data-access';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -26,6 +27,7 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 import {
   LanguageService,
@@ -42,12 +44,11 @@ export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get tasks */
-  private _subjectManual: Subject<void> = new Subject<void>();
-  private _subjectDatagrid: Subject<ClrDatagridStateInterface> =
-    new Subject<ClrDatagridStateInterface>();
-  private _subjectInterval: BehaviorSubject<number> =
-    new BehaviorSubject<number>(10_000);
-  private _subjectStopInterval: Subject<void> = new Subject<void>();
+  private _subjectManual = new Subject<void>();
+  private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
+  private _intervalValue = new Subject<number>();
+  private _stopInterval = new Subject<void>();
+  public stopInterval$ = this._stopInterval.asObservable();
 
   /** Triggers to reload tasks */
   private _triggerManual$: Observable<void> =
@@ -65,12 +66,10 @@ export class TasksListComponent implements OnInit {
         return state;
       })
     );
-  private _triggerInterval$: Observable<number> = this.subjectInterval
+  private _triggerInterval$: Observable<number> = this._intervalValue
     .asObservable()
     .pipe(
-      switchMap((time) =>
-        interval(time).pipe(takeUntil(this._subjectStopInterval.asObservable()))
-      )
+      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
     );
 
   loadingTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
@@ -135,10 +134,6 @@ export class TasksListComponent implements OnInit {
     return this._settingsService.seqSubject$.asObservable();
   }
 
-  public get subjectInterval(): BehaviorSubject<number> {
-    return this._subjectInterval;
-  }
-
   public get intervals(): number[] {
     return this._settingsService.intervals;
   }
@@ -157,6 +152,15 @@ export class TasksListComponent implements OnInit {
     return task.status === TaskStatus.TASK_STATUS_COMPLETED;
   }
 
+  public onUpdateInterval(value: number) {
+    this._intervalValue.next(value);
+
+    // Stop interval
+    if (value === DisabledIntervalValue) {
+      this._stopInterval.next();
+    }
+  }
+
   public defaultSortOrder(
     field: ListTasksRequest.OrderByField
   ): ClrDatagridSortOrder {
@@ -172,23 +176,6 @@ export class TasksListComponent implements OnInit {
     if (order === -1) return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
-  }
-
-  /**
-   * Change interval
-   *
-   * @param number
-   */
-  public changeInterval(value: number): void {
-    this.subjectInterval.next(value);
-  }
-
-  /**
-   * Stop interval
-   */
-  public stopInterval(): void {
-    this.subjectInterval.next(-1);
-    this._subjectStopInterval.next();
   }
 
   /**
@@ -320,7 +307,7 @@ export class TasksListComponent implements OnInit {
     return this._grpcTasksService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
-        this.stopInterval();
+        this._stopInterval.next();
 
         return of({} as ListTasksResponse);
       }),
