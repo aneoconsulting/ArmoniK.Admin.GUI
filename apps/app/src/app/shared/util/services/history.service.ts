@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { Params, UrlSerializer } from '@angular/router';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 
 export type HistoryItem = {
   title: string;
@@ -23,7 +23,7 @@ export class HistoryService {
   }
 
   private get _historyValue(): Set<string> {
-    return this._history.value;
+    return this._history.getValue();
   }
 
   public get history$(): Observable<HistoryItem[]> {
