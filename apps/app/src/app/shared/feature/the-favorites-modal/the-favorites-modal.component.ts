@@ -1,10 +1,15 @@
-import { AsyncPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { ClrInputModule, ClrModalModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, first, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, filter } from 'rxjs';
 import { FavoritesService } from '../../util';
 
 @Component({
@@ -19,18 +24,44 @@ import { FavoritesService } from '../../util';
     TranslateModule,
     NgIf,
     AsyncPipe,
+    JsonPipe,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TheFavoritesModalComponent {
+export class TheFavoritesModalComponent implements OnInit, OnDestroy {
+  private _eventsSubscription: Subscription | null = null;
+
   private _modalFavoriteOpened = new BehaviorSubject<boolean>(false);
 
+  public currentFavoriteName: string | null = null;
   public favoriteName = '';
 
   constructor(
     private _router: Router,
     private _favoritesService: FavoritesService
   ) {}
+
+  ngOnInit(): void {
+    this._eventsSubscription = this._router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        )
+      )
+      .subscribe(() => {
+        console.log(
+          'TheFavoritesModalComponent.ngOnInit()',
+          this._favoritesService.get(this.currentUrl)
+        );
+        this.currentFavoriteName = this._favoritesService.get(this.currentUrl);
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this._eventsSubscription) {
+      this._eventsSubscription.unsubscribe();
+    }
+  }
 
   public get currentUrl(): string {
     return this._router.url;
@@ -43,58 +74,42 @@ export class TheFavoritesModalComponent {
   /**
    * Open the modal to add a favorite
    */
-  openModalFavorites(): void {
+  public openModalFavorites(): void {
     this._modalFavoriteOpened.next(true);
   }
 
   /**
    * Close the modal to add a favorite
    */
-  closeModalFavorites(): void {
+  public closeModalFavorites(): void {
     this._modalFavoriteOpened.next(false);
   }
 
   /**
    * Add a favorite
    */
-  addPageFavorite(): void {
+  public addPageFavorite(): void {
     this._favoritesService.add(this.currentUrl, this.favoriteName);
+    this.currentFavoriteName = this.favoriteName;
     this.closeModalFavorites();
   }
 
   /**
    * Remove a favorite
    */
-  removePageFavorite(): void {
+  public removePageFavorite(): void {
     this._favoritesService.remove(this.currentUrl);
+    this.currentFavoriteName = null;
   }
 
   /**
    * Toggle a favorite
    */
   togglePageFavorite(): void {
-    this.hasCurrentPageFavorite$()
-      .pipe(first())
-      .subscribe((has) => {
-        if (has) {
-          this.removePageFavorite();
-        } else {
-          this.openModalFavorites();
-        }
-      });
-  }
-
-  /**
-   * Check if a favorite exists
-   */
-  hasCurrentPageFavorite$(): Observable<boolean> {
-    return this._favoritesService.has$(this.currentUrl);
-  }
-
-  /**
-   * Get the favorite name
-   */
-  getFavoriteName$(): Observable<string | undefined> {
-    return this._favoritesService.get$(this.currentUrl);
+    if (this.currentFavoriteName) {
+      this.removePageFavorite();
+    } else {
+      this.openModalFavorites();
+    }
   }
 }
