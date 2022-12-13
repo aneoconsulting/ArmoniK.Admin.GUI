@@ -1,11 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SessionStatus } from '@armonik.admin.gui/shared/data-access';
-import { ClrDatagridFilterInterface } from '@clr/angular';
+import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-sessions-status-filter',
   templateUrl: './sessions-status-filter.component.html',
   styleUrls: ['./sessions-status-filter.component.scss'],
+  imports: [ClarityModule, TranslateModule, FormsModule, CommonModule],
 })
 export class SessionsStatusFilterComponent
   implements ClrDatagridFilterInterface<number>, OnInit
@@ -16,7 +21,7 @@ export class SessionsStatusFilterComponent
   @Input() name = '';
 
   sessionStatus = SessionStatus;
-  status: { value: SessionStatus; label: string }[];
+  status: { value: SessionStatus; label: string }[] = [];
 
   get property(): string {
     return this.name;

@@ -10,7 +10,6 @@ describe('SessionsStatusFilterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [SessionsStatusFilterComponent],
     }).compileComponents();
   });
 

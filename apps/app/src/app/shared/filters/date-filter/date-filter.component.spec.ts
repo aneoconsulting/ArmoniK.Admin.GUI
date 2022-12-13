@@ -11,7 +11,6 @@ describe('DateFilterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [DateFilterComponent],
     }).compileComponents();
   });
 

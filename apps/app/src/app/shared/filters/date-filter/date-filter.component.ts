@@ -1,10 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ClrDatagridFilterInterface } from '@clr/angular';
+import { FormsModule } from '@angular/forms';
+import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
+  standalone: true,
   selector: 'app-date-filter',
   templateUrl: './date-filter.component.html',
   styleUrls: ['./date-filter.component.scss'],
+  imports: [ClarityModule, TranslateModule, FormsModule, CommonModule],
 })
 export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
   @Output() changes = new EventEmitter<never>();

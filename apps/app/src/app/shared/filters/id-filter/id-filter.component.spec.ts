@@ -9,7 +9,6 @@ describe('IdFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [IdFilterComponent],
       imports: [TranslateModule.forRoot()],
     }).compileComponents();
   });
@@ -51,11 +50,11 @@ describe('IdFilterComponent', () => {
     expect(testValue).toEqual(component.inputValue);
   });
 
-  it('should emit an event on change', async () => {
+  it('should emit an event on change', () => {
     let testValue = false;
     component.changes.subscribe(() => (testValue = true));
     component.onChange();
-    await setTimeout(() => {
+    setTimeout(() => {
       expect(testValue).toBeTruthy();
     }, 1000); // wait for the debounceTime
   });

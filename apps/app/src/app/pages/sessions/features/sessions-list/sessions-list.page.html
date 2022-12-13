@@ -38,12 +38,12 @@
     >
       {{ 'pages.sessions-list.columns.session_id' | translate }}
       <clr-dg-filter [clrDgFilter]="sessionFilter">
-        <armonik-admin-gui-app-id-filter
+        <app-id-filter
           [name]="'sessionId'"
           [inputValue]="(sessionFilter$ | async) || ''"
           #sessionFilter
         >
-        </armonik-admin-gui-app-id-filter>
+        </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -52,12 +52,12 @@
     >
       {{ 'pages.sessions-list.columns.status' | translate }}
       <clr-dg-filter [clrDgFilter]="statusFilter">
-        <armonik-admin-gui-app-sessions-status-filter
+        <app-sessions-status-filter
           [name]="'status'"
           [selectedValue]="(statusFilter$ | async) || 0"
           #statusFilter
         >
-        </armonik-admin-gui-app-sessions-status-filter>
+        </app-sessions-status-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -68,13 +68,13 @@
     >
       {{ 'pages.sessions-list.columns.created_at' | translate }}
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
-        <armonik-admin-gui-app-date-filter
+        <app-date-filter
           [name]="'createdAt'"
           [beforeDate]="(createdBeforeFilter$ | async) || null"
           [afterDate]="(createdAfterFilter$ | async) || null"
           #createdDateFilter
         >
-        </armonik-admin-gui-app-date-filter>
+        </app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -85,12 +85,12 @@
     >
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
-        <armonik-admin-gui-app-date-filter
+        <app-date-filter
           [name]="'cancelledAt'"
           [beforeDate]="(cancelledBeforeFilter$ | async) || null"
           [afterDate]="(cancelledAfterFilter$ | async) || null"
           #closedDateFilter
-        ></armonik-admin-gui-app-date-filter>
+        ></app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>

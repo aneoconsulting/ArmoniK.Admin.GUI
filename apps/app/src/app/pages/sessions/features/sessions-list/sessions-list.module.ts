@@ -9,12 +9,7 @@ import {
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import {
-  AutoRefreshDropdownComponent,
-  DateFilterComponent,
-  IdFilterComponent,
-  SessionsStatusFilterComponent,
-} from '@armonik.admin.gui/shared/feature';
+import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridModule,
@@ -26,6 +21,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
 import { BrowserTitleService, LanguageService } from '../../../util';
+import {
+  DateFilterComponent,
+  IdFilterComponent,
+  SessionsStatusFilterComponent,
+} from '../../../../shared/filters';
 
 /**
  * Sessions list module
