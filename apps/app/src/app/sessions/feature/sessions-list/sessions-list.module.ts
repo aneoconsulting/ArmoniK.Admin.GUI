@@ -24,7 +24,7 @@ import {
   DateFilterComponent,
   IdFilterComponent,
   SessionsStatusFilterComponent,
-} from '../../../shared/feature';
+} from '../../../shared/feature/filters';
 import { BrowserTitleService, LanguageService } from '../../../shared/util';
 
 /**
