@@ -1,22 +1,60 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { Params, UrlSerializer } from '@angular/router';
+
+export type HistoryItem = {
+  title: string;
+  url: string;
+  queryParams: Params;
+};
 
 @Injectable()
 export class HistoryService {
   private _maxHistorySize = 3;
 
-  private _history: Set<string> = new Set<string>();
-  private _historySubject = new BehaviorSubject<Set<string>>(this._history);
+  private _historySubject = new BehaviorSubject<Set<string>>(new Set());
   private _history$: Observable<Set<string>> =
     this._historySubject.asObservable();
 
-  constructor(private _localStorage: Storage) {
-    this._history = this._recover();
-    this._historySubject.next(this._history);
+  constructor(
+    private _localStorage: Storage,
+    private _urlSerializer: UrlSerializer
+  ) {
+    this._historySubject.next(this._recover());
   }
 
-  public get history$(): Observable<string[]> {
-    return this._history$.pipe(map((history) => [...history].reverse()));
+  private get _history(): Set<string> {
+    return this._historySubject.value;
+  }
+
+  public get history$(): Observable<HistoryItem[]> {
+    return this._history$.pipe(
+      map((history) => [...history].reverse()),
+      map((history) => {
+        return history.map((url) => {
+          const urlTree = this._urlSerializer.parse(url);
+          const root = urlTree.root;
+          const queryParams = urlTree.queryParams;
+
+          if (!root.children['primary']) {
+            return {
+              title: url,
+              url: url,
+              queryParams: queryParams,
+            };
+          }
+
+          return {
+            title: url,
+            url: root.children['primary'].segments
+              .map((segment) => segment.path)
+              .join('/'),
+            queryParams: queryParams,
+          };
+        });
+      }),
+      tap((history) => console.log(history))
+    );
   }
 
   /**

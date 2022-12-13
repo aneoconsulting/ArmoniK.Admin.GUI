@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ClrVerticalNavModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { HistoryService } from '../../util';
+import { HistoryItem, HistoryService } from '../../util';
 
 @Component({
   standalone: true,
@@ -23,7 +23,7 @@ import { HistoryService } from '../../util';
 export class TheHistoryNavigationComponent {
   constructor(private _historyService: HistoryService) {}
 
-  public get history$(): Observable<string[]> {
+  public get history$(): Observable<HistoryItem[]> {
     return this._historyService.history$;
   }
 }
