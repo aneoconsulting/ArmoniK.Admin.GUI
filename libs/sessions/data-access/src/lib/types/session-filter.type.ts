@@ -6,8 +6,8 @@ import {
 export type SessionFilter = {
   applicationName: string;
   applicationVersion: string;
-  sessionId?: string;
-  status?: SessionStatus;
+  sessionId: string;
+  status: SessionStatus;
   createdBefore?: TimeFilter;
   createdAfter?: TimeFilter;
   cancelledBefore?: TimeFilter;
