@@ -12,19 +12,18 @@ export type HistoryItem = {
 export class HistoryService {
   private _maxHistorySize = 3;
 
-  private _historySubject = new BehaviorSubject<Set<string>>(new Set());
-  private _history$: Observable<Set<string>> =
-    this._historySubject.asObservable();
+  private _history = new BehaviorSubject<Set<string>>(new Set());
+  private _history$: Observable<Set<string>> = this._history.asObservable();
 
   constructor(
     private _localStorage: Storage,
     private _urlSerializer: UrlSerializer
   ) {
-    this._historySubject.next(this._recover());
+    this._history.next(this._recover());
   }
 
-  private get _history(): Set<string> {
-    return this._historySubject.value;
+  private get _historyValue(): Set<string> {
+    return this._history.value;
   }
 
   public get history$(): Observable<HistoryItem[]> {
@@ -52,8 +51,7 @@ export class HistoryService {
             queryParams: queryParams,
           };
         });
-      }),
-      tap((history) => console.log(history))
+      })
     );
   }
 
@@ -64,18 +62,18 @@ export class HistoryService {
    */
   public add(url: string) {
     // Used to pull up a URL already in the history
-    if (this._history.has(url)) {
-      this._history.delete(url);
+    if (this._historyValue.has(url)) {
+      this._historyValue.delete(url);
     }
 
-    this._history.add(url);
+    this._historyValue.add(url);
 
     // Remove the oldest URL if the history is too big
-    if (this._history.size > this._maxHistorySize) {
-      this._history.delete(this._history.values().next().value);
+    if (this._historyValue.size > this._maxHistorySize) {
+      this._historyValue.delete(this._historyValue.values().next().value);
     }
 
-    this._historySubject.next(this._history);
+    this._history.next(this._historyValue);
 
     this._store();
   }
@@ -84,7 +82,10 @@ export class HistoryService {
    * Store history in local storage
    */
   private _store(): void {
-    this._localStorage.setItem('history', JSON.stringify([...this._history]));
+    this._localStorage.setItem(
+      'history',
+      JSON.stringify([...this._historyValue])
+    );
   }
 
   /**
