@@ -30,10 +30,7 @@ describe('FavoritesService', () => {
     const favoriteName = 'Angular';
     service.add(url, favoriteName);
 
-    service
-      .has$(url)
-      .pipe(first())
-      .subscribe((has) => expect(has).toBeTruthy());
+    expect(service.get(url)).toBeTruthy();
   });
 
   it('should store favorites in local storage', () => {
@@ -55,10 +52,7 @@ describe('FavoritesService', () => {
     service.add(url, favoriteName);
     service.remove(url);
 
-    service
-      .has$(url)
-      .pipe(first())
-      .subscribe((has) => expect(has).toBeFalsy());
+    expect(service.get(url)).toBeFalsy();
   });
 
   it('should remove a favorite from local storage', () => {
@@ -83,20 +77,6 @@ describe('FavoritesService', () => {
     service.favorites$.pipe(first()).subscribe((favorites) => {
       expect(favorites.length).toEqual(1);
       expect(favorites[0].label).toEqual(favoriteName);
-      expect(favorites[0].path).toEqual(url);
     });
-  });
-
-  it('should get one favorite', () => {
-    const url = 'https://www.angular.io';
-    const favoriteName = 'Angular';
-    service.add(url, favoriteName);
-
-    service
-      .get$(url)
-      .pipe(first())
-      .subscribe((favorite) => {
-        expect(favorite).toEqual(favoriteName);
-      });
   });
 });
