@@ -1,11 +1,15 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { ClrDatagridFilterInterface } from '@clr/angular';
+import { FormsModule } from '@angular/forms';
+import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { ResultStatus } from '../../../core/types/proto/result-status.pb';
 
 @Component({
+  standalone: true,
   selector: 'app-results-status-filter',
   templateUrl: './results-status-filter.component.html',
   styleUrls: ['./results-status-filter.component.scss'],
+  imports: [ClarityModule, TranslateModule, FormsModule],
 })
 export class ResultsStatusFilterComponent
   implements ClrDatagridFilterInterface<number>, OnInit

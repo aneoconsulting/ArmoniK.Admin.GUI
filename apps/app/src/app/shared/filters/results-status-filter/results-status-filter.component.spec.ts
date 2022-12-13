@@ -10,7 +10,6 @@ describe('ResultsStatusFilterComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      declarations: [ResultsStatusFilterComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResultsStatusFilterComponent);
