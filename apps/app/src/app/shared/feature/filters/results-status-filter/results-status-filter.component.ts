@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { ResultStatus } from '../../../core/types/proto/result-status.pb';
+import { ResultStatus } from '@armonik.admin.gui/shared/data-access';
 
 @Component({
   standalone: true,

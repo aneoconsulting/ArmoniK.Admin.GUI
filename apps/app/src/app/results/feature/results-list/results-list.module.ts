@@ -11,7 +11,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ResultsListRoutingModule } from './results-list-routing.module';
 import { ResultsListComponent } from './results-list.page';
-import { ResultsStatusFilterComponent } from '../../../shared/filters';
+import { ResultsStatusFilterComponent } from '../../../shared/feature/filters';
 
 @NgModule({
   declarations: [ResultsListComponent],
