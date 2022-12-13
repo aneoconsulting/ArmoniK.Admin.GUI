@@ -3,18 +3,39 @@ import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClarityModule } from '@clr/angular';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
-import { GrafanaService, SeqService, SettingsService } from './core';
+import {
+  GrafanaService,
+  HistoryService,
+  SeqService,
+  SettingsService,
+} from './shared/util';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
-      providers: [SeqService, GrafanaService, SettingsService],
+      providers: [
+        SeqService,
+        GrafanaService,
+        SettingsService,
+        HistoryService,
+        {
+          provide: Storage,
+          useValue: {
+            getItem: () => null,
+            setItem: () => null,
+            removeItem: () => null,
+            clear: () => null,
+          },
+        },
+      ],
       imports: [
         RouterTestingModule.withRoutes([]),
         ClarityModule,
         HttpClientModule,
+        TranslateModule.forRoot(),
       ],
     });
   });
@@ -26,14 +47,5 @@ describe('AppComponent', () => {
 
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it('should have a router-outlet', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-
-    fixture.detectChanges();
-
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });

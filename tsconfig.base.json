@@ -8,15 +8,26 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2019", "dom"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@armonik.admin.gui/armonik-typing": ["libs/armonik-typing/src/index.ts"],
-      "@armonik.admin.gui/ui": ["libs/ui/src/index.ts"]
+      "@armonik.admin.gui/results/data-access": [
+        "libs/results/data-access/src/index.ts"
+      ],
+      "@armonik.admin.gui/sessions/data-access": [
+        "libs/sessions/data-access/src/index.ts"
+      ],
+      "@armonik.admin.gui/shared/data-access": [
+        "libs/shared/data-access/src/index.ts"
+      ],
+      "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
+      "@armonik.admin.gui/tasks/data-access": [
+        "libs/tasks/data-access/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

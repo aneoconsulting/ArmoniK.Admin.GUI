@@ -1,0 +1,27 @@
+{
+  "name": "shared-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/data-access/src",
+  "prefix": "armonik.admin.gui",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/shared/data-access/src/test.ts",
+        "tsConfig": "libs/shared/data-access/tsconfig.spec.json",
+        "karmaConfig": "libs/shared/data-access/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/shared/data-access/**/*.ts",
+          "libs/shared/data-access/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
