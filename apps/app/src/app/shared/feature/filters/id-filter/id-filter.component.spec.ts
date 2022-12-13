@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { IdFilterComponent } from './id-filter.component';
@@ -50,14 +55,13 @@ describe('IdFilterComponent', () => {
     expect(testValue).toEqual(component.inputValue);
   });
 
-  it('should emit an event on change', () => {
+  it('should emit an event on change', fakeAsync(() => {
     let testValue = false;
     component.changes.subscribe(() => (testValue = true));
     component.onChange();
-    setTimeout(() => {
-      expect(testValue).toBeTruthy();
-    }, 1000); // wait for the debounceTime
-  });
+    tick(701); // wait for the debounceTime
+    expect(testValue).toBeTruthy();
+  }));
 
   it('should have a empty inputValue when the filter is cleared', () => {
     component.inputValue = 'Not empty value';

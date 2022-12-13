@@ -4,3 +4,6 @@ export { TheFavoritesNavigationComponent } from './the-favorites-navigation/the-
 export { TheHeaderTimeComponent } from '../ui/the-header-time/the-header-time.component';
 export { TheHistoryNavigationComponent } from './the-history-navigation/the-history-navigation.component';
 export { TheLanguagesSelectorComponent } from './the-languages-selector/the-languages-selector.component';
+export { SessionsStatusFilterComponent } from './filters/sessions-status-filter/sessions-status-filter.component';
+export { DateFilterComponent } from './filters/date-filter/date-filter.component';
+export { IdFilterComponent } from './filters/id-filter/id-filter.component';

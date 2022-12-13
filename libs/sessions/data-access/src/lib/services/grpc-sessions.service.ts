@@ -50,32 +50,51 @@ export class GrpcSessionsService extends BaseGrpcService {
     };
 
     for (const [key, value] of Object.entries(urlParams)) {
-      if (key === 'page') {
-        grpcParams.page = value as number;
-      } else if (key === 'pageSize') {
-        grpcParams.pageSize = value as number;
-      } else if (key === 'order') {
-        grpcParams.order = value as number;
-      } else if (key === 'orderBy') {
-        grpcParams.orderBy = value as number;
-      } else {
-        if (key === 'sessionId') {
+      switch (key) {
+        case 'page': {
+          grpcParams.page = value as number;
+          break;
+        }
+        case 'pageSize': {
+          grpcParams.pageSize = value as number;
+          break;
+        }
+        case 'order': {
+          grpcParams.order = value as number;
+          break;
+        }
+        case 'orderBy': {
+          grpcParams.orderBy = value as number;
+          break;
+        }
+        case 'sessionId': {
           filter.sessionId = value as string;
-        } else if (key === 'status') {
+          break;
+        }
+        case 'status': {
           filter.status = value as number;
-        } else if (key === 'createdAtBefore') {
-          filter.createdBefore = this.createTimeFilter(value as number);
-        } else if (key === 'createdAtAfter') {
+          break;
+        }
+        case 'createdAtBefore': {
+          filter.createdBefore = this._createTimeFilter(value as number);
+          break;
+        }
+        case 'createdAtAfter': {
           // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
-          filter.createdAfter = this.createTimeFilter(
+          filter.createdAfter = this._createTimeFilter(
             (value as number) + 86400000
           );
-        } else if (key === 'cancelledAtBefore') {
-          filter.cancelledBefore = this.createTimeFilter(value as number);
-        } else if (key === 'cancelledAtAfter') {
-          filter.cancelledAfter = this.createTimeFilter(
+          break;
+        }
+        case 'cancelledAtBefore': {
+          filter.cancelledBefore = this._createTimeFilter(value as number);
+          break;
+        }
+        case 'cancelledAtAfter': {
+          filter.cancelledAfter = this._createTimeFilter(
             (value as number) + 86400000
           );
+          break;
         }
       }
     }
@@ -147,7 +166,7 @@ export class GrpcSessionsService extends BaseGrpcService {
     return this._sessionsClient.cancelSession(options);
   }
 
-  private createTimeFilter(value: number): TimeFilter {
+  private _createTimeFilter(value: number): TimeFilter {
     return {
       nanos: 0,
       seconds: (value / 1000).toString(),

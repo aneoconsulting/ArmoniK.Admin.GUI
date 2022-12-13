@@ -1,10 +1,10 @@
 <clr-date-container>
   <label>
-    {{ 'global.filters.date.before' | translate }}
+    {{ 'pages.components.filters.date.before' | translate }}
     <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
       <span class="tooltip-content">
-        {{ 'global.filters.warning.before-date' | translate }}
+        {{ 'pages.components.filters.warning.before-date' | translate }}
       </span>
     </a>
   </label>
@@ -18,11 +18,11 @@
 </clr-date-container>
 <clr-date-container>
   <label>
-    {{ 'global.filters.date.after' | translate }}
+    {{ 'pages.components.filters.date.after' | translate }}
     <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
       <span class="tooltip-content">
-        {{ 'global.filters.warning.after-date' | translate }}
+        {{ 'pages.components.filters.warning.after-date' | translate }}
       </span>
     </a>
   </label>
@@ -35,5 +35,5 @@
   />
 </clr-date-container>
 <button class="btn btn-sm" *ngIf="isActive()" (click)="clear()">
-  {{ 'global.filters.clear-filter' | translate }}
+  {{ 'pages.components.filters.clear-filter' | translate }}
 </button>

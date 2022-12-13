@@ -1,21 +1,6 @@
 {
   "global": {
-    "loading": "Chargement...",
-    "filters": {
-      "no-filter-available": "Pas de filtre disponible",
-      "string-filter": "Filtre",
-      "clear-filter": "Supprimer le filtre",
-      "clear-all-filters": "Supprimer tous les filtres",
-      "date": {
-        "before": "Avant le",
-        "after": "Après le"
-      },
-      "warning": {
-        "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
-        "before-date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
-        "after-date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
-      }
-    }
+    "loading": "Chargement..."
   },
   "shared": {
     "auto_refresh": {
@@ -64,6 +49,22 @@
           "disabled": "Désactivé"
         },
         "disable": "Désactiver"
+      },
+      "filters": {
+        "filter": "Filtre",
+        "status-title": "Sélectionner un statut",
+        "no-filter-available": "Pas de filtre disponible",
+        "clear-filter": "Supprimer le filtre",
+        "clear-all-filters": "Supprimer tous les filtres",
+        "date": {
+          "before": "Avant le",
+          "after": "Après le"
+        },
+        "warning": {
+          "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
+          "before-date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
+          "after-date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
+        }
       }
     },
     "sessions-list": {
@@ -97,12 +98,9 @@
         "close": "Fermer"
       },
       "filters": {
-        "status": {
-          "title": "Sélectionner un statut",
-          "SESSION_STATUS_UNSPECIFIED": "Non spécifié",
-          "SESSION_STATUS_RUNNING": "En cours",
-          "SESSION_STATUS_CANCELLED": "Annulée"
-        }
+        "SESSION_STATUS_UNSPECIFIED": "Non spécifié",
+        "SESSION_STATUS_RUNNING": "En cours",
+        "SESSION_STATUS_CANCELLED": "Annulée"
       }
     },
     "tasks-list": {
@@ -320,22 +318,19 @@
           },
           "cancel": "Annuler la sélection",
           "filters": {
-            "status": {
-              "title": "Filtres",
-              "default": "Toutes",
-              "UNSPECIFIED": "Non spécifié",
-              "CREATING": "Création",
-              "SUBMITTED": "Soumise",
-              "DISPATCHED": "Dépôt",
-              "PROCESSING": "En cours",
-              "PROCESSED": "Traitée",
-              "COMPLETED": "Terminée",
-              "ERROR": "Erreur",
-              "FAILED": "Échouée",
-              "TIMEOUT": "Temps écoulé",
-              "CANCELLING": "Annulation",
-              "CANCELLED": "Annulée"
-            }
+            "default": "Toutes",
+            "UNSPECIFIED": "Non spécifié",
+            "CREATING": "Création",
+            "SUBMITTED": "Soumise",
+            "DISPATCHED": "Dépôt",
+            "PROCESSING": "En cours",
+            "PROCESSED": "Traitée",
+            "COMPLETED": "Terminée",
+            "ERROR": "Erreur",
+            "FAILED": "Échouée",
+            "TIMEOUT": "Temps écoulé",
+            "CANCELLING": "Annulation",
+            "CANCELLED": "Annulée"
           }
         },
         "task-detail": {

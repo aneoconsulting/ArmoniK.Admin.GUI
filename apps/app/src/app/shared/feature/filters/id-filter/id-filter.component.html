@@ -4,17 +4,17 @@
     (input)="onChange()"
     type="text"
     [(ngModel)]="inputValue"
-    placeholder="{{ 'global.filters.string-filter' | translate }}"
+    placeholder="{{ 'pages.components.filters.filter' | translate }}"
   />
   <label>
     <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
       <span class="tooltip-content">
-        {{ 'global.filters.warning.id' | translate }}
+        {{ 'pages.components.filters.warning.id' | translate }}
       </span>
     </a>
   </label>
 </clr-input-container>
 <button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
-  {{ 'global.filters.clear-filter' | translate }}
+  {{ 'pages.components.filters.clear-filter' | translate }}
 </button>

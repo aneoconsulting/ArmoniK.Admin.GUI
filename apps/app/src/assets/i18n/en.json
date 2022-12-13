@@ -1,21 +1,6 @@
 {
   "global": {
-    "loading": "Loading...",
-    "filters": {
-      "no-filter-available": "No filter available",
-      "string-filter": "Filter value",
-      "clear-filter": "Clear the filter",
-      "clear-all-filters": "Clear all filters",
-      "date": {
-        "before": "Before the",
-        "after": "After the"
-      },
-      "warning": {
-        "id": "Will display data with an Id strictly equal to the one indicated.",
-        "before-date": "Will display data with a date stricly inferior than indicated.",
-        "after-date": "Will display data with a date stricly superior than indicated."
-      }
-    }
+    "loading": "Loading..."
   },
   "shared": {
     "auto_refresh": {
@@ -64,6 +49,22 @@
           "disabled": "Disabled"
         },
         "disable": "Disable"
+      },
+      "filters": {
+        "filter": "Filter",
+        "status-title": "Select a status",
+        "no-filter-available": "No filter available",
+        "clear-filter": "Clear the filter",
+        "clear-all-filters": "Clear all filters",
+        "date": {
+          "before": "Before the",
+          "after": "After the"
+        },
+        "warning": {
+          "id": "Will display data with an Id strictly equal to the one indicated.",
+          "before-date": "Will display data with a date stricly inferior than indicated.",
+          "after-date": "Will display data with a date stricly superior than indicated."
+        }
       }
     },
     "sessions-list": {
@@ -97,12 +98,9 @@
         "close": "Close"
       },
       "filters": {
-        "status": {
-          "title": "Select a status",
-          "SESSION_STATUS_UNSPECIFIED": "Unspecified",
-          "SESSION_STATUS_RUNNING": "Running",
-          "SESSION_STATUS_CANCELLED": "Cancelled"
-        }
+        "SESSION_STATUS_UNSPECIFIED": "Unspecified",
+        "SESSION_STATUS_RUNNING": "Running",
+        "SESSION_STATUS_CANCELLED": "Cancelled"
       }
     },
     "tasks-list": {
@@ -320,22 +318,19 @@
           },
           "cancel": "Cancel selection",
           "filters": {
-            "status": {
-              "title": "Select a status",
-              "default": "All",
-              "UNSPECIFIED": "Unspecified",
-              "CREATING": "Creating",
-              "SUBMITTED": "Submitted",
-              "DISPATCHED": "Dispatched",
-              "PROCESSING": "Processing",
-              "PROCESSED": "Processed",
-              "COMPLETED": "Completed",
-              "ERROR": "Error",
-              "FAILED": "Failed",
-              "TIMEOUT": "Timeout",
-              "CANCELLING": "Cancelling",
-              "CANCELLED": "Cancelled"
-            }
+            "default": "All",
+            "UNSPECIFIED": "Unspecified",
+            "CREATING": "Creating",
+            "SUBMITTED": "Submitted",
+            "DISPATCHED": "Dispatched",
+            "PROCESSING": "Processing",
+            "PROCESSED": "Processed",
+            "COMPLETED": "Completed",
+            "ERROR": "Error",
+            "FAILED": "Failed",
+            "TIMEOUT": "Timeout",
+            "CANCELLING": "Cancelling",
+            "CANCELLED": "Cancelled"
           }
         },
         "task-detail": {
