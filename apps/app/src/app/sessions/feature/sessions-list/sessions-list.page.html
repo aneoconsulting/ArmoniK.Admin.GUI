@@ -69,7 +69,7 @@
       {{ 'pages.sessions-list.columns.created_at' | translate }}
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
-          [name]="'createdAt'"
+          [name]="'created'"
           [beforeDate]="(createdBeforeFilter$ | async) || null"
           [afterDate]="(createdAfterFilter$ | async) || null"
           #createdDateFilter
@@ -86,7 +86,7 @@
       {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
         <app-date-filter
-          [name]="'cancelledAt'"
+          [name]="'cancelled'"
           [beforeDate]="(cancelledBeforeFilter$ | async) || null"
           [afterDate]="(cancelledAfterFilter$ | async) || null"
           #closedDateFilter

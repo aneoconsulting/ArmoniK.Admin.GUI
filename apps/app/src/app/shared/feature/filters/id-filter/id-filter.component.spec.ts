@@ -37,7 +37,7 @@ describe('IdFilterComponent', () => {
   });
 
   it('should have a subscription', () => {
-    expect(component.input).toBeDefined();
+    expect(component.subscription).toBeDefined();
   });
 
   it('should have a value', () => {
@@ -47,7 +47,7 @@ describe('IdFilterComponent', () => {
 
   it('should send the input value on change', () => {
     let testValue = '';
-    component.input = component.inputSubject.subscribe(
+    component.subscription = component.inputSubject.subscribe(
       (value) => (testValue = value)
     );
     component.inputValue = 'test';

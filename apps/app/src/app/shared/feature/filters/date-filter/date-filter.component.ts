@@ -19,7 +19,7 @@ export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
   @Input() afterDate: Date | null = null;
 
   get property(): string {
-    return this.name;
+    return this.name + 'At';
   }
 
   get value(): { before: number | null; after: number | null } {

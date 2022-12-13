@@ -33,7 +33,7 @@ export class IdFilterComponent
   @Input() inputValue = '';
 
   inputSubject = new Subject<string>();
-  input: Subscription = new Subscription();
+  subscription: Subscription = new Subscription();
 
   get property() {
     return this.name;
@@ -46,7 +46,7 @@ export class IdFilterComponent
   ngOnInit(): void {
     // The subscription permits us to prevent the string filter to reload at each input
     const input$ = this.inputSubject.asObservable();
-    this.input = input$
+    this.subscription = input$
       .pipe(debounceTime(700), distinctUntilChanged())
       .subscribe(() => {
         this.changes.emit();
@@ -54,7 +54,7 @@ export class IdFilterComponent
   }
 
   ngOnDestroy(): void {
-    this.input.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   onChange() {
