@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
 import {
-  TheApplicationsSubnavComponent,
   TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
   TheHeaderTimeComponent,
@@ -44,7 +43,6 @@ import { TheHeaderComponent } from './shared/ui';
     AppRoutingModule,
     AppTranslateModule,
     BrowserModule,
-    TheApplicationsSubnavComponent,
     TheLanguagesSelectorComponent,
     TheHeaderComponent,
     TheHistoryNavigationComponent,
