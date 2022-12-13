@@ -21,10 +21,6 @@ export class HistoryService {
     this._history.next(this._recover());
   }
 
-  private get _historyValue(): Set<string> {
-    return this._history.getValue();
-  }
-
   public get history$(): Observable<HistoryItem[]> {
     return this._history.pipe(
       map((history) => [...history].reverse()),
@@ -75,6 +71,10 @@ export class HistoryService {
     this._history.next(this._historyValue);
 
     this._store();
+  }
+
+  private get _historyValue(): Set<string> {
+    return this._history.getValue();
   }
 
   /**
