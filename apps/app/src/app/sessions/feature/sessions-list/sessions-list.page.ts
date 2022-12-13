@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
-import {
-  GrpcPagerService,
-  ListResultsRequest,
-  ListResultsResponse,
-  ResultRaw,
-  ResultStatus,
-} from '@armonik.admin.gui/shared/data-access';
+import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
+import {
+  GetSessionResponse,
+  GrpcPagerService,
+  ListSessionsRequest,
+  ListSessionsResponse,
+  SessionStatus,
+} from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
   catchError,
   concatMap,
   distinctUntilChanged,
-  interval,
+  first,
   map,
   merge,
   Observable,
@@ -26,28 +26,36 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../util';
+import { BrowserTitleService, LanguageService } from '../../../shared/util';
 
 @Component({
-  selector: 'app-pages-results-list',
-  templateUrl: './results-list.page.html',
-  styleUrls: ['./results-list.page.scss'],
+  selector: 'app-pages-sessions-list',
+  templateUrl: './sessions-list.page.html',
+  styleUrls: ['./sessions-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResultsListComponent implements OnInit {
+export class SessionsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
+  /** Get a single session */
+  private _opened$ = new BehaviorSubject<boolean>(false);
+  private _subjectSingleSession = new Subject<string>();
+  private _triggerSingleSession = this._subjectSingleSession.asObservable();
+
+  loadingSingleSession$ = new BehaviorSubject<string | null>(null);
+  loadSingleSession$ = this._triggerSingleSession.pipe(
+    tap((sessionId) => this.loadingSingleSession$.next(sessionId)),
+    switchMap((sessionId) => this._getSession$(sessionId))
+  );
+
+  /** Get sessions */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
   private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
-  /** Triggers to reload data */
+  /** Triggers to reload sessions */
   private _triggerManual$ = this._subjectManual.asObservable();
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
@@ -67,16 +75,16 @@ export class ResultsListComponent implements OnInit {
       switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
     );
 
-  loadingResults$ = new BehaviorSubject<boolean>(true);
-  totalResults$ = new BehaviorSubject<number>(0);
+  loadingSessions$ = new BehaviorSubject<boolean>(true);
+  totalSessions$ = new BehaviorSubject<number>(0);
 
-  loadResults$ = merge(
+  loadSessions$ = merge(
     this._triggerManual$,
     this._triggerDatagrid$,
     this._triggerInterval$
   ).pipe(
-    tap(() => this.loadingResults$.next(true)),
-    switchMap(() => this._listResults$())
+    tap(() => this.loadingSessions$.next(true)),
+    switchMap(() => this._listSessions$())
   );
 
   constructor(
@@ -84,31 +92,22 @@ export class ResultsListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
-    private _settingsService: SettingsService,
-    private _grpcResultsService: GrpcResultsService,
+    private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('results.title')
+      this._languageService.instant('pages.sessions-list.title')
     );
   }
 
   public get OrderByField() {
-    return ListResultsRequest.OrderByField;
+    return ListSessionsRequest.OrderByField;
   }
 
-  public get ResultsStatusEnum() {
-    return ResultStatus;
-  }
-
-  public get intervals() {
-    return this._settingsService.intervals;
-  }
-
-  public get initialInterval() {
-    return this._settingsService.initialInterval;
+  public get SessionStatusEnum() {
+    return SessionStatus;
   }
 
   public onUpdateInterval(value: number) {
@@ -121,7 +120,7 @@ export class ResultsListComponent implements OnInit {
   }
 
   public defaultSortOrder(
-    field: ListResultsRequest.OrderByField
+    field: ListSessionsRequest.OrderByField
   ): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
@@ -138,34 +137,70 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * Track by interval
+   * Cancel a session
    *
-   * @param _
-   * @param interval
-   *
-   * @returns Interval
+   * @param sessionId
    */
-  public trackByInterval(_: number, interval: number): string {
-    return interval.toString();
+  public cancelSession(sessionId: string): void {
+    this._grpcSessionsService
+      .cancel$(sessionId)
+      .pipe(
+        first(),
+        catchError((error: Error) => {
+          console.error(error);
+
+          return of({} as ListSessionsResponse);
+        })
+      )
+      .subscribe({
+        next: () => this.manualRefreshSessions(),
+      });
   }
 
   /**
-   * Refresh results using a new state
+   * Call a new session
+   *
+   * @param sessionId
+   */
+  public viewSessionDetail(sessionId: string): void {
+    this._subjectSingleSession.next(sessionId);
+  }
+
+  /**
+   * Open modal to view details
+   */
+  public openGetSessionModal(): void {
+    this._opened$.next(true);
+  }
+
+  /**
+   * Close modal to view details
+   */
+  public closeGetSessionModal(): void {
+    this._opened$.next(false);
+  }
+
+  public get isGetSessionModalOpened$(): Observable<boolean> {
+    return this._opened$.asObservable();
+  }
+
+  /**
+   * Refresh sessions using a new state
    *
    * @param state
    *
    * @returns void
    */
-  public refreshResults(state: ClrDatagridStateInterface): void {
+  public refreshSessions(state: ClrDatagridStateInterface): void {
     this._subjectDatagrid.next(state);
   }
 
   /**
-   * Refresh manually results using new state
+   * Refresh manually sessions using new state
    *
    * @returns void
    */
-  public manualRefreshResults(): void {
+  public manualRefreshSessions(): void {
     this._subjectManual.next();
   }
 
@@ -182,18 +217,6 @@ export class ResultsListComponent implements OnInit {
       map((value) => Number(value)),
       distinctUntilChanged()
     );
-  }
-
-  /**
-   * Track by result
-   *
-   * @param _
-   * @param result
-   *
-   * @returns Id
-   */
-  public trackByResult(_: number, result: ResultRaw): string {
-    return result.name ?? '';
   }
 
   /**
@@ -215,23 +238,42 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * List results
+   * List sessions
    *
-   * @returns Observable<ListResultsResponse>
+   * @returns Observable<ListSessionsResponse>
    */
-  private _listResults$(): Observable<ListResultsResponse> {
+  private _listSessions$(): Observable<ListSessionsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
 
-    return this._grpcResultsService.list$(params).pipe(
-      catchError((error) => {
+    return this._grpcSessionsService.list$(params).pipe(
+      catchError((error: Error) => {
         console.error(error);
         this._stopInterval.next();
 
-        return of({} as ListResultsResponse);
+        return of({} as ListSessionsResponse);
       }),
-      tap((results) => {
-        this.loadingResults$.next(false);
-        this.totalResults$.next(results.total ?? 0);
+      tap((sessions) => {
+        this.loadingSessions$.next(false);
+        this.totalSessions$.next(sessions.total ?? 0);
+      })
+    );
+  }
+
+  /**
+   * Get single session
+   *
+   * @returns Observable<GetSessionResponse>
+   */
+  private _getSession$(sessionId: string): Observable<GetSessionResponse> {
+    return this._grpcSessionsService.get$(sessionId).pipe(
+      catchError((error: Error) => {
+        console.error(error);
+
+        return of({} as GetSessionResponse);
+      }),
+      tap(() => {
+        this.openGetSessionModal();
+        this.loadingSingleSession$.next(null);
       })
     );
   }

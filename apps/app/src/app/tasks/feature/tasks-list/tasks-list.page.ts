@@ -30,10 +30,10 @@ import {
   timer,
 } from 'rxjs';
 import {
+  BrowserTitleService,
   LanguageService,
   SettingsService,
-  BrowserTitleService,
-} from '../../../util';
+} from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-tasks-list',
