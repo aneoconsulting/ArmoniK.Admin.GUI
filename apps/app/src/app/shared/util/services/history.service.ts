@@ -13,7 +13,6 @@ export class HistoryService {
   private _maxHistorySize = 3;
 
   private _history = new BehaviorSubject<Set<string>>(new Set());
-  private _history$: Observable<Set<string>> = this._history.asObservable();
 
   constructor(
     private _localStorage: Storage,
@@ -27,7 +26,7 @@ export class HistoryService {
   }
 
   public get history$(): Observable<HistoryItem[]> {
-    return this._history$.pipe(
+    return this._history.pipe(
       map((history) => [...history].reverse()),
       map((history) => {
         return history.map((url) => {
