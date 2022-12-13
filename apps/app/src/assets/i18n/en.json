@@ -52,18 +52,18 @@
       },
       "filters": {
         "filter": "Filter",
-        "status-title": "Select a status",
-        "no-filter-available": "No filter available",
-        "clear-filter": "Clear the filter",
-        "clear-all-filters": "Clear all filters",
+        "status_title": "Select a status",
+        "no_filter_available": "No filter available",
+        "clear_filter": "Clear the filter",
+        "clear_all_filters": "Clear all filters",
         "date": {
           "before": "Before the",
           "after": "After the"
         },
         "warning": {
           "id": "Will display data with an Id strictly equal to the one indicated.",
-          "before-date": "Will display data with a date stricly inferior than indicated.",
-          "after-date": "Will display data with a date stricly superior than indicated."
+          "before_date": "Will display data with a date strictly inferior than indicated.",
+          "after_date": "Will display data with a date strictly superior than indicated."
         }
       }
     },
