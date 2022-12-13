@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BrowserTitleService, LanguageService } from '../../../util';
+import { BrowserTitleService, LanguageService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-error-detail',

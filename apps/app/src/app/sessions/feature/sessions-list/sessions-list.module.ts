@@ -20,7 +20,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
-import { BrowserTitleService, LanguageService } from '../../../util';
+import { BrowserTitleService, LanguageService } from '../../../shared/util';
 
 /**
  * Sessions list module

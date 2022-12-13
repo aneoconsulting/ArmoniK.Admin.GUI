@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { BrowserTitleService, LanguageCode, LanguageService } from '../util';
+import {
+  BrowserTitleService,
+  LanguageCode,
+  LanguageService,
+} from '../shared/util';
 
 @Component({
   selector: 'app-pages-how-to-use',
