@@ -31,7 +31,10 @@ export class GrpcTasksService extends BaseGrpcService {
   //     ListSessionsRequest.OrderDirection,
   //     TaskFilter
   //   > = {};
-  //   const filter: TaskFilter = {};
+  //   const filter: TaskFilter = {
+  //     sessionId: '',
+  //     status: 0
+  //   };
 
   //   for (const [key, value] of Object.entries(urlParams)) {
   //     if (key === 'page') {
