@@ -1,4 +1,10 @@
 export { ApplicationRaw } from './lib/proto/generated/applications-common.pb';
+export {
+  GetCurrentUserRequest,
+  GetCurrentUserResponse,
+  User,
+} from './lib/proto/generated/auth-common.pb';
+export { AuthenticationClient } from './lib/proto/generated/auth-service.pbsc';
 export { ResultStatus } from './lib/proto/generated/result-status.pb';
 export {
   GetOwnerTaskIdRequest,
