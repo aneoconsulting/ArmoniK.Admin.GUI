@@ -77,6 +77,9 @@ export class ResultsListComponent implements OnInit {
     switchMap(() => this._listResults$())
   );
 
+  //Filter status, to be send into the select-filter component.
+  statusList: { value: number; label: string }[];
+
   /**
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
@@ -104,6 +107,14 @@ export class ResultsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('results.title')
     );
+    this.statusList = [
+      ...Object.keys(ResultStatus)
+        .filter((key) => !Number.isInteger(parseInt(key)))
+        .map((key) => ({
+          value: ResultStatus[key as keyof typeof ResultStatus] as number,
+          label: key,
+        })),
+    ];
   }
 
   public get OrderByField() {

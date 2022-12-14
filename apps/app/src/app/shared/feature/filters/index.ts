@@ -1,1 +1,1 @@
-export { ResultsStatusFilterComponent } from './results-status-filter/results-status-filter.component';
+export { SelectFilterComponent } from './select-filter/select-filter.component';

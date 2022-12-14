@@ -82,12 +82,13 @@
     >
       {{ 'pages.results-list.columns.status' | translate }}
       <clr-dg-filter [clrDgFilter]="statusFilter">
-        <app-results-status-filter
+        <app-select-filter
           [name]="'status'"
           [selectedValue]="(statusFilter$ | async) || 0"
+          [selectionList]="statusList"
           #statusFilter
         >
-        </app-results-status-filter>
+        </app-select-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column

@@ -52,6 +52,32 @@
           "disabled": "Désactivé"
         },
         "disable": "Désactiver"
+      },
+      "filters": {
+        "select_title": "Sélectionnez une valeur :",
+        "select_list": {
+          "default": "Toutes",
+          "SESSION_STATUS_UNSPECIFIED": "Non spécifié",
+          "SESSION_STATUS_RUNNING": "En cours",
+          "SESSION_STATUS_CANCELLED": "Annulée",
+          "TASK_STATUS_UNSPECIFIED": "Non spécifié",
+          "TASK_STATUS_CREATING": "Création",
+          "TASK_STATUS_SUBMITTED": "Soumise",
+          "TASK_STATUS_DISPATCHED": "Dépôt",
+          "TASK_STATUS_PROCESSING": "En cours",
+          "TASK_STATUS_PROCESSED": "Traitée",
+          "TASK_STATUS_COMPLETED": "Terminée",
+          "TASK_STATUS_ERROR": "Erreur",
+          "TASK_STATUS_FAILED": "Échouée",
+          "TASK_STATUS_TIMEOUT": "Temps écoulé",
+          "TASK_STATUS_CANCELLING": "Annulation",
+          "TASK_STATUS_CANCELLED": "Annulée",
+          "RESULT_STATUS_UNSPECIFIED": "Non spécifié",
+          "RESULT_STATUS_CREATED": "En création",
+          "RESULT_STATUS_COMPLETED": "Complet",
+          "RESULT_STATUS_ABORTED": "Interrompu",
+          "RESULT_STATUS_NOTFOUND": "Non trouvé"
+        }
       }
     },
     "sessions-list": {

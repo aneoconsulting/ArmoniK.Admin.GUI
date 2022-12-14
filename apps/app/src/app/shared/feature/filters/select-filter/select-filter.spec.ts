@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { ResultsStatusFilterComponent } from './results-status-filter.component';
+import { SelectFilterComponent } from './select-filter.component';
 
-describe('ResultsStatusFilterComponent', () => {
-  let component: ResultsStatusFilterComponent;
-  let fixture: ComponentFixture<ResultsStatusFilterComponent>;
+describe('SelectFilterComponent', () => {
+  let component: SelectFilterComponent;
+  let fixture: ComponentFixture<SelectFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ResultsStatusFilterComponent);
+    fixture = TestBed.createComponent(SelectFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -33,8 +33,8 @@ describe('ResultsStatusFilterComponent', () => {
     expect(component.changes).toBeDefined();
   });
 
-  it('should have a defined list of result status', () => {
-    expect(component.status).toBeDefined();
+  it('should have a defined selectionList', () => {
+    expect(component.selectionList).toBeDefined();
   });
 
   it('should emit an event when the selection change', () => {
