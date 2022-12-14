@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { ExternalServicesEnum } from '@armonik.admin.gui/shared/data-access';
-import { HealthCheckService } from 'libs/shared/data-access/src/lib/services';
+import {
+  ExternalServicesEnum,
+  HealthCheckService,
+} from '@armonik.admin.gui/shared/data-access';
 import { distinctUntilChanged, filter, merge, take } from 'rxjs';
 import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 
