@@ -1,9 +1,9 @@
 import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
   OnInit,
   OnDestroy,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
@@ -26,7 +26,7 @@ import { FavoritesService } from '../../util';
     AsyncPipe,
     JsonPipe,
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TheFavoritesModalComponent implements OnInit, OnDestroy {
   private _eventsSubscription: Subscription | null = null;
@@ -49,10 +49,6 @@ export class TheFavoritesModalComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(() => {
-        console.log(
-          'TheFavoritesModalComponent.ngOnInit()',
-          this._favoritesService.get(this.currentUrl)
-        );
         this.currentFavoriteName = this._favoritesService.get(this.currentUrl);
       });
   }
