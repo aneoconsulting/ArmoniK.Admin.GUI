@@ -2,6 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrIconModule,
   ClrLayoutModule,
@@ -18,6 +19,7 @@ import {
   TheHistoryNavigationComponent,
   TheLanguagesSelectorComponent,
 } from './shared/feature';
+import { TheHeaderComponent } from './shared/ui';
 import {
   CoreModule,
   LanguageService,
@@ -29,8 +31,6 @@ import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/technology-shapes';
-import { TheHeaderComponent } from './shared/ui';
-import { HealthCheckService } from 'libs/shared/data-access/src/lib/services';
 
 /**
  * Load app data
