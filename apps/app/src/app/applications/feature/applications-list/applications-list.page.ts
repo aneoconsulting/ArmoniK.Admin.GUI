@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import {
   GrpcPagerService,
   ListApplicationsRequest,
@@ -8,7 +9,6 @@ import {
 } from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
-import { GrpcApplicationsService } from 'libs/applications/data-access/src';
 import {
   BehaviorSubject,
   catchError,
