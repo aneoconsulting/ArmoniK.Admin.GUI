@@ -34,3 +34,4 @@ export {
 export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
 export { BaseGrpcService, GrpcPagerService } from './lib/services';
 export { GrpcParams } from './lib/types';
+export { ExternalServicesEnum } from './lib/enums';

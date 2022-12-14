@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { distinctUntilChanged, filter, first, merge } from 'rxjs';
-import {
-  AppNavLink,
-  ExternalServicesEnum,
-  GrafanaService,
-  HistoryService,
-  SeqService,
-  SettingsService,
-} from './shared/util';
+import { ExternalServicesEnum } from '@armonik.admin.gui/shared/data-access';
+import { HealthCheckService } from 'libs/shared/data-access/src/lib/services';
+import { distinctUntilChanged, filter, merge, take } from 'rxjs';
+import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 
 @Component({
   selector: 'app-root',
@@ -37,15 +32,20 @@ export class AppComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private _seqService: SeqService,
-    private _grafanaService: GrafanaService,
+    private _healthCheckService: HealthCheckService,
     private _historyService: HistoryService,
     public settingsService: SettingsService
   ) {}
 
   ngOnInit(): void {
-    merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
-      .pipe(first())
+    merge(
+      this._healthCheckService.healthCheck$('/seq', ExternalServicesEnum.SEQ),
+      this._healthCheckService.healthCheck$(
+        '/grafana',
+        ExternalServicesEnum.GRAFANA
+      )
+    )
+      .pipe(take(2))
       .subscribe(({ isResponseOk, service }) => {
         if (isResponseOk && service === ExternalServicesEnum.SEQ) {
           this.settingsService.seqSubject$.next(true);

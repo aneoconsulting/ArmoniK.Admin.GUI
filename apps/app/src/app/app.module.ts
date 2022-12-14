@@ -30,6 +30,7 @@ import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/technology-shapes';
 import { TheHeaderComponent } from './shared/ui';
+import { HealthCheckService } from 'libs/shared/data-access/src/lib/services';
 
 /**
  * Load app data
@@ -55,6 +56,7 @@ import { TheHeaderComponent } from './shared/ui';
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
     { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
     { provide: Window, useValue: window },
+    HealthCheckService,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
