@@ -12,6 +12,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
+import { AuthService } from './shared/data-access/auth.service';
 import {
   TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
@@ -31,7 +32,6 @@ import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/technology-shapes';
-import { AuthService } from './shared/data-access/auth.service';
 
 /**
  * Load app data
