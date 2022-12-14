@@ -19,6 +19,13 @@
   </clr-header>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
+      <ng-container *ngIf="currentUser$ | async as user">
+        <div clrVerticalNavLink>
+          <clr-icon shape="user" clrVerticalNavIcon></clr-icon>
+          {{ user.username }}
+        </div>
+        <div class="nav-divider"></div>
+      </ng-container>
       <a
         *ngFor="let link of links; trackBy: trackByLabel"
         clrVerticalNavLink

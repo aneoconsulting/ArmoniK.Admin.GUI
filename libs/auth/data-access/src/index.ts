@@ -1,1 +1,1 @@
-export * from './lib/auth-data-access/auth-data-access.component';
+export { GrpcAuthService } from './lib/services';

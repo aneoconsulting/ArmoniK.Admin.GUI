@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import { distinctUntilChanged, filter, first, merge } from 'rxjs';
+import { AuthService } from './shared/data-access/auth.service';
 import {
   AppNavLink,
   ExternalServicesEnum,
@@ -40,6 +42,8 @@ export class AppComponent implements OnInit {
     private _seqService: SeqService,
     private _grafanaService: GrafanaService,
     private _historyService: HistoryService,
+    private _authService: AuthService,
+    private _grpcAuthService: GrpcAuthService,
     public settingsService: SettingsService
   ) {}
 
@@ -55,6 +59,14 @@ export class AppComponent implements OnInit {
         }
       });
 
+    // Get current user
+    this._grpcAuthService
+      .currentUser$()
+      .pipe(first())
+      .subscribe((response) => {
+        this._authService.user = response.user ?? null;
+      });
+
     // Add current url to history
     this._historyService.add(this._router.url);
     // Subscribe to router events to track url changes
@@ -68,6 +80,10 @@ export class AppComponent implements OnInit {
       .subscribe((event) => {
         this._historyService.add((event as NavigationEnd).urlAfterRedirects);
       });
+  }
+
+  public get currentUser$() {
+    return this._authService.user$;
   }
 
   /** Used to track label
