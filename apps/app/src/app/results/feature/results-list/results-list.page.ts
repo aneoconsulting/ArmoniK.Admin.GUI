@@ -15,7 +15,6 @@ import {
   catchError,
   concatMap,
   distinctUntilChanged,
-  interval,
   map,
   merge,
   Observable,

@@ -31,6 +31,12 @@ export class GrpcApplicationsService extends BaseGrpcService {
           params.order ||
           ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
+      filter: {
+        name: '',
+        namespace: '',
+        service: '',
+        version: '',
+      },
     });
 
     return this._applicationsClient

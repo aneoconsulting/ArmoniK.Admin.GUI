@@ -2,7 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'sessions', pathMatch: 'full' },
+  { path: '', redirectTo: 'applications', pathMatch: 'full' },
+  {
+    path: 'applications',
+    loadChildren: () =>
+      import(
+        './applications/feature/applications-list/applications-list.module'
+      ).then((m) => m.ApplicationsListModule),
+  },
   {
     path: 'sessions',
     loadChildren: () =>

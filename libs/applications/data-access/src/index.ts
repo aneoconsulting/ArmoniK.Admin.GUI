@@ -1,1 +1,1 @@
-export * from './lib/applications-data-access/applications-data-access.component';
+export { GrpcApplicationsService } from './lib/services/grpc-applications.service';
