@@ -48,6 +48,16 @@
           "disabled": "Désactivé"
         },
         "disable": "Désactiver"
+      },
+      "filters": {
+        "date": {
+          "before": "Avant le",
+          "after": "Après le"
+        },
+        "warning": {
+          "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
+          "after_date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
+        }
       }
     },
     "sessions-list": {
