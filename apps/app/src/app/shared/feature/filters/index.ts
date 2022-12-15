@@ -1,1 +1,1 @@
-export {} from './combobox-filter/combobox-filter.component';
+export { ComboBoxFilterComponent } from './combobox-filter/combobox-filter.component';
