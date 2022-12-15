@@ -36,38 +36,51 @@ export class GrpcResultsService extends BaseGrpcService {
       ListResultsRequest.OrderDirection,
       ListResultsRequest.Filter.AsObject
     > = {};
-    const filter: ListResultsRequest.Filter.AsObject = {
-      sessionId: '',
-      name: '',
-      ownerTaskId: '',
-      status: 0,
-    };
-
+    const filter: ListResultsRequest.Filter.AsObject = {};
     for (const [key, value] of Object.entries(urlParams)) {
-      if (key == 'page') {
-        grpcParams.page = value as number;
-      } else if (key == 'PageSize') {
-        grpcParams.pageSize = value as number;
-      } else if (key === 'order') {
-        grpcParams.order = value as number;
-      } else if (key === 'orderBy') {
-        grpcParams.orderBy = value as number;
-      } else {
-        if (key === 'name') {
+      switch (key) {
+        case 'page': {
+          grpcParams.page = value as number;
+          break;
+        }
+        case 'PageSize': {
+          grpcParams.pageSize = value as number;
+          break;
+        }
+        case 'order': {
+          grpcParams.order = value as number;
+          break;
+        }
+        case 'orderBy': {
+          grpcParams.orderBy = value as number;
+          break;
+        }
+        case 'name': {
           filter.name = value as string;
-        } else if (key === 'sessionId') {
+          break;
+        }
+        case 'sessionId': {
           filter.sessionId = value as string;
-        } else if (key === 'taskId') {
+          break;
+        }
+        case 'taskId': {
           filter.ownerTaskId = value as string;
-        } else if (key === 'status') {
+          break;
+        }
+        case 'status': {
           filter.status = value as number;
-        } else if (key === 'createdBefore') {
+          break;
+        }
+        case 'createdBefore': {
           filter.createdBefore = this._createTimeFilter(value as number);
-        } else if (key === 'createdAfter') {
+          break;
+        }
+        case 'createdAfter': {
           // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
           filter.createdAfter = this._createTimeFilter(
             (value as number) + 86400000
           );
+          break;
         }
       }
     }

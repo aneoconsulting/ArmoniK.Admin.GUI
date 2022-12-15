@@ -40,46 +40,64 @@ export class GrpcTasksService extends BaseGrpcService {
       ListTasksRequest.OrderDirection,
       ListTasksRequest.Filter.AsObject
     > = {};
-    const filter: ListTasksRequest.Filter.AsObject = {
-      sessionId: '',
-      status: 0,
-    };
+    const filter: ListTasksRequest.Filter.AsObject = {};
 
     for (const [key, value] of Object.entries(urlParams)) {
-      if (key === 'page') {
-        grpcParams.page = value as number;
-      } else if (key === 'pageSize') {
-        grpcParams.pageSize = value as number;
-      } else if (key === 'order') {
-        grpcParams.order = value as number;
-      } else if (key === 'orderBy') {
-        grpcParams.orderBy = value as number;
-      } else {
-        if (key === 'id') {
+      switch (key) {
+        case 'page': {
+          grpcParams.page = value as number;
+          break;
+        }
+        case 'pageSize': {
+          grpcParams.pageSize = value as number;
+          break;
+        }
+        case 'order': {
+          grpcParams.order = value as number;
+          break;
+        }
+        case 'orderBy': {
+          grpcParams.orderBy = value as number;
+          break;
+        }
+        case 'sessionId': {
           filter.sessionId = value as string;
-        } else if (key === 'sessionId') {
-          filter.sessionId = value as string;
-        } else if (key === 'status') {
+          break;
+        }
+        case 'status': {
           filter.status = value as number;
-        } else if (key === 'createdAtBefore') {
+          break;
+        }
+        case 'createdAtBefore': {
           filter.createdBefore = this._createTimeFilter(value as number);
-        } else if (key === 'createdAtAfter') {
+          break;
+        }
+        case 'createdAtAfter': {
           // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
           filter.createdAfter = this._createTimeFilter(
             (value as number) + 86400000
           );
-        } else if (key === 'startedAtBefore') {
+          break;
+        }
+        case 'startedAtBefore': {
           filter.startedBefore = this._createTimeFilter(value as number);
-        } else if (key === 'startedAtAfter') {
+          break;
+        }
+        case 'startedAtAfter': {
           filter.startedAfter = this._createTimeFilter(
             (value as number) + 86400000
           );
-        } else if (key === 'endedAtBefore') {
+          break;
+        }
+        case 'endedAtBefore': {
           filter.endedBefore = this._createTimeFilter(value as number);
-        } else if (key === 'endedAtAfter') {
+          break;
+        }
+        case 'endedAtAfter': {
           filter.endedAfter = this._createTimeFilter(
             (value as number) + 86400000
           );
+          break;
         }
       }
     }
