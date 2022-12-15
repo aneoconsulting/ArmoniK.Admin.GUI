@@ -58,7 +58,7 @@ export class IdFilterComponent
   }
 
   onChange() {
-    this.inputSubject.next(this.inputValue);
+    this.input.next(this.inputValue);
   }
 
   clear() {

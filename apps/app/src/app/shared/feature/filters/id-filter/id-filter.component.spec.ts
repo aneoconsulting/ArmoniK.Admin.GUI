@@ -47,7 +47,7 @@ describe('IdFilterComponent', () => {
 
   it('should send the input value on change', () => {
     let testValue = '';
-    component.subscription = component.inputSubject.subscribe(
+    component.subscription = component.input.subscribe(
       (value) => (testValue = value)
     );
     component.inputValue = 'test';
