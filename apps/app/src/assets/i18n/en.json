@@ -56,6 +56,9 @@
       "filters": {
         "select_many_title": "Select one or more value.",
         "clear_filter": "Clear the filter",
+        "warning": {
+          "combobox": "You can select more than one value."
+        },
         "select_list": {
           "default": "All",
           "SESSION_STATUS_UNSPECIFIED": "Unspecified",

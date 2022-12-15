@@ -1,6 +1,12 @@
 <clr-combobox-container>
   <label>
     {{ 'pages.components.filters.select_many_title' | translate }}
+    <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+      <cds-icon shape="info-circle" size="22"></cds-icon>
+      <span class="tooltip-content">
+        {{ 'pages.components.filters.warning.combobox' | translate }}
+      </span>
+    </a>
   </label>
   <clr-combobox
     [ngModel]="selectedValues"
