@@ -33,7 +33,7 @@ describe('IdFilterComponent', () => {
   });
 
   it('should have a subject', () => {
-    expect(component.inputSubject).toBeDefined();
+    expect(component.input).toBeDefined();
   });
 
   it('should have a subscription', () => {
