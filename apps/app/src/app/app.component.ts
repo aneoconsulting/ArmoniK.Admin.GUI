@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
-import { distinctUntilChanged, filter, first, merge } from 'rxjs';
+import { User } from '@armonik.admin.gui/shared/data-access';
+import { distinctUntilChanged, filter, first, merge, Observable } from 'rxjs';
 import { AuthService } from './shared/data-access/auth.service';
 import {
   AppNavLink,
@@ -59,13 +60,7 @@ export class AppComponent implements OnInit {
         }
       });
 
-    // Get current user
-    this._grpcAuthService
-      .currentUser$()
-      .pipe(first())
-      .subscribe((response) => {
-        this._authService.user = response.user ?? null;
-      });
+    this.authenticateUser();
 
     // Add current url to history
     this._historyService.add(this._router.url);
@@ -82,8 +77,22 @@ export class AppComponent implements OnInit {
       });
   }
 
-  public get currentUser$() {
+  public get currentUser$(): Observable<User | null> {
     return this._authService.user$;
+  }
+
+  /**
+   * Authenticate user and set user to auth service
+   *
+   * @returns void
+   */
+  public authenticateUser() {
+    this._grpcAuthService
+      .currentUser$()
+      .pipe(first())
+      .subscribe((response) => {
+        this._authService.user = response.user ?? null;
+      });
   }
 
   /** Used to track label
