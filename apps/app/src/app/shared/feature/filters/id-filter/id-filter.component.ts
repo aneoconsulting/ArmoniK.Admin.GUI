@@ -54,7 +54,7 @@ export class IdFilterComponent
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 
   onChange() {
