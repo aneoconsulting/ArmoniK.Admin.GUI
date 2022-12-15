@@ -36,7 +36,14 @@ export class GrpcResultsService extends BaseGrpcService {
       ListResultsRequest.OrderDirection,
       ListResultsRequest.Filter.AsObject
     > = {};
-    const filter: ListResultsRequest.Filter.AsObject = {};
+
+    const filter: ListResultsRequest.Filter.AsObject = {
+      sessionId: '',
+      name: '',
+      ownerTaskId: '',
+      status: 0,
+    };
+
     for (const [key, value] of Object.entries(urlParams)) {
       switch (key) {
         case 'page': {

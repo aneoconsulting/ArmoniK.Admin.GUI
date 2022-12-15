@@ -44,7 +44,7 @@ export class GrpcSessionsService extends BaseGrpcService {
       applicationName: '',
       applicationVersion: '',
       sessionId: '',
-      status: 0
+      status: 0,
     };
 
     for (const [key, value] of Object.entries(urlParams)) {
