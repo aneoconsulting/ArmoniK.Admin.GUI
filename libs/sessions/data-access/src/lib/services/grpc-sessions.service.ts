@@ -40,7 +40,12 @@ export class GrpcSessionsService extends BaseGrpcService {
       ListSessionsRequest.OrderDirection,
       ListSessionsRequest.Filter.AsObject
     > = {};
-    const filter: ListSessionsRequest.Filter.AsObject = {};
+    const filter: ListSessionsRequest.Filter.AsObject = {
+      applicationName: '',
+      applicationVersion: '',
+      sessionId: '',
+      status: 0
+    };
 
     for (const [key, value] of Object.entries(urlParams)) {
       switch (key) {
