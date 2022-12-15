@@ -52,6 +52,13 @@
           "disabled": "Disabled"
         },
         "disable": "Disable"
+      },
+      "filters": {
+        "filter": "Filter",
+        "clear_filter": "Clear the filter",
+        "warning": {
+          "id": "Will display data with an Id strictly equal to the one indicated."
+        }
       }
     },
     "sessions-list": {
