@@ -40,7 +40,11 @@ export class GrpcTasksService extends BaseGrpcService {
       ListTasksRequest.OrderDirection,
       ListTasksRequest.Filter.AsObject
     > = {};
-    const filter: ListTasksRequest.Filter.AsObject = {};
+
+    const filter: ListTasksRequest.Filter.AsObject = {
+      sessionId: '',
+      status: 0,
+    };
 
     for (const [key, value] of Object.entries(urlParams)) {
       switch (key) {
