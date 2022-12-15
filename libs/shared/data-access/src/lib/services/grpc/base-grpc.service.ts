@@ -1,5 +1,5 @@
 import { mergeMap, throwError, timer } from 'rxjs';
-import { TimeFilter } from '../types/time-filter-type';
+import { TimeFilter } from '../../types/time-filter-type';
 
 export class BaseGrpcService {
   // Timeout for gRPC requests. 8 seconds is an arbitrary value that should be under 10 seconds, which is the default value for auto refresh.
