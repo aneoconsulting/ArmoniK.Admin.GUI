@@ -2,6 +2,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
@@ -12,6 +13,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       providers: [
+        HealthCheckService,
         SettingsService,
         HistoryService,
         {
