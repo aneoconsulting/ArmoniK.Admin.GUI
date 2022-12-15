@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ClrIconModule, ClrVerticalNavModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { FavoritesService } from '../../util';
+import { FavoriteItem, FavoritesService } from '../../util';
 
 @Component({
   standalone: true,
@@ -24,7 +24,7 @@ import { FavoritesService } from '../../util';
 export class TheFavoritesNavigationComponent {
   constructor(private _favoritesService: FavoritesService) {}
 
-  public get favorites$(): Observable<{ path: string; label: string }[]> {
+  public get favorites$(): Observable<FavoriteItem[]> {
     return this._favoritesService.favorites$;
   }
 
@@ -36,10 +36,7 @@ export class TheFavoritesNavigationComponent {
    *
    * @returns Item path
    */
-  public trackByFavorites(
-    _: number,
-    item: { path: string; label: string }
-  ): string {
-    return item.path;
+  public trackByFavorites(_: number, item: FavoriteItem): string {
+    return item.label;
   }
 }

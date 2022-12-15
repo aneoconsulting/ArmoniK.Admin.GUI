@@ -2,23 +2,18 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
-import {
-  GrafanaService,
-  HistoryService,
-  SeqService,
-  SettingsService,
-} from './shared/util';
+import { HistoryService, SettingsService } from './shared/util';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       providers: [
-        SeqService,
-        GrafanaService,
+        HealthCheckService,
         SettingsService,
         HistoryService,
         {
