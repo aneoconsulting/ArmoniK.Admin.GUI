@@ -1,0 +1,30 @@
+<clr-combobox-container>
+  <label>
+    {{ 'pages.components.filters.select_many_title' | translate }}
+  </label>
+  <clr-combobox
+    [ngModel]="selectedValues"
+    (clrSelectionChange)="onSelectionChange()"
+    clrMulti="true"
+  >
+    <ng-container *clrOptionSelected="let selected">
+      {{
+        'pages.components.filters.select_list.' + selectionList[selected]
+          | translate
+      }}
+    </ng-container>
+    <clr-options>
+      <clr-option
+        *clrOptionItems="let item of selectionList"
+        clrOptionItemsField="label"
+        [clrValue]="item.value"
+      >
+        {{ 'pages.components.filters.select_list.' + item.label | translate }}
+      </clr-option>
+    </clr-options>
+  </clr-combobox>
+</clr-combobox-container>
+
+<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
+  {{ 'pages.components.filters.clear_filter' | translate }}
+</button>

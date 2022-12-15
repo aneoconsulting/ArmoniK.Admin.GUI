@@ -52,6 +52,9 @@
           "disabled": "Disabled"
         },
         "disable": "Disable"
+      },
+      "filters": {
+        "select_many_title": "Select one or more value."
       }
     },
     "sessions-list": {
