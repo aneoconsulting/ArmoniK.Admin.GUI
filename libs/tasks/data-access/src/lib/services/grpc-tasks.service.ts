@@ -10,7 +10,6 @@ import {
   ListTasksResponse,
   TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
-import { TimeFilter } from '@armonik.admin.gui/shared/feature';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
@@ -127,12 +126,5 @@ export class GrpcTasksService extends BaseGrpcService {
     return this._tasksClient
       .cancelTasks(options)
       .pipe(takeUntil(this._timeout$));
-  }
-
-  private _createTimeFilter(value: number): TimeFilter {
-    return {
-      nanos: 0,
-      seconds: (value / 1000).toString(),
-    };
   }
 }
