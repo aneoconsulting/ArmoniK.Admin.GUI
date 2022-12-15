@@ -33,7 +33,7 @@ export class IdFilterComponent
   @Input() inputValue = '';
 
   inputSubject = new Subject<string>();
-  subscription: Subscription = new Subscription();
+  subscription: Subscription | null = null;
 
   get property() {
     return this.name;
