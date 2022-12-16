@@ -25,10 +25,6 @@
     "return_to_sessions": "Return to sessions",
     "return_to_tasks": "Return to tasks"
   },
-  "applications_subnav": {
-    "no_current_applications": "No current application",
-    "close_tab": "Close tab"
-  },
   "pages": {
     "components": {
       "modal_favorites": {
@@ -57,8 +53,14 @@
         "filter": "Filter",
         "clear_filter": "Clear the filter",
         "warning": {
-          "id": "Will display data with an Id strictly equal to the one indicated."
-        }
+          "id": "Will display data with an Id strictly equal to the one indicated.",
+          "before_date": "Will display data with a date strictly inferior than indicated.",
+          "after_date": "Will display data with a date strictly superior than indicated."
+        },
+        "date": {
+          "before": "Before the",
+          "after": "After the"
+        },
       }
     },
     "sessions-list": {

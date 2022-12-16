@@ -25,10 +25,6 @@
     "return_to_sessions": "Retour aux sessions",
     "return_to_tasks": "Retour aux tâches"
   },
-  "applications_subnav": {
-    "no_current_applications": "Aucune application sélectionnée",
-    "close_tab": "Fermer l'onglet"
-  },
   "pages": {
     "components": {
       "modal_favorites": {
@@ -57,7 +53,13 @@
         "filter": "Filtre",
         "clear_filter": "Supprimer le filtre",
         "warning": {
-          "id": "Affichera les données avec un ID strictement égal à celui indiqué."
+          "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
+          "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
+          "after_date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
+        },
+        "date": {
+          "before": "Avant le",
+          "after": "Après le"
         }
       }
     },
