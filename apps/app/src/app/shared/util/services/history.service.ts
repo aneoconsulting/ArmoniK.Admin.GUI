@@ -1,22 +1,53 @@
 import { Injectable } from '@angular/core';
+import { Params, UrlSerializer } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
+
+export type HistoryItem = {
+  title: string;
+  url: string;
+  queryParams: Params;
+};
 
 @Injectable()
 export class HistoryService {
   private _maxHistorySize = 3;
 
-  private _history: Set<string> = new Set<string>();
-  private _historySubject = new BehaviorSubject<Set<string>>(this._history);
-  private _history$: Observable<Set<string>> =
-    this._historySubject.asObservable();
+  private _history = new BehaviorSubject<Set<string>>(new Set());
 
-  constructor(private _localStorage: Storage) {
-    this._history = this._recover();
-    this._historySubject.next(this._history);
+  constructor(
+    private _localStorage: Storage,
+    private _urlSerializer: UrlSerializer
+  ) {
+    this._history.next(this._recover());
   }
 
-  public get history$(): Observable<string[]> {
-    return this._history$.pipe(map((history) => [...history].reverse()));
+  public get history$(): Observable<HistoryItem[]> {
+    return this._history.pipe(
+      map((history) => [...history].reverse()),
+      map((history) => {
+        return history.map((url) => {
+          const urlTree = this._urlSerializer.parse(url);
+          const root = urlTree.root;
+          const queryParams = urlTree.queryParams;
+
+          if (!root.children['primary']) {
+            return {
+              title: url,
+              url: url,
+              queryParams: queryParams,
+            };
+          }
+
+          return {
+            title: url,
+            url: root.children['primary'].segments
+              .map((segment) => segment.path)
+              .join('/'),
+            queryParams: queryParams,
+          };
+        });
+      })
+    );
   }
 
   /**
@@ -26,27 +57,34 @@ export class HistoryService {
    */
   public add(url: string) {
     // Used to pull up a URL already in the history
-    if (this._history.has(url)) {
-      this._history.delete(url);
+    if (this._historyValue.has(url)) {
+      this._historyValue.delete(url);
     }
 
-    this._history.add(url);
+    this._historyValue.add(url);
 
     // Remove the oldest URL if the history is too big
-    if (this._history.size > this._maxHistorySize) {
-      this._history.delete(this._history.values().next().value);
+    if (this._historyValue.size > this._maxHistorySize) {
+      this._historyValue.delete(this._historyValue.values().next().value);
     }
 
-    this._historySubject.next(this._history);
+    this._history.next(this._historyValue);
 
     this._store();
+  }
+
+  private get _historyValue(): Set<string> {
+    return this._history.getValue();
   }
 
   /**
    * Store history in local storage
    */
   private _store(): void {
-    this._localStorage.setItem('history', JSON.stringify([...this._history]));
+    this._localStorage.setItem(
+      'history',
+      JSON.stringify([...this._historyValue])
+    );
   }
 
   /**

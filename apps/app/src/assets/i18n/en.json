@@ -25,10 +25,6 @@
     "return_to_sessions": "Return to sessions",
     "return_to_tasks": "Return to tasks"
   },
-  "applications_subnav": {
-    "no_current_applications": "No current application",
-    "close_tab": "Close tab"
-  },
   "pages": {
     "components": {
       "modal_favorites": {
@@ -52,6 +48,16 @@
           "disabled": "Disabled"
         },
         "disable": "Disable"
+      },
+      "filters": {
+        "date": {
+          "before": "Before the",
+          "after": "After the"
+        },
+        "warning": {
+          "before_date": "Will display data with a date strictly inferior than indicated.",
+          "after_date": "Will display data with a date strictly superior than indicated."
+        }
       }
     },
     "sessions-list": {
