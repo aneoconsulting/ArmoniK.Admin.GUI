@@ -50,7 +50,6 @@
         "disable": "Désactiver"
       },
       "filters": {
-
         "select_title": "Sélectionnez une valeur :",
         "clear_filter": "Supprimer le filtre",
         "warning": {
