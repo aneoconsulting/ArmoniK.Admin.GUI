@@ -60,7 +60,7 @@
         "date": {
           "before": "Before the",
           "after": "After the"
-        },
+        }
       }
     },
     "sessions-list": {
