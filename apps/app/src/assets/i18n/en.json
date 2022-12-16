@@ -140,24 +140,6 @@
       "modal": {
         "title": "Task",
         "close": "Close"
-      },
-      "filters": {
-        "status": {
-          "title": "Select a status",
-          "default": "All",
-          "UNSPECIFIED": "Unspecified",
-          "CREATING": "Creating",
-          "SUBMITTED": "Submitted",
-          "DISPATCHED": "Dispatched",
-          "PROCESSING": "Processing",
-          "PROCESSED": "Processed",
-          "COMPLETED": "Completed",
-          "ERROR": "Error",
-          "FAILED": "Failed",
-          "TIMEOUT": "Timeout",
-          "CANCELLING": "Cancelling",
-          "CANCELLED": "Cancelled"
-        }
       }
     },
     "results-list": {

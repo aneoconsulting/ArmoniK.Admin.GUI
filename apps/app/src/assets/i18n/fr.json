@@ -140,24 +140,6 @@
       "modal": {
         "title": "Tâche",
         "close": "Fermer"
-      },
-      "filters": {
-        "status": {
-          "title": "Filtres",
-          "default": "Toutes",
-          "UNSPECIFIED": "Non spécifié",
-          "CREATING": "Création",
-          "SUBMITTED": "Soumise",
-          "DISPATCHED": "Dépôt",
-          "PROCESSING": "En cours",
-          "PROCESSED": "Traitée",
-          "COMPLETED": "Terminée",
-          "ERROR": "Erreur",
-          "FAILED": "Échouée",
-          "TIMEOUT": "Temps écoulé",
-          "CANCELLING": "Annulation",
-          "CANCELLED": "Annulée"
-        }
       }
     },
     "results-list": {
