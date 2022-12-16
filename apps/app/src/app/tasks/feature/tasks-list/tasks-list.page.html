@@ -91,15 +91,15 @@
       "
     >
       {{ 'pages.tasks-list.columns.created_at' | translate }}
-      <!-- <clr-dg-filter [clrDgFilter]="createdDateFilter">
+      <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
-          [name]="'createdAt'"
+          [name]="'created'"
           [beforeDate]="(queryDateParam$('createdAtBefore') | async) || null"
           [afterDate]="(queryDateParam$('createdAtAfter') | async) || null"
           #createdDateFilter
         >
         </app-date-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
@@ -108,30 +108,30 @@
       "
     >
       {{ 'pages.tasks-list.columns.started_at' | translate }}
-      <!-- <clr-dg-filter [clrDgFilter]="startedDateFilter">
+      <clr-dg-filter [clrDgFilter]="startedDateFilter">
         <app-date-filter
-          [name]="'startedAt'"
+          [name]="'started'"
           [beforeDate]="(queryDateParam$('startedAtBefore') | async) || null"
           [afterDate]="(queryDateParam$('startedAtAfter') | async) || null"
           #startedDateFilter
         >
         </app-date-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
     >
       {{ 'pages.tasks-list.columns.ended_at' | translate }}
-      <!-- <clr-dg-filter [clrDgFilter]="endedDateFilter">
+      <clr-dg-filter [clrDgFilter]="endedDateFilter">
         <app-date-filter
-          [name]="'endedAt'"
+          [name]="'ended'"
           [beforeDate]="(queryDateParam$('endedAtBefore') | async) || null"
           [afterDate]="(queryDateParam$('endedAtAfter') | async) || null"
           #endedDateFilter
         >
         </app-date-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.tasks-list.columns.actions' | translate }}
