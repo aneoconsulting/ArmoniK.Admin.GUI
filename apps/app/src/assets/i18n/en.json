@@ -51,8 +51,10 @@
       },
       "filters": {
         "filter": "Filter",
+        "select_many_title": "Select one or more value.",
         "clear_filter": "Clear the filter",
         "warning": {
+          "combobox": "You can select more than one value.",
           "id": "Will display data with an Id strictly equal to the one indicated.",
           "before_date": "Will display data with a date strictly inferior than indicated.",
           "after_date": "Will display data with a date strictly superior than indicated."
@@ -60,6 +62,29 @@
         "date": {
           "before": "Before the",
           "after": "After the"
+        },
+        "select_list": {
+          "default": "All",
+          "SESSION_STATUS_UNSPECIFIED": "Unspecified",
+          "SESSION_STATUS_RUNNING": "Running",
+          "SESSION_STATUS_CANCELLED": "Cancelled",
+          "TASK_STATUS_UNSPECIFIED": "Unspecified",
+          "TASK_STATUS_CREATING": "Creating",
+          "TASK_STATUS_SUBMITTED": "Submitted",
+          "TASK_STATUS_DISPATCHED": "Dispatched",
+          "TASK_STATUS_PROCESSING": "Processing",
+          "TASK_STATUS_PROCESSED": "Processed",
+          "TASK_STATUS_COMPLETED": "Completed",
+          "TASK_STATUS_ERROR": "Error",
+          "TASK_STATUS_FAILED": "Failed",
+          "TASK_STATUS_TIMEOUT": "Timeout",
+          "TASK_STATUS_CANCELLING": "Cancelling",
+          "TASK_STATUS_CANCELLED": "Cancelled",
+          "RESULT_STATUS_UNSPECIFIED": "Unspecified",
+          "RESULT_STATUS_CREATED": "Creating",
+          "RESULT_STATUS_COMPLETED": "Completed",
+          "RESULT_STATUS_ABORTED": "Aborted",
+          "RESULT_STATUS_NOTFOUND": "Not found"
         }
       }
     },
