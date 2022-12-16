@@ -22,8 +22,7 @@ describe('TheFavoritesModalComponent', () => {
           useValue: {
             add: jasmine.createSpy('add'),
             remove: jasmine.createSpy('remove'),
-            has$: jasmine.createSpy('has$'),
-            get$: jasmine.createSpy('get$'),
+            get: jasmine.createSpy('get'),
           },
         },
       ],
@@ -87,23 +86,15 @@ describe('TheFavoritesModalComponent', () => {
   describe('togglePageFavorite', () => {
     it('should remove the favorite when already set', () => {
       const favoritesService = TestBed.inject(FavoritesService);
-      favoritesService.has$ = jasmine
-        .createSpy('has$')
-        .and.returnValue(
-          new Observable<boolean>((observer) => observer.next(true))
-        );
+
+      component.currentFavoriteName = 'test';
 
       component.togglePageFavorite();
 
       expect(favoritesService.remove).toHaveBeenCalled();
     });
     it('should open modal if the favorite is not set', () => {
-      const favoritesService = TestBed.inject(FavoritesService);
-      favoritesService.has$ = jasmine
-        .createSpy('has$')
-        .and.returnValue(
-          new Observable<boolean>((observer) => observer.next(false))
-        );
+      component.currentFavoriteName = null;
 
       component.togglePageFavorite();
 

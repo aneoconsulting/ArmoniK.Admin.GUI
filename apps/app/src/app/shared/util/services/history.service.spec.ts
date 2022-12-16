@@ -32,7 +32,7 @@ describe('HistoryService', () => {
     service.add(url);
 
     service.history$.pipe(first()).subscribe((history) => {
-      expect(history).toContain(url);
+      expect(history[0].title).toContain(url);
     });
   });
 
@@ -42,7 +42,8 @@ describe('HistoryService', () => {
     service.add(url);
 
     service.history$.pipe(first()).subscribe((history) => {
-      expect(history).toEqual([url]);
+      expect(history[0].title).toEqual(url);
+      expect(history.length).toEqual(1);
     });
   });
 
@@ -57,7 +58,7 @@ describe('HistoryService', () => {
     service.add(url4);
 
     service.history$.pipe(first()).subscribe((history) => {
-      expect(history).toEqual([url4, url3, url2]);
+      expect(history.length).toEqual(3);
     });
   });
 
@@ -75,7 +76,7 @@ describe('HistoryService', () => {
 
   it('should recover history from local storage', () => {
     service.history$.pipe(first()).subscribe((history) => {
-      expect(history).toEqual(['https://www.angular.io']);
+      expect(history[0].title).toEqual('https://www.angular.io');
     });
   });
 });

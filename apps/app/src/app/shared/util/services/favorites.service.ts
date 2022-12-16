@@ -1,26 +1,46 @@
 import { Injectable } from '@angular/core';
+import { UrlSerializer, Params } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
+
+export type FavoriteItem = {
+  url: string;
+  queryParams: Params;
+  label: string;
+};
 
 @Injectable()
 export class FavoritesService {
-  private _favorites: Map<string, string> = new Map();
-  private _favoritesSubject = new BehaviorSubject<Map<string, string>>(
-    this._favorites
-  );
-  private _favorites$ = this._favoritesSubject.asObservable();
+  private _favorites = new BehaviorSubject<Map<string, string>>(new Map());
 
-  constructor(private _storage: Storage) {
-    this._favorites = this._recover();
-    this._favoritesSubject.next(this._favorites);
+  constructor(
+    private _storage: Storage,
+    private _urlSerializer: UrlSerializer
+  ) {
+    this._favorites.next(this._recover());
   }
 
-  public get favorites$(): Observable<{ path: string; label: string }[]> {
-    return this._favorites$.pipe(
+  public get favorites$(): Observable<FavoriteItem[]> {
+    return this._favorites.pipe(
       map((favorites) => {
-        return Array.from(favorites.entries()).map(([path, label]) => {
+        return Array.from(favorites.entries()).map(([url, label]) => {
+          const urlTree = this._urlSerializer.parse(url);
+          const root = urlTree.root;
+          const queryParams = urlTree.queryParams;
+
+          if (!root.children['primary']) {
+            return {
+              label,
+              url: url,
+              queryParams: queryParams,
+            };
+          }
+
           return {
-            path,
             label,
+            url: root.children['primary'].segments
+              .map((segment) => segment.path)
+              .join('/'),
+            queryParams: queryParams,
           };
         });
       })
@@ -34,8 +54,8 @@ export class FavoritesService {
    * @param favoriteName name to give to an URL
    */
   add(url: string, favoriteName: string): void {
-    this._favorites.set(url, favoriteName);
-    this._favoritesSubject.next(this._favorites);
+    this._favoritesValue.set(url, favoriteName);
+    this._favorites.next(this._favoritesValue);
 
     this._store();
   }
@@ -46,23 +66,10 @@ export class FavoritesService {
    * @param key Key to remove
    */
   remove(key: string): void {
-    this._favorites.delete(key);
-    this._favoritesSubject.next(this._favorites);
+    this._favoritesValue.delete(key);
+    this._favorites.next(this._favoritesValue);
 
     this._store();
-  }
-
-  /**
-   * Check if a favorite exists
-   *
-   * @param key key to find
-   */
-  has$(key: string): Observable<boolean> {
-    return this._favorites$.pipe(
-      map((favorites) => {
-        return favorites.has(key);
-      })
-    );
   }
 
   /**
@@ -70,12 +77,12 @@ export class FavoritesService {
    *
    * @param key key to find
    */
-  get$(key: string): Observable<string | undefined> {
-    return this._favorites$.pipe(
-      map((favorites) => {
-        return favorites.get(key);
-      })
-    );
+  get(key: string): string | null {
+    return this._favoritesValue.get(key) ?? null;
+  }
+
+  private get _favoritesValue(): Map<string, string> {
+    return this._favorites.getValue();
   }
 
   /**
@@ -84,7 +91,7 @@ export class FavoritesService {
   private _store(): void {
     this._storage.setItem(
       'favorites',
-      JSON.stringify(Array.from(this._favorites.entries()))
+      JSON.stringify(Array.from(this._favoritesValue.entries()))
     );
   }
 

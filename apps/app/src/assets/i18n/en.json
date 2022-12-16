@@ -22,10 +22,6 @@
     "return_to_sessions": "Return to sessions",
     "return_to_tasks": "Return to tasks"
   },
-  "applications_subnav": {
-    "no_current_applications": "No current application",
-    "close_tab": "Close tab"
-  },
   "pages": {
     "components": {
       "modal_favorites": {

@@ -7,15 +7,12 @@ import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { LocaleProvider } from './providers';
 import {
-  ApiService,
   ErrorService,
   BrowserTitleService,
   FavoritesService,
-  GrafanaService,
   HistoryService,
   LanguageService,
   PagerService,
-  SeqService,
   SettingsService,
 } from './services';
 
@@ -42,12 +39,9 @@ import {
     LanguageService,
     SettingsService,
     HistoryService,
-    ApiService,
     ErrorService,
     FavoritesService,
     PagerService,
-    SeqService,
-    GrafanaService,
     {
       provide: Storage,
       useFactory: () => localStorage,

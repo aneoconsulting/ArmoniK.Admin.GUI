@@ -2,6 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrIconModule,
   ClrLayoutModule,
@@ -12,13 +13,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
 import {
-  TheApplicationsSubnavComponent,
   TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
   TheHeaderTimeComponent,
   TheHistoryNavigationComponent,
   TheLanguagesSelectorComponent,
 } from './shared/feature';
+import { TheHeaderComponent } from './shared/ui';
 import {
   CoreModule,
   LanguageService,
@@ -30,7 +31,6 @@ import '@clr/icons/shapes/chart-shapes';
 import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/technology-shapes';
-import { TheHeaderComponent } from './shared/ui';
 
 /**
  * Load app data
@@ -44,7 +44,6 @@ import { TheHeaderComponent } from './shared/ui';
     AppRoutingModule,
     AppTranslateModule,
     BrowserModule,
-    TheApplicationsSubnavComponent,
     TheLanguagesSelectorComponent,
     TheHeaderComponent,
     TheHistoryNavigationComponent,
@@ -57,6 +56,7 @@ import { TheHeaderComponent } from './shared/ui';
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
     { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
     { provide: Window, useValue: window },
+    HealthCheckService,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

@@ -1,4 +1,3 @@
-export { TheApplicationsSubnavComponent } from './the-application-subnav/the-applications-subnav.component';
 export { TheFavoritesModalComponent } from './the-favorites-modal/the-favorites-modal.component';
 export { TheFavoritesNavigationComponent } from './the-favorites-navigation/the-favorites-navigation.component';
 export { TheHeaderTimeComponent } from '../ui/the-header-time/the-header-time.component';
