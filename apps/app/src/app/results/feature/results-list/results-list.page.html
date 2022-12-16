@@ -35,14 +35,14 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
       {{ 'pages.results-list.columns.name' | translate }}
-      <!-- <clr-dg-filter [clrDgFilter]="nameFilter">
+      <clr-dg-filter [clrDgFilter]="nameFilter">
         <app-id-filter
           [name]="'name'"
           [inputValue]="(nameFilter$ | async) || ''"
           #nameFilter
         >
         </app-id-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_OWNER_TASK_ID.toString()"
@@ -51,14 +51,14 @@
       "
     >
       {{ 'pages.results-list.columns.task_id' | translate }}
-      <!-- <clr-dg-filter [clrDgFilter]="taskFilter">
+      <clr-dg-filter [clrDgFilter]="taskFilter">
         <app-id-filter
           [name]="'taskId'"
           [inputValue]="(taskIdFilter$ | async) || ''"
           #taskFilter
         >
         </app-id-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -67,14 +67,14 @@
       "
     >
       {{ 'pages.results-list.columns.session_id' | translate }}
-      <!-- <clr-dg-filter [clrDgFilter]="sessionFilter">
+      <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
           [inputValue]="(sessionIdFilter$ | async) || ''"
           #sessionFilter
         >
         </app-id-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"

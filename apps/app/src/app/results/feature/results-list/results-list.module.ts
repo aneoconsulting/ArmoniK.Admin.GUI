@@ -14,6 +14,7 @@ import { ResultsListComponent } from './results-list.page';
 import {
   SelectFilterComponent,
   DateFilterComponent,
+  IdFilterComponent,
 } from '../../../shared/feature/filters';
 
 @NgModule({
@@ -26,6 +27,7 @@ import {
     TranslateModule,
     SelectFilterComponent,
     DateFilterComponent,
+    IdFilterComponent,
     ResultsListRoutingModule,
     NgClass,
     AsyncPipe,
