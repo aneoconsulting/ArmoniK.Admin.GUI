@@ -25,10 +25,6 @@
     "return_to_sessions": "Retour aux sessions",
     "return_to_tasks": "Retour aux tâches"
   },
-  "applications_subnav": {
-    "no_current_applications": "Aucune application sélectionnée",
-    "close_tab": "Fermer l'onglet"
-  },
   "pages": {
     "components": {
       "modal_favorites": {
@@ -57,7 +53,13 @@
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
         "clear_filter": "Supprimer le filtre",
         "warning": {
-          "combobox": "Vous pouvez sélectionner plus d'une valeur."
+          "combobox": "Vous pouvez sélectionner plus d'une valeur.",
+          "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
+          "after_date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
+        },
+        "date": {
+          "before": "Avant le",
+          "after": "Après le"
         },
         "select_list": {
           "default": "Toutes",
