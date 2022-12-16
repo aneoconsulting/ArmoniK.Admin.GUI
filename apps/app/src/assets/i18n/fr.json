@@ -50,10 +50,10 @@
         "disable": "Désactiver"
       },
       "filters": {
+        "filter": "Filtre",
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
         "clear_filter": "Supprimer le filtre",
-        "warning": {
-          "combobox": "Vous pouvez sélectionner plus d'une valeur.",
+          "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
           "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
           "after_date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
         },
