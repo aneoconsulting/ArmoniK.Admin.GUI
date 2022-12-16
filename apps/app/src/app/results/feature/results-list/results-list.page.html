@@ -98,14 +98,14 @@
       "
     >
       {{ 'pages.results-list.columns.created_at' | translate }}
-      <!-- <clr-dg-filter>
+      <clr-dg-filter>
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="createdBeforeFilter$ | async || null"
-          [afterDate]="createdAfterFilter$ | async || null"
+          [beforeDate]="(createdBeforeFilter$ | async) || null"
+          [afterDate]="(createdAfterFilter$ | async) || null"
         >
         </app-date-filter>
-      </clr-dg-filter> -->
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.results-list.columns.actions' | translate }}
