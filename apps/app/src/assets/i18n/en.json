@@ -50,8 +50,8 @@
         "filter": "Filter",
         "status_title": "Select a status",
         "no_filter_available": "No filter available",
-        "clear_all_filters": "Clear all filters",
         "clear_filter": "Clear the filter",
+        "clear_all_filters": "Clear all filters",
         "warning": {
           "id": "Will display data with an Id strictly equal to the one indicated.",
           "before_date": "Will display data with a date strictly inferior than indicated.",
