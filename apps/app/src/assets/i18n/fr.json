@@ -52,14 +52,14 @@
         "no_filter_available": "Pas de filtre disponible",
         "clear_filter": "Supprimer le filtre",
         "clear_all_filters": "Supprimer tous les filtres",
-        "date": {
-          "before": "Avant le",
-          "after": "Après le"
-        },
         "warning": {
           "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
           "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
           "after_date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
+        },
+        "date": {
+          "before": "Avant le",
+          "after": "Après le"
         }
       }
     },
