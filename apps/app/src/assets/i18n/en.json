@@ -51,7 +51,10 @@
       },
       "filters": {
         "select_title": "Select a value:",
+        "filter": "Filter",
+        "clear_filter": "Clear the filter",
         "warning": {
+          "id": "Will display data with an Id strictly equal to the one indicated.",
           "before_date": "Will display data with a date strictly inferior than indicated.",
           "after_date": "Will display data with a date strictly superior than indicated."
         },
