@@ -200,11 +200,6 @@
         "per_page": "Par page",
         "results": "{{value}} résultats",
         "result": "{{value}} résultat"
-      },
-      "filters": {
-        "status": {
-          "title": "Sélectionnez un statut."
-        }
       }
     },
     "dashboard": {
