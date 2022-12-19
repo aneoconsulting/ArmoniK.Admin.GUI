@@ -308,9 +308,9 @@ export class SessionsListComponent implements OnInit {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
-    const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
-    return this._grpcSessionsService.list$(grpcParams).pipe(
+    const params = this._grpcPagerService.createParams(this._restoreState());
+    
+    return this._grpcSessionsService.list$(params).pipe(
       catchError((error: Error) => {
         console.error(error);
         this._stopInterval.next();
