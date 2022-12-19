@@ -36,7 +36,7 @@
         class="btn btn-sm btn-secondary"
         (click)="clearAllFilters()"
       >
-        {{ 'global.filters.clear-all-filters' | translate }}
+        {{ 'pages.components.filters.clear_all_filters' | translate }}
       </button>
     </clr-dg-action-bar>
 
@@ -76,12 +76,13 @@
     >
       {{ 'pages.tasks-list.columns.status' | translate }}
       <clr-dg-filter [clrDgFilter]="statusFilter">
-        <app-task-status-filter
+        <app-select-filter
           [name]="'status'"
-          [selectedValues]="(filterStatus$ | async) || []"
+          [selectedValue]="(filterStatus$ | async) || 0"
+          [selectionList]="taskStatusList"
           #statusFilter
         >
-        </app-task-status-filter>
+        </app-select-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column

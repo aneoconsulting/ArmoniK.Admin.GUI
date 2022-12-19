@@ -104,11 +104,13 @@ export class TasksListComponent implements OnInit {
     false
   );
 
+  taskStatusList: { value: number; label: string }[];
+
   /**
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterStatus$: Observable<number[]> = this.queryListParam$('status');
+  filterStatus$: Observable<number> = this.queryParam$('status');
   filterTaskId$: Observable<string> = this.queryStringParam$('taskId');
   filterSessionId$: Observable<string> = this.queryStringParam$('SessionId');
   filterCreated$: Observable<Date | null> = this.queryDateParam$('createdAt');
@@ -129,6 +131,14 @@ export class TasksListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('pages.tasks-list.title')
     );
+    this.taskStatusList = [
+      ...Object.keys(TaskStatus)
+        .filter((key) => !Number.isInteger(parseInt(key)))
+        .map((key) => ({
+          value: TaskStatus[key as keyof typeof TaskStatus],
+          label: key,
+        })),
+    ];
   }
 
   public get OrderByField(): typeof ListTasksRequest.OrderByField {

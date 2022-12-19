@@ -19,7 +19,7 @@ import {
 } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  TaskStatusFilterComponent,
+  SelectFilterComponent,
   DateFilterComponent,
   IdFilterComponent,
 } from '../../../shared/feature/filters';
@@ -40,7 +40,7 @@ import { TasksListComponent } from './tasks-list.page';
     ClrModalModule,
     TranslateModule,
     TasksListRoutingModule,
-    TaskStatusFilterComponent,
+    SelectFilterComponent,
     IdFilterComponent,
     DateFilterComponent,
     NgClass,

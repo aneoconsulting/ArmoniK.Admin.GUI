@@ -54,6 +54,7 @@
         "select_title": "Sélectionnez une valeur :",
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
         "clear_filter": "Supprimer le filtre",
+        "clear_all_filters": "Clear all filters",
         "warning": {
           "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
           "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
