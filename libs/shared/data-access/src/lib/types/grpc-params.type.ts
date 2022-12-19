@@ -1,7 +1,6 @@
-export type GrpcParams<T, K, J> = {
+export type GrpcParams<T, K> = {
   page?: number;
   pageSize?: number;
   orderBy?: T;
   order?: K;
-  filter?: J;
 };

@@ -9,97 +9,13 @@ import {
   ListSessionsRequest,
   ListSessionsResponse,
   SessionsClient,
-  TimeFilter,
 } from '@armonik.admin.gui/shared/data-access';
-import { SessionFilter } from '../types/session-filter.type';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcSessionsService extends BaseGrpcService {
   constructor(private _sessionsClient: SessionsClient) {
     super();
-  }
-
-  /**
-   * Transform an urlParams into a real GrpcParams object designed for retrieving session data
-   *
-   * @param urlParams Record<string, string | number>
-   * @returns GrpcParams<
-   *            ListSessionsRequest.OrderByField,
-   *            ListSessionsRequest.OrderDirection,
-   *             SessionFilter
-   *          >
-   */
-  public urlToGrpcParams(
-    urlParams: Record<string, string | number>
-  ): GrpcParams<
-    ListSessionsRequest.OrderByField,
-    ListSessionsRequest.OrderDirection,
-    SessionFilter
-  > {
-    const grpcParams: GrpcParams<
-      ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection,
-      SessionFilter
-    > = {};
-    const filter: SessionFilter = {
-      applicationName: '',
-      applicationVersion: '',
-      sessionId: '',
-      status: 0,
-    };
-
-    for (const [key, value] of Object.entries(urlParams)) {
-      switch (key) {
-        case 'page': {
-          grpcParams.page = value as number;
-          break;
-        }
-        case 'pageSize': {
-          grpcParams.pageSize = value as number;
-          break;
-        }
-        case 'order': {
-          grpcParams.order = value as number;
-          break;
-        }
-        case 'orderBy': {
-          grpcParams.orderBy = value as number;
-          break;
-        }
-        case 'sessionId': {
-          filter.sessionId = value as string;
-          break;
-        }
-        case 'status': {
-          filter.status = value as number;
-          break;
-        }
-        case 'createdAtBefore': {
-          filter.createdBefore = this._createTimeFilter(value as number);
-          break;
-        }
-        case 'createdAtAfter': {
-          // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
-          filter.createdAfter = this._createTimeFilter(
-            (value as number) + 86400000
-          );
-          break;
-        }
-        case 'cancelledAtBefore': {
-          filter.cancelledBefore = this._createTimeFilter(value as number);
-          break;
-        }
-        case 'cancelledAtAfter': {
-          filter.cancelledAfter = this._createTimeFilter(
-            (value as number) + 86400000
-          );
-          break;
-        }
-      }
-    }
-    grpcParams.filter = filter;
-    return grpcParams;
   }
 
   /**
@@ -112,8 +28,7 @@ export class GrpcSessionsService extends BaseGrpcService {
   public list$(
     params: GrpcParams<
       ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection,
-      SessionFilter
+      ListSessionsRequest.OrderDirection
     >
   ): Observable<ListSessionsResponse> {
     const options = new ListSessionsRequest({
@@ -127,7 +42,6 @@ export class GrpcSessionsService extends BaseGrpcService {
           params.order ||
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: params.filter,
     });
     return this._sessionsClient
       .listSessions(options)
@@ -164,12 +78,5 @@ export class GrpcSessionsService extends BaseGrpcService {
     });
 
     return this._sessionsClient.cancelSession(options);
-  }
-
-  private _createTimeFilter(value: number): TimeFilter {
-    return {
-      nanos: 0,
-      seconds: (value / 1000).toString(),
-    };
   }
 }

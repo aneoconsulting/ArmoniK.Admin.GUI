@@ -10,7 +10,6 @@ import {
   ListTasksResponse,
   TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
-import { TaskFilter } from '../types/task-filter.type';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
@@ -22,8 +21,7 @@ export class GrpcTasksService extends BaseGrpcService {
   public list$(
     params: GrpcParams<
       ListTasksRequest.OrderByField,
-      ListTasksRequest.OrderDirection,
-      TaskFilter
+      ListTasksRequest.OrderDirection
     >
   ): Observable<ListTasksResponse> {
     const options = new ListTasksRequest({

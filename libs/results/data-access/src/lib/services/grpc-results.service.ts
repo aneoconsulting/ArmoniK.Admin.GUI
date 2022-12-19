@@ -7,7 +7,6 @@ import {
   ResultsClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { Observable, takeUntil } from 'rxjs';
-import { ResultFilter } from '../types/result-filter.type';
 
 @Injectable()
 export class GrpcResultsService extends BaseGrpcService {
@@ -18,8 +17,7 @@ export class GrpcResultsService extends BaseGrpcService {
   public list$(
     params: GrpcParams<
       ListResultsRequest.OrderByField,
-      ListResultsRequest.OrderDirection,
-      ResultFilter
+      ListResultsRequest.OrderDirection
     >
   ): Observable<ListResultsResponse> {
     const options = new ListResultsRequest({
