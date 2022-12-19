@@ -32,12 +32,6 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
  */
 @NgModule({
   declarations: [SessionsListComponent],
-  providers: [
-    BrowserTitleService,
-    LanguageService,
-    GrpcSessionsService,
-    GrpcPagerService,
-  ],
   imports: [
     AutoRefreshDropdownComponent,
     RouterModule,
@@ -56,6 +50,12 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
     IdFilterComponent,
     DateFilterComponent,
     SelectFilterComponent,
+  ],
+  providers: [
+    BrowserTitleService,
+    LanguageService,
+    GrpcSessionsService,
+    GrpcPagerService,
   ],
 })
 export class SessionsListModule {}
