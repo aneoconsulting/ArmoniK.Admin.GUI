@@ -123,6 +123,10 @@ export class GrpcPagerService {
       sessionId: '',
       status: 0,
       ownerTaskId: '',
+      name: '',
+      namespace: '',
+      version: '',
+      service: '',
     };
 
     const filters: { property: string; value: number | string }[] =
