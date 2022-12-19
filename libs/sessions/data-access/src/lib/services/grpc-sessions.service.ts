@@ -114,8 +114,6 @@ export class GrpcSessionsService extends BaseGrpcService {
       ListSessionsRequest.Filter.AsObject
     >
   ): Observable<ListSessionsResponse> {
-    console.log(params.filter);
-
     const options = new ListSessionsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
