@@ -43,7 +43,7 @@ export class GrpcSessionsService extends BaseGrpcService {
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
     });
-    
+
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));

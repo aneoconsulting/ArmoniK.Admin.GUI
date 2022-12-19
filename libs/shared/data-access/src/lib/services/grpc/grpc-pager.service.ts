@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
+
 @Injectable()
 export class GrpcPagerService {
   private defaultCurrentPage = 0;
@@ -77,20 +78,9 @@ export class GrpcPagerService {
     const filters = state.filters ?? [];
     // filters is an array of filter
     for (const filter of filters) {
-      if (filter.property.includes('At')) {
-        if (filter.value.before !== null) {
-          const filterName = filter.property + 'Before';
-          params.set(filterName, filter.value.before);
-        }
-        if (filter.value.after !== null) {
-          const filterName = filter.property + 'After';
-          params.set(filterName, filter.value.after);
-        }
-      } else {
-        const filterName = filter.property as string;
-        const filterValue = filter.value as string;
-        params.set(filterName, filterValue);
-      }
+      const filterName = filter.property as string;
+      const filterValue = filter.value as string;
+      params.set(filterName, filterValue);
     }
   }
 }
