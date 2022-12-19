@@ -23,7 +23,7 @@ import { SessionsListComponent } from './sessions-list.page';
 import {
   DateFilterComponent,
   IdFilterComponent,
-  SessionsStatusFilterComponent,
+  SelectFilterComponent,
 } from '../../../shared/feature/filters';
 import { BrowserTitleService, LanguageService } from '../../../shared/util';
 
@@ -55,7 +55,7 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
     JsonPipe,
     IdFilterComponent,
     DateFilterComponent,
-    SessionsStatusFilterComponent,
+    SelectFilterComponent,
   ],
 })
 export class SessionsListModule {}

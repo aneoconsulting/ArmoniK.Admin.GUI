@@ -86,6 +86,8 @@ export class SessionsListComponent implements OnInit {
     switchMap(() => this._listSessions$())
   );
 
+  sessionsStatusList: { value: number; label: string }[];
+
   /**
    * Filter observables.
    * They permit to avoid the endless loop due to the async pipe with the functions.
@@ -114,6 +116,14 @@ export class SessionsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('pages.sessions-list.title')
     );
+    this.sessionsStatusList = [
+      ...Object.keys(SessionStatus)
+        .filter((key) => !Number.isInteger(parseInt(key)))
+        .map((key) => ({
+          value: SessionStatus[key as keyof typeof SessionStatus],
+          label: key,
+        })),
+    ];
   }
 
   public get OrderByField() {
