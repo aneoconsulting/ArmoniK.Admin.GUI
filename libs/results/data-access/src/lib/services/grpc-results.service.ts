@@ -78,11 +78,11 @@ export class GrpcResultsService extends BaseGrpcService {
           filter.status = value as number;
           break;
         }
-        case 'createdBefore': {
+        case 'createdAtBefore': {
           filter.createdBefore = this._createTimeFilter(value as number);
           break;
         }
-        case 'createdAfter': {
+        case 'createdAtAfter': {
           // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
           filter.createdAfter = this._createTimeFilter(
             (value as number) + 86400000
