@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
+import { GlobalFilter } from '../../types';
+import { TimeFilter } from '../../types/time-filter-type';
 
 @Injectable()
 export class GrpcPagerService {
@@ -93,5 +95,114 @@ export class GrpcPagerService {
         params.set(filterName, filterValue);
       }
     }
+  }
+
+  public createGrpcParams(
+    state: ClrDatagridStateInterface,
+    data: Record<string, string | number | GlobalFilter> = {}
+  ) {
+    const params = new Map<string, string | number>();
+
+    this._createPage(state, params);
+    this._createOrder(state, params);
+
+    const paramsFilter = params as Map<string, string | number | GlobalFilter>;
+
+    this._createGrpcParamsFilters(state, paramsFilter);
+
+    return { ...Object.fromEntries(paramsFilter), ...data };
+  }
+
+  private _createGrpcParamsFilters(
+    state: ClrDatagridStateInterface,
+    params: Map<string, string | number | GlobalFilter>
+  ) {
+    const filter: GlobalFilter = {
+      applicationName: '',
+      applicationVersion: '',
+      sessionId: '',
+      status: 0,
+      ownerTaskId: '',
+    };
+
+    const filters: { property: string; value: number | string }[] =
+      state.filters ?? [];
+    filters.forEach((f) => {
+      switch (f.property) {
+        case 'applicationName': {
+          filter.applicationName = f.value as string;
+          break;
+        }
+        case 'applicationVersion': {
+          filter.applicationVersion = f.value as string;
+          break;
+        }
+        case 'sessionId': {
+          filter.sessionId = f.value as string;
+          break;
+        }
+        case 'ownerTaskId': {
+          filter.ownerTaskId = f.value as string;
+          break;
+        }
+        case 'name': {
+          filter.name = f.value as string;
+          break;
+        }
+        case 'status': {
+          filter.status = f.value as number;
+          break;
+        }
+        case 'createdAtBefore': {
+          filter.createdBefore = this._createTimeFilter(f.value as number);
+          break;
+        }
+        case 'createdAtAfter': {
+          filter.createdAfter = this._createTimeFilter(
+            (f.value as number) + 86400000
+          );
+          break;
+        }
+        case 'starteAtdBefore': {
+          filter.startedBefore = this._createTimeFilter(f.value as number);
+          break;
+        }
+        case 'startedAfter': {
+          filter.startedAfter = this._createTimeFilter(
+            (f.value as number) + 86400000
+          );
+          break;
+        }
+        case 'endedAtBefore': {
+          filter.endedBefore = this._createTimeFilter(f.value as number);
+          break;
+        }
+        case 'endedAtAfter': {
+          filter.endedAfter = this._createTimeFilter(
+            (f.value as number) + 86400000
+          );
+          break;
+        }
+        case 'closeAtdBefore': {
+          filter.closedBefore = this._createTimeFilter(f.value as number);
+          break;
+        }
+        case 'closedAtAfter': {
+          filter.closedAfter = this._createTimeFilter(
+            (f.value as number) + 86400000
+          );
+          break;
+        }
+      }
+    });
+
+    params.set('filter', filter);
+  }
+
+  private _createTimeFilter(value: number): TimeFilter {
+    return {
+      nanos: 0,
+      seconds: (value / 1000).toString(),
+    };
   }
 }

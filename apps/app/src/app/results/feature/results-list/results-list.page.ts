@@ -219,8 +219,10 @@ export class ResultsListComponent implements OnInit {
    * @returns Observable<ListResultsResponse>
    */
   private _listResults$(): Observable<ListResultsResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
-    const grpcParams = this._grpcResultsService.urlToGrpcParams(urlParams);
+    const grpcParams = this._grpcPagerService.createGrpcParams(
+      this._restoreState()
+    );
+
     return this._grpcResultsService.list$(grpcParams).pipe(
       catchError((error) => {
         console.error(error);

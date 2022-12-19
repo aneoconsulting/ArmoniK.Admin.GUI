@@ -49,4 +49,4 @@ export {
   GrpcPagerService,
   HealthCheckService,
 } from './lib/services';
-export { GrpcParams } from './lib/types';
+export { GrpcParams, GlobalFilter } from './lib/types';
