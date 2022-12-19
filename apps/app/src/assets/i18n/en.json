@@ -54,6 +54,7 @@
         "select_title": "Select a value:",
         "select_many_title": "Select one or more value.",
         "clear_filter": "Clear the filter",
+        "clear_all_filters": "Clear all filters",
         "warning": {
           "combobox": "You can select more than one value.",
           "id": "Will display data with an Id strictly equal to the one indicated.",

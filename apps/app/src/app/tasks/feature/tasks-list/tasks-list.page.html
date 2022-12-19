@@ -104,11 +104,11 @@
                 'text-warn': [
                   TaskStatusEnum.TASK_STATUS_PROCESSING,
                   TaskStatusEnum.TASK_STATUS_PROCESSED
-                ].includes(task.status || 0),
+                ].includes(task.status),
                 'text-danger': [
                   TaskStatusEnum.TASK_STATUS_ERROR,
                   TaskStatusEnum.TASK_STATUS_TIMEOUT
-                ].includes(task.status || 0),
+                ].includes(task.status),
                 'text-creating':
                   task.status === TaskStatusEnum.TASK_STATUS_CREATING,
                 'text-submitted':
@@ -118,7 +118,7 @@
                 'text-cancelled': [
                   TaskStatusEnum.TASK_STATUS_CANCELLING,
                   TaskStatusEnum.TASK_STATUS_CANCELLED
-                ].includes(task.status || 0)
+                ].includes(task.status)
               }"
             >
               {{ 'pages.tasks-list.cells.status.' + task.status | translate }}
