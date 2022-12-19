@@ -51,6 +51,7 @@
       },
       "filters": {
         "filter": "Filtre",
+        "select_title": "Sélectionnez une valeur :",
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
         "clear_filter": "Supprimer le filtre",
         "warning": {
