@@ -53,7 +53,6 @@ export class ApplicationsListComponent implements OnInit {
       const params = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: params,
-        queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
       return state;
