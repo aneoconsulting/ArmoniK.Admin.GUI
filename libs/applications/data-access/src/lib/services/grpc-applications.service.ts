@@ -18,7 +18,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
     params: GrpcParams<
       ListApplicationsRequest.OrderByField,
       ListApplicationsRequest.OrderDirection,
-      ListApplicationsRequest.Filter
+      ListApplicationsRequest.Filter.AsObject
     >
   ): Observable<ListApplicationsResponse> {
     const options = new ListApplicationsRequest({
