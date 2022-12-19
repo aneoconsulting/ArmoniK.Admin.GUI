@@ -50,7 +50,6 @@
         "disable": "Disable"
       },
       "filters": {
-        "select_title": "Select a value:",
         "filter": "Filter",
         "select_title": "Select a value:",
         "select_many_title": "Select one or more value.",
