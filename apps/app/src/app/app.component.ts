@@ -15,6 +15,12 @@ import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 export class AppComponent implements OnInit {
   links: AppNavLink[] = [
     {
+      path: ['/', 'applications'],
+      label: 'navigation.applications',
+      queryParams: { page: 0, pageSize: 10 },
+      shape: 'bundle',
+    },
+    {
       path: ['/', 'sessions'],
       label: 'navigation.sessions',
       queryParams: { page: 0, pageSize: 10 },

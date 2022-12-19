@@ -14,6 +14,7 @@
   },
   "navigation": {
     "dashboard": "Dashboard",
+    "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tasks",
     "results": "Results",
@@ -88,6 +89,25 @@
           "RESULT_STATUS_ABORTED": "Aborted",
           "RESULT_STATUS_NOTFOUND": "Not found"
         }
+      }
+    },
+    "applications-list": {
+      "title": "Applications",
+      "columns": {
+        "name": "Name",
+        "version": "Version",
+        "namespace": "Namespace",
+        "service": "Service",
+        "actions": "Actions"
+      },
+      "actions": {
+        "refresh": "Refresh",
+        "related_sessions": "Related Sessions"
+      },
+      "pagination": {
+        "per_page": "Applications per page",
+        "applications": "{{value}} applications",
+        "application": "{{value}} application"
       }
     },
     "sessions-list": {
