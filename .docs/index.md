@@ -1,19 +1,23 @@
 ---
 layout: home
+
+title: Admin GUI
+titleTemplate: ArmoniK
+
 hero:
-  name: ArmoniK - Admin GUI
+  name: Admin GUI
   text: Monitor and manage an ArmoniK cluster.
   tagline: 
   image:
-    src: /logo.png
-    alt: VitePress
+    # src: /logo.png
+    # alt: VitePress
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/what-is-vitepress
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/vuejs/vitepress
+      link: /guide/introduction
+    # - theme: alt
+    #   text: View on GitHub
+    #   link: https://github.com/vuejs/vitepress
 ---
 
 <!-- 
