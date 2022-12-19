@@ -1,4 +1,12 @@
+import { version } from '../../package.json';
+import aneoSvg from './aneo-svg';
+
+/**
+ * @type {import('vitepress').UserConfig}
+ */
 export default {
+  base: process.env.NODE_ENV === 'production' ? '/ArmoniK.Admin.GUI/' : '/',
+
   lang: 'en-US',
   title: 'Admin GUI - ArmoniK',
   description: 'A user interface to monitor and manage an ArmoniK cluster',
@@ -8,6 +16,12 @@ export default {
 
   themeConfig: {
     siteTile: 'Admin GUI',
+
+    nav: nav(),
+
+    sidebar: {
+      '/guide/': sidebarGuide(),
+    },
 
     editLink: {
       pattern:
@@ -20,29 +34,129 @@ export default {
         icon: 'github',
         link: 'https://github.com/aneoconsulting/ArmoniK.Admin.GUI',
       },
+      {
+        icon: {
+          svg: aneoSvg,
+        },
+        link: 'https://aneo.eu',
+      },
     ],
 
     footer: {
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2022-present Aneo',
     },
-
-    sidebar: {
-      '/guide/': sidebarGuide(),
-    },
   },
 };
+
+function nav() {
+  return [
+    { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
+    {
+      text: version,
+      items: [
+        {
+          text: 'Releases',
+          link: 'https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases',
+        },
+      ],
+    },
+  ];
+}
 
 function sidebarGuide() {
   return [
     {
-      text: 'Getting Started',
+      text: 'Introduction',
       collapsible: true,
       items: [
-        { text: 'Introduction', link: '/guide/introduction' },
+        { text: 'Getting Started', link: '/guide/getting-started' },
         {
           text: 'Understand the layout',
           link: '/guide/understand-layout',
+        },
+      ],
+    },
+    {
+      text: 'Authentication',
+      collapsible: true,
+      items: [
+        { text: 'Login', link: '/guide/login' },
+        {
+          text: 'Logout',
+          link: '/guide/logout',
+        },
+        {
+          text: 'Permissions',
+          link: '/guide/permissions',
+        },
+      ],
+    },
+    {
+      text: 'Datagrid',
+      collapsible: true,
+      items: [
+        { text: 'Introduction', link: '/guide/datagrid-introduction' },
+        {
+          text: 'Sorting',
+          link: '/guide/datagrid-filtering',
+        },
+        {
+          text: 'Filtering',
+          link: '/guide/datagrid-sorting',
+        },
+        {
+          text: 'Pagination',
+          link: '/guide/datagrid-pagination',
+        },
+        {
+          text: 'Custom Columns',
+          link: '/guide/datagrid-custom-columns',
+        },
+      ],
+    },
+    {
+      text: 'Data',
+      collapsible: true,
+      items: [
+        { text: 'Applications', link: '/guide/applications' },
+        {
+          text: 'Partitions',
+          link: '/guide/partitions',
+        },
+      ],
+    },
+    {
+      text: 'Compute',
+      collapsible: true,
+      items: [
+        { text: 'Sessions', link: '/guide/sessions' },
+        {
+          text: 'Tasks',
+          link: '/guide/tasks',
+        },
+        {
+          text: 'Results',
+          link: '/guide/results',
+        },
+      ],
+    },
+    {
+      text: 'Goodies',
+      collapsible: true,
+      items: [
+        { text: 'Languages', link: '/guide/languages' },
+        {
+          text: 'External Services',
+          link: '/guide/external-services',
+        },
+        {
+          text: 'Favorites',
+          link: '/guide/favorites',
+        },
+        {
+          text: 'History',
+          link: '/guide/history',
         },
       ],
     },

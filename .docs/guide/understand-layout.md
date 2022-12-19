@@ -1,3 +1,1 @@
 # Understand the layout
-
-bonjour
