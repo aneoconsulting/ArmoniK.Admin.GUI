@@ -334,6 +334,7 @@
           "cancel": "Cancel selection",
           "filters": {
             "status": {
+              "title": "Select a status",
               "default": "All",
               "UNSPECIFIED": "Unspecified",
               "CREATING": "Creating",

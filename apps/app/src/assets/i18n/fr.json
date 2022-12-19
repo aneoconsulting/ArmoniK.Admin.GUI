@@ -333,6 +333,7 @@
           "cancel": "Annuler la sélection",
           "filters": {
             "status": {
+              "title": "Filtres",
               "default": "Toutes",
               "UNSPECIFIED": "Non spécifié",
               "CREATING": "Création",
