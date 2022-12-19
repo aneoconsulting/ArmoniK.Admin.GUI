@@ -1,0 +1,27 @@
+{
+  "name": "auth-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/auth/data-access/src",
+  "prefix": "armonik.admin.gui",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/auth/data-access/src/test.ts",
+        "tsConfig": "libs/auth/data-access/tsconfig.spec.json",
+        "karmaConfig": "libs/auth/data-access/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/auth/data-access/**/*.ts",
+          "libs/auth/data-access/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

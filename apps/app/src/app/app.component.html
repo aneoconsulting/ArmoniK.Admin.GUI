@@ -19,6 +19,13 @@
   </clr-header>
   <div class="content-container">
     <clr-vertical-nav [clr-nav-level]="1">
+      <div clrVerticalNavLink>
+        <clr-icon shape="user" clrVerticalNavIcon></clr-icon>
+        <ng-container *ngIf="currentUser$ | async as user; else connexion">
+          {{ user.username }}
+        </ng-container>
+      </div>
+      <div class="nav-divider"></div>
       <a
         *ngFor="let link of links; trackBy: trackByLabel"
         clrVerticalNavLink
@@ -69,3 +76,7 @@
     </div>
   </div>
 </clr-main-container>
+
+<ng-template #connexion>
+  {{ 'navigation.connexion_in_progress' | translate }}
+</ng-template>
