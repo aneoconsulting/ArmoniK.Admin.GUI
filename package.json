@@ -13,8 +13,6 @@
     "format": "nx format --base=main",
     "format:check": "nx format:check --base=main",
     "lint": "nx run-many --target=lint --all",
-    "prepare": "husky install",
-    "pre-commit": "lint-staged",
     "proto:generate": "node ./scripts/generate-proto.mjs",
     "proto:generate:linux": "protoc --plugin=protoc-gen-ng=$(which protoc-gen-ng) --ng_out=./libs/shared/data-access/src/lib/proto/generated -I ./libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1 ./libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto",
     "proto:generate:win": "for /f %G in ('dir /b .\\libs\\shared\\util\\src\\lib\\proto\\ArmoniK.Api\\Protos\\V1\\*.proto') do grpc_tools_node_protoc --plugin=protoc-gen-ng=.\\node_modules\\.bin\\protoc-gen-ng.cmd --ng_out=.\\libs\\shared\\util\\src\\lib\\proto\\generated -I .\\libs\\shared\\util\\src\\lib\\proto\\ArmoniK.Api\\Protos\\V1 .\\libs\\shared\\util\\src\\lib\\proto\\ArmoniK.Api\\Protos\\V1\\%G"
@@ -57,8 +55,6 @@
     "@angular/cli": "~14.2.10",
     "@angular/compiler-cli": "~14.2.10",
     "@angular/language-service": "~14.2.10",
-    "@commitlint/cli": "^16.2.3",
-    "@commitlint/config-conventional": "^16.2.1",
     "@ngx-grpc/protoc-gen-ng": "^3.1.1",
     "@nrwl/cli": "15.2.4",
     "@nrwl/cypress": "15.2.4",
@@ -76,7 +72,6 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
     "grpc-tools": "^1.12.3",
-    "husky": "^7.0.4",
     "jasmine-core": "~3.10.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~6.3.0",
@@ -84,17 +79,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
-    "lint-staged": "^12.4.0",
     "nx": "15.2.4",
     "prettier": "^2.8.0",
     "typescript": "~4.6.2"
-  },
-  "lint-staged": {
-    "**": [
-      "npm run format:check",
-      "npm run lint",
-      "npm run test"
-    ]
   },
   "packageManager": "yarn@3.3.0"
 }

@@ -38,5 +38,10 @@ export {
   TaskSummary,
 } from './lib/proto/generated/tasks-common.pb';
 export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
-export { BaseGrpcService, GrpcPagerService } from './lib/services';
+export {
+  BaseGrpcService,
+  GrpcPagerService,
+  HealthCheckService,
+} from './lib/services';
 export { GrpcParams } from './lib/types';
+export { ExternalServicesEnum } from './lib/enums';

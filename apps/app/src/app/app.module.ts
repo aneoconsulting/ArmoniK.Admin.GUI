@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
+import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrIconModule,
   ClrLayoutModule,
@@ -59,6 +60,7 @@ import '@clr/icons/shapes/technology-shapes';
     { provide: Window, useValue: window },
     AuthService,
     GrpcAuthService,
+    HealthCheckService,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

@@ -1,17 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
-import { User } from '@armonik.admin.gui/shared/data-access';
-import { distinctUntilChanged, filter, first, merge, Observable } from 'rxjs';
-import { AuthService } from './shared/data-access/auth.service';
 import {
-  AppNavLink,
   ExternalServicesEnum,
-  GrafanaService,
-  HistoryService,
-  SeqService,
-  SettingsService,
-} from './shared/util';
+  HealthCheckService,
+  User,
+} from '@armonik.admin.gui/shared/data-access';
+import {
+  Observable,
+  distinctUntilChanged,
+  filter,
+  first,
+  merge,
+  take,
+} from 'rxjs';
+import { AuthService } from './shared/data-access/auth.service';
+import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 
 @Component({
   selector: 'app-root',
@@ -40,8 +44,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private _router: Router,
-    private _seqService: SeqService,
-    private _grafanaService: GrafanaService,
+    private _healthCheckService: HealthCheckService,
     private _historyService: HistoryService,
     private _authService: AuthService,
     private _grpcAuthService: GrpcAuthService,
@@ -49,8 +52,14 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    merge(this._seqService.healthCheck$(), this._grafanaService.healthCheck$())
-      .pipe(first())
+    merge(
+      this._healthCheckService.healthCheck$('/seq', ExternalServicesEnum.SEQ),
+      this._healthCheckService.healthCheck$(
+        '/grafana',
+        ExternalServicesEnum.GRAFANA
+      )
+    )
+      .pipe(take(2))
       .subscribe(({ isResponseOk, service }) => {
         if (isResponseOk && service === ExternalServicesEnum.SEQ) {
           this.settingsService.seqSubject$.next(true);
