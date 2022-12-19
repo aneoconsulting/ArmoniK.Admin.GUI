@@ -26,24 +26,56 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
       {{ 'pages.applications-list.columns.name' | translate }}
+      <clr-dg-filter [clrDgFilter]="nameFilter">
+        <app-id-filter
+          #nameFilter
+          [name]="'name'"
+          [inputValue]="(nameFilter$ | async) || ''"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_VERSION.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_VERSION)"
     >
       {{ 'pages.applications-list.columns.version' | translate }}
+      <clr-dg-filter [clrDgFilter]="versionFilter">
+        <app-id-filter
+          #versionFilter
+          [name]="'version'"
+          [inputValue]="(versionFilter$ | async) || ''"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAMESPACE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAMESPACE)"
     >
       {{ 'pages.applications-list.columns.namespace' | translate }}
+      <clr-dg-filter [clrDgFilter]="namespaceFilter">
+        <app-id-filter
+          #namespaceFilter
+          [name]="'namespace'"
+          [inputValue]="(namespaceFilter$ | async) || ''"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SERVICE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_SERVICE)"
     >
       {{ 'pages.applications-list.columns.service' | translate }}
+      <clr-dg-filter [clrDgFilter]="serviceFilter">
+        <app-id-filter
+          #serviceFilter
+          [name]="'service'"
+          [inputValue]="(serviceFilter$ | async) || ''"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.applications-list.columns.actions' | translate }}

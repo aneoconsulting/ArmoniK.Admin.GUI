@@ -11,6 +11,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ApplicationsListComponent } from './applications-list.page';
+import { IdFilterComponent } from '../../../shared/feature/filters';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -26,6 +27,7 @@ import { ApplicationsListComponent } from './applications-list.page';
     DatePipe,
     NgFor,
     NgIf,
+    IdFilterComponent,
   ],
   providers: [GrpcApplicationsService, GrpcPagerService],
 })

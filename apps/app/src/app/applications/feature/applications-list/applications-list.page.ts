@@ -76,6 +76,11 @@ export class ApplicationsListComponent implements OnInit {
     switchMap(() => this._listApplications$())
   );
 
+  nameFilter$: Observable<string> = this.queryStringParam$('name');
+  versionFilter$: Observable<string> = this.queryStringParam$('version');
+  namespaceFilter$: Observable<string> = this.queryStringParam$('namespace');
+  serviceFilter$: Observable<string> = this.queryStringParam$('service');
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -173,6 +178,21 @@ export class ApplicationsListComponent implements OnInit {
     return this._activatedRoute.queryParamMap.pipe(
       map((params) => params.get(param)),
       map((value) => Number(value)),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Get query params from route
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryStringParam$(param: string): Observable<string> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((params) => params.get(param)),
+      map((value) => (value !== null ? value : '')),
       distinctUntilChanged()
     );
   }
