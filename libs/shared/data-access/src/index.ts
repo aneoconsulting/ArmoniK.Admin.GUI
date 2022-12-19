@@ -37,5 +37,5 @@ export {
   GrpcPagerService,
   HealthCheckService,
 } from './lib/services';
-export { GrpcParams, TimeFilter } from './lib/types';
+export { GrpcParams } from './lib/types';
 export { ExternalServicesEnum } from './lib/enums';
