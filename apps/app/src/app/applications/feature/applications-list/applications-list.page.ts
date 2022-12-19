@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
+import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import {
   GrpcPagerService,
-  ListResultsRequest,
-  ListResultsResponse,
-  ResultRaw,
-  ResultStatus,
+  ListApplicationsRequest,
+  ListApplicationsResponse,
+  ApplicationRaw,
 } from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -32,12 +31,12 @@ import {
 } from '../../../shared/util';
 
 @Component({
-  selector: 'app-pages-results-list',
-  templateUrl: './results-list.page.html',
-  styleUrls: ['./results-list.page.scss'],
+  selector: 'app-pages-applications-list',
+  templateUrl: './applications-list.page.html',
+  styleUrls: ['./applications-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResultsListComponent implements OnInit {
+export class ApplicationsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
 
   private _subjectManual = new Subject<void>();
@@ -54,7 +53,6 @@ export class ResultsListComponent implements OnInit {
       const params = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: params,
-        queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -66,16 +64,16 @@ export class ResultsListComponent implements OnInit {
       switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
     );
 
-  loadingResults$ = new BehaviorSubject<boolean>(true);
-  totalResults$ = new BehaviorSubject<number>(0);
+  loadingApplications$ = new BehaviorSubject<boolean>(true);
+  totalApplications$ = new BehaviorSubject<number>(0);
 
-  loadResults$ = merge(
+  loadApplications$ = merge(
     this._triggerManual$,
     this._triggerDatagrid$,
     this._triggerInterval$
   ).pipe(
-    tap(() => this.loadingResults$.next(true)),
-    switchMap(() => this._listResults$())
+    tap(() => this.loadingApplications$.next(true)),
+    switchMap(() => this._listApplications$())
   );
 
   constructor(
@@ -84,22 +82,18 @@ export class ResultsListComponent implements OnInit {
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
     private _settingsService: SettingsService,
-    private _grpcResultsService: GrpcResultsService,
+    private _grpcApplicationsService: GrpcApplicationsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('results.title')
+      this._languageService.instant('pages.applications-list.title')
     );
   }
 
   public get OrderByField() {
-    return ListResultsRequest.OrderByField;
-  }
-
-  public get ResultsStatusEnum() {
-    return ResultStatus;
+    return ListApplicationsRequest.OrderByField;
   }
 
   public get intervals() {
@@ -120,7 +114,7 @@ export class ResultsListComponent implements OnInit {
   }
 
   public defaultSortOrder(
-    field: ListResultsRequest.OrderByField
+    field: ListApplicationsRequest.OrderByField
   ): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
@@ -149,22 +143,22 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * Refresh results using a new state
+   * Refresh applications using a new state
    *
    * @param state
    *
    * @returns void
    */
-  public refreshResults(state: ClrDatagridStateInterface): void {
+  public refreshApplications(state: ClrDatagridStateInterface): void {
     this._subjectDatagrid.next(state);
   }
 
   /**
-   * Refresh manually results using new state
+   * Refresh manually applications using new state
    *
    * @returns void
    */
-  public manualRefreshResults(): void {
+  public manualRefreshApplications(): void {
     this._subjectManual.next();
   }
 
@@ -184,15 +178,15 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * Track by result
+   * Track by application
    *
    * @param _
-   * @param result
+   * @param application
    *
    * @returns Id
    */
-  public trackByResult(_: number, result: ResultRaw): string {
-    return result.name ?? '';
+  public trackByApplication(_: number, application: ApplicationRaw): string {
+    return application.name ?? '';
   }
 
   /**
@@ -214,23 +208,23 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * List results
+   * List applications
    *
-   * @returns Observable<ListResultsResponse>
+   * @returns Observable<ListApplicationsResponse>
    */
-  private _listResults$(): Observable<ListResultsResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
-    const grpcParams = this._grpcResultsService.urlToGrpcParams(urlParams);
-    return this._grpcResultsService.list$(grpcParams).pipe(
+  private _listApplications$(): Observable<ListApplicationsResponse> {
+    const params = this._grpcPagerService.createParams(this._restoreState());
+
+    return this._grpcApplicationsService.list$(params).pipe(
       catchError((error) => {
         console.error(error);
         this._stopInterval.next();
 
-        return of({} as ListResultsResponse);
+        return of({} as ListApplicationsResponse);
       }),
-      tap((results) => {
-        this.loadingResults$.next(false);
-        this.totalResults$.next(results.total ?? 0);
+      tap((applications) => {
+        this.loadingApplications$.next(false);
+        this.totalApplications$.next(applications.total ?? 0);
       })
     );
   }

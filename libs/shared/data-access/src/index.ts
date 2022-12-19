@@ -1,4 +1,9 @@
-export { ApplicationRaw } from './lib/proto/generated/applications-common.pb';
+export {
+  ApplicationRaw,
+  ListApplicationsRequest,
+  ListApplicationsResponse,
+} from './lib/proto/generated/applications-common.pb';
+export { ApplicationsClient } from './lib/proto/generated/applications-service.pbsc';
 export { ResultStatus } from './lib/proto/generated/result-status.pb';
 export {
   GetOwnerTaskIdRequest,
