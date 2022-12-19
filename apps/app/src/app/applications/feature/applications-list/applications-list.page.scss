@@ -1,0 +1,13 @@
+.datagrid-action-bar {
+  margin-top: 0;
+}
+
+clr-dg-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  & a:hover span {
+    text-decoration: inherit;
+  }
+}
