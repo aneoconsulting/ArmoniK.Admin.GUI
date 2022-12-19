@@ -2,6 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrIconModule,
@@ -12,6 +13,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
+import { AuthService } from './shared/data-access/auth.service';
 import {
   TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
@@ -56,6 +58,8 @@ import '@clr/icons/shapes/technology-shapes';
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
     { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
     { provide: Window, useValue: window },
+    AuthService,
+    GrpcAuthService,
     HealthCheckService,
   ],
   declarations: [AppComponent],

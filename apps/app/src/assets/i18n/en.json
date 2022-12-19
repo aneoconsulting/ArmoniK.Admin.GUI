@@ -11,6 +11,7 @@
   },
   "navigation": {
     "dashboard": "Dashboard",
+    "connexion_in_progress": "Connexion in progress...",
     "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tasks",

@@ -11,6 +11,7 @@
   },
   "navigation": {
     "dashboard": "Tableau de bord",
+    "connexion_in_progress": "Connexion en cours...",
     "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tâches",
