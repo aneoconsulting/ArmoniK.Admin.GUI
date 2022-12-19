@@ -1,4 +1,10 @@
-export { ApplicationRaw } from './lib/proto/generated/applications-common.pb';
+export { ExternalServicesEnum } from './lib/enums';
+export {
+  ApplicationRaw,
+  ListApplicationsRequest,
+  ListApplicationsResponse,
+} from './lib/proto/generated/applications-common.pb';
+export { ApplicationsClient } from './lib/proto/generated/applications-service.pbsc';
 export {
   GetCurrentUserRequest,
   GetCurrentUserResponse,
@@ -44,4 +50,3 @@ export {
   HealthCheckService,
 } from './lib/services';
 export { GrpcParams } from './lib/types';
-export { ExternalServicesEnum } from './lib/enums';

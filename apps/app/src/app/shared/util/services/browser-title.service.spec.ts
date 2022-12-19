@@ -30,6 +30,6 @@ describe('BrowserTitleService', () => {
 
     const titleService = TestBed.inject(Title);
 
-    expect(titleService.setTitle).toHaveBeenCalledWith(title + ' | Armonik');
+    expect(titleService.setTitle).toHaveBeenCalledWith(title + ' | ArmoniK');
   });
 });

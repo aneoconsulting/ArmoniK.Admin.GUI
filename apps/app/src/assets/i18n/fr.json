@@ -15,6 +15,7 @@
   "navigation": {
     "dashboard": "Tableau de bord",
     "connexion_in_progress": "Connexion en cours...",
+    "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tâches",
     "results": "Résultats",
@@ -87,6 +88,25 @@
           "RESULT_STATUS_ABORTED": "Interrompu",
           "RESULT_STATUS_NOTFOUND": "Non trouvé"
         }
+      }
+    },
+    "applications-list": {
+      "title": "Applications",
+      "columns": {
+        "name": "Name",
+        "version": "Version",
+        "namespace": "Namespace",
+        "service": "Service",
+        "actions": "Actions"
+      },
+      "actions": {
+        "refresh": "Rafraîchir",
+        "related_sessions": "Sessions liées"
+      },
+      "pagination": {
+        "per_page": "Applications par page",
+        "applications": "{{value}} applications",
+        "application": "{{value}} application"
       }
     },
     "sessions-list": {

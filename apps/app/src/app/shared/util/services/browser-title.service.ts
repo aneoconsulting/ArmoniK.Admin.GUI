@@ -6,7 +6,7 @@ import { Title } from '@angular/platform-browser';
  */
 @Injectable()
 export class BrowserTitleService {
-  private _suffix = ' | Armonik';
+  private _suffix = ' | ArmoniK';
 
   constructor(private _titleService: Title) {}
 
