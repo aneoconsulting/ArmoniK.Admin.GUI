@@ -94,7 +94,7 @@
                 'text-danger': [
                   ResultsStatusEnum.RESULT_STATUS_ABORTED,
                   ResultsStatusEnum.RESULT_STATUS_NOTFOUND
-                ].includes(result.status || 0)
+                ].includes(result.status)
               }"
             >
               {{ 'pages.results-list.cells.status.' + result.status | translate
