@@ -26,7 +26,7 @@
         class="btn btn-sm btn-secondary"
         (click)="clearAllFilters()"
       >
-        {{ 'pages.components.filters.clear_all_filters' | translate }}
+        {{ 'pages.results-list.clear_all_filters' | translate }}
       </button>
     </clr-dg-action-bar>
 
@@ -144,7 +144,7 @@
                 'text-danger': [
                   ResultsStatusEnum.RESULT_STATUS_ABORTED,
                   ResultsStatusEnum.RESULT_STATUS_NOTFOUND
-                ].includes(result.status ||0)
+                ].includes(result.status || 0)
               }"
             >
               {{ 'pages.results-list.cells.status.' + result.status | translate

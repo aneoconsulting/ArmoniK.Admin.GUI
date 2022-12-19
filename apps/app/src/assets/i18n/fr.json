@@ -55,8 +55,8 @@
         "select_title": "Sélectionnez une valeur :",
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
         "clear_filter": "Supprimer le filtre",
-        "clear_all_filters": "Supprimer tous les filtres",
         "warning": {
+          "combobox": "Vous pouvez sélectionner plus d'une valeur.",
           "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
           "before_date": "Affichera les données ayant une date strictement inférieure à celle indiquée.",
           "after_date": "Affichera les données ayant une date strictement supérieure à celle indiquée."
@@ -193,6 +193,7 @@
     },
     "results-list": {
       "title": "Résultats",
+      "clear_all_filters": "Supprimer tous les filtres",
       "columns": {
         "name": "Nom",
         "task_id": "Task ID",
