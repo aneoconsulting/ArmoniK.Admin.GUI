@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { first } from 'rxjs';
 import { CustomColumnsManagerComponent } from './custom-columns-manager.component';
 
 describe('CustomColumnsManagerComponent', () => {
@@ -10,8 +9,11 @@ describe('CustomColumnsManagerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CustomColumnsManagerComponent],
-      imports: [TranslateModule.forRoot(), ClarityModule],
+      imports: [
+        CustomColumnsManagerComponent,
+        TranslateModule.forRoot(),
+        ClarityModule,
+      ],
     }).compileComponents();
   });
 
