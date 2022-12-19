@@ -88,7 +88,7 @@ export class ApplicationsListComponent implements OnInit {
 
   ngOnInit(): void {
     this._browserTitleService.setTitle(
-      this._languageService.instant('applications.title')
+      this._languageService.instant('pages.applications-list.title')
     );
   }
 
