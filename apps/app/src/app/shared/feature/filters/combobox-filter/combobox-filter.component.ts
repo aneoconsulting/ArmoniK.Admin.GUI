@@ -16,12 +16,12 @@ export class ComboBoxFilterComponent
   implements ClrDatagridFilterInterface<TaskStatus>
 {
   @Input() name = '';
-  @Input() selectedValues: number[] = [];
+  @Input() selectedValues: number[] | null = [];
   @Input() selectionList: { value: number; label: string }[] = [];
   @Output() changes = new EventEmitter<never>();
 
   get value(): number[] {
-    return this.selectedValues;
+    return this.selectedValues ?? [];
   }
 
   get property() {
@@ -53,6 +53,6 @@ export class ComboBoxFilterComponent
    * Verify if the filter is active.
    */
   isActive(): boolean {
-    return this.selectedValues.length !== 0;
+    return !!this.selectedValues && this.selectedValues.length !== 0;
   }
 }

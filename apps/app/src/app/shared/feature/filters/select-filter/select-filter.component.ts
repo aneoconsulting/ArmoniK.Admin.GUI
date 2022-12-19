@@ -17,7 +17,7 @@ export class SelectFilterComponent
   changes = new EventEmitter<never>();
 
   @Input() name = '';
-  @Input() selectedValue = 0;
+  @Input() selectedValue: number | null = 0;
   @Input() selectionList: { value: number; label: string }[] = [];
 
   get property(): string {
@@ -25,7 +25,7 @@ export class SelectFilterComponent
   }
 
   get value(): number {
-    return this.selectedValue;
+    return this.selectedValue ?? 0;
   }
 
   onSelectionChange(): void {
@@ -47,7 +47,7 @@ export class SelectFilterComponent
    * @returns true if yes, false if no
    */
   isActive(): boolean {
-    return this.selectedValue !== 0;
+    return !!this.selectedValue && this.selectedValue !== 0;
   }
 
   /**
