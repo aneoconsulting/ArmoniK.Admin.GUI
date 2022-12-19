@@ -52,6 +52,7 @@
       "filters": {
         "select_title": "Sélectionnez une valeur :",
         "filter": "Filtre",
+        "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
         "clear_filter": "Supprimer le filtre",
         "warning": {
           "id": "Affichera les données avec un ID strictement égal à celui indiqué.",
