@@ -1,10 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import {
   ExternalServicesEnum,
   HealthCheckService,
+  User,
 } from '@armonik.admin.gui/shared/data-access';
-import { distinctUntilChanged, filter, merge, take } from 'rxjs';
+import {
+  Observable,
+  distinctUntilChanged,
+  filter,
+  first,
+  merge,
+  take,
+} from 'rxjs';
+import { AuthService } from './shared/data-access/auth.service';
 import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 
 @Component({
@@ -14,6 +24,12 @@ import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 })
 export class AppComponent implements OnInit {
   links: AppNavLink[] = [
+    {
+      path: ['/', 'applications'],
+      label: 'navigation.applications',
+      queryParams: { page: 0, pageSize: 10 },
+      shape: 'bundle',
+    },
     {
       path: ['/', 'sessions'],
       label: 'navigation.sessions',
@@ -36,6 +52,8 @@ export class AppComponent implements OnInit {
     private _router: Router,
     private _healthCheckService: HealthCheckService,
     private _historyService: HistoryService,
+    private _authService: AuthService,
+    private _grpcAuthService: GrpcAuthService,
     public settingsService: SettingsService
   ) {}
 
@@ -57,6 +75,8 @@ export class AppComponent implements OnInit {
         }
       });
 
+    this.authenticateUser();
+
     // Add current url to history
     this._historyService.add(this._router.url);
     // Subscribe to router events to track url changes
@@ -69,6 +89,24 @@ export class AppComponent implements OnInit {
       )
       .subscribe((event) => {
         this._historyService.add((event as NavigationEnd).urlAfterRedirects);
+      });
+  }
+
+  public get currentUser$(): Observable<User | null> {
+    return this._authService.user$;
+  }
+
+  /**
+   * Authenticate user and set user to auth service
+   *
+   * @returns void
+   */
+  public authenticateUser() {
+    this._grpcAuthService
+      .currentUser$()
+      .pipe(first())
+      .subscribe((response) => {
+        this._authService.user = response.user ?? null;
       });
   }
 
