@@ -40,7 +40,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="(sessionFilter$ | async) || ''"
+          [inputValue]="sessionFilter$ | async"
           #sessionFilter
         >
         </app-id-filter>
@@ -54,7 +54,7 @@
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
           [name]="'status'"
-          [selectedValue]="(statusFilter$ | async) || 0"
+          [selectedValue]="statusFilter$ | async"
           [selectionList]="sessionsStatusList"
           #statusFilter
         >
@@ -71,8 +71,8 @@
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="(createdBeforeFilter$ | async) || null"
-          [afterDate]="(createdAfterFilter$ | async) || null"
+          [beforeDate]="createdBeforeFilter$ | async"
+          [afterDate]="createdAfterFilter$ | async"
           #createdDateFilter
         >
         </app-date-filter>
@@ -88,8 +88,8 @@
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
         <app-date-filter
           [name]="'cancelled'"
-          [beforeDate]="(cancelledBeforeFilter$ | async) || null"
-          [afterDate]="(cancelledAfterFilter$ | async) || null"
+          [beforeDate]="cancelledBeforeFilter$ | async"
+          [afterDate]="cancelledAfterFilter$ | async"
           #closedDateFilter
         ></app-date-filter>
       </clr-dg-filter>
