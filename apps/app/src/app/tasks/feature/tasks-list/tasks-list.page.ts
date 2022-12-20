@@ -108,18 +108,66 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterTaskId$: Observable<string>;
-  filterSessionId$: Observable<string>;
-  filterStatus$: Observable<number>;
-  filterCreatedBefore$: Observable<Date | null>;
-  filterCreatedAfter$: Observable<Date | null>;
-  filterStartedBefore$: Observable<Date | null>;
-  filterStartedAfter$: Observable<Date | null>;
-  filterEndedBefore$: Observable<Date | null>;
-  filterEndedAfter$: Observable<Date | null>;
+  filterTaskId$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.paramMap,
+    'taskId'
+  );
 
-  pageSize$: Observable<number>;
-  page$: Observable<number>;
+  filterSessionId$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'SessionId'
+    );
+
+  filterStatus$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'status'
+  );
+
+  filterCreatedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtBefore'
+    );
+
+  filterCreatedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtAfter'
+    );
+
+  filterStartedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'startedAtBefore'
+    );
+
+  filterStartedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'startedAtAfter'
+    );
+
+  filterEndedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'endedAtBefore'
+    );
+
+  filterEndedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'endedAtAfter'
+    );
+
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
 
   constructor(
     private _router: Router,
@@ -143,60 +191,6 @@ export class TasksListComponent implements OnInit {
           label: key,
         })),
     ];
-
-    this.filterTaskId$ = this._settingsService.queryStringParam$(
-      this._activatedRoute.paramMap,
-      'taskId'
-    );
-
-    this.filterSessionId$ = this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'SessionId'
-    );
-
-    this.filterStatus$ = this._settingsService.queryParam$(
-      this._activatedRoute.queryParamMap,
-      'status'
-    );
-
-    this.filterCreatedBefore$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtBefore'
-    );
-
-    this.filterCreatedAfter$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtAfter'
-    );
-
-    this.filterStartedBefore$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'startedAtBefore'
-    );
-
-    this.filterStartedAfter$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'startedAtAfter'
-    );
-
-    this.filterEndedBefore$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'endedAtBefore'
-    );
-
-    this.filterEndedAfter$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'endedAtAfter'
-    );
-
-    this.pageSize$ = this._settingsService.queryParam$(
-      this._activatedRoute.queryParamMap,
-      'pageSize'
-    );
-    this.page$ = this._settingsService.queryParam$(
-      this._activatedRoute.queryParamMap,
-      'page'
-    );
   }
 
   public get OrderByField(): typeof ListTasksRequest.OrderByField {

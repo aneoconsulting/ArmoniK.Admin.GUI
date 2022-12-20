@@ -82,15 +82,42 @@ export class ResultsListComponent implements OnInit {
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
    */
-  nameFilter$: Observable<string>;
-  taskIdFilter$: Observable<string>;
-  sessionIdFilter$: Observable<string>;
-  statusFilter$: Observable<number>;
-  createdBeforeFilter$: Observable<Date | null>;
-  createdAfterFilter$: Observable<Date | null>;
+  nameFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'name'
+  );
+  taskIdFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'taskId'
+  );
+  sessionIdFilter$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'sessionId'
+    );
+  statusFilter$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'status'
+  );
+  createdBeforeFilter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtBefore'
+    );
+  createdAfterFilter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtAfter'
+    );
 
-  pageSize$: Observable<number>;
-  page$: Observable<number>;
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
 
   constructor(
     private _router: Router,
@@ -114,46 +141,6 @@ export class ResultsListComponent implements OnInit {
           label: key,
         })),
     ];
-
-    this.nameFilter$ = this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'name'
-    );
-
-    this.taskIdFilter$ = this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'taskId'
-    );
-
-    this.sessionIdFilter$ = this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'sessionId'
-    );
-
-    this.statusFilter$ = this._settingsService.queryParam$(
-      this._activatedRoute.queryParamMap,
-      'status'
-    );
-
-    this.createdBeforeFilter$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtBefore'
-    );
-
-    this.createdAfterFilter$ = this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtAfter'
-    );
-
-    this.pageSize$ = this._settingsService.queryParam$(
-      this._activatedRoute.queryParamMap,
-      'pageSize'
-    );
-
-    this.page$ = this._settingsService.queryParam$(
-      this._activatedRoute.queryParamMap,
-      'page'
-    );
   }
 
   public get OrderByField() {
