@@ -116,7 +116,7 @@ export class TasksListComponent implements OnInit {
   filterSessionId$: Observable<string> =
     this._settingsService.queryStringParam$(
       this._activatedRoute.queryParamMap,
-      'SessionId'
+      'sessionId'
     );
 
   filterStatus$: Observable<number> = this._settingsService.queryParam$(
