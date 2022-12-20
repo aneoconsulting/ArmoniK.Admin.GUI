@@ -29,6 +29,15 @@
         (refreshIntervalChange)="onUpdateInterval($event)"
       >
       </armonik-admin-gui-auto-refresh-dropdown>
+
+      <button
+        *ngIf="isFiltered()"
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="clearAllFilters()"
+      >
+        {{ 'pages.tasks-list.clear_all_filters' | translate }}
+      </button>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -36,6 +45,14 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
       {{ 'pages.tasks-list.columns.task_id' | translate }}
+      <clr-dg-filter [clrDgFilter]="idFilter">
+        <app-id-filter
+          [name]="'id'"
+          [inputValue]="queryStringParam$('id') | async"
+          #idFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -44,12 +61,29 @@
       "
     >
       {{ 'pages.tasks-list.columns.session_id' | translate }}
+      <clr-dg-filter [clrDgFilter]="sessionFilter">
+        <app-id-filter
+          [name]="'sessionId'"
+          [inputValue]="queryStringParam$('sessionId') | async"
+          #sessionFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       {{ 'pages.tasks-list.columns.status' | translate }}
+      <clr-dg-filter [clrDgFilter]="statusFilter">
+        <app-select-filter
+          [name]="'status'"
+          [selectedValue]="filterStatus$ | async"
+          [selectionList]="taskStatusList"
+          #statusFilter
+        >
+        </app-select-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -58,6 +92,15 @@
       "
     >
       {{ 'pages.tasks-list.columns.created_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="createdDateFilter">
+        <app-date-filter
+          [name]="'created'"
+          [beforeDate]="queryDateParam$('createdAtBefore') | async"
+          [afterDate]="queryDateParam$('createdAtAfter') | async"
+          #createdDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
@@ -66,12 +109,30 @@
       "
     >
       {{ 'pages.tasks-list.columns.started_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="startedDateFilter">
+        <app-date-filter
+          [name]="'started'"
+          [beforeDate]="queryDateParam$('startedAtBefore') | async"
+          [afterDate]="queryDateParam$('startedAtAfter') | async"
+          #startedDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
     >
       {{ 'pages.tasks-list.columns.ended_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="endedDateFilter">
+        <app-date-filter
+          [name]="'ended'"
+          [beforeDate]="queryDateParam$('endedAtBefore') | async"
+          [afterDate]="queryDateParam$('endedAtAfter') | async"
+          #endedDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.tasks-list.columns.actions' | translate }}
@@ -104,11 +165,11 @@
                 'text-warn': [
                   TaskStatusEnum.TASK_STATUS_PROCESSING,
                   TaskStatusEnum.TASK_STATUS_PROCESSED
-                ].includes(task.status),
+                ].includes(task.status || 0),
                 'text-danger': [
                   TaskStatusEnum.TASK_STATUS_ERROR,
                   TaskStatusEnum.TASK_STATUS_TIMEOUT
-                ].includes(task.status),
+                ].includes(task.status || 0),
                 'text-creating':
                   task.status === TaskStatusEnum.TASK_STATUS_CREATING,
                 'text-submitted':
@@ -118,7 +179,7 @@
                 'text-cancelled': [
                   TaskStatusEnum.TASK_STATUS_CANCELLING,
                   TaskStatusEnum.TASK_STATUS_CANCELLED
-                ].includes(task.status)
+                ].includes(task.status || 0)
               }"
             >
               {{ 'pages.tasks-list.cells.status.' + task.status | translate }}

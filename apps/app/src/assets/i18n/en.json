@@ -143,6 +143,7 @@
     },
     "tasks-list": {
       "title": "Tasks",
+      "clear_all_filters": "Clear all filters",
       "columns": {
         "task_id": "Task ID",
         "session_id": "Session ID",

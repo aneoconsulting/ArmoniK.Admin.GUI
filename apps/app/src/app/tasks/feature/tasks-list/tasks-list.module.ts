@@ -18,6 +18,11 @@ import {
   ClrModalModule,
 } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  SelectFilterComponent,
+  DateFilterComponent,
+  IdFilterComponent,
+} from '../../../shared/feature/filters';
 import { TasksListRoutingModule } from './tasks-list-routing.module';
 import { TasksListComponent } from './tasks-list.page';
 
@@ -35,6 +40,9 @@ import { TasksListComponent } from './tasks-list.page';
     ClrModalModule,
     TranslateModule,
     TasksListRoutingModule,
+    SelectFilterComponent,
+    IdFilterComponent,
+    DateFilterComponent,
     NgClass,
     AsyncPipe,
     DatePipe,
