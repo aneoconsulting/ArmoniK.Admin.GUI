@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable()
 export class AuthService {
   private _user = new BehaviorSubject<User | null>(null);
+  private _user$ = this._user.asObservable();
 
   public set user(user: User | null) {
     this._user.next(user);
@@ -15,6 +16,6 @@ export class AuthService {
   }
 
   public get user$() {
-    return this._user.asObservable();
+    return this._user$;
   }
 }

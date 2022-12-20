@@ -1,0 +1,50 @@
+<h1>{{ 'pages.users_me.title' | translate }}</h1>
+
+<ng-container *ngIf="currentUser$ | async as user">
+  <section>
+    <h2>{{ 'pages.users_me.informations.title' | translate }}</h2>
+
+    <div>
+      <span> {{ 'pages.users_me.informations.username' | translate }}: </span>
+      <span> {{ user.username }} </span>
+    </div>
+
+    <div>
+      <span> {{ 'pages.users_me.informations.roles' | translate}}: </span>
+      <ul *ngIf="user.roles.length; else noRoles">
+        <ng-container *ngFor="let role of user.roles">
+          <li>{{ role }}</li>
+        </ng-container>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>{{ 'pages.users_me.permissions.title' | translate }}</h2>
+
+    <ng-container *ngIf="user.permissions.length; else noPermissions">
+      <div class="clr-row">
+        <ng-container *ngFor="let service of services(user.permissions)">
+          <div class="clr-col-md-6 clr-col-lg-4">
+            <h3>{{ service}}</h3>
+            <ul>
+              <ng-container
+                *ngFor="let permission of permissionsByServices(user.permissions, service)"
+              >
+                <li>{{ permission }}</li>
+              </ng-container>
+            </ul>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </section>
+</ng-container>
+
+<ng-template #noRoles>
+  <span> No roles </span>
+</ng-template>
+
+<ng-template #noPermissions>
+  <span> No permissions </span>
+</ng-template>

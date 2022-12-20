@@ -91,6 +91,17 @@
         }
       }
     },
+    "users_me": {
+      "title": "Mon profil",
+      "informations": {
+        "title": "Informations",
+        "username": "Nom d'utilisateur",
+        "roles": "Rôles"
+      },
+      "permissions": {
+        "title": "Permissions"
+      }
+    },
     "applications-list": {
       "title": "Applications",
       "columns": {
