@@ -48,7 +48,7 @@
       <clr-dg-filter [clrDgFilter]="idFilter">
         <app-id-filter
           [name]="'id'"
-          [inputValue]="queryStringParam$('id') | async"
+          [inputValue]="filterTaskId$ | async"
           #idFilter
         >
         </app-id-filter>
@@ -64,7 +64,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="queryStringParam$('sessionId') | async"
+          [inputValue]="filterSessionId$ | async"
           #sessionFilter
         >
         </app-id-filter>
@@ -95,8 +95,8 @@
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="queryDateParam$('createdAtBefore') | async"
-          [afterDate]="queryDateParam$('createdAtAfter') | async"
+          [beforeDate]="filterCreatedBefore$ | async"
+          [afterDate]="filterCreatedAfter$ | async"
           #createdDateFilter
         >
         </app-date-filter>
@@ -112,8 +112,8 @@
       <clr-dg-filter [clrDgFilter]="startedDateFilter">
         <app-date-filter
           [name]="'started'"
-          [beforeDate]="queryDateParam$('startedAtBefore') | async"
-          [afterDate]="queryDateParam$('startedAtAfter') | async"
+          [beforeDate]="filterStartedBefore$ | async"
+          [afterDate]="filterStartedAfter$ | async"
           #startedDateFilter
         >
         </app-date-filter>
@@ -127,8 +127,8 @@
       <clr-dg-filter [clrDgFilter]="endedDateFilter">
         <app-date-filter
           [name]="'ended'"
-          [beforeDate]="queryDateParam$('endedAtBefore') | async"
-          [afterDate]="queryDateParam$('endedAtAfter') | async"
+          [beforeDate]="filterEndedBefore$ | async"
+          [afterDate]="filterEndedAfter$ | async"
           #endedDateFilter
         >
         </app-date-filter>
@@ -248,9 +248,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgPageSize]="(pageSize$ | async) || 10"
         [clrDgTotalItems]="(totalTasks$ | async) ?? 0"
-        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
+        [clrDgPage]="((page$ | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
           >{{ 'pages.tasks-list.pagination.per_page' | translate
