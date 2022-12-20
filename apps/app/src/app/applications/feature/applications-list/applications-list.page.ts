@@ -248,4 +248,21 @@ export class ApplicationsListComponent implements OnInit {
       })
     );
   }
+
+  /**
+   * Checks if one filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  public clearAllFilters(): void {
+    delete this._state.filters;
+    this.refreshApplications(this._state);
+  }
 }

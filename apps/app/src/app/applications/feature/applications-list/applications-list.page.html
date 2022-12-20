@@ -19,6 +19,15 @@
         (refreshIntervalChange)="onUpdateInterval($event)"
       >
       </armonik-admin-gui-auto-refresh-dropdown>
+
+      <button
+        *ngIf="isFiltered()"
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="clearAllFilters()"
+      >
+        {{ 'pages.applications-list.clear_all_filters' | translate }}
+      </button>
     </clr-dg-action-bar>
 
     <clr-dg-column
