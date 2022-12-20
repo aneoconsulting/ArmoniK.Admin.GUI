@@ -11,6 +11,11 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ResultsListRoutingModule } from './results-list-routing.module';
 import { ResultsListComponent } from './results-list.page';
+import {
+  SelectFilterComponent,
+  DateFilterComponent,
+  IdFilterComponent,
+} from '../../../shared/feature/filters';
 
 @NgModule({
   declarations: [ResultsListComponent],
@@ -20,6 +25,9 @@ import { ResultsListComponent } from './results-list.page';
     ClrDropdownModule,
     ClrDatagridModule,
     TranslateModule,
+    SelectFilterComponent,
+    DateFilterComponent,
+    IdFilterComponent,
     ResultsListRoutingModule,
     NgClass,
     AsyncPipe,

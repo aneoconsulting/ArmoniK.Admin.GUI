@@ -54,7 +54,6 @@ export class ResultsListComponent implements OnInit {
       const params = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: params,
-        queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -78,6 +77,22 @@ export class ResultsListComponent implements OnInit {
     switchMap(() => this._listResults$())
   );
 
+  //Filter status, to be send into the select-filter component.
+  statusList: { value: number; label: string }[];
+
+  /**
+   * Observable filters
+   * Permits to avoid redundant calls of queryParams function due to async pipe.
+   */
+  nameFilter$: Observable<string> = this.queryStringParam$('name');
+  taskIdFilter$: Observable<string> = this.queryStringParam$('taskId');
+  sessionIdFilter$: Observable<string> = this.queryStringParam$('sessionId');
+  statusFilter$: Observable<number> = this.queryParam$('status');
+  createdBeforeFilter$: Observable<Date | null> =
+    this.queryDateParam$('createdAtBefore');
+  createdAfterFilter$: Observable<Date | null> =
+    this.queryDateParam$('createdAtAfter');
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -92,6 +107,14 @@ export class ResultsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('results.title')
     );
+    this.statusList = [
+      ...Object.keys(ResultStatus)
+        .filter((key) => !Number.isInteger(parseInt(key)))
+        .map((key) => ({
+          value: ResultStatus[key as keyof typeof ResultStatus] as number,
+          label: key,
+        })),
+    ];
   }
 
   public get OrderByField() {
@@ -184,6 +207,47 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
+   * Get query params from route and return them as string
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryStringParam$(param: string): Observable<string> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((urlParams) => urlParams.get(param)),
+      map((value) => (value !== null ? value : '')),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Get query params from route and return them as Date
+   *
+   * @param param
+   *
+   * @returns Observable<Date | null>
+   */
+  public queryDateParam$(param: string): Observable<Date | null> {
+    return this._activatedRoute.queryParamMap.pipe(
+      map((urlParams) => urlParams.get(param)),
+      map((value) => {
+        if (!value) {
+          return null;
+        }
+
+        const numberDate = Number(value);
+        if (isNaN(numberDate)) {
+          return null;
+        }
+
+        return new Date(numberDate);
+      }),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
    * Track by result
    *
    * @param _
@@ -233,5 +297,22 @@ export class ResultsListComponent implements OnInit {
         this.totalResults$.next(results.total ?? 0);
       })
     );
+  }
+
+  /**
+   * Checks if any filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

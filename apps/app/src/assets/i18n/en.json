@@ -194,6 +194,7 @@
     },
     "results-list": {
       "title": "Results",
+      "clear_all_filters": "Clear all filters",
       "columns": {
         "name": "Name",
         "task_id": "Task ID",
