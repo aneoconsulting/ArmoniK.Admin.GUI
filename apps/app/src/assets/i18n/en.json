@@ -15,6 +15,7 @@
   "navigation": {
     "dashboard": "Dashboard",
     "connexion_in_progress": "Connexion in progress...",
+    "connexion_failed": "Connexion failed",
     "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tasks",
