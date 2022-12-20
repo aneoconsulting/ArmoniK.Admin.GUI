@@ -1,5 +1,5 @@
 # Permissions
 
-::: tip
-coming soon
+::: warning
+Coming soon...
 :::

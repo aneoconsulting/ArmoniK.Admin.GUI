@@ -1,1 +1,42 @@
 # Getting Started
+
+This guide will help you to get started with ArmoniK Admin GUI.
+
+::: warning
+ArmoniK Admin GUI is currently under heavy development. The documentation is not yet complete and may contain errors. The application can still change a lot in the future.
+:::
+
+## Pre-requisites
+
+This guide assume that you have are familiar with ArmoniK and that you have a running cluster.
+
+::: info
+To learn more about ArmoniK, please visit the [ArmoniK documentation](https://aneoconsulting.github.io/ArmoniK/).
+:::
+
+## What is ArmoniK Admin GUI?
+
+ArmoniK Admin GUI is a web application that allows you to monitor and manage an ArmoniK cluster. It can be deployed during the cluster creation and will be accessible from the browser.
+
+![ArmoniK Admin GUI](./assets/ArmoniK_Admin_GUI.png)
+
+ArmoniK Admin GUI is a simple but powerful way to view what is happening in your cluster. In fact, thanks to the ArmoniK Admin GUI, you can:
+
+- Current user with his roles
+- Applications
+- Partitions
+- Sessions
+- Tasks
+- Results
+- Easily access to external services (Grafana, SEQ)
+- ...
+
+## Open Source
+
+ArmoniK Admin GUI is an OSS project. You can find the source code on [GitHub](https://github.com/aneoconsulting/ArmoniK.Admin.GUI).
+
+![GitHub](./assets/GitHub.png)
+
+::: tip
+Feel free to contribute to the project by submitting [issues](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/issues) or [pull requests](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/pulls).
+:::

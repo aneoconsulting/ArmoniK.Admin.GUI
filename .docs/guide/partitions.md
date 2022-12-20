@@ -1,1 +1,5 @@
 # Partitions
+
+::: warning
+Coming soon...
+:::

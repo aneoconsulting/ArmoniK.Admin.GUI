@@ -98,11 +98,11 @@ function sidebarGuide() {
       items: [
         { text: 'Introduction', link: '/guide/datagrid-introduction' },
         {
-          text: 'Sorting',
+          text: 'Filtering',
           link: '/guide/datagrid-filtering',
         },
         {
-          text: 'Filtering',
+          text: 'Sorting',
           link: '/guide/datagrid-sorting',
         },
         {

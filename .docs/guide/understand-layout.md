@@ -1,1 +1,39 @@
 # Understand the layout
+
+The layout of the ArmoniK Admin GUI is quite simple but really powerful.
+
+![ArmoniK Admin GUI](./assets/ArmoniK_Admin_GUI.png)
+
+The layout is composed of 3 main parts:
+
+- The **header** contains the logo, date and time and the language selector.
+- The **sidebar** contains the menu.
+- The **main content** contains the page content.
+
+## Header
+
+![Header](./assets/header.png)
+
+The header is very simple. It contains:
+
+- The logo which is a link to the home page.
+- The date and time which is updated every second.
+- The language selector which allows you to [change the language](./languages.md) of the application.
+
+## Sidebar
+
+![Sidebar](./assets/sidebar.png)
+
+The sidebar is the menu of the application. It contains the list of all the pages of the application.
+
+The sidebar is divided into 3 parts:
+
+- The **top menu** contains user information.
+- The **middle menu** contains the list of pages related to data.
+- The **bottom menu** contains the list of pages related to the computes.
+
+## Main content
+
+![Main content](./assets/main-content.png)
+
+The main content is the area where the page content is displayed. Content depends on the page you are currently viewing.
