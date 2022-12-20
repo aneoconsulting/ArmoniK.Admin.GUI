@@ -15,21 +15,23 @@ hero:
     - theme: brand
       text: Get Started
       link: /guide/getting-started
-    # - theme: alt
-    #   text: View on GitHub
-    #   link: https://github.com/vuejs/vitepress
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/aneoconsulting/ArmoniK.Admin.GUI
+
+features:
+  - icon: 👁
+    title: Monitoring
+    details: Monitor your cluster from a single visual point easily accessible.
+  - icon: 🛠
+    title: Management
+    details: Manage your cluster, sessions and tasks in a visual canvas.
+  - icon: 🖖
+    title: Simple
+    details: Simple and intuitive interface to manage your cluster.
 ---
 
 <!-- 
-Qu'est qu'on veut dans la documentation ?
-
-
-- Datagrid (ça c'est dans les grandes lignes parce que après, il y a une présentation dans d'autres pages)
-  - Introduction
-  - Sorting
-  - Filtering
-  - Pagination
-  - Custom Columns
 - How to create his own client
   - Introduction
   - Proto files
