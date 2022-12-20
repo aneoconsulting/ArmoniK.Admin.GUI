@@ -30,7 +30,7 @@
         <app-id-filter
           #nameFilter
           [name]="'name'"
-          [inputValue]="(nameFilter$ | async) || ''"
+          [inputValue]=" nameFilter$ | async"
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -44,7 +44,7 @@
         <app-id-filter
           #versionFilter
           [name]="'version'"
-          [inputValue]="(versionFilter$ | async) || ''"
+          [inputValue]="versionFilter$ | async"
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -58,7 +58,7 @@
         <app-id-filter
           #namespaceFilter
           [name]="'namespace'"
-          [inputValue]="(namespaceFilter$ | async) || ''"
+          [inputValue]="namespaceFilter$ | async"
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -72,7 +72,7 @@
         <app-id-filter
           #serviceFilter
           [name]="'service'"
-          [inputValue]="(serviceFilter$ | async) || ''"
+          [inputValue]="serviceFilter$ | async"
         >
         </app-id-filter>
       </clr-dg-filter>
