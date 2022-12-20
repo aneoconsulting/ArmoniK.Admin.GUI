@@ -15,6 +15,7 @@
   "navigation": {
     "dashboard": "Tableau de bord",
     "connexion_in_progress": "Connexion en cours...",
+    "connexion_failed": "Échec de la connexion",
     "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tâches",

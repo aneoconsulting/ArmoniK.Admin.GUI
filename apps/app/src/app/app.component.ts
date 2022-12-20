@@ -23,6 +23,8 @@ import { AppNavLink, HistoryService, SettingsService } from './shared/util';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  public loadingUser = false;
+
   links: AppNavLink[] = [
     {
       path: ['/', 'applications'],
@@ -102,11 +104,19 @@ export class AppComponent implements OnInit {
    * @returns void
    */
   public authenticateUser() {
+    this.loadingUser = true;
     this._grpcAuthService
       .currentUser$()
       .pipe(first())
-      .subscribe((response) => {
-        this._authService.user = response.user ?? null;
+      .subscribe({
+        next: (response) => {
+          this.loadingUser = false;
+          this._authService.user = response.user ?? null;
+        },
+        error: () => {
+          this.loadingUser = false;
+          this._authService.user = null;
+        },
       });
   }
 
