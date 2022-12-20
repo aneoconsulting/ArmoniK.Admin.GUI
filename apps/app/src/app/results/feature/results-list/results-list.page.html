@@ -38,7 +38,7 @@
       <clr-dg-filter [clrDgFilter]="nameFilter">
         <app-id-filter
           [name]="'name'"
-          [inputValue]="(nameFilter$ | async) || ''"
+          [inputValue]="nameFilter$ | async"
           #nameFilter
         >
         </app-id-filter>
@@ -54,7 +54,7 @@
       <clr-dg-filter [clrDgFilter]="taskFilter">
         <app-id-filter
           [name]="'taskId'"
-          [inputValue]="(taskIdFilter$ | async) || ''"
+          [inputValue]="taskIdFilter$ | async"
           #taskFilter
         >
         </app-id-filter>
@@ -70,7 +70,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="(sessionIdFilter$ | async) || ''"
+          [inputValue]="sessionIdFilter$ | async"
           #sessionFilter
         >
         </app-id-filter>
@@ -84,7 +84,7 @@
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
           [name]="'status'"
-          [selectedValue]="(statusFilter$ | async) || 0"
+          [selectedValue]="statusFilter$ | async"
           [selectionList]="statusList"
           #statusFilter
         >
@@ -101,8 +101,8 @@
       <clr-dg-filter>
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="(createdBeforeFilter$ | async) || null"
-          [afterDate]="(createdAfterFilter$ | async) || null"
+          [beforeDate]="createdBeforeFilter$ | async"
+          [afterDate]="createdAfterFilter$ | async"
         >
         </app-date-filter>
       </clr-dg-filter>
