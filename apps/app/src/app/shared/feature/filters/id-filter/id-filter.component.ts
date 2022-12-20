@@ -30,7 +30,7 @@ export class IdFilterComponent
   @Output() changes = new EventEmitter<never>();
 
   @Input() name = '';
-  @Input() inputValue = '';
+  @Input() inputValue: string | null = '';
 
   public input = new Subject<string>();
   private _input$ = this.input.asObservable();
@@ -58,7 +58,7 @@ export class IdFilterComponent
   }
 
   onChange() {
-    this.input.next(this.inputValue);
+    this.input.next(this.inputValue ?? '');
   }
 
   clear() {
@@ -67,7 +67,7 @@ export class IdFilterComponent
   }
 
   isActive(): boolean {
-    return this.inputValue.length != 0;
+    return !!this.inputValue && this.inputValue.length != 0;
   }
 
   /**
