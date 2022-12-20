@@ -92,6 +92,7 @@
     },
     "applications-list": {
       "title": "Applications",
+      "clear_all_filters": "Supprimer tous les filtres",
       "columns": {
         "name": "Name",
         "version": "Version",
