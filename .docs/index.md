@@ -17,7 +17,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/aneoconsulting/ArmoniK.Admin.GUI
+      link: https://github.com/aneoconsulting/ArmoniK.Admin.GUIex
 
 features:
   - icon: 👁
@@ -35,4 +35,6 @@ features:
 - How to create his own client
   - Introduction
   - Proto files
+
+do not put this in a guide. Create another section.
  -->
