@@ -48,7 +48,7 @@
       <clr-dg-filter [clrDgFilter]="idFilter">
         <app-id-filter
           [name]="'id'"
-          [inputValue]="(queryStringParam$('id') | async) || ''"
+          [inputValue]="queryStringParam$('id') | async"
           #idFilter
         >
         </app-id-filter>
@@ -64,7 +64,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="(queryStringParam$('sessionId') | async) || ''"
+          [inputValue]="queryStringParam$('sessionId') | async"
           #sessionFilter
         >
         </app-id-filter>
@@ -78,7 +78,7 @@
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
           [name]="'status'"
-          [selectedValue]="(filterStatus$ | async) || 0"
+          [selectedValue]="filterStatus$ | async"
           [selectionList]="taskStatusList"
           #statusFilter
         >
@@ -95,8 +95,8 @@
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="(queryDateParam$('createdAtBefore') | async) || null"
-          [afterDate]="(queryDateParam$('createdAtAfter') | async) || null"
+          [beforeDate]="queryDateParam$('createdAtBefore') | async"
+          [afterDate]="queryDateParam$('createdAtAfter') | async"
           #createdDateFilter
         >
         </app-date-filter>
@@ -112,8 +112,8 @@
       <clr-dg-filter [clrDgFilter]="startedDateFilter">
         <app-date-filter
           [name]="'started'"
-          [beforeDate]="(queryDateParam$('startedAtBefore') | async) || null"
-          [afterDate]="(queryDateParam$('startedAtAfter') | async) || null"
+          [beforeDate]="queryDateParam$('startedAtBefore') | async"
+          [afterDate]="queryDateParam$('startedAtAfter') | async"
           #startedDateFilter
         >
         </app-date-filter>
@@ -127,8 +127,8 @@
       <clr-dg-filter [clrDgFilter]="endedDateFilter">
         <app-date-filter
           [name]="'ended'"
-          [beforeDate]="(queryDateParam$('endedAtBefore') | async) || null"
-          [afterDate]="(queryDateParam$('endedAtAfter') | async) || null"
+          [beforeDate]="queryDateParam$('endedAtBefore') | async"
+          [afterDate]="queryDateParam$('endedAtAfter') | async"
           #endedDateFilter
         >
         </app-date-filter>
