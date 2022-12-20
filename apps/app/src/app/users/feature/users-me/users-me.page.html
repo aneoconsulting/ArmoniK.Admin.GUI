@@ -1,6 +1,6 @@
 <h1>{{ 'pages.users_me.title' | translate }}</h1>
 
-<ng-container *ngIf="currentUser$ | async as user">
+<ng-container *ngIf="currentUser$ | async as user; noInformations">
   <section>
     <h2>{{ 'pages.users_me.informations.title' | translate }}</h2>
 
@@ -41,10 +41,14 @@
   </section>
 </ng-container>
 
+<ng-template #noInformations>
+  <span> {{ 'pages.users_me.templates.no_informations' | translate }} </span>
+</ng-template>
+
 <ng-template #noRoles>
-  <span> No roles </span>
+  <span> {{ 'pages.users_me.templates.no_roles' | translate }} </span>
 </ng-template>
 
 <ng-template #noPermissions>
-  <span> No permissions </span>
+  <span>{{ 'pages.users_me.templates.no_permissions' | translate }} </span>
 </ng-template>

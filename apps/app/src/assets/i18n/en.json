@@ -100,6 +100,11 @@
       },
       "permissions": {
         "title": "Permissions"
+      },
+      "templates": {
+        "no_information": "No information",
+        "no_roles": "No roles",
+        "no_permissions": "No permissions"
       }
     },
     "applications-list": {
