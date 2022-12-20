@@ -3,6 +3,7 @@
   "projects": {
     "app": "apps/app",
     "app-e2e": "apps/app-e2e",
+    "auth-data-access": "libs/auth/data-access",
     "applications-data-access": "libs/applications/data-access",
     "results-data-access": "libs/results/data-access",
     "sessions-data-access": "libs/sessions/data-access",

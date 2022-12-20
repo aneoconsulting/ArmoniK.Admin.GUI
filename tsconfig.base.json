@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@armonik.admin.gui/auth/data-access": [
+        "libs/auth/data-access/src/index.ts"
+      ],
       "@armonik.admin.gui/applications/data-access": [
         "libs/applications/data-access/src/index.ts"
       ],
