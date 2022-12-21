@@ -80,12 +80,6 @@ export class ResultsListComponent implements OnInit {
   //Filter status, to be send into the select-filter component.
   statusList: { value: number; label: string }[];
 
-  clearFiltersSubject: Subject<void> = new Subject();
-  clearFilters$ = this.clearFiltersSubject.subscribe(() => {
-    delete this._state.filters;
-    this._subjectDatagrid.next(this._state);
-  });
-
   /**
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
@@ -312,5 +306,13 @@ export class ResultsListComponent implements OnInit {
    */
   isFiltered(): boolean {
     return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

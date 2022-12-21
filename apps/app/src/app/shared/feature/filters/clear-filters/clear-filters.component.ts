@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -10,9 +9,9 @@ import { Subject } from 'rxjs';
   imports: [TranslateModule],
 })
 export class ClearFiltersComponent {
-  @Input() clearFiltersSubject: Subject<void>;
+  @Output() clearFilter = new EventEmitter<never>();
 
   public clearFilters(): void {
-    this.clearFiltersSubject.next();
+    this.clearFilter.emit();
   }
 }

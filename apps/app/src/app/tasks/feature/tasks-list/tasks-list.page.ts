@@ -106,12 +106,6 @@ export class TasksListComponent implements OnInit {
 
   taskStatusList: { value: number; label: string }[];
 
-  clearFiltersSubject: Subject<void> = new Subject();
-  clearFilters$ = this.clearFiltersSubject.subscribe(() => {
-    delete this._state.filters;
-    this._subjectDatagrid.next(this._state);
-  });
-
   /**
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
@@ -429,5 +423,13 @@ export class TasksListComponent implements OnInit {
    */
   isFiltered(): boolean {
     return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

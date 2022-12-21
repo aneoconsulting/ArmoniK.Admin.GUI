@@ -22,7 +22,7 @@
 
       <app-clear-filters
         *ngIf="isFiltered()"
-        [clearFiltersSubject]="clearFiltersSubject"
+        (clearFilter)="clearAllFilters()"
       ></app-clear-filters>
     </clr-dg-action-bar>
 

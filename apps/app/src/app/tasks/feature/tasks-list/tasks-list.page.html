@@ -30,10 +30,7 @@
       >
       </armonik-admin-gui-auto-refresh-dropdown>
 
-      <app-clear-filters
-        *ngIf="isFiltered()"
-        [clearFiltersSubject]="clearFiltersSubject"
-      >
+      <app-clear-filters *ngIf="isFiltered()" (clearFilter)="clearAllFilters()">
       </app-clear-filters>
     </clr-dg-action-bar>
 

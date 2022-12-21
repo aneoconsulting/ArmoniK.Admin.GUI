@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
 
 import { ClearFiltersComponent } from './clear-filters.component';
 
@@ -23,9 +22,8 @@ describe('ClearFiltersComponent', () => {
   });
 
   it('should emit when clearFilters is called', () => {
-    component.clearFiltersSubject = new Subject();
-    component.clearFiltersSubject.next = jasmine.createSpy();
+    component.clearFilter.emit = jasmine.createSpy();
     component.clearFilters();
-    expect(component.clearFiltersSubject.next).toHaveBeenCalled();
+    expect(component.clearFilter.emit).toHaveBeenCalled();
   });
 });
