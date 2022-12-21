@@ -32,11 +32,6 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'how-to-use',
-    loadChildren: () =>
-      import('./how-to-use/how-to-use.module').then((m) => m.HowToUseModule),
-  },
-  {
     path: 'error',
     loadChildren: () =>
       import('./error/feature/error-detail/error-detail.module').then(
