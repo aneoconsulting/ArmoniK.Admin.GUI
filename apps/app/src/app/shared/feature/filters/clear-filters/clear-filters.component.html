@@ -2,7 +2,7 @@
   type="button"
   class="btn btn-sm btn-secondary"
   (click)="clearFilters()"
-  [ngClass]="isFiltered ? '' : 'disabled'"
+  [disabled]="!isFiltered"
 >
   {{ 'pages.components.filters.clear_all_filters' | translate }}
 </button>
