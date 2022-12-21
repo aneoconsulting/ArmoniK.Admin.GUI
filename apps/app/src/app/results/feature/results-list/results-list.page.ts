@@ -77,12 +77,6 @@ export class ResultsListComponent implements OnInit {
     switchMap(() => this._listResults$())
   );
 
-  clearOrderSubject: Subject<void> = new Subject();
-  clearOrder$ = this.clearOrderSubject.subscribe(() => {
-    delete this._state.sort;
-    this._subjectDatagrid.next(this._state);
-  });
-
   //Filter status, to be send into the select-filter component.
   statusList: { value: number; label: string }[];
 
