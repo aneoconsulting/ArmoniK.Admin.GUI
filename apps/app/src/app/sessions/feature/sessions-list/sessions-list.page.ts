@@ -14,9 +14,7 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
-  distinctUntilChanged,
   first,
-  map,
   merge,
   Observable,
   of,
@@ -26,7 +24,11 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
+import {
+  BrowserTitleService,
+  LanguageService,
+  SettingsService,
+} from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -92,16 +94,43 @@ export class SessionsListComponent implements OnInit {
    * Filter observables.
    * They permit to avoid the endless loop due to the async pipe with the functions.
    */
-  sessionFilter$: Observable<string> = this.queryStringParam$('sessionId');
-  statusFilter$: Observable<number> = this.queryParam$('status');
+  sessionFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'sessionId'
+  );
+  statusFilter$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'status'
+  );
   createdBeforeFilter$: Observable<Date | null> =
-    this.queryDateParam$('createdAtBefore');
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtBefore'
+    );
   createdAfterFilter$: Observable<Date | null> =
-    this.queryDateParam$('createdAtAfter');
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtAfter'
+    );
   cancelledBeforeFilter$: Observable<Date | null> =
-    this.queryDateParam$('cancelledAtBefore');
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'cancelledAtBefore'
+    );
   cancelledAfterFilter$: Observable<Date | null> =
-    this.queryDateParam$('cancelledAtAfter');
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'cancelledAtAfter'
+    );
+
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
 
   constructor(
     private _router: Router,
@@ -109,7 +138,8 @@ export class SessionsListComponent implements OnInit {
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
     private _grpcSessionsService: GrpcSessionsService,
-    private _grpcPagerService: GrpcPagerService
+    private _grpcPagerService: GrpcPagerService,
+    private _settingsService: SettingsService
   ) {}
 
   ngOnInit(): void {
@@ -226,62 +256,6 @@ export class SessionsListComponent implements OnInit {
    */
   public manualRefreshSessions(): void {
     this._subjectManual.next();
-  }
-
-  /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<number>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as string
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryStringParam$(param: string): Observable<string> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => (value !== null ? value : '')),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as Date
-   *
-   * @param param
-   *
-   * @returns Observable<Date | null>
-   */
-  public queryDateParam$(param: string): Observable<Date | null> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => {
-        if (!value) {
-          return null;
-        }
-
-        const numberDate = Number(value);
-        if (isNaN(numberDate)) {
-          return null;
-        }
-
-        return new Date(numberDate);
-      }),
-      distinctUntilChanged()
-    );
   }
 
   /**
