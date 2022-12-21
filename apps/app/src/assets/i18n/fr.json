@@ -17,6 +17,7 @@
     "connexion_in_progress": "Connexion en cours...",
     "connexion_failed": "Échec de la connexion",
     "applications": "Applications",
+    "partitions": "Partitions",
     "sessions": "Sessions",
     "tasks": "Tâches",
     "results": "Résultats",

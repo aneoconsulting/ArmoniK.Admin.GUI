@@ -48,6 +48,11 @@ export class AppComponent implements OnInit {
       label: 'navigation.results',
       shape: 'certificate',
     },
+    {
+      path: ['/', 'partitions'],
+      label: 'navigation.partitions',
+      shape: 'objects',
+    }
   ];
 
   constructor(
