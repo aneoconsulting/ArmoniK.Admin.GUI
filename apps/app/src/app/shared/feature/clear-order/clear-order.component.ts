@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -10,10 +9,9 @@ import { Subject } from 'rxjs';
   imports: [TranslateModule],
 })
 export class ClearOrderComponent {
-
-  @Input() clearOrderSubject: Subject<void>;
+  @Output() clearOrderEvent = new EventEmitter<never>();
 
   public clearOrder(): void {
-    this.clearOrderSubject.next();
+    this.clearOrderEvent.emit();
   }
 }

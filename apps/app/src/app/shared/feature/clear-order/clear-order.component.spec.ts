@@ -19,4 +19,10 @@ describe('ClearOrderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit when clearOrder is called', () => {
+    component.clearOrderEvent.emit = jasmine.createSpy();
+    component.clearOrder();
+    expect(component.clearOrderEvent.emit).toHaveBeenCalled();
+  });
 });

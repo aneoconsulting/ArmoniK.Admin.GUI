@@ -31,7 +31,7 @@
 
       <app-clear-order
         *ngIf="isOrdered()"
-        [clearOrderSubject]="clearOrderSubject"
+        (clearOrderEvent)="clearOrder()"
       ></app-clear-order>
     </clr-dg-action-bar>
 
