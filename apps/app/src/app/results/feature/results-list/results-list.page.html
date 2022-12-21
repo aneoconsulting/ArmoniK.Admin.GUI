@@ -28,6 +28,11 @@
       >
         {{ 'pages.results-list.clear_all_filters' | translate }}
       </button>
+
+      <app-clear-order
+        *ngIf="isOrdered()"
+        [clearOrderSubject]="clearOrderSubject"
+      ></app-clear-order>
     </clr-dg-action-bar>
 
     <clr-dg-column
