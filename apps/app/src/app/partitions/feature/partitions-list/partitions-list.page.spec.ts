@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PartitionsListComponent } from './partitions-list.component';
+import { PartitionsListComponent } from './partitions-list.page';
 
 describe('PartitionsListComponent', () => {
   let component: PartitionsListComponent;

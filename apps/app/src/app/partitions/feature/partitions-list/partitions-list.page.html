@@ -1,0 +1,30 @@
+<section>
+    <h1>{{ 'pages.partitions-list.title' | translate }}</h1>
+
+    <clr-datagrid
+        (clrDgRefresh)="refreshPartitions($event)"
+    >
+        <clr-dg-column>
+            Id
+        </clr-dg-column>
+        <clr-dg-column>
+            Parent
+        </clr-dg-column>
+        <clr-dg-column>
+            pod reservés
+        </clr-dg-column>
+        <clr-dg-column>
+            Pod max
+        </clr-dg-column>
+        <clr-dg-column>
+            Pod configuration
+        </clr-dg-column>
+        <clr-dg-column>
+            Pourcentage
+        </clr-dg-column>
+        <clr-dg-column>
+            Priorité
+        </clr-dg-column>
+    </clr-datagrid>
+
+</section>
