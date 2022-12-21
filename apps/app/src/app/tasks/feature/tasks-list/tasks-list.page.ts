@@ -16,9 +16,7 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
-  distinctUntilChanged,
   first,
-  map,
   merge,
   Observable,
   of,
@@ -110,12 +108,66 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterStatus$: Observable<number> = this.queryParam$('status');
-  filterTaskId$: Observable<string> = this.queryStringParam$('taskId');
-  filterSessionId$: Observable<string> = this.queryStringParam$('SessionId');
-  filterCreated$: Observable<Date | null> = this.queryDateParam$('createdAt');
-  filterStarted$: Observable<Date | null> = this.queryDateParam$('startedAt');
-  filterEnded$: Observable<Date | null> = this.queryDateParam$('endedAt');
+  filterTaskId$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.paramMap,
+    'taskId'
+  );
+
+  filterSessionId$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'sessionId'
+    );
+
+  filterStatus$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'status'
+  );
+
+  filterCreatedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtBefore'
+    );
+
+  filterCreatedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtAfter'
+    );
+
+  filterStartedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'startedAtBefore'
+    );
+
+  filterStartedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'startedAtAfter'
+    );
+
+  filterEndedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'endedAtBefore'
+    );
+
+  filterEndedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'endedAtAfter'
+    );
+
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
 
   constructor(
     private _router: Router,
@@ -256,70 +308,6 @@ export class TasksListComponent implements OnInit {
       .subscribe({
         complete: () => this.manualRefreshTasks(),
       });
-  }
-
-  /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  public queryListParam$(param: string): Observable<number[]> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.getAll(param)),
-      map((values) => values.flatMap((v) => Number(v))),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as string
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryStringParam$(param: string): Observable<string> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => (value !== null ? value : '')),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as Date
-   *
-   * @param param
-   *
-   * @returns Observable<Date | null>
-   */
-  public queryDateParam$(param: string): Observable<Date | null> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => {
-        if (!value) {
-          return null;
-        }
-
-        const numberDate = Number(value);
-        if (isNaN(numberDate)) {
-          return null;
-        }
-
-        return new Date(numberDate);
-      }),
-      distinctUntilChanged()
-    );
   }
 
   /**
