@@ -21,9 +21,10 @@
       </armonik-admin-gui-auto-refresh-dropdown>
 
       <app-clear-filters
-        *ngIf="isFiltered()"
+        [isFiltered]="isFiltered()"
         (clearFilter)="clearAllFilters()"
-      ></app-clear-filters>
+      >
+      </app-clear-filters>
     </clr-dg-action-bar>
 
     <clr-dg-column
