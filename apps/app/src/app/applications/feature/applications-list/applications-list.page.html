@@ -21,7 +21,7 @@
       </armonik-admin-gui-auto-refresh-dropdown>
 
       <app-clear-order
-        *ngIf="isOrdered()"
+        [isOrdered]="isOrdered()"
         (clearOrderEvent)="clearOrder()"
       ></app-clear-order>
     </clr-dg-action-bar>

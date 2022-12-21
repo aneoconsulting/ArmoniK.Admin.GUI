@@ -1,3 +1,7 @@
-<button class="btn btn-sm btn-secondary" (click)="clearOrder()">
+<button
+  class="btn btn-sm btn-secondary"
+  (click)="clearOrder()"
+  [ngClass]="isOrdered ? '' : 'disabled'"
+>
   {{ 'pages.components.clear_order' | translate }}
 </button>

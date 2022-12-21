@@ -1,4 +1,5 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -6,9 +7,10 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-clear-order',
   templateUrl: './clear-order.component.html',
   styleUrls: ['./clear-order.component.scss'],
-  imports: [TranslateModule],
+  imports: [TranslateModule, CommonModule],
 })
 export class ClearOrderComponent {
+  @Input() isOrdered = false;
   @Output() clearOrderEvent = new EventEmitter<never>();
 
   public clearOrder(): void {
