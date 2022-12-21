@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ParamMap } from '@angular/router';
+import { BehaviorSubject, Observable, map, distinctUntilChanged } from 'rxjs';
 
 @Injectable()
 export class SettingsService {
@@ -116,6 +117,89 @@ export class SettingsService {
     localStorage.setItem(
       'currentApplications',
       JSON.stringify(Array.from(this.currentApplications))
+    );
+  }
+
+  /**
+   * Get query params from route
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryParam$(
+    queryParamMap: Observable<ParamMap>,
+    param: string
+  ): Observable<number> {
+    return queryParamMap.pipe(
+      map((params) => params.get(param)),
+      map((value) => Number(value)),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Get query params from route and return them as a list
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryListParam$(
+    queryParamMap: Observable<ParamMap>,
+    param: string
+  ): Observable<number[]> {
+    return queryParamMap.pipe(
+      map((params) => params.getAll(param)),
+      map((values) => values.flatMap((v) => Number(v))),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Get query params from route and return them as string
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryStringParam$(
+    queryParamMap: Observable<ParamMap>,
+    param: string
+  ): Observable<string> {
+    return queryParamMap.pipe(
+      map((urlParams) => urlParams.get(param)),
+      map((value) => (value !== null ? value : '')),
+      distinctUntilChanged()
+    );
+  }
+
+  /**
+   * Get query params from route and return them as Date
+   *
+   * @param param
+   *
+   * @returns Observable<Date | null>
+   */
+  public queryDateParam$(
+    queryParamMap: Observable<ParamMap>,
+    param: string
+  ): Observable<Date | null> {
+    return queryParamMap.pipe(
+      map((urlParams) => urlParams.get(param)),
+      map((value) => {
+        if (!value) {
+          return null;
+        }
+
+        const numberDate = Number(value);
+        if (isNaN(numberDate)) {
+          return null;
+        }
+
+        return new Date(numberDate);
+      }),
+      distinctUntilChanged()
     );
   }
 }
