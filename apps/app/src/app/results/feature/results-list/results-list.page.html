@@ -20,14 +20,10 @@
       >
       </armonik-admin-gui-auto-refresh-dropdown>
 
-      <button
+      <app-clear-filters
         *ngIf="isFiltered()"
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="clearAllFilters()"
-      >
-        {{ 'pages.results-list.clear_all_filters' | translate }}
-      </button>
+        [clearFiltersSubject]="clearFiltersSubject"
+      ></app-clear-filters>
     </clr-dg-action-bar>
 
     <clr-dg-column

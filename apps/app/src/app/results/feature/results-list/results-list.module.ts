@@ -15,6 +15,7 @@ import {
   SelectFilterComponent,
   DateFilterComponent,
   IdFilterComponent,
+  ClearFiltersComponent,
 } from '../../../shared/feature/filters';
 
 @NgModule({
@@ -28,6 +29,7 @@ import {
     SelectFilterComponent,
     DateFilterComponent,
     IdFilterComponent,
+    ClearFiltersComponent,
     ResultsListRoutingModule,
     NgClass,
     AsyncPipe,
