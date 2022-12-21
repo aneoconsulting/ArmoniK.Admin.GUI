@@ -49,6 +49,7 @@
         },
         "disable": "Désactiver"
       },
+      "clear_order": "Ordre par défaut",
       "filters": {
         "filter": "Filtre",
         "select_title": "Sélectionnez une valeur :",

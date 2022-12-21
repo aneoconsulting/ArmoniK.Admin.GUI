@@ -26,6 +26,7 @@ import {
   SelectFilterComponent,
 } from '../../../shared/feature/filters';
 import { BrowserTitleService, LanguageService } from '../../../shared/util';
+import { ClearOrderComponent } from '../../../shared/feature';
 
 /**
  * Sessions list module
@@ -40,6 +41,7 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
     ClrModalModule,
     ClrLoadingModule,
     ClrIconModule,
+    ClearOrderComponent,
     TranslateModule,
     NgClass,
     NgFor,

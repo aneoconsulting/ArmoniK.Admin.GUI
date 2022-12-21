@@ -49,6 +49,7 @@
         },
         "disable": "Disable"
       },
+      "clear_order": "Set to default order",
       "filters": {
         "filter": "Filter",
         "select_title": "Select a value:",
