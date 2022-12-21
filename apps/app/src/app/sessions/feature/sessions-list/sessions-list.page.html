@@ -19,6 +19,11 @@
         (refreshIntervalChange)="onUpdateInterval($event)"
       >
       </armonik-admin-gui-auto-refresh-dropdown>
+
+      <app-clear-order
+        *ngIf="isOrdered()"
+        (clearOrderEvent)="clearOrder()"
+      ></app-clear-order>
     </clr-dg-action-bar>
 
     <clr-dg-column
