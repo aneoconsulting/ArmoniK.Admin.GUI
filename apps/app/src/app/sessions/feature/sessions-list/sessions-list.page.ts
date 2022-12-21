@@ -277,4 +277,21 @@ export class SessionsListComponent implements OnInit {
       })
     );
   }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
 }
