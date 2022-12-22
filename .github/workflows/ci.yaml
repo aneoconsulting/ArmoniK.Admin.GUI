@@ -21,9 +21,21 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
+      # - name: Cache Protos
+      #   id: proto-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: libs/shared/data-access/src/lib/proto/generated
+      #     key: ${{ runner.os }}-protobuf
+
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
+
+      # - name: Install Protoc
+      #   if: steps.proto-cache.outputs.cache-hit != 'true'
+      #   uses: arduino/setup-protoc@v1
+      #   run: yarn proto:generate
 
   validate-code:
     needs: setup
@@ -69,6 +81,13 @@ jobs:
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
+
+      # - name: Restore Protoc
+      #   id: proto-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: libs/shared/data-access/src/lib/proto/generated
+      #     key: ${{ runner.os }}-protobuf
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
@@ -177,6 +196,13 @@ jobs:
         with:
           main-branch-name: main
 
+      # - name: Restore Protoc
+      #   id: proto-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: libs/shared/data-access/src/lib/proto/generated
+      #     key: ${{ runner.os }}-protobuf
+
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
 
@@ -208,6 +234,13 @@ jobs:
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      # - name: Restore Protoc
+      #   id: proto-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: libs/shared/data-access/src/lib/proto/generated
+      #     key: ${{ runner.os }}-protobuf
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
