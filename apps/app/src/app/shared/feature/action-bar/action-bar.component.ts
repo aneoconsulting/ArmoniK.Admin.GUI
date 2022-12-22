@@ -20,7 +20,7 @@ import { ClearOrderComponent } from '../clear-order/clear-order.component';
   styleUrls: ['./action-bar.component.scss'],
 })
 export class ActionBarComponent {
-  @Input() stopInterval$: Observable<void>;
+  @Input() stopInterval$ = new Observable<void>();
   @Input() isOrdered = false;
   @Input() isFiltered = false;
 
