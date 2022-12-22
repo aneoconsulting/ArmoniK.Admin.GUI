@@ -1,0 +1,7 @@
+<button
+  class="btn btn-sm btn-secondary"
+  (click)="clearOrder()"
+  [disabled]="!isOrdered"
+>
+  {{ 'pages.components.clear_order' | translate }}
+</button>

@@ -17,6 +17,7 @@ import {
   IdFilterComponent,
   ClearFiltersComponent,
 } from '../../../shared/feature/filters';
+import { ClearOrderComponent } from '../../../shared/feature';
 
 @NgModule({
   declarations: [ResultsListComponent],
@@ -31,6 +32,7 @@ import {
     IdFilterComponent,
     ClearFiltersComponent,
     ResultsListRoutingModule,
+    ClearOrderComponent,
     NgClass,
     AsyncPipe,
     DatePipe,

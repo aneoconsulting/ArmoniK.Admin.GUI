@@ -20,6 +20,11 @@
       >
       </armonik-admin-gui-auto-refresh-dropdown>
 
+      <app-clear-order
+        [isOrdered]="isOrdered()"
+        (clearOrderEvent)="clearOrder()"
+      ></app-clear-order>
+
       <app-clear-filters
         [isFiltered]="isFiltered()"
         (clearFilter)="clearAllFilters()"
@@ -171,9 +176,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgPageSize]="(pageSize$ | async) || 10"
         [clrDgTotalItems]="(totalResults$ | async) ?? 0"
-        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
+        [clrDgPage]="((page$ | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
           >{{ 'pages.results-list.pagination.per_page' | translate
