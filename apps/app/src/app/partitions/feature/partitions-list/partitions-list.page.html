@@ -4,6 +4,21 @@
     <clr-datagrid
         (clrDgRefresh)="refreshPartitions($event)"
     >
+        <clr-dg-action-bar>
+            <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            (click)="manualRefreshPartitions()"
+          >
+            {{ 'pages.results-list.actions.refresh' | translate }}
+          </button>
+    
+          <armonik-admin-gui-auto-refresh-dropdown
+            [manualStop$]="stopInterval$"
+            (refreshIntervalChange)="onUpdateInterval($event)"
+          >
+          </armonik-admin-gui-auto-refresh-dropdown>
+        </clr-dg-action-bar>
         <clr-dg-column>
             Id
         </clr-dg-column>
@@ -25,6 +40,32 @@
         <clr-dg-column>
             Priorité
         </clr-dg-column>
+
+        <ng-container *ngIf="loadPartitions$ | async as list">
+            <clr-dg-row *ngFor="let partition of list.partitions; trackBy: trackByPartition">
+                <clr-dg-cell> {{ partition.id }} </clr-dg-cell>
+                <clr-dg-cell>
+                    <a
+                        [routerLink]="['/', 'partitions']"
+                        [queryParams]="{ id: partition.parent_partition_ids }"
+                    >
+                        {{ partition.parent_partition_ids }}
+                    </a>
+                </clr-dg-cell>
+                <clr-dg-cell>
+                    <a
+                        [routerLink]="['/', 'partitions']"
+                        [queryParams]="{ pod_reserved: partition.pod_reserved }"
+                    >
+                        {{ partition.pod_reserved }}
+                    </a>
+                </clr-dg-cell>
+                <clr-dg-cell> {{ partition.pod_max }} </clr-dg-cell>
+                <clr-dg-cell> {{ partition.pod_configuration }} </clr-dg-cell>
+                <clr-dg-cell> {{ partition.preemption_percentage }} </clr-dg-cell>
+                <clr-dg-cell> {{ partition.priority }} </clr-dg-cell>
+            </clr-dg-row>
+        </ng-container>
     </clr-datagrid>
 
 </section>

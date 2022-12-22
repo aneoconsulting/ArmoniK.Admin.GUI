@@ -134,13 +134,25 @@ export class PartitionsListComponent implements OnInit {
   }
 
   /**
- * Track by interval
- *
- * @param _
- * @param interval
- *
- * @returns Interval
- */
+   * Track by result
+   *
+   * @param _
+   * @param result
+   *
+   * @returns Id
+   */
+  public trackByPartition(_: number, result: PartitionRaw): string {
+    return result.name ?? '';
+  }
+
+  /**
+   * Track by interval
+   *
+   * @param _
+   * @param interval
+   *
+   * @returns Interval
+   */
   public trackByInterval(_: number, interval: number): string {
     return interval.toString();
   }
