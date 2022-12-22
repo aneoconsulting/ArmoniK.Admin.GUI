@@ -15,6 +15,7 @@ import {
   SelectFilterComponent,
   DateFilterComponent,
   IdFilterComponent,
+  ClearFiltersComponent,
 } from '../../../shared/feature/filters';
 import { ClearOrderComponent } from '../../../shared/feature';
 
@@ -29,6 +30,7 @@ import { ClearOrderComponent } from '../../../shared/feature';
     SelectFilterComponent,
     DateFilterComponent,
     IdFilterComponent,
+    ClearFiltersComponent,
     ResultsListRoutingModule,
     ClearOrderComponent,
     NgClass,

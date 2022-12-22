@@ -57,6 +57,7 @@
         "filter": "Filtre",
         "select_title": "Sélectionnez une valeur :",
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
+        "clear_all_filters": "Supprimer tous les filtres",
         "clear_filter": "Supprimer le filtre",
         "warning": {
           "combobox": "Vous pouvez sélectionner plus d'une valeur.",
@@ -145,7 +146,6 @@
     },
     "tasks-list": {
       "title": "Tâches",
-      "clear_all_filters": "Supprimer tous les filtres",
       "columns": {
         "task_id": "Tâche ID",
         "session_id": "Session ID",
@@ -197,7 +197,6 @@
     },
     "results-list": {
       "title": "Résultats",
-      "clear_all_filters": "Supprimer tous les filtres",
       "columns": {
         "name": "Nom",
         "task_id": "Task ID",
