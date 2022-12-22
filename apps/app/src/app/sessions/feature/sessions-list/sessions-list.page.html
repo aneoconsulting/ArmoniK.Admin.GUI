@@ -14,16 +14,16 @@
         {{ 'pages.sessions-list.actions.refresh' | translate }}
       </button>
 
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
-
-      <app-clear-order
-        [isOrdered]="isOrdered()"
-        (clearOrderEvent)="clearOrder()"
-      ></app-clear-order>
+      <app-action-bar
+      [stopInterval$]="stopInterval$"
+      [isFiltered]="isFiltered()"
+      [isOrdered]="isOrdered()"
+      (refresh)="manualRefreshSessions()"
+      (updateInterval)="onUpdateInterval($event)"
+      (clearFilters)="clearAllFilters()"
+      (clearSort)="clearOrder()"
+    >
+    </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column

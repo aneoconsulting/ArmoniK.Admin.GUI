@@ -245,4 +245,21 @@ export class ApplicationsListComponent implements OnInit {
     delete this._state.sort;
     this._subjectDatagrid.next(this._state);
   }
+
+  /**
+   * Checks if one filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
+  }
 }
