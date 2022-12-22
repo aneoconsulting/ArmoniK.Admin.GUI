@@ -1,15 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
+import { TranslateModule } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { ClearFiltersComponent } from '../filters';
+import { ClearOrderComponent } from '../clear-order/clear-order.component';
 
 @Component({
-  selector: 'armonik.admin.gui-action-bar',
+  selector: 'app-action-bar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AutoRefreshDropdownComponent, TranslateModule, ClearFiltersComponent, ClearOrderComponent],
   templateUrl: './action-bar.component.html',
   styleUrls: ['./action-bar.component.scss'],
 })
-export class ActionBarComponent implements OnInit {
-  constructor() {}
+export class ActionBarComponent {
+  @Input() stopInterval$: Observable<void>;
+  @Input() isOrdered = false;
+  @Input() isFiltered = false;
 
-  ngOnInit(): void {}
+  @Output() refresh = new EventEmitter<never>();
+  @Output() updateInterval = new EventEmitter<number>();
+  @Output() clearSort = new EventEmitter<never>();
+  @Output() clearFilters = new EventEmitter<never>();
+
+  manualRefresh() {
+    this.refresh.emit();
+  }
+
+  onUpdateInterval(value: number) {
+    this.updateInterval.emit(value);
+  }
+
+  clearOrder() {
+    this.clearSort.emit();
+  }
+
+  clearAllFilters() {
+    this.clearFilters.emit();
+  }
+
 }

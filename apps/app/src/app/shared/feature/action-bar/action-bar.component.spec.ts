@@ -19,4 +19,29 @@ describe('ActionBarComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should emit on manualRefresh', () => {
+    component.refresh.emit = jasmine.createSpy();
+    component.manualRefresh();
+    expect(component.refresh).toHaveBeenCalled();
+  });
+
+  it('should emit on onUpdateInterval', () => {
+    component.updateInterval.emit = jasmine.createSpy();
+    component.onUpdateInterval(0);
+    expect(component.updateInterval).toHaveBeenCalled();
+  });
+
+  it('should emit on clearOrder', () => {
+    component.clearSort.emit = jasmine.createSpy();
+    component.clearOrder();
+    expect(component.clearSort).toHaveBeenCalled();
+  });
+
+  it('should emit on clearAllFilters', () => {
+    component.clearFilters.emit = jasmine.createSpy();
+    component.clearAllFilters();
+    expect(component.clearFilters).toHaveBeenCalled();
+  });
+
 });
