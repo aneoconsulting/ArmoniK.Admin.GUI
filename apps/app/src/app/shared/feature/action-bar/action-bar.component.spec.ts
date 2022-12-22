@@ -43,5 +43,4 @@ describe('ActionBarComponent', () => {
     component.clearAllFilters();
     expect(component.clearFilters).toHaveBeenCalled();
   });
-
 });

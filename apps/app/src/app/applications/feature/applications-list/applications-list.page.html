@@ -7,15 +7,15 @@
   >
     <clr-dg-action-bar>
       <app-action-bar
-      [stopInterval$]="stopInterval$"
-      [isFiltered]="isFiltered()"
-      [isOrdered]="isOrdered()"
-      (refresh)="manualRefreshApplications()"
-      (updateInterval)="onUpdateInterval($event)"
-      (clearFilters)="clearAllFilters()"
-      (clearSort)="clearOrder()"
-    >
-    </app-action-bar>
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshApplications()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
+      >
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column

@@ -303,7 +303,7 @@ export class SessionsListComponent implements OnInit {
   isFiltered(): boolean {
     return !!this._state.filters;
   }
-  
+
   /**
    * Clear all filters currently applied to the datagrid
    */

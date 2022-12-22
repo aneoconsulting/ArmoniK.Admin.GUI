@@ -1,24 +1,21 @@
 <button
-    type="button"
-    class="btn btn-sm btn-secondary"
-    (click)="manualRefresh()"
+  type="button"
+  class="btn btn-sm btn-secondary"
+  (click)="manualRefresh()"
 >
-    {{ 'pages.components.actions.refresh' | translate }}
+  {{ 'pages.components.actions.refresh' | translate }}
 </button>
 
 <armonik-admin-gui-auto-refresh-dropdown
-    [manualStop$]="stopInterval$"
-    (refreshIntervalChange)="onUpdateInterval($event)"
+  [manualStop$]="stopInterval$"
+  (refreshIntervalChange)="onUpdateInterval($event)"
 >
 </armonik-admin-gui-auto-refresh-dropdown>
 
 <app-clear-order
-    [isOrdered]="isOrdered"
-    (clearOrderEvent)="clearOrder()"
+  [isOrdered]="isOrdered"
+  (clearOrderEvent)="clearOrder()"
 ></app-clear-order>
 
-<app-clear-filters
-    [isFiltered]="isFiltered"
-    (clearFilter)="clearAllFilters()"
->
+<app-clear-filters [isFiltered]="isFiltered" (clearFilter)="clearAllFilters()">
 </app-clear-filters>

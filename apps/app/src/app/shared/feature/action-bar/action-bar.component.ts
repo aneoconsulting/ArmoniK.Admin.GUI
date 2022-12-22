@@ -9,7 +9,13 @@ import { ClearOrderComponent } from '../clear-order/clear-order.component';
 @Component({
   selector: 'app-action-bar',
   standalone: true,
-  imports: [CommonModule, AutoRefreshDropdownComponent, TranslateModule, ClearFiltersComponent, ClearOrderComponent],
+  imports: [
+    CommonModule,
+    AutoRefreshDropdownComponent,
+    TranslateModule,
+    ClearFiltersComponent,
+    ClearOrderComponent,
+  ],
   templateUrl: './action-bar.component.html',
   styleUrls: ['./action-bar.component.scss'],
 })
@@ -38,5 +44,4 @@ export class ActionBarComponent {
   clearAllFilters() {
     this.clearFilters.emit();
   }
-
 }
