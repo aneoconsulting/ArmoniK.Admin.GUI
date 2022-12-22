@@ -52,7 +52,10 @@
         },
         "disable": "Désactiver"
       },
-      "clear_order": "Ordre par défaut",
+      "actions": {
+        "clear_order": "Ordre par défaut",
+        "refresh": "Rafraîchir"
+      },
       "filters": {
         "filter": "Filtre",
         "select_title": "Sélectionnez une valeur :",
