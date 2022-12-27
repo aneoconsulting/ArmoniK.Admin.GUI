@@ -231,7 +231,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
-          key: ${{ runner.os }}-protobuf
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Docker meta
         id: meta
