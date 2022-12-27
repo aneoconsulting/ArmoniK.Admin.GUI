@@ -5,7 +5,11 @@
         <a routerLink="/">
           <span class="title">
             <figure>
-              <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" />
+              <img
+                src="assets/images/armonik-logo.png"
+                alt="ArmoniK logo"
+                i18n-alt
+              />
             </figure>
             &nbsp; - &nbsp;
             <app-pages-the-header-time></app-pages-the-header-time>
@@ -43,8 +47,8 @@
         <div class="nav-divider" *ngIf="isUp.seq || isUp.grafana"></div>
         <a clrVerticalNavLink href="/seq/" target="_blank" *ngIf="isUp.seq">
           <clr-icon shape="crosshairs" clrVerticalNavIcon></clr-icon>
-          Seq</a
-        >
+          <span i18n> Seq </span>
+        </a>
         <a
           clrVerticalNavLink
           href="/grafana/"
@@ -52,8 +56,8 @@
           *ngIf="isUp.grafana"
         >
           <clr-icon shape="line-chart" clrVerticalNavIcon></clr-icon>
-          Grafana</a
-        >
+          <span i18n> Grafana </span>
+        </a>
       </ng-container>
       <div class="nav-divider"></div>
       <app-pages-the-favorites-navigation></app-pages-the-favorites-navigation>
@@ -61,7 +65,7 @@
       <div class="nav-divider"></div>
       <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
         <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
-        How to use
+        <span i18n> How to use </span>
       </a>
       <div class="version">
         <span> v0.7.0 </span>

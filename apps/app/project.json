@@ -106,7 +106,12 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "browserTarget": "app:build",
-        "outputPath": "apps/app/src/locale"
+        "format": "xlf2",
+        "outputPath": "apps/app/src/locale",
+        "targetFiles": [
+          "messages.en.xlf",
+          "messages.fr.xlf"
+        ]
       }
     },
     "lint": {
