@@ -14,8 +14,6 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
-  distinctUntilChanged,
-  map,
   merge,
   Observable,
   of,
@@ -54,7 +52,6 @@ export class ResultsListComponent implements OnInit {
       const params = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: params,
-        queryParamsHandling: 'merge',
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -78,6 +75,50 @@ export class ResultsListComponent implements OnInit {
     switchMap(() => this._listResults$())
   );
 
+  //Filter status, to be send into the select-filter component.
+  statusList: { value: number; label: string }[];
+
+  /**
+   * Observable filters
+   * Permits to avoid redundant calls of queryParams function due to async pipe.
+   */
+  nameFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'name'
+  );
+  taskIdFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'taskId'
+  );
+  sessionIdFilter$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'sessionId'
+    );
+  statusFilter$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'status'
+  );
+  createdBeforeFilter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtBefore'
+    );
+  createdAfterFilter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtAfter'
+    );
+
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -92,6 +133,14 @@ export class ResultsListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('results.title')
     );
+    this.statusList = [
+      ...Object.keys(ResultStatus)
+        .filter((key) => !Number.isInteger(parseInt(key)))
+        .map((key) => ({
+          value: ResultStatus[key as keyof typeof ResultStatus] as number,
+          label: key,
+        })),
+    ];
   }
 
   public get OrderByField() {
@@ -169,21 +218,6 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
    * Track by result
    *
    * @param _
@@ -233,5 +267,39 @@ export class ResultsListComponent implements OnInit {
         this.totalResults$.next(results.total ?? 0);
       })
     );
+  }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Checks if any filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

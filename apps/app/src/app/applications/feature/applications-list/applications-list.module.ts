@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ApplicationsListComponent } from './applications-list.page';
 import { IdFilterComponent } from '../../../shared/feature/filters';
+import { ActionBarComponent } from '../../../shared/feature';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -21,6 +22,7 @@ import { IdFilterComponent } from '../../../shared/feature/filters';
     ClrDropdownModule,
     ClrDatagridModule,
     TranslateModule,
+    ActionBarComponent,
     ApplicationsListRoutingModule,
     NgClass,
     AsyncPipe,
