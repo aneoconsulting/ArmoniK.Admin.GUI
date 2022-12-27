@@ -317,7 +317,7 @@ export class SessionsListComponent implements OnInit {
     );
   }
 
-  /** 
+  /**
    * Checks if the datagrid is ordered by any column
    *
    * @returns true if yes, false if no
