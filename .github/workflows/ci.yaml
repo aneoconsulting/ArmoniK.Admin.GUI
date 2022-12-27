@@ -92,14 +92,6 @@ jobs:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
-      - name: Install Protoc
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        run: yarn proto:generate
-
       - name: Run Unit Tests
         run: yarn ng affected --target=test --parallel=3 --code-coverage
 
@@ -208,12 +200,6 @@ jobs:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: yarn proto:generate
-
       - name: Build all
         run: yarn ng affected --target=build --parallel=3
 
@@ -246,14 +232,6 @@ jobs:
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: ${{ runner.os }}-protobuf
-
-      - name: Install Protoc
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        run: yarn proto:generate
 
       - name: Docker meta
         id: meta
