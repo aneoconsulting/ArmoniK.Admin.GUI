@@ -21,9 +21,24 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
+      - name: Cache Protos
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
+
+      - name: Install Protoc
+        if: steps.proto-cache.outputs.cache-hit != 'true'
+        uses: arduino/setup-protoc@v1
+
+      - name: Build protos
+        if: steps.proto-cache.outputs.cache-hit != 'true'
+        run: yarn proto:generate
 
   validate-code:
     needs: setup
@@ -70,11 +85,12 @@ jobs:
         with:
           main-branch-name: main
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: yarn proto:generate
+      - name: Restore Protos
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Run Unit Tests
         run: yarn ng affected --target=test --parallel=3 --code-coverage
@@ -177,11 +193,12 @@ jobs:
         with:
           main-branch-name: main
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: yarn proto:generate
+      - name: Restore Protoc
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Build all
         run: yarn ng affected --target=build --parallel=3
@@ -209,11 +226,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: yarn proto:generate
+      - name: Restore Protos
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Docker meta
         id: meta
