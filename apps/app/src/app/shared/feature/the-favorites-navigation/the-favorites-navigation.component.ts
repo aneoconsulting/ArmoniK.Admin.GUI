@@ -2,7 +2,7 @@ import { AsyncPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ClrIconModule, ClrVerticalNavModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { Observable } from 'rxjs';
 import { FavoriteItem, FavoritesService } from '../../util';
 
@@ -15,7 +15,7 @@ import { FavoriteItem, FavoritesService } from '../../util';
     RouterModule,
     ClrVerticalNavModule,
     ClrIconModule,
-    TranslateModule,
+
     NgFor,
     AsyncPipe,
   ],

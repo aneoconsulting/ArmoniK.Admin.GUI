@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
-import { Observable, tap } from 'rxjs';
+import { BrowserTitleService } from '../../../shared/util';
+import { Observable } from 'rxjs';
 import { User } from '@armonik.admin.gui/shared/data-access';
 import { AuthService } from '../../../shared/data-access/auth.service';
 
@@ -12,13 +12,10 @@ import { AuthService } from '../../../shared/data-access/auth.service';
 })
 export class UsersMeComponent {
   constructor(
-    private _languageService: LanguageService,
     private _browserTitleService: BrowserTitleService,
     private _authService: AuthService
   ) {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.users_me.title')
-    );
+    this._browserTitleService.setTitle('Profile');
   }
 
   public get currentUser$(): Observable<User | null> {

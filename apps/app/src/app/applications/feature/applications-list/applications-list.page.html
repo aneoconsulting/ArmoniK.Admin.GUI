@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'pages.applications-list.title' | translate }}</h1>
+  <h1>Applications</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshApplications($event)"
@@ -22,29 +22,27 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAME.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
-      {{ 'pages.applications-list.columns.name' | translate }}
+      Name
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_VERSION.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_VERSION)"
     >
-      {{ 'pages.applications-list.columns.version' | translate }}
+      Version
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAMESPACE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAMESPACE)"
     >
-      {{ 'pages.applications-list.columns.namespace' | translate }}
+      Namespace
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SERVICE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_SERVICE)"
     >
-      {{ 'pages.applications-list.columns.service' | translate }}
+      Service
     </clr-dg-column>
-    <clr-dg-column>
-      {{ 'pages.applications-list.columns.actions' | translate }}
-    </clr-dg-column>
+    <clr-dg-column> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadApplications$ | async as list">
       <clr-dg-row
@@ -75,7 +73,7 @@
             [queryParams]="{ applicationName: application.name, applicationVersion: application.version }"
           >
             <clr-icon shape="nodes"></clr-icon>
-            {{ 'pages.applications-list.actions.related_sessions' | translate }}
+            Related Sessions
           </a>
         </clr-dg-cell>
 
@@ -90,13 +88,10 @@
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >{{ 'pages.applications-list.pagination.per_page' | translate
-          }}</clr-dg-page-size
+          >Related Sessions</clr-dg-page-size
         >
         <span *ngIf="(totalApplications$ | async) ?? 0 > 1 as total">
-          {{ (total > 1 ? 'pages.applications-list.pagination.applications' :
-          'pages.applications-list.pagination.application' ) | translate : {
-          value: total } }}
+          {{ total }} {{ (total > 1 ? 'applications' : 'application' ) }}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>

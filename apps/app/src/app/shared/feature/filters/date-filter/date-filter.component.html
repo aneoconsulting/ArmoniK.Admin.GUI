@@ -1,10 +1,10 @@
 <clr-date-container>
   <label>
-    {{ 'pages.components.filters.date.before' | translate }}
+    Before the
     <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
       <span class="tooltip-content">
-        {{ 'pages.components.filters.warning.before-date' | translate }}
+        Will display data with a date strictly inferior than indicated.
       </span>
     </a>
   </label>
@@ -18,11 +18,11 @@
 </clr-date-container>
 <clr-date-container>
   <label>
-    {{ 'pages.components.filters.date.after' | translate }}
+    After the
     <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
       <span class="tooltip-content">
-        {{ 'pages.components.filters.warning.after-date' | translate }}
+        Will display data with a date strictly superior than indicated.
       </span>
     </a>
   </label>
@@ -35,5 +35,5 @@
   />
 </clr-date-container>
 <button class="btn btn-sm" *ngIf="isActive()" (click)="clear()">
-  {{ 'pages.components.filters.clear-filter' | translate }}
+  Clear the filter
 </button>

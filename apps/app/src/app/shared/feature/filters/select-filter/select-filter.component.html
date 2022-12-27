@@ -1,14 +1,14 @@
 <clr-select-container>
-  <label>{{ 'pages.components.filters.select_title' | translate }}</label>
+  <label>pages.components.filters.select_title</label>
   <select clrSelect (change)="onSelectionChange()" [(ngModel)]="selectedValue">
     <option
       *ngFor="let item of selectionList; trackBy: trackByLabel"
       [value]="item.value"
     >
-      {{ 'pages.components.filters.select_list.' + item.label | translate }}
+      {{ item.label }}
     </option>
   </select>
 </clr-select-container>
 <button class="btn btn-sm" *ngIf="isActive()" (click)="clear()">
-  {{ 'pages.components.filters.clear_filter' | translate }}
+  pages.components.filters.clear_filter
 </button>

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClarityModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { first, Subject } from 'rxjs';
 import {
   AutoRefreshDropdownComponent,

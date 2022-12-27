@@ -4,17 +4,17 @@
     (input)="onChange()"
     type="text"
     [(ngModel)]="inputValue"
-    placeholder="{{ 'pages.components.filters.filter' | translate }}"
+    placeholder="Filter"
   />
   <label>
     <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
       <span class="tooltip-content">
-        {{ 'pages.components.filters.warning.id' | translate }}
+        'Will display data with an Id strictly equal to the one indicated.'
       </span>
     </a>
   </label>
 </clr-input-container>
 <button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
-  {{ 'pages.components.filters.clear_filter' | translate }}
+  Clear the filter
 </button>

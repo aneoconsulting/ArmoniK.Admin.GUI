@@ -26,7 +26,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
+import { BrowserTitleService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -91,15 +91,12 @@ export class SessionsListComponent implements OnInit {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.sessions-list.title')
-    );
+    this._browserTitleService.setTitle('Sessions');
   }
 
   public get OrderByField() {

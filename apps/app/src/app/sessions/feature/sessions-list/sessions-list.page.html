@@ -1,19 +1,11 @@
 <section>
-  <h1>{{ 'pages.sessions-list.title' | translate }}</h1>
+  <h1>Sessions</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshSessions($event)"
     [clrDgLoading]="(loadingSessions$ | async) ?? false"
   >
     <clr-dg-action-bar>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshSessions()"
-      >
-        {{ 'pages.sessions-list.actions.refresh' | translate }}
-      </button>
-
       <app-action-bar
         [stopInterval$]="stopInterval$"
         [isFiltered]="isFiltered()"
@@ -32,13 +24,13 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
     >
-      {{ 'pages.sessions-list.columns.session_id' | translate }}
+      Session ID
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
-      {{ 'pages.sessions-list.columns.status' | translate }}
+      Status
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -46,7 +38,7 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
     >
-      {{ 'pages.sessions-list.columns.created_at' | translate }}
+      Created at
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
@@ -54,11 +46,9 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
       "
     >
-      {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
+      Closed at
     </clr-dg-column>
-    <clr-dg-column>
-      {{ 'pages.sessions-list.columns.actions' | translate }}
-    </clr-dg-column>
+    <clr-dg-column> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
       <clr-dg-row *ngFor="let session of list.sessions">
@@ -76,8 +66,8 @@
                   session.status === SessionStatusEnum.SESSION_STATUS_CANCELLED
               }"
             >
-              {{ 'pages.sessions-list.cells.status.' + session.status |
-              translate }} ({{ session.status }})
+              {{ session.status === 1 ? 'Opened' : 'Cancelled' }} ({{
+              session.status }})
             </span>
           </a>
         </clr-dg-cell>
@@ -101,7 +91,7 @@
             (click)="viewSessionDetail(session.sessionId!)"
           >
             <clr-icon shape="eye"></clr-icon>
-            {{ 'pages.sessions-list.actions.details' | translate }}
+            Details
           </button>
           <a
             class="btn btn-sm btn-secondary"
@@ -109,7 +99,7 @@
             [queryParams]="{ sessionId: session.sessionId }"
           >
             <clr-icon shape="node"></clr-icon>
-            {{ 'pages.sessions-list.actions.related_tasks' | translate }}
+            Related Tasks
           </a>
           <button
             type="button"
@@ -118,7 +108,7 @@
             [disabled]="session.cancelledAt"
           >
             <clr-icon shape="times"></clr-icon>
-            {{ 'pages.sessions-list.actions.cancel' | translate }}
+            Close
           </button>
         </clr-dg-cell>
       </clr-dg-row>
@@ -131,13 +121,10 @@
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >{{ 'pages.sessions-list.pagination.per_page' | translate
-          }}</clr-dg-page-size
+          >Sessions per page</clr-dg-page-size
         >
         <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total">
-          {{ (total > 1 ? 'pages.sessions-list.pagination.sessions' :
-          'pages.sessions-list.pagination.session' ) | translate: { value: total
-          } }}
+          {{ total }} {{ (total > 1 ? 'sessions' : 'session' ) }}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
@@ -150,10 +137,7 @@
   [clrModalSize]="'lg'"
   *ngIf="loadSingleSession$ | async as session"
 >
-  <h3 class="modal-title">
-    {{ 'pages.sessions-list.modal.title' | translate }} {{
-    session.session!.sessionId }}
-  </h3>
+  <h3 class="modal-title">Session {{ session.session!.sessionId }}</h3>
   <div class="modal-body">
     <pre>{{ session.session! | json }}</pre>
   </div>
@@ -163,7 +147,7 @@
       class="btn btn-primary"
       (click)="closeGetSessionModal()"
     >
-      {{ 'pages.sessions-list.modal.close' | translate }}
+      Close
     </button>
   </div>
 </clr-modal>

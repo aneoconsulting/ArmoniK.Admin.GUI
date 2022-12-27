@@ -28,24 +28,24 @@ export class AppComponent implements OnInit {
   links: AppNavLink[] = [
     {
       path: ['/', 'applications'],
-      label: 'navigation.applications',
+      label: 'Applications',
       queryParams: { page: 0, pageSize: 10 },
       shape: 'bundle',
     },
     {
       path: ['/', 'sessions'],
-      label: 'navigation.sessions',
+      label: 'Sessions',
       queryParams: { page: 0, pageSize: 10 },
       shape: 'nodes',
     },
     {
       path: ['/', 'tasks'],
-      label: 'navigation.tasks',
+      label: 'Tasks',
       shape: 'node',
     },
     {
       path: ['/', 'results'],
-      label: 'navigation.results',
+      label: 'Results',
       shape: 'certificate',
     },
   ];

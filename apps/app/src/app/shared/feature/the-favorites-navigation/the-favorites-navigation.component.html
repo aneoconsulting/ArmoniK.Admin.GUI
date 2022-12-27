@@ -1,6 +1,6 @@
 <clr-vertical-nav-group>
   <clr-icon clrVerticalNavIcon shape="star"></clr-icon>
-  {{ 'navigation.favorites' | translate }}
+  Favorites
   <clr-vertical-nav-group-children>
     <div *ngFor="let favorite of favorites$ | async; trackBy: trackByFavorites">
       <a

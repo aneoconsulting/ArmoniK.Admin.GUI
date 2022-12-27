@@ -26,11 +26,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { BrowserTitleService, SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -173,16 +169,13 @@ export class TasksListComponent implements OnInit {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.tasks-list.title')
-    );
+    this._browserTitleService.setTitle('Tasks');
     this.taskStatusList = [
       ...Object.keys(TaskStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))

@@ -4,7 +4,6 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { IdFilterComponent } from './id-filter.component';
 

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { ErrorDetailRoutingModule } from './error-detail-routing.module';
 import { ErrorDetailComponent } from './error-detail.page';
 
@@ -8,6 +8,6 @@ import { ErrorDetailComponent } from './error-detail.page';
  */
 @NgModule({
   declarations: [ErrorDetailComponent],
-  imports: [TranslateModule, ErrorDetailRoutingModule],
+  imports: [ErrorDetailRoutingModule],
 })
 export class ErrorDetailModule {}

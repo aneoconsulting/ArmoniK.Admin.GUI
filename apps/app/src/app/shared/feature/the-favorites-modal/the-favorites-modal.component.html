@@ -10,12 +10,7 @@
       [class.is-solid]="currentFavoriteName"
     ></clr-icon>
     <span class="sr-only">
-      {{
-        (currentFavoriteName
-          ? 'pages.components.modal_favorites.button.remove'
-          : 'pages.components.modal_favorites.button.add'
-        ) | translate
-      }}
+      {{ currentFavoriteName ? 'Remove from favorites' : 'Add to favorites' }}
     </span>
     <span *ngIf="currentFavoriteName">
       {{ currentFavoriteName }}
@@ -26,24 +21,17 @@
     [clrModalClosable]="false"
     [clrModalSize]="'lg'"
   >
-    <h3 class="modal-title">
-      {{ 'pages.components.modal_favorites.modal.title' | translate }}
-    </h3>
+    <h3 class="modal-title">Create a new favorite</h3>
     <div class="modal-body">
       <form clrForm>
         <clr-input-container>
-          <label>{{
-            'pages.components.modal_favorites.modal.input.label' | translate
-          }}</label>
+          <label>Name of the favorite</label>
           <input
             clrInput
             type="text"
             name="favoriteName"
             [(ngModel)]="favoriteName"
-            placeholder="{{
-              'pages.components.modal_favorites.modal.input.placeholder'
-                | translate
-            }}"
+            placeholder="Enter a name"
             required
           />
         </clr-input-container>
@@ -55,10 +43,10 @@
         (click)="closeModalFavorites()"
         class="btn btn-secondary"
       >
-        {{ 'pages.components.modal_favorites.modal.close' | translate }}
+        Close
       </button>
       <button type="button" (click)="addPageFavorite()" class="btn btn-primary">
-        {{ 'pages.components.modal_favorites.modal.add' | translate }}
+        Add
       </button>
     </div>
   </clr-modal>

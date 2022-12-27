@@ -8,7 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
 import { ClrInputModule, ClrModalModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { BehaviorSubject, Observable, Subscription, filter } from 'rxjs';
 import { FavoritesService } from '../../util';
 
@@ -21,7 +21,7 @@ import { FavoritesService } from '../../util';
     FormsModule,
     ClrModalModule,
     ClrInputModule,
-    TranslateModule,
+
     NgIf,
     AsyncPipe,
     JsonPipe,

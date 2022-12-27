@@ -24,11 +24,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { BrowserTitleService, SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-applications-list',
@@ -80,16 +76,13 @@ export class ApplicationsListComponent implements OnInit {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.applications-list.title')
-    );
+    this._browserTitleService.setTitle('Applications');
   }
 
   public get OrderByField() {

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClrInputModule, ClrModalModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -20,7 +20,7 @@ import { BehaviorSubject } from 'rxjs';
     FormsModule,
     ClrInputModule,
     ClrModalModule,
-    TranslateModule,
+
     NgIf,
     NgFor,
     AsyncPipe,

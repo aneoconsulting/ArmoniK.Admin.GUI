@@ -8,7 +8,6 @@ import {
   ClrDropdownModule,
   ClrIconModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ApplicationsListComponent } from './applications-list.page';
 import { ActionBarComponent } from '../../../shared/feature';
@@ -20,7 +19,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     ClrIconModule,
     ClrDropdownModule,
     ClrDatagridModule,
-    TranslateModule,
     ActionBarComponent,
     ApplicationsListRoutingModule,
     NgClass,

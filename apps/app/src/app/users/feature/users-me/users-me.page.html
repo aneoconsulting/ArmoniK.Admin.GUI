@@ -1,16 +1,16 @@
-<h1>{{ 'pages.users_me.title' | translate }}</h1>
+<h1>My profile</h1>
 
 <ng-container *ngIf="currentUser$ | async as user; noInformations">
   <section>
-    <h2>{{ 'pages.users_me.informations.title' | translate }}</h2>
+    <h2>Informations</h2>
 
     <div>
-      <span> {{ 'pages.users_me.informations.username' | translate }}: </span>
+      <span> Username: </span>
       <span> {{ user.username }} </span>
     </div>
 
     <div>
-      <span> {{ 'pages.users_me.informations.roles' | translate}}: </span>
+      <span> Roles: </span>
       <ul *ngIf="user.roles.length; else noRoles">
         <ng-container *ngFor="let role of user.roles">
           <li>{{ role }}</li>
@@ -20,7 +20,7 @@
   </section>
 
   <section>
-    <h2>{{ 'pages.users_me.permissions.title' | translate }}</h2>
+    <h2>Permissions</h2>
 
     <ng-container *ngIf="user.permissions.length; else noPermissions">
       <div class="clr-row">
@@ -42,13 +42,13 @@
 </ng-container>
 
 <ng-template #noInformations>
-  <span> {{ 'pages.users_me.templates.no_informations' | translate }} </span>
+  <span> No information </span>
 </ng-template>
 
 <ng-template #noRoles>
-  <span> {{ 'pages.users_me.templates.no_roles' | translate }} </span>
+  <span> No roles </span>
 </ng-template>
 
 <ng-template #noPermissions>
-  <span>{{ 'pages.users_me.templates.no_permissions' | translate }} </span>
+  <span>No permissions </span>
 </ng-template>

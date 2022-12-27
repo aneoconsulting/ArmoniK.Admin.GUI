@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  BrowserTitleService,
-  LanguageCode,
-  LanguageService,
-} from '../shared/util';
+import { BrowserTitleService } from '../shared/util';
 
 @Component({
   selector: 'app-pages-how-to-use',
@@ -11,22 +7,9 @@ import {
   styleUrls: ['./how-to-use.page.scss'],
 })
 export class HowToUseComponent implements OnInit {
-  constructor(
-    private browserTitleService: BrowserTitleService,
-    private languageService: LanguageService
-  ) {}
+  constructor(private browserTitleService: BrowserTitleService) {}
 
   ngOnInit(): void {
-    this.browserTitleService.setTitle(
-      this.languageService.instant('navigation.how_to_use')
-    );
-  }
-
-  isFrench(): boolean {
-    return this.languageService.currentLang === LanguageCode.fr;
-  }
-
-  isEnglish(): boolean {
-    return this.languageService.currentLang === LanguageCode.en;
+    this.browserTitleService.setTitle('How to use');
   }
 }
