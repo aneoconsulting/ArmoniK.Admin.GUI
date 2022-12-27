@@ -16,7 +16,7 @@ import {
   DateFilterComponent,
   IdFilterComponent,
 } from '../../../shared/feature/filters';
-import { ClearOrderComponent } from '../../../shared/feature';
+import { ActionBarComponent } from '../../../shared/feature';
 
 @NgModule({
   declarations: [ResultsListComponent],
@@ -29,8 +29,8 @@ import { ClearOrderComponent } from '../../../shared/feature';
     SelectFilterComponent,
     DateFilterComponent,
     IdFilterComponent,
+    ActionBarComponent,
     ResultsListRoutingModule,
-    ClearOrderComponent,
     NgClass,
     AsyncPipe,
     DatePipe,

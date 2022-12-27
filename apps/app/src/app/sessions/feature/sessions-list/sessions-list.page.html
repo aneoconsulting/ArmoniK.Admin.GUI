@@ -14,93 +14,85 @@
         {{ 'pages.sessions-list.actions.refresh' | translate }}
       </button>
 
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
-
-      <button
-        *ngIf="isFiltered()"
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="clearAllFilters()"
-      >
-        {{ 'pages.sessions-list.clear_all_filters' | translate }}
-      </button>
-      <app-clear-order
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
         [isOrdered]="isOrdered()"
-        (clearOrderEvent)="clearOrder()"
-      ></app-clear-order>
+        (refresh)="manualRefreshSessions()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
+      >
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
-      [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
-      "
-    >
-      {{ 'pages.sessions-list.columns.session_id' | translate }}
-      <clr-dg-filter [clrDgFilter]="sessionFilter">
-        <app-id-filter
-          [name]="'sessionId'"
-          [inputValue]="sessionFilter$ | async"
-          #sessionFilter
-        >
-        </app-id-filter>
-      </clr-dg-filter>
-    </clr-dg-column>
-    <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
-    >
-      {{ 'pages.sessions-list.columns.status' | translate }}
-      <clr-dg-filter [clrDgFilter]="statusFilter">
-        <app-select-filter
-          [name]="'status'"
-          [selectedValue]="statusFilter$ | async"
-          [selectionList]="sessionsStatusList"
-          #statusFilter
-        >
-        </app-select-filter>
-      </clr-dg-filter>
-    </clr-dg-column>
-    <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
-      [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
-      "
-    >
-      {{ 'pages.sessions-list.columns.created_at' | translate }}
-      <clr-dg-filter [clrDgFilter]="createdDateFilter">
-        <app-date-filter
-          [name]="'created'"
-          [beforeDate]="createdBeforeFilter$ | async"
-          [afterDate]="createdAfterFilter$ | async"
-          #createdDateFilter
-        >
-        </app-date-filter>
-      </clr-dg-filter>
-    </clr-dg-column>
-    <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
-      [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
-      "
-    >
-      {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
-      <clr-dg-filter [clrDgFilter]="closedDateFilter">
-        <app-date-filter
-          [name]="'cancelled'"
-          [beforeDate]="cancelledBeforeFilter$ | async"
-          [afterDate]="cancelledAfterFilter$ | async"
-          #closedDateFilter
-        ></app-date-filter>
-      </clr-dg-filter>
-    </clr-dg-column>
-    <clr-dg-column>
-      {{ 'pages.sessions-list.columns.actions' | translate }}
-    </clr-dg-column>
+    [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
+    [clrDgSortOrder]="
+      defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
+    "
+  >
+    {{ 'pages.sessions-list.columns.session_id' | translate }}
+    <clr-dg-filter [clrDgFilter]="sessionFilter">
+      <app-id-filter
+        [name]="'sessionId'"
+        [inputValue]="sessionFilter$ | async"
+        #sessionFilter
+      >
+      </app-id-filter>
+    </clr-dg-filter>
+  </clr-dg-column>
+  <clr-dg-column
+    [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
+    [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+  >
+    {{ 'pages.sessions-list.columns.status' | translate }}
+    <clr-dg-filter [clrDgFilter]="statusFilter">
+      <app-select-filter
+        [name]="'status'"
+        [selectedValue]="statusFilter$ | async"
+        [selectionList]="sessionsStatusList"
+        #statusFilter
+      >
+      </app-select-filter>
+    </clr-dg-filter>
+  </clr-dg-column>
+  <clr-dg-column
+    [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
+    [clrDgSortOrder]="
+      defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
+    "
+  >
+    {{ 'pages.sessions-list.columns.created_at' | translate }}
+    <clr-dg-filter [clrDgFilter]="createdDateFilter">
+      <app-date-filter
+        [name]="'created'"
+        [beforeDate]="createdBeforeFilter$ | async"
+        [afterDate]="createdAfterFilter$ | async"
+        #createdDateFilter
+      >
+      </app-date-filter>
+    </clr-dg-filter>
+  </clr-dg-column>
+  <clr-dg-column
+    [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
+    [clrDgSortOrder]="
+      defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
+    "
+  >
+    {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
+    <clr-dg-filter [clrDgFilter]="closedDateFilter">
+      <app-date-filter
+        [name]="'cancelled'"
+        [beforeDate]="cancelledBeforeFilter$ | async"
+        [afterDate]="cancelledAfterFilter$ | async"
+        #closedDateFilter
+      ></app-date-filter>
+    </clr-dg-filter>
+  </clr-dg-column>
+  <clr-dg-column>
+    {{ 'pages.sessions-list.columns.actions' | translate }}
+  </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
       <clr-dg-row *ngFor="let session of list.sessions">

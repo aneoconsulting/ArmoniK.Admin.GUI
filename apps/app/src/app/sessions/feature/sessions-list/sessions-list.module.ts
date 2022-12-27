@@ -26,7 +26,7 @@ import {
   SelectFilterComponent,
 } from '../../../shared/feature/filters';
 import { BrowserTitleService, LanguageService } from '../../../shared/util';
-import { ClearOrderComponent } from '../../../shared/feature';
+import { ActionBarComponent } from '../../../shared/feature';
 
 /**
  * Sessions list module
@@ -41,7 +41,7 @@ import { ClearOrderComponent } from '../../../shared/feature';
     ClrModalModule,
     ClrLoadingModule,
     ClrIconModule,
-    ClearOrderComponent,
+    ActionBarComponent,
     TranslateModule,
     NgClass,
     NgFor,
