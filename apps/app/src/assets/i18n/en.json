@@ -152,7 +152,6 @@
     },
     "sessions-list": {
       "title": "Sessions",
-      "clear_all_filters": "Clear all filters",
       "columns": {
         "session_id": "Session ID",
         "status": "Status",
