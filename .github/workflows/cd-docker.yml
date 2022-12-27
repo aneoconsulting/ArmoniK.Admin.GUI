@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Install Protoc
         if: steps.proto-cache.outputs.cache-hit != 'true'
