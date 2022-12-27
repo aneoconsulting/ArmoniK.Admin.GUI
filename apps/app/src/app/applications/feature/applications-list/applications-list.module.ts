@@ -11,7 +11,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ApplicationsListComponent } from './applications-list.page';
-import { ClearOrderComponent } from '../../../shared/feature';
+import { ActionBarComponent } from '../../../shared/feature';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -21,7 +21,7 @@ import { ClearOrderComponent } from '../../../shared/feature';
     ClrDropdownModule,
     ClrDatagridModule,
     TranslateModule,
-    ClearOrderComponent,
+    ActionBarComponent,
     ApplicationsListRoutingModule,
     NgClass,
     AsyncPipe,

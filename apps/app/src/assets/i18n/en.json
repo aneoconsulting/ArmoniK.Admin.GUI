@@ -52,7 +52,10 @@
         },
         "disable": "Disable"
       },
-      "clear_order": "Set to default order",
+      "actions": {
+        "clear_order": "Set to default order",
+        "refresh": "Refresh"
+      },
       "filters": {
         "filter": "Filter",
         "select_title": "Select a value:",
@@ -104,7 +107,6 @@
         "actions": "Actions"
       },
       "actions": {
-        "refresh": "Refresh",
         "related_sessions": "Related Sessions"
       },
       "pagination": {
@@ -129,7 +131,6 @@
         }
       },
       "actions": {
-        "refresh": "Refresh",
         "details": "Details",
         "related_tasks": "Related Tasks",
         "cancel": "Close"
@@ -172,14 +173,6 @@
       },
       "actions": {
         "cancel_selection": "Cancel selection",
-        "refresh": "Refresh",
-        "auto_refresh": {
-          "button": {
-            "title": "Auto-refresh",
-            "disabled": "Disabled"
-          },
-          "disable": "Disable"
-        },
         "details": "Details",
         "related_results": "Related Results",
         "parent_session": "Session",
@@ -215,14 +208,6 @@
         }
       },
       "actions": {
-        "refresh": "Refresh",
-        "auto_refresh": {
-          "button": {
-            "title": "Auto-refresh",
-            "disabled": "Disabled"
-          },
-          "disable": "Disable"
-        },
         "parent_task": "Task"
       },
       "pagination": {

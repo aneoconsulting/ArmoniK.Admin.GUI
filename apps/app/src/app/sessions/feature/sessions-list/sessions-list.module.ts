@@ -21,7 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
 import { BrowserTitleService, LanguageService } from '../../../shared/util';
-import { ClearOrderComponent } from '../../../shared/feature';
+import { ActionBarComponent } from '../../../shared/feature';
 
 /**
  * Sessions list module
@@ -36,7 +36,7 @@ import { ClearOrderComponent } from '../../../shared/feature';
     ClrModalModule,
     ClrLoadingModule,
     ClrIconModule,
-    ClearOrderComponent,
+    ActionBarComponent,
     TranslateModule,
     NgClass,
     NgFor,
