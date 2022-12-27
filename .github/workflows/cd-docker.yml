@@ -34,7 +34,7 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
 
-      - name: Restore Protoc
+      - name: Restore Protos
         id: proto-cache
         uses: actions/cache@v3
         with:

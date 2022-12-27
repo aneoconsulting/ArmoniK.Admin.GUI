@@ -33,8 +33,10 @@ jobs:
         run: yarn
 
       - name: Install Protoc
-        if: steps.proto-cache.outputs.cache-hit != 'true'
         uses: arduino/setup-protoc@v1
+
+      - name: Build protos
+        if: steps.proto-cache.outputs.cache-hit != 'true'
         run: yarn proto:generate
 
   validate-code:
@@ -82,18 +84,18 @@ jobs:
         with:
           main-branch-name: main
 
-      - name: Restore Protoc
+      - name: Restore Protos
         id: proto-cache
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
+      # - name: Install Protoc
+      #   uses: arduino/setup-protoc@v1
 
-      - name: Build proto
-        run: yarn proto:generate
+      # - name: Build proto
+      #   run: yarn proto:generate
 
       - name: Run Unit Tests
         run: yarn ng affected --target=test --parallel=3 --code-coverage
@@ -235,7 +237,7 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Restore Protoc
+      - name: Restore Protos
         id: proto-cache
         uses: actions/cache@v3
         with:
