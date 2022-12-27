@@ -39,7 +39,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
-          key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1

@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
-          key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
@@ -89,7 +89,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
-          key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
+          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
       # - name: Install Protoc
       #   uses: arduino/setup-protoc@v1
@@ -198,12 +198,12 @@ jobs:
         with:
           main-branch-name: main
 
-      # - name: Restore Protoc
-      #   id: proto-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: libs/shared/data-access/src/lib/proto/generated
-      #     key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
+      - name: Restore Protoc
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
