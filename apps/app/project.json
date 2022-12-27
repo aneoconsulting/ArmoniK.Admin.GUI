@@ -103,14 +103,14 @@
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "ng-extract-i18n-merge:ng-extract-i18n-merge",
       "options": {
         "browserTarget": "app:build",
         "format": "xlf2",
         "outputPath": "apps/app/src/locale",
         "targetFiles": [
-          "messages.en.xlf",
-          "messages.fr.xlf"
+          "messages.fr.xlf",
+          "messages.en.xlf"
         ]
       }
     },
