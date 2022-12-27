@@ -34,12 +34,12 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
 
-      # - name: Restore Protoc
-      #   id: proto-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: libs/shared/data-access/src/lib/proto/generated
-      #     key: ${{ runner.os }}-protobuf
+      - name: Restore Protoc
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1

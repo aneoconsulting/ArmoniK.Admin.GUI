@@ -21,21 +21,21 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      # - name: Cache Protos
-      #   id: proto-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: libs/shared/data-access/src/lib/proto/generated
-      #     key: ${{ runner.os }}-protobuf
+      - name: Cache Protos
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
 
-      # - name: Install Protoc
-      #   if: steps.proto-cache.outputs.cache-hit != 'true'
-      #   uses: arduino/setup-protoc@v1
-      #   run: yarn proto:generate
+      - name: Install Protoc
+        if: steps.proto-cache.outputs.cache-hit != 'true'
+        uses: arduino/setup-protoc@v1
+        run: yarn proto:generate
 
   validate-code:
     needs: setup
@@ -82,12 +82,12 @@ jobs:
         with:
           main-branch-name: main
 
-      # - name: Restore Protoc
-      #   id: proto-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: libs/shared/data-access/src/lib/proto/generated
-      #     key: ${{ runner.os }}-protobuf
+      - name: Restore Protoc
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
@@ -201,7 +201,7 @@ jobs:
       #   uses: actions/cache@v3
       #   with:
       #     path: libs/shared/data-access/src/lib/proto/generated
-      #     key: ${{ runner.os }}-protobuf
+      #     key: ${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}-protobuf
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
@@ -235,12 +235,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      # - name: Restore Protoc
-      #   id: proto-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: libs/shared/data-access/src/lib/proto/generated
-      #     key: ${{ runner.os }}-protobuf
+      - name: Restore Protoc
+        id: proto-cache
+        uses: actions/cache@v3
+        with:
+          path: libs/shared/data-access/src/lib/proto/generated
+          key: ${{ runner.os }}-protobuf
 
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
