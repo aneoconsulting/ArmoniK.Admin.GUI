@@ -97,6 +97,22 @@
         }
       }
     },
+    "users_me": {
+      "title": "Mon profil",
+      "informations": {
+        "title": "Informations",
+        "username": "Nom d'utilisateur",
+        "roles": "Rôles"
+      },
+      "permissions": {
+        "title": "Permissions"
+      },
+      "templates": {
+        "no_information": "Pas d'informations",
+        "no_roles": "Pas de rôles",
+        "no_permissions": "Pas de permissions"
+      }
+    },
     "applications-list": {
       "title": "Applications",
       "columns": {
