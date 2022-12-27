@@ -3,18 +3,34 @@
   "projectType": "application",
   "sourceRoot": "apps/app/src",
   "prefix": "armonik.admin.gui",
+  "i18n": {
+    "locales": {
+      "fr": "apps/app/src/locale/messages.fr.xlf",
+      "en": "apps/app/src/locale/messages.en.xlf"
+    }
+  },
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/app",
         "index": "apps/app/src/index.html",
         "main": "apps/app/src/main.ts",
+        "i18nMissingTranslation": "warning",
+        "localize": [
+          "fr",
+          "en"
+        ],
         "polyfills": "apps/app/src/polyfills.ts",
         "tsConfig": "apps/app/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": ["apps/app/src/favicon.ico", "apps/app/src/assets"],
+        "assets": [
+          "apps/app/src/favicon.ico",
+          "apps/app/src/assets"
+        ],
         "styles": [
           "node_modules/@clr/icons/clr-icons.min.css",
           "node_modules/@clr/ui/clr-ui-dark.min.css",
@@ -44,6 +60,16 @@
           ],
           "outputHashing": "all"
         },
+        "en": {
+          "localize": [
+            "en"
+          ]
+        },
+        "fr": {
+          "localize": [
+            "fr"
+          ]
+        },
         "development": {
           "buildOptimizer": false,
           "optimization": false,
@@ -63,6 +89,12 @@
         },
         "development": {
           "browserTarget": "app:build:development"
+        },
+        "fr": {
+          "browserTarget": "app:build:fr"
+        },
+        "en": {
+          "browserTarget": "app:build:en"
         }
       },
       "defaultConfiguration": "development",
@@ -73,13 +105,17 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "app:build"
+        "browserTarget": "app:build",
+        "outputPath": "apps/app/src/locale"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/app/src/**/*.ts", "apps/app/src/**/*.html"]
+        "lintFilePatterns": [
+          "apps/app/src/**/*.ts",
+          "apps/app/src/**/*.html"
+        ]
       }
     },
     "test": {

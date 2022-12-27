@@ -76,6 +76,8 @@
 </clr-main-container>
 
 <ng-template #loading>
-  <ng-container *ngIf="loadingUser"> Connexion in progress... </ng-container>
-  <ng-container *ngIf="!loadingUser"> Connexion failed </ng-container>
+  <ng-container *ngIf="loadingUser" i18n>
+    Connexion in progress...
+  </ng-container>
+  <ng-container *ngIf="!loadingUser" i18n> Connexion failed </ng-container>
 </ng-template>
