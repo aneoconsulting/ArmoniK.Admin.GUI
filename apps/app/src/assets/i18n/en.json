@@ -30,6 +30,28 @@
   },
   "pages": {
     "components": {
+      "custom_columns_manager": {
+        "manage_columns": "Manage columns",
+        "add_column": "Add a column",
+        "modals": {
+          "add_column": {
+            "title": "Add a column",
+            "close": "Close",
+            "add": "Add",
+            "name_input": {
+              "label": "Name",
+              "placeholder": "Enter a name",
+              "helper_text": "Name must be unique. You can use '.' to access nested properties. You must have data to view custom columns."
+            }
+          },
+          "manage_columns": {
+            "title": "Manage columns",
+            "close": "Close",
+            "empty": "No custom columns",
+            "remove": "Remove"
+          }
+        }
+      },
       "modal_favorites": {
         "button": {
           "add": "Add to favorites",
