@@ -132,7 +132,6 @@
         }
       },
       "actions": {
-        "refresh": "Rafraîchir",
         "details": "Détails",
         "related_tasks": "Tâches liées",
         "cancel": "Fermer"
@@ -175,14 +174,6 @@
       },
       "actions": {
         "cancel_selection": "Annuler la sélection",
-        "refresh": "Rafraîchir",
-        "auto_refresh": {
-          "button": {
-            "title": "Rafraîchissement automatique",
-            "disabled": "Désactivé"
-          },
-          "disable": "Désactiver"
-        },
         "details": "Détails",
         "related_results": "Résultats liés",
         "parent_session": "Session",
@@ -218,14 +209,6 @@
         }
       },
       "actions": {
-        "refresh": "Rafraîchir",
-        "auto_refresh": {
-          "button": {
-            "title": "Rafraîchissement automatique",
-            "disabled": "Désactivé"
-          },
-          "disable": "Désactiver"
-        },
         "parent_task": "Task"
       },
       "pagination": {
