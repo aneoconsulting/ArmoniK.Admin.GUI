@@ -6,14 +6,6 @@
     [clrDgLoading]="(loadingSessions$ | async) ?? false"
   >
     <clr-dg-action-bar>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshSessions()"
-      >
-        {{ 'pages.sessions-list.actions.refresh' | translate }}
-      </button>
-
       <app-action-bar
         [stopInterval$]="stopInterval$"
         [isFiltered]="isFiltered()"
