@@ -42,9 +42,11 @@ jobs:
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Api/common/protofiles.sh') }}
 
       - name: Install Protoc
+        if: steps.proto-cache.outputs.cache-hit != 'true'
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
+        if: steps.proto-cache.outputs.cache-hit != 'true'
         run: yarn proto:generate
 
       - name: Docker meta
