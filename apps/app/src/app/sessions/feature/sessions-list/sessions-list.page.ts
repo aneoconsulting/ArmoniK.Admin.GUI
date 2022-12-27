@@ -346,8 +346,8 @@ export class SessionsListComponent implements OnInit {
   /**
    * Clear all filters currently applied to the datagrid
    */
-  clearAllFilters() {
+  clearAllFilters(): void {
     delete this._state.filters;
-    this.refreshSessions(this._state);
+    this._subjectDatagrid.next(this._state);
   }
 }
