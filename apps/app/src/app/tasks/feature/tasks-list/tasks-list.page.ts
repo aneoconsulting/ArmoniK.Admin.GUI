@@ -16,9 +16,7 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
-  distinctUntilChanged,
   first,
-  map,
   merge,
   Observable,
   of,
@@ -59,7 +57,6 @@ export class TasksListComponent implements OnInit {
         const params = this._grpcPagerService.createParams(state);
         await this._router.navigate([], {
           queryParams: params,
-          queryParamsHandling: 'merge',
           relativeTo: this._activatedRoute,
         });
         return state;
@@ -105,6 +102,73 @@ export class TasksListComponent implements OnInit {
     false
   );
 
+  taskStatusList: { value: number; label: string }[];
+
+  /**
+   * Filters observables.
+   * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
+   */
+  filterTaskId$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.paramMap,
+    'taskId'
+  );
+
+  filterSessionId$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'sessionId'
+    );
+
+  filterStatus$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'status'
+  );
+
+  filterCreatedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtBefore'
+    );
+
+  filterCreatedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'createdAtAfter'
+    );
+
+  filterStartedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'startedAtBefore'
+    );
+
+  filterStartedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'startedAtAfter'
+    );
+
+  filterEndedBefore$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'endedAtBefore'
+    );
+
+  filterEndedAfter$: Observable<Date | null> =
+    this._settingsService.queryDateParam$(
+      this._activatedRoute.queryParamMap,
+      'endedAtAfter'
+    );
+
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -119,6 +183,14 @@ export class TasksListComponent implements OnInit {
     this._browserTitleService.setTitle(
       this._languageService.instant('pages.tasks-list.title')
     );
+    this.taskStatusList = [
+      ...Object.keys(TaskStatus)
+        .filter((key) => !Number.isInteger(parseInt(key)))
+        .map((key) => ({
+          value: TaskStatus[key as keyof typeof TaskStatus],
+          label: key,
+        })),
+    ];
   }
 
   public get OrderByField(): typeof ListTasksRequest.OrderByField {
@@ -239,21 +311,6 @@ export class TasksListComponent implements OnInit {
   }
 
   /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
    * Track by interval
    *
    * @param _
@@ -347,5 +404,39 @@ export class TasksListComponent implements OnInit {
       }),
       tap(() => this.loadingCancelTasks$.next(false))
     );
+  }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Checks if one filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

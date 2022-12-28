@@ -6,19 +6,16 @@
     [clrDgLoading]="(loadingApplications$ | async) ?? false"
   >
     <clr-dg-action-bar>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshApplications()"
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshApplications()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
       >
-        {{ 'pages.applications-list.actions.refresh' | translate }}
-      </button>
-
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column
