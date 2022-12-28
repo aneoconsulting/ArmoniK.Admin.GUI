@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
+import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access'
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  catchError,
   concatMap,
   merge,
   Observable,
@@ -19,6 +21,7 @@ import {
   LanguageService,
   SettingsService,
 } from '../../../shared/util';
+import { off } from 'process';
 
 @Component({
   selector: 'app-partitions-list',
@@ -95,6 +98,7 @@ export class PartitionsListComponent implements OnInit {
     private _browserTitleService: BrowserTitleService,
     private _grpcPagerService: GrpcPagerService,
     private _activatedRoute: ActivatedRoute,
+    private _grpcPartitionsService: GrpcPartitionsService,
     private _router: Router
   ) {}
 
@@ -134,8 +138,20 @@ export class PartitionsListComponent implements OnInit {
     return this._state;
   }
 
-  private _listPartitions$() {
-    return '';
+  private _listPartitions$(): Observable<ListPartitionsResponse> {
+    const grpcParams = this._grpcPagerService.createGrpcParams(this._restoreState())
+    return this._grpcPartitionsService.list$(grpcParams).pipe(
+      catchError((error) => {
+        console.log(error);
+        this._stopInterval.next();
+
+        return off({} as ListPartitionsResponse);
+      }),
+      tap((partitions) => {
+        this.loadingPartitions$.next(false);
+        this.totalPartitions$.next(partitions.total ?? 0);
+      })
+    );
   }
 
   public onUpdateInterval(value: number) {

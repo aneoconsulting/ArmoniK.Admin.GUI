@@ -1,1 +1,1 @@
-export * from './lib/partitions-data-access/partitions-data-access.component';
+export { GrpcPartitionsService } from './lib/services/grpc-partitions.service';
