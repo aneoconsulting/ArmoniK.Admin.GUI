@@ -34,7 +34,7 @@ describe('AppComponent', () => {
         RouterTestingModule.withRoutes([]),
         ClarityModule,
         HttpClientModule,
-        TranslateModule.forRoot(),
+
         GrpcCoreModule.forRoot(),
         GrpcWebClientModule.forRoot({
           settings: {

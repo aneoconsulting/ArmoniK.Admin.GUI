@@ -1,5 +1,5 @@
 <section>
-  <h1>Sessions</h1>
+  <h1 i18n>Sessions</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshSessions($event)"
@@ -23,12 +23,14 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
+      i18n
     >
       Session ID
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+      i18n
     >
       Status
     </clr-dg-column>
@@ -37,6 +39,7 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
+      i18n
     >
       Created at
     </clr-dg-column>
@@ -45,10 +48,11 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
       "
+      i18n
     >
       Closed at
     </clr-dg-column>
-    <clr-dg-column> Actions </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
       <clr-dg-row *ngFor="let session of list.sessions">
@@ -91,7 +95,7 @@
             (click)="viewSessionDetail(session.sessionId!)"
           >
             <clr-icon shape="eye"></clr-icon>
-            Details
+            <span i18n> Details </span>
           </button>
           <a
             class="btn btn-sm btn-secondary"
@@ -99,7 +103,7 @@
             [queryParams]="{ sessionId: session.sessionId }"
           >
             <clr-icon shape="node"></clr-icon>
-            Related Tasks
+            <span i18n> Related Tasks </span>
           </a>
           <button
             type="button"
@@ -108,7 +112,7 @@
             [disabled]="session.cancelledAt"
           >
             <clr-icon shape="times"></clr-icon>
-            Close
+            <span i18n> Close </span>
           </button>
         </clr-dg-cell>
       </clr-dg-row>
@@ -120,11 +124,11 @@
         [clrDgTotalItems]="(totalSessions$ | async) ?? 0"
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
-        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >Sessions per page</clr-dg-page-size
-        >
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+          <span i18n> Per Page </span>
+        </clr-dg-page-size>
         <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total">
-          {{ total }} {{ (total > 1 ? 'sessions' : 'session' ) }}
+          {{ total }} { total, plural, =1 {session} other {sessions} }
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
@@ -137,7 +141,9 @@
   [clrModalSize]="'lg'"
   *ngIf="loadSingleSession$ | async as session"
 >
-  <h3 class="modal-title">Session {{ session.session!.sessionId }}</h3>
+  <h3 class="modal-title">
+    <span i18n> Session </span> {{ session.session!.sessionId }}
+  </h3>
   <div class="modal-body">
     <pre>{{ session.session! | json }}</pre>
   </div>
@@ -146,6 +152,7 @@
       type="button"
       class="btn btn-primary"
       (click)="closeGetSessionModal()"
+      i18n
     >
       Close
     </button>

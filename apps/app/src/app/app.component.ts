@@ -34,18 +34,18 @@ export class AppComponent implements OnInit {
     },
     {
       path: ['/', 'sessions'],
-      label: 'Sessions',
+      label: $localize`Sessions`,
       queryParams: { page: 0, pageSize: 10 },
       shape: 'nodes',
     },
     {
       path: ['/', 'tasks'],
-      label: 'Tasks',
+      label: $localize`Tasks`,
       shape: 'node',
     },
     {
       path: ['/', 'results'],
-      label: 'Results',
+      label: $localize`Results`,
       shape: 'certificate',
     },
   ];

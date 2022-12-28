@@ -4,17 +4,19 @@
     (input)="onChange()"
     type="text"
     [(ngModel)]="inputValue"
+    i18n-placeholder
     placeholder="Filter"
   />
   <label>
-    <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+    <span i18n>Id</span>
+    <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
-      <span class="tooltip-content">
-        'Will display data with an Id strictly equal to the one indicated.'
+      <span class="tooltip-content" i18n>
+        Will display data with an Id strictly equal to the one indicated.
       </span>
-    </a>
+    </div>
   </label>
 </clr-input-container>
-<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
+<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()" i18n>
   Clear the filter
 </button>

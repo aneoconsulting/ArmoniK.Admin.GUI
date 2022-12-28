@@ -15,7 +15,6 @@ import { FavoriteItem, FavoritesService } from '../../util';
     RouterModule,
     ClrVerticalNavModule,
     ClrIconModule,
-
     NgFor,
     AsyncPipe,
   ],

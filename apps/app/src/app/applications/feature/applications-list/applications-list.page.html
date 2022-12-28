@@ -1,5 +1,5 @@
 <section>
-  <h1>Applications</h1>
+  <h1 i18n>Applications</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshApplications($event)"
@@ -21,28 +21,32 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAME.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
+      i18n
     >
       Name
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_VERSION.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_VERSION)"
+      i18n
     >
       Version
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAMESPACE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAMESPACE)"
+      i18n
     >
       Namespace
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SERVICE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_SERVICE)"
+      i18n
     >
       Service
     </clr-dg-column>
-    <clr-dg-column> Actions </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadApplications$ | async as list">
       <clr-dg-row
@@ -73,7 +77,7 @@
             [queryParams]="{ applicationName: application.name, applicationVersion: application.version }"
           >
             <clr-icon shape="nodes"></clr-icon>
-            Related Sessions
+            <span i18n> Related Sessions </span>
           </a>
         </clr-dg-cell>
 
@@ -87,11 +91,11 @@
         [clrDgTotalItems]="(totalApplications$ | async) ?? 0"
         [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
-        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >Related Sessions</clr-dg-page-size
-        >
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+          <span i18n> Per Page </span>
+        </clr-dg-page-size>
         <span *ngIf="(totalApplications$ | async) ?? 0 > 1 as total">
-          {{ total }} {{ (total > 1 ? 'applications' : 'application' ) }}
+          {{ total }} { total, plural, =1 {application} other {applications} }
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>

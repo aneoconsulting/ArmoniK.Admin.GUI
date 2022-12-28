@@ -1,16 +1,16 @@
-<h1>My profile</h1>
+<h1 i18n>My profile</h1>
 
 <ng-container *ngIf="currentUser$ | async as user; noInformations">
   <section>
-    <h2>Informations</h2>
+    <h2 i18n>Informations</h2>
 
     <div>
-      <span> Username: </span>
+      <span i18n> Username: </span>
       <span> {{ user.username }} </span>
     </div>
 
     <div>
-      <span> Roles: </span>
+      <span i18n> Roles: </span>
       <ul *ngIf="user.roles.length; else noRoles">
         <ng-container *ngFor="let role of user.roles">
           <li>{{ role }}</li>
@@ -20,7 +20,7 @@
   </section>
 
   <section>
-    <h2>Permissions</h2>
+    <h2 i18n>Permissions</h2>
 
     <ng-container *ngIf="user.permissions.length; else noPermissions">
       <div class="clr-row">
@@ -42,13 +42,13 @@
 </ng-container>
 
 <ng-template #noInformations>
-  <span> No information </span>
+  <span i18n> No information </span>
 </ng-template>
 
 <ng-template #noRoles>
-  <span> No roles </span>
+  <span i18n> No roles </span>
 </ng-template>
 
 <ng-template #noPermissions>
-  <span>No permissions </span>
+  <span i18n>No permissions </span>
 </ng-template>

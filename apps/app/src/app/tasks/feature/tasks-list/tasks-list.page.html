@@ -1,5 +1,5 @@
 <section>
-  <h1>Tasks</h1>
+  <h1 i18n>Tasks</h1>
 
   <clr-datagrid
     [(clrDgSelected)]="selected"
@@ -12,6 +12,7 @@
         type="button"
         class="btn btn-sm btn-outline-danger"
         (click)="cancelSelection()"
+        i18n
       >
         Cancel selection
       </button>
@@ -31,14 +32,11 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_TASK_ID.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
+      i18n
     >
       Task ID
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter
-          [name]="'id'"
-          [inputValue]="filterTaskId$ | async"
-          #idFilter
-        >
+        <app-id-filter name="id" [inputValue]="filterTaskId$ | async" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -47,11 +45,12 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
+      i18n
     >
       Session ID
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
-          [name]="'sessionId'"
+          name="sessionId"
           [inputValue]="filterSessionId$ | async"
           #sessionFilter
         >
@@ -61,6 +60,7 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+      i18n
     >
       Status
       <clr-dg-filter [clrDgFilter]="statusFilter">
@@ -78,6 +78,7 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
+      i18n
     >
       Created at
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
@@ -95,11 +96,12 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_STARTED_AT)
       "
+      i18n
     >
       Started at
       <clr-dg-filter [clrDgFilter]="startedDateFilter">
         <app-date-filter
-          [name]="'started'"
+          name="started"
           [beforeDate]="filterStartedBefore$ | async"
           [afterDate]="filterStartedAfter$ | async"
           #startedDateFilter
@@ -110,11 +112,12 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
+      i18n
     >
       Ended at
       <clr-dg-filter [clrDgFilter]="endedDateFilter">
         <app-date-filter
-          [name]="'ended'"
+          name="ended"
           [beforeDate]="filterEndedBefore$ | async"
           [afterDate]="filterEndedAfter$ | async"
           #endedDateFilter
@@ -122,7 +125,7 @@
         </app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column> Actions </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadTasks$ | async as list">
       <clr-dg-row
@@ -198,7 +201,7 @@
             (click)="viewTaskDetail(task.id!)"
           >
             <clr-icon shape="eye"></clr-icon>
-            Details
+            <span i18n> Details </span>
           </button>
           <a
             class="btn btn-sm btn-secondary"
@@ -206,7 +209,7 @@
             [queryParams]="{ ownerTaskId: task.sessionId }"
           >
             <clr-icon shape="certificate"></clr-icon>
-            Related Results
+            <span i18n> Related Results </span>
           </a>
           <a
             class="btn btn-sm btn-secondary"
@@ -214,17 +217,18 @@
             [queryParams]="{ sessionId: task.sessionId }"
           >
             <clr-icon shape="nodes"></clr-icon>
-            Session
+            <span i18n> Session </span>
           </a>
           <a
             *ngIf="isSeqUp$ | async"
             class="btn btn-sm btn-secondary"
             target="_blank"
+            i18n-title
             title="See in SEQ"
             [href]="generateSeqUrl(task.id!)"
           >
             <clr-icon shape="crosshairs"></clr-icon>
-            SEQ
+            <span i18n> SEQ </span>
           </a>
         </clr-dg-cell>
         <ng-template #empty> - </ng-template>
@@ -237,11 +241,11 @@
         [clrDgTotalItems]="(totalTasks$ | async) ?? 0"
         [clrDgPage]="((page$ | async) || 0) + 1"
       >
-        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >Per page</clr-dg-page-size
-        >
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+          <span i18n> Per Page </span>
+        </clr-dg-page-size>
         <span *ngIf="(totalTasks$ | async) ?? 0 > 1 as total">
-          {{ total }} {{ (total > 1 ? 'tasks' : 'task' ) }}
+          {{ total }} { total, plural, =1 {result} other {results} }
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
@@ -254,12 +258,20 @@
   [clrModalSize]="'lg'"
   *ngIf="loadSingleTask$ | async as task"
 >
-  <h3 class="modal-title">Task {{ task.task!.id }}</h3>
+  <h3 class="modal-title">
+    <span i18n> Task </span>
+    {{ task.task!.id }}
+  </h3>
   <div class="modal-body">
     <pre>{{ task.task! | json }}</pre>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="closeGetTaskModal()">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="closeGetTaskModal()"
+      i18n
+    >
       Close
     </button>
   </div>

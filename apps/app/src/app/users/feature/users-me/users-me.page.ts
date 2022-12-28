@@ -15,7 +15,7 @@ export class UsersMeComponent {
     private _browserTitleService: BrowserTitleService,
     private _authService: AuthService
   ) {
-    this._browserTitleService.setTitle('Profile');
+    this._browserTitleService.setTitle($localize`Profile`);
   }
 
   public get currentUser$(): Observable<User | null> {

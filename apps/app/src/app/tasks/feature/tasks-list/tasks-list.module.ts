@@ -39,7 +39,6 @@ import { TasksListComponent } from './tasks-list.page';
     ClrLoadingModule,
     ClrDropdownModule,
     ClrModalModule,
-
     TasksListRoutingModule,
     SelectFilterComponent,
     IdFilterComponent,

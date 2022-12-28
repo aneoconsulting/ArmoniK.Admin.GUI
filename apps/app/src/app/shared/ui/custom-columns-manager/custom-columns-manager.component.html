@@ -3,6 +3,7 @@
     type="button"
     class="btn btn-sm btn-secondary"
     (click)="openModalManageColumns()"
+    i18n
   >
     Manage columns
   </button>
@@ -10,6 +11,7 @@
     type="button"
     class="btn btn-sm btn-secondary"
     (click)="openModalAddColumn()"
+    i18n
   >
     Add a column
   </button>
@@ -20,18 +22,19 @@
   [clrModalClosable]="false"
   [clrModalSize]="'lg'"
 >
-  <h3 class="modal-title">Add a column</h3>
+  <h3 class="modal-title" i18n>Add a column</h3>
   <div class="modal-body">
     <form clrForm>
       <clr-input-container>
-        <label> Name</label>
+        <label i18n> Name</label>
         <input
+          i18n-placeholder
           placeholder="Enter a name"
           clrInput
           name="name"
           [(ngModel)]="newColumnName"
         />
-        <clr-control-helper
+        <clr-control-helper i18n
           >Name must be unique. You can use '.' to access nested properties. You
           must have data to view custom columns.
         </clr-control-helper>
@@ -43,10 +46,11 @@
       type="button"
       class="btn btn-secondary"
       (click)="closeModalAddColumn()"
+      i18n
     >
       Close
     </button>
-    <button type="button" class="btn btn-primary" (click)="addColumn()">
+    <button type="button" class="btn btn-primary" (click)="addColumn()" i18n>
       Add
     </button>
   </div>
@@ -57,7 +61,7 @@
   [clrModalClosable]="false"
   [clrModalSize]="'lg'"
 >
-  <h3 class="modal-title">Manage columns</h3>
+  <h3 class="modal-title" i18n>Manage columns</h3>
   <div class="modal-body">
     <ng-container *ngIf="columns$ | async as columns">
       <ol class="list" *ngIf="columns.size > 0; else emptyCustomColumns">
@@ -68,6 +72,7 @@
             class="btn btn-sm btn-danger-outline"
             type="button"
             (click)="removeColumn(column)"
+            i18n
           >
             Remove
           </button>
@@ -80,10 +85,11 @@
       type="button"
       class="btn btn-primary"
       (click)="closeModalManageColumns()"
+      i18n
     >
       Close
     </button>
   </div>
 </clr-modal>
 
-<ng-template #emptyCustomColumns> No custom columns </ng-template>
+<ng-template #emptyCustomColumns i18n> No custom columns </ng-template>

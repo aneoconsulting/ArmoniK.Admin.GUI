@@ -82,7 +82,7 @@ export class ApplicationsListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle('Applications');
+    this._browserTitleService.setTitle($localize`Applications`);
   }
 
   public get OrderByField() {

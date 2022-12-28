@@ -175,7 +175,7 @@ export class TasksListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle('Tasks');
+    this._browserTitleService.setTitle($localize`Tasks`);
     this.taskStatusList = [
       ...Object.keys(TaskStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))

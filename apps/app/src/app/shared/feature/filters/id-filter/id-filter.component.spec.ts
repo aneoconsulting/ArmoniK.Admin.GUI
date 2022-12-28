@@ -13,7 +13,7 @@ describe('IdFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [],
     }).compileComponents();
   });
 

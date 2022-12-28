@@ -125,7 +125,7 @@ export class ResultsListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle('Results');
+    this._browserTitleService.setTitle($localize`Results`);
     this.statusList = [
       ...Object.keys(ResultStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))

@@ -11,11 +11,7 @@ describe('TheFavoritesModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        TheFavoritesModalComponent,
-        TranslateModule.forRoot(),
-        RouterTestingModule,
-      ],
+      imports: [TheFavoritesModalComponent, RouterTestingModule],
       providers: [
         {
           provide: FavoritesService,

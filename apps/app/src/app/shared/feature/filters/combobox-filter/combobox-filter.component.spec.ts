@@ -9,7 +9,7 @@ describe('TaskStatusFilterComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), ClarityModule],
+      imports: [ClarityModule],
     }).compileComponents();
   });
 

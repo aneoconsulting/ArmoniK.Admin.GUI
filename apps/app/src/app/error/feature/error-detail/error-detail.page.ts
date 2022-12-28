@@ -8,6 +8,6 @@ import { BrowserTitleService } from '../../../shared/util';
 })
 export class ErrorDetailComponent {
   constructor(private browserTitleService: BrowserTitleService) {
-    this.browserTitleService.setTitle('Error');
+    this.browserTitleService.setTitle($localize`Error`);
   }
 }

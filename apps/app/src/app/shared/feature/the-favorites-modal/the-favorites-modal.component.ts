@@ -21,7 +21,6 @@ import { FavoritesService } from '../../util';
     FormsModule,
     ClrModalModule,
     ClrInputModule,
-
     NgIf,
     AsyncPipe,
     JsonPipe,

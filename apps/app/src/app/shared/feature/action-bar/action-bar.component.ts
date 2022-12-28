@@ -12,7 +12,6 @@ import { ClearOrderComponent } from '../clear-order/clear-order.component';
   imports: [
     CommonModule,
     AutoRefreshDropdownComponent,
-
     ClearFiltersComponent,
     ClearOrderComponent,
   ],

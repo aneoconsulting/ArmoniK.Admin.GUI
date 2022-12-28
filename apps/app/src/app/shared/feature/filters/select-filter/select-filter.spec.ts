@@ -8,7 +8,7 @@ describe('SelectFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SelectFilterComponent);

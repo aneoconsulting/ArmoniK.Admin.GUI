@@ -8,7 +8,7 @@ describe('CustomColumnsManagerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomColumnsManagerComponent, TranslateModule.forRoot()],
+      imports: [CustomColumnsManagerComponent],
     }).compileComponents();
   });
 

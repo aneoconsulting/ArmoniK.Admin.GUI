@@ -96,7 +96,7 @@ export class SessionsListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle('Sessions');
+    this._browserTitleService.setTitle($localize`Sessions`);
   }
 
   public get OrderByField() {
