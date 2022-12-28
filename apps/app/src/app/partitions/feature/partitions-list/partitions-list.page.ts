@@ -2,9 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
-import { ClrDatagridStateInterface } from '@clr/angular';
+import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import { BehaviorSubject, concatMap, merge, Observable, Subject, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { BrowserTitleService, LanguageService, SettingsService } from '../../../shared/util';
+
+
+export type PartitionRaw = {
+  name: string;
+}
+
+export enum OrderByField {
+  ORDER_BY_FIELD_PARTITION_ID,
+  ORDER_BY_FIELD_PARTITION_PARENT,
+  ORDER_BY_FIELD_RESERVED_POD,
+  ORDER_BY_FIELD_MAX_POD,
+  ORDER_BY_FIELD_POD_CONFIGURATION,
+  ORDER_BY_FIELD_PERCENTAGE,
+  ORDER_BY_FIELD_PRIORITY
+}
 
 @Component({
   selector: 'app-partitions-list',
@@ -71,7 +86,7 @@ export class PartitionsListComponent implements OnInit {
 
   public get OrderByField() {
     // return ListPartitionsRequest.OrderByField;
-    return;
+    return OrderByField;
   }
 
   public get intervals(): number[] {
@@ -155,6 +170,40 @@ export class PartitionsListComponent implements OnInit {
    */
   public trackByInterval(_: number, interval: number): string {
     return interval.toString();
+  }
+
+  public defaultSortOrder(
+    field: OrderByField
+  ): ClrDatagridSortOrder {
+    const orderBy = Number(
+      this._activatedRoute.snapshot.queryParamMap.get('orderBy')
+    );
+
+    if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
+
+    const order =
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+
+    if (order === -1) return ClrDatagridSortOrder.DESC;
+
+    return ClrDatagridSortOrder.ASC;
+  }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
   }
 
   /**
