@@ -13,8 +13,6 @@ import {
   BehaviorSubject,
   catchError,
   concatMap,
-  distinctUntilChanged,
-  map,
   merge,
   Observable,
   of,
@@ -76,10 +74,31 @@ export class ApplicationsListComponent implements OnInit {
     switchMap(() => this._listApplications$())
   );
 
-  nameFilter$: Observable<string> = this.queryStringParam$('name');
-  versionFilter$: Observable<string> = this.queryStringParam$('version');
-  namespaceFilter$: Observable<string> = this.queryStringParam$('namespace');
-  serviceFilter$: Observable<string> = this.queryStringParam$('service');
+  nameFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'name'
+  );
+  versionFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'version'
+  );
+  namespaceFilter$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'namespace'
+    );
+  serviceFilter$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'service'
+  );
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
 
   constructor(
     private _router: Router,
@@ -165,36 +184,6 @@ export class ApplicationsListComponent implements OnInit {
    */
   public manualRefreshApplications(): void {
     this._subjectManual.next();
-  }
-
-  /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryStringParam$(param: string): Observable<string> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => (value !== null ? value : '')),
-      distinctUntilChanged()
-    );
   }
 
   /**

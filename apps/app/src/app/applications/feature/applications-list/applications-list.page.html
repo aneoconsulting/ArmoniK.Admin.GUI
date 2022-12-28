@@ -117,9 +117,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgPageSize]="(pageSize$ | async) || 10"
         [clrDgTotalItems]="(totalApplications$ | async) ?? 0"
-        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
+        [clrDgPage]="((page$ | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
           >{{ 'pages.applications-list.pagination.per_page' | translate
