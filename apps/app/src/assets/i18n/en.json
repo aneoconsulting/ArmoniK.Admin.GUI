@@ -15,6 +15,7 @@
   "navigation": {
     "dashboard": "Dashboard",
     "connexion_in_progress": "Connexion in progress...",
+    "connexion_failed": "Connexion failed",
     "applications": "Applications",
     "sessions": "Sessions",
     "tasks": "Tasks",
@@ -29,6 +30,28 @@
   },
   "pages": {
     "components": {
+      "custom_columns_manager": {
+        "manage_columns": "Manage columns",
+        "add_column": "Add a column",
+        "modals": {
+          "add_column": {
+            "title": "Add a column",
+            "close": "Close",
+            "add": "Add",
+            "name_input": {
+              "label": "Name",
+              "placeholder": "Enter a name",
+              "helper_text": "Name must be unique. You can use '.' to access nested properties. You must have data to view custom columns."
+            }
+          },
+          "manage_columns": {
+            "title": "Manage columns",
+            "close": "Close",
+            "empty": "No custom columns",
+            "remove": "Remove"
+          }
+        }
+      },
       "modal_favorites": {
         "button": {
           "add": "Add to favorites",
@@ -51,10 +74,15 @@
         },
         "disable": "Disable"
       },
+      "actions": {
+        "clear_order": "Set to default order",
+        "refresh": "Refresh"
+      },
       "filters": {
         "filter": "Filter",
         "select_title": "Select a value:",
         "select_many_title": "Select one or more value.",
+        "clear_all_filters": "Clear all filters",
         "clear_filter": "Clear the filter",
         "warning": {
           "combobox": "You can select more than one value.",
@@ -91,6 +119,22 @@
         }
       }
     },
+    "users_me": {
+      "title": "My profile",
+      "informations": {
+        "title": "Informations",
+        "username": "Username",
+        "roles": "Roles"
+      },
+      "permissions": {
+        "title": "Permissions"
+      },
+      "templates": {
+        "no_information": "No information",
+        "no_roles": "No roles",
+        "no_permissions": "No permissions"
+      }
+    },
     "applications-list": {
       "title": "Applications",
       "columns": {
@@ -101,7 +145,6 @@
         "actions": "Actions"
       },
       "actions": {
-        "refresh": "Refresh",
         "related_sessions": "Related Sessions"
       },
       "pagination": {
@@ -126,7 +169,6 @@
         }
       },
       "actions": {
-        "refresh": "Refresh",
         "details": "Details",
         "related_tasks": "Related Tasks",
         "cancel": "Close"
@@ -169,14 +211,6 @@
       },
       "actions": {
         "cancel_selection": "Cancel selection",
-        "refresh": "Refresh",
-        "auto_refresh": {
-          "button": {
-            "title": "Auto-refresh",
-            "disabled": "Disabled"
-          },
-          "disable": "Disable"
-        },
         "details": "Details",
         "related_results": "Related Results",
         "parent_session": "Session",
@@ -212,14 +246,6 @@
         }
       },
       "actions": {
-        "refresh": "Refresh",
-        "auto_refresh": {
-          "button": {
-            "title": "Auto-refresh",
-            "disabled": "Disabled"
-          },
-          "disable": "Disable"
-        },
         "parent_task": "Task"
       },
       "pagination": {
@@ -228,160 +254,9 @@
         "result": "{{value}} result"
       }
     },
-    "dashboard": {
-      "title": "Dashboard",
-      "errors": {
-        "title": "Errors"
-      },
-      "applications": {
-        "last_sessions": "Last sessions",
-        "title": "Applications",
-        "completed": "{{countTasksCompleted}} tasks completed on the last 7 days",
-        "processing": "{{countTasksProcessing}} tasks processing on the last 7 days",
-        "error": "{{countTasksError}} tasks error on the last 7 days",
-        "pending": "{{countTasksPending}} tasks in creation, submission or dispatch on the last 7 days",
-        "see-sessions": "See sessions"
-      },
-      "table": {
-        "application_name": "Application name",
-        "application_version": "Application version",
-        "session_id": "Session ID",
-        "error_at": "Error at",
-        "error": {
-          "seq": "Link to Seq error",
-          "seq_link": "See in Seq",
-          "message": "Error message"
-        },
-        "per_page": "Per page",
-        "applications": "{{value}} Applications",
-        "application": "{{value}} Application",
-        "filters": {
-          "error_at": {
-            "label": "Error since",
-            "default": "Always",
-            "text": "{{value}} days"
-          }
-        }
-      }
-    },
     "error": {
       "title": "Oops",
       "message": "Something went wrong"
-    },
-    "sessions": {
-      "session": "{{value}} session",
-      "sessions": "{{value}} sessions",
-      "per_page": "Sessions per page",
-      "title": "All sessions",
-      "cancel": {
-        "title": "Close the session",
-        "text": "Are you sure you want to close the session '{{id}}'?",
-        "button": "Validate"
-      },
-      "table": {
-        "id": "Session ID",
-        "refresh": "Refresh",
-        "delete_state": "Delete table state",
-        "last_activity_at": "Last activity at",
-        "actions": {
-          "title": "Actions",
-          "close_session": "Close the session"
-        },
-        "count": {
-          "title": "Tasks count",
-          "tooltip": "{{countError}} error, {{countPending}} pending, {{countProcessing}} processing, {{countCompleted}} completed"
-        },
-        "status": {
-          "title": "Status",
-          "cancelled": "Cancelled",
-          "pending": "Pending",
-          "processing": "Processing",
-          "error": "Error",
-          "completed": "Completed"
-        },
-        "createdAt": "Created at",
-        "cancelledAt": "Cancelled at",
-        "filters": {
-          "last_activity_at": {
-            "label": "Last activity since",
-            "default": "Always",
-            "text": "Last {{value}} day(s)"
-          }
-        }
-      },
-      "session-detail": {
-        "tab_title": "Session {{id}}",
-        "title": "Session detail",
-        "created_at": "Created at",
-        "see-more": "See more",
-        "modal": {
-          "title": "Task {{id}}"
-        },
-        "table": {
-          "title": "Associated tasks",
-          "id": "Task ID",
-          "refresh": "Refresh",
-          "delete_state": "Delete table state",
-          "per_page": "Per page",
-          "tasks": "{{value}} tasks",
-          "task": "{{value}} task",
-          "started_at": "Started at",
-          "ended_at": "Ended at",
-          "duration": {
-            "title": "Duration",
-            "milliseconds": "{{value}}ms",
-            "seconds": "{{value}}s",
-            "minutes": "{{value}}m",
-            "hours": "{{value}}h",
-            "days": "{{value}}d"
-          },
-          "status": {
-            "title": "Status",
-            "creating": "Creating",
-            "submitted": "Submitted",
-            "dispatched": "Dispatched",
-            "processing": "Processing",
-            "error": "Error",
-            "completed": "Completed",
-            "cancelling": "Cancelling",
-            "cancelled": "Cancelled"
-          },
-          "error": {
-            "seq": "Link to Seq error",
-            "seq_link": "See in Seq"
-          },
-          "actions": {
-            "title": "Actions",
-            "see_error": "See error"
-          },
-          "cancel": "Cancel selection",
-          "filters": {
-            "status": {
-              "title": "Select a status",
-              "default": "All",
-              "UNSPECIFIED": "Unspecified",
-              "CREATING": "Creating",
-              "SUBMITTED": "Submitted",
-              "DISPATCHED": "Dispatched",
-              "PROCESSING": "Processing",
-              "PROCESSED": "Processed",
-              "COMPLETED": "Completed",
-              "ERROR": "Error",
-              "FAILED": "Failed",
-              "TIMEOUT": "Timeout",
-              "CANCELLING": "Cancelling",
-              "CANCELLED": "Cancelled"
-            }
-          }
-        },
-        "task-detail": {
-          "tab_title": "Task {{id}}",
-          "title": "Task detail",
-          "created_at": "Created at",
-          "ended_at": "Ended at",
-          "see_more": "See more"
-        }
-      }
     }
   },
   "errors": {

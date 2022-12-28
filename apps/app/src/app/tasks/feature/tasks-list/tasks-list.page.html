@@ -16,19 +16,16 @@
         {{ 'pages.tasks-list.actions.cancel_selection' | translate }}
       </button>
 
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshTasks()"
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshTasks()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
       >
-        {{ 'pages.tasks-list.actions.refresh' | translate }}
-      </button>
-
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -36,6 +33,14 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
       {{ 'pages.tasks-list.columns.task_id' | translate }}
+      <clr-dg-filter [clrDgFilter]="idFilter">
+        <app-id-filter
+          [name]="'id'"
+          [inputValue]="filterTaskId$ | async"
+          #idFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -44,12 +49,29 @@
       "
     >
       {{ 'pages.tasks-list.columns.session_id' | translate }}
+      <clr-dg-filter [clrDgFilter]="sessionFilter">
+        <app-id-filter
+          [name]="'sessionId'"
+          [inputValue]="filterSessionId$ | async"
+          #sessionFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       {{ 'pages.tasks-list.columns.status' | translate }}
+      <clr-dg-filter [clrDgFilter]="statusFilter">
+        <app-select-filter
+          [name]="'status'"
+          [selectedValue]="filterStatus$ | async"
+          [selectionList]="taskStatusList"
+          #statusFilter
+        >
+        </app-select-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
@@ -58,6 +80,15 @@
       "
     >
       {{ 'pages.tasks-list.columns.created_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="createdDateFilter">
+        <app-date-filter
+          [name]="'created'"
+          [beforeDate]="filterCreatedBefore$ | async"
+          [afterDate]="filterCreatedAfter$ | async"
+          #createdDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
@@ -66,12 +97,30 @@
       "
     >
       {{ 'pages.tasks-list.columns.started_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="startedDateFilter">
+        <app-date-filter
+          [name]="'started'"
+          [beforeDate]="filterStartedBefore$ | async"
+          [afterDate]="filterStartedAfter$ | async"
+          #startedDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
     >
       {{ 'pages.tasks-list.columns.ended_at' | translate }}
+      <clr-dg-filter [clrDgFilter]="endedDateFilter">
+        <app-date-filter
+          [name]="'ended'"
+          [beforeDate]="filterEndedBefore$ | async"
+          [afterDate]="filterEndedAfter$ | async"
+          #endedDateFilter
+        >
+        </app-date-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column>
       {{ 'pages.tasks-list.columns.actions' | translate }}
@@ -104,11 +153,11 @@
                 'text-warn': [
                   TaskStatusEnum.TASK_STATUS_PROCESSING,
                   TaskStatusEnum.TASK_STATUS_PROCESSED
-                ].includes(task.status),
+                ].includes(task.status || 0),
                 'text-danger': [
                   TaskStatusEnum.TASK_STATUS_ERROR,
                   TaskStatusEnum.TASK_STATUS_TIMEOUT
-                ].includes(task.status),
+                ].includes(task.status || 0),
                 'text-creating':
                   task.status === TaskStatusEnum.TASK_STATUS_CREATING,
                 'text-submitted':
@@ -118,7 +167,7 @@
                 'text-cancelled': [
                   TaskStatusEnum.TASK_STATUS_CANCELLING,
                   TaskStatusEnum.TASK_STATUS_CANCELLED
-                ].includes(task.status)
+                ].includes(task.status || 0)
               }"
             >
               {{ 'pages.tasks-list.cells.status.' + task.status | translate }}
@@ -187,9 +236,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgPageSize]="(pageSize$ | async) || 10"
         [clrDgTotalItems]="(totalTasks$ | async) ?? 0"
-        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
+        [clrDgPage]="((page$ | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
           >{{ 'pages.tasks-list.pagination.per_page' | translate
