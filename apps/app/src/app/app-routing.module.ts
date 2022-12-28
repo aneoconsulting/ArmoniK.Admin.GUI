@@ -4,6 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   { path: '', redirectTo: 'applications', pathMatch: 'full' },
   {
+    path: 'users',
+    loadChildren: () =>
+      import('./users/feature/users-shell/users-shell.module').then(
+        (m) => m.UsersShellModule
+      ),
+  },
+  {
     path: 'applications',
     loadChildren: () =>
       import(

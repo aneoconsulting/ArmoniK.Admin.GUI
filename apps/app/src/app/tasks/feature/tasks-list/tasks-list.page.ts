@@ -405,6 +405,23 @@ export class TasksListComponent implements OnInit {
   }
 
   /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
    * Checks if one filter is applied to the datagrid
    *
    * @returns true if yes, false if no
@@ -416,8 +433,8 @@ export class TasksListComponent implements OnInit {
   /**
    * Clear all filters currently applied to the datagrid
    */
-  clearAllFilters() {
+  clearAllFilters(): void {
     delete this._state.filters;
-    this.refreshTasks(this._state);
+    this._subjectDatagrid.next(this._state);
   }
 }

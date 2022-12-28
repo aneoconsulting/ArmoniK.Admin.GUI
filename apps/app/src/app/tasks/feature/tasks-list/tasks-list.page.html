@@ -16,28 +16,16 @@
         {{ 'pages.tasks-list.actions.cancel_selection' | translate }}
       </button>
 
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshTasks()"
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshTasks()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
       >
-        {{ 'pages.tasks-list.actions.refresh' | translate }}
-      </button>
-
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
-
-      <button
-        *ngIf="isFiltered()"
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="clearAllFilters()"
-      >
-        {{ 'pages.tasks-list.clear_all_filters' | translate }}
-      </button>
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column
