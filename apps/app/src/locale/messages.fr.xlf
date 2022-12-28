@@ -1,0 +1,500 @@
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en-US" trgLang="fr">
+  <file original="ng.template" id="ngi18n">
+    <unit id="360186035564826299">
+      <segment state="initial">
+        <source>ArmoniK logo</source>
+        <target>Logo d'ArmoniK</target>
+      </segment>
+    </unit>
+    <unit id="5514106309354968448">
+      <segment state="initial">
+        <source> Seq </source>
+        <target> Seq </target>
+      </segment>
+    </unit>
+    <unit id="1542926687721067548">
+      <segment state="initial">
+        <source> Grafana </source>
+        <target> Grafana </target>
+      </segment>
+    </unit>
+    <unit id="6696564147769081173">
+      <segment state="initial">
+        <source> How to use </source>
+        <target> Comment utiliser </target>
+      </segment>
+    </unit>
+    <unit id="6715424196394178892">
+      <segment state="initial">
+        <source> Connexion in progress... </source>
+        <target> Connexion en cours... </target>
+      </segment>
+    </unit>
+    <unit id="8038492058748232410">
+      <segment state="initial">
+        <source> Connexion failed </source>
+        <target> Échec de la connexion </target>
+      </segment>
+    </unit>
+    <unit id="6658000829978978023">
+      <segment state="initial">
+        <source>Applications</source>
+        <target>Applications</target>
+      </segment>
+    </unit>
+    <unit id="721963055036507192">
+      <segment state="initial">
+        <source>Sessions</source>
+        <target>Sessions</target>
+      </segment>
+    </unit>
+    <unit id="6904866445262015585">
+      <segment state="initial">
+        <source>Tasks</source>
+        <target>Tâches</target>
+      </segment>
+    </unit>
+    <unit id="5968132631442328843">
+      <segment state="initial">
+        <source>Results</source>
+        <target>Résultats</target>
+      </segment>
+    </unit>
+    <unit id="8778616811237742446">
+      <segment state="initial">
+        <source> Name </source>
+        <target> Nom </target>
+      </segment>
+    </unit>
+    <unit id="5088286317508582496">
+      <segment state="initial">
+        <source> Version </source>
+        <target> Version </target>
+      </segment>
+    </unit>
+    <unit id="6831529980408957700">
+      <segment state="initial">
+        <source> Namespace </source>
+        <target> Espace de nom </target>
+      </segment>
+    </unit>
+    <unit id="7260804917752247227">
+      <segment state="initial">
+        <source> Service </source>
+        <target> Service </target>
+      </segment>
+    </unit>
+    <unit id="4360239040231802726">
+      <segment state="initial">
+        <source> Actions </source>
+        <target> Actions </target>
+      </segment>
+    </unit>
+    <unit id="7868868837030072422">
+      <segment state="initial">
+        <source> Related Sessions </source>
+        <target> Sessions liées </target>
+      </segment>
+    </unit>
+    <unit id="2200980423335009196">
+      <segment state="initial">
+        <source> Per Page </source>
+        <target> Par Page </target>
+      </segment>
+    </unit>
+    <unit id="2667990283971044762">
+      <segment state="initial">
+        <source>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 application} other {{{total}} applications}}"/>
+        </source>
+        <target>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 application} other {{{total}} applications}}"/>
+        </target>
+      </segment>
+    </unit>
+    <unit id="2896080322332039141">
+      <segment state="initial">
+        <source>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</target>
+      </segment>
+    </unit>
+    <unit id="7872557156040593774">
+      <segment state="initial">
+        <source>Oops</source>
+        <target>Oops</target>
+      </segment>
+    </unit>
+    <unit id="960665565485640516">
+      <segment state="initial">
+        <source>Something went wrong</source>
+        <target>Quelque chose s'est mal passé</target>
+      </segment>
+    </unit>
+    <unit id="1519954996184640001">
+      <segment state="initial">
+        <source>Error</source>
+        <target>Erreur</target>
+      </segment>
+    </unit>
+    <unit id="3115003903328542418">
+      <segment state="initial">
+        <source> Task ID </source>
+        <target> Tâche ID </target>
+      </segment>
+    </unit>
+    <unit id="8129451601564233517">
+      <segment state="initial">
+        <source> Session ID </source>
+        <target> Session ID </target>
+      </segment>
+    </unit>
+    <unit id="4282587102956396340">
+      <segment state="initial">
+        <source> Status </source>
+        <target> Status </target>
+      </segment>
+    </unit>
+    <unit id="4070888718648503727">
+      <segment state="initial">
+        <source> Created at </source>
+        <target> Créé à </target>
+      </segment>
+    </unit>
+    <unit id="6442812322325259685">
+      <segment state="initial">
+        <source> Task </source>
+        <target> Tâche </target>
+      </segment>
+    </unit>
+    <unit id="8042579649547507797">
+      <segment state="initial">
+        <source>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 result} other {{{total}} results}}"/>
+        </source>
+        <target>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 result} other {{{total}} results}}"/>
+        </target>
+      </segment>
+    </unit>
+    <unit id="3079807154693697946">
+      <segment state="initial">
+        <source>{VAR_PLURAL, plural, =1 {1 result} other {<ph id="0" equiv="INTERPOLATION"/> results}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 résultat} other {<ph id="0" equiv="INTERPOLATION"/> résultats}}</target>
+      </segment>
+    </unit>
+    <unit id="983862385866322065">
+      <segment state="initial">
+        <source> Closed at </source>
+        <target> Fermée à </target>
+      </segment>
+    </unit>
+    <unit id="4423253549935469768">
+      <segment state="initial">
+        <source> Details </source>
+        <target> Détails </target>
+      </segment>
+    </unit>
+    <unit id="2337632144509432408">
+      <segment state="initial">
+        <source> Related Tasks </source>
+        <target> Tâches liées </target>
+      </segment>
+    </unit>
+    <unit id="5547981558491672240">
+      <segment state="initial">
+        <source> Close </source>
+        <target> Fermer </target>
+      </segment>
+    </unit>
+    <unit id="1511799404874144981">
+      <segment state="initial">
+        <source>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 session} other {{{total}} sessions}}"/>
+        </source>
+        <target>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 session} other {{{total}} sessions}}"/>
+        </target>
+      </segment>
+    </unit>
+    <unit id="2117392527188736776">
+      <segment state="initial">
+        <source>{VAR_PLURAL, plural, =1 {1 session} other {<ph id="0" equiv="INTERPOLATION"/> sessions}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 session} other {<ph id="0" equiv="INTERPOLATION"/> sessions}}</target>
+      </segment>
+    </unit>
+    <unit id="7779627316401407129">
+      <segment state="initial">
+        <source> Session </source>
+        <target> Session </target>
+      </segment>
+    </unit>
+    <unit id="3912307190518681177">
+      <segment state="initial">
+        <source> Close </source>
+        <target> Fermer </target>
+      </segment>
+    </unit>
+    <unit id="3045213032558012824">
+      <segment state="initial">
+        <source> Refresh </source>
+        <target> Rafraîchir </target>
+      </segment>
+    </unit>
+    <unit id="8368430434229194488">
+      <segment state="initial">
+        <source> Set to default order </source>
+        <target> Définir l'ordre par défaut </target>
+      </segment>
+    </unit>
+    <unit id="5395917695334148701">
+      <segment state="initial">
+        <source> Clear all filters </source>
+        <target> Effacer tous les filtres </target>
+      </segment>
+    </unit>
+    <unit id="1090354551891568461">
+      <segment state="initial">
+        <source> Select one or more value. </source>
+        <target> Choisir une ou plusieurs valeurs. </target>
+      </segment>
+    </unit>
+    <unit id="7687317354279407431">
+      <segment state="initial">
+        <source> You can select more than one value. </source>
+        <target> Vous pouvez sélectionner plus d'une valeur. </target>
+      </segment>
+    </unit>
+    <unit id="7460243133029237001">
+      <segment state="initial">
+        <source> Clear the filter </source>
+        <target> Effacer le filtre </target>
+      </segment>
+    </unit>
+    <unit id="1234574297123069956">
+      <segment state="initial">
+        <source> Before the </source>
+        <target> Avant le </target>
+      </segment>
+    </unit>
+    <unit id="6102397348917445239">
+      <segment state="initial">
+        <source> Will display data with a date strictly inferior than indicated. </source>
+        <target> Affiche les données dont la date est strictement inférieure à celle indiquée. </target>
+      </segment>
+    </unit>
+    <unit id="444979833081311681">
+      <segment state="initial">
+        <source>YYYY-MM-DD</source>
+        <target>AAAA-MM-JJ</target>
+      </segment>
+    </unit>
+    <unit id="8638067318522230415">
+      <segment state="initial">
+        <source> After the </source>
+        <target> Après le </target>
+      </segment>
+    </unit>
+    <unit id="1613332815210843724">
+      <segment state="initial">
+        <source> Will display data with a date strictly superior than indicated. </source>
+        <target> Affiche les données avec une date strictement supérieure à celle indiquée. </target>
+      </segment>
+    </unit>
+    <unit id="8829497237648100098">
+      <segment state="initial">
+        <source>Filter</source>
+        <target>Filtre</target>
+      </segment>
+    </unit>
+    <unit id="7286430803380181008">
+      <segment state="initial">
+        <source>Id</source>
+        <target>Id</target>
+      </segment>
+    </unit>
+    <unit id="4060983546905729885">
+      <segment state="initial">
+        <source> Will display data with an Id strictly equal to the one indicated. </source>
+        <target> Permet d'afficher les données dont l'Id est strictement égal à celui indiqué. </target>
+      </segment>
+    </unit>
+    <unit id="2732497740481788559">
+      <segment state="initial">
+        <source>Select a value</source>
+        <target>Sélectionnez une valeur</target>
+      </segment>
+    </unit>
+    <unit id="4355219995854950706">
+      <segment state="initial">
+        <source> Remove from favorites </source>
+        <target> Retirer des favoris </target>
+      </segment>
+    </unit>
+    <unit id="4410165924883101427">
+      <segment state="initial">
+        <source>Create a new favorite</source>
+        <target>Créer un nouveau favori</target>
+      </segment>
+    </unit>
+    <unit id="7024464269508150441">
+      <segment state="initial">
+        <source>Name of the favorite</source>
+        <target>Nom du favori</target>
+      </segment>
+    </unit>
+    <unit id="1150128542114547627">
+      <segment state="initial">
+        <source>Enter a name</source>
+        <target>Entrer un nom</target>
+      </segment>
+    </unit>
+    <unit id="3935920932340410342">
+      <segment state="initial">
+        <source> Close </source>
+        <target> Fermer </target>
+      </segment>
+    </unit>
+    <unit id="2782673915275593030">
+      <segment state="initial">
+        <source> Add </source>
+        <target> Ajouter </target>
+      </segment>
+    </unit>
+    <unit id="2525368532943285941">
+      <segment state="initial">
+        <source> Add to favorites </source>
+        <target> Ajouter un favori </target>
+      </segment>
+    </unit>
+    <unit id="7404285152683564503">
+      <segment state="initial">
+        <source> Favorites </source>
+        <target> Favoris </target>
+      </segment>
+    </unit>
+    <unit id="3846409925629000661">
+      <segment state="initial">
+        <source> Cancel selection </source>
+        <target> Annuler la sélection </target>
+      </segment>
+    </unit>
+    <unit id="393619121277808456">
+      <segment state="initial">
+        <source> Started at </source>
+        <target> Démarrée à </target>
+      </segment>
+    </unit>
+    <unit id="5951564441121078059">
+      <segment state="initial">
+        <source> Ended at </source>
+        <target> Fermée à </target>
+      </segment>
+    </unit>
+    <unit id="5157281480605477568">
+      <segment state="initial">
+        <source> Related Results </source>
+        <target> Résultats en lien </target>
+      </segment>
+    </unit>
+    <unit id="276242302622664421">
+      <segment state="initial">
+        <source>See in SEQ</source>
+        <target>Voir dans SEQ</target>
+      </segment>
+    </unit>
+    <unit id="7917562643376650008">
+      <segment state="initial">
+        <source> SEQ </source>
+        <target> SEQ </target>
+      </segment>
+    </unit>
+    <unit id="491800464792740898">
+      <segment state="initial">
+        <source>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 task} other {{{total}} tasks}}"/>
+        </source>
+        <target>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 task} other {{{total}} tasks}}"/>
+        </target>
+      </segment>
+    </unit>
+    <unit id="1225830295010700202">
+      <segment state="initial">
+        <source>{VAR_PLURAL, plural, =1 {1 task} other {<ph id="0" equiv="INTERPOLATION"/> tasks}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 tâche} other {<ph id="0" equiv="INTERPOLATION"/> tâches}}</target>
+      </segment>
+    </unit>
+    <unit id="8258325324649507024">
+      <segment state="initial">
+        <source>My profile</source>
+        <target>Mon profil</target>
+      </segment>
+    </unit>
+    <unit id="5148916028088347449">
+      <segment state="initial">
+        <source>Informations</source>
+        <target>Informations</target>
+      </segment>
+    </unit>
+    <unit id="258085744542194148">
+      <segment state="initial">
+        <source> Username: </source>
+        <target> Utilisateur: </target>
+      </segment>
+    </unit>
+    <unit id="6452509821016828136">
+      <segment state="initial">
+        <source> Roles: </source>
+        <target> Rôles: </target>
+      </segment>
+    </unit>
+    <unit id="7314814725704332646">
+      <segment state="initial">
+        <source>Permissions</source>
+        <target>Permissions</target>
+      </segment>
+    </unit>
+    <unit id="7051586828411516889">
+      <segment state="initial">
+        <source> No information </source>
+        <target> Pas d'informations </target>
+      </segment>
+    </unit>
+    <unit id="6141300050775611576">
+      <segment state="initial">
+        <source> No roles </source>
+        <target> Pas de rôles </target>
+      </segment>
+    </unit>
+    <unit id="2236957581736681134">
+      <segment state="initial">
+        <source>No permissions </source>
+        <target>Pas de permissions </target>
+      </segment>
+    </unit>
+    <unit id="4915431133669985304">
+      <segment state="initial">
+        <source>Profile</source>
+        <target>Profil</target>
+      </segment>
+    </unit>
+    <unit id="2973059034135035176">
+      <segment state="initial">
+        <source> Auto-refresh </source>
+        <target> Rafraîchissement automatique </target>
+      </segment>
+    </unit>
+    <unit id="4921390078311701631">
+      <segment state="initial">
+        <source> Disable </source>
+        <target> Désactiver </target>
+      </segment>
+    </unit>
+    <unit id="6197665339164385071">
+      <segment state="initial">
+        <source> Disabled </source>
+        <target> Désactivé </target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

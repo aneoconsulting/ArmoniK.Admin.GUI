@@ -21,9 +21,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAME.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
-      i18n
     >
-      Name
+      <span i18n> Name </span>
       <clr-dg-filter [clrDgFilter]="nameFilter">
         <app-id-filter
           name="name"
@@ -38,9 +37,8 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_OWNER_TASK_ID)
       "
-      i18n
     >
-      Task ID
+      <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="taskFilter">
         <app-id-filter
           name="taskId"
@@ -55,9 +53,8 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
-      i18n
     >
-      Session ID
+      <span i18n> Session ID </span>
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           name="sessionId"
@@ -70,9 +67,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
-      i18n
     >
-      Status
+      <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
           name="status"
@@ -88,9 +84,8 @@
       [clrDgSortOrder]="
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
-      i18n
     >
-      Created at
+      <span i18n> Created at </span>
       <clr-dg-filter>
         <app-date-filter
           name="created"
@@ -171,8 +166,8 @@
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
           <span i18n> Per Page </span>
         </clr-dg-page-size>
-        <span *ngIf="(totalResults$ | async) ?? 0 > 1 as total">
-          {{ total }} { total, plural, =1 {result} other {results} }
+        <span *ngIf="(totalResults$ | async) ?? 0 > 1 as total" i18n>
+          {total, plural, =1 {1 result} other {{{total}} results}}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
