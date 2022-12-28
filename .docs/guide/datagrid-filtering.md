@@ -20,7 +20,7 @@ To filter on multiple columns, you have to repeat the previous step for every co
 
 ## How to remove the filter?
 
-To remove the filter, you have to click on the **Clear Filters** button.
+To remove every filters, you have to click on the **Clear Filters** button. But you can also remove a filter by clicking on the **Clear** in the filter box.
 
 ![Button to clear the filters](./assets/clear-filters.png)
 

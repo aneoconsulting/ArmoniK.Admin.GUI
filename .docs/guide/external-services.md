@@ -7,7 +7,7 @@ Directly from the GUI, you can access to external services, deployed in the clus
 - [Grafana](https://grafana.com/)
 
 ::: info
-To deploy them, please refer to the [ArmoniK documentation]()
+To deploy them, please refer to the [ArmoniK documentation](https://aneoconsulting.github.io/Armonik/)
 :::
 
 ## SEQ
@@ -22,7 +22,7 @@ In case the SEQ button is not visible, please check that the SEQ service is depl
 
 ## Grafana
 
-Grafana is a dashboard tool. It allows you to visualize the metrics of ArmoniK like the number of pods. You can access it by clicking on the Grafana button in the left navigation bar.
+Grafana is a dashboard tool. It allows you to visualize the metrics of ArmoniK like the number of tasks. You can access it by clicking on the Grafana button in the left navigation bar.
 
 ![Grafana button](./assets/grafana.png)
 

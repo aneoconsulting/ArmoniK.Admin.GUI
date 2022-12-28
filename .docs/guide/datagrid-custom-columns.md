@@ -22,7 +22,7 @@ Then, you can validate by clicking on the **Add** button. A new column will be a
 If there is no data in the datagrid, the column will be added but not displayed.
 :::
 
-If the property exists, it will be added shown. If not, a simple `-` will be displayed.
+If the property exists, it will be shown. If not, a simple `-` will be displayed.
 
 ![Datagrid view with some custom columns](./assets/add-columns-result.png)
 
@@ -37,5 +37,9 @@ To remove a column, you have to click on the **Remove Columns** button.
 ![Button to open the modal to remove columns](./assets/remove-columns.png)
 
 Then, a modal will be displayed with a list of all the columns. You've just to remove every columns you don't want to see.
+
+::: tip
+A modal is a window that is displayed on top of the current page. It's used to display a form or a list of items.
+:::
 
 ![Modal with the custom columns list](./assets/remove-columns-modal.png)
