@@ -6,21 +6,6 @@ import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import { BehaviorSubject, concatMap, merge, Observable, Subject, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { BrowserTitleService, LanguageService, SettingsService } from '../../../shared/util';
 
-
-export type PartitionRaw = {
-  name: string;
-}
-
-export enum OrderByField {
-  ORDER_BY_FIELD_PARTITION_ID,
-  ORDER_BY_FIELD_PARTITION_PARENT,
-  ORDER_BY_FIELD_RESERVED_POD,
-  ORDER_BY_FIELD_MAX_POD,
-  ORDER_BY_FIELD_POD_CONFIGURATION,
-  ORDER_BY_FIELD_PERCENTAGE,
-  ORDER_BY_FIELD_PRIORITY
-}
-
 @Component({
   selector: 'app-partitions-list',
   templateUrl: './partitions-list.page.html',
@@ -69,6 +54,12 @@ export class PartitionsListComponent implements OnInit {
     switchMap(() => this._listPartitions$())
   );
 
+  filterPartitionId$: Observable<string> = this._settingsService.queryStringParam$(this._activatedRoute.queryParamMap, 'id');
+  filterParentId$: Observable<string> = this._settingsService.queryStringParam$(this._activatedRoute.queryParamMap, 'parentId');
+
+  page$: Observable<number> = this._settingsService.queryParam$(this._activatedRoute.queryParamMap, 'page');
+  pageSize$: Observable<number> = this._settingsService.queryParam$(this._activatedRoute.queryParamMap, 'pageSize');
+
   constructor(
     private _settingsService: SettingsService,
     private _languageService: LanguageService,
@@ -85,8 +76,7 @@ export class PartitionsListComponent implements OnInit {
   }
 
   public get OrderByField() {
-    // return ListPartitionsRequest.OrderByField;
-    return OrderByField;
+    return ListPartitionsRequest.OrderByField;
   }
 
   public get intervals(): number[] {
@@ -173,7 +163,7 @@ export class PartitionsListComponent implements OnInit {
   }
 
   public defaultSortOrder(
-    field: OrderByField
+    field: ListPartitionsRequest.OrderByField
   ): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
