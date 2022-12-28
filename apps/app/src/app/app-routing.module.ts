@@ -41,9 +41,9 @@ const routes: Routes = [
   {
     path: 'partitions',
     loadChildren: () =>
-      import('./partitions/feature/partitions-list/partitions-list.module').then(
-        (m) => m.PartitionsListModule
-      ),
+      import(
+        './partitions/feature/partitions-list/partitions-list.module'
+      ).then((m) => m.PartitionsListModule),
   },
   {
     path: 'how-to-use',

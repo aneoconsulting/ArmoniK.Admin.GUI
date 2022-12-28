@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
       path: ['/', 'partitions'],
       label: 'navigation.partitions',
       shape: 'objects',
-    }
+    },
   ];
 
   constructor(

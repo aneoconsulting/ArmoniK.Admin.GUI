@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PartitionsClient, BaseGrpcService, ListPartitionsRequest } from "@armonik.admin.gui/shared/data-access";
+import { PartitionsClient, BaseGrpcService, ListPartitionsRequest, ListPartitionsResponse, GrpcParams } from "@armonik.admin.gui/shared/data-access";
 import { Observable, takeUntil } from "rxjs";
 
 @Injectable()

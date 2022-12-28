@@ -3,8 +3,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
-import { BehaviorSubject, concatMap, merge, Observable, Subject, switchMap, takeUntil, tap, timer } from 'rxjs';
-import { BrowserTitleService, LanguageService, SettingsService } from '../../../shared/util';
+import {
+  BehaviorSubject,
+  concatMap,
+  merge,
+  Observable,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+  timer,
+} from 'rxjs';
+import {
+  BrowserTitleService,
+  LanguageService,
+  SettingsService,
+} from '../../../shared/util';
 
 @Component({
   selector: 'app-partitions-list',
@@ -23,7 +37,7 @@ export class PartitionsListComponent implements OnInit {
 
   /** Triggers to reload partitions */
   private _triggerManual$: Observable<void> =
-  this._subjectManual.asObservable();
+    this._subjectManual.asObservable();
   private _triggerDatagrid$: Observable<ClrDatagridStateInterface> =
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
@@ -41,8 +55,10 @@ export class PartitionsListComponent implements OnInit {
     .pipe(
       switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
     );
-  
-  loadingPartitions$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+  loadingPartitions$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    true
+  );
   totalPartitions$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   loadPartitions$ = merge(
@@ -54,11 +70,24 @@ export class PartitionsListComponent implements OnInit {
     switchMap(() => this._listPartitions$())
   );
 
-  filterPartitionId$: Observable<string> = this._settingsService.queryStringParam$(this._activatedRoute.queryParamMap, 'id');
-  filterParentId$: Observable<string> = this._settingsService.queryStringParam$(this._activatedRoute.queryParamMap, 'parentId');
+  filterPartitionId$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'id'
+    );
+  filterParentId$: Observable<string> = this._settingsService.queryStringParam$(
+    this._activatedRoute.queryParamMap,
+    'parentId'
+  );
 
-  page$: Observable<number> = this._settingsService.queryParam$(this._activatedRoute.queryParamMap, 'page');
-  pageSize$: Observable<number> = this._settingsService.queryParam$(this._activatedRoute.queryParamMap, 'pageSize');
+  page$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'page'
+  );
+  pageSize$: Observable<number> = this._settingsService.queryParam$(
+    this._activatedRoute.queryParamMap,
+    'pageSize'
+  );
 
   constructor(
     private _settingsService: SettingsService,
