@@ -7,7 +7,7 @@ export interface GlobalFilter {
   ownerTaskId: string;
   name: string;
   namespace: string;
-  service: string
+  service: string;
   version: string;
   status: number;
   createdBefore?: TimeFilter;
