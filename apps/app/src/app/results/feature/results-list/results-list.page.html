@@ -86,11 +86,12 @@
       "
     >
       {{ 'pages.results-list.columns.created_at' | translate }}
-      <clr-dg-filter>
+      <clr-dg-filter [clrDgFilter]="createdAtFilter">
         <app-date-filter
           [name]="'created'"
           [beforeDate]="createdBeforeFilter$ | async"
           [afterDate]="createdAfterFilter$ | async"
+          #createdAtFilter
         >
         </app-date-filter>
       </clr-dg-filter>
