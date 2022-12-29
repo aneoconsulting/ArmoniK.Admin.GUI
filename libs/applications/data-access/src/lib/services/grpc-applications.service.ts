@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   ApplicationsClient,
   BaseGrpcService,
+  GlobalFilter,
   GrpcParams,
   ListApplicationsRequest,
   ListApplicationsResponse,
@@ -18,7 +19,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
     params: GrpcParams<
       ListApplicationsRequest.OrderByField,
       ListApplicationsRequest.OrderDirection,
-      ListApplicationsRequest.Filter.AsObject
+      GlobalFilter
     >
   ): Observable<ListApplicationsResponse> {
     const options = new ListApplicationsRequest({
@@ -32,12 +33,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
           params.order ||
           ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {
-        name: '',
-        namespace: '',
-        service: '',
-        version: '',
-      },
+      filter: params.filter?.applicationsFilter,
     });
 
     return this._applicationsClient

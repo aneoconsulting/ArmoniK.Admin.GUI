@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
+import { Timestamp } from '@ngx-grpc/well-known-types';
+import { ListApplicationsRequest } from '../../proto/generated/applications-common.pb';
+import { ListResultsRequest } from '../../proto/generated/results-common.pb';
+import { ListSessionsRequest } from '../../proto/generated/sessions-common.pb';
+import { ListTasksRequest } from '../../proto/generated/tasks-common.pb';
 import { GlobalFilter } from '../../types';
 import { TimeFilter } from '../../types/time-filter-type';
 
@@ -118,83 +123,135 @@ export class GrpcPagerService {
     params: Map<string, string | number | GlobalFilter>
   ) {
     const filter: GlobalFilter = {
-      applicationName: '',
-      applicationVersion: '',
-      sessionId: '',
-      status: 0,
-      ownerTaskId: '',
-      name: '',
-      namespace: '',
-      version: '',
-      service: '',
+      resultsFilter: {
+        ownerTaskId: '',
+        sessionId: '',
+        status: 0,
+        name: '',
+      } as ListResultsRequest.Filter,
+      applicationsFilter: {
+        name: '',
+        namespace: '',
+        service: '',
+        version: '',
+      } as ListApplicationsRequest.Filter,
+      sessionsFilter: {
+        applicationName: '',
+        applicationVersion: '',
+        sessionId: '',
+        status: 0,
+      } as ListSessionsRequest.Filter,
+      tasksFilter: {
+        sessionId: '',
+        status: 0,
+      } as ListTasksRequest.Filter,
     };
-
-    const filters: { property: string; value: number | string }[] =
-      state.filters ?? [];
+    const filters: {
+      property: string;
+      value: number | string | { before: number | null; after: number | null };
+    }[] = state.filters ?? [];
     filters.forEach((f) => {
       switch (f.property) {
         case 'applicationName': {
-          filter.applicationName = f.value as string;
+          filter.sessionsFilter.applicationName = f.value as string;
           break;
         }
         case 'applicationVersion': {
-          filter.applicationVersion = f.value as string;
+          filter.sessionsFilter.applicationVersion = f.value as string;
           break;
         }
         case 'sessionId': {
-          filter.sessionId = f.value as string;
+          filter.resultsFilter.sessionId = f.value as string;
+          filter.sessionsFilter.sessionId = f.value as string;
+          filter.tasksFilter.sessionId = f.value as string;
           break;
         }
         case 'ownerTaskId': {
-          filter.ownerTaskId = f.value as string;
+          filter.resultsFilter.ownerTaskId = f.value as string;
           break;
         }
         case 'name': {
-          filter.name = f.value as string;
+          filter.applicationsFilter.name = f.value as string;
+          filter.resultsFilter.name = f.value as string;
           break;
         }
         case 'status': {
-          filter.status = f.value as number;
+          filter.resultsFilter.status = f.value as number;
+          filter.sessionsFilter.status = f.value as number;
+          filter.tasksFilter.status = f.value as number;
           break;
         }
-        case 'createdAtBefore': {
-          filter.createdBefore = this._createTimeFilter(f.value as number);
+        case 'createdAt': {
+          const value = f.value as {
+            before: number | null;
+            after: number | null;
+          };
+          if (value.before) {
+            const timeValue = this._createTimeFilter(value.before) as Timestamp;
+            filter.sessionsFilter.createdBefore = timeValue;
+            filter.resultsFilter.createdBefore = timeValue;
+            filter.tasksFilter.createdBefore = timeValue;
+          }
+          if (value.after) {
+            const timeValue = this._createTimeFilter(
+              value.after + 86400000
+            ) as Timestamp;
+            filter.sessionsFilter.createdAfter = timeValue;
+            filter.resultsFilter.createdAfter = timeValue;
+            filter.tasksFilter.createdAfter = timeValue;
+          }
           break;
         }
-        case 'createdAtAfter': {
-          filter.createdAfter = this._createTimeFilter(
-            (f.value as number) + 86400000
-          );
+        case 'startedAt': {
+          const value = f.value as {
+            before: number | null;
+            after: number | null;
+          };
+          if (value.before) {
+            filter.tasksFilter.startedBefore = this._createTimeFilter(
+              value.before
+            ) as Timestamp;
+          }
+          if (value.after) {
+            filter.tasksFilter.startedAfter = this._createTimeFilter(
+              (f.value as number) + 86400000
+            ) as Timestamp;
+          }
           break;
         }
-        case 'starteAtdBefore': {
-          filter.startedBefore = this._createTimeFilter(f.value as number);
+        case 'endedAt': {
+          const value = f.value as {
+            before: number | null;
+            after: number | null;
+          };
+          if (value.before) {
+            filter.tasksFilter.endedBefore = this._createTimeFilter(
+              value.before
+            ) as Timestamp;
+          }
+          if (value.after) {
+            filter.tasksFilter.endedAfter = this._createTimeFilter(
+              value.after + 86400000
+            ) as Timestamp;
+          }
           break;
         }
-        case 'startedAfter': {
-          filter.startedAfter = this._createTimeFilter(
-            (f.value as number) + 86400000
-          );
-          break;
-        }
-        case 'endedAtBefore': {
-          filter.endedBefore = this._createTimeFilter(f.value as number);
-          break;
-        }
-        case 'endedAtAfter': {
-          filter.endedAfter = this._createTimeFilter(
-            (f.value as number) + 86400000
-          );
-          break;
-        }
-        case 'closeAtdBefore': {
-          filter.closedBefore = this._createTimeFilter(f.value as number);
-          break;
-        }
-        case 'closedAtAfter': {
-          filter.closedAfter = this._createTimeFilter(
-            (f.value as number) + 86400000
-          );
+        case 'closedAt': {
+          const value = f.value as {
+            before: number | null;
+            after: number | null;
+          };
+          if (value.before) {
+            filter.sessionsFilter.cancelledBefore = this._createTimeFilter(
+              f.value as number
+            ) as Timestamp;
+          }
+          if (value.after) {
+            filter.sessionsFilter.cancelledAfter = this._createTimeFilter(
+              (f.value as number) + 86400000
+            ) as Timestamp;
+          }
+
           break;
         }
       }

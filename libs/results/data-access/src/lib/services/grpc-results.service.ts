@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,
+  GlobalFilter,
   GrpcParams,
   ListResultsRequest,
   ListResultsResponse,
@@ -18,7 +19,7 @@ export class GrpcResultsService extends BaseGrpcService {
     params: GrpcParams<
       ListResultsRequest.OrderByField,
       ListResultsRequest.OrderDirection,
-      ListResultsRequest.Filter.AsObject
+      GlobalFilter
     >
   ): Observable<ListResultsResponse> {
     const options = new ListResultsRequest({
@@ -32,7 +33,7 @@ export class GrpcResultsService extends BaseGrpcService {
           params.order ||
           ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: params.filter,
+      filter: params.filter?.resultsFilter,
     });
 
     return this._resultsClient

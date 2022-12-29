@@ -5,6 +5,7 @@ import {
   CancelSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
+  GlobalFilter,
   GrpcParams,
   ListSessionsRequest,
   ListSessionsResponse,
@@ -29,7 +30,7 @@ export class GrpcSessionsService extends BaseGrpcService {
     params: GrpcParams<
       ListSessionsRequest.OrderByField,
       ListSessionsRequest.OrderDirection,
-      ListSessionsRequest.Filter.AsObject
+      GlobalFilter
     >
   ): Observable<ListSessionsResponse> {
     const options = new ListSessionsRequest({
@@ -43,7 +44,7 @@ export class GrpcSessionsService extends BaseGrpcService {
           params.order ||
           ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: params.filter,
+      filter: params.filter?.sessionsFilter,
     });
 
     return this._sessionsClient

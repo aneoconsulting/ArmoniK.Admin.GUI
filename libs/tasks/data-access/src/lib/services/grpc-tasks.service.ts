@@ -5,6 +5,7 @@ import {
   CancelTasksResponse,
   GetTaskRequest,
   GetTaskResponse,
+  GlobalFilter,
   GrpcParams,
   ListTasksRequest,
   ListTasksResponse,
@@ -22,7 +23,7 @@ export class GrpcTasksService extends BaseGrpcService {
     params: GrpcParams<
       ListTasksRequest.OrderByField,
       ListTasksRequest.OrderDirection,
-      ListTasksRequest.Filter.AsObject
+      GlobalFilter
     >
   ): Observable<ListTasksResponse> {
     const options = new ListTasksRequest({
@@ -35,7 +36,7 @@ export class GrpcTasksService extends BaseGrpcService {
         direction:
           params.order || ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: params.filter,
+      filter: params.filter?.tasksFilter,
     });
 
     return this._tasksClient.listTasks(options).pipe(takeUntil(this._timeout$));
