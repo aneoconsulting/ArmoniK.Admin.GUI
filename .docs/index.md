@@ -7,7 +7,7 @@ titleTemplate: ArmoniK
 hero:
   name: Admin GUI
   text: Monitor and manage an ArmoniK cluster.
-  tagline: 
+  tagline:
   image:
     # src: /logo.png
     # alt: VitePress
@@ -31,7 +31,7 @@ features:
     details: Simple and intuitive interface to manage your cluster.
 ---
 
-<!-- 
+<!--
 - How to create his own client
   - Introduction
   - Proto files

@@ -1,6 +1,5 @@
 # External services
 
-
 Directly from the GUI, you can access to external services, deployed in the cluster, such as:
 
 - [SEQ](https://datalust.co/seq)

@@ -33,4 +33,3 @@ Currently, you can't filter on custom columns.
 ::: info
 To learn more about custom columns, please read the [Custom Columns](./datagrid-custom-columns.md) page.
 :::
-

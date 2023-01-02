@@ -4,8 +4,6 @@ A favorite is a shortcut to a specific URL. You can add multiple favorites per p
 
 They are useful to quickly access a specific page with a predefined set of filters and sorting.
 
-
-
 ## Add a favorite
 
 To add a favorite, you've just to click on the star icon in the top right corner of the page.

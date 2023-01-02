@@ -11,4 +11,3 @@ This is especially useful when you are navigating through the datagrid, using fi
 ![History button](../assets/images/history.png)
 
 Of course, you can also use the browser history and the back button.
-
