@@ -66,8 +66,7 @@
                   session.status === SessionStatusEnum.SESSION_STATUS_CANCELLED
               }"
             >
-              {{ session.status === 1 ? 'Opened' : 'Cancelled' }} ({{
-              session.status }})
+              {{getStatusLabel(session.status) }} ({{ session.status }})
             </span>
           </a>
         </clr-dg-cell>

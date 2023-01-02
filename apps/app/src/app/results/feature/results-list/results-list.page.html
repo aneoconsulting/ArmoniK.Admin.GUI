@@ -133,7 +133,7 @@
                 ].includes(result.status || 0)
               }"
             >
-              ({{ result.status }})
+              {{ getStatusLabel(result.status) }} ({{ result.status }})
             </span>
           </a>
         </clr-dg-cell>

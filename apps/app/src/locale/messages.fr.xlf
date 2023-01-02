@@ -3,7 +3,7 @@
     <unit id="360186035564826299">
       <segment state="initial">
         <source>ArmoniK logo</source>
-        <target>Logo d'ArmoniK</target>
+        <target>Logo d&apos;ArmoniK</target>
       </segment>
     </unit>
     <unit id="5514106309354968448">
@@ -127,7 +127,7 @@
     <unit id="960665565485640516">
       <segment state="initial">
         <source>Something went wrong</source>
-        <target>Quelque chose s'est mal passé</target>
+        <target>Quelque chose s&apos;est mal passé</target>
       </segment>
     </unit>
     <unit id="1519954996184640001">
@@ -243,7 +243,7 @@
     <unit id="8368430434229194488">
       <segment state="initial">
         <source> Set to default order </source>
-        <target> Définir l'ordre par défaut </target>
+        <target> Définir l&apos;ordre par défaut </target>
       </segment>
     </unit>
     <unit id="5395917695334148701">
@@ -261,7 +261,7 @@
     <unit id="7687317354279407431">
       <segment state="initial">
         <source> You can select more than one value. </source>
-        <target> Vous pouvez sélectionner plus d'une valeur. </target>
+        <target> Vous pouvez sélectionner plus d&apos;une valeur. </target>
       </segment>
     </unit>
     <unit id="7460243133029237001">
@@ -315,7 +315,7 @@
     <unit id="4060983546905729885">
       <segment state="initial">
         <source> Will display data with an Id strictly equal to the one indicated. </source>
-        <target> Permet d'afficher les données dont l'Id est strictement égal à celui indiqué. </target>
+        <target> Permet d&apos;afficher les données dont l&apos;Id est strictement égal à celui indiqué. </target>
       </segment>
     </unit>
     <unit id="2732497740481788559">
@@ -457,7 +457,7 @@
     <unit id="7051586828411516889">
       <segment state="initial">
         <source> No information </source>
-        <target> Pas d'informations </target>
+        <target> Pas d&apos;informations </target>
       </segment>
     </unit>
     <unit id="6141300050775611576">
@@ -494,6 +494,96 @@
       <segment state="initial">
         <source> Disabled </source>
         <target> Désactivé </target>
+      </segment>
+    </unit>
+    <unit id="9135780517563211822">
+      <segment state="initial">
+        <source>Aborted</source>
+        <target>Annulé</target>
+      </segment>
+    </unit>
+    <unit id="4207916966377787111">
+      <segment state="initial">
+        <source>Created</source>
+        <target>Créée</target>
+      </segment>
+    </unit>
+    <unit id="1161299114153631702">
+      <segment state="initial">
+        <source>Completed</source>
+        <target>Complétée</target>
+      </segment>
+    </unit>
+    <unit id="6595008830732269870">
+      <segment state="initial">
+        <source>Not found</source>
+        <target>Non trouvée</target>
+      </segment>
+    </unit>
+    <unit id="7726080656019750876">
+      <segment state="initial">
+        <source>Unspecified</source>
+        <target>Non spécifié</target>
+      </segment>
+    </unit>
+    <unit id="4467323362722952678">
+      <segment state="initial">
+        <source>Unknown</source>
+        <target>Inconnue</target>
+      </segment>
+    </unit>
+    <unit id="4043049091728011235">
+      <segment state="initial">
+        <source>Cancelled</source>
+        <target>Annulée</target>
+      </segment>
+    </unit>
+    <unit id="2956098160626271284">
+      <segment state="initial">
+        <source>Running</source>
+        <target>En cours</target>
+      </segment>
+    </unit>
+    <unit id="8990977482609744250">
+      <segment state="initial">
+        <source>Cancelling</source>
+        <target>Annulation en cours</target>
+      </segment>
+    </unit>
+    <unit id="8667665916832796867">
+      <segment state="initial">
+        <source>Creating</source>
+        <target>Création en cours</target>
+      </segment>
+    </unit>
+    <unit id="5033937537861966242">
+      <segment state="initial">
+        <source>Dispatched</source>
+        <target>Envoyée</target>
+      </segment>
+    </unit>
+    <unit id="4749295647449765550">
+      <segment state="initial">
+        <source>Processed</source>
+        <target>Traitée</target>
+      </segment>
+    </unit>
+    <unit id="9155387182259025015">
+      <segment state="initial">
+        <source>Processing</source>
+        <target>Traitement en cours</target>
+      </segment>
+    </unit>
+    <unit id="1612722476211621614">
+      <segment state="initial">
+        <source>Submitted</source>
+        <target>Soumise</target>
+      </segment>
+    </unit>
+    <unit id="5956316725115867558">
+      <segment state="initial">
+        <source>Timeout</source>
+        <target>Expirée</target>
       </segment>
     </unit>
   </file>

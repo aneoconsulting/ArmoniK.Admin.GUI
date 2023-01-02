@@ -165,7 +165,7 @@
                 ].includes(task.status || 0)
               }"
             >
-              ({{ task.status }})
+              {{ getStatusLabel(task.status) }} ({{ task.status }})
             </span>
           </a>
         </clr-dg-cell>

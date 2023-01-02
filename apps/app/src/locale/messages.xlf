@@ -409,5 +409,80 @@
         <source> Disabled </source>
       </segment>
     </unit>
+    <unit id="1161299114153631702">
+      <segment>
+        <source>Completed</source>
+      </segment>
+    </unit>
+    <unit id="1612722476211621614">
+      <segment>
+        <source>Submitted</source>
+      </segment>
+    </unit>
+    <unit id="2956098160626271284">
+      <segment>
+        <source>Running</source>
+      </segment>
+    </unit>
+    <unit id="4043049091728011235">
+      <segment>
+        <source>Cancelled</source>
+      </segment>
+    </unit>
+    <unit id="4207916966377787111">
+      <segment>
+        <source>Created</source>
+      </segment>
+    </unit>
+    <unit id="4467323362722952678">
+      <segment>
+        <source>Unknown</source>
+      </segment>
+    </unit>
+    <unit id="4749295647449765550">
+      <segment>
+        <source>Processed</source>
+      </segment>
+    </unit>
+    <unit id="5033937537861966242">
+      <segment>
+        <source>Dispatched</source>
+      </segment>
+    </unit>
+    <unit id="5956316725115867558">
+      <segment>
+        <source>Timeout</source>
+      </segment>
+    </unit>
+    <unit id="6595008830732269870">
+      <segment>
+        <source>Not found</source>
+      </segment>
+    </unit>
+    <unit id="7726080656019750876">
+      <segment>
+        <source>Unspecified</source>
+      </segment>
+    </unit>
+    <unit id="8667665916832796867">
+      <segment>
+        <source>Creating</source>
+      </segment>
+    </unit>
+    <unit id="8990977482609744250">
+      <segment>
+        <source>Cancelling</source>
+      </segment>
+    </unit>
+    <unit id="9135780517563211822">
+      <segment>
+        <source>Aborted</source>
+      </segment>
+    </unit>
+    <unit id="9155387182259025015">
+      <segment>
+        <source>Processing</source>
+      </segment>
+    </unit>
   </file>
 </xliff>
