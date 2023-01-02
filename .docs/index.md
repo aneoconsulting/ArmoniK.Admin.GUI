@@ -17,7 +17,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/aneoconsulting/ArmoniK.Admin.GUIex
+      link: https://github.com/aneoconsulting/ArmoniK.Admin.GUI
 
 features:
   - icon: 👁
