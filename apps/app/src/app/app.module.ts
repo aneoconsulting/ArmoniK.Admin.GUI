@@ -15,13 +15,12 @@ import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
 import { AuthService } from './shared/data-access/auth.service';
 import {
-  TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
   TheHeaderTimeComponent,
   TheHistoryNavigationComponent,
   TheLanguagesSelectorComponent,
 } from './shared/feature';
-import { TheHeaderComponent } from './shared/ui';
+import { TheHeaderComponent, TheFavoritesModalComponent } from './shared/ui';
 import {
   CoreModule,
   LanguageService,
