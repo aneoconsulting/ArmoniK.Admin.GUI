@@ -6,7 +6,7 @@
 
 To sort a column, you have to click on the column header. The column will be sorted in ascending order. If you click again on the column header, the column will be sorted in descending order. If you click again on the column header, the column will be sorted in ascending order and so on.
 
-![Datagrid sorting](./assets/sorting.gif)
+![Datagrid sorting](../assets/images/sorting.png)
 
 ## How to sort on multiple columns?
 
@@ -16,7 +16,7 @@ Currently, you can't sort on multiple columns.
 
 To remove the sorting, you have to click on the **Clear Sorting** button.
 
-![Button to clear the sorting](./assets/clear-sorting.png)
+![Button to clear the sorting](../assets/images/clear-sorting.png)
 
 ## How to sort on custom columns?
 

@@ -2,15 +2,15 @@
 
 Each datagrid are paginated. It means that you can't see all the records at the same time. You have to navigate between pages to see all the records. By default, there are 10 records per page.
 
-![Global view of the datagrid pagination](./assets/datagrid-pagination.png)
+![Global view of the datagrid pagination](../assets/images/datagrid-pagination.png)
 
 You can change the number of records per page by clicking on the **Change page size** button. Then, a select will be displayed with the list of available page sizes. You can select the one you want.
 
-![Change page size of a datagrid](./assets/datagrid-pagination-change-page-size.png)
+![Change page size of a datagrid](../assets/images/datagrid-pagination-change-page-size.png)
 
 You can also navigate between pages by clicking on the **Previous** and **Next** buttons.
 
-![Preview and next button of a datagrid pagination](./assets/datagrid-pagination-previous-next.png)
+![Preview and next button of a datagrid pagination](../assets/images/datagrid-pagination-previous-next.png)
 
 ::: info
 Every change are reflected in the URL. So, you can share a specific page with someone else.
@@ -20,4 +20,4 @@ Every change are reflected in the URL. So, you can share a specific page with so
 
 To go to a specific page, you have to enter a number in the input field. Then, you can validate by pressing the **Enter** key.
 
-![Go to page of a datagrid pagination](./assets/datagrid-pagination-go-to-page.png)
+![Go to page of a datagrid pagination](../assets/images/datagrid-pagination-go-to-page.png)

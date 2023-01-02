@@ -16,7 +16,7 @@ The start is empty when the page is not a favorite.
 
 Then, a modal will open to ask you to enter a name for the favorite. The name is used to identify the favorite in the list.
 
-![Modal to add a favorites](./assets/favorites-add.png)
+![Modal to add a favorites](../assets/images/favorites-add.png)
 
 Once you've entered a name, you can click on the "Add" button to add the favorite to the list.
 
@@ -28,7 +28,7 @@ You can't have the same favorite twice or favorites with the same name.
 
 You can access to your favorites using the navigation bar. You can open the menu named "Favorites" and you'll see the list of your favorites.
 
-![List of favorites](./assets/favorites-list.png)
+![List of favorites](../assets/images/favorites-list.png)
 
 ## Remove a favorite
 

@@ -2,7 +2,7 @@
 
 The layout of the ArmoniK Admin GUI is quite simple but really powerful.
 
-![ArmoniK Admin GUI](./assets/ArmoniK_Admin_GUI.png)
+![ArmoniK Admin GUI](../assets/images/ArmoniK_Admin_GUI.png)
 
 The layout is composed of 3 main parts:
 
@@ -12,7 +12,7 @@ The layout is composed of 3 main parts:
 
 ## Header
 
-![Header](./assets/header.png)
+![Header](../assets/images/header.png)
 
 The header is very simple. It contains:
 
@@ -22,7 +22,7 @@ The header is very simple. It contains:
 
 ## Sidebar
 
-![Sidebar](./assets/sidebar.png)
+![Sidebar](../assets/images/sidebar.png)
 
 The sidebar is the menu of the application. It contains the list of all the pages of the application.
 
@@ -34,6 +34,6 @@ The sidebar is divided into 3 parts:
 
 ## Main content
 
-![Main content](./assets/main-content.png)
+![Main content](../assets/images/main-content.png)
 
 The main content is the area where the page content is displayed. Content depends on the page you are currently viewing.

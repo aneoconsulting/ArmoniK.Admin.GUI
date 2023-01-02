@@ -6,7 +6,7 @@
 
 To use custom columns, you have to click on the **Add Columns** button.
 
-![Button to open the modal to add columns](./assets/add-columns.png)
+<!-- ![Button to open the modal to add columns](../assets/images/add-columns.png) -->
 
 Then, a modal will be displayed with an input field. You've just to type the name of the property you want to add.
 
@@ -14,7 +14,7 @@ Then, a modal will be displayed with an input field. You've just to type the nam
 You can use dot notation to access to nested properties. For example, if you want to display the `Name` property of the `Application` property, you have to type `Application.Name`.
 :::
 
-![Modal with input to add a custom column](./assets/add-columns-modal.png)
+<!-- ![Modal with input to add a custom column](../assets/images/add-columns-modal.png) -->
 
 Then, you can validate by clicking on the **Add** button. A new column will be added to the datagrid.
 
@@ -24,7 +24,7 @@ If there is no data in the datagrid, the column will be added but not displayed.
 
 If the property exists, it will be shown. If not, a simple `-` will be displayed.
 
-![Datagrid view with some custom columns](./assets/add-columns-result.png)
+<!-- ![Datagrid view with some custom columns](../assets/images/add-columns-result.png) -->
 
 ::: warning
 Currently, you won't be able to sort or filter on custom columns.
@@ -34,7 +34,7 @@ Currently, you won't be able to sort or filter on custom columns.
 
 To remove a column, you have to click on the **Remove Columns** button.
 
-![Button to open the modal to remove columns](./assets/remove-columns.png)
+<!-- ![Button to open the modal to remove columns](../assets/images/remove-columns.png) -->
 
 Then, a modal will be displayed with a list of all the columns. You've just to remove every columns you don't want to see.
 
@@ -42,4 +42,4 @@ Then, a modal will be displayed with a list of all the columns. You've just to r
 A modal is a window that is displayed on top of the current page. It's used to display a form or a list of items.
 :::
 
-![Modal with the custom columns list](./assets/remove-columns-modal.png)
+<!-- ![Modal with the custom columns list](../assets/images/remove-columns-modal.png) -->

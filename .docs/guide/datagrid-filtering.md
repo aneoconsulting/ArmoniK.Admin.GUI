@@ -12,7 +12,7 @@ To filter a column, you have to click on the icon on the left side of an header.
 - For a **date** column, you will have a date picker.
 - For a **list** column, you will have a select.
 
-![Datagrid filtering](./assets/filtering.gif)
+![Datagrid filtering](../assets/images/filtering.png)
 
 ## How to filter on multiple columns?
 
@@ -22,7 +22,9 @@ To filter on multiple columns, you have to repeat the previous step for every co
 
 To remove every filters, you have to click on the **Clear Filters** button. But you can also remove a filter by clicking on the **Clear** in the filter box.
 
-![Button to clear the filters](./assets/clear-filters.png)
+![Button to clear the filters](../assets/images/clear-filters.png)
+
+![Button to clear a filter](../assets/images/clear-filter.png)
 
 ## How to filter on custom columns?
 
