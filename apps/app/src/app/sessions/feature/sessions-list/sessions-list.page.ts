@@ -300,7 +300,7 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
-   * Modify a given state and add it applicationName and applicationVersion
+   * Modify a given state and add applicationName and applicationVersion to it
    * in order to filter sessions by those properties, since they are not part
    * of the basic filters.
    *
