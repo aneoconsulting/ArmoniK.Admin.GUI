@@ -62,6 +62,7 @@ export class SessionsListComponent implements OnInit {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
+      this.addApplicationDatatoState(state);
       const urlParams = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: urlParams,
@@ -132,6 +133,21 @@ export class SessionsListComponent implements OnInit {
     'page'
   );
 
+  applicationName$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'applicationName'
+    );
+
+  applicationVersion$: Observable<string> =
+    this._settingsService.queryStringParam$(
+      this._activatedRoute.queryParamMap,
+      'applicationVersion'
+    );
+
+  applicationName = '';
+  applicationVersion = '';
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -154,6 +170,13 @@ export class SessionsListComponent implements OnInit {
           label: key,
         })),
     ];
+
+    this.applicationName$.subscribe((value) => {
+      this.applicationName = value;
+    });
+    this.applicationVersion$.subscribe((value) => {
+      this.applicationVersion = value;
+    });
   }
 
   public get OrderByField() {
@@ -277,6 +300,34 @@ export class SessionsListComponent implements OnInit {
   }
 
   /**
+   * Modify a given state and add it applicationName and applicationVersion
+   * in order to filter sessions by those properties, since they are not part
+   * of the basic filters.
+   *
+   * @param state state to modify
+   */
+  public addApplicationDatatoState(state: ClrDatagridStateInterface) {
+    if (this.applicationName !== '') {
+      if (!state.filters) {
+        state.filters = [];
+      }
+      state.filters?.push({
+        property: 'applicationName',
+        value: this.applicationName,
+      });
+    }
+    if (this.applicationVersion !== '') {
+      if (!state.filters) {
+        state.filters = [];
+      }
+      state.filters?.push({
+        property: 'applicationVersion',
+        value: this.applicationVersion,
+      });
+    }
+  }
+
+  /**
    * List sessions
    *
    * @returns Observable<ListSessionsResponse>
@@ -348,6 +399,8 @@ export class SessionsListComponent implements OnInit {
    */
   clearAllFilters(): void {
     delete this._state.filters;
+    this.applicationName = '';
+    this.applicationVersion = '';
     this._subjectDatagrid.next(this._state);
   }
 }

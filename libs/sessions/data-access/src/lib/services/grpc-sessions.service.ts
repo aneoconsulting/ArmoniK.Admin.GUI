@@ -65,6 +65,14 @@ export class GrpcSessionsService extends BaseGrpcService {
           grpcParams.orderBy = value as number;
           break;
         }
+        case 'applicationName': {
+          filter.applicationName = value as string;
+          break;
+        }
+        case 'applicationVersion': {
+          filter.applicationVersion = value as string;
+          break;
+        }
         case 'sessionId': {
           filter.sessionId = value as string;
           break;
