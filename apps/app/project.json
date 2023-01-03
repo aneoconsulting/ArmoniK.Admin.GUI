@@ -12,25 +12,17 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/app",
         "index": "apps/app/src/index.html",
         "main": "apps/app/src/main.ts",
         "i18nMissingTranslation": "warning",
-        "localize": [
-          "fr",
-          "en"
-        ],
+        "localize": ["fr", "en"],
         "polyfills": "apps/app/src/polyfills.ts",
         "tsConfig": "apps/app/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "assets": [
-          "apps/app/src/favicon.ico",
-          "apps/app/src/assets"
-        ],
+        "assets": ["apps/app/src/favicon.ico", "apps/app/src/assets"],
         "styles": [
           "node_modules/@clr/icons/clr-icons.min.css",
           "node_modules/@clr/ui/clr-ui-dark.min.css",
@@ -67,9 +59,7 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true,
-          "localize": [
-            "en"
-          ]
+          "localize": ["en"]
         },
         "fr": {
           "buildOptimizer": false,
@@ -78,9 +68,7 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true,
-          "localize": [
-            "fr"
-          ]
+          "localize": ["fr"]
         }
       },
       "defaultConfiguration": "production"
@@ -109,19 +97,13 @@
         "browserTarget": "app:build",
         "format": "xlf2",
         "outputPath": "apps/app/src/locale",
-        "targetFiles": [
-          "messages.fr.xlf",
-          "messages.en.xlf"
-        ]
+        "targetFiles": ["messages.fr.xlf", "messages.en.xlf"]
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "options": {
-        "lintFilePatterns": [
-          "apps/app/src/**/*.ts",
-          "apps/app/src/**/*.html"
-        ]
+        "lintFilePatterns": ["apps/app/src/**/*.ts", "apps/app/src/**/*.html"]
       }
     },
     "test": {
