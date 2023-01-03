@@ -78,7 +78,7 @@
       "filters": {
         "filter": "Filtre",
         "select_title": "Sélectionnez une valeur :",
-        "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
+        "select_many_title": "Sélectionnez une ou plusieurs valeurs :",
         "clear_all_filters": "Supprimer tous les filtres",
         "clear_filter": "Supprimer le filtre",
         "warning": {
