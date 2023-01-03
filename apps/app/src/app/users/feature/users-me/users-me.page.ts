@@ -3,6 +3,7 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
 import { Observable, tap } from 'rxjs';
 import { User } from '@armonik.admin.gui/shared/data-access';
 import { AuthService } from '../../../shared/data-access/auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-users-me',
@@ -12,6 +13,7 @@ import { AuthService } from '../../../shared/data-access/auth.service';
 })
 export class UsersMeComponent {
   constructor(
+    private _route: ActivatedRoute,
     private _languageService: LanguageService,
     private _browserTitleService: BrowserTitleService,
     private _authService: AuthService

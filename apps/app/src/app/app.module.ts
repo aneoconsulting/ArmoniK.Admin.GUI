@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
@@ -27,6 +27,7 @@ import {
   LanguageService,
   RemoveRouteReuseStrategy,
 } from './shared/util';
+import { CanActivateUser } from './shared/data-access';
 
 import '@clr/icons';
 import '@clr/icons/shapes/chart-shapes';
@@ -44,6 +45,7 @@ import '@clr/icons/shapes/technology-shapes';
     ClrIconModule,
     CoreModule,
     AppRoutingModule,
+    RouterModule,
     AppTranslateModule,
     BrowserModule,
     TheLanguagesSelectorComponent,
@@ -61,6 +63,7 @@ import '@clr/icons/shapes/technology-shapes';
     AuthService,
     GrpcAuthService,
     HealthCheckService,
+    CanActivateUser,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
