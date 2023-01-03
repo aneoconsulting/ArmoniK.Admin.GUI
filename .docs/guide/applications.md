@@ -1,0 +1,5 @@
+# Applications
+
+::: warning
+Coming soon...
+:::
