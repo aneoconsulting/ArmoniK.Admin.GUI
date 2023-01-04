@@ -5,6 +5,7 @@ import { SessionsListComponent } from './sessions-list.page';
 const route: Routes = [
   {
     path: '',
+    title: 'Sessions List',
     component: SessionsListComponent,
   },
 ];
