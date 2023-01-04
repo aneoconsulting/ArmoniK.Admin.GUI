@@ -5,60 +5,87 @@ import {
   CancelSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
-  GlobalFilter,
-  GrpcParams,
+  GrpcListSessionsParams,
+  GrpcParamsService,
   ListSessionsRequest,
   ListSessionsResponse,
   SessionsClient,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcSessionsService extends BaseGrpcService {
-  constructor(private _sessionsClient: SessionsClient) {
+  constructor(
+    private _sessionsClient: SessionsClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  /**
-   * Get a list of sessions
-   *
-   * @param params
-   *
-   * @returns Observable<ListSessionsResponse>
-   */
-  public list$(
-    params: GrpcParams<
-      ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection,
-      GlobalFilter
-    >
-  ): Observable<ListSessionsResponse> {
-    const options = new ListSessionsRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction:
-          params.order ||
-          ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter?.sessionsFilter,
-    });
+  public createListRequestParams(state: ClrDatagridStateInterface) {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
+      ListSessionsRequest.OrderByField,
+      ListSessionsRequest.OrderDirection
+    >(state);
+
+    const filter =
+      this._grpcParamsService.createFilterParams<ListSessionsRequest.Filter.AsObject>(
+        state
+      );
+
+    return {
+      page,
+      pageSize,
+      orderBy:
+        orderBy ?? ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
+      order,
+      filter,
+    };
+  }
+
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListSessionsParams) {
+    return {
+      page,
+      pageSize,
+      orderBy,
+      order,
+      ...filter,
+    };
+  }
+
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListSessionsParams): ListSessionsRequest {
+    return new ListSessionsRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter,
+    });
+  }
+
+  public list$(options: ListSessionsRequest): Observable<ListSessionsResponse> {
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));
   }
 
-  /**
-   * Get a session
-   *
-   * @param sessionId
-   *
-   * @returns Observable<GetSessionResponse>
-   */
   public get$(sessionId: string): Observable<GetSessionResponse> {
     const options = new GetSessionRequest({
       sessionId,
@@ -69,13 +96,6 @@ export class GrpcSessionsService extends BaseGrpcService {
       .pipe(takeUntil(this._timeout$));
   }
 
-  /**
-   * Cancel a session
-   *
-   * @param sessionId
-   *
-   * @returns Observable<CancelSessionResponse>
-   */
   public cancel$(sessionId: string): Observable<CancelSessionResponse> {
     const options = new CancelSessionRequest({
       sessionId,

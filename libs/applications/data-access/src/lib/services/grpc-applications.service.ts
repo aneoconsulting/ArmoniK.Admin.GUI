@@ -2,40 +2,85 @@ import { Injectable } from '@angular/core';
 import {
   ApplicationsClient,
   BaseGrpcService,
-  GlobalFilter,
-  GrpcParams,
   ListApplicationsRequest,
   ListApplicationsResponse,
+  GrpcListApplicationsParams,
+  GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcApplicationsService extends BaseGrpcService {
-  constructor(private _applicationsClient: ApplicationsClient) {
+  constructor(
+    private _applicationsClient: ApplicationsClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  public list$(
-    params: GrpcParams<
-      ListApplicationsRequest.OrderByField,
-      ListApplicationsRequest.OrderDirection,
-      GlobalFilter
-    >
-  ): Observable<ListApplicationsResponse> {
-    const options = new ListApplicationsRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
-        direction:
-          params.order ||
-          ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter?.applicationsFilter,
-    });
+  public createListRequestParams(
+    state: ClrDatagridStateInterface
+  ): GrpcListApplicationsParams {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
+      ListApplicationsRequest.OrderByField,
+      ListApplicationsRequest.OrderDirection
+    >(state);
+
+    const filter =
+      this._grpcParamsService.createFilterParams<ListApplicationsRequest.Filter.AsObject>(
+        state
+      );
+
+    return {
+      page,
+      pageSize,
+      orderBy:
+        orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      order,
+      filter,
+    };
+  }
+
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListApplicationsParams) {
+    return {
+      page,
+      pageSize,
+      orderBy,
+      order,
+      ...filter,
+    };
+  }
+
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListApplicationsParams): ListApplicationsRequest {
+    return new ListApplicationsRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter,
+    });
+  }
+
+  public list$(
+    options: ListApplicationsRequest
+  ): Observable<ListApplicationsResponse> {
     return this._applicationsClient
       .listApplications(options)
       .pipe(takeUntil(this._timeout$));

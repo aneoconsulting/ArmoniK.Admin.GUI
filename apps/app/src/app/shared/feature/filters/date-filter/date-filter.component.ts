@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { FiltersEnum } from 'libs/shared/data-access/src/lib/enums';
 
 @Component({
   standalone: true,
@@ -12,14 +13,27 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [ClarityModule, TranslateModule, FormsModule, CommonModule],
 })
 export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
+  readonly type = FiltersEnum.TIME;
+
   @Output() changes = new EventEmitter<never>();
 
   @Input() name = '';
   @Input() beforeDate: Date | null = null;
   @Input() afterDate: Date | null = null;
 
-  get property(): string {
-    return this.name + 'At';
+  get property(): { after: string; before: string } {
+    return {
+      before: this._propertyBefore,
+      after: this._propertyAfter,
+    };
+  }
+
+  private get _propertyBefore(): string {
+    return `${this.name}Before`;
+  }
+
+  private get _propertyAfter(): string {
+    return `${this.name}After`;
   }
 
   get value(): { before: number | null; after: number | null } {

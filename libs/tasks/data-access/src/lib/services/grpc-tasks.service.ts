@@ -5,40 +5,84 @@ import {
   CancelTasksResponse,
   GetTaskRequest,
   GetTaskResponse,
-  GlobalFilter,
-  GrpcParams,
+  GrpcListTasksParams,
+  GrpcParamsService,
   ListTasksRequest,
   ListTasksResponse,
   TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcTasksService extends BaseGrpcService {
-  constructor(private _tasksClient: TasksClient) {
+  constructor(
+    private _tasksClient: TasksClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  public list$(
-    params: GrpcParams<
-      ListTasksRequest.OrderByField,
-      ListTasksRequest.OrderDirection,
-      GlobalFilter
-    >
-  ): Observable<ListTasksResponse> {
-    const options = new ListTasksRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction:
-          params.order || ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter?.tasksFilter,
-    });
+  public createListRequestParams(
+    state: ClrDatagridStateInterface
+  ): GrpcListTasksParams {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
+      ListTasksRequest.OrderByField,
+      ListTasksRequest.OrderDirection
+    >(state);
+
+    const filter =
+      this._grpcParamsService.createFilterParams<ListTasksRequest.Filter.AsObject>(
+        state
+      );
+
+    return {
+      page,
+      pageSize,
+      orderBy:
+        orderBy ?? ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      order,
+      filter,
+    };
+  }
+
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListTasksParams) {
+    return {
+      page,
+      pageSize,
+      orderBy,
+      order,
+      ...filter,
+    };
+  }
+
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListTasksParams): ListTasksRequest {
+    return new ListTasksRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter,
+    });
+  }
+
+  public list$(options: ListTasksRequest): Observable<ListTasksResponse> {
     return this._tasksClient.listTasks(options).pipe(takeUntil(this._timeout$));
   }
 

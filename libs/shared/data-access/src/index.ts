@@ -46,7 +46,12 @@ export {
 export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
 export {
   BaseGrpcService,
-  GrpcPagerService,
+  GrpcParamsService,
   HealthCheckService,
 } from './lib/services';
-export { GrpcParams, GlobalFilter } from './lib/types';
+export {
+  GrpcListApplicationsParams,
+  GrpcListSessionsParams,
+  GrpcListTasksParams,
+  GrpcListResultsParams,
+} from './lib/types';

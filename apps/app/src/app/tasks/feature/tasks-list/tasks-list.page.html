@@ -51,7 +51,7 @@
       {{ 'pages.tasks-list.columns.session_id' | translate }}
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
-          [name]="'sessionId'"
+          name="sessionId"
           [inputValue]="filterSessionId$ | async"
           #sessionFilter
         >
@@ -65,7 +65,7 @@
       {{ 'pages.tasks-list.columns.status' | translate }}
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
-          [name]="'status'"
+          name="status"
           [selectedValue]="filterStatus$ | async"
           [selectionList]="taskStatusList"
           #statusFilter
@@ -136,7 +136,7 @@
         <clr-dg-cell>
           <a
             [routerLink]="['/', 'tasks']"
-            [queryParams]="{ sessionId: task.sessionId }"
+            [queryParams]="mergeWithCurrentQueryParams({sessionId: task.sessionId })"
           >
             {{ task.sessionId }}
           </a>
@@ -144,7 +144,7 @@
         <clr-dg-cell class="status">
           <a
             [routerLink]="['/', 'tasks']"
-            [queryParams]="{ status: task.status }"
+            [queryParams]="mergeWithCurrentQueryParams({status: task.status })"
           >
             <span
               [ngClass]="{

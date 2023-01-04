@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
 import {
-  GrpcPagerService,
   ListResultsRequest,
   ListResultsResponse,
   ResultRaw,
@@ -49,9 +48,12 @@ export class ResultsListComponent implements OnInit {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-      const params = this._grpcPagerService.createParams(state);
+      const params = this._grpcResultsService.createListRequestParams(state);
+      const queryParams =
+        this._grpcResultsService.createListRequestQueryParams(params);
+
       await this._router.navigate([], {
-        queryParams: params,
+        queryParams,
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -125,8 +127,7 @@ export class ResultsListComponent implements OnInit {
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
     private _settingsService: SettingsService,
-    private _grpcResultsService: GrpcResultsService,
-    private _grpcPagerService: GrpcPagerService
+    private _grpcResultsService: GrpcResultsService
   ) {}
 
   ngOnInit(): void {
@@ -178,9 +179,11 @@ export class ResultsListComponent implements OnInit {
     if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
 
     const order =
-      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
+      ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC;
 
-    if (order === -1) return ClrDatagridSortOrder.DESC;
+    if (order === ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC)
+      return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
   }
@@ -253,11 +256,13 @@ export class ResultsListComponent implements OnInit {
    * @returns Observable<ListResultsResponse>
    */
   private _listResults$(): Observable<ListResultsResponse> {
-    const grpcParams = this._grpcPagerService.createGrpcParams(
-      this._restoreState()
-    );
+    const state = this._restoreState();
+    const params = this._grpcResultsService.createListRequestParams(state);
+    const options = this._grpcResultsService.createListRequestOptions(params);
 
-    return this._grpcResultsService.list$(grpcParams).pipe(
+    console.log('List results', params);
+
+    return this._grpcResultsService.list$(options).pipe(
       catchError((error) => {
         console.error(error);
         this._stopInterval.next();

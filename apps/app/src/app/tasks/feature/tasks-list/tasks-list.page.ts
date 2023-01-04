@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   CancelTasksResponse,
   GetTaskResponse,
-  GrpcPagerService,
   ListTasksRequest,
   ListTasksResponse,
   TaskStatus,
@@ -54,11 +53,16 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPagerService.createParams(state);
+        console.log('state', state);
+        const params = this._grpcTasksService.createListRequestParams(state);
+        const queryParams =
+          this._grpcTasksService.createListRequestQueryParams(params);
+
         await this._router.navigate([], {
-          queryParams: params,
+          queryParams,
           relativeTo: this._activatedRoute,
         });
+
         return state;
       })
     );
@@ -113,16 +117,13 @@ export class TasksListComponent implements OnInit {
     'taskId'
   );
 
-  filterSessionId$: Observable<string> =
-    this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'sessionId'
-    );
+  filterSessionId$: Observable<string> = this._settingsService
+    .queryStringParam$(this._activatedRoute.queryParamMap, 'sessionId')
+    .pipe(tap(console.log));
 
-  filterStatus$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
-    'status'
-  );
+  filterStatus$: Observable<number> = this._settingsService
+    .queryParam$(this._activatedRoute.queryParamMap, 'status')
+    .pipe(tap(console.log));
 
   filterCreatedBefore$: Observable<Date | null> =
     this._settingsService.queryDateParam$(
@@ -175,8 +176,7 @@ export class TasksListComponent implements OnInit {
     private _browserTitleService: BrowserTitleService,
     private _languageService: LanguageService,
     private _settingsService: SettingsService,
-    private _grpcTasksService: GrpcTasksService,
-    private _grpcPagerService: GrpcPagerService
+    private _grpcTasksService: GrpcTasksService
   ) {}
 
   ngOnInit(): void {
@@ -242,11 +242,17 @@ export class TasksListComponent implements OnInit {
     if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
 
     const order =
-      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
+      ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC;
 
-    if (order === -1) return ClrDatagridSortOrder.DESC;
+    if (order === ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC)
+      return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
+  }
+
+  public mergeWithCurrentQueryParams(newQueryParams: Params): Params {
+    return { ...this._activatedRoute.snapshot.queryParams, ...newQueryParams };
   }
 
   /**
@@ -358,11 +364,11 @@ export class TasksListComponent implements OnInit {
    * @returns Observable<ListTasksResponse>
    */
   private _listTasks$(): Observable<ListTasksResponse> {
-    const grpcParams = this._grpcPagerService.createGrpcParams(
-      this._restoreState()
-    );
+    const state = this._restoreState();
+    const params = this._grpcTasksService.createListRequestParams(state);
+    const options = this._grpcTasksService.createListRequestOptions(params);
 
-    return this._grpcTasksService.list$(grpcParams).pipe(
+    return this._grpcTasksService.list$(options).pipe(
       catchError((error) => {
         console.error(error);
         this._stopInterval.next();
