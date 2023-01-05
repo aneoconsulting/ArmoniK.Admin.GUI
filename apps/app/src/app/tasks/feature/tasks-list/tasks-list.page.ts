@@ -108,64 +108,64 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterTaskId$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.paramMap,
+  filterTaskId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
 
-  filterSessionId$: Observable<string> =
-    this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
+  filterSessionId: string =
+    this._settingsService.queryStringParam(
+      this._activatedRoute.snapshot.queryParams,
       'sessionId'
     );
 
-  filterStatus$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  filterStatus: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'status'
   );
 
-  filterCreatedBefore$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  filterCreatedBefore: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'createdAtBefore'
     );
 
-  filterCreatedAfter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  filterCreatedAfter: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'createdAtAfter'
     );
 
-  filterStartedBefore$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  filterStartedBefore: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'startedAtBefore'
     );
 
-  filterStartedAfter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  filterStartedAfter: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'startedAtAfter'
     );
 
-  filterEndedBefore$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  filterEndedBefore: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'endedAtBefore'
     );
 
-  filterEndedAfter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  filterEndedAfter: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'endedAtAfter'
     );
 
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  pageSize: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  page: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'page'
   );
 

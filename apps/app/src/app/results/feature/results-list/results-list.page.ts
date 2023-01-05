@@ -82,40 +82,40 @@ export class ResultsListComponent implements OnInit {
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
    */
-  nameFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  nameFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'name'
   );
-  taskIdFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  taskIdFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
-  sessionIdFilter$: Observable<string> =
-    this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
+  sessionIdFilter: string =
+    this._settingsService.queryStringParam(
+      this._activatedRoute.snapshot.queryParams,
       'sessionId'
     );
-  statusFilter$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  statusFilter: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'status'
   );
-  createdBeforeFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  createdBeforeFilter: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'createdAtBefore'
     );
-  createdAfterFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
+  createdAfterFilter: Date | null =
+    this._settingsService.queryDateParam(
+      this._activatedRoute.snapshot.queryParams,
       'createdAtAfter'
     );
 
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  pageSize: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  page: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'page'
   );
 
