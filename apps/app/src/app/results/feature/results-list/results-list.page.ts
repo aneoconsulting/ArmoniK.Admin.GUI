@@ -90,25 +90,22 @@ export class ResultsListComponent implements OnInit {
     this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
-  sessionIdFilter: string =
-    this._settingsService.queryStringParam(
-      this._activatedRoute.snapshot.queryParams,
-      'sessionId'
-    );
+  sessionIdFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
   statusFilter: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
-  createdBeforeFilter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'createdAtBefore'
-    );
-  createdAfterFilter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'createdAtAfter'
-    );
+  createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
+  createdAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
 
   pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,

@@ -113,52 +113,45 @@ export class TasksListComponent implements OnInit {
     'taskId'
   );
 
-  filterSessionId: string =
-    this._settingsService.queryStringParam(
-      this._activatedRoute.snapshot.queryParams,
-      'sessionId'
-    );
+  filterSessionId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
 
   filterStatus: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
 
-  filterCreatedBefore: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'createdAtBefore'
-    );
+  filterCreatedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
 
-  filterCreatedAfter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'createdAtAfter'
-    );
+  filterCreatedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
 
-  filterStartedBefore: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'startedAtBefore'
-    );
+  filterStartedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'startedAtBefore'
+  );
 
-  filterStartedAfter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'startedAtAfter'
-    );
+  filterStartedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'startedAtAfter'
+  );
 
-  filterEndedBefore: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'endedAtBefore'
-    );
+  filterEndedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'endedAtBefore'
+  );
 
-  filterEndedAfter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'endedAtAfter'
-    );
+  filterEndedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'endedAtAfter'
+  );
 
   pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,

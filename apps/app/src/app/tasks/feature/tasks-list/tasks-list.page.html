@@ -34,11 +34,7 @@
     >
       {{ 'pages.tasks-list.columns.task_id' | translate }}
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter
-          [name]="'id'"
-          [inputValue]="filterTaskId"
-          #idFilter
-        >
+        <app-id-filter [name]="'id'" [inputValue]="filterTaskId" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>

@@ -128,7 +128,7 @@ export class SettingsService {
    * @returns Observable<Date | null>
    */
   public queryDateParam(
-    queryParams: ActivatedRouteSnapshot["queryParams"],
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
   ): Date | null {
     return queryParams[param] ? new Date(parseInt(queryParams[param])) : null;
@@ -142,10 +142,10 @@ export class SettingsService {
    * @returns Observable<string>
    */
   public queryStringParam(
-    queryParams: ActivatedRouteSnapshot["queryParams"],
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
   ): string {
-    return queryParams[param] ? queryParams[param] as string : '';
+    return queryParams[param] ? (queryParams[param] as string) : '';
   }
 
   /**
@@ -156,10 +156,10 @@ export class SettingsService {
    * @returns Observable<string>
    */
   public queryListParam(
-    queryParams: ActivatedRouteSnapshot["queryParams"],
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
   ): number[] {
-    return queryParams[param] ? queryParams[param] as number[] : [];
+    return queryParams[param] ? (queryParams[param] as number[]) : [];
   }
 
   /**
@@ -170,9 +170,9 @@ export class SettingsService {
    * @returns Observable<string>
    */
   public queryParam(
-    queryParams: ActivatedRouteSnapshot["queryParams"],
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
   ): number {
-    return queryParams[param] ? queryParams[param] as number : 0;
+    return queryParams[param] ? (queryParams[param] as number) : 0;
   }
 }
