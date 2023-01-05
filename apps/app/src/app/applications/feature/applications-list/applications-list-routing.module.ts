@@ -5,6 +5,7 @@ import { ApplicationsListComponent } from './applications-list.page';
 const routes: Routes = [
   {
     path: '',
+    title: 'Applications List',
     component: ApplicationsListComponent,
   },
 ];
