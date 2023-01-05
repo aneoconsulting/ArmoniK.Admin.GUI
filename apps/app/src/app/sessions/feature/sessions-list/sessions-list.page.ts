@@ -66,7 +66,6 @@ export class SessionsListComponent implements OnInit {
       console.log('queryParams', queryParams);
 
       await this._router.navigate([], {
-        queryParamsHandling: 'merge', // 'merge' option is useful when a user filter using a link of a cell
         queryParams,
         relativeTo: this._activatedRoute,
       });

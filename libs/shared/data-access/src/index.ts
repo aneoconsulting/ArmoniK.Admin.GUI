@@ -1,4 +1,4 @@
-export { ExternalServicesEnum } from './lib/enums';
+export { ExternalServicesEnum, FiltersEnum } from './lib/enums';
 export {
   ApplicationRaw,
   ListApplicationsRequest,

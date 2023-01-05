@@ -77,6 +77,7 @@ export class GrpcParamsService {
    * @returns T
    */
   private _getOrder<T extends number>(state: ClrDatagridStateInterface): T {
+    // TODO: remove 2 (once https://github.com/aneoconsulting/ArmoniK.Api/issues/87 is resolved)
     if (state.sort?.reverse) return 2 as unknown as T;
     else return 1 as unknown as T;
   }

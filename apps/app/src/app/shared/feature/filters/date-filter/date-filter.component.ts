@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FiltersEnum } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { FiltersEnum } from 'libs/shared/data-access/src/lib/enums';
 
 @Component({
   standalone: true,
