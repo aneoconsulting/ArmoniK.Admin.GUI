@@ -5,6 +5,7 @@ import { HowToUseComponent } from './how-to-use.page';
 const routes: Routes = [
   {
     path: '',
+    title: 'How To Use',
     component: HowToUseComponent,
   },
 ];

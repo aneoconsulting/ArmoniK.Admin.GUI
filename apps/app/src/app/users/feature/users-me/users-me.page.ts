@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User } from '@armonik.admin.gui/shared/data-access';
 import { AuthService } from '../../../shared/data-access/auth.service';
 
@@ -11,15 +10,7 @@ import { AuthService } from '../../../shared/data-access/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersMeComponent {
-  constructor(
-    private _languageService: LanguageService,
-    private _browserTitleService: BrowserTitleService,
-    private _authService: AuthService
-  ) {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.users_me.title')
-    );
-  }
+  constructor(private _authService: AuthService) {}
 
   public get currentUser$(): Observable<User | null> {
     return this._authService.user$;
