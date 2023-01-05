@@ -214,7 +214,7 @@ export class SettingsService {
     queryParams: ActivatedRouteSnapshot["queryParams"],
     param: string
   ): Date | null {
-    return queryParams[param] ? queryParams[param] as Date : null;
+    return queryParams[param] ? new Date(parseInt(queryParams[param])) : null;
   }
 
   /**
@@ -255,7 +255,7 @@ export class SettingsService {
     public queryParam(
       queryParams: ActivatedRouteSnapshot["queryParams"],
       param: string
-    ): number | null {
-      return queryParams[param] ? queryParams[param] as number : null;
+    ): number {
+      return queryParams[param] ? queryParams[param] as number : 0;
     }
 }

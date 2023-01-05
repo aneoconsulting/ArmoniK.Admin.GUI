@@ -95,7 +95,7 @@ export class ResultsListComponent implements OnInit {
       this._activatedRoute.snapshot.queryParams,
       'sessionId'
     );
-  statusFilter: number | null = this._settingsService.queryParam(
+  statusFilter: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -110,11 +110,11 @@ export class ResultsListComponent implements OnInit {
       'createdAtAfter'
     );
 
-  pageSize: number | null = this._settingsService.queryParam(
+  pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number | null = this._settingsService.queryParam(
+  page: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );

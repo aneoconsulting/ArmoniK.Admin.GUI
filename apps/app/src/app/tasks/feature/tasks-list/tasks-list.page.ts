@@ -119,7 +119,7 @@ export class TasksListComponent implements OnInit {
       'sessionId'
     );
 
-  filterStatus: number | null = this._settingsService.queryParam(
+  filterStatus: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -160,11 +160,11 @@ export class TasksListComponent implements OnInit {
       'endedAtAfter'
     );
 
-  pageSize: number | null = this._settingsService.queryParam(
+  pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number | null = this._settingsService.queryParam(
+  page: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );
