@@ -25,15 +25,19 @@ app-pages-the-languages-selector {
   justify-content: center;
 }
 
-.version {
+.bottom {
   flex-grow: 1;
 
   display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: end;
 
   margin-bottom: 0.9rem;
+
+  & .version {
+    margin-top: 1rem;
+    text-align: center;
+  }
 }
 
 .content-area {
