@@ -101,52 +101,52 @@ export class SessionsListComponent {
    * They permit to avoid the endless loop due to the async pipe with the functions.
    */
   sessionFilter = this._settingsService.queryStringParam(
-    this._activatedRoute.queryParamMap,
+    this._activatedRoute.snapshot.queryParams,
     'sessionId'
   );
   statusFilter: number = this._settingsService.queryParam(
-    this._activatedRoute.queryParamMap,
+    this._activatedRoute.snapshot.queryParams,
     'status'
   );
   createdBeforeFilter: Date | null =
     this._settingsService.queryDateParam(
-      this._activatedRoute.queryParamMap,
+      this._activatedRoute.snapshot.queryParams,
       'createdAtBefore'
     );
   createdAfterFilter: Date | null =
     this._settingsService.queryDateParam(
-      this._activatedRoute.queryParamMap,
+      this._activatedRoute.snapshot.queryParams,
       'createdAtAfter'
     );
   cancelledBeforeFilter: Date | null =
     this._settingsService.queryDateParam(
-      this._activatedRoute.queryParamMap,
+      this._activatedRoute.snapshot.queryParams,
       'cancelledAtBefore'
     );
   cancelledAfterFilter: Date | null =
     this._settingsService.queryDateParam(
-      this._activatedRoute.queryParamMap,
+      this._activatedRoute.snapshot.queryParams,
       'cancelledAtAfter'
     );
 
   pageSize: number = this._settingsService.queryParam(
-    this._activatedRoute.queryParamMap,
+    this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
   page: number = this._settingsService.queryParam(
-    this._activatedRoute.queryParamMap,
+    this._activatedRoute.snapshot.queryParams,
     'page'
   );
 
   applicationName: string =
     this._settingsService.queryStringParam(
-      this._activatedRoute.queryParamMap,
+      this._activatedRoute.snapshot.queryParams,
       'applicationName'
     );
 
   applicationVersion: string =
     this._settingsService.queryStringParam(
-      this._activatedRoute.queryParamMap,
+      this._activatedRoute.snapshot.queryParams,
       'applicationVersion'
     );
 
