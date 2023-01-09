@@ -49,13 +49,6 @@ const routes: Routes = [
             (m) => m.ResultsShellModule
           ),
       },
-      {
-        path: 'how-to-use',
-        loadChildren: () =>
-          import('./how-to-use/how-to-use.module').then(
-            (m) => m.HowToUseModule
-          ),
-      },
     ],
   },
   {
