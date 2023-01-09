@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ParamMap } from '@angular/router';
+import { ActivatedRouteSnapshot, ParamMap } from '@angular/router';
 import { BehaviorSubject, Observable, map, distinctUntilChanged } from 'rxjs';
 
 @Injectable()
@@ -121,39 +121,17 @@ export class SettingsService {
   }
 
   /**
-   * Get query params from route
+   * Get query params from route and return them as Date
    *
    * @param param
    *
-   * @returns Observable<string>
+   * @returns Observable<Date | null>
    */
-  public queryParam$(
-    queryParamMap: Observable<ParamMap>,
+  public queryDateParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
-  ): Observable<number> {
-    return queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as a list
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryListParam$(
-    queryParamMap: Observable<ParamMap>,
-    param: string
-  ): Observable<number[]> {
-    return queryParamMap.pipe(
-      map((params) => params.getAll(param)),
-      map((values) => values.flatMap((v) => Number(v))),
-      distinctUntilChanged()
-    );
+  ): Date | null {
+    return queryParams[param] ? new Date(parseInt(queryParams[param])) : null;
   }
 
   /**
@@ -163,43 +141,38 @@ export class SettingsService {
    *
    * @returns Observable<string>
    */
-  public queryStringParam$(
-    queryParamMap: Observable<ParamMap>,
+  public queryStringParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
-  ): Observable<string> {
-    return queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => (value !== null ? value : '')),
-      distinctUntilChanged()
-    );
+  ): string {
+    return queryParams[param] ? (queryParams[param] as string) : '';
   }
 
   /**
-   * Get query params from route and return them as Date
+   * Get query params from route and return them as a list
    *
    * @param param
    *
-   * @returns Observable<Date | null>
+   * @returns Observable<string>
    */
-  public queryDateParam$(
-    queryParamMap: Observable<ParamMap>,
+  public queryListParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
-  ): Observable<Date | null> {
-    return queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => {
-        if (!value) {
-          return null;
-        }
+  ): number[] {
+    return queryParams[param] ? (queryParams[param] as number[]) : [];
+  }
 
-        const numberDate = Number(value);
-        if (isNaN(numberDate)) {
-          return null;
-        }
-
-        return new Date(numberDate);
-      }),
-      distinctUntilChanged()
-    );
+  /**
+   * Get query params from route
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
+    param: string
+  ): number {
+    return queryParams[param] ? (queryParams[param] as number) : 0;
   }
 }
