@@ -1,4 +1,16 @@
-export { ApplicationRaw } from './lib/proto/generated/applications-common.pb';
+export { ExternalServicesEnum } from './lib/enums';
+export {
+  ApplicationRaw,
+  ListApplicationsRequest,
+  ListApplicationsResponse,
+} from './lib/proto/generated/applications-common.pb';
+export { ApplicationsClient } from './lib/proto/generated/applications-service.pbsc';
+export {
+  GetCurrentUserRequest,
+  GetCurrentUserResponse,
+  User,
+} from './lib/proto/generated/auth-common.pb';
+export { AuthenticationClient } from './lib/proto/generated/auth-service.pbsc';
 export { ResultStatus } from './lib/proto/generated/result-status.pb';
 export {
   GetOwnerTaskIdRequest,
@@ -32,5 +44,9 @@ export {
   TaskSummary,
 } from './lib/proto/generated/tasks-common.pb';
 export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
-export { BaseGrpcService, GrpcPagerService } from './lib/services';
+export {
+  BaseGrpcService,
+  GrpcPagerService,
+  HealthCheckService,
+} from './lib/services';
 export { GrpcParams } from './lib/types';
