@@ -91,7 +91,7 @@ export class SessionsListComponent {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
-    private _grpcPagerService: GrpcPagerService,
+    private _grpcPagerService: GrpcPagerService
   ) {}
 
   public get OrderByField() {
