@@ -87,14 +87,14 @@ describe('TheFavoritesModalComponent', () => {
     it('should remove the favorite when already set', () => {
       const favoritesService = TestBed.inject(FavoritesService);
 
-      component.currentFavoriteName = 'test';
+      component.currentFavoriteName.next('test');
 
       component.togglePageFavorite();
 
       expect(favoritesService.remove).toHaveBeenCalled();
     });
     it('should open modal if the favorite is not set', () => {
-      component.currentFavoriteName = null;
+      component.currentFavoriteName.next(null);
 
       component.togglePageFavorite();
 
