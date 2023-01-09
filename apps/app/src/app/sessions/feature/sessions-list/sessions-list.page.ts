@@ -8,7 +8,10 @@ import {
   ListSessionsResponse,
   SessionStatus,
 } from '@armonik.admin.gui/shared/data-access';
-import { AutoRefreshService, DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
+import {
+  AutoRefreshService,
+  DisabledIntervalValue,
+} from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
@@ -35,7 +38,9 @@ import {
 })
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
-  private _intervalValue = this._autoRefreshService.intervalQueryParam(this._activatedRoute.snapshot.queryParams)
+  private _intervalValue = this._autoRefreshService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   /** Get a single session */
   private _opened$ = new BehaviorSubject<boolean>(false);
@@ -59,7 +64,10 @@ export class SessionsListComponent {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-      const params = this._grpcPagerService.createParams(state, this._intervalValue);
+      const params = this._grpcPagerService.createParams(
+        state,
+        this._intervalValue
+      );
       await this._router.navigate([], {
         queryParams: params,
         relativeTo: this._activatedRoute,
@@ -67,7 +75,10 @@ export class SessionsListComponent {
       return state;
     })
   );
-  private _triggerInterval$: Observable<number> = timer(0, this._intervalValue).pipe(takeUntil(this.stopInterval$))
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
@@ -86,7 +97,7 @@ export class SessionsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService,
-    private _autoRefreshService: AutoRefreshService,
+    private _autoRefreshService: AutoRefreshService
   ) {}
 
   public get refreshIntervalValue() {
@@ -233,7 +244,10 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState(), this._intervalValue);
+    const urlParams = this._grpcPagerService.createParams(
+      this._restoreState(),
+      this._intervalValue
+    );
     const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
     return this._grpcSessionsService.list$(grpcParams).pipe(
       catchError((error: Error) => {

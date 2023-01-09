@@ -9,7 +9,10 @@ import {
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
-import { AutoRefreshDropdownComponent, AutoRefreshService } from '@armonik.admin.gui/shared/feature';
+import {
+  AutoRefreshDropdownComponent,
+  AutoRefreshService,
+} from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import {
   ClrDatagridModule,

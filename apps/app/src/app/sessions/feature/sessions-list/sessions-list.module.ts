@@ -9,7 +9,10 @@ import {
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { AutoRefreshDropdownComponent, AutoRefreshService } from '@armonik.admin.gui/shared/feature';
+import {
+  AutoRefreshDropdownComponent,
+  AutoRefreshService,
+} from '@armonik.admin.gui/shared/feature';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridModule,
@@ -45,6 +48,11 @@ import { ActionBarComponent } from '../../../shared/feature';
     DatePipe,
     JsonPipe,
   ],
-  providers: [LanguageService, AutoRefreshService, GrpcSessionsService, GrpcPagerService],
+  providers: [
+    LanguageService,
+    AutoRefreshService,
+    GrpcSessionsService,
+    GrpcPagerService,
+  ],
 })
 export class SessionsListModule {}

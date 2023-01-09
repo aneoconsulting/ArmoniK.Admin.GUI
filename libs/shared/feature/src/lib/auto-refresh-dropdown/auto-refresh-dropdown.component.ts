@@ -31,7 +31,9 @@ export class AutoRefreshDropdownComponent {
   private _intervalsValues = [10_000, 30_000, 60_000, 120_000];
   private _disabledIntervalValue = DisabledIntervalValue;
 
-  public intervals: Interval[] = this._intervalsValues.map((interval) => this._toInterval(interval));
+  public intervals: Interval[] = this._intervalsValues.map((interval) =>
+    this._toInterval(interval)
+  );
 
   public get interval() {
     return this._toInterval(this.actualInterval);
@@ -87,7 +89,7 @@ export class AutoRefreshDropdownComponent {
   private _toInterval(interval: number): Interval {
     return {
       value: interval,
-      label: this._formatInterval(interval)
+      label: this._formatInterval(interval),
     };
   }
 }

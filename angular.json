@@ -9,7 +9,6 @@
     "sessions-data-access": "libs/sessions/data-access",
     "shared-data-access": "libs/shared/data-access",
     "shared-feature": "libs/shared/feature",
-    "shared-util": "libs/shared/util",
     "tasks-data-access": "libs/tasks/data-access"
   }
 }

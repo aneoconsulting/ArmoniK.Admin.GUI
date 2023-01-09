@@ -2,7 +2,10 @@ import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
-import { AutoRefreshDropdownComponent, AutoRefreshService } from '@armonik.admin.gui/shared/feature';
+import {
+  AutoRefreshDropdownComponent,
+  AutoRefreshService,
+} from '@armonik.admin.gui/shared/feature';
 import {
   ClrDatagridModule,
   ClrDropdownModule,

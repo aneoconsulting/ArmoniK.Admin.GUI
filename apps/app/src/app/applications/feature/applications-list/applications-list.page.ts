@@ -7,7 +7,10 @@ import {
   ListApplicationsRequest,
   ListApplicationsResponse,
 } from '@armonik.admin.gui/shared/data-access';
-import { AutoRefreshService, DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
+import {
+  AutoRefreshService,
+  DisabledIntervalValue,
+} from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
@@ -34,7 +37,9 @@ import { SettingsService } from '../../../shared/util';
 })
 export class ApplicationsListComponent {
   private _state: ClrDatagridStateInterface = {};
-  private _intervalValue = this._autoRefreshService.intervalQueryParam(this._activatedRoute.snapshot.queryParams);
+  private _intervalValue = this._autoRefreshService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
@@ -46,7 +51,10 @@ export class ApplicationsListComponent {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-      const params = this._grpcPagerService.createParams(state, this._intervalValue);
+      const params = this._grpcPagerService.createParams(
+        state,
+        this._intervalValue
+      );
       await this._router.navigate([], {
         queryParams: params,
         relativeTo: this._activatedRoute,
@@ -54,7 +62,9 @@ export class ApplicationsListComponent {
       return state;
     })
   );
-  private _triggerInterval$ = timer(0, this._intervalValue).pipe(takeUntil(this.stopInterval$))
+  private _triggerInterval$ = timer(0, this._intervalValue).pipe(
+    takeUntil(this.stopInterval$)
+  );
 
   loadingApplications$ = new BehaviorSubject<boolean>(true);
   totalApplications$ = new BehaviorSubject<number>(0);
@@ -201,7 +211,10 @@ export class ApplicationsListComponent {
    * @returns Observable<ListApplicationsResponse>
    */
   private _listApplications$(): Observable<ListApplicationsResponse> {
-    const params = this._grpcPagerService.createParams(this._restoreState(), this._intervalValue);
+    const params = this._grpcPagerService.createParams(
+      this._restoreState(),
+      this._intervalValue
+    );
 
     return this._grpcApplicationsService.list$(params).pipe(
       catchError((error) => {

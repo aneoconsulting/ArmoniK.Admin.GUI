@@ -20,7 +20,7 @@ export class GrpcPagerService {
     data: Record<string, string | number> = {}
   ): Record<string, string | number> {
     const params = new Map<string, string | number>();
-    
+
     params.set('interval', refreshInterval);
 
     this._createPage(state, params);

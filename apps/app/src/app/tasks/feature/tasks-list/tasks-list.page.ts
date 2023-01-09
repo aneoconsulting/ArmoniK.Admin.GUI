@@ -9,7 +9,10 @@ import {
   TaskStatus,
   TaskSummary,
 } from '@armonik.admin.gui/shared/data-access';
-import { AutoRefreshService, DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
+import {
+  AutoRefreshService,
+  DisabledIntervalValue,
+} from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -35,7 +38,9 @@ import { SettingsService } from '../../../shared/util';
 })
 export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
-  private _intervalValue = this._autoRefreshService.intervalQueryParam(this._activatedRoute.snapshot.queryParams)
+  private _intervalValue = this._autoRefreshService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   /** Get tasks */
   private _subjectManual = new Subject<void>();
@@ -50,7 +55,10 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPagerService.createParams(state, this._intervalValue);
+        const params = this._grpcPagerService.createParams(
+          state,
+          this._intervalValue
+        );
         await this._router.navigate([], {
           queryParams: params,
           relativeTo: this._activatedRoute,
@@ -58,7 +66,10 @@ export class TasksListComponent implements OnInit {
         return state;
       })
     );
-  private _triggerInterval$: Observable<number> = timer(0, this._intervalValue).pipe(takeUntil(this.stopInterval$))
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   totalTasks$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -342,7 +353,10 @@ export class TasksListComponent implements OnInit {
    * @returns Observable<ListTasksResponse>
    */
   private _listTasks$(): Observable<ListTasksResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState(), this._intervalValue);
+    const urlParams = this._grpcPagerService.createParams(
+      this._restoreState(),
+      this._intervalValue
+    );
     const grpcParams = this._grpcTasksService.urlToGrpcParams(urlParams);
     return this._grpcTasksService.list$(grpcParams).pipe(
       catchError((error) => {
