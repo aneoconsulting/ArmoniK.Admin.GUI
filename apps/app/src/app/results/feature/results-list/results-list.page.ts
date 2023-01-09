@@ -12,24 +12,18 @@ import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
-  distinctUntilChanged,
-  map,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-results-list',
@@ -84,29 +78,49 @@ export class ResultsListComponent implements OnInit {
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
    */
-  nameFilter$: Observable<string> = this.queryStringParam$('name');
-  taskIdFilter$: Observable<string> = this.queryStringParam$('taskId');
-  sessionIdFilter$: Observable<string> = this.queryStringParam$('sessionId');
-  statusFilter$: Observable<number> = this.queryParam$('status');
-  createdBeforeFilter$: Observable<Date | null> =
-    this.queryDateParam$('createdAtBefore');
-  createdAfterFilter$: Observable<Date | null> =
-    this.queryDateParam$('createdAtAfter');
+  nameFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'name'
+  );
+  taskIdFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'taskId'
+  );
+  sessionIdFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
+  statusFilter: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'status'
+  );
+  createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
+  createdAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
+
+  pageSize: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'pageSize'
+  );
+  page: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'page'
+  );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcResultsService: GrpcResultsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('results.title')
-    );
     this.statusList = [
       ...Object.keys(ResultStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))
@@ -192,62 +206,6 @@ export class ResultsListComponent implements OnInit {
   }
 
   /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as string
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryStringParam$(param: string): Observable<string> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => (value !== null ? value : '')),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as Date
-   *
-   * @param param
-   *
-   * @returns Observable<Date | null>
-   */
-  public queryDateParam$(param: string): Observable<Date | null> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => {
-        if (!value) {
-          return null;
-        }
-
-        const numberDate = Number(value);
-        if (isNaN(numberDate)) {
-          return null;
-        }
-
-        return new Date(numberDate);
-      }),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
    * Track by result
    *
    * @param _
@@ -297,6 +255,23 @@ export class ResultsListComponent implements OnInit {
         this.totalResults$.next(results.total ?? 0);
       })
     );
+  }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
   }
 
   /**

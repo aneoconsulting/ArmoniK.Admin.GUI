@@ -20,7 +20,8 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
+import { LanguageService } from '../../../shared/util';
+import { ActionBarComponent } from '../../../shared/feature';
 
 /**
  * Sessions list module
@@ -35,6 +36,7 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
     ClrModalModule,
     ClrLoadingModule,
     ClrIconModule,
+    ActionBarComponent,
     TranslateModule,
     NgClass,
     NgFor,
@@ -43,11 +45,6 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
     DatePipe,
     JsonPipe,
   ],
-  providers: [
-    BrowserTitleService,
-    LanguageService,
-    GrpcSessionsService,
-    GrpcPagerService,
-  ],
+  providers: [LanguageService, GrpcSessionsService, GrpcPagerService],
 })
 export class SessionsListModule {}

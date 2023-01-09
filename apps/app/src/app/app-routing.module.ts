@@ -1,8 +1,21 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Injectable, NgModule } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import {
+  RouterModule,
+  RouterStateSnapshot,
+  Routes,
+  TitleStrategy,
+} from '@angular/router';
 
 const routes: Routes = [
   { path: '', redirectTo: 'applications', pathMatch: 'full' },
+  {
+    path: 'users',
+    loadChildren: () =>
+      import('./users/feature/users-shell/users-shell.module').then(
+        (m) => m.UsersShellModule
+      ),
+  },
   {
     path: 'applications',
     loadChildren: () =>
@@ -40,11 +53,33 @@ const routes: Routes = [
   },
 ];
 
+@Injectable({
+  providedIn: 'root',
+})
+export class TemplatePageTitleStrategy extends TitleStrategy {
+  constructor(private readonly title: Title) {
+    super();
+  }
+
+  override updateTitle(routerState: RouterStateSnapshot): void {
+    const title = this.buildTitle(routerState);
+
+    if (title !== undefined)
+      this.title.setTitle(`${title} | Admin GUI - ArmoniK`);
+  }
+}
+
 /**
  * Handle routing for the app
  */
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
+  providers: [
+    {
+      provide: TitleStrategy,
+      useClass: TemplatePageTitleStrategy,
+    },
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

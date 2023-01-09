@@ -1,34 +1,30 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import {
+  ApplicationRaw,
   GrpcPagerService,
   ListApplicationsRequest,
   ListApplicationsResponse,
-  ApplicationRaw,
 } from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   distinctUntilChanged,
   map,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-applications-list',
@@ -36,7 +32,7 @@ import {
   styleUrls: ['./applications-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ApplicationsListComponent implements OnInit {
+export class ApplicationsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
   private _subjectManual = new Subject<void>();
@@ -79,18 +75,10 @@ export class ApplicationsListComponent implements OnInit {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
-
-  ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.applications-list.title')
-    );
-  }
 
   public get OrderByField() {
     return ListApplicationsRequest.OrderByField;
@@ -227,5 +215,39 @@ export class ApplicationsListComponent implements OnInit {
         this.totalApplications$.next(applications.total ?? 0);
       })
     );
+  }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Checks if one filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

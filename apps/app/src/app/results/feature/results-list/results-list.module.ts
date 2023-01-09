@@ -16,6 +16,7 @@ import {
   DateFilterComponent,
   IdFilterComponent,
 } from '../../../shared/feature/filters';
+import { ActionBarComponent } from '../../../shared/feature';
 
 @NgModule({
   declarations: [ResultsListComponent],
@@ -28,6 +29,7 @@ import {
     SelectFilterComponent,
     DateFilterComponent,
     IdFilterComponent,
+    ActionBarComponent,
     ResultsListRoutingModule,
     NgClass,
     AsyncPipe,

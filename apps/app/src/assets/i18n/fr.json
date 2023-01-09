@@ -30,6 +30,28 @@
   },
   "pages": {
     "components": {
+      "custom_columns_manager": {
+        "manage_columns": "Gérer les colonnes",
+        "add_column": "Ajouter une colonne",
+        "modals": {
+          "add_column": {
+            "title": "Ajouter une colonne",
+            "close": "Fermer",
+            "add": "Ajouter",
+            "name_input": {
+              "label": "Nom",
+              "placeholder": "Saisir le nom",
+              "helper_text": "Le nom de la colonne doit être unique. Il est possible d'utiliser '.' pour accéder aux propriétés imbriquées. Vous devez avoir des données pour voir les colonnes personnalisées."
+            }
+          },
+          "manage_columns": {
+            "title": "Gérer les colonnes",
+            "close": "Fermer",
+            "empty": "Aucune colonne personnalisée",
+            "remove": "Supprimer"
+          }
+        }
+      },
       "modal_favorites": {
         "button": {
           "add": "Ajouter aux favoris",
@@ -52,10 +74,15 @@
         },
         "disable": "Désactiver"
       },
+      "actions": {
+        "clear_order": "Ordre par défaut",
+        "refresh": "Rafraîchir"
+      },
       "filters": {
         "filter": "Filtre",
         "select_title": "Sélectionnez une valeur :",
         "select_many_title": "Sélectionnez une ou plusieurs valeurs.",
+        "clear_all_filters": "Supprimer tous les filtres",
         "clear_filter": "Supprimer le filtre",
         "warning": {
           "combobox": "Vous pouvez sélectionner plus d'une valeur.",
@@ -90,6 +117,22 @@
           "RESULT_STATUS_ABORTED": "Interrompu",
           "RESULT_STATUS_NOTFOUND": "Non trouvé"
         }
+      }
+    },
+    "users_me": {
+      "title": "Mon profil",
+      "informations": {
+        "title": "Informations",
+        "username": "Nom d'utilisateur",
+        "roles": "Rôles"
+      },
+      "permissions": {
+        "title": "Permissions"
+      },
+      "templates": {
+        "no_information": "Pas d'informations",
+        "no_roles": "Pas de rôles",
+        "no_permissions": "Pas de permissions"
       }
     },
     "applications-list": {
@@ -127,7 +170,6 @@
         }
       },
       "actions": {
-        "refresh": "Rafraîchir",
         "details": "Détails",
         "related_tasks": "Tâches liées",
         "cancel": "Fermer"
@@ -144,7 +186,6 @@
     },
     "tasks-list": {
       "title": "Tâches",
-      "clear_all_filters": "Supprimer tous les filtres",
       "columns": {
         "task_id": "Tâche ID",
         "session_id": "Session ID",
@@ -171,14 +212,6 @@
       },
       "actions": {
         "cancel_selection": "Annuler la sélection",
-        "refresh": "Rafraîchir",
-        "auto_refresh": {
-          "button": {
-            "title": "Rafraîchissement automatique",
-            "disabled": "Désactivé"
-          },
-          "disable": "Désactiver"
-        },
         "details": "Détails",
         "related_results": "Résultats liés",
         "parent_session": "Session",
@@ -196,7 +229,6 @@
     },
     "results-list": {
       "title": "Résultats",
-      "clear_all_filters": "Supprimer tous les filtres",
       "columns": {
         "name": "Nom",
         "task_id": "Task ID",
@@ -215,14 +247,6 @@
         }
       },
       "actions": {
-        "refresh": "Rafraîchir",
-        "auto_refresh": {
-          "button": {
-            "title": "Rafraîchissement automatique",
-            "disabled": "Désactivé"
-          },
-          "disable": "Désactiver"
-        },
         "parent_task": "Task"
       },
       "pagination": {
@@ -231,160 +255,9 @@
         "result": "{{value}} résultat"
       }
     },
-    "dashboard": {
-      "title": "Tableau de bord",
-      "errors": {
-        "title": "Les erreurs"
-      },
-      "applications": {
-        "last_sessions": "Dernières sessions",
-        "title": "Les applications",
-        "completed": "{{countTasksCompleted}} tâches complétées sur les 7 derniers jours",
-        "processing": "{{countTasksProcessing}} tâches en cours sur les 7 derniers jours",
-        "error": "{{countTasksError}} tâches en erreur sur les 7 derniers jours",
-        "pending": "{{countTasksPending}} tâches en creation, soumission ou envoi sur les 7 derniers jours",
-        "see-sessions": "Voir les sessions"
-      },
-      "table": {
-        "application_name": "Nom de l'application",
-        "application_version": "Version de l'application",
-        "session_id": "Session ID",
-        "error_at": "Erreur le",
-        "error": {
-          "seq": "Lien vers Seq de l'erreur",
-          "seq_link": "Voir dans Seq",
-          "message": "Message d'erreur"
-        },
-        "per_page": "Par page",
-        "applications": "{{value}} applications",
-        "application": "{{value}} application",
-        "filters": {
-          "error_at": {
-            "label": "Erreur depuis",
-            "default": "Toutes",
-            "text": "{{value}} jours"
-          }
-        }
-      }
-    },
     "error": {
       "title": "Désolé",
       "message": "Une erreur est survenue"
-    },
-    "sessions": {
-      "session": "{{value}} session",
-      "sessions": "{{value}} sessions",
-      "per_page": "Sessions par page",
-      "title": "Toutes les sessions",
-      "cancel": {
-        "title": "Fermer la session",
-        "text": "Vous êtes sur le point de fermer la session '{{id}}'. Voulez-vous continuer ?",
-        "button": "Valider la fermeture"
-      },
-      "table": {
-        "id": "Session ID",
-        "refresh": "Rafraîchir",
-        "delete_state": "Supprimer l'état de la table",
-        "last_activity_at": "Dernière activité le",
-        "actions": {
-          "title": "Actions",
-          "close_session": "Fermer la session"
-        },
-        "count": {
-          "title": "Total des tâches",
-          "tooltip": "{{countError}} erreurs, {{countProcessing}} en cours, {{countPending}} en attente, {{countCompleted}} complétées"
-        },
-        "status": {
-          "title": "Statut",
-          "cancelled": "Annulé",
-          "pending": "En attente",
-          "processing": "En cours",
-          "completed": "Terminée",
-          "error": "Erreur"
-        },
-        "createdAt": "Créée le",
-        "cancelledAt": "Annulée le",
-        "filters": {
-          "last_activity_at": {
-            "label": "Dernière activité depuis",
-            "default": "Toujours",
-            "text": "Derniers {{value}} jour(s)"
-          }
-        }
-      },
-      "session-detail": {
-        "tab_title": "Session {{id}}",
-        "title": "Détail de la session",
-        "created_at": "Créée le",
-        "see-more": "En voir plus",
-        "modal": {
-          "title": "Tâche {{id}}"
-        },
-        "table": {
-          "title": "Tâches associées",
-          "id": "Tâche ID",
-          "refresh": "Rafraîchir",
-          "delete_state": "Supprimer l'état de la table",
-          "per_page": "Par page",
-          "tâches": "{{value}} tâches",
-          "tâche": "{{value}} tâche",
-          "started_at": "Démarrée le",
-          "ended_at": "Terminée le",
-          "duration": {
-            "title": "Durée",
-            "milliseconds": "{{value}}ms",
-            "seconds": "{{value}}s",
-            "minutes": "{{value}}m",
-            "hours": "{{value}}h",
-            "days": "{{value}}j"
-          },
-          "status": {
-            "title": "Statut",
-            "creating": "Création",
-            "submitted": "Soumise",
-            "dispatched": "Envoyée",
-            "processing": "En cours",
-            "completed": "Terminée",
-            "error": "Erreur",
-            "cancelling": "Annulation en cours",
-            "cancelled": "Annulée"
-          },
-          "error": {
-            "seq": "Lien vers Seq de l'erreur",
-            "seq_link": "Voir dans Seq"
-          },
-          "actions": {
-            "title": "Actions",
-            "see_error": "Voir l'erreur"
-          },
-          "cancel": "Annuler la sélection",
-          "filters": {
-            "status": {
-              "title": "Filtres",
-              "default": "Toutes",
-              "UNSPECIFIED": "Non spécifié",
-              "CREATING": "Création",
-              "SUBMITTED": "Soumise",
-              "DISPATCHED": "Dépôt",
-              "PROCESSING": "En cours",
-              "PROCESSED": "Traitée",
-              "COMPLETED": "Terminée",
-              "ERROR": "Erreur",
-              "FAILED": "Échouée",
-              "TIMEOUT": "Temps écoulé",
-              "CANCELLING": "Annulation",
-              "CANCELLED": "Annulée"
-            }
-          }
-        },
-        "task-detail": {
-          "tab_title": "Tâche {{id}}",
-          "title": "Détail de la tâche",
-          "created_at": "Créée le",
-          "ended_at": "Terminée le",
-          "see_more": "En voir plus"
-        }
-      }
     }
   },
   "errors": {

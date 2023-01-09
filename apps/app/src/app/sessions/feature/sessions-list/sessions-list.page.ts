@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import {
   GetSessionResponse,
   GrpcPagerService,
@@ -9,24 +8,24 @@ import {
   ListSessionsResponse,
   SessionStatus,
 } from '@armonik.admin.gui/shared/data-access';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   distinctUntilChanged,
   first,
   map,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -34,7 +33,7 @@ import { BrowserTitleService, LanguageService } from '../../../shared/util';
   styleUrls: ['./sessions-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionsListComponent implements OnInit {
+export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
@@ -90,17 +89,9 @@ export class SessionsListComponent implements OnInit {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
-
-  ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.sessions-list.title')
-    );
-  }
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
@@ -276,5 +267,39 @@ export class SessionsListComponent implements OnInit {
         this.loadingSingleSession$.next(null);
       })
     );
+  }
+
+  /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Checks if one filter is applied to the datagrid
+   *
+   * @returns true if yes, false if no
+   */
+  isFiltered(): boolean {
+    return !!this._state.filters;
+  }
+
+  /**
+   * Clear all filters currently applied to the datagrid
+   */
+  clearAllFilters(): void {
+    delete this._state.filters;
+    this._subjectDatagrid.next(this._state);
   }
 }

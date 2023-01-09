@@ -1,0 +1,13 @@
+# History
+
+To help you to navigate, we have added a history feature. It allows you to go back to the previous pages you have visited directly from the GUI.
+
+::: tip
+We try, as much as we can, to keep page state in the URL to allow you to share it with other users.
+:::
+
+This is especially useful when you are navigating through the datagrid, using filters and sorting. It plays well with the [favorites](./favorites.md) feature.
+
+![History button](../assets/images/history.png)
+
+Of course, you can also use the browser history and the back button.

@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRouteSnapshot, ParamMap } from '@angular/router';
+import { BehaviorSubject, Observable, map, distinctUntilChanged } from 'rxjs';
 
 @Injectable()
 export class SettingsService {
@@ -117,5 +118,61 @@ export class SettingsService {
       'currentApplications',
       JSON.stringify(Array.from(this.currentApplications))
     );
+  }
+
+  /**
+   * Get query params from route and return them as Date
+   *
+   * @param param
+   *
+   * @returns Observable<Date | null>
+   */
+  public queryDateParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
+    param: string
+  ): Date | null {
+    return queryParams[param] ? new Date(parseInt(queryParams[param])) : null;
+  }
+
+  /**
+   * Get query params from route and return them as string
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryStringParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
+    param: string
+  ): string {
+    return queryParams[param] ? (queryParams[param] as string) : '';
+  }
+
+  /**
+   * Get query params from route and return them as a list
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryListParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
+    param: string
+  ): number[] {
+    return queryParams[param] ? (queryParams[param] as number[]) : [];
+  }
+
+  /**
+   * Get query params from route
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
+    param: string
+  ): number {
+    return queryParams[param] ? (queryParams[param] as number) : 0;
   }
 }

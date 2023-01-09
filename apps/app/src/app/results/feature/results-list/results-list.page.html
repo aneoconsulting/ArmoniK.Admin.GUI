@@ -6,28 +6,16 @@
     [clrDgLoading]="(loadingResults$ | async) ?? false"
   >
     <clr-dg-action-bar>
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshResults()"
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshResults()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
       >
-        {{ 'pages.results-list.actions.refresh' | translate }}
-      </button>
-
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
-
-      <button
-        *ngIf="isFiltered()"
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="clearAllFilters()"
-      >
-        {{ 'pages.results-list.clear_all_filters' | translate }}
-      </button>
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -35,11 +23,11 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
       {{ 'pages.results-list.columns.name' | translate }}
-      <clr-dg-filter [clrDgFilter]="nameFilter">
+      <clr-dg-filter [clrDgFilter]="nameFilterComponent">
         <app-id-filter
           [name]="'name'"
-          [inputValue]="nameFilter$ | async"
-          #nameFilter
+          [inputValue]="nameFilter"
+          #nameFilterComponent
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -54,7 +42,7 @@
       <clr-dg-filter [clrDgFilter]="taskFilter">
         <app-id-filter
           [name]="'taskId'"
-          [inputValue]="taskIdFilter$ | async"
+          [inputValue]="taskIdFilter"
           #taskFilter
         >
         </app-id-filter>
@@ -70,7 +58,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="sessionIdFilter$ | async"
+          [inputValue]="sessionIdFilter"
           #sessionFilter
         >
         </app-id-filter>
@@ -81,12 +69,12 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       {{ 'pages.results-list.columns.status' | translate }}
-      <clr-dg-filter [clrDgFilter]="statusFilter">
+      <clr-dg-filter [clrDgFilter]="statusFilterComponent">
         <app-select-filter
           [name]="'status'"
-          [selectedValue]="statusFilter$ | async"
+          [selectedValue]="statusFilter"
           [selectionList]="statusList"
-          #statusFilter
+          #statusFilterComponent
         >
         </app-select-filter>
       </clr-dg-filter>
@@ -98,11 +86,12 @@
       "
     >
       {{ 'pages.results-list.columns.created_at' | translate }}
-      <clr-dg-filter>
+      <clr-dg-filter [clrDgFilter]="createdAtFilter">
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="createdBeforeFilter$ | async"
-          [afterDate]="createdAfterFilter$ | async"
+          [beforeDate]="createdBeforeFilter"
+          [afterDate]="createdAfterFilter"
+          #createdAtFilter
         >
         </app-date-filter>
       </clr-dg-filter>
@@ -174,9 +163,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgPageSize]="pageSize || 10"
         [clrDgTotalItems]="(totalResults$ | async) ?? 0"
-        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
+        [clrDgPage]="(page || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
           >{{ 'pages.results-list.pagination.per_page' | translate

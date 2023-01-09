@@ -16,28 +16,16 @@
         {{ 'pages.tasks-list.actions.cancel_selection' | translate }}
       </button>
 
-      <button
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="manualRefreshTasks()"
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshTasks()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
       >
-        {{ 'pages.tasks-list.actions.refresh' | translate }}
-      </button>
-
-      <armonik-admin-gui-auto-refresh-dropdown
-        [manualStop$]="stopInterval$"
-        (refreshIntervalChange)="onUpdateInterval($event)"
-      >
-      </armonik-admin-gui-auto-refresh-dropdown>
-
-      <button
-        *ngIf="isFiltered()"
-        type="button"
-        class="btn btn-sm btn-secondary"
-        (click)="clearAllFilters()"
-      >
-        {{ 'pages.tasks-list.clear_all_filters' | translate }}
-      </button>
+      </app-action-bar>
     </clr-dg-action-bar>
 
     <clr-dg-column
@@ -46,11 +34,7 @@
     >
       {{ 'pages.tasks-list.columns.task_id' | translate }}
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter
-          [name]="'id'"
-          [inputValue]="queryStringParam$('id') | async"
-          #idFilter
-        >
+        <app-id-filter [name]="'id'" [inputValue]="filterTaskId" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -64,7 +48,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="queryStringParam$('sessionId') | async"
+          [inputValue]="filterSessionId"
           #sessionFilter
         >
         </app-id-filter>
@@ -78,7 +62,7 @@
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
           [name]="'status'"
-          [selectedValue]="filterStatus$ | async"
+          [selectedValue]="filterStatus"
           [selectionList]="taskStatusList"
           #statusFilter
         >
@@ -95,8 +79,8 @@
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
           [name]="'created'"
-          [beforeDate]="queryDateParam$('createdAtBefore') | async"
-          [afterDate]="queryDateParam$('createdAtAfter') | async"
+          [beforeDate]="filterCreatedBefore"
+          [afterDate]="filterCreatedAfter"
           #createdDateFilter
         >
         </app-date-filter>
@@ -112,8 +96,8 @@
       <clr-dg-filter [clrDgFilter]="startedDateFilter">
         <app-date-filter
           [name]="'started'"
-          [beforeDate]="queryDateParam$('startedAtBefore') | async"
-          [afterDate]="queryDateParam$('startedAtAfter') | async"
+          [beforeDate]="filterStartedBefore"
+          [afterDate]="filterStartedAfter"
           #startedDateFilter
         >
         </app-date-filter>
@@ -127,8 +111,8 @@
       <clr-dg-filter [clrDgFilter]="endedDateFilter">
         <app-date-filter
           [name]="'ended'"
-          [beforeDate]="queryDateParam$('endedAtBefore') | async"
-          [afterDate]="queryDateParam$('endedAtAfter') | async"
+          [beforeDate]="filterEndedBefore"
+          [afterDate]="filterEndedAfter"
           #endedDateFilter
         >
         </app-date-filter>
@@ -248,9 +232,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
+        [clrDgPageSize]="pageSize || 10"
         [clrDgTotalItems]="(totalTasks$ | async) ?? 0"
-        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
+        [clrDgPage]="(page || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
           >{{ 'pages.tasks-list.pagination.per_page' | translate

@@ -14,25 +14,19 @@ import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
-  distinctUntilChanged,
   first,
-  map,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -110,27 +104,69 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterStatus$: Observable<number> = this.queryParam$('status');
-  filterTaskId$: Observable<string> = this.queryStringParam$('taskId');
-  filterSessionId$: Observable<string> = this.queryStringParam$('SessionId');
-  filterCreated$: Observable<Date | null> = this.queryDateParam$('createdAt');
-  filterStarted$: Observable<Date | null> = this.queryDateParam$('startedAt');
-  filterEnded$: Observable<Date | null> = this.queryDateParam$('endedAt');
+  filterTaskId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'taskId'
+  );
+
+  filterSessionId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
+
+  filterStatus: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'status'
+  );
+
+  filterCreatedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
+
+  filterCreatedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
+
+  filterStartedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'startedAtBefore'
+  );
+
+  filterStartedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'startedAtAfter'
+  );
+
+  filterEndedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'endedAtBefore'
+  );
+
+  filterEndedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'endedAtAfter'
+  );
+
+  pageSize: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'pageSize'
+  );
+  page: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'page'
+  );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.tasks-list.title')
-    );
     this.taskStatusList = [
       ...Object.keys(TaskStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))
@@ -259,70 +295,6 @@ export class TasksListComponent implements OnInit {
   }
 
   /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  public queryListParam$(param: string): Observable<number[]> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.getAll(param)),
-      map((values) => values.flatMap((v) => Number(v))),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as string
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryStringParam$(param: string): Observable<string> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => (value !== null ? value : '')),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
-   * Get query params from route and return them as Date
-   *
-   * @param param
-   *
-   * @returns Observable<Date | null>
-   */
-  public queryDateParam$(param: string): Observable<Date | null> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((urlParams) => urlParams.get(param)),
-      map((value) => {
-        if (!value) {
-          return null;
-        }
-
-        const numberDate = Number(value);
-        if (isNaN(numberDate)) {
-          return null;
-        }
-
-        return new Date(numberDate);
-      }),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
    * Track by interval
    *
    * @param _
@@ -417,6 +389,23 @@ export class TasksListComponent implements OnInit {
   }
 
   /**
+   * Checks if the datagrid is ordered by any column
+   *
+   * @returns true if yes, false if no
+   */
+  isOrdered(): boolean {
+    return !!this._state.sort;
+  }
+
+  /**
+   * Set the datagrid to the default order
+   */
+  clearOrder(): void {
+    delete this._state.sort;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
    * Checks if one filter is applied to the datagrid
    *
    * @returns true if yes, false if no
@@ -428,8 +417,8 @@ export class TasksListComponent implements OnInit {
   /**
    * Clear all filters currently applied to the datagrid
    */
-  clearAllFilters() {
+  clearAllFilters(): void {
     delete this._state.filters;
-    this.refreshTasks(this._state);
+    this._subjectDatagrid.next(this._state);
   }
 }

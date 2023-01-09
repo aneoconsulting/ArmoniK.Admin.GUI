@@ -3,23 +3,17 @@
     class="btn-star btn btn-inverse btn-link"
     (click)="togglePageFavorite()"
   >
-    {{ currentFavoriteName }}
-    <clr-icon
-      shape="star"
-      size="24"
-      [class.is-solid]="currentFavoriteName"
-    ></clr-icon>
-    <span class="sr-only">
-      {{
-        (currentFavoriteName
-          ? 'pages.components.modal_favorites.button.remove'
-          : 'pages.components.modal_favorites.button.add'
-        ) | translate
-      }}
-    </span>
-    <span *ngIf="currentFavoriteName">
-      {{ currentFavoriteName }}
-    </span>
+    <ng-container
+      *ngIf="currentFavoriteName | async as name; else notAFavorite"
+    >
+      <clr-icon shape="star" size="24" class="is-solid"></clr-icon>
+      <span class="sr-only">
+        {{ 'pages.components.modal_favorites.button.remove' | translate }}
+      </span>
+      <span>
+        {{ name }}
+      </span>
+    </ng-container>
   </button>
   <clr-modal
     [clrModalOpen]="(isModalFavoriteOpened$ | async) || false"
@@ -63,3 +57,10 @@
     </div>
   </clr-modal>
 </div>
+
+<ng-template #notAFavorite>
+  <clr-icon shape="star" size="24"></clr-icon>
+  <span class="sr-only">
+    {{ 'pages.components.modal_favorites.button.add' | translate }}
+  </span>
+</ng-template>
