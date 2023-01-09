@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { User } from '@armonik.admin.gui/shared/data-access';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class AuthService {
+  public loading$ = new Subject<boolean>();
+
   private _user = new BehaviorSubject<User | null>(null);
   private _user$ = this._user.asObservable();
 

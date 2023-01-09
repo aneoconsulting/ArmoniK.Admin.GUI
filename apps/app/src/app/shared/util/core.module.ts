@@ -8,7 +8,6 @@ import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { LocaleProvider } from './providers';
 import {
   ErrorService,
-  BrowserTitleService,
   FavoritesService,
   HistoryService,
   LanguageService,
@@ -34,7 +33,6 @@ import {
     }),
   ],
   providers: [
-    BrowserTitleService,
     LocaleProvider,
     LanguageService,
     SettingsService,
