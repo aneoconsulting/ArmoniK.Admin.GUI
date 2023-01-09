@@ -7,7 +7,7 @@
 </button>
 
 <armonik-admin-gui-auto-refresh-dropdown
-  [manualStop$]="stopInterval$"
+  [actualInterval]="refreshInterval"
   (refreshIntervalChange)="onUpdateInterval($event)"
 >
 </armonik-admin-gui-auto-refresh-dropdown>

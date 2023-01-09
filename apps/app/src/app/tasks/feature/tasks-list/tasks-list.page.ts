@@ -9,7 +9,7 @@ import {
   TaskStatus,
   TaskSummary,
 } from '@armonik.admin.gui/shared/data-access';
-import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
+import { AutoRefreshService, DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -35,11 +35,11 @@ import { SettingsService } from '../../../shared/util';
 })
 export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
+  private _intervalValue = this._autoRefreshService.intervalQueryParam(this._activatedRoute.snapshot.queryParams)
 
   /** Get tasks */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
@@ -50,7 +50,7 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPagerService.createParams(state);
+        const params = this._grpcPagerService.createParams(state, this._intervalValue);
         await this._router.navigate([], {
           queryParams: params,
           relativeTo: this._activatedRoute,
@@ -58,11 +58,7 @@ export class TasksListComponent implements OnInit {
         return state;
       })
     );
-  private _triggerInterval$: Observable<number> = this._intervalValue
-    .asObservable()
-    .pipe(
-      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
-    );
+  private _triggerInterval$: Observable<number> = timer(0, this._intervalValue).pipe(takeUntil(this.stopInterval$))
 
   loadingTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   totalTasks$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -163,7 +159,8 @@ export class TasksListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
-    private _grpcPagerService: GrpcPagerService
+    private _grpcPagerService: GrpcPagerService,
+    private _autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
@@ -175,6 +172,10 @@ export class TasksListComponent implements OnInit {
           label: key,
         })),
     ];
+  }
+
+  public get refreshIntervalValue() {
+    return this._intervalValue;
   }
 
   public get OrderByField(): typeof ListTasksRequest.OrderByField {
@@ -208,12 +209,11 @@ export class TasksListComponent implements OnInit {
   }
 
   public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
+    this._intervalValue = value;
+    this._subjectDatagrid.next(this._state);
   }
 
   public defaultSortOrder(
@@ -342,7 +342,7 @@ export class TasksListComponent implements OnInit {
    * @returns Observable<ListTasksResponse>
    */
   private _listTasks$(): Observable<ListTasksResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
+    const urlParams = this._grpcPagerService.createParams(this._restoreState(), this._intervalValue);
     const grpcParams = this._grpcTasksService.urlToGrpcParams(urlParams);
     return this._grpcTasksService.list$(grpcParams).pipe(
       catchError((error) => {
