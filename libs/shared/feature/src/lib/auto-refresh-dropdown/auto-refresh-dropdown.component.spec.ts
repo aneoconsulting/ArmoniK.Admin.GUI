@@ -36,7 +36,7 @@ describe('AutoRefreshDropdownComponent', () => {
   });
 
   it('should have a default refresh rate label', () => {
-      expect(component.interval.label).toBeTruthy();
+    expect(component.interval.label).toBeTruthy();
   });
 
   it('should emit an interval value on interval change', () => {

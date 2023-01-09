@@ -62,9 +62,10 @@ export class ApplicationsListComponent {
       return state;
     })
   );
-  private _triggerInterval$: Observable<number> = timer(0, this._intervalValue).pipe(
-    takeUntil(this.stopInterval$)
-  );
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingApplications$ = new BehaviorSubject<boolean>(true);
   totalApplications$ = new BehaviorSubject<number>(0);
