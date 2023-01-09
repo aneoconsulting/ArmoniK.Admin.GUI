@@ -61,7 +61,7 @@ export class ResultsListComponent implements OnInit {
       return state;
     })
   );
-  private _triggerInterval$ = timer(0, this._intervalValue).pipe(
+  private _triggerInterval$: Observable<number> = timer(0, this._intervalValue).pipe(
     takeUntil(this.stopInterval$)
   );
 
