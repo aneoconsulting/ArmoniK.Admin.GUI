@@ -21,8 +21,8 @@
     <clr-vertical-nav [clr-nav-level]="1">
       <a clrVerticalNavLink [routerLink]="['/', 'users', 'me']">
         <clr-icon shape="user" clrVerticalNavIcon></clr-icon>
-        <ng-container *ngIf="currentUser$ | async as user; else loading">
-          {{ user.username }}
+        <ng-container *ngIf="loadingCurrentUser$ | async; else showUser">
+          {{ 'navigation.connexion_in_progress' | translate }}
         </ng-container>
       </a>
       <div class="nav-divider"></div>
@@ -94,11 +94,12 @@
   </div>
 </clr-main-container>
 
-<ng-template #loading>
-  <ng-container *ngIf="loadingUser">
-    {{ 'navigation.connexion_in_progress' | translate }}
+<ng-template #showUser>
+  <ng-container *ngIf="currentUser as user; else noUser">
+    {{ user.username }}
   </ng-container>
-  <ng-container *ngIf="!loadingUser">
-    {{ 'navigation.connexion_failed' | translate }}
-  </ng-container>
+</ng-template>
+
+<ng-template #noUser>
+  {{ 'navigation.connexion_failed' | translate }}
 </ng-template>
