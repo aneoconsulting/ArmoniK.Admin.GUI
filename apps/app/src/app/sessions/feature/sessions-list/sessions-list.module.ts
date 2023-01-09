@@ -25,7 +25,7 @@ import {
   IdFilterComponent,
   SelectFilterComponent,
 } from '../../../shared/feature/filters';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
+import { LanguageService } from '../../../shared/util';
 import { ActionBarComponent } from '../../../shared/feature';
 
 /**
@@ -53,11 +53,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     DateFilterComponent,
     SelectFilterComponent,
   ],
-  providers: [
-    BrowserTitleService,
-    LanguageService,
-    GrpcSessionsService,
-    GrpcPagerService,
-  ],
+  providers: [LanguageService, GrpcSessionsService, GrpcPagerService],
 })
 export class SessionsListModule {}

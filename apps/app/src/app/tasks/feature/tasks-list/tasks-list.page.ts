@@ -14,23 +14,19 @@ import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   first,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -108,81 +104,69 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterTaskId$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.paramMap,
+  filterTaskId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
 
-  filterSessionId$: Observable<string> =
-    this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'sessionId'
-    );
+  filterSessionId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
 
-  filterStatus$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  filterStatus: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'status'
   );
 
-  filterCreatedBefore$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtBefore'
-    );
+  filterCreatedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
 
-  filterCreatedAfter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtAfter'
-    );
+  filterCreatedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
 
-  filterStartedBefore$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'startedAtBefore'
-    );
+  filterStartedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'startedAtBefore'
+  );
 
-  filterStartedAfter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'startedAtAfter'
-    );
+  filterStartedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'startedAtAfter'
+  );
 
-  filterEndedBefore$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'endedAtBefore'
-    );
+  filterEndedBefore: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'endedAtBefore'
+  );
 
-  filterEndedAfter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'endedAtAfter'
-    );
+  filterEndedAfter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'endedAtAfter'
+  );
 
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  pageSize: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  page: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'page'
   );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.tasks-list.title')
-    );
     this.taskStatusList = [
       ...Object.keys(TaskStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))

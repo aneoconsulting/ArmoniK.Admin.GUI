@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import {
   GetSessionResponse,
   GrpcPagerService,
@@ -9,24 +8,23 @@ import {
   ListSessionsResponse,
   SessionStatus,
 } from '@armonik.admin.gui/shared/data-access';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   first,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
 import {
-  BrowserTitleService,
-  LanguageService,
   SettingsService,
 } from '../../../shared/util';
 
@@ -36,7 +34,7 @@ import {
   styleUrls: ['./sessions-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionsListComponent implements OnInit {
+export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
@@ -89,95 +87,76 @@ export class SessionsListComponent implements OnInit {
     switchMap(() => this._listSessions$())
   );
 
-  sessionsStatusList: { value: number; label: string }[];
+  sessionsStatusList: { value: number; label: string }[] = [
+    ...Object.keys(SessionStatus)
+      .filter((key) => !Number.isInteger(parseInt(key)))
+      .map((key) => ({
+        value: SessionStatus[key as keyof typeof SessionStatus],
+        label: key,
+      })),
+  ];;
 
   /**
    * Filter observables.
    * They permit to avoid the endless loop due to the async pipe with the functions.
    */
-  sessionFilter$: Observable<string> = this._settingsService.queryStringParam$(
+  sessionFilter = this._settingsService.queryStringParam(
     this._activatedRoute.queryParamMap,
     'sessionId'
   );
-  statusFilter$: Observable<number> = this._settingsService.queryParam$(
+  statusFilter: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'status'
   );
-  createdBeforeFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
+  createdBeforeFilter: Date | null =
+    this._settingsService.queryDateParam(
       this._activatedRoute.queryParamMap,
       'createdAtBefore'
     );
-  createdAfterFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
+  createdAfterFilter: Date | null =
+    this._settingsService.queryDateParam(
       this._activatedRoute.queryParamMap,
       'createdAtAfter'
     );
-  cancelledBeforeFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
+  cancelledBeforeFilter: Date | null =
+    this._settingsService.queryDateParam(
       this._activatedRoute.queryParamMap,
       'cancelledAtBefore'
     );
-  cancelledAfterFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
+  cancelledAfterFilter: Date | null =
+    this._settingsService.queryDateParam(
       this._activatedRoute.queryParamMap,
       'cancelledAtAfter'
     );
 
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
+  pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'pageSize'
   );
-  page$: Observable<number> = this._settingsService.queryParam$(
+  page: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'page'
   );
 
-  applicationName$: Observable<string> =
-    this._settingsService.queryStringParam$(
+  applicationName: string =
+    this._settingsService.queryStringParam(
       this._activatedRoute.queryParamMap,
       'applicationName'
     );
 
-  applicationVersion$: Observable<string> =
-    this._settingsService.queryStringParam$(
+  applicationVersion: string =
+    this._settingsService.queryStringParam(
       this._activatedRoute.queryParamMap,
       'applicationVersion'
     );
 
-  applicationName = '';
-  applicationVersion = '';
-
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService,
     private _settingsService: SettingsService
   ) {}
-
-  ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.sessions-list.title')
-    );
-    this.sessionsStatusList = [
-      ...Object.keys(SessionStatus)
-        .filter((key) => !Number.isInteger(parseInt(key)))
-        .map((key) => ({
-          value: SessionStatus[key as keyof typeof SessionStatus],
-          label: key,
-        })),
-    ];
-
-    this.applicationName$.subscribe((value) => {
-      this.applicationName = value;
-    });
-    this.applicationVersion$.subscribe((value) => {
-      this.applicationVersion = value;
-    });
-  }
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
