@@ -1,5 +1,5 @@
 name: "\U0001F41E Bug Report"
-description: Create a report to help us improve Nuxt
+description: Create a report to help us improve the Admin GUI
 labels: ['pending triage']
 body:
   - type: textarea
@@ -30,7 +30,7 @@ body:
     id: additonal
     attributes:
       label: Additional context
-      description: If applicable, add any other context about the problem here`
+      description: If applicable, add any other context about the problem here.
   - type: textarea
     id: logs
     attributes:
