@@ -24,9 +24,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import {
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -94,7 +92,7 @@ export class SessionsListComponent {
         value: SessionStatus[key as keyof typeof SessionStatus],
         label: key,
       })),
-  ];;
+  ];
 
   /**
    * Filter observables.
@@ -108,26 +106,22 @@ export class SessionsListComponent {
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
-  createdBeforeFilter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'createdAtBefore'
-    );
-  createdAfterFilter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'createdAtAfter'
-    );
-  cancelledBeforeFilter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'cancelledAtBefore'
-    );
-  cancelledAfterFilter: Date | null =
-    this._settingsService.queryDateParam(
-      this._activatedRoute.snapshot.queryParams,
-      'cancelledAtAfter'
-    );
+  createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
+  createdAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
+  cancelledBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'cancelledAtBefore'
+  );
+  cancelledAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'cancelledAtAfter'
+  );
 
   pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
@@ -138,17 +132,15 @@ export class SessionsListComponent {
     'page'
   );
 
-  applicationName: string =
-    this._settingsService.queryStringParam(
-      this._activatedRoute.snapshot.queryParams,
-      'applicationName'
-    );
+  applicationName: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'applicationName'
+  );
 
-  applicationVersion: string =
-    this._settingsService.queryStringParam(
-      this._activatedRoute.snapshot.queryParams,
-      'applicationVersion'
-    );
+  applicationVersion: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'applicationVersion'
+  );
 
   constructor(
     private _router: Router,
