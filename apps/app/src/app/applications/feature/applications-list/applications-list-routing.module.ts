@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 const routes: Routes = [
   {
     path: '',
+    title: 'Applications List',
     component: ApplicationsListComponent,
   },
 ];

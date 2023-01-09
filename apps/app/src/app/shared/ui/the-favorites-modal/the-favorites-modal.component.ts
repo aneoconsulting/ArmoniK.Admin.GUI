@@ -33,7 +33,7 @@ export class TheFavoritesModalComponent implements OnInit, OnDestroy {
 
   private _modalFavoriteOpened = new BehaviorSubject<boolean>(false);
 
-  public currentFavoriteName: string | null = null;
+  public currentFavoriteName = new BehaviorSubject<string | null>(null);
   public favoriteName = '';
 
   constructor(
@@ -49,7 +49,9 @@ export class TheFavoritesModalComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(() => {
-        this.currentFavoriteName = this._favoritesService.get(this.currentUrl);
+        this.currentFavoriteName.next(
+          this._favoritesService.get(this.currentUrl)
+        );
       });
   }
 
@@ -86,7 +88,7 @@ export class TheFavoritesModalComponent implements OnInit, OnDestroy {
    */
   public addPageFavorite(): void {
     this._favoritesService.add(this.currentUrl, this.favoriteName);
-    this.currentFavoriteName = this.favoriteName;
+    this.currentFavoriteName.next(this.favoriteName);
     this.closeModalFavorites();
   }
 
@@ -95,14 +97,14 @@ export class TheFavoritesModalComponent implements OnInit, OnDestroy {
    */
   public removePageFavorite(): void {
     this._favoritesService.remove(this.currentUrl);
-    this.currentFavoriteName = null;
+    this.currentFavoriteName.next(null);
   }
 
   /**
    * Toggle a favorite
    */
   togglePageFavorite(): void {
-    if (this.currentFavoriteName) {
+    if (this.currentFavoriteName.getValue()) {
       this.removePageFavorite();
     } else {
       this.openModalFavorites();

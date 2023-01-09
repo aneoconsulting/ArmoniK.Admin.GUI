@@ -5,6 +5,7 @@ import { ErrorDetailComponent } from './error-detail.page';
 const routes: Routes = [
   {
     path: '',
+    title: 'Error Detail',
     component: ErrorDetailComponent,
   },
 ];
