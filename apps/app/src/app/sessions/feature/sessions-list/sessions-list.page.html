@@ -100,7 +100,7 @@
             class="btn btn-sm btn-secondary"
             (click)="viewSessionDetail(session.sessionId!)"
           >
-            <clr-icon shape="eye"></clr-icon>
+            <cds-icon shape="eye"></cds-icon>
             {{ 'pages.sessions-list.actions.details' | translate }}
           </button>
           <a
@@ -108,7 +108,7 @@
             [routerLink]="['/', 'tasks']"
             [queryParams]="{ sessionId: session.sessionId }"
           >
-            <clr-icon shape="node"></clr-icon>
+            <cds-icon shape="node"></cds-icon>
             {{ 'pages.sessions-list.actions.related_tasks' | translate }}
           </a>
           <button
@@ -117,7 +117,7 @@
             (click)="cancelSession(session.sessionId!)"
             [disabled]="session.cancelledAt"
           >
-            <clr-icon shape="times"></clr-icon>
+            <cds-icon shape="times"></cds-icon>
             {{ 'pages.sessions-list.actions.cancel' | translate }}
           </button>
         </clr-dg-cell>

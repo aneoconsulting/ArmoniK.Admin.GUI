@@ -5,6 +5,25 @@ import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
+  ClarityIcons,
+  angleIcon,
+  bundleIcon,
+  certificateIcon,
+  crosshairsIcon,
+  eyeIcon,
+  filterGridIcon,
+  helpIcon,
+  historyIcon,
+  infoCircleIcon,
+  lineChartIcon,
+  nodeIcon,
+  nodesIcon,
+  starIcon,
+  timesIcon,
+  userIcon,
+} from '@cds/core/icon';
+import '@cds/core/icon/register.js';
+import {
   ClrIconModule,
   ClrLayoutModule,
   ClrVerticalNavModule,
@@ -13,6 +32,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppTranslateModule } from './app-translate.module';
 import { AppComponent } from './app.component';
+import { CanActivateUser } from './shared/data-access';
 import { AuthService } from './shared/data-access/auth.service';
 import {
   TheFavoritesNavigationComponent,
@@ -20,19 +40,12 @@ import {
   TheHistoryNavigationComponent,
   TheLanguagesSelectorComponent,
 } from './shared/feature';
-import { TheHeaderComponent, TheFavoritesModalComponent } from './shared/ui';
+import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
 import {
   CoreModule,
   LanguageService,
   RemoveRouteReuseStrategy,
 } from './shared/util';
-import { CanActivateUser } from './shared/data-access';
-
-import '@clr/icons';
-import '@clr/icons/shapes/chart-shapes';
-import '@clr/icons/shapes/essential-shapes';
-import '@clr/icons/shapes/social-shapes';
-import '@clr/icons/shapes/technology-shapes';
 
 /**
  * Load app data
@@ -70,5 +83,22 @@ import '@clr/icons/shapes/technology-shapes';
 export class AppModule {
   constructor(private languageService: LanguageService) {
     this.languageService.init();
+    ClarityIcons.addIcons(
+      userIcon,
+      crosshairsIcon,
+      bundleIcon,
+      lineChartIcon,
+      angleIcon,
+      helpIcon,
+      nodesIcon,
+      filterGridIcon,
+      nodeIcon,
+      eyeIcon,
+      timesIcon,
+      infoCircleIcon,
+      historyIcon,
+      starIcon,
+      certificateIcon
+    );
   }
 }

@@ -196,7 +196,7 @@
             class="btn btn-sm btn-secondary"
             (click)="viewTaskDetail(task.id!)"
           >
-            <clr-icon shape="eye"></clr-icon>
+            <cds-icon shape="eye"></cds-icon>
             {{ 'pages.tasks-list.actions.details' | translate }}
           </button>
           <a
@@ -204,7 +204,7 @@
             [routerLink]="['/', 'results']"
             [queryParams]="{ ownerTaskId: task.sessionId }"
           >
-            <clr-icon shape="certificate"></clr-icon>
+            <cds-icon shape="certificate"></cds-icon>
             {{ 'pages.tasks-list.actions.related_results' | translate }}
           </a>
           <a
@@ -212,7 +212,7 @@
             [routerLink]="['/', 'sessions']"
             [queryParams]="{ sessionId: task.sessionId }"
           >
-            <clr-icon shape="nodes"></clr-icon>
+            <cds-icon shape="nodes"></cds-icon>
             {{ 'pages.tasks-list.actions.parent_session' | translate }}
           </a>
           <a
@@ -222,7 +222,7 @@
             [title]="'pages.tasks-list.actions.view_seq' | translate"
             [href]="generateSeqUrl(task.id!)"
           >
-            <clr-icon shape="crosshairs"></clr-icon>
+            <cds-icon shape="crosshairs"></cds-icon>
             SEQ
           </a>
         </clr-dg-cell>

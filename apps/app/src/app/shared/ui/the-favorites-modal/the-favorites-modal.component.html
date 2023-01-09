@@ -6,7 +6,7 @@
     <ng-container
       *ngIf="currentFavoriteName | async as name; else notAFavorite"
     >
-      <clr-icon shape="star" size="24" class="is-solid"></clr-icon>
+      <cds-icon shape="star" size="24" class="is-solid"></cds-icon>
       <span class="sr-only">
         {{ 'pages.components.modal_favorites.button.remove' | translate }}
       </span>
@@ -59,7 +59,7 @@
 </div>
 
 <ng-template #notAFavorite>
-  <clr-icon shape="star" size="24"></clr-icon>
+  <cds-icon shape="star" size="24"></cds-icon>
   <span class="sr-only">
     {{ 'pages.components.modal_favorites.button.add' | translate }}
   </span>
