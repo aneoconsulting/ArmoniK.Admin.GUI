@@ -70,29 +70,29 @@ export class ApplicationsListComponent {
     switchMap(() => this._listApplications$())
   );
 
-  nameFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  nameFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'name'
   );
-  versionFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  versionFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'version'
   );
-  namespaceFilter$: Observable<string> =
-    this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
+  namespaceFilter: string =
+    this._settingsService.queryStringParam(
+      this._activatedRoute.snapshot.queryParams,
       'namespace'
     );
-  serviceFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  serviceFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'service'
   );
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  pageSize: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  page: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'page'
   );
 

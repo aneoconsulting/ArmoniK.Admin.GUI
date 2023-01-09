@@ -21,6 +21,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       ListApplicationsRequest.Filter.AsObject
     >
   ): Observable<ListApplicationsResponse> {
+    console.log(params)
     const options = new ListApplicationsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
@@ -33,12 +34,14 @@ export class GrpcApplicationsService extends BaseGrpcService {
           ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
       filter: {
-        name: '',
-        namespace: '',
-        service: '',
-        version: '',
+        name: params.filter?.name || '',
+        namespace: params.filter?.namespace || '',
+        service: params.filter?.service || '',
+        version: params.filter?.version || '',
       },
     });
+
+    console.log(options)
 
     return this._applicationsClient
       .listApplications(options)
