@@ -1,6 +1,6 @@
 ---
 name: "\U0001F4A1 Feature Request"
-about: Suggest an idea or enhancement for the module.
+about: Suggest an idea or enhancement for the Admin GUI.
 title: ''
 labels: 'enhancement'
 assignees: ''
