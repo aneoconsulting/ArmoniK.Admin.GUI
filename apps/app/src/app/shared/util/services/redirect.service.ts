@@ -7,27 +7,27 @@ import { Router } from '@angular/router';
 export class RedirectService {
   constructor(private _router: Router) {}
 
-  public notFound(title: string = 'Not found') {
+  public notFound(message: string = 'Not found') {
     this._router.navigate(['/404'], {
-      queryParams: { title },
+      queryParams: { message },
     });
   }
 
-  public unauthenticated(title: string = 'You are not authenticated') {
+  public unauthenticated(message: string = 'You are not authenticated') {
     this._router.navigate(['/401'], {
-      queryParams: { title },
+      queryParams: { message },
     });
   }
 
-  public forbidden(title: string = 'You are not authorized') {
+  public forbidden(message: string = 'You are not authorized') {
     this._router.navigate(['/403'], {
-      queryParams: { title },
+      queryParams: { message },
     });
   }
 
-  public error(title: string = 'An error occurred') {
+  public error(message: string = 'An error occurred') {
     this._router.navigate(['/error'], {
-      queryParams: { title },
+      queryParams: { message },
     });
   }
 }

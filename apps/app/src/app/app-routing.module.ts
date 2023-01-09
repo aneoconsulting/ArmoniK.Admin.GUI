@@ -59,10 +59,10 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'error',
+    path: ':statusCode',
     loadChildren: () =>
-      import('./error/feature/error-detail/error-detail.module').then(
-        (m) => m.ErrorDetailModule
+      import('./errors/feature/errors-shell/errors-shell.module').then(
+        (m) => m.ErrorsShellModule
       ),
   },
 ];
