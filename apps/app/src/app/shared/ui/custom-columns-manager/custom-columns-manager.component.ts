@@ -20,7 +20,6 @@ import { BehaviorSubject } from 'rxjs';
     FormsModule,
     ClrInputModule,
     ClrModalModule,
-
     NgIf,
     NgFor,
     AsyncPipe,
