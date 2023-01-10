@@ -31,7 +31,7 @@ export class AuthorizationService {
   }
 
   public canCancelTasks(): boolean {
-    return !this._can<TasksClient>('CancelTasks', 'Tasks');
+    return this._can<TasksClient>('CancelTasks', 'Tasks');
   }
 
   private _can<T>(action: Action<T>, service: string): boolean {
