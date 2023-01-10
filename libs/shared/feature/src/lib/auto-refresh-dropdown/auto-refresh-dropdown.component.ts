@@ -1,10 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClrDropdownModule } from '@clr/angular';
 
 type Interval = {
