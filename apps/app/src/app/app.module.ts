@@ -23,7 +23,6 @@ import {
   timesIcon,
   userIcon,
 } from '@cds/core/icon';
-import '@cds/core/icon/register.js';
 import {
   ClrIconModule,
   ClrLayoutModule,
@@ -41,7 +40,6 @@ import {
 } from './shared/feature';
 import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
 import { CoreModule, RemoveRouteReuseStrategy } from './shared/util';
-
 /**
  * Load app data
  */
