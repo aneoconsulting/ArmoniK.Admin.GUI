@@ -1,7 +1,7 @@
 import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
+import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
 import {
   ClrDatagridModule,
@@ -9,8 +9,8 @@ import {
   ClrIconModule,
 } from '@clr/angular';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
-import { ApplicationsListComponent } from './applications-list.page';
 import { ActionBarComponent } from '../../../shared/feature';
+import { ApplicationsListComponent } from './applications-list.page';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -21,6 +21,7 @@ import { ActionBarComponent } from '../../../shared/feature';
     ClrDatagridModule,
     ActionBarComponent,
     ApplicationsListRoutingModule,
+    ActionBarComponent,
     NgClass,
     AsyncPipe,
     DatePipe,

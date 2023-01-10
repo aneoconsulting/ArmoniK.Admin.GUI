@@ -12,14 +12,14 @@ import {
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CanActivateUser } from './shared/data-access';
 import { AuthService } from './shared/data-access/auth.service';
 import {
-  TheFavoritesModalComponent,
   TheFavoritesNavigationComponent,
   TheHeaderTimeComponent,
   TheHistoryNavigationComponent,
 } from './shared/feature';
-import { TheHeaderComponent } from './shared/ui';
+import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
 import { CoreModule, RemoveRouteReuseStrategy } from './shared/util';
 
 import '@clr/icons';
@@ -53,6 +53,7 @@ import '@clr/icons/shapes/technology-shapes';
     AuthService,
     GrpcAuthService,
     HealthCheckService,
+    CanActivateUser,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

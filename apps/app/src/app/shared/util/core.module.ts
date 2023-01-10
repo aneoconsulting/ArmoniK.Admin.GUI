@@ -7,7 +7,6 @@ import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import {
   ErrorService,
-  BrowserTitleService,
   FavoritesService,
   HistoryService,
   PagerService,
@@ -32,7 +31,6 @@ import {
     }),
   ],
   providers: [
-    BrowserTitleService,
     SettingsService,
     HistoryService,
     ErrorService,

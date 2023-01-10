@@ -20,7 +20,6 @@ import {
 
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
-import { BrowserTitleService } from '../../../shared/util';
 import { ActionBarComponent } from '../../../shared/feature';
 
 /**
@@ -44,6 +43,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     DatePipe,
     JsonPipe,
   ],
-  providers: [BrowserTitleService, GrpcSessionsService, GrpcPagerService],
+  providers: [GrpcSessionsService, GrpcPagerService],
 })
 export class SessionsListModule {}

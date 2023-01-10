@@ -1,0 +1,62 @@
+<div class="favorites-container">
+  <button
+    class="btn-star btn btn-inverse btn-link"
+    (click)="togglePageFavorite()"
+  >
+    <ng-container
+      *ngIf="currentFavoriteName | async as name; else notAFavorite"
+    >
+      <clr-icon shape="star" size="24" class="is-solid"></clr-icon>
+      <span class="sr-only" i18n> Remove from favorites </span>
+      <span>
+        {{ name }}
+      </span>
+    </ng-container>
+  </button>
+  <clr-modal
+    [clrModalOpen]="(isModalFavoriteOpened$ | async) || false"
+    [clrModalClosable]="false"
+    [clrModalSize]="'lg'"
+  >
+    <h3 class="modal-title" i18n>Create a new favorite</h3>
+    <div class="modal-body">
+      <form clrForm>
+        <clr-input-container>
+          <label i18n>Name of the favorite</label>
+          <input
+            clrInput
+            type="text"
+            name="favoriteName"
+            [(ngModel)]="favoriteName"
+            i18n-placeholder
+            placeholder="Enter a name"
+            required
+          />
+        </clr-input-container>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        (click)="closeModalFavorites()"
+        class="btn btn-secondary"
+        i18n
+      >
+        Close
+      </button>
+      <button
+        type="button"
+        (click)="addPageFavorite()"
+        class="btn btn-primary"
+        i18n
+      >
+        Add
+      </button>
+    </div>
+  </clr-modal>
+</div>
+
+<ng-template #notAFavorite>
+  <clr-icon shape="star" size="24"></clr-icon>
+  <span class="sr-only" i18n> Add to favorites </span>
+</ng-template>

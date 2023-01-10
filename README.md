@@ -2,13 +2,32 @@
 
 ArmoniK GUI add an administration interface to the ArmoniK project.
 
-It is a monorepo containing the client, the server and shared libraries.
+It is a monorepo containing the client and shared libraries.
 
 ## Tech Stack
 
 **Client:** [Angular](https://angular.io), [Clarity](https://clarity.design/), [gRCP](https://grpc.io/)
 
 **Build System:** [Nx](https://nx.dev/)
+
+## Apps
+
+- **app:** The main app of the project. It is the administration interface of ArmoniK.
+
+## Libs
+
+The libs are divided into 4 categories:
+
+- **feature:** The feature libs are the libs that implement smart UI (with access to data sources) for specific business use cases or pages in an application.
+- **ui:** The UI libs are the libs that contain only presentational components (also called "dumb" components).
+- **data-access:** The data-access libs are the libs that contain code for interacting with a back-end system. It also includes all the code related to state management.
+- **utility:** The utility libs are the libs that contain low-level utilities used by many libraries and applications.
+
+There is also a shared lib that contains code that is shared between multiple apps and libs.
+
+- **shared:** The shared libs are the libs that contain code that is shared between multiple apps and libs. It will be divided into the 4 categories above.
+
+This structure is based on the [Nx documentation](https://nx.dev/more-concepts). It is a good practice to have a better separation of concerns and a better maintainability. So this structure mused be respected.
 
 ## Run Locally
 
@@ -48,24 +67,24 @@ Then, you can edit the generated files in `apps/app/src/assets/locale`.
 
 ### Create proxy configuration
 
-Duplicate the file `proxy.conf.json.example` to `proxy.conf.json` and change the `<protocol>://<host>:<port>` value to the url of the ArmoniK server.
+Duplicate the file `proxy.conf.json.example` to `proxy.conf.json` and change the `<protocol>://<host>:<port>` value to the url of the ArmoniK backend.
 
 This file is necessary to have access to the gRPC services and in order to be able to build the project.
 
 ### Commandes available
 
 ```sh
-# Start the project (App and Server)
+# Start the project (App)
 yarn start
-# Build the project (App and Server)
+# Build the project (App)
 yarn build
-# Run test on the project (App, Server and libs)
+# Run test on the project (App and libs)
 yarn test
-# Format the project (App, Server and libs)
+# Format the project (App and libs)
 yarn format
-# Check format of the project (App, Server and libs)
+# Check format of the project (App and libs)
 yarn format:check
-# Lint the project (App, Server and libs)
+# Lint the project (App and libs)
 yarn lint
 ```
 
@@ -77,7 +96,7 @@ Start the app
   yarn ng serve app
 ```
 
-In order to have access to data, you must alors install [ArmoniK](https://github.com/aneoconsulting/ArmoniK) and start the server.
+In order to have access to data, you must install [ArmoniK](https://github.com/aneoconsulting/ArmoniK) and start the service.
 
 #### Analyze the app
 

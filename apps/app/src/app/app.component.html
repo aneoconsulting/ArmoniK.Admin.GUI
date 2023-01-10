@@ -23,8 +23,8 @@
     <clr-vertical-nav [clr-nav-level]="1">
       <a clrVerticalNavLink [routerLink]="['/', 'users', 'me']">
         <clr-icon shape="user" clrVerticalNavIcon></clr-icon>
-        <ng-container *ngIf="currentUser$ | async as user; else loading">
-          {{ user.username }}
+        <ng-container *ngIf="loadingCurrentUser$ | async; else showUser">
+          <span i18n> Connexion en cours... </span>
         </ng-container>
       </a>
       <div class="nav-divider"></div>
@@ -62,13 +62,30 @@
       <div class="nav-divider"></div>
       <app-pages-the-favorites-navigation></app-pages-the-favorites-navigation>
       <app-pages-the-history-navigation></app-pages-the-history-navigation>
-      <div class="nav-divider"></div>
-      <a clrVerticalNavLink routerLink="/how-to-use" routerLinkActive="active">
-        <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
-        <span i18n> How to use </span>
-      </a>
-      <div class="version">
-        <span> v0.7.0 </span>
+      <div class="bottom">
+        <a
+          clrVerticalNavLink
+          href="https://aneoconsulting.github.io/ArmoniK.Admin.GUI/"
+          rel="noopener"
+          target="_blank"
+        >
+          <clr-icon shape="help" clrVerticalNavIcon></clr-icon>
+          <span i18n> Documentation </span>
+        </a>
+        <a
+          clrVerticalNavLink
+          href="https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases"
+          rel="noopener"
+          target="_blank"
+        >
+          <clr-icon shape="new" clrVerticalNavIcon></clr-icon>
+          <span i18n> Changelog </span>
+        </a>
+        <div class="version">
+          <span i18n> Admin GUI </span>
+          -
+          <span> v0.7.0 </span>
+        </div>
       </div>
     </clr-vertical-nav>
 
@@ -79,9 +96,12 @@
   </div>
 </clr-main-container>
 
-<ng-template #loading>
-  <ng-container *ngIf="loadingUser" i18n>
-    Connexion in progress...
+<ng-template #showUser>
+  <ng-container *ngIf="currentUser as user; else noUser">
+    {{ user.username }}
   </ng-container>
-  <ng-container *ngIf="!loadingUser" i18n> Connexion failed </ng-container>
+</ng-template>
+
+<ng-template #noUser>
+  <span i18n> Connexion failed </span>
 </ng-template>

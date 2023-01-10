@@ -23,11 +23,11 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
       <span i18n> Name </span>
-      <clr-dg-filter [clrDgFilter]="nameFilter">
+      <clr-dg-filter [clrDgFilter]="nameFilterComponent">
         <app-id-filter
-          name="name"
-          [inputValue]="nameFilter$ | async"
-          #nameFilter
+          [name]="'name'"
+          [inputValue]="nameFilter"
+          #nameFilterComponent
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -40,11 +40,7 @@
     >
       <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="taskFilter">
-        <app-id-filter
-          name="taskId"
-          [inputValue]="taskIdFilter$ | async"
-          #taskFilter
-        >
+        <app-id-filter name="taskId" [inputValue]="taskIdFilter" #taskFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -58,7 +54,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           name="sessionId"
-          [inputValue]="sessionIdFilter$ | async"
+          [inputValue]="sessionIdFilter"
           #sessionFilter
         >
         </app-id-filter>
@@ -69,12 +65,12 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       <span i18n> Status </span>
-      <clr-dg-filter [clrDgFilter]="statusFilter">
+      <clr-dg-filter [clrDgFilter]="statusFilterComponent">
         <app-select-filter
-          name="status"
-          [selectedValue]="statusFilter$ | async"
+          [name]="'status'"
+          [selectedValue]="statusFilter"
           [selectionList]="statusList"
-          #statusFilter
+          #statusFilterComponent
         >
         </app-select-filter>
       </clr-dg-filter>
@@ -86,11 +82,12 @@
       "
     >
       <span i18n> Created at </span>
-      <clr-dg-filter>
+      <clr-dg-filter [clrDgFilter]="createdAtFilter">
         <app-date-filter
-          name="created"
-          [beforeDate]="createdBeforeFilter$ | async"
-          [afterDate]="createdAfterFilter$ | async"
+          [name]="'created'"
+          [beforeDate]="createdBeforeFilter"
+          [afterDate]="createdAfterFilter"
+          #createdAtFilter
         >
         </app-date-filter>
       </clr-dg-filter>
@@ -159,9 +156,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(pageSize$ | async) || 10"
+        [clrDgPageSize]="pageSize || 10"
         [clrDgTotalItems]="(totalResults$ | async) ?? 0"
-        [clrDgPage]="((page$ | async) || 0) + 1"
+        [clrDgPage]="(page || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
           <span i18n> Per Page </span>

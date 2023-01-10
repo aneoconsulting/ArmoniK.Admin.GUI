@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import {
   GetSessionResponse,
   GrpcPagerService,
@@ -9,24 +8,24 @@ import {
   ListSessionsResponse,
   SessionStatus,
 } from '@armonik.admin.gui/shared/data-access';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   distinctUntilChanged,
   first,
   map,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import { BrowserTitleService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -34,7 +33,7 @@ import { BrowserTitleService } from '../../../shared/util';
   styleUrls: ['./sessions-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionsListComponent implements OnInit {
+export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get a single session */
@@ -90,14 +89,9 @@ export class SessionsListComponent implements OnInit {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
-
-  ngOnInit(): void {
-    this._browserTitleService.setTitle($localize`Sessions`);
-  }
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
