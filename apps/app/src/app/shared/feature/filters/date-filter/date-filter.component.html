@@ -1,16 +1,18 @@
 <clr-date-container>
   <label>
-    {{ 'pages.components.filters.date.before' | translate }}
-    <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+    <span i18n> Before the </span>
+    <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
-      <span class="tooltip-content">
-        {{ 'pages.components.filters.warning.before-date' | translate }}
+      <span class="tooltip-content" i18n>
+        Will display data with a date strictly inferior than indicated.
       </span>
-    </a>
+    </div>
   </label>
   <input
     type="date"
     clrDate
+    i18n-placeholder
+    placeholder="YYYY-MM-DD"
     name="beforeDate"
     [(clrDate)]="beforeDate"
     (clrDateChange)="onDateChange()"
@@ -18,22 +20,24 @@
 </clr-date-container>
 <clr-date-container>
   <label>
-    {{ 'pages.components.filters.date.after' | translate }}
-    <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+    <span i18n> After the </span>
+    <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
-      <span class="tooltip-content">
-        {{ 'pages.components.filters.warning.after-date' | translate }}
+      <span class="tooltip-content" i18n>
+        Will display data with a date strictly superior than indicated.
       </span>
-    </a>
+    </div>
   </label>
   <input
     type="date"
     clrDate
+    i18n-placeholder
+    placeholder="YYYY-MM-DD"
     name="afterDate"
     [(clrDate)]="afterDate"
     (clrDateChange)="onDateChange()"
   />
 </clr-date-container>
-<button class="btn btn-sm" *ngIf="isActive()" (click)="clear()">
-  {{ 'pages.components.filters.clear-filter' | translate }}
+<button class="btn btn-sm" *ngIf="isActive()" (click)="clear()" i18n>
+  Clear the filter
 </button>

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { ClearOrderComponent } from './clear-order.component';
 
@@ -9,7 +8,7 @@ describe('ClearOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ClearOrderComponent);

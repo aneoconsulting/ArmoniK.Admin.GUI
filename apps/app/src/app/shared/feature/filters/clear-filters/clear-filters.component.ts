@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-clear-filters',
   templateUrl: './clear-filters.component.html',
   styleUrls: ['./clear-filters.component.scss'],
-  imports: [TranslateModule, CommonModule],
+  imports: [CommonModule],
 })
 export class ClearFiltersComponent {
   @Input() isFiltered = false;

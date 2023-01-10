@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-select-filter',
   templateUrl: './select-filter.component.html',
   styleUrls: ['./select-filter.component.scss'],
-  imports: [ClarityModule, TranslateModule, FormsModule, CommonModule],
+  imports: [ClarityModule, FormsModule, CommonModule],
 })
 export class SelectFilterComponent
   implements ClrDatagridFilterInterface<number>
