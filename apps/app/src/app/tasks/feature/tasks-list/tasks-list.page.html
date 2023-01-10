@@ -8,6 +8,7 @@
   >
     <clr-dg-action-bar>
       <button
+        *ngIf="canCancelTasks()"
         [clrLoading]="loadingCancelTasks$ | async"
         type="button"
         class="btn btn-sm btn-outline-danger"
