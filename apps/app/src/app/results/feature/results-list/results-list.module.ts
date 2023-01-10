@@ -2,10 +2,7 @@ import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
-import {
-  AutoRefreshDropdownComponent,
-  AutoRefreshService,
-} from '@armonik.admin.gui/shared/feature';
+
 import {
   ClrDatagridModule,
   ClrDropdownModule,
@@ -24,7 +21,6 @@ import { ActionBarComponent } from '../../../shared/feature';
 @NgModule({
   declarations: [ResultsListComponent],
   imports: [
-    AutoRefreshDropdownComponent,
     ClrIconModule,
     ClrDropdownModule,
     ClrDatagridModule,
@@ -39,6 +35,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     NgFor,
     NgIf,
   ],
-  providers: [GrpcResultsService, GrpcPagerService, AutoRefreshService],
+  providers: [GrpcResultsService, GrpcPagerService],
 })
 export class ResultsListModule {}

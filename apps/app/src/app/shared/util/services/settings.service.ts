@@ -175,4 +175,17 @@ export class SettingsService {
   ): number {
     return queryParams[param] ? (queryParams[param] as number) : 0;
   }
+
+  /**
+   * Get the interval param from the route
+   * 
+   * @param queryParams 
+   * 
+   * @returns the value of the interval; 10000 if it does not exists. 
+   */
+  public intervalQueryParam(
+    queryParams: ActivatedRouteSnapshot['queryParams']
+  ): number {
+    return queryParams['interval'] ? parseInt(queryParams['interval']) : 10000;
+  }
 }

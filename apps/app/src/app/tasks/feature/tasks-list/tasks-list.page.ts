@@ -10,7 +10,6 @@ import {
   TaskSummary,
 } from '@armonik.admin.gui/shared/data-access';
 import {
-  AutoRefreshService,
   DisabledIntervalValue,
 } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
@@ -38,7 +37,7 @@ import { SettingsService } from '../../../shared/util';
 })
 export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
-  private _intervalValue = this._autoRefreshService.intervalQueryParam(
+  private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
   );
 
@@ -171,7 +170,6 @@ export class TasksListComponent implements OnInit {
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
     private _grpcPagerService: GrpcPagerService,
-    private _autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {

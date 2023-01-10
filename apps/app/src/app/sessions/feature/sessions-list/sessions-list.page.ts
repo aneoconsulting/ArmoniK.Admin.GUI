@@ -9,7 +9,6 @@ import {
   SessionStatus,
 } from '@armonik.admin.gui/shared/data-access';
 import {
-  AutoRefreshService,
   DisabledIntervalValue,
 } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -29,6 +28,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -38,7 +38,7 @@ import {
 })
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
-  private _intervalValue = this._autoRefreshService.intervalQueryParam(
+  private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
   );
 
@@ -97,7 +97,7 @@ export class SessionsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
     private _grpcPagerService: GrpcPagerService,
-    private _autoRefreshService: AutoRefreshService
+    private _settingsService: SettingsService
   ) {}
 
   public get refreshIntervalValue() {

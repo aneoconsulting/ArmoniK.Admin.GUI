@@ -9,7 +9,6 @@ import {
   ResultStatus,
 } from '@armonik.admin.gui/shared/data-access';
 import {
-  AutoRefreshService,
   DisabledIntervalValue,
 } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -36,7 +35,7 @@ import { SettingsService } from '../../../shared/util';
 })
 export class ResultsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
-  private _intervalValue = this._autoRefreshService.intervalQueryParam(
+  private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
   );
 
@@ -125,7 +124,6 @@ export class ResultsListComponent implements OnInit {
     private _settingsService: SettingsService,
     private _grpcResultsService: GrpcResultsService,
     private _grpcPagerService: GrpcPagerService,
-    private _autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
