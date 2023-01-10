@@ -5,7 +5,7 @@
     <div *ngFor="let favorite of favorites$ | async; trackBy: trackByFavorites">
       <a
         class="nav-link"
-        [routerLink]="splitUrl(favorite.url)"
+        [routerLink]="generateRouterLink(favorite.url)"
         [queryParams]="favorite.queryParams"
         [title]="favorite.label"
         >{{ favorite.label }}</a

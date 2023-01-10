@@ -39,10 +39,7 @@ export class TheFavoritesNavigationComponent {
     return item.label;
   }
 
-  public splitUrl(url: string): string | string[] {
-    if (url.includes(',')) {
-      return ['/', ...url.split(',')];
-    }
-    return `/${url}`;
+  public generateRouterLink(url: string | string[]): string[] {
+    return ['/', ...url];
   }
 }
