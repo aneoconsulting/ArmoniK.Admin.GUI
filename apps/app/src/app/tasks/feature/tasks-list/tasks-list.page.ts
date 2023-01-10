@@ -172,7 +172,9 @@ export class TasksListComponent implements OnInit {
         .filter((key) => !Number.isInteger(parseInt(key)))
         .map((key) => ({
           value: TaskStatus[key as keyof typeof TaskStatus],
-          label: key,
+          label: this.getStatusLabel(
+            TaskStatus[key as keyof typeof TaskStatus]
+          ),
         })),
     ];
   }
@@ -195,6 +197,35 @@ export class TasksListComponent implements OnInit {
 
   public get initialInterval(): number {
     return this._settingsService.initialInterval;
+  }
+
+  public getStatusLabel(status: number): string {
+    switch (status) {
+      case TaskStatus.TASK_STATUS_CANCELLED:
+        return $localize`Cancelled`;
+      case TaskStatus.TASK_STATUS_CANCELLING:
+        return $localize`Cancelling`;
+      case TaskStatus.TASK_STATUS_COMPLETED:
+        return $localize`Completed`;
+      case TaskStatus.TASK_STATUS_CREATING:
+        return $localize`Creating`;
+      case TaskStatus.TASK_STATUS_DISPATCHED:
+        return $localize`Dispatched`;
+      case TaskStatus.TASK_STATUS_ERROR:
+        return $localize`Error`;
+      case TaskStatus.TASK_STATUS_PROCESSED:
+        return $localize`Processed`;
+      case TaskStatus.TASK_STATUS_PROCESSING:
+        return $localize`Processing`;
+      case TaskStatus.TASK_STATUS_SUBMITTED:
+        return $localize`Submitted`;
+      case TaskStatus.TASK_STATUS_TIMEOUT:
+        return $localize`Timeout`;
+      case TaskStatus.TASK_STATUS_UNSPECIFIED:
+        return $localize`Unspecified`;
+      default:
+        return $localize`Unknown`;
+    }
   }
 
   public generateSeqUrl(taskId: string): string {

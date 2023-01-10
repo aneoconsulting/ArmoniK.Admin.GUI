@@ -3,6 +3,12 @@
   "projectType": "application",
   "sourceRoot": "apps/app/src",
   "prefix": "armonik.admin.gui",
+  "i18n": {
+    "locales": {
+      "fr": "apps/app/src/locale/messages.fr.xlf",
+      "en": "apps/app/src/locale/messages.en.xlf"
+    }
+  },
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -11,6 +17,8 @@
         "outputPath": "dist/apps/app",
         "index": "apps/app/src/index.html",
         "main": "apps/app/src/main.ts",
+        "i18nMissingTranslation": "warning",
+        "localize": ["fr", "en"],
         "polyfills": "apps/app/src/polyfills.ts",
         "tsConfig": "apps/app/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
@@ -43,13 +51,23 @@
           ],
           "outputHashing": "all"
         },
-        "development": {
+        "en": {
           "buildOptimizer": false,
           "optimization": false,
           "vendorChunk": true,
           "extractLicenses": false,
           "sourceMap": true,
-          "namedChunks": true
+          "namedChunks": true,
+          "localize": ["en"]
+        },
+        "fr": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "localize": ["fr"]
         }
       },
       "defaultConfiguration": "production"
@@ -60,19 +78,25 @@
         "production": {
           "browserTarget": "app:build:production"
         },
-        "development": {
-          "browserTarget": "app:build:development"
+        "fr": {
+          "browserTarget": "app:build:fr"
+        },
+        "en": {
+          "browserTarget": "app:build:en"
         }
       },
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "en",
       "options": {
         "proxyConfig": "apps/app/proxy.conf.json"
       }
     },
     "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "executor": "ng-extract-i18n-merge:ng-extract-i18n-merge",
       "options": {
-        "browserTarget": "app:build"
+        "browserTarget": "app:build",
+        "format": "xlf2",
+        "outputPath": "apps/app/src/locale",
+        "targetFiles": ["messages.fr.xlf", "messages.en.xlf"]
       }
     },
     "lint": {

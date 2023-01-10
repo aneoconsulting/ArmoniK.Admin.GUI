@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import {
   debounceTime,
   distinctUntilChanged,
@@ -22,7 +22,7 @@ import {
   selector: 'app-id-filter',
   templateUrl: './id-filter.component.html',
   styleUrls: ['./id-filter.component.scss'],
-  imports: [ClarityModule, TranslateModule, FormsModule, CommonModule],
+  imports: [ClarityModule, FormsModule, CommonModule],
 })
 export class IdFilterComponent
   implements ClrDatagridFilterInterface<string>, OnInit, OnDestroy

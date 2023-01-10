@@ -57,6 +57,14 @@ These types are generated from the Proto files in `/libs/shared/data-access/src/
 yarn generate:proto
 ```
 
+### Generate translations
+
+```sh
+yarn translate
+```
+
+Then, you can edit the generated files in `apps/app/src/assets/locale`.
+
 ### Create proxy configuration
 
 Duplicate the file `proxy.conf.json.example` to `proxy.conf.json` and change the `<protocol>://<host>:<port>` value to the url of the ArmoniK backend.
