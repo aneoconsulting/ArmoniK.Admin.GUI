@@ -5,6 +5,25 @@ import { RouteReuseStrategy } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
+  ClarityIcons,
+  angleIcon,
+  bundleIcon,
+  certificateIcon,
+  crosshairsIcon,
+  eyeIcon,
+  filterGridIcon,
+  helpIcon,
+  historyIcon,
+  infoCircleIcon,
+  lineChartIcon,
+  newIcon,
+  nodeIcon,
+  nodesIcon,
+  starIcon,
+  timesIcon,
+  userIcon,
+} from '@cds/core/icon';
+import {
   ClrIconModule,
   ClrLayoutModule,
   ClrVerticalNavModule,
@@ -21,13 +40,6 @@ import {
 } from './shared/feature';
 import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
 import { CoreModule, RemoveRouteReuseStrategy } from './shared/util';
-
-import '@clr/icons';
-import '@clr/icons/shapes/chart-shapes';
-import '@clr/icons/shapes/essential-shapes';
-import '@clr/icons/shapes/social-shapes';
-import '@clr/icons/shapes/technology-shapes';
-
 /**
  * Load app data
  */
@@ -58,4 +70,25 @@ import '@clr/icons/shapes/technology-shapes';
   declarations: [AppComponent],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    ClarityIcons.addIcons(
+      userIcon,
+      crosshairsIcon,
+      bundleIcon,
+      lineChartIcon,
+      angleIcon,
+      helpIcon,
+      newIcon,
+      nodesIcon,
+      filterGridIcon,
+      nodeIcon,
+      eyeIcon,
+      timesIcon,
+      infoCircleIcon,
+      historyIcon,
+      starIcon,
+      certificateIcon
+    );
+  }
+}
