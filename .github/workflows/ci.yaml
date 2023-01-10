@@ -207,7 +207,12 @@ jobs:
     needs: [setup, validate-code]
     runs-on: ubuntu-latest
     steps:
-      - name: Cache Node Modules
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v3
         with:
