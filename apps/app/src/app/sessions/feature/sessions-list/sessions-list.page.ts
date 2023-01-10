@@ -260,7 +260,7 @@ export class SessionsListComponent {
     return this._grpcSessionsService.list$(grpcParams).pipe(
       catchError((error: Error) => {
         console.error(error);
-        // this._stopInterval.next();
+        this._stopInterval.next();
 
         return of({} as ListSessionsResponse);
       }),
