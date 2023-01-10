@@ -5,9 +5,9 @@ on:
     branches:
       - main
     paths:
-      - ".docs/**"
-      - "package.json"
-      - "yarn.lock"
+      - '.docs/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 jobs:
   deploy:
