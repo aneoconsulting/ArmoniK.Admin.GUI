@@ -38,4 +38,11 @@ export class TheFavoritesNavigationComponent {
   public trackByFavorites(_: number, item: FavoriteItem): string {
     return item.label;
   }
+
+  public splitUrl(url: string): string | string[] {
+    if (url.includes(',')) {
+      return ['/', ...url.split(',')];
+    }
+    return `/${url}`;
+  }
 }

@@ -34,12 +34,9 @@ export class FavoritesService {
               queryParams: queryParams,
             };
           }
-
           return {
             label,
-            url: root.children['primary'].segments
-              .map((segment) => segment.path)
-              .join('/'),
+            url: root.children['primary'].segments.toString(),
             queryParams: queryParams,
           };
         });
