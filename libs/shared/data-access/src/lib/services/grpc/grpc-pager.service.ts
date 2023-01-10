@@ -16,12 +16,14 @@ export class GrpcPagerService {
    */
   public createParams(
     state: ClrDatagridStateInterface,
-    refreshInterval: number,
+    refreshInterval?: number,
     data: Record<string, string | number> = {}
   ): Record<string, string | number> {
     const params = new Map<string, string | number>();
 
-    params.set('interval', refreshInterval);
+    if (refreshInterval) {
+      params.set('interval', refreshInterval);
+    }
 
     this._createPage(state, params);
     this._createOrder(state, params);

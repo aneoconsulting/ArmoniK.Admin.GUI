@@ -208,10 +208,7 @@ export class ApplicationsListComponent {
    * @returns Observable<ListApplicationsResponse>
    */
   private _listApplications$(): Observable<ListApplicationsResponse> {
-    const params = this._grpcPagerService.createParams(
-      this._restoreState(),
-      this._intervalValue
-    );
+    const params = this._grpcPagerService.createParams(this._restoreState());
 
     return this._grpcApplicationsService.list$(params).pipe(
       catchError((error) => {

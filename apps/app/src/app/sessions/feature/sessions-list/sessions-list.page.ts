@@ -255,10 +255,7 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    const urlParams = this._grpcPagerService.createParams(
-      this._restoreState(),
-      this._intervalValue
-    );
+    const urlParams = this._grpcPagerService.createParams(this._restoreState());
     const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
     return this._grpcSessionsService.list$(grpcParams).pipe(
       catchError((error: Error) => {

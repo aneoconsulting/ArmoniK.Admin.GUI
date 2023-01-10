@@ -380,10 +380,7 @@ export class TasksListComponent implements OnInit {
    * @returns Observable<ListTasksResponse>
    */
   private _listTasks$(): Observable<ListTasksResponse> {
-    const urlParams = this._grpcPagerService.createParams(
-      this._restoreState(),
-      this._intervalValue
-    );
+    const urlParams = this._grpcPagerService.createParams(this._restoreState());
     const grpcParams = this._grpcTasksService.urlToGrpcParams(urlParams);
     return this._grpcTasksService.list$(grpcParams).pipe(
       catchError((error) => {
