@@ -101,6 +101,7 @@
             <span i18n> Related Tasks </span>
           </a>
           <button
+            *ngIf="canCancelSession()"
             type="button"
             class="btn btn-sm btn-outline-danger"
             (click)="cancelSession(session.sessionId!)"
