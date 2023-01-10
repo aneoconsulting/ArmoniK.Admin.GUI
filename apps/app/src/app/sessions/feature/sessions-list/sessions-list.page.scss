@@ -7,15 +7,20 @@ clr-dg-cell {
   flex-direction: row;
   align-items: center;
 
-  & a:hover span {
-    text-decoration: inherit;
+  & a:has(span) {
+    text-decoration: none;
+
+    &:hover span {
+      text-decoration: underline;
+    }
   }
 }
 
 $textTypes: ('success', 'danger');
 
 @each $type in $textTypes {
-  .text-#{$type} {
+  .#{$type} {
     color: var(--#{$type}-500);
+    text-decoration-color: var(--#{$type}-500);
   }
 }
