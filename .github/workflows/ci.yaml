@@ -203,8 +203,25 @@ jobs:
       - name: Build all
         run: yarn ng affected --target=build --parallel=3
 
+  build-docs:
+    needs: [validate-code]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Set Node Env
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Build
+        run: yarn docs:build
+
   build-push-docker-images:
-    needs: build
+    needs: [build, build-docs]
     runs-on: ubuntu-latest
     strategy:
       matrix:
