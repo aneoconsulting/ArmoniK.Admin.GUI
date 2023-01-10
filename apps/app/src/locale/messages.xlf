@@ -16,14 +16,9 @@
         <source> Grafana </source>
       </segment>
     </unit>
-    <unit id="6696564147769081173">
+    <unit id="5735144946949909322">
       <segment>
-        <source> How to use </source>
-      </segment>
-    </unit>
-    <unit id="6715424196394178892">
-      <segment>
-        <source> Connexion in progress... </source>
+        <source> Connexion en cours... </source>
       </segment>
     </unit>
     <unit id="8038492058748232410">
@@ -96,16 +91,6 @@
     <unit id="2896080322332039141">
       <segment>
         <source>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</source>
-      </segment>
-    </unit>
-    <unit id="7872557156040593774">
-      <segment>
-        <source>Oops</source>
-      </segment>
-    </unit>
-    <unit id="960665565485640516">
-      <segment>
-        <source>Something went wrong</source>
       </segment>
     </unit>
     <unit id="1519954996184640001">
@@ -267,7 +252,7 @@
         <source>Select a value</source>
       </segment>
     </unit>
-    <unit id="4355219995854950706">
+    <unit id="2550362311380847170">
       <segment>
         <source> Remove from favorites </source>
       </segment>
@@ -389,11 +374,6 @@
         <source>No permissions </source>
       </segment>
     </unit>
-    <unit id="4915431133669985304">
-      <segment>
-        <source>Profile</source>
-      </segment>
-    </unit>
     <unit id="2973059034135035176">
       <segment>
         <source> Auto-refresh </source>
@@ -482,6 +462,21 @@
     <unit id="9155387182259025015">
       <segment>
         <source>Processing</source>
+      </segment>
+    </unit>
+    <unit id="5231513041566423158">
+      <segment>
+        <source> Admin GUI </source>
+      </segment>
+    </unit>
+    <unit id="6801253915325537992">
+      <segment>
+        <source> Documentation </source>
+      </segment>
+    </unit>
+    <unit id="8126854498119483717">
+      <segment>
+        <source> Changelog </source>
       </segment>
     </unit>
   </file>

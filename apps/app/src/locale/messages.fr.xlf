@@ -18,15 +18,9 @@
         <target> Grafana </target>
       </segment>
     </unit>
-    <unit id="6696564147769081173">
+    <unit id="5735144946949909322">
       <segment state="initial">
-        <source> How to use </source>
-        <target> Comment utiliser </target>
-      </segment>
-    </unit>
-    <unit id="6715424196394178892">
-      <segment state="initial">
-        <source> Connexion in progress... </source>
+        <source> Connexion en cours... </source>
         <target> Connexion en cours... </target>
       </segment>
     </unit>
@@ -116,18 +110,6 @@
       <segment state="initial">
         <source>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</source>
         <target>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</target>
-      </segment>
-    </unit>
-    <unit id="7872557156040593774">
-      <segment state="initial">
-        <source>Oops</source>
-        <target>Oops</target>
-      </segment>
-    </unit>
-    <unit id="960665565485640516">
-      <segment state="initial">
-        <source>Something went wrong</source>
-        <target>Quelque chose s&apos;est mal passé</target>
       </segment>
     </unit>
     <unit id="1519954996184640001">
@@ -324,7 +306,7 @@
         <target>Sélectionnez une valeur</target>
       </segment>
     </unit>
-    <unit id="4355219995854950706">
+    <unit id="2550362311380847170">
       <segment state="initial">
         <source> Remove from favorites </source>
         <target> Retirer des favoris </target>
@@ -472,12 +454,6 @@
         <target>Pas de permissions </target>
       </segment>
     </unit>
-    <unit id="4915431133669985304">
-      <segment state="initial">
-        <source>Profile</source>
-        <target>Profil</target>
-      </segment>
-    </unit>
     <unit id="2973059034135035176">
       <segment state="initial">
         <source> Auto-refresh </source>
@@ -584,6 +560,24 @@
       <segment state="initial">
         <source>Timeout</source>
         <target>Expirée</target>
+      </segment>
+    </unit>
+    <unit id="6801253915325537992">
+      <segment state="initial">
+        <source> Documentation </source>
+        <target> Documentation </target>
+      </segment>
+    </unit>
+    <unit id="8126854498119483717">
+      <segment state="initial">
+        <source> Changelog </source>
+        <target> Changelog </target>
+      </segment>
+    </unit>
+    <unit id="5231513041566423158">
+      <segment state="initial">
+        <source> Admin GUI </source>
+        <target> Admin GUI </target>
       </segment>
     </unit>
   </file>
