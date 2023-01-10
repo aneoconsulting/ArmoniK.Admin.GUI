@@ -9,9 +9,7 @@ import {
   TaskStatus,
   TaskSummary,
 } from '@armonik.admin.gui/shared/data-access';
-import {
-  DisabledIntervalValue,
-} from '@armonik.admin.gui/shared/feature';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -169,7 +167,7 @@ export class TasksListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
-    private _grpcPagerService: GrpcPagerService,
+    private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {

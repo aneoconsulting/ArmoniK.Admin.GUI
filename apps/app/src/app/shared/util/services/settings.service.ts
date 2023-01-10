@@ -178,10 +178,10 @@ export class SettingsService {
 
   /**
    * Get the interval param from the route
-   * 
-   * @param queryParams 
-   * 
-   * @returns the value of the interval; 10000 if it does not exists. 
+   *
+   * @param queryParams
+   *
+   * @returns the value of the interval; 10000 if it does not exists.
    */
   public intervalQueryParam(
     queryParams: ActivatedRouteSnapshot['queryParams']

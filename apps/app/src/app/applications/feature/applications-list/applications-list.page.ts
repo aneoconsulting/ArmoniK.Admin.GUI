@@ -7,9 +7,7 @@ import {
   ListApplicationsRequest,
   ListApplicationsResponse,
 } from '@armonik.admin.gui/shared/data-access';
-import {
-  DisabledIntervalValue,
-} from '@armonik.admin.gui/shared/feature';
+import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
@@ -83,7 +81,7 @@ export class ApplicationsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService,
-    private _grpcPagerService: GrpcPagerService,
+    private _grpcPagerService: GrpcPagerService
   ) {}
 
   public get refreshIntervalValue() {
