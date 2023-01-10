@@ -172,7 +172,9 @@ export class TasksListComponent implements OnInit {
         .filter((key) => !Number.isInteger(parseInt(key)))
         .map((key) => ({
           value: TaskStatus[key as keyof typeof TaskStatus],
-          label: key,
+          label: this.getStatusLabel(
+            TaskStatus[key as keyof typeof TaskStatus]
+          ),
         })),
     ];
   }
