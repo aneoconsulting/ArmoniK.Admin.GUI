@@ -26,8 +26,7 @@ export class FavoritesService {
           const urlTree = this._urlSerializer.parse(url);
           const root = urlTree.root;
           const queryParams = urlTree.queryParams;
-          console.log('url', url)
-          console.log('urlTree', urlTree)
+
           if (!root.children['primary']) {
             return {
               label,
