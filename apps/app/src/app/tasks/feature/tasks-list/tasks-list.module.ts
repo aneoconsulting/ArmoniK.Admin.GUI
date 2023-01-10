@@ -20,7 +20,7 @@ import {
   ClrLoadingModule,
   ClrModalModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { ActionBarComponent } from '../../../shared/feature';
 import {
   SelectFilterComponent,
@@ -42,7 +42,6 @@ import { TasksListComponent } from './tasks-list.page';
     ClrLoadingModule,
     ClrDropdownModule,
     ClrModalModule,
-    TranslateModule,
     TasksListRoutingModule,
     SelectFilterComponent,
     IdFilterComponent,

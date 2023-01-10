@@ -11,10 +11,9 @@ import {
   ClrDropdownModule,
   ClrIconModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ActionBarComponent } from '../../../shared/feature';
 import { ApplicationsListComponent } from './applications-list.page';
-import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -23,7 +22,7 @@ import { ApplicationsListRoutingModule } from './applications-list-routing.modul
     ClrIconModule,
     ClrDropdownModule,
     ClrDatagridModule,
-    TranslateModule,
+    ActionBarComponent,
     ApplicationsListRoutingModule,
     ActionBarComponent,
     NgClass,

@@ -159,6 +159,23 @@ export class ResultsListComponent implements OnInit {
     return this._settingsService.initialInterval;
   }
 
+  public getStatusLabel(status: number): string {
+    switch (status) {
+      case ResultStatus.RESULT_STATUS_ABORTED:
+        return $localize`Aborted`;
+      case ResultStatus.RESULT_STATUS_CREATED:
+        return $localize`Created`;
+      case ResultStatus.RESULT_STATUS_COMPLETED:
+        return $localize`Completed`;
+      case ResultStatus.RESULT_STATUS_NOTFOUND:
+        return $localize`Not found`;
+      case ResultStatus.RESULT_STATUS_UNSPECIFIED:
+        return $localize`Unspecified`;
+      default:
+        return $localize`Unknown`;
+    }
+  }
+
   public onUpdateInterval(value: number) {
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();

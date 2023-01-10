@@ -1,6 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClarityModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { first } from 'rxjs';
 import {
   AutoRefreshDropdownComponent,
@@ -13,11 +11,7 @@ describe('AutoRefreshDropdownComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [
-        AutoRefreshDropdownComponent,
-        TranslateModule.forRoot(),
-        ClarityModule,
-      ],
+      imports: [],
     }).compileComponents();
   });
 

@@ -7,9 +7,7 @@
       *ngIf="currentFavoriteName | async as name; else notAFavorite"
     >
       <clr-icon shape="star" size="24" class="is-solid"></clr-icon>
-      <span class="sr-only">
-        {{ 'pages.components.modal_favorites.button.remove' | translate }}
-      </span>
+      <span class="sr-only" i18n> Remove from favorites </span>
       <span>
         {{ name }}
       </span>
@@ -20,24 +18,18 @@
     [clrModalClosable]="false"
     [clrModalSize]="'lg'"
   >
-    <h3 class="modal-title">
-      {{ 'pages.components.modal_favorites.modal.title' | translate }}
-    </h3>
+    <h3 class="modal-title" i18n>Create a new favorite</h3>
     <div class="modal-body">
       <form clrForm>
         <clr-input-container>
-          <label>{{
-            'pages.components.modal_favorites.modal.input.label' | translate
-          }}</label>
+          <label i18n>Name of the favorite</label>
           <input
             clrInput
             type="text"
             name="favoriteName"
             [(ngModel)]="favoriteName"
-            placeholder="{{
-              'pages.components.modal_favorites.modal.input.placeholder'
-                | translate
-            }}"
+            i18n-placeholder
+            placeholder="Enter a name"
             required
           />
         </clr-input-container>
@@ -48,11 +40,17 @@
         type="button"
         (click)="closeModalFavorites()"
         class="btn btn-secondary"
+        i18n
       >
-        {{ 'pages.components.modal_favorites.modal.close' | translate }}
+        Close
       </button>
-      <button type="button" (click)="addPageFavorite()" class="btn btn-primary">
-        {{ 'pages.components.modal_favorites.modal.add' | translate }}
+      <button
+        type="button"
+        (click)="addPageFavorite()"
+        class="btn btn-primary"
+        i18n
+      >
+        Add
       </button>
     </div>
   </clr-modal>
@@ -60,7 +58,5 @@
 
 <ng-template #notAFavorite>
   <clr-icon shape="star" size="24"></clr-icon>
-  <span class="sr-only">
-    {{ 'pages.components.modal_favorites.button.add' | translate }}
-  </span>
+  <span class="sr-only" i18n> Add to favorites </span>
 </ng-template>

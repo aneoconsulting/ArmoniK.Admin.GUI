@@ -4,7 +4,6 @@ import {
   TestBed,
   tick,
 } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { IdFilterComponent } from './id-filter.component';
 
@@ -14,7 +13,7 @@ describe('IdFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [],
     }).compileComponents();
   });
 

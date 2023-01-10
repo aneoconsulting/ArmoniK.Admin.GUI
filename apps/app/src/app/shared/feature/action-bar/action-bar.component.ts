@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
-import { TranslateModule } from '@ngx-translate/core';
 import { ClearFiltersComponent } from '../filters';
 import { ClearOrderComponent } from '../clear-order/clear-order.component';
 
@@ -11,7 +10,6 @@ import { ClearOrderComponent } from '../clear-order/clear-order.component';
   imports: [
     CommonModule,
     AutoRefreshDropdownComponent,
-    TranslateModule,
     ClearFiltersComponent,
     ClearOrderComponent,
   ],

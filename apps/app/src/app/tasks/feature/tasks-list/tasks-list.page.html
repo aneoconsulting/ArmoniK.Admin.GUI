@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'pages.tasks-list.title' | translate }}</h1>
+  <h1 i18n>Tasks</h1>
 
   <clr-datagrid
     [(clrDgSelected)]="selected"
@@ -12,8 +12,9 @@
         type="button"
         class="btn btn-sm btn-outline-danger"
         (click)="cancelSelection()"
+        i18n
       >
-        {{ 'pages.tasks-list.actions.cancel_selection' | translate }}
+        Cancel selection
       </button>
 
       <app-action-bar
@@ -32,9 +33,9 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_TASK_ID.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
-      {{ 'pages.tasks-list.columns.task_id' | translate }}
+      <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter [name]="'id'" [inputValue]="filterTaskId" #idFilter>
+        <app-id-filter name="id" [inputValue]="filterTaskId" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -44,10 +45,10 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
     >
-      {{ 'pages.tasks-list.columns.session_id' | translate }}
+      <span i18n> Session ID </span>
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
-          [name]="'sessionId'"
+          name="sessionId"
           [inputValue]="filterSessionId"
           #sessionFilter
         >
@@ -58,7 +59,7 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
-      {{ 'pages.tasks-list.columns.status' | translate }}
+      <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilter">
         <app-select-filter
           [name]="'status'"
@@ -75,7 +76,7 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
     >
-      {{ 'pages.tasks-list.columns.created_at' | translate }}
+      <span i18n> Created at </span>
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
           [name]="'created'"
@@ -92,10 +93,10 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_STARTED_AT)
       "
     >
-      {{ 'pages.tasks-list.columns.started_at' | translate }}
+      <span i18n> Started at </span>
       <clr-dg-filter [clrDgFilter]="startedDateFilter">
         <app-date-filter
-          [name]="'started'"
+          name="started"
           [beforeDate]="filterStartedBefore"
           [afterDate]="filterStartedAfter"
           #startedDateFilter
@@ -107,10 +108,10 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
     >
-      {{ 'pages.tasks-list.columns.ended_at' | translate }}
+      <span i18n> Ended at </span>
       <clr-dg-filter [clrDgFilter]="endedDateFilter">
         <app-date-filter
-          [name]="'ended'"
+          name="ended"
           [beforeDate]="filterEndedBefore"
           [afterDate]="filterEndedAfter"
           #endedDateFilter
@@ -118,9 +119,7 @@
         </app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column>
-      {{ 'pages.tasks-list.columns.actions' | translate }}
-    </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadTasks$ | async as list">
       <clr-dg-row
@@ -166,8 +165,7 @@
                 ].includes(task.status || 0)
               }"
             >
-              {{ 'pages.tasks-list.cells.status.' + task.status | translate }}
-              ({{ task.status }})
+              {{ getStatusLabel(task.status) }} ({{ task.status }})
             </span>
           </a>
         </clr-dg-cell>
@@ -197,7 +195,7 @@
             (click)="viewTaskDetail(task.id!)"
           >
             <clr-icon shape="eye"></clr-icon>
-            {{ 'pages.tasks-list.actions.details' | translate }}
+            <span i18n> Details </span>
           </button>
           <a
             class="btn btn-sm btn-secondary"
@@ -205,7 +203,7 @@
             [queryParams]="{ ownerTaskId: task.sessionId }"
           >
             <clr-icon shape="certificate"></clr-icon>
-            {{ 'pages.tasks-list.actions.related_results' | translate }}
+            <span i18n> Related Results </span>
           </a>
           <a
             class="btn btn-sm btn-secondary"
@@ -213,17 +211,18 @@
             [queryParams]="{ sessionId: task.sessionId }"
           >
             <clr-icon shape="nodes"></clr-icon>
-            {{ 'pages.tasks-list.actions.parent_session' | translate }}
+            <span i18n> Session </span>
           </a>
           <a
             *ngIf="isSeqUp$ | async"
             class="btn btn-sm btn-secondary"
             target="_blank"
-            [title]="'pages.tasks-list.actions.view_seq' | translate"
+            i18n-title
+            title="See in SEQ"
             [href]="generateSeqUrl(task.id!)"
           >
             <clr-icon shape="crosshairs"></clr-icon>
-            SEQ
+            <span i18n> SEQ </span>
           </a>
         </clr-dg-cell>
         <ng-template #empty> - </ng-template>
@@ -236,13 +235,11 @@
         [clrDgTotalItems]="(totalTasks$ | async) ?? 0"
         [clrDgPage]="(page || 0) + 1"
       >
-        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >{{ 'pages.tasks-list.pagination.per_page' | translate
-          }}</clr-dg-page-size
-        >
-        <span *ngIf="(totalTasks$ | async) ?? 0 > 1 as total">
-          {{ (total > 1 ? 'pages.tasks-list.pagination.tasks' :
-          'pages.tasks-list.pagination.task' ) | translate : { value: total } }}
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+          <span i18n> Per Page </span>
+        </clr-dg-page-size>
+        <span *ngIf="(totalTasks$ | async) ?? 0 > 1 as total" i18n>
+          {total, plural, =1 {1 task} other {{{total}} tasks}}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
@@ -256,14 +253,20 @@
   *ngIf="loadSingleTask$ | async as task"
 >
   <h3 class="modal-title">
-    {{ 'pages.tasks-list.modal.title' | translate }} {{ task.task!.id }}
+    <span i18n> Task </span>
+    {{ task.task!.id }}
   </h3>
   <div class="modal-body">
     <pre>{{ task.task! | json }}</pre>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="closeGetTaskModal()">
-      {{ 'pages.tasks-list.modal.close' | translate }}
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="closeGetTaskModal()"
+      i18n
+    >
+      Close
     </button>
   </div>
 </clr-modal>

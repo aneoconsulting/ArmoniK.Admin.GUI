@@ -112,6 +112,19 @@ export class SessionsListComponent {
     return SessionStatus;
   }
 
+  public getStatusLabel(status: number): string {
+    switch (status) {
+      case SessionStatus.SESSION_STATUS_CANCELLED:
+        return $localize`Cancelled`;
+      case SessionStatus.SESSION_STATUS_RUNNING:
+        return $localize`Running`;
+      case SessionStatus.SESSION_STATUS_UNSPECIFIED:
+        return $localize`Unspecified`;
+      default:
+        return $localize`Unknown`;
+    }
+  }
+
   public onUpdateInterval(value: number) {
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();

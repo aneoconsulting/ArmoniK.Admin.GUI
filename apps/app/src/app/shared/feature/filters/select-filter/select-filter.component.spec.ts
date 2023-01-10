@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { SelectFilterComponent } from './select-filter.component';
 
@@ -9,7 +8,7 @@ describe('SelectFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SelectFilterComponent);
