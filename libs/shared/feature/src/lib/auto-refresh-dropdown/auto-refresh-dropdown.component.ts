@@ -1,6 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -21,7 +20,6 @@ export const DisabledIntervalValue = -1; // Use -1 to stop interval because 0 is
   templateUrl: './auto-refresh-dropdown.component.html',
   styleUrls: ['./auto-refresh-dropdown.component.scss'],
   imports: [ClrDropdownModule, NgIf, NgFor, AsyncPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AutoRefreshDropdownComponent {
   @Input() actualInterval = 10000;
