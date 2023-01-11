@@ -27,6 +27,7 @@ import {
   timer,
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
+import { AuthorizationService } from '../../../shared/data-access';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -162,6 +163,7 @@ export class TasksListComponent implements OnInit {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
+    private _authorizationService: AuthorizationService,
     private _grpcTasksService: GrpcTasksService,
     private _grpcPagerService: GrpcPagerService
   ) {}
@@ -197,6 +199,10 @@ export class TasksListComponent implements OnInit {
 
   public get initialInterval(): number {
     return this._settingsService.initialInterval;
+  }
+
+  public canCancelTasks(): boolean {
+    return this._authorizationService.canCancelTasks();
   }
 
   public getStatusLabel(status: number): string {

@@ -30,7 +30,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
-        run: yarn
+        run: yarn --immutable
 
       - name: Install Protoc
         if: steps.proto-cache.outputs.cache-hit != 'true'

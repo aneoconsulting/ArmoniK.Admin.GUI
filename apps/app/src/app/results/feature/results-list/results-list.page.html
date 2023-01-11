@@ -120,11 +120,11 @@
           >
             <span
               [ngClass]="{
-                'text-created':
+                'created':
                   result.status === ResultsStatusEnum.RESULT_STATUS_CREATED,
-                'text-success':
+                'success':
                   result.status === ResultsStatusEnum.RESULT_STATUS_COMPLETED,
-                'text-danger': [
+                'danger': [
                   ResultsStatusEnum.RESULT_STATUS_ABORTED,
                   ResultsStatusEnum.RESULT_STATUS_NOTFOUND
                 ].includes(result.status || 0)
@@ -146,7 +146,7 @@
             [routerLink]="['/', 'tasks']"
             [queryParams]="{ taskId: result.ownerTaskId }"
           >
-            <clr-icon shape="node"></clr-icon>
+            <cds-icon shape="node"></cds-icon>
             <span i18n> Task </span>
           </a>
         </clr-dg-cell>
