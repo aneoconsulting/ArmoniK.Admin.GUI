@@ -144,23 +144,23 @@
           >
             <span
               [ngClass]="{
-                'text-success':
+                'success':
                   task.status === TaskStatusEnum.TASK_STATUS_COMPLETED,
-                'text-warn': [
+                'warn': [
                   TaskStatusEnum.TASK_STATUS_PROCESSING,
                   TaskStatusEnum.TASK_STATUS_PROCESSED
                 ].includes(task.status || 0),
-                'text-danger': [
+                'danger': [
                   TaskStatusEnum.TASK_STATUS_ERROR,
                   TaskStatusEnum.TASK_STATUS_TIMEOUT
                 ].includes(task.status || 0),
-                'text-creating':
+                'creating':
                   task.status === TaskStatusEnum.TASK_STATUS_CREATING,
-                'text-submitted':
+                'submitted':
                   task.status === TaskStatusEnum.TASK_STATUS_SUBMITTED,
-                'text-dispatched':
+                'dispatched':
                   task.status === TaskStatusEnum.TASK_STATUS_DISPATCHED,
-                'text-cancelled': [
+                'cancelled': [
                   TaskStatusEnum.TASK_STATUS_CANCELLING,
                   TaskStatusEnum.TASK_STATUS_CANCELLED
                 ].includes(task.status || 0)
