@@ -8,11 +8,9 @@ import {
   ClrDropdownModule,
   ClrIconModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
-import { IdFilterComponent } from '../../../shared/feature/filters';
+import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ActionBarComponent } from '../../../shared/feature';
 import { ApplicationsListComponent } from './applications-list.page';
-import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -21,7 +19,7 @@ import { ApplicationsListRoutingModule } from './applications-list-routing.modul
     ClrIconModule,
     ClrDropdownModule,
     ClrDatagridModule,
-    TranslateModule,
+    ActionBarComponent,
     ApplicationsListRoutingModule,
     ActionBarComponent,
     NgClass,
@@ -29,7 +27,6 @@ import { ApplicationsListRoutingModule } from './applications-list-routing.modul
     DatePipe,
     NgFor,
     NgIf,
-    IdFilterComponent,
   ],
   providers: [GrpcApplicationsService, GrpcPagerService],
 })

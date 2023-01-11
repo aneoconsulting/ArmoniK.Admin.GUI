@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.docs/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 jobs:
   deploy:
