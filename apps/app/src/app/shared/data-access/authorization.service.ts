@@ -34,6 +34,10 @@ export class AuthorizationService {
     return this._can<TasksClient>('ListTasks', 'Tasks');
   }
 
+  public canCancelTasks(): boolean {
+    return this._can<TasksClient>('CancelTasks', 'Tasks');
+  }
+
   private _can<T>(action: Action<T>, service: string): boolean {
     const user = this._authService.user;
     if (!user) {
