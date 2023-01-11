@@ -39,7 +39,7 @@ export class TheFavoritesNavigationComponent {
     return item.label;
   }
 
-  public generateRouterLink(url: string | string[]): string[] {
+  public generateRouterLink(url: string[]): string[] {
     return ['/', ...url];
   }
 }
