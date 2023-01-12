@@ -26,6 +26,7 @@ import {
   SelectFilterComponent,
 } from '../../../shared/feature/filters';
 import { ActionBarComponent } from '../../../shared/feature';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Sessions list module
@@ -50,6 +51,7 @@ import { ActionBarComponent } from '../../../shared/feature';
     IdFilterComponent,
     DateFilterComponent,
     SelectFilterComponent,
+    FormsModule
   ],
   providers: [GrpcSessionsService, GrpcPagerService],
 })

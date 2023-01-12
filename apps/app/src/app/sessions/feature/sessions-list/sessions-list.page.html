@@ -16,6 +16,42 @@
         (clearSort)="clearOrder()"
       >
       </app-action-bar>
+
+      <label>
+        <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+          <cds-icon shape="info-circle" size="22"></cds-icon>
+          <span class="tooltip-content" i18n>
+            Please enter the full application name.
+          </span>
+        </div>
+      </label>
+      <input
+        class="clr-input"
+        placeholder="Application Name"
+        [ngModel]="applicationName"
+        (ngModelChange)="onApplicationFilterChange()"
+      >
+      
+      <label>
+        <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+          <cds-icon shape="info-circle" size="22"></cds-icon>
+          <span class="tooltip-content" i18n>
+            Please enter the full application version.
+          </span>
+        </div>
+      </label>
+      <input
+        class="clr-input"
+        placeholder="Application Version"
+        [ngModel]="applicationVersion"
+        (ngModelChange)="onApplicationFilterChange()"
+      >
+      
+      <button
+      class="btn btn-sm"
+      [disabled]="!hasApplicationFilter"
+      (click)="clearApplicationFilter()"
+      >Clear</button>
     </clr-dg-action-bar>
 
     <clr-dg-column

@@ -59,7 +59,8 @@ export class SessionsListComponent {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-      this.addApplicationDatatoState(state);
+      this.addApplicationFilter('applicationName', this.applicationName);
+      this.addApplicationFilter('applicationVersion', this.applicationVersion);
       const urlParams = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: urlParams,
@@ -153,6 +154,7 @@ export class SessionsListComponent {
     private _grpcPagerService: GrpcPagerService,
     private _settingsService: SettingsService
   ) {}
+
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
@@ -291,32 +293,22 @@ export class SessionsListComponent {
     return this._state;
   }
 
-  /**
-   * Modify a given state and add applicationName and applicationVersion to it
-   * in order to filter sessions by those properties, since they are not part
-   * of the basic filters.
-   *
-   * @param state state to modify
-   */
-  public addApplicationDatatoState(state: ClrDatagridStateInterface) {
-    if (this.applicationName !== '') {
-      if (!state.filters) {
-        state.filters = [];
-      }
-      state.filters?.push({
-        property: 'applicationName',
-        value: this.applicationName,
-      });
+  public get hasApplicationFilter() {
+    return this.applicationName !== '' || this.applicationVersion !== '';
+  }
+
+  public addApplicationFilter(property: string, value: string) {
+    if (!this._state.filters) {
+      this._state.filters = [];
     }
-    if (this.applicationVersion !== '') {
-      if (!state.filters) {
-        state.filters = [];
-      }
-      state.filters?.push({
-        property: 'applicationVersion',
-        value: this.applicationVersion,
-      });
-    }
+    this._state.filters?.push({
+      property: property,
+      value: value === '' ? undefined : value,
+    });
+  }
+
+  public onApplicationFilterChange() {
+    this._subjectDatagrid.next(this._state);
   }
 
   /**
@@ -325,6 +317,8 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
+    this.addApplicationFilter('applicationName', this.applicationName);
+    this.addApplicationFilter('applicationVersion', this.applicationVersion);
     const urlParams = this._grpcPagerService.createParams(this._restoreState());
     const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
     return this._grpcSessionsService.list$(grpcParams).pipe(
@@ -400,7 +394,12 @@ export class SessionsListComponent {
       }
     });
     //Clearing applicationName and applicationVersion
-    delete this._state.filters;
+    this.applicationName = '';
+    this.applicationVersion = '';
+    this._subjectDatagrid.next(this._state);
+  }
+
+  clearApplicationFilter(): void {
     this.applicationName = '';
     this.applicationVersion = '';
     this._subjectDatagrid.next(this._state);
