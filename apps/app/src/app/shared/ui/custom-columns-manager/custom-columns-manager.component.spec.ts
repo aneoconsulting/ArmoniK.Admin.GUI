@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { CustomColumnsManagerComponent } from './custom-columns-manager.component';
 
 describe('CustomColumnsManagerComponent', () => {
@@ -8,7 +8,7 @@ describe('CustomColumnsManagerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomColumnsManagerComponent, TranslateModule.forRoot()],
+      imports: [CustomColumnsManagerComponent],
     }).compileComponents();
   });
 

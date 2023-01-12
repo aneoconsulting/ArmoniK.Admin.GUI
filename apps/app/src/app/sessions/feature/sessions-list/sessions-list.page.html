@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'pages.sessions-list.title' | translate }}</h1>
+  <h1 i18n>Sessions</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshSessions($event)"
@@ -24,7 +24,7 @@
       defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
     "
     >
-      {{ 'pages.sessions-list.columns.session_id' | translate }}
+      <span i18n> Session ID </span>
       <clr-dg-filter [clrDgFilter]="sessionFilterComponent">
         <app-id-filter
           [name]="'sessionId'"
@@ -38,7 +38,7 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
-      {{ 'pages.sessions-list.columns.status' | translate }}
+      <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilterComponent">
         <app-select-filter
           [name]="'status'"
@@ -55,7 +55,7 @@
       defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
     "
     >
-      {{ 'pages.sessions-list.columns.created_at' | translate }}
+      <span i18n> Created at </span>
       <clr-dg-filter [clrDgFilter]="createdDateFilter">
         <app-date-filter
           [name]="'created'"
@@ -72,7 +72,7 @@
       defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
     "
     >
-      {{ 'pages.sessions-list.columns.cancelled_at' | translate }}
+      <span i18n> Closed at </span>
       <clr-dg-filter [clrDgFilter]="closedDateFilter">
         <app-date-filter
           [name]="'cancelled'"
@@ -82,9 +82,7 @@
         ></app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column>
-      {{ 'pages.sessions-list.columns.actions' | translate }}
-    </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
       <clr-dg-row *ngFor="let session of list.sessions">
@@ -96,14 +94,13 @@
           >
             <span
               [ngClass]="{
-                'text-success':
+                'success':
                   session.status === SessionStatusEnum.SESSION_STATUS_RUNNING,
-                'text-danger':
+                'danger':
                   session.status === SessionStatusEnum.SESSION_STATUS_CANCELLED
               }"
             >
-              {{ 'pages.sessions-list.cells.status.' + session.status |
-              translate }} ({{ session.status }})
+              {{getStatusLabel(session.status) }} ({{ session.status }})
             </span>
           </a>
         </clr-dg-cell>
@@ -126,25 +123,26 @@
             class="btn btn-sm btn-secondary"
             (click)="viewSessionDetail(session.sessionId!)"
           >
-            <clr-icon shape="eye"></clr-icon>
-            {{ 'pages.sessions-list.actions.details' | translate }}
+            <cds-icon shape="eye"></cds-icon>
+            <span i18n> Details </span>
           </button>
           <a
             class="btn btn-sm btn-secondary"
             [routerLink]="['/', 'tasks']"
             [queryParams]="{ sessionId: session.sessionId }"
           >
-            <clr-icon shape="node"></clr-icon>
-            {{ 'pages.sessions-list.actions.related_tasks' | translate }}
+            <cds-icon shape="node"></cds-icon>
+            <span i18n> Related Tasks </span>
           </a>
           <button
+            *ngIf="canCancelSession()"
             type="button"
             class="btn btn-sm btn-outline-danger"
             (click)="cancelSession(session.sessionId!)"
             [disabled]="session.cancelledAt"
           >
-            <clr-icon shape="times"></clr-icon>
-            {{ 'pages.sessions-list.actions.cancel' | translate }}
+            <cds-icon shape="times"></cds-icon>
+            <span i18n> Close </span>
           </button>
         </clr-dg-cell>
       </clr-dg-row>
@@ -156,14 +154,11 @@
         [clrDgTotalItems]="(totalSessions$ | async) ?? 0"
         [clrDgPage]="(page || 0) + 1"
       >
-        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >{{ 'pages.sessions-list.pagination.per_page' | translate
-          }}</clr-dg-page-size
-        >
-        <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total">
-          {{ (total > 1 ? 'pages.sessions-list.pagination.sessions' :
-          'pages.sessions-list.pagination.session' ) | translate: { value: total
-          } }}
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+          <span i18n> Per Page </span>
+        </clr-dg-page-size>
+        <span *ngIf="(totalSessions$ | async) ?? 0 > 1 as total" i18n>
+          {total, plural, =1 {1 session} other {{{total}} sessions}}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>
@@ -177,8 +172,7 @@
   *ngIf="loadSingleSession$ | async as session"
 >
   <h3 class="modal-title">
-    {{ 'pages.sessions-list.modal.title' | translate }} {{
-    session.session!.sessionId }}
+    <span i18n> Session </span> {{ session.session!.sessionId }}
   </h3>
   <div class="modal-body">
     <pre>{{ session.session! | json }}</pre>
@@ -188,8 +182,9 @@
       type="button"
       class="btn btn-primary"
       (click)="closeGetSessionModal()"
+      i18n
     >
-      {{ 'pages.sessions-list.modal.close' | translate }}
+      Close
     </button>
   </div>
 </clr-modal>

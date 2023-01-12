@@ -5,12 +5,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-import { LocaleProvider } from './providers';
 import {
   ErrorService,
   FavoritesService,
   HistoryService,
-  LanguageService,
   PagerService,
   SettingsService,
 } from './services';
@@ -33,8 +31,6 @@ import {
     }),
   ],
   providers: [
-    LocaleProvider,
-    LanguageService,
     SettingsService,
     HistoryService,
     ErrorService,

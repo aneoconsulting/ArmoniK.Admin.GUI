@@ -22,12 +22,20 @@ export class AuthorizationService {
     return this._can<SessionsClient>('ListSessions', 'Sessions');
   }
 
+  public canCancelSession(): boolean {
+    return this._can<SessionsClient>('CancelSession', 'Sessions');
+  }
+
   public canListResults(): boolean {
     return this._can<ResultsClient>('ListResults', 'Results');
   }
 
   public canListTasks(): boolean {
     return this._can<TasksClient>('ListTasks', 'Tasks');
+  }
+
+  public canCancelTasks(): boolean {
+    return this._can<TasksClient>('CancelTasks', 'Tasks');
   }
 
   private _can<T>(action: Action<T>, service: string): boolean {
