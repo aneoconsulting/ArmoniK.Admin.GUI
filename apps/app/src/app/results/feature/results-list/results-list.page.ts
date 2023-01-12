@@ -12,22 +12,18 @@ import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-results-list',
@@ -82,57 +78,49 @@ export class ResultsListComponent implements OnInit {
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
    */
-  nameFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  nameFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'name'
   );
-  taskIdFilter$: Observable<string> = this._settingsService.queryStringParam$(
-    this._activatedRoute.queryParamMap,
+  taskIdFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
-  sessionIdFilter$: Observable<string> =
-    this._settingsService.queryStringParam$(
-      this._activatedRoute.queryParamMap,
-      'sessionId'
-    );
-  statusFilter$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  sessionIdFilter: string = this._settingsService.queryStringParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
+  statusFilter: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'status'
   );
-  createdBeforeFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtBefore'
-    );
-  createdAfterFilter$: Observable<Date | null> =
-    this._settingsService.queryDateParam$(
-      this._activatedRoute.queryParamMap,
-      'createdAtAfter'
-    );
+  createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
+  createdAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
 
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  pageSize: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page$: Observable<number> = this._settingsService.queryParam$(
-    this._activatedRoute.queryParamMap,
+  page: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
     'page'
   );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcResultsService: GrpcResultsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
 
   ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('results.title')
-    );
     this.statusList = [
       ...Object.keys(ResultStatus)
         .filter((key) => !Number.isInteger(parseInt(key)))
@@ -157,6 +145,23 @@ export class ResultsListComponent implements OnInit {
 
   public get initialInterval() {
     return this._settingsService.initialInterval;
+  }
+
+  public getStatusLabel(status: number): string {
+    switch (status) {
+      case ResultStatus.RESULT_STATUS_ABORTED:
+        return $localize`Aborted`;
+      case ResultStatus.RESULT_STATUS_CREATED:
+        return $localize`Created`;
+      case ResultStatus.RESULT_STATUS_COMPLETED:
+        return $localize`Completed`;
+      case ResultStatus.RESULT_STATUS_NOTFOUND:
+        return $localize`Not found`;
+      case ResultStatus.RESULT_STATUS_UNSPECIFIED:
+        return $localize`Unspecified`;
+      default:
+        return $localize`Unknown`;
+    }
   }
 
   public onUpdateInterval(value: number) {

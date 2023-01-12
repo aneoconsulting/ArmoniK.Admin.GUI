@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClarityModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { ComboBoxFilterComponent } from './combobox-filter.component';
 
 describe('TaskStatusFilterComponent', () => {
@@ -9,7 +9,7 @@ describe('TaskStatusFilterComponent', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot(), ClarityModule],
+      imports: [ClarityModule],
     }).compileComponents();
   });
 

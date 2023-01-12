@@ -17,10 +17,9 @@ import {
   ClrLoadingModule,
   ClrModalModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
 import { ActionBarComponent } from '../../../shared/feature';
 
 /**
@@ -37,7 +36,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     ClrLoadingModule,
     ClrIconModule,
     ActionBarComponent,
-    TranslateModule,
     NgClass,
     NgFor,
     NgIf,
@@ -45,11 +43,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     DatePipe,
     JsonPipe,
   ],
-  providers: [
-    BrowserTitleService,
-    LanguageService,
-    GrpcSessionsService,
-    GrpcPagerService,
-  ],
+  providers: [GrpcSessionsService, GrpcPagerService],
 })
 export class SessionsListModule {}

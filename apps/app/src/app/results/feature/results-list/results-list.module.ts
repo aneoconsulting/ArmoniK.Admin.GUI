@@ -8,7 +8,7 @@ import {
   ClrDropdownModule,
   ClrIconModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { ResultsListRoutingModule } from './results-list-routing.module';
 import { ResultsListComponent } from './results-list.page';
 import {
@@ -25,7 +25,6 @@ import { ActionBarComponent } from '../../../shared/feature';
     ClrIconModule,
     ClrDropdownModule,
     ClrDatagridModule,
-    TranslateModule,
     SelectFilterComponent,
     DateFilterComponent,
     IdFilterComponent,

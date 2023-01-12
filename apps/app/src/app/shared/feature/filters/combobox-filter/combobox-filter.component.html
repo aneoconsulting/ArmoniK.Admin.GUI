@@ -1,12 +1,12 @@
 <clr-combobox-container>
   <label>
-    {{ 'pages.components.filters.select_many_title' | translate }}
-    <a role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+    <span i18n> Select one or more value. </span>
+    <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
       <cds-icon shape="info-circle" size="22"></cds-icon>
-      <span class="tooltip-content">
-        {{ 'pages.components.filters.warning.combobox' | translate }}
+      <span class="tooltip-content" i18n>
+        You can select more than one value.
       </span>
-    </a>
+    </div>
   </label>
   <clr-combobox
     [ngModel]="selectedValues"
@@ -14,10 +14,7 @@
     clrMulti="true"
   >
     <ng-container *clrOptionSelected="let selected">
-      {{
-        'pages.components.filters.select_list.' + selectionList[selected]
-          | translate
-      }}
+      {{ selectionList[selected] }}
     </ng-container>
     <clr-options>
       <clr-option
@@ -25,12 +22,12 @@
         clrOptionItemsField="label"
         [clrValue]="item.value"
       >
-        {{ 'pages.components.filters.select_list.' + item.label | translate }}
+        {{ item.label }}
       </clr-option>
     </clr-options>
   </clr-combobox>
 </clr-combobox-container>
 
-<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()">
-  {{ 'pages.components.filters.clear_filter' | translate }}
+<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()" i18n>
+  Clear the filter
 </button>
