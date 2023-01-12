@@ -1,0 +1,40 @@
+<clr-input-container>
+  <label for="minValueInput">
+    <span i18n>Min value</span>
+    <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+      <cds-icon shape="info-circle" size="22"></cds-icon>
+      <span class="tooltip-content" i18n>
+        Will display data with a value equal or superior than indicated.
+      </span>
+    </div>
+  </label>
+  <input
+    #minValueInput
+    clrInput
+    [(ngModel)]="minValue"
+    (input)="onChange()"
+    type="number"
+  />
+</clr-input-container>
+<clr-input-container>
+  <label for="maxValueInput">
+    <span i18n>Max value</span>
+    <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+      <cds-icon shape="info-circle" size="22"></cds-icon>
+      <span class="tooltip-content" i18n>
+        Will display data with a value inferior or equal than indicated.
+      </span>
+    </div>
+  </label>
+  <input
+    #maxValueInput
+    clrInput
+    [(ngModel)]="maxValue"
+    (input)="onChange()"
+    type="number"
+  />
+</clr-input-container>
+
+<button *ngIf="isActive()" class="btn btn-sm" (click)="clear()" i18n>
+  Clear the filter
+</button>
