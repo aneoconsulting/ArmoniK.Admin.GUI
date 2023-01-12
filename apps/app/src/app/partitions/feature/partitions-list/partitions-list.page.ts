@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
+import { GrpcPagerService, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@armonik.admin.gui/shared/data-access';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access'
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -10,6 +10,7 @@ import {
   concatMap,
   merge,
   Observable,
+  of,
   Subject,
   switchMap,
   takeUntil,
@@ -17,18 +18,15 @@ import {
   timer,
 } from 'rxjs';
 import {
-  BrowserTitleService,
-  LanguageService,
   SettingsService,
 } from '../../../shared/util';
-import { off } from 'process';
 
 @Component({
   selector: 'app-partitions-list',
   templateUrl: './partitions-list.page.html',
   styleUrls: ['./partitions-list.page.scss'],
 })
-export class PartitionsListComponent implements OnInit {
+export class PartitionsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
   /** Get partitions */
@@ -73,40 +71,32 @@ export class PartitionsListComponent implements OnInit {
     switchMap(() => this._listPartitions$())
   );
 
-  filterPartitionId$: Observable<string> =
-    this._settingsService.queryStringParam$(
+  filterPartitionId: string =
+    this._settingsService.queryStringParam(
       this._activatedRoute.queryParamMap,
       'id'
     );
-  filterParentId$: Observable<string> = this._settingsService.queryStringParam$(
+  filterParentId: string = this._settingsService.queryStringParam(
     this._activatedRoute.queryParamMap,
     'parentId'
   );
 
-  page$: Observable<number> = this._settingsService.queryParam$(
+  page: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'page'
   );
-  pageSize$: Observable<number> = this._settingsService.queryParam$(
+  pageSize: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'pageSize'
   );
 
   constructor(
     private _settingsService: SettingsService,
-    private _languageService: LanguageService,
-    private _browserTitleService: BrowserTitleService,
     private _grpcPagerService: GrpcPagerService,
     private _activatedRoute: ActivatedRoute,
     private _grpcPartitionsService: GrpcPartitionsService,
     private _router: Router
   ) {}
-
-  ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.partitions-list.title')
-    );
-  }
 
   public get OrderByField() {
     return ListPartitionsRequest.OrderByField;
@@ -139,13 +129,13 @@ export class PartitionsListComponent implements OnInit {
   }
 
   private _listPartitions$(): Observable<ListPartitionsResponse> {
-    const grpcParams = this._grpcPagerService.createGrpcParams(this._restoreState())
+    const grpcParams = this._grpcPagerService.createParams(this._restoreState())
     return this._grpcPartitionsService.list$(grpcParams).pipe(
       catchError((error) => {
         console.log(error);
         this._stopInterval.next();
 
-        return off({} as ListPartitionsResponse);
+        return of({} as ListPartitionsResponse);
       }),
       tap((partitions) => {
         this.loadingPartitions$.next(false);
@@ -184,15 +174,15 @@ export class PartitionsListComponent implements OnInit {
   }
 
   /**
-   * Track by result
+   * Track by partition
    *
    * @param _
-   * @param result
+   * @param partition
    *
    * @returns Id
    */
-  public trackByPartition(_: number, result: PartitionRaw): string {
-    return result.name ?? '';
+  public trackByPartition(_: number, partition: PartitionRaw): string {
+    return partition.id ?? '';
   }
 
   /**

@@ -12,21 +12,19 @@ export class GrpcPartitionsService extends BaseGrpcService {
         params: GrpcParams<
             ListPartitionsRequest.OrderByField,
             ListPartitionsRequest.OrderDirection,
-            ListPartitionsRequest.Filter.AsObject
+            ListPartitionsRequest.Filter.AsObject>
     ): Observable<ListPartitionsResponse> {
         const options = new ListPartitionsRequest({
             page: params.page || 0,
             pageSize: params.pageSize || 10,
             sort: {
-              field:
-                params.orderBy ||
-                ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+              field: params.orderBy || ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
               direction:
                 params.order ||
                 ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
             },
           })
 
-        return this._partitionsClient.list(options).pipe(takeUntil(this._timeout$));
+        return this._partitionsClient.listPartitions(options).pipe(takeUntil(this._timeout$));
     }
 }

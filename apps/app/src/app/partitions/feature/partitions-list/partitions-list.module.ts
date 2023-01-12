@@ -1,8 +1,8 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridModule } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { ActionBarComponent } from '../../../shared/feature';
 import { IdFilterComponent } from '../../../shared/feature/filters';
 import { PartitionsListRoutingModule } from './partitions-list-routing.module';
@@ -14,11 +14,10 @@ import { PartitionsListComponent } from './partitions-list.page';
     CommonModule,
     ActionBarComponent,
     ClrDatagridModule,
-    TranslateModule,
     AsyncPipe,
     PartitionsListRoutingModule,
     IdFilterComponent,
   ],
-  providers: [GrpcPagerService],
+  providers: [GrpcPartitionsService ,GrpcPagerService],
 })
 export class PartitionsListModule {}
