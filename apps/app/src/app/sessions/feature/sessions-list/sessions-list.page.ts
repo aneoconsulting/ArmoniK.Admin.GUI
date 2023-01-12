@@ -91,7 +91,9 @@ export class SessionsListComponent {
       .filter((key) => !Number.isInteger(parseInt(key)))
       .map((key) => ({
         value: SessionStatus[key as keyof typeof SessionStatus],
-        label: key,
+        label: this.getStatusLabel(
+          SessionStatus[key as keyof typeof SessionStatus]
+        ),
       })),
   ];
 
@@ -388,6 +390,16 @@ export class SessionsListComponent {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters(): void {
+    this._state.filters?.forEach((f) => {
+      if (
+        f.property !== 'applicationName' &&
+        f.property !== 'applicationVersion'
+      ) {
+        // Make sure the filters are inactive after clearing
+        f.clear();
+      }
+    });
+    //Clearing applicationName and applicationVersion
     delete this._state.filters;
     this.applicationName = '';
     this.applicationVersion = '';
