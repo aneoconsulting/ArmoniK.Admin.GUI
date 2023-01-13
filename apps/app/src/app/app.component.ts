@@ -21,13 +21,11 @@ export class AppComponent implements OnInit {
     {
       path: ['/', 'applications'],
       label: $localize`Applications`,
-      queryParams: { page: 0, pageSize: 10 },
       shape: 'bundle',
     },
     {
       path: ['/', 'sessions'],
       label: $localize`Sessions`,
-      queryParams: { page: 0, pageSize: 10 },
       shape: 'nodes',
     },
     {

@@ -52,10 +52,16 @@ export class GrpcApplicationsService extends BaseGrpcService {
     filter,
   }: GrpcListApplicationsParams) {
     return {
-      page,
-      pageSize,
-      orderBy,
-      order,
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
       ...filter,
     };
   }

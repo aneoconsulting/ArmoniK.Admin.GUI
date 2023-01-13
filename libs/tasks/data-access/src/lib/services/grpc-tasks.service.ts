@@ -56,10 +56,16 @@ export class GrpcTasksService extends BaseGrpcService {
     filter,
   }: GrpcListTasksParams) {
     return {
-      page,
-      pageSize,
-      orderBy,
-      order,
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? page : undefined,
+      orderBy:
+        orderBy !== ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
       ...filter,
     };
   }

@@ -52,10 +52,16 @@ export class GrpcResultsService extends BaseGrpcService {
     filter,
   }: GrpcListResultsParams) {
     return {
-      page,
-      pageSize,
-      orderBy,
-      order,
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
       ...filter,
     };
   }

@@ -40,7 +40,7 @@ export class GrpcSessionsService extends BaseGrpcService {
       page,
       pageSize,
       orderBy:
-        orderBy ?? ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
+        orderBy ?? ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -54,10 +54,16 @@ export class GrpcSessionsService extends BaseGrpcService {
     filter,
   }: GrpcListSessionsParams) {
     return {
-      page,
-      pageSize,
-      orderBy,
-      order,
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
       ...filter,
     };
   }
