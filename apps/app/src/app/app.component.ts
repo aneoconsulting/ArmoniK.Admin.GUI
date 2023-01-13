@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     },
     {
       path: ['/', 'partitions'],
-      label: 'navigation.partitions',
+      label: $localize`Partitions`,
       shape: 'objects',
     },
   ];

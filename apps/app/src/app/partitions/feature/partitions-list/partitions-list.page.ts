@@ -76,10 +76,26 @@ export class PartitionsListComponent {
       this._activatedRoute.queryParamMap,
       'id'
     );
-  filterParentId: string = this._settingsService.queryStringParam(
+  filterParentId: string[] = this._settingsService.queryListParam(
     this._activatedRoute.queryParamMap,
-    'parentId'
+    'parentPartitionIds'
   );
+  filterPodReserved: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'podReserved'
+  );
+  filterPodMax: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'podMax'
+  )
+  filterPreemption: number = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'PreemptionPercentage'
+  )
+  filterPriority: number = this._settingsService.queryParam(
+    this._activatedRoute.queryParams,
+    'Priority'
+  )
 
   page: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,

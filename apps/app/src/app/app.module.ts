@@ -22,6 +22,7 @@ import {
   starIcon,
   timesIcon,
   userIcon,
+  objectsIcon,
 } from '@cds/core/icon';
 import {
   ClrIconModule,
@@ -88,7 +89,8 @@ export class AppModule {
       infoCircleIcon,
       historyIcon,
       starIcon,
-      certificateIcon
+      certificateIcon,
+      objectsIcon
     );
   }
 }
