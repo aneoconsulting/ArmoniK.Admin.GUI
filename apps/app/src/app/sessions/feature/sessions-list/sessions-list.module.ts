@@ -51,7 +51,7 @@ import { FormsModule } from '@angular/forms';
     IdFilterComponent,
     DateFilterComponent,
     SelectFilterComponent,
-    FormsModule
+    FormsModule,
   ],
   providers: [GrpcSessionsService, GrpcPagerService],
 })

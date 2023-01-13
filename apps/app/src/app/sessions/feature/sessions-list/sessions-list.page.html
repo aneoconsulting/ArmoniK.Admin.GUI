@@ -27,11 +27,11 @@
       </label>
       <input
         class="clr-input"
-        placeholder="Application Name"
+        [placeholder]="applicationNamePlaceHolder"
         [(ngModel)]="applicationName"
         (ngModelChange)="onApplicationFilterChange()"
-      >
-      
+      />
+
       <label>
         <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
           <cds-icon shape="info-circle" size="22"></cds-icon>
@@ -42,16 +42,18 @@
       </label>
       <input
         class="clr-input"
-        placeholder="Application Version"
+        [placeholder]="applicationVersionPlaceHolder"
         [(ngModel)]="applicationVersion"
         (ngModelChange)="onApplicationFilterChange()"
-      >
-      
+      />
+
       <button
-      class="btn btn-sm"
-      [disabled]="!hasApplicationFilter"
-      (click)="clearApplicationFilter()"
-      >Clear</button>
+        class="btn btn-sm"
+        [disabled]="!hasApplicationFilter"
+        (click)="clearApplicationFilter()"
+      >
+        Clear
+      </button>
     </clr-dg-action-bar>
 
     <clr-dg-column

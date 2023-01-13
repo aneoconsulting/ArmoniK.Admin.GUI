@@ -580,5 +580,29 @@
         <target> Admin GUI </target>
       </segment>
     </unit>
+    <unit id="5560294477415696130">
+      <segment state="initial">
+        <source> Please enter the full application name. </source>
+        <target> Veuillez renseigner le nom complet de l'application. </target>
+      </segment>
+    </unit>
+    <unit id="3437883184850221816">
+      <segment state="initial">
+        <source> Please enter the full application version. </source>
+        <target> Veuillez renseigner la version complète de l'application. </target>
+      </segment>
+    </unit>
+    <unit id="2887251461858216261">
+      <segment state="initial">
+        <source>Application Name</source>
+        <target>Application Name</target>
+      </segment>
+    </unit>
+    <unit id="8245536584787530067">
+      <segment state="initial">
+        <source>Application Version</source>
+        <target>Application Version</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

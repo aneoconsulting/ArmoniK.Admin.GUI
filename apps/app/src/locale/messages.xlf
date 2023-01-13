@@ -479,5 +479,25 @@
         <source> Changelog </source>
       </segment>
     </unit>
+    <unit id="3437883184850221816">
+      <segment>
+        <source> Please enter the full application version. </source>
+      </segment>
+    </unit>
+    <unit id="5560294477415696130">
+      <segment>
+        <source> Please enter the full application name. </source>
+      </segment>
+    </unit>
+    <unit id="2887251461858216261">
+      <segment>
+        <source>Application Name</source>
+      </segment>
+    </unit>
+    <unit id="8245536584787530067">
+      <segment>
+        <source>Application Version</source>
+      </segment>
+    </unit>
   </file>
 </xliff>

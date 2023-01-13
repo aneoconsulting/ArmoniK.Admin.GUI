@@ -155,7 +155,6 @@ export class SessionsListComponent {
     private _settingsService: SettingsService
   ) {}
 
-
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
   }
@@ -179,6 +178,14 @@ export class SessionsListComponent {
       default:
         return $localize`Unknown`;
     }
+  }
+
+  public get applicationNamePlaceHolder(): string {
+    return $localize`Application Name`;
+  }
+
+  public get applicationVersionPlaceHolder(): string {
+    return $localize`Application Version`;
   }
 
   public onUpdateInterval(value: number) {
