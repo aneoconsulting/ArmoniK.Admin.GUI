@@ -169,7 +169,7 @@ export class TasksListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
-    private _grpcPagerService: GrpcPagerService
+    private _authorizationService: AuthorizationService
   ) {}
 
   ngOnInit(): void {
