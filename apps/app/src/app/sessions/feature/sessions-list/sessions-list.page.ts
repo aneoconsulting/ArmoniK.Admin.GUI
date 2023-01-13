@@ -94,7 +94,7 @@ export class SessionsListComponent {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
-    private _authorizationService: AuthorizationService,
+    private _authorizationService: AuthorizationService
   ) {}
 
   public get OrderByField() {

@@ -43,9 +43,6 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
     DatePipe,
     JsonPipe,
   ],
-  providers: [
-    GrpcSessionsService,
-    GrpcParamsService,
-  ],
+  providers: [GrpcSessionsService, GrpcParamsService],
 })
 export class SessionsListModule {}

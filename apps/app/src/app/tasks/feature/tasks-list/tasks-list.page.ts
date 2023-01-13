@@ -114,11 +114,10 @@ export class TasksListComponent implements OnInit {
     'taskId'
   );
 
-  filterSessionId: string =
-    this._settingsService.queryStringParam(
-      this._activatedRoute.queryParamMap,
-      'sessionId'
-    );
+  filterSessionId: string = this._settingsService.queryStringParam(
+    this._activatedRoute.queryParamMap,
+    'sessionId'
+  );
 
   filterStatus: number = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
