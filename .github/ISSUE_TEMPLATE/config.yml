@@ -1,0 +1,7 @@
+contact_links:
+  - name: 📚 Documentation
+    url: https://aneoconsulting.github.io/ArmoniK.Admin.GUI/
+    about: Check documentation for usage
+  - name: 💬 Discussions
+    url: https://github.com/aneoconsulting/ArmoniK/discussions
+    about: Use discussions if you have an idea for improvement and asking questions

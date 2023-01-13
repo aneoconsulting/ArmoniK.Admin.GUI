@@ -7,11 +7,10 @@ import {
   ClrDropdownModule,
   ClrIconModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
-import { ApplicationsListComponent } from './applications-list.page';
 import { ActionBarComponent } from '../../../shared/feature';
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
+import { ApplicationsListComponent } from './applications-list.page';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -20,9 +19,9 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
     ClrIconModule,
     ClrDropdownModule,
     ClrDatagridModule,
-    TranslateModule,
     ActionBarComponent,
     ApplicationsListRoutingModule,
+    ActionBarComponent,
     NgClass,
     AsyncPipe,
     DatePipe,

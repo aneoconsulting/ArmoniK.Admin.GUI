@@ -1,5 +1,5 @@
 <section>
-  <h1>{{ 'pages.results-list.title' | translate }}</h1>
+  <h1 i18n>Results</h1>
 
   <clr-datagrid
     (clrDgRefresh)="refreshResults($event)"
@@ -22,12 +22,12 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAME.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
-      {{ 'pages.results-list.columns.name' | translate }}
-      <clr-dg-filter [clrDgFilter]="nameFilter">
+      <span i18n> Name </span>
+      <clr-dg-filter [clrDgFilter]="nameFilterComponent">
         <app-id-filter
           [name]="'name'"
-          [inputValue]="nameFilter$ | async"
-          #nameFilter
+          [inputValue]="nameFilter"
+          #nameFilterComponent
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -38,13 +38,9 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_OWNER_TASK_ID)
       "
     >
-      {{ 'pages.results-list.columns.task_id' | translate }}
+      <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="taskFilter">
-        <app-id-filter
-          [name]="'taskId'"
-          [inputValue]="taskIdFilter$ | async"
-          #taskFilter
-        >
+        <app-id-filter name="taskId" [inputValue]="taskIdFilter" #taskFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -54,11 +50,11 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
       "
     >
-      {{ 'pages.results-list.columns.session_id' | translate }}
+      <span i18n> Session ID </span>
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
-          [name]="'sessionId'"
-          [inputValue]="sessionIdFilter$ | async"
+          name="sessionId"
+          [inputValue]="sessionIdFilter"
           #sessionFilter
         >
         </app-id-filter>
@@ -68,13 +64,13 @@
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
-      {{ 'pages.results-list.columns.status' | translate }}
-      <clr-dg-filter [clrDgFilter]="statusFilter">
+      <span i18n> Status </span>
+      <clr-dg-filter [clrDgFilter]="statusFilterComponent">
         <app-select-filter
           [name]="'status'"
-          [selectedValue]="statusFilter$ | async"
+          [selectedValue]="statusFilter"
           [selectionList]="statusList"
-          #statusFilter
+          #statusFilterComponent
         >
         </app-select-filter>
       </clr-dg-filter>
@@ -85,19 +81,18 @@
         defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
       "
     >
-      {{ 'pages.results-list.columns.created_at' | translate }}
-      <clr-dg-filter>
+      <span i18n> Created at </span>
+      <clr-dg-filter [clrDgFilter]="createdAtFilter">
         <app-date-filter
-          name="created"
-          [beforeDate]="createdBeforeFilter$ | async"
-          [afterDate]="createdAfterFilter$ | async"
+          [name]="'created'"
+          [beforeDate]="createdBeforeFilter"
+          [afterDate]="createdAfterFilter"
+          #createdAtFilter
         >
         </app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column>
-      {{ 'pages.results-list.columns.actions' | translate }}
-    </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadResults$ | async as list">
       <clr-dg-row *ngFor="let result of list.results; trackBy: trackByResult">
@@ -125,18 +120,17 @@
           >
             <span
               [ngClass]="{
-                'text-created':
+                'created':
                   result.status === ResultsStatusEnum.RESULT_STATUS_CREATED,
-                'text-success':
+                'success':
                   result.status === ResultsStatusEnum.RESULT_STATUS_COMPLETED,
-                'text-danger': [
+                'danger': [
                   ResultsStatusEnum.RESULT_STATUS_ABORTED,
                   ResultsStatusEnum.RESULT_STATUS_NOTFOUND
                 ].includes(result.status || 0)
               }"
             >
-              {{ 'pages.results-list.cells.status.' + result.status | translate
-              }} ({{ result.status }})
+              {{ getStatusLabel(result.status) }} ({{ result.status }})
             </span>
           </a>
         </clr-dg-cell>
@@ -152,8 +146,8 @@
             [routerLink]="['/', 'tasks']"
             [queryParams]="{ taskId: result.ownerTaskId }"
           >
-            <clr-icon shape="node"></clr-icon>
-            {{ 'pages.results-list.actions.parent_task' | translate }}
+            <cds-icon shape="node"></cds-icon>
+            <span i18n> Task </span>
           </a>
         </clr-dg-cell>
         <ng-template #empty> - </ng-template>
@@ -162,18 +156,15 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="(pageSize$ | async) || 10"
+        [clrDgPageSize]="pageSize || 10"
         [clrDgTotalItems]="(totalResults$ | async) ?? 0"
-        [clrDgPage]="((page$ | async) || 0) + 1"
+        [clrDgPage]="(page || 0) + 1"
       >
-        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
-          >{{ 'pages.results-list.pagination.per_page' | translate
-          }}</clr-dg-page-size
-        >
-        <span *ngIf="(totalResults$ | async) ?? 0 > 1 as total">
-          {{ (total > 1 ? 'pages.results-list.pagination.results' :
-          'pages.results-list.pagination.result' ) | translate : { value: total
-          } }}
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+          <span i18n> Per Page </span>
+        </clr-dg-page-size>
+        <span *ngIf="(totalResults$ | async) ?? 0 > 1 as total" i18n>
+          {total, plural, =1 {1 result} other {{{total}} results}}
         </span>
       </clr-dg-pagination>
     </clr-dg-footer>

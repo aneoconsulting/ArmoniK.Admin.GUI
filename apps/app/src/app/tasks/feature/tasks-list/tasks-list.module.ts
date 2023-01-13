@@ -16,7 +16,7 @@ import {
   ClrLoadingModule,
   ClrModalModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { ActionBarComponent } from '../../../shared/feature';
 import {
   SelectFilterComponent,
@@ -39,7 +39,6 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
     ClrLoadingModule,
     ClrDropdownModule,
     ClrModalModule,
-    TranslateModule,
     TasksListRoutingModule,
     SelectFilterComponent,
     IdFilterComponent,

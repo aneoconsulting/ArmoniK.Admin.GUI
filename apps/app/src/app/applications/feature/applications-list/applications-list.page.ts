@@ -1,33 +1,29 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import {
+  ApplicationRaw,
   ListApplicationsRequest,
   ListApplicationsResponse,
-  ApplicationRaw,
 } from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   distinctUntilChanged,
   map,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
   timer,
 } from 'rxjs';
-import {
-  BrowserTitleService,
-  LanguageService,
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-applications-list',
@@ -35,7 +31,7 @@ import {
   styleUrls: ['./applications-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ApplicationsListComponent implements OnInit {
+export class ApplicationsListComponent {
   private _state: ClrDatagridStateInterface = {};
 
   private _subjectManual = new Subject<void>();
@@ -83,17 +79,9 @@ export class ApplicationsListComponent implements OnInit {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
-    private _browserTitleService: BrowserTitleService,
-    private _languageService: LanguageService,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService
   ) {}
-
-  ngOnInit(): void {
-    this._browserTitleService.setTitle(
-      this._languageService.instant('pages.applications-list.title')
-    );
-  }
 
   public get OrderByField() {
     return ListApplicationsRequest.OrderByField;

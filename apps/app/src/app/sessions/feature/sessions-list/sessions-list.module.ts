@@ -16,10 +16,9 @@ import {
   ClrLoadingModule,
   ClrModalModule,
 } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
+
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
-import { BrowserTitleService, LanguageService } from '../../../shared/util';
 import { ActionBarComponent } from '../../../shared/feature';
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 
@@ -37,7 +36,6 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
     ClrLoadingModule,
     ClrIconModule,
     ActionBarComponent,
-    TranslateModule,
     NgClass,
     NgFor,
     NgIf,
@@ -46,8 +44,6 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
     JsonPipe,
   ],
   providers: [
-    BrowserTitleService,
-    LanguageService,
     GrpcSessionsService,
     GrpcParamsService,
   ],

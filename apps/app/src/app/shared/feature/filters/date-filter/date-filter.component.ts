@@ -3,14 +3,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FiltersEnum } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-date-filter',
   templateUrl: './date-filter.component.html',
   styleUrls: ['./date-filter.component.scss'],
-  imports: [ClarityModule, TranslateModule, FormsModule, CommonModule],
+  imports: [ClarityModule, FormsModule, CommonModule],
 })
 export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
   readonly type = FiltersEnum.TIME;
