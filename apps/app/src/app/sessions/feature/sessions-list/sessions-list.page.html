@@ -17,6 +17,12 @@
       >
       </app-action-bar>
 
+      <input
+        class="clr-input"
+        [placeholder]="applicationNamePlaceHolder"
+        [(ngModel)]="applicationName"
+        (ngModelChange)="onApplicationFilterChange()"
+      />
       <label>
         <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
           <cds-icon shape="info-circle" size="22"></cds-icon>
@@ -25,13 +31,13 @@
           </span>
         </div>
       </label>
+
       <input
         class="clr-input"
-        [placeholder]="applicationNamePlaceHolder"
-        [(ngModel)]="applicationName"
+        [placeholder]="applicationVersionPlaceHolder"
+        [(ngModel)]="applicationVersion"
         (ngModelChange)="onApplicationFilterChange()"
       />
-
       <label>
         <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
           <cds-icon shape="info-circle" size="22"></cds-icon>
@@ -40,12 +46,6 @@
           </span>
         </div>
       </label>
-      <input
-        class="clr-input"
-        [placeholder]="applicationVersionPlaceHolder"
-        [(ngModel)]="applicationVersion"
-        (ngModelChange)="onApplicationFilterChange()"
-      />
 
       <button
         class="btn btn-sm"
