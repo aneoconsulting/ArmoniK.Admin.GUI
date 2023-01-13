@@ -134,7 +134,6 @@ export class SettingsService {
     return queryParams[param] ? new Date(parseInt(queryParams[param])) : null;
   }
 
-
   /**
    * Get query params from route and return them as a list
    *
