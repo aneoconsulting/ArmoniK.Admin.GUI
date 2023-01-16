@@ -608,6 +608,8 @@
       <segment state="initial">
         <source> Clear the filter </source>
         <target> Clear the filter </target>
+      </segment>
+    </unit>
     <unit id="7890770651055369175">
       <segment state="initial">
         <source>Enter a value</source>
