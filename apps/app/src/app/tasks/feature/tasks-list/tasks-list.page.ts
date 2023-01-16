@@ -115,7 +115,7 @@ export class TasksListComponent implements OnInit {
     'sessionId'
   );
 
-  filterStatus: number = this._settingsService.queryParam(
+  filterSelectedStatus: number[] = this._settingsService.queryListParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
