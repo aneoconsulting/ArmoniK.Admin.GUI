@@ -27,6 +27,7 @@ import {
   timer,
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
+import { AuthorizationService } from '../../../shared/data-access';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -94,8 +95,9 @@ export class SessionsListComponent {
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
-    private _grpcPagerService: GrpcPagerService,
-    private _settingsService: SettingsService
+    private _settingsService: SettingsService,
+    private _authorizationService: AuthorizationService,
+    private _grpcPagerService: GrpcPagerService
   ) {}
 
   public get refreshIntervalValue() {
@@ -108,6 +110,10 @@ export class SessionsListComponent {
 
   public get SessionStatusEnum() {
     return SessionStatus;
+  }
+
+  public canCancelSession(): boolean {
+    return this._authorizationService.canCancelSession();
   }
 
   public getStatusLabel(status: number): string {
