@@ -580,13 +580,13 @@
         <target> Admin GUI </target>
       </segment>
     </unit>
-    <unit id="5560294477415696130">
+    <unit id="7267818710527454615">
       <segment state="initial">
         <source> Please enter the full application name. </source>
         <target> Please enter the full application name. </target>
       </segment>
     </unit>
-    <unit id="3437883184850221816">
+    <unit id="5741943266979661747">
       <segment state="initial">
         <source> Please enter the full application version. </source>
         <target> Please enter the full application version. </target>
@@ -602,6 +602,12 @@
       <segment state="initial">
         <source>Application Version</source>
         <target>Application Version</target>
+      </segment>
+    </unit>
+    <unit id="684380972110439395">
+      <segment state="initial">
+        <source> Clear the filter </source>
+        <target> Clear the filter </target>
       </segment>
     </unit>
   </file>
