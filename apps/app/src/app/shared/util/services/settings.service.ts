@@ -153,7 +153,7 @@ export class SettingsService {
    *
    * @param param
    *
-   * @returns Observable<string>
+   * @returns Observable
    */
   public queryParam<T>(
     queryParams: ActivatedRouteSnapshot['queryParams'],
