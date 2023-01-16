@@ -141,11 +141,11 @@ export class SettingsService {
    *
    * @returns Observable<string>
    */
-  public queryListParam<T>(
+  public queryListParam(
     queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
-  ): T[] {
-    return queryParams[param] ? (queryParams[param] as T[]) : [];
+  ): number[] {
+    return queryParams[param] ? (queryParams[param] as number[]) : [];
   }
 
   /**
