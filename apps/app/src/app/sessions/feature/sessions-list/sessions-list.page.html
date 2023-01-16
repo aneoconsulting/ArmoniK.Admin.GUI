@@ -60,9 +60,9 @@
           >
             <span
               [ngClass]="{
-                'text-success':
+                'success':
                   session.status === SessionStatusEnum.SESSION_STATUS_RUNNING,
-                'text-danger':
+                'danger':
                   session.status === SessionStatusEnum.SESSION_STATUS_CANCELLED
               }"
             >
@@ -101,6 +101,7 @@
             <span i18n> Related Tasks </span>
           </a>
           <button
+            *ngIf="canCancelSession()"
             type="button"
             class="btn btn-sm btn-outline-danger"
             (click)="cancelSession(session.sessionId!)"
