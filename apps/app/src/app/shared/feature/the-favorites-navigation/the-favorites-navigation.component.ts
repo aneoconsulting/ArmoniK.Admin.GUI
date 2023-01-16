@@ -38,4 +38,8 @@ export class TheFavoritesNavigationComponent {
   public trackByFavorites(_: number, item: FavoriteItem): string {
     return item.label;
   }
+
+  public generateRouterLink(url: string[]): string[] {
+    return ['/', ...url];
+  }
 }
