@@ -22,6 +22,10 @@ export class AuthorizationService {
     return this._can<SessionsClient>('ListSessions', 'Sessions');
   }
 
+  public canCancelSession(): boolean {
+    return this._can<SessionsClient>('CancelSession', 'Sessions');
+  }
+
   public canListResults(): boolean {
     return this._can<ResultsClient>('ListResults', 'Results');
   }

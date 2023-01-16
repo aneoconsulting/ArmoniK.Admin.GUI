@@ -3,7 +3,7 @@ import { UrlSerializer, Params } from '@angular/router';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 
 export type FavoriteItem = {
-  url: string;
+  url: string[];
   queryParams: Params;
   label: string;
 };
@@ -30,16 +30,16 @@ export class FavoritesService {
           if (!root.children['primary']) {
             return {
               label,
-              url: url,
+              url: [url],
               queryParams: queryParams,
             };
           }
 
           return {
             label,
-            url: root.children['primary'].segments
-              .map((segment) => segment.path)
-              .join('/'),
+            url: root.children['primary'].segments.map(
+              (segment) => segment.path
+            ),
             queryParams: queryParams,
           };
         });
