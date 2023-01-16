@@ -17,43 +17,46 @@
       >
       </app-action-bar>
 
-      <input
-        class="clr-input"
-        [placeholder]="applicationNamePlaceHolder"
-        [(ngModel)]="applicationName"
-        (ngModelChange)="onApplicationFilterChange()"
-      />
-      <label>
-        <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
-          <cds-icon shape="info-circle" size="22"></cds-icon>
-          <span class="tooltip-content" i18n>
-            Please enter the full application name.
-          </span>
-        </div>
-      </label>
+      <div>
+        <input
+          class="clr-input"
+          [placeholder]="applicationNamePlaceHolder"
+          [(ngModel)]="applicationName"
+          (ngModelChange)="onApplicationFilterChange()"
+        />
+        <label>
+          <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+            <cds-icon shape="info-circle" size="22"></cds-icon>
+            <span class="tooltip-content" i18n>
+              Please enter the full application name.
+            </span>
+          </div>
+        </label>
 
-      <input
-        class="clr-input"
-        [placeholder]="applicationVersionPlaceHolder"
-        [(ngModel)]="applicationVersion"
-        (ngModelChange)="onApplicationFilterChange()"
-      />
-      <label>
-        <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
-          <cds-icon shape="info-circle" size="22"></cds-icon>
-          <span class="tooltip-content" i18n>
-            Please enter the full application version.
-          </span>
-        </div>
-      </label>
+        <input
+          class="clr-input"
+          [placeholder]="applicationVersionPlaceHolder"
+          [(ngModel)]="applicationVersion"
+          (ngModelChange)="onApplicationFilterChange()"
+        />
+        <label>
+          <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
+            <cds-icon shape="info-circle" size="22"></cds-icon>
+            <span class="tooltip-content" i18n>
+              Please enter the full application version.
+            </span>
+          </div>
+        </label>
 
-      <button
-        class="btn btn-sm"
-        [disabled]="!hasApplicationFilter"
-        (click)="clearApplicationFilter()"
-      >
-        Clear
-      </button>
+        <button
+          class="btn btn-sm"
+          [disabled]="!hasApplicationFilter"
+          (click)="clearApplicationFilter()"
+          i18n
+        >
+          Clear
+        </button>
+      </div>
     </clr-dg-action-bar>
 
     <clr-dg-column

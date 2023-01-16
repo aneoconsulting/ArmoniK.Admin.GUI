@@ -59,8 +59,8 @@ export class SessionsListComponent {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-      this.addApplicationFilter('applicationName', this.applicationName);
-      this.addApplicationFilter('applicationVersion', this.applicationVersion);
+      this.setApplicationFilter('applicationName', this.applicationName);
+      this.setApplicationFilter('applicationVersion', this.applicationVersion);
       const urlParams = this._grpcPagerService.createParams(state);
       await this._router.navigate([], {
         queryParams: urlParams,
@@ -304,14 +304,36 @@ export class SessionsListComponent {
     return this.applicationName !== '' || this.applicationVersion !== '';
   }
 
-  public addApplicationFilter(property: string, value: string) {
-    if (!this._state.filters) {
-      this._state.filters = [];
+  /**
+   * Add or remove an application related filter to the filters.
+   *
+   * Application filters works independently from other filters, since are not part of the Session Response.
+   *
+   * @param property The property of the filter
+   * @param value The value of the filter
+   */
+  public setApplicationFilter(property: string, value: string) {
+    if (value !== '') {
+      if (!this._state.filters) {
+        this._state.filters = [];
+      }
+      const filter = this._state.filters.find((f) => f.property === property);
+      if (filter) {
+        filter.value = value;
+      } else {
+        this._state.filters?.push({
+          property: property,
+          value: value,
+        });
+      }
+    } else if (this._state.filters) {
+      this._state.filters = this._state.filters.filter(
+        (f) => f.property !== property
+      );
+      if (this._state.filters.length === 0) {
+        delete this._state.filters;
+      }
     }
-    this._state.filters?.push({
-      property: property,
-      value: value === '' ? undefined : value,
-    });
   }
 
   public onApplicationFilterChange() {
@@ -324,8 +346,8 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    this.addApplicationFilter('applicationName', this.applicationName);
-    this.addApplicationFilter('applicationVersion', this.applicationVersion);
+    this.setApplicationFilter('applicationName', this.applicationName);
+    this.setApplicationFilter('applicationVersion', this.applicationVersion);
     const urlParams = this._grpcPagerService.createParams(this._restoreState());
     const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
     return this._grpcSessionsService.list$(grpcParams).pipe(
@@ -392,13 +414,14 @@ export class SessionsListComponent {
    */
   clearAllFilters(): void {
     this._state.filters?.forEach((f) => {
+      // Permit to avoid filter to stay active after clearing
       if (
-        f.property !== 'applicationName' &&
-        f.property !== 'applicationVersion'
+        f.property !== 'applicationVersion' &&
+        f.property !== 'applicationName'
       ) {
-        // Make sure the filters are inactive after clearing
         f.clear();
       }
+      f = undefined;
     });
     //Clearing applicationName and applicationVersion
     this.applicationName = '';
@@ -406,6 +429,11 @@ export class SessionsListComponent {
     this._subjectDatagrid.next(this._state);
   }
 
+  /**
+   * Clear the application filters.
+   *
+   * The filters themselves are not destroyed, but the strings they are build upon are set to empty.
+   */
   clearApplicationFilter(): void {
     this.applicationName = '';
     this.applicationVersion = '';
