@@ -4,7 +4,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 
 export type HistoryItem = {
   title: string;
-  url: string;
+  url: string[];
   queryParams: Params;
 };
 
@@ -33,16 +33,15 @@ export class HistoryService {
           if (!root.children['primary']) {
             return {
               title: url,
-              url: url,
+              url: [url],
               queryParams: queryParams,
             };
           }
 
           return {
             title: url,
-            url: root.children['primary'].segments
-              .map((segment) => segment.path)
-              .join('/'),
+            url: root.children['primary'].segments.map(
+              (segment) => segment.path),
             queryParams: queryParams,
           };
         });
