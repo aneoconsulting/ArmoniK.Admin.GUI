@@ -502,6 +502,9 @@
     <unit id="684380972110439395">
       <segment>
         <source> Clear the filter </source>
+    <unit id="7890770651055369175">
+      <segment>
+        <source>Enter a value</source>
       </segment>
     </unit>
   </file>

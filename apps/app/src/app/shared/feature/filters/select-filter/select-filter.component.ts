@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   imports: [ClarityModule, FormsModule, CommonModule],
 })
 export class SelectFilterComponent
-  implements ClrDatagridFilterInterface<number>
+  implements ClrDatagridFilterInterface<number>, OnDestroy
 {
   changes = new EventEmitter<never>();
 
@@ -26,6 +26,10 @@ export class SelectFilterComponent
 
   get value(): number {
     return this.selectedValue ?? 0;
+  }
+
+  ngOnDestroy(): void {
+    this.selectedValue = null;
   }
 
   onSelectionChange(): void {

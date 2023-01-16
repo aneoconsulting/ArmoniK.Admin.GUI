@@ -51,5 +51,8 @@ libs/shared/data-access/src/lib/proto/generated/*.ts
 !.yarn/releases
 !yarn.lock
 
+.vitepress/
 .docs/.vitepress/dist
 .docs/.vitepress/cache
+
+
