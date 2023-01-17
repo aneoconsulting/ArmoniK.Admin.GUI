@@ -33,7 +33,6 @@ export class GrpcApplicationsService extends BaseGrpcService {
       service: '',
       version: ''
     }
-    console.log(params);
     for (const [key, value] of Object.entries(params)) {
       switch(key) {
         case 'page': {
@@ -81,7 +80,6 @@ export class GrpcApplicationsService extends BaseGrpcService {
       ListApplicationsRequest.Filter.AsObject
     >
   ): Observable<ListApplicationsResponse> {
-    // console.log(params)
     const options = new ListApplicationsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
@@ -100,8 +98,6 @@ export class GrpcApplicationsService extends BaseGrpcService {
         version: params.filter?.version || '',
       },
     });
-
-    // console.log(options)
 
     return this._applicationsClient
       .listApplications(options)
