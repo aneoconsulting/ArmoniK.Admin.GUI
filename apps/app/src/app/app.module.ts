@@ -1,7 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
 import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
 import {
@@ -40,7 +39,7 @@ import {
   TheHistoryNavigationComponent,
 } from './shared/feature';
 import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
-import { CoreModule, RemoveRouteReuseStrategy } from './shared/util';
+import { CoreModule } from './shared/util';
 /**
  * Load app data
  */
@@ -61,7 +60,6 @@ import { CoreModule, RemoveRouteReuseStrategy } from './shared/util';
 
   providers: [
     { provide: APP_BASE_HREF, useValue: environment.baseHref },
-    { provide: RouteReuseStrategy, useClass: RemoveRouteReuseStrategy },
     { provide: Window, useValue: window },
     AuthService,
     GrpcAuthService,
