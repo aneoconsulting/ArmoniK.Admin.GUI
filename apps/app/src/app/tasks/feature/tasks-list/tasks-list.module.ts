@@ -20,7 +20,6 @@ import {
 
 import { ActionBarComponent } from '../../../shared/feature';
 import {
-  SelectFilterComponent,
   DateFilterComponent,
   IdFilterComponent,
   ComboBoxFilterComponent,
@@ -41,7 +40,6 @@ import { TasksListComponent } from './tasks-list.page';
     ClrDropdownModule,
     ClrModalModule,
     TasksListRoutingModule,
-    SelectFilterComponent,
     IdFilterComponent,
     DateFilterComponent,
     ComboBoxFilterComponent,
