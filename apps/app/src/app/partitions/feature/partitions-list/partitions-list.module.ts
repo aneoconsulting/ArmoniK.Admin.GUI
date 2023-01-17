@@ -4,7 +4,7 @@ import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access
 import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridModule } from '@clr/angular';
 import { ActionBarComponent } from '../../../shared/feature';
-import { IdFilterComponent } from '../../../shared/feature/filters';
+import { IdFilterComponent, NumericFilterComponent } from '../../../shared/feature/filters';
 import { PartitionsListRoutingModule } from './partitions-list-routing.module';
 import { PartitionsListComponent } from './partitions-list.page';
 
@@ -17,6 +17,7 @@ import { PartitionsListComponent } from './partitions-list.page';
     AsyncPipe,
     PartitionsListRoutingModule,
     IdFilterComponent,
+    NumericFilterComponent,
   ],
   providers: [GrpcPartitionsService ,GrpcPagerService],
 })

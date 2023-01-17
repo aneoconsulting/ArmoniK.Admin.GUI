@@ -76,32 +76,32 @@ export class PartitionsListComponent {
       this._activatedRoute.queryParamMap,
       'id'
     );
-  filterParentId: string[] = this._settingsService.queryListParam(
-    this._activatedRoute.queryParamMap,
-    'parentPartitionIds'
-  );
-  filterPodReserved: number = this._settingsService.queryParam(
+  // filterParentId: string[] = this._settingsService.queryListParam(
+  //   this._activatedRoute.queryParamMap,
+  //   'parentPartitionIds'
+  // );
+  filterPodReserved: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'podReserved'
   );
-  filterPodMax: number = this._settingsService.queryParam(
+  filterPodMax: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'podMax'
   )
-  filterPreemption: number = this._settingsService.queryParam(
+  filterPreemption: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
-    'PreemptionPercentage'
+    'preemptionPercentage'
   )
-  filterPriority: number = this._settingsService.queryParam(
+  filterPriority: number | null = this._settingsService.queryParam(
     this._activatedRoute.queryParams,
-    'Priority'
+    'priority'
   )
 
-  page: number = this._settingsService.queryParam(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'page'
   );
-  pageSize: number = this._settingsService.queryParam(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
     'pageSize'
   );
