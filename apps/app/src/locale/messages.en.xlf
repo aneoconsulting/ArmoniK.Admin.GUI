@@ -580,5 +580,11 @@
         <target> Admin GUI </target>
       </segment>
     </unit>
+    <unit id="7890770651055369175">
+      <segment state="initial">
+        <source>Enter a value</source>
+        <target>Enter a value</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
