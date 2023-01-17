@@ -78,19 +78,19 @@ export class ResultsListComponent implements OnInit {
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
    */
-  nameFilter: string | null = this._settingsService.queryParam<string>(
+  nameFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'name'
   );
-  taskIdFilter: string | null = this._settingsService.queryParam<string>(
+  taskIdFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
-  sessionIdFilter: string | null = this._settingsService.queryParam<string>(
+  sessionIdFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'sessionId'
   );
-  statusFilter: number | null = this._settingsService.queryParam<number>(
+  statusFilter: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -103,11 +103,11 @@ export class ResultsListComponent implements OnInit {
     'createdAtAfter'
   );
 
-  pageSize: number | null = this._settingsService.queryParam<number>(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number | null = this._settingsService.queryParam<number>(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );

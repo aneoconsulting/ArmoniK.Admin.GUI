@@ -105,17 +105,17 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterTaskId: string | null = this._settingsService.queryParam<string>(
+  filterTaskId: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
 
-  filterSessionId: string | null = this._settingsService.queryParam<string>(
+  filterSessionId: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'sessionId'
   );
 
-  filterStatus: number | null = this._settingsService.queryParam<number>(
+  filterStatus: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -150,11 +150,11 @@ export class TasksListComponent implements OnInit {
     'endedAtAfter'
   );
 
-  pageSize: number | null = this._settingsService.queryParam<number>(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number | null = this._settingsService.queryParam<number>(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );
