@@ -41,7 +41,8 @@ export class HistoryService {
           return {
             title: url,
             url: root.children['primary'].segments.map(
-              (segment) => segment.path),
+              (segment) => segment.path
+            ),
             queryParams: queryParams,
           };
         });
