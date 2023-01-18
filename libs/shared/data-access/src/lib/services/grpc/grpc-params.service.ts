@@ -104,7 +104,7 @@ export class GrpcParamsService {
         if (filter.value.after) {
           result.set(
             filter.property.after,
-            this._createTimestamp(filter.value.after)
+            this._createTimestamp(filter.value.after + 86400000)
           );
         }
       } else {
