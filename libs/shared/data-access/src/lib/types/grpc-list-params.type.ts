@@ -36,5 +36,5 @@ type GrpcListParams<
   pageSize: number;
   orderBy: T;
   order: K;
-  filter: J;
+  filter?: J;
 };
