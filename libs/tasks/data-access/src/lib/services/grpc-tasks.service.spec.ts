@@ -89,6 +89,14 @@ describe('GrpcTasksService', () => {
       pageSize: undefined,
       orderBy: undefined,
       order: undefined,
+      createdAfter: undefined,
+      createdBefore: undefined,
+      endedBefore: undefined,
+      endedAfter: undefined,
+      startedBefore: undefined,
+      startedAfter: undefined,
+      sessionId: undefined,
+      status: undefined
     });
   });
 
@@ -108,6 +116,13 @@ describe('GrpcTasksService', () => {
       orderBy: 5,
       order: 2,
       sessionId: 'Some test sessionId',
+      createdAfter: undefined,
+      createdBefore: undefined,
+      endedBefore: undefined,
+      endedAfter: undefined,
+      startedBefore: undefined,
+      startedAfter: undefined,
+      status: undefined
     });
   });
 

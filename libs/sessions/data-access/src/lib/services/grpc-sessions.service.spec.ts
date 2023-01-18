@@ -89,6 +89,12 @@ describe('GrpcSessionsService', () => {
       pageSize: undefined,
       orderBy: undefined,
       order: undefined,
+      createdBefore: undefined,
+      createdAfter: undefined,
+      cancelledBefore: undefined,
+      cancelledAfter: undefined,
+      sessionId: undefined,
+      status: undefined
     });
   });
 
@@ -108,6 +114,11 @@ describe('GrpcSessionsService', () => {
       orderBy: 1,
       order: 2,
       sessionId: 'Some test sessionId',
+      createdBefore: undefined,
+      createdAfter: undefined,
+      cancelledBefore: undefined,
+      cancelledAfter: undefined,
+      status: undefined
     });
   });
 
