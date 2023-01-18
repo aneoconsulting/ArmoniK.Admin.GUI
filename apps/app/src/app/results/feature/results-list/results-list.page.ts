@@ -307,7 +307,7 @@ export class ResultsListComponent implements OnInit {
     // Reset the filters so that they doesn't stay active
     this._state.filters?.forEach((filter) => {
       filter.reset();
-    })
+    });
     delete this._state.filters;
     this._subjectDatagrid.next(this._state);
   }
