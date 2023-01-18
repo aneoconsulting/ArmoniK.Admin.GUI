@@ -9,7 +9,7 @@ export class GrpcParamsService {
   private _defaultPageSize = 10;
 
   public getTimeStampSeconds(time?: Timestamp.AsObject): number | undefined {
-    return time ? parseInt(time.seconds) * 1000 : undefined
+    return time ? parseInt(time.seconds) * 1000 : undefined;
   }
 
   public createPagerParams(state: ClrDatagridStateInterface) {

@@ -66,8 +66,12 @@ export class GrpcResultsService extends BaseGrpcService {
       ownerTaskId: filter?.ownerTaskId,
       sessionId: filter?.sessionId,
       status: filter?.status,
-      createdBefore: this._grpcParamsService.getTimeStampSeconds(filter?.createdBefore),
-      createdAfter: this._grpcParamsService.getTimeStampSeconds(filter?.createdAfter)
+      createdBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdBefore
+      ),
+      createdAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdAfter
+      ),
     };
   }
 

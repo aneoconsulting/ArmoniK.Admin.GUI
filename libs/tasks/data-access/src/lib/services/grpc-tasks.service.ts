@@ -68,12 +68,24 @@ export class GrpcTasksService extends BaseGrpcService {
           : undefined,
       sessionId: filter?.sessionId,
       status: filter?.status,
-      createdBefore: this._grpcParamsService.getTimeStampSeconds(filter?.createdBefore),
-      createdAfter: this._grpcParamsService.getTimeStampSeconds(filter?.createdAfter),
-      startedBefore: this._grpcParamsService.getTimeStampSeconds(filter?.startedBefore),
-      startedAfter: this._grpcParamsService.getTimeStampSeconds(filter?.startedAfter),
-      endedBefore: this._grpcParamsService.getTimeStampSeconds(filter?.endedBefore),
-      endedAfter: this._grpcParamsService.getTimeStampSeconds(filter?.endedAfter)
+      createdBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdBefore
+      ),
+      createdAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdAfter
+      ),
+      startedBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.startedBefore
+      ),
+      startedAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.startedAfter
+      ),
+      endedBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.endedBefore
+      ),
+      endedAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.endedAfter
+      ),
     };
   }
 
