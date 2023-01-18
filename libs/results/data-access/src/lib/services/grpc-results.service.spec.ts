@@ -94,7 +94,7 @@ describe('GrpcResultsService', () => {
       status: undefined,
       name: undefined,
       ownerTaskId: undefined,
-      sessionId: undefined
+      sessionId: undefined,
     });
   });
 

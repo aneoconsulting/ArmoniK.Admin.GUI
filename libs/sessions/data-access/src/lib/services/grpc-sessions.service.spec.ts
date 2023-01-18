@@ -94,7 +94,7 @@ describe('GrpcSessionsService', () => {
       cancelledBefore: undefined,
       cancelledAfter: undefined,
       sessionId: undefined,
-      status: undefined
+      status: undefined,
     });
   });
 
@@ -118,7 +118,7 @@ describe('GrpcSessionsService', () => {
       createdAfter: undefined,
       cancelledBefore: undefined,
       cancelledAfter: undefined,
-      status: undefined
+      status: undefined,
     });
   });
 

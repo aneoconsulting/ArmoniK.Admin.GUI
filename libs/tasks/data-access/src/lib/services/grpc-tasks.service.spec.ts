@@ -96,7 +96,7 @@ describe('GrpcTasksService', () => {
       startedBefore: undefined,
       startedAfter: undefined,
       sessionId: undefined,
-      status: undefined
+      status: undefined,
     });
   });
 
@@ -122,7 +122,7 @@ describe('GrpcTasksService', () => {
       endedAfter: undefined,
       startedBefore: undefined,
       startedAfter: undefined,
-      status: undefined
+      status: undefined,
     });
   });
 
