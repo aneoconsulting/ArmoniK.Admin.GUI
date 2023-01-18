@@ -86,7 +86,7 @@ export class ResultsListComponent implements OnInit {
   );
   taskIdFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
-    'taskId'
+    'ownerTaskId'
   );
   sessionIdFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
@@ -98,11 +98,11 @@ export class ResultsListComponent implements OnInit {
   );
   createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtBefore'
+    'createdBefore'
   );
   createdAfterFilter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtAfter'
+    'createdAfter'
   );
 
   pageSize: number | null = this._settingsService.queryParam(
@@ -264,9 +264,6 @@ export class ResultsListComponent implements OnInit {
     const state = this._restoreState();
     const params = this._grpcResultsService.createListRequestParams(state);
     const options = this._grpcResultsService.createListRequestOptions(params);
-
-    console.log('List results', params);
-
     return this._grpcResultsService.list$(options).pipe(
       catchError((error) => {
         console.error(error);

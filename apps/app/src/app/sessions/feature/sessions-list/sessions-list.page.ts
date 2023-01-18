@@ -63,8 +63,6 @@ export class SessionsListComponent {
       const queryParams =
         this._grpcSessionsService.createListRequestQueryParams(params);
 
-      console.log('queryParams', queryParams);
-
       await this._router.navigate([], {
         queryParams,
         relativeTo: this._activatedRoute,

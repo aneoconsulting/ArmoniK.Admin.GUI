@@ -210,9 +210,6 @@ export class ApplicationsListComponent {
     const params = this._grpcApplicationsService.createListRequestParams(state);
     const options =
       this._grpcApplicationsService.createListRequestOptions(params);
-
-    console.log('grpcParams', params);
-
     return this._grpcApplicationsService.list$(options).pipe(
       catchError((error) => {
         console.error(error);

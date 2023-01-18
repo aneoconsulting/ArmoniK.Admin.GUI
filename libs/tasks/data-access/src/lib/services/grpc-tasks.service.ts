@@ -66,7 +66,14 @@ export class GrpcTasksService extends BaseGrpcService {
         order !== ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
           : undefined,
-      ...filter,
+      sessionId: filter?.sessionId,
+      status: filter?.status,
+      createdBefore: this._grpcParamsService.getTimeStampSeconds(filter?.createdBefore),
+      createdAfter: this._grpcParamsService.getTimeStampSeconds(filter?.createdAfter),
+      startedBefore: this._grpcParamsService.getTimeStampSeconds(filter?.startedBefore),
+      startedAfter: this._grpcParamsService.getTimeStampSeconds(filter?.startedAfter),
+      endedBefore: this._grpcParamsService.getTimeStampSeconds(filter?.endedBefore),
+      endedAfter: this._grpcParamsService.getTimeStampSeconds(filter?.endedAfter)
     };
   }
 

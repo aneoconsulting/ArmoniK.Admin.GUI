@@ -64,7 +64,12 @@ export class GrpcSessionsService extends BaseGrpcService {
         order !== ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
           : undefined,
-      ...filter,
+      sessionId: filter?.sessionId,
+      status: filter?.status,
+      createdBefore: this._grpcParamsService.getTimeStampSeconds(filter?.createdBefore),
+      createdAfter: this._grpcParamsService.getTimeStampSeconds(filter?.createdAfter),
+      cancelledBefore: this._grpcParamsService.getTimeStampSeconds(filter?.cancelledBefore),
+      cancelledAfter: this._grpcParamsService.getTimeStampSeconds(filter?.cancelledAfter)
     };
   }
 

@@ -8,6 +8,10 @@ export class GrpcParamsService {
   private _defaultCurrentPage = 0;
   private _defaultPageSize = 10;
 
+  public getTimeStampSeconds(time?: Timestamp.AsObject): number | undefined {
+    return time ? parseInt(time.seconds) * 1000 : undefined
+  }
+
   public createPagerParams(state: ClrDatagridStateInterface) {
     const page = this._getPage(state);
     const pageSize = this._getPageSize(state);

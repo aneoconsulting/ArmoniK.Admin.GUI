@@ -50,7 +50,6 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        console.log('state', state);
         const params = this._grpcTasksService.createListRequestParams(state);
         const queryParams =
           this._grpcTasksService.createListRequestQueryParams(params);
@@ -126,32 +125,32 @@ export class TasksListComponent implements OnInit {
 
   filterCreatedBefore: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtBefore'
+    'createdBefore'
   );
 
   filterCreatedAfter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtAfter'
+    'createdAfter'
   );
 
   filterStartedBefore: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'startedAtBefore'
+    'startedBefore'
   );
 
   filterStartedAfter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'startedAtAfter'
+    'startedAfter'
   );
 
   filterEndedBefore: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'endedAtBefore'
+    'endedBefore'
   );
 
   filterEndedAfter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'endedAtAfter'
+    'endedAfter'
   );
 
   pageSize: number | null = this._settingsService.queryParam(
