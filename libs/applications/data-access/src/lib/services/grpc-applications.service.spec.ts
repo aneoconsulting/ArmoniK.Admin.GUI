@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ApplicationsClient } from '@armonik.admin.gui/shared/data-access';
+import { ApplicationsClient, GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcApplicationsService } from './grpc-applications.service';
@@ -17,7 +17,7 @@ describe('GrpcApplicationsService', () => {
           },
         }),
       ],
-      providers: [GrpcApplicationsService, ApplicationsClient],
+      providers: [GrpcApplicationsService, ApplicationsClient, GrpcParamsService],
     });
     service = TestBed.inject(GrpcApplicationsService);
   });

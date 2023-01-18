@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import {
+  GrpcParamsService,
   SessionsClient,
-  TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
@@ -20,7 +20,7 @@ describe('GrpcSessionsService', () => {
           },
         }),
       ],
-      providers: [GrpcSessionsService, SessionsClient],
+      providers: [GrpcSessionsService, SessionsClient, GrpcParamsService],
     });
     service = TestBed.inject(GrpcSessionsService);
   });
