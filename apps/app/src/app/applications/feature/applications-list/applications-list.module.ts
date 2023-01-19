@@ -28,7 +28,7 @@ import { IdFilterComponent } from '../../../shared/feature/filters';
     DatePipe,
     NgFor,
     NgIf,
-    IdFilterComponent
+    IdFilterComponent,
   ],
   providers: [GrpcApplicationsService, GrpcPagerService],
 })

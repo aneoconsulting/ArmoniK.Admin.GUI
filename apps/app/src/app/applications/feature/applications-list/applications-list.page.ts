@@ -78,11 +78,10 @@ export class ApplicationsListComponent {
     this._activatedRoute.snapshot.queryParams,
     'version'
   );
-  namespaceFilter: string | null =
-    this._settingsService.queryParam(
-      this._activatedRoute.snapshot.queryParams,
-      'namespace'
-    );
+  namespaceFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'namespace'
+  );
   serviceFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'service'

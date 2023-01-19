@@ -17,24 +17,23 @@ export class GrpcApplicationsService extends BaseGrpcService {
   public urlToGrpcParams(
     params: Record<string, string | number>
   ): GrpcParams<
-      ListApplicationsRequest.OrderByField,
-      ListApplicationsRequest.OrderDirection,
-      ListApplicationsRequest.Filter.AsObject
-    > {
+    ListApplicationsRequest.OrderByField,
+    ListApplicationsRequest.OrderDirection,
+    ListApplicationsRequest.Filter.AsObject
+  > {
     const grpcParams: GrpcParams<
       ListApplicationsRequest.OrderByField,
       ListApplicationsRequest.OrderDirection,
       ListApplicationsRequest.Filter.AsObject
-    > = {
-    };
+    > = {};
     const filter = {
       name: '',
-      namespace:'',
+      namespace: '',
       service: '',
-      version: ''
-    }
+      version: '',
+    };
     for (const [key, value] of Object.entries(params)) {
-      switch(key) {
+      switch (key) {
         case 'page': {
           grpcParams.page = value as number;
           break;
@@ -51,7 +50,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
           grpcParams.orderBy = value as number;
           break;
         }
-        case 'name':{
+        case 'name': {
           filter.name = value as string;
           break;
         }
