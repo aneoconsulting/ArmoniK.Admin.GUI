@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GrpcPagerService, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@armonik.admin.gui/shared/data-access';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access'
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
@@ -71,8 +71,7 @@ export class PartitionsListComponent {
     switchMap(() => this._listPartitions$())
   );
 
-  filterPartitionId: string =
-    this._settingsService.queryStringParam(
+  filterPartitionId: string | null = this._settingsService.queryParam(
       this._activatedRoute.queryParamMap,
       'id'
     );
@@ -126,6 +125,14 @@ export class PartitionsListComponent {
     return this._settingsService.initialInterval;
   }
 
+  public onUpdateInterval(value: number) {
+    this._intervalValue.next(value);
+    // Stop interval
+    if (value === DisabledIntervalValue) {
+      this._stopInterval.next();
+    }
+  }
+
   /**
    * Save state
    *
@@ -142,31 +149,6 @@ export class PartitionsListComponent {
    */
   private _restoreState(): ClrDatagridStateInterface {
     return this._state;
-  }
-
-  private _listPartitions$(): Observable<ListPartitionsResponse> {
-    const grpcParams = this._grpcPagerService.createParams(this._restoreState())
-    return this._grpcPartitionsService.list$(grpcParams).pipe(
-      catchError((error) => {
-        console.log(error);
-        this._stopInterval.next();
-
-        return of({} as ListPartitionsResponse);
-      }),
-      tap((partitions) => {
-        this.loadingPartitions$.next(false);
-        this.totalPartitions$.next(partitions.total ?? 0);
-      })
-    );
-  }
-
-  public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
-    if (value === DisabledIntervalValue) {
-      this._stopInterval.next();
-    }
   }
 
   /**
@@ -201,18 +183,6 @@ export class PartitionsListComponent {
     return partition.id ?? '';
   }
 
-  /**
-   * Track by interval
-   *
-   * @param _
-   * @param interval
-   *
-   * @returns Interval
-   */
-  public trackByInterval(_: number, interval: number): string {
-    return interval.toString();
-  }
-
   public defaultSortOrder(
     field: ListPartitionsRequest.OrderByField
   ): ClrDatagridSortOrder {
@@ -229,6 +199,28 @@ export class PartitionsListComponent {
 
     return ClrDatagridSortOrder.ASC;
   }
+
+  public mergeWithCurrentQueryParams(newQueryParams: Params): Params {
+    return { ...this._activatedRoute.snapshot.queryParams, ...newQueryParams };
+  }
+
+  private _listPartitions$(): Observable<ListPartitionsResponse> {
+    const urlParams = this._grpcPagerService.createParams(this._restoreState());
+    const grpcParams = this._grpcPartitionsService.urlToGrpcParams(urlParams);
+    return this._grpcPartitionsService.list$(grpcParams).pipe(
+      catchError((error) => {
+        console.log(error);
+        this._stopInterval.next();
+
+        return of({} as ListPartitionsResponse);
+      }),
+      tap((partitions) => {
+        this.loadingPartitions$.next(false);
+        this.totalPartitions$.next(partitions.total ?? 0);
+      })
+    );
+  }
+
 
   /**
    * Checks if the datagrid is ordered by any column

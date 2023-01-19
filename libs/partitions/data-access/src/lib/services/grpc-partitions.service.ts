@@ -8,6 +8,72 @@ export class GrpcPartitionsService extends BaseGrpcService {
         super();
     }
 
+    public urlToGrpcParams(urlParams: Record<string, string | number>
+        ) :GrpcParams<
+    ListPartitionsRequest.OrderByField,
+    ListPartitionsRequest.OrderDirection,
+    ListPartitionsRequest.Filter.AsObject> {
+        const grpcParams: GrpcParams<ListPartitionsRequest.OrderByField,
+        ListPartitionsRequest.OrderDirection,
+        ListPartitionsRequest.Filter.AsObject> = {}
+
+        const filter: ListPartitionsRequest.Filter.AsObject = {
+            id: '',
+            parentPartitionId: '',
+            podMax: '',
+            podReserved: '',
+            preemptionPercentage: '',
+            priority: ''
+        }
+
+        for (const [key, value] of Object.entries(urlParams)) {
+            switch (key) {
+                case 'page': {
+                    grpcParams.page = value as number;
+                    break;
+                }
+                case 'PageSize': {
+                    grpcParams.pageSize = value as number;
+                    break;
+                }
+                case 'order': {
+                    grpcParams.order = value as number;
+                    break;
+                }
+                case 'orderBy': {
+                    grpcParams.orderBy = value as number;
+                    break;
+                }
+                case 'id': {
+                    filter.id = value as string;
+                    break;
+                }
+                case 'parentPartitionId': {
+                    filter.parentPartitionId = value as string;
+                    break;
+                }
+                case 'podMax': {
+                    filter.podMax = value as string;
+                    break;
+                }
+                case 'podReserved': {
+                    filter.podReserved = value as string;
+                    break;
+                }
+                case 'preemptionPercentage': {
+                    filter.preemptionPercentage = value as string;
+                    break;
+                }
+                case 'priority': {
+                    filter.priority = value as string;
+                    break;
+                }
+            }
+        }
+        grpcParams.filter = filter;
+        return grpcParams;
+    }
+
     public list$(
         params: GrpcParams<
             ListPartitionsRequest.OrderByField,

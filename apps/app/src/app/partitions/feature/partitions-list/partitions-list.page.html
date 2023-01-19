@@ -50,6 +50,14 @@
       i18n
     >
       Reserved pods
+      <clr-dg-filter [clrDgFilter]="reservedPodFilter">
+        <app-numeric-filter
+          #reservedPodFilter
+          name="podReserved"
+          [selectedValue]="filterPodReserved"
+        >
+        </app-numeric-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_POD_MAX.toString()"
@@ -114,7 +122,7 @@
         <clr-dg-cell>
           <a
             [routerLink]="['/', 'partitions']"
-            [queryParams]="{ podReserved: partition.podReserved }"
+            [queryParams]="mergeWithCurrentQueryParams({ podReserved: partition.podReserved })"
           >
             {{ partition.podReserved }}
           </a>
