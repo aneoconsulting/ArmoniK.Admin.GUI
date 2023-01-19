@@ -70,28 +70,28 @@ export class ApplicationsListComponent {
     switchMap(() => this._listApplications$())
   );
 
-  nameFilter: string = this._settingsService.queryStringParam(
+  nameFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'name'
   );
-  versionFilter: string = this._settingsService.queryStringParam(
+  versionFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'version'
   );
-  namespaceFilter: string =
-    this._settingsService.queryStringParam(
+  namespaceFilter: string | null =
+    this._settingsService.queryParam(
       this._activatedRoute.snapshot.queryParams,
       'namespace'
     );
-  serviceFilter: string = this._settingsService.queryStringParam(
+  serviceFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'service'
   );
-  pageSize: number = this._settingsService.queryParam(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number = this._settingsService.queryParam(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );
