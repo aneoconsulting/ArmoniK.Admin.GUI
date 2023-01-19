@@ -50,8 +50,8 @@ export {
   ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
-} from './lib/proto/generated/partitions-common.pb'
-export { PartitionsClient } from './lib/proto/generated/partitions-service.pbsc'
+} from './lib/proto/generated/partitions-common.pb';
+export { PartitionsClient } from './lib/proto/generated/partitions-service.pbsc';
 export {
   BaseGrpcService,
   GrpcPagerService,

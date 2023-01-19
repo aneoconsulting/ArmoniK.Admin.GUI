@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { GetPartitionResponse, GrpcPagerService, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@armonik.admin.gui/shared/data-access';
-import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access'
+import {
+  GetPartitionResponse,
+  GrpcPagerService,
+  ListPartitionsRequest,
+  ListPartitionsResponse,
+  PartitionRaw,
+} from '@armonik.admin.gui/shared/data-access';
+import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -17,9 +23,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import {
-  SettingsService,
-} from '../../../shared/util';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-partitions-list',
@@ -92,9 +96,9 @@ export class PartitionsListComponent {
   );
 
   filterPartitionId: string | null = this._settingsService.queryParam(
-      this._activatedRoute.queryParamMap,
-      'id'
-    );
+    this._activatedRoute.queryParamMap,
+    'id'
+  );
   // filterParentId: string[] = this._settingsService.queryListParam(
   //   this._activatedRoute.queryParamMap,
   //   'parentPartitionIds'
@@ -106,15 +110,15 @@ export class PartitionsListComponent {
   filterPodMax: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'podMax'
-  )
+  );
   filterPreemption: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'preemptionPercentage'
-  )
+  );
   filterPriority: number | null = this._settingsService.queryParam(
     this._activatedRoute.queryParams,
     'priority'
-  )
+  );
 
   page: number | null = this._settingsService.queryParam(
     this._activatedRoute.queryParamMap,
@@ -241,8 +245,7 @@ export class PartitionsListComponent {
     );
   }
 
-
-  private _getPartition$(id: string): Observable<GetPartitionResponse>{
+  private _getPartition$(id: string): Observable<GetPartitionResponse> {
     return this._grpcPartitionsService.get$(id).pipe(
       catchError((error) => {
         console.log(error);
@@ -250,11 +253,9 @@ export class PartitionsListComponent {
         return of({} as GetPartitionResponse);
       }),
       tap(() => {
-        this.openGetPartitionModal(),
-        this.loadingSinglePartition$.next(null);
+        this.openGetPartitionModal(), this.loadingSinglePartition$.next(null);
       })
-    )
-    return {} as Observable<GetPartitionResponse>
+    );
   }
 
   public viewPartitionDetail(partitionId: string): void {

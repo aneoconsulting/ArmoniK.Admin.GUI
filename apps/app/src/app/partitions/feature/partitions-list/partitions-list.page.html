@@ -21,11 +21,7 @@
     >
       Id
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter
-          name="id"
-          [inputValue]="filterPartitionId"
-          #idFilter
-        >
+        <app-id-filter name="id" [inputValue]="filterPartitionId" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -36,11 +32,7 @@
     >
       Parent
       <clr-dg-filter [clrDgFilter]="idParentFilter">
-        <app-id-filter
-          name="parentId"
-          [inputValue]="''"
-          #idParentFilter
-        >
+        <app-id-filter name="parentId" [inputValue]="''" #idParentFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -67,16 +59,14 @@
       Maximum pods
       <clr-dg-filter [clrDgFilter]="maxPodFilter">
         <app-numeric-filter
-        #maxPodFilter
-        name="maxPod"
-        [selectedValue]="filterPodMax"
-      >
-      </app-numeric-filter>
+          #maxPodFilter
+          name="maxPod"
+          [selectedValue]="filterPodMax"
+        >
+        </app-numeric-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column>
-      Pods configuration
-    </clr-dg-column>
+    <clr-dg-column> Pods configuration </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE)"
@@ -84,11 +74,11 @@
       Percentage
       <clr-dg-filter [clrDgFilter]="percentageFilter">
         <app-numeric-filter
-        #percentageFilter
-        name="preemptionPercentage"
-        [selectedValue]="filterPreemption"
-      >
-      </app-numeric-filter>
+          #percentageFilter
+          name="preemptionPercentage"
+          [selectedValue]="filterPreemption"
+        >
+        </app-numeric-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
@@ -98,11 +88,11 @@
       Priority
       <clr-dg-filter [clrDgFilter]="priorityFilter">
         <app-numeric-filter
-        #priorityFilter
-        name="priority"
-        [selectedValue]="filterPodMax"
-      >
-      </app-numeric-filter>
+          #priorityFilter
+          name="priority"
+          [selectedValue]="filterPodMax"
+        >
+        </app-numeric-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column i18n> Actions </clr-dg-column>
@@ -139,9 +129,9 @@
             class="btn btn-sm btn-secondary"
             (click)="viewPartitionDetail(partition.id!)"
           >
-          <cds-icon shape="eye"></cds-icon>
-          <span i18n> Details </span>
-        </button>
+            <cds-icon shape="eye"></cds-icon>
+            <span i18n> Details </span>
+          </button>
         </clr-dg-cell>
       </clr-dg-row>
     </ng-container>
