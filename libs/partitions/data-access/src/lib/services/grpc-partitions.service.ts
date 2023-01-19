@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { PartitionsClient, BaseGrpcService, ListPartitionsRequest, ListPartitionsResponse, GrpcParams } from "@armonik.admin.gui/shared/data-access";
+import { PartitionsClient, BaseGrpcService, ListPartitionsRequest, ListPartitionsResponse, GrpcParams, GetPartitionResponse, GetPartitionRequest } from "@armonik.admin.gui/shared/data-access";
 import { Observable, takeUntil } from "rxjs";
 
 @Injectable()
@@ -92,5 +92,15 @@ export class GrpcPartitionsService extends BaseGrpcService {
           })
 
         return this._partitionsClient.listPartitions(options).pipe(takeUntil(this._timeout$));
+    }
+
+    public get$(
+        paramId: string
+    ): Observable<GetPartitionResponse> {
+        const options = new GetPartitionRequest({
+            id: paramId
+        });
+
+        return this._partitionsClient.getPartition(options).pipe(takeUntil(this._timeout$));
     }
 }

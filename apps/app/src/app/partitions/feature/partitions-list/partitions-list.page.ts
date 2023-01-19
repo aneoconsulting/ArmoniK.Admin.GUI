@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { GrpcPagerService, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@armonik.admin.gui/shared/data-access';
+import { GetPartitionResponse, GrpcPagerService, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@armonik.admin.gui/shared/data-access';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access'
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -69,6 +69,26 @@ export class PartitionsListComponent {
   ).pipe(
     tap(() => this.loadingPartitions$.next(true)),
     switchMap(() => this._listPartitions$())
+  );
+
+  /**
+   * Get a single partition.
+   * Used for "details" button.
+   */
+
+  private _opened$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  private _subjectSinglePartition: Subject<string> = new Subject<string>();
+  private _triggerSinglePartition: Observable<string> =
+    this._subjectSinglePartition.asObservable();
+
+  loadingSinglePartition$: BehaviorSubject<string | null> = new BehaviorSubject<
+    string | null
+  >(null);
+  loadSinglePartition$ = this._triggerSinglePartition.pipe(
+    tap((partitionId) => this.loadingSinglePartition$.next(partitionId)),
+    switchMap((partitionId) => this._getPartition$(partitionId))
   );
 
   filterPartitionId: string | null = this._settingsService.queryParam(
@@ -221,6 +241,43 @@ export class PartitionsListComponent {
     );
   }
 
+
+  private _getPartition$(id: string): Observable<GetPartitionResponse>{
+    return this._grpcPartitionsService.get$(id).pipe(
+      catchError((error) => {
+        console.log(error);
+
+        return of({} as GetPartitionResponse);
+      }),
+      tap(() => {
+        this.openGetPartitionModal(),
+        this.loadingSinglePartition$.next(null);
+      })
+    )
+    return {} as Observable<GetPartitionResponse>
+  }
+
+  public viewPartitionDetail(partitionId: string): void {
+    this._subjectSinglePartition.next(partitionId);
+  }
+
+  /**
+   * Open modal to view details
+   */
+  public openGetPartitionModal(): void {
+    this._opened$.next(true);
+  }
+
+  /**
+   * Close modal to view details
+   */
+  public closeGetPartitionModal(): void {
+    this._opened$.next(false);
+  }
+
+  public get isGetPartitionModalOpened$(): Observable<boolean> {
+    return this._opened$.asObservable();
+  }
 
   /**
    * Checks if the datagrid is ordered by any column

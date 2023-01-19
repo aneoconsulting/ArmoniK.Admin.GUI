@@ -105,6 +105,7 @@
       </app-numeric-filter>
       </clr-dg-filter>
     </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadPartitions$ | async as list">
       <clr-dg-row
@@ -131,6 +132,17 @@
         <clr-dg-cell> {{ partition.podConfiguration }} </clr-dg-cell>
         <clr-dg-cell> {{ partition.preemptionPercentage }} </clr-dg-cell>
         <clr-dg-cell> {{ partition.priority }} </clr-dg-cell>
+        <clr-dg-cell>
+          <button
+            type="button"
+            [clrLoading]="(loadingSinglePartition$ | async) === partition.id"
+            class="btn btn-sm btn-secondary"
+            (click)="viewPartitionDetail(partition.id!)"
+          >
+          <cds-icon shape="eye"></cds-icon>
+          <span i18n> Details </span>
+        </button>
+        </clr-dg-cell>
       </clr-dg-row>
     </ng-container>
     <clr-dg-footer>
@@ -145,3 +157,28 @@
     </clr-dg-footer>
   </clr-datagrid>
 </section>
+
+<clr-modal
+  [clrModalOpen]="(isGetPartitionModalOpened$ | async) || false"
+  [clrModalClosable]="false"
+  [clrModalSize]="'lg'"
+  *ngIf="loadSinglePartition$ | async as partition"
+>
+  <h3 class="modal-title">
+    <span i18n> Partition </span>
+    {{ partition.partition!.id }}
+  </h3>
+  <div class="modal-body">
+    <pre>{{ partition.partition! | json }}</pre>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="closeGetPartitionModal()"
+      i18n
+    >
+      Close
+    </button>
+  </div>
+</clr-modal>
