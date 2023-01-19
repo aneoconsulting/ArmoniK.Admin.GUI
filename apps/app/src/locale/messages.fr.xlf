@@ -594,14 +594,14 @@
     </unit>
     <unit id="7436033587912760962">
       <segment state="initial">
-        <source> Id <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;id&quot; [inputValue]=&quot;filterPartitionId&quot; #idFilter &gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
-        <target> Id <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;id&quot; [inputValue]=&quot;filterPartitionId&quot; #idFilter &gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></target>
+        <source> Id <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;id&quot; [inputValue]=&quot;filterPartitionId&quot; #idFilter&gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
+        <target> Id <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;id&quot; [inputValue]=&quot;filterPartitionId&quot; #idFilter&gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></target>
       </segment>
     </unit>
     <unit id="6115517693550682280">
       <segment state="initial">
-        <source> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;&apos;&apos;&quot; #idParentFilter &gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
-        <target> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;&apos;&apos;&quot; #idParentFilter &gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></target>
+        <source> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;&apos;&apos;&quot; #idParentFilter&gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
+        <target> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;&apos;&apos;&quot; #idParentFilter&gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></target>
       </segment>
     </unit>
     <unit id="8605385282893868014">
@@ -610,7 +610,7 @@
         <target> Pods réservés <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;reservedPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #reservedPodFilter name=&quot;podReserved&quot; [selectedValue]=&quot;filterPodReserved&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></target>
       </segment>
     </unit>
-    <unit id="3554204320865925864">
+    <unit id="7795403253962962872">
       <segment state="initial">
         <source> Maximum pods <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;maxPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #maxPodFilter name=&quot;maxPod&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
         <target> Pods maximums <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;maxPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #maxPodFilter name=&quot;maxPod&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></target>
@@ -632,6 +632,24 @@
       <segment state="initial">
         <source> Partition </source>
         <target> Partition </target>
+      </segment>
+    </unit>
+    <unit id="9105088314008190814">
+      <segment state="initial">
+        <source> Pods configuration </source>
+        <target> Configuration des pods </target>
+      </segment>
+    </unit>
+    <unit id="2656022340917188727">
+      <segment state="initial">
+        <source> Percentage <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;percentageFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #percentageFilter name=&quot;preemptionPercentage&quot; [selectedValue]=&quot;filterPreemption&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
+        <target> Pourcentage <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;percentageFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #percentageFilter name=&quot;preemptionPercentage&quot; [selectedValue]=&quot;filterPreemption&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></target>
+      </segment>
+    </unit>
+    <unit id="8512537905750432992">
+      <segment state="initial">
+        <source> Priority <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;priorityFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #priorityFilter name=&quot;priority&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
+        <target> Priorité <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;priorityFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #priorityFilter name=&quot;priority&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></target>
       </segment>
     </unit>
   </file>

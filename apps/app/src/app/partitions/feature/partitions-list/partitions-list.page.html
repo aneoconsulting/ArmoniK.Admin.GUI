@@ -66,10 +66,11 @@
         </app-numeric-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column> Pods configuration </clr-dg-column>
+    <clr-dg-column i18n> Pods configuration </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE)"
+      i18n
     >
       Percentage
       <clr-dg-filter [clrDgFilter]="percentageFilter">
@@ -84,6 +85,7 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PRIORITY.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PRIORITY)"
+      i18n
     >
       Priority
       <clr-dg-filter [clrDgFilter]="priorityFilter">
