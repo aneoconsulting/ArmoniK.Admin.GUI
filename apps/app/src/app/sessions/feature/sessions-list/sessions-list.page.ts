@@ -102,11 +102,11 @@ export class SessionsListComponent {
    * Filter observables.
    * They permit to avoid the endless loop due to the async pipe with the functions.
    */
-  sessionFilter = this._settingsService.queryStringParam(
+  sessionFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'sessionId'
   );
-  statusFilter: number = this._settingsService.queryParam(
+  statusFilter: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -127,21 +127,21 @@ export class SessionsListComponent {
     'cancelledAtAfter'
   );
 
-  pageSize: number = this._settingsService.queryParam(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number = this._settingsService.queryParam(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );
 
-  applicationName: string = this._settingsService.queryStringParam(
+  applicationName: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'applicationName'
   );
 
-  applicationVersion: string = this._settingsService.queryStringParam(
+  applicationVersion: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'applicationVersion'
   );
@@ -312,8 +312,8 @@ export class SessionsListComponent {
    * @param property The property of the filter
    * @param value The value of the filter
    */
-  public setApplicationFilter(property: string, value: string) {
-    if (value !== '') {
+  public setApplicationFilter(property: string, value: string | null) {
+    if (value) {
       if (!this._state.filters) {
         this._state.filters = [];
       }
@@ -424,8 +424,8 @@ export class SessionsListComponent {
       f = undefined;
     });
     //Clearing applicationName and applicationVersion
-    this.applicationName = '';
-    this.applicationVersion = '';
+    this.applicationName = null;
+    this.applicationVersion = null;
     this._subjectDatagrid.next(this._state);
   }
 
@@ -435,8 +435,8 @@ export class SessionsListComponent {
    * The filters themselves are not destroyed, but the strings they are build upon are set to empty.
    */
   clearApplicationFilter(): void {
-    this.applicationName = '';
-    this.applicationVersion = '';
+    this.applicationName = null;
+    this.applicationVersion = null;
     this._subjectDatagrid.next(this._state);
   }
 }
