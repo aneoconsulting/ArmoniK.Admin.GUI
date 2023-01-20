@@ -90,14 +90,8 @@ export class GrpcApplicationsService extends BaseGrpcService {
           params.order ||
           ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {
-        name: params.filter?.name || '',
-        namespace: params.filter?.namespace || '',
-        service: params.filter?.service || '',
-        version: params.filter?.version || '',
-      },
+      filter: params.filter,
     });
-
     return this._applicationsClient
       .listApplications(options)
       .pipe(takeUntil(this._timeout$));
