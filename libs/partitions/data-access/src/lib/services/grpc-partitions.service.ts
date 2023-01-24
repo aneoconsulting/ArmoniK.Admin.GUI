@@ -32,10 +32,10 @@ export class GrpcPartitionsService extends BaseGrpcService {
     const filter: ListPartitionsRequest.Filter.AsObject = {
       id: '',
       parentPartitionId: '',
-      podMax: '',
-      podReserved: '',
-      preemptionPercentage: '',
-      priority: '',
+      podMax: '0',
+      podReserved: '0',
+      preemptionPercentage: '0',
+      priority: '0',
     };
 
     for (const [key, value] of Object.entries(urlParams)) {
@@ -104,6 +104,7 @@ export class GrpcPartitionsService extends BaseGrpcService {
           params.order ||
           ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
+      filter: params.filter,
     });
 
     return this._partitionsClient
