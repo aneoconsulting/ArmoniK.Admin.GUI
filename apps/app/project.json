@@ -58,8 +58,7 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true,
-          "localize": ["en"],
-          "baseHref":""
+          "localize": ["en"]
         },
         "fr": {
           "buildOptimizer": false,
@@ -68,8 +67,7 @@
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true,
-          "localize": ["fr"],
-          "baseHref":""
+          "localize": ["fr"]
         }
       },
       "defaultConfiguration": "production"
