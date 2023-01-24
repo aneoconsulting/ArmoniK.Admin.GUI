@@ -15,7 +15,8 @@ RUN yarn
 
 COPY . .
 
-RUN nx build app --prod --baseHref=/admin/
+#RUN nx build app --prod --baseHref=/admin/
+RUN nx run build
 
 FROM nginx:stable as production
 
