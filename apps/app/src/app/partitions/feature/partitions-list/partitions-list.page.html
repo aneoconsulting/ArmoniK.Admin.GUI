@@ -69,7 +69,6 @@
         </app-numeric-filter>
       </clr-dg-filter>
     </clr-dg-column>
-    <clr-dg-column i18n> Pods configuration </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE)"
@@ -108,12 +107,16 @@
       >
         <clr-dg-cell> {{ partition.id }} </clr-dg-cell>
         <clr-dg-cell>
-          <a
-            [routerLink]="['/', 'partitions']"
-            [queryParams]="{ id: partition.parentPartitionIds }"
-          >
-            {{ partition.parentPartitionIds }}
-          </a>
+          <div class="partition-parent-cell">
+            <ng-container *ngFor="let parent of partition.parentPartitionIds">
+              <a
+                [routerLink]="['/', 'partitions']"
+                [queryParams]="{ id: parent }"
+              >
+                {{parent}}
+              </a>
+            </ng-container>
+          </div>
         </clr-dg-cell>
         <clr-dg-cell>
           <a
@@ -124,7 +127,6 @@
           </a>
         </clr-dg-cell>
         <clr-dg-cell> {{ partition.podMax }} </clr-dg-cell>
-        <clr-dg-cell> {{ partition.podConfiguration }} </clr-dg-cell>
         <clr-dg-cell> {{ partition.preemptionPercentage }} </clr-dg-cell>
         <clr-dg-cell> {{ partition.priority }} </clr-dg-cell>
         <clr-dg-cell>
