@@ -491,7 +491,7 @@
     </unit>
     <unit id="7795403253962962872">
       <segment>
-        <source> Maximum pods <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;maxPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #maxPodFilter name=&quot;maxPod&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
+        <source> Maximum pods <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;maxPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #maxPodFilter name=&quot;podMax&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
       </segment>
     </unit>
     <unit id="4619728390274608205">
@@ -506,7 +506,7 @@
     </unit>
     <unit id="6115517693550682280">
       <segment>
-        <source> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;&apos;&apos;&quot; #idParentFilter&gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
+        <source> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;filterParentId&quot; #idParentFilter &gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
       </segment>
     </unit>
     <unit id="673311583240774798">
@@ -531,12 +531,7 @@
     </unit>
     <unit id="8512537905750432992">
       <segment>
-        <source> Priority <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;priorityFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #priorityFilter name=&quot;priority&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
-      </segment>
-    </unit>
-    <unit id="9105088314008190814">
-      <segment>
-        <source> Pods configuration </source>
+        <source> Priority <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;priorityFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #priorityFilter name=&quot;priority&quot; [selectedValue]=&quot;filterPriority&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
       </segment>
     </unit>
   </file>
