@@ -65,19 +65,19 @@ export class GrpcPartitionsService extends BaseGrpcService {
           break;
         }
         case 'podMax': {
-          filter.podMax = value as string;
+          filter.podMax = value.toString();
           break;
         }
         case 'podReserved': {
-          filter.podReserved = value as string;
+          filter.podReserved = value.toString();
           break;
         }
         case 'preemptionPercentage': {
-          filter.preemptionPercentage = value as string;
+          filter.preemptionPercentage = value.toString();
           break;
         }
         case 'priority': {
-          filter.priority = value as string;
+          filter.priority = value.toString();
           break;
         }
       }
