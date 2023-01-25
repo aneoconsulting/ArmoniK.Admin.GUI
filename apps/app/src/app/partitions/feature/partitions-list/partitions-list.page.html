@@ -1,7 +1,7 @@
 <section>
   <h1>Partitions</h1>
 
-  <clr-datagrid 
+  <clr-datagrid
     (clrDgRefresh)="refreshPartitions($event)"
     [clrDgLoading]="(loadingPartitions$ | async) ?? false"
   >
