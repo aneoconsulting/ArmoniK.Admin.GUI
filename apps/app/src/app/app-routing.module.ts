@@ -32,8 +32,8 @@ const routes: Routes = [
         path: 'partitions',
         loadChildren: () =>
           import(
-            './partitions/feature/partitions-list/partitions-list.module'
-          ).then((m) => m.PartitionsListModule),
+            './partitions/feature/partitions-shell/partitions-shell.module'
+          ).then((m) => m.PartitionsShellModule),
       },
       {
         path: 'sessions',
