@@ -111,7 +111,7 @@
             <ng-container *ngFor="let parent of partition.parentPartitionIds">
               <a
                 [routerLink]="['/', 'partitions']"
-                [queryParams]="{ id: parent }"
+                [queryParams]="mergeWithCurrentQueryParams({parentPartitionIds:parent})"
               >
                 {{parent}}
               </a>
