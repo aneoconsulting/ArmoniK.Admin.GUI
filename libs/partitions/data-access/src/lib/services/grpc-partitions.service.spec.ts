@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { TasksClient } from '@armonik.admin.gui/shared/data-access';
+import { PartitionsClient } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcPartitionsService } from './grpc-partitions.service';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
@@ -17,7 +17,7 @@ describe('GrpcTasksService', () => {
           },
         }),
       ],
-      providers: [GrpcPartitionsService, TasksClient],
+      providers: [GrpcPartitionsService, PartitionsClient],
     });
     service = TestBed.inject(GrpcPartitionsService);
   });
