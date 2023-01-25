@@ -35,7 +35,11 @@
     >
       Parent
       <clr-dg-filter [clrDgFilter]="idParentFilter">
-        <app-id-filter name="parentId" [inputValue]="''" #idParentFilter>
+        <app-id-filter
+          name="parentId"
+          [inputValue]="filterParentId"
+          #idParentFilter
+        >
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -94,7 +98,7 @@
         <app-numeric-filter
           #priorityFilter
           name="priority"
-          [selectedValue]="filterPodMax"
+          [selectedValue]="filterPriority"
         >
         </app-numeric-filter>
       </clr-dg-filter>

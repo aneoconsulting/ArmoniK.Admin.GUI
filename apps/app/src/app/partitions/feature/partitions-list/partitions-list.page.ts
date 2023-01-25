@@ -96,13 +96,13 @@ export class PartitionsListComponent {
   );
 
   filterPartitionId: string | null = this._settingsService.queryParam(
-    this._activatedRoute.queryParamMap,
+    this._activatedRoute.snapshot.queryParams,
     'id'
   );
-  // filterParentId: string[] = this._settingsService.queryListParam(
-  //   this._activatedRoute.queryParamMap,
-  //   'parentPartitionIds'
-  // );
+  filterParentId: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParamMap,
+    'parentPartitionIds'
+  );
   filterPodReserved: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'podReserved'
@@ -116,7 +116,7 @@ export class PartitionsListComponent {
     'preemptionPercentage'
   );
   filterPriority: number | null = this._settingsService.queryParam(
-    this._activatedRoute.queryParams,
+    this._activatedRoute.snapshot.queryParams,
     'priority'
   );
 
