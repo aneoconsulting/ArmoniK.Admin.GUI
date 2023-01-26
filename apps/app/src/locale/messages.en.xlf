@@ -586,5 +586,11 @@
         <target>Enter a value</target>
       </segment>
     </unit>
+    <unit id="367594917170236015">
+      <segment state="initial">
+        <source>/admin/en</source>
+        <target>/admin/en</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
