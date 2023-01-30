@@ -484,6 +484,51 @@
         <source>Enter a value</source>
       </segment>
     </unit>
+    <unit id="118284616495039929">
+      <segment>
+        <source>Partitions</source>
+      </segment>
+    </unit>
+    <unit id="4619728390274608205">
+      <segment>
+        <source> Partitions per page </source>
+      </segment>
+    </unit>
+    <unit id="5379315794961283458">
+      <segment>
+        <source> Partition </source>
+      </segment>
+    </unit>
+    <unit id="673311583240774798">
+      <segment>
+        <source>{VAR_PLURAL, plural, =1 {partition} other {partitions}}</source>
+      </segment>
+    </unit>
+    <unit id="1526301480023862050">
+      <segment>
+        <source>Percentage</source>
+      </segment>
+    </unit>
+    <unit id="2734022681675842051">
+      <segment>
+        <source>Priority</source>
+      </segment>
+    </unit>
+    <unit id="3794107826498009594">
+      <segment>
+        <source>Maximum pods</source>
+      </segment>
+    </unit>
+    <unit id="6306094452775052932">
+      <segment>
+        <source>Reserved pods</source>
+      </segment>
+    </unit>
+    <unit id="8621797738551294959">
+      <segment>
+        <source>Parent</source>
+      </segment>
+    </unit>
     <unit id="2589810979983981192">
       <segment>
         <source>/admin/en/</source>

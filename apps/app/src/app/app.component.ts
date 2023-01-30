@@ -40,6 +40,11 @@ export class AppComponent implements OnInit {
       label: $localize`Results`,
       shape: 'certificate',
     },
+    {
+      path: ['/', 'partitions'],
+      label: $localize`Partitions`,
+      shape: 'objects',
+    },
   ];
 
   constructor(
