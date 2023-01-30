@@ -1,5 +1,0 @@
-# Permissions
-
-::: warning
-Coming soon...
-:::
