@@ -489,11 +489,6 @@
         <source>Partitions</source>
       </segment>
     </unit>
-    <unit id="7795403253962962872">
-      <segment>
-        <source> Maximum pods <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;maxPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #maxPodFilter name=&quot;podMax&quot; [selectedValue]=&quot;filterPodMax&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
-      </segment>
-    </unit>
     <unit id="4619728390274608205">
       <segment>
         <source> Partitions per page </source>
@@ -504,34 +499,34 @@
         <source> Partition </source>
       </segment>
     </unit>
-    <unit id="6115517693550682280">
-      <segment>
-        <source> Parent <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idParentFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;parentId&quot; [inputValue]=&quot;filterParentId&quot; #idParentFilter &gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
-      </segment>
-    </unit>
     <unit id="673311583240774798">
       <segment>
         <source>{VAR_PLURAL, plural, =1 {partition} other {partitions}}</source>
       </segment>
     </unit>
-    <unit id="7436033587912760962">
+    <unit id="1526301480023862050">
       <segment>
-        <source> Id <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;idFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_ID_FILTER" equivEnd="CLOSE_TAG_APP_ID_FILTER" type="other" dispStart="&lt;app-id-filter name=&quot;id&quot; [inputValue]=&quot;filterPartitionId&quot; #idFilter&gt;" dispEnd="&lt;/app-id-filter&gt;"/></pc></source>
+        <source>Percentage</source>
       </segment>
     </unit>
-    <unit id="8605385282893868014">
+    <unit id="2734022681675842051">
       <segment>
-        <source> Reserved pods <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;reservedPodFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #reservedPodFilter name=&quot;podReserved&quot; [selectedValue]=&quot;filterPodReserved&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
+        <source>Priority</source>
       </segment>
     </unit>
-    <unit id="2656022340917188727">
+    <unit id="3794107826498009594">
       <segment>
-        <source> Percentage <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;percentageFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #percentageFilter name=&quot;preemptionPercentage&quot; [selectedValue]=&quot;filterPreemption&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
+        <source>Maximum pods</source>
       </segment>
     </unit>
-    <unit id="8512537905750432992">
+    <unit id="6306094452775052932">
       <segment>
-        <source> Priority <pc id="0" equivStart="START_TAG_CLR_DG_FILTER" equivEnd="CLOSE_TAG_CLR_DG_FILTER" type="other" dispStart="&lt;clr-dg-filter [clrDgFilter]=&quot;priorityFilter&quot;&gt;" dispEnd="&lt;/clr-dg-filter&gt;"><pc id="1" equivStart="START_TAG_APP_NUMERIC_FILTER" equivEnd="CLOSE_TAG_APP_NUMERIC_FILTER" type="other" dispStart="&lt;app-numeric-filter #priorityFilter name=&quot;priority&quot; [selectedValue]=&quot;filterPriority&quot; &gt;" dispEnd="&lt;/app-numeric-filter&gt;"/></pc></source>
+        <source>Reserved pods</source>
+      </segment>
+    </unit>
+    <unit id="8621797738551294959">
+      <segment>
+        <source>Parent</source>
       </segment>
     </unit>
   </file>

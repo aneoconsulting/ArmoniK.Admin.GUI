@@ -20,9 +20,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_ID.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ID)"
-      i18n
     >
-      Id
+      <span i18n>Id</span>
       <clr-dg-filter [clrDgFilter]="idFilter">
         <app-id-filter name="id" [inputValue]="filterPartitionId" #idFilter>
         </app-id-filter>
@@ -31,9 +30,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PARENT_PARTITION_IDS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PARENT_PARTITION_IDS)"
-      i18n
     >
-      Parent
+      <span i18n>Parent</span>
       <clr-dg-filter [clrDgFilter]="idParentFilter">
         <app-id-filter
           name="parentId"
@@ -46,9 +44,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_POD_RESERVED.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_POD_RESERVED)"
-      i18n
     >
-      Reserved pods
+      <span i18n>Reserved pods</span>
       <clr-dg-filter [clrDgFilter]="reservedPodFilter">
         <app-numeric-filter
           #reservedPodFilter
@@ -61,9 +58,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_POD_MAX.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_POD_MAX)"
-      i18n
     >
-      Maximum pods
+      <span i18n>Maximum pods</span>
       <clr-dg-filter [clrDgFilter]="maxPodFilter">
         <app-numeric-filter
           #maxPodFilter
@@ -76,9 +72,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE)"
-      i18n
     >
-      Percentage
+      <span i18n>Percentage</span>
       <clr-dg-filter [clrDgFilter]="percentageFilter">
         <app-numeric-filter
           #percentageFilter
@@ -91,9 +86,8 @@
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_PRIORITY.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PRIORITY)"
-      i18n
     >
-      Priority
+      <span i18n>Priority</span>
       <clr-dg-filter [clrDgFilter]="priorityFilter">
         <app-numeric-filter
           #priorityFilter
