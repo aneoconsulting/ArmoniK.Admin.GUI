@@ -484,5 +484,10 @@
         <source>Enter a value</source>
       </segment>
     </unit>
+    <unit id="2589810979983981192">
+      <segment>
+        <source>/admin/en/</source>
+      </segment>
+    </unit>
   </file>
 </xliff>
