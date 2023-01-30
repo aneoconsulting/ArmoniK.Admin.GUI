@@ -20,7 +20,8 @@
       <div>
         <input
           class="clr-input"
-          [placeholder]="applicationNamePlaceHolder"
+          i18n-placeholder
+          placeholder="Application Name"
           [(ngModel)]="applicationName"
           (ngModelChange)="onApplicationFilterChange()"
         />
@@ -35,7 +36,8 @@
 
         <input
           class="clr-input"
-          [placeholder]="applicationVersionPlaceHolder"
+          i18n-placeholder
+          placeholder="Application Version"
           [(ngModel)]="applicationVersion"
           (ngModelChange)="onApplicationFilterChange()"
         />

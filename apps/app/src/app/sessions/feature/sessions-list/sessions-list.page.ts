@@ -180,14 +180,6 @@ export class SessionsListComponent {
     }
   }
 
-  public get applicationNamePlaceHolder(): string {
-    return $localize`Application Name`;
-  }
-
-  public get applicationVersionPlaceHolder(): string {
-    return $localize`Application Version`;
-  }
-
   public onUpdateInterval(value: number) {
     this._intervalValue.next(value);
 
