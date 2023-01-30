@@ -1,0 +1,27 @@
+{
+  "name": "partitions-data-access",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/partitions/data-access/src",
+  "prefix": "armonik.admin.gui",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/partitions/data-access/src/test.ts",
+        "tsConfig": "libs/partitions/data-access/tsconfig.spec.json",
+        "karmaConfig": "libs/partitions/data-access/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/partitions/data-access/**/*.ts",
+          "libs/partitions/data-access/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
