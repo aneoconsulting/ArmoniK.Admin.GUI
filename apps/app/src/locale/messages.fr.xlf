@@ -586,5 +586,11 @@
         <target>Renseignez une valeur</target>
       </segment>
     </unit>
+    <unit id="2589810979983981192">
+      <segment state="initial">
+        <source>/admin/en/</source>
+        <target>/admin/fr/</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
