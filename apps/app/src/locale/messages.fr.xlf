@@ -586,10 +586,10 @@
         <target>Renseignez une valeur</target>
       </segment>
     </unit>
-    <unit id="8736590025685531961">
+    <unit id="2589810979983981192">
       <segment state="initial">
-        <source>/en</source>
-        <target>/fr</target>
+        <source>/admin/en/</source>
+        <target>/admin/fr/</target>
       </segment>
     </unit>
   </file>

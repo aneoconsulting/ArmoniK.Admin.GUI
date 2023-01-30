@@ -586,10 +586,10 @@
         <target>Enter a value</target>
       </segment>
     </unit>
-    <unit id="8736590025685531961">
+    <unit id="2589810979983981192">
       <segment state="initial">
-        <source>/en</source>
-        <target>/en</target>
+        <source>/admin/en/</source>
+        <target>/admin/en/</target>
       </segment>
     </unit>
   </file>
