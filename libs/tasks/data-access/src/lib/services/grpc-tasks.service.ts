@@ -29,7 +29,7 @@ export class GrpcTasksService extends BaseGrpcService {
    *          >
    */
   public urlToGrpcParams(
-    urlParams: Record<string, string | number>
+    urlParams: Record<string, string | number | number[]>
   ): GrpcParams<
     ListTasksRequest.OrderByField,
     ListTasksRequest.OrderDirection,
@@ -69,7 +69,7 @@ export class GrpcTasksService extends BaseGrpcService {
           break;
         }
         case 'status': {
-          filter.status = [value] as number[];
+          filter.status = value as number[];
           break;
         }
         case 'createdAtBefore': {

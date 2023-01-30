@@ -616,5 +616,65 @@
         <target>Renseignez une valeur</target>
       </segment>
     </unit>
+    <unit id="118284616495039929">
+      <segment state="initial">
+        <source>Partitions</source>
+        <target>Partitions</target>
+      </segment>
+    </unit>
+    <unit id="4619728390274608205">
+      <segment state="initial">
+        <source> Partitions per page </source>
+        <target> Partitions par page </target>
+      </segment>
+    </unit>
+    <unit id="673311583240774798">
+      <segment state="initial">
+        <source>{VAR_PLURAL, plural, =1 {partition} other {partitions}}</source>
+        <target>{VAR_PLURAL, plural, =1 {partition} other {partitions}}</target>
+      </segment>
+    </unit>
+    <unit id="5379315794961283458">
+      <segment state="initial">
+        <source> Partition </source>
+        <target> Partition </target>
+      </segment>
+    </unit>
+    <unit id="8621797738551294959">
+      <segment state="initial">
+        <source>Parent</source>
+        <target>Parent</target>
+      </segment>
+    </unit>
+    <unit id="6306094452775052932">
+      <segment state="initial">
+        <source>Reserved pods</source>
+        <target>Pods réservés</target>
+      </segment>
+    </unit>
+    <unit id="3794107826498009594">
+      <segment state="initial">
+        <source>Maximum pods</source>
+        <target>Pods maximums</target>
+      </segment>
+    </unit>
+    <unit id="1526301480023862050">
+      <segment state="initial">
+        <source>Percentage</source>
+        <target>Pourcentage</target>
+      </segment>
+    </unit>
+    <unit id="2734022681675842051">
+      <segment state="initial">
+        <source>Priority</source>
+        <target>Priorité</target>
+      </segment>
+    </unit>
+    <unit id="2589810979983981192">
+      <segment state="initial">
+        <source>/admin/en/</source>
+        <target>/admin/fr/</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
