@@ -1,5 +1,0 @@
-# Sessions
-
-::: warning
-Coming soon...
-:::
