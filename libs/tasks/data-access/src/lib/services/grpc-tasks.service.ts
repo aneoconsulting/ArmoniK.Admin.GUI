@@ -43,7 +43,7 @@ export class GrpcTasksService extends BaseGrpcService {
 
     const filter: ListTasksRequest.Filter.AsObject = {
       sessionId: '',
-      status: 0,
+      status: [],
     };
 
     for (const [key, value] of Object.entries(urlParams)) {
@@ -69,7 +69,7 @@ export class GrpcTasksService extends BaseGrpcService {
           break;
         }
         case 'status': {
-          filter.status = value as number;
+          filter.status = [value] as number[];
           break;
         }
         case 'createdAtBefore': {
