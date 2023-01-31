@@ -580,6 +580,36 @@
         <target> Admin GUI </target>
       </segment>
     </unit>
+    <unit id="7267818710527454615">
+      <segment state="initial">
+        <source> Please enter the full application name. </source>
+        <target> Veuillez renseigner le nom complet de l&apos;application. </target>
+      </segment>
+    </unit>
+    <unit id="5741943266979661747">
+      <segment state="initial">
+        <source> Please enter the full application version. </source>
+        <target> Veuillez renseigner la version complète de l&apos;application. </target>
+      </segment>
+    </unit>
+    <unit id="2887251461858216261">
+      <segment state="initial">
+        <source>Application Name</source>
+        <target>Nom de l'application</target>
+      </segment>
+    </unit>
+    <unit id="8245536584787530067">
+      <segment state="initial">
+        <source>Application Version</source>
+        <target>Version de l'application</target>
+      </segment>
+    </unit>
+    <unit id="684380972110439395">
+      <segment state="initial">
+        <source> Clear the filter </source>
+        <target> Effacer le filtre </target>
+      </segment>
+    </unit>
     <unit id="7890770651055369175">
       <segment state="initial">
         <source>Enter a value</source>
