@@ -20,9 +20,9 @@ import {
 
 import { ActionBarComponent } from '../../../shared/feature';
 import {
-  SelectFilterComponent,
   DateFilterComponent,
   IdFilterComponent,
+  ComboBoxFilterComponent,
 } from '../../../shared/feature/filters';
 import { TasksListRoutingModule } from './tasks-list-routing.module';
 import { TasksListComponent } from './tasks-list.page';
@@ -40,9 +40,9 @@ import { TasksListComponent } from './tasks-list.page';
     ClrDropdownModule,
     ClrModalModule,
     TasksListRoutingModule,
-    SelectFilterComponent,
     IdFilterComponent,
     DateFilterComponent,
+    ComboBoxFilterComponent,
     ActionBarComponent,
     NgClass,
     AsyncPipe,

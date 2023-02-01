@@ -65,6 +65,14 @@ export class GrpcSessionsService extends BaseGrpcService {
           grpcParams.orderBy = value as number;
           break;
         }
+        case 'applicationName': {
+          filter.applicationName = value as string;
+          break;
+        }
+        case 'applicationVersion': {
+          filter.applicationVersion = value as string;
+          break;
+        }
         case 'sessionId': {
           filter.sessionId = value as string;
           break;
@@ -114,8 +122,6 @@ export class GrpcSessionsService extends BaseGrpcService {
       ListSessionsRequest.Filter.AsObject
     >
   ): Observable<ListSessionsResponse> {
-    console.log(params.filter);
-
     const options = new ListSessionsRequest({
       page: params.page || 0,
       pageSize: params.pageSize || 10,
