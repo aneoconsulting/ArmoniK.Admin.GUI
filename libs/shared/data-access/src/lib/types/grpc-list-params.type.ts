@@ -1,4 +1,5 @@
 import { ListApplicationsRequest } from '../proto/generated/applications-common.pb';
+import { ListPartitionsRequest } from '../proto/generated/partitions-common.pb';
 import { ListResultsRequest } from '../proto/generated/results-common.pb';
 import { ListSessionsRequest } from '../proto/generated/sessions-common.pb';
 import { ListTasksRequest } from '../proto/generated/tasks-common.pb';
@@ -25,6 +26,12 @@ export type GrpcListResultsParams = GrpcListParams<
   ListResultsRequest.OrderByField,
   ListResultsRequest.OrderDirection,
   ListResultsRequest.Filter.AsObject
+>;
+
+export type GrpcListPartitionsParams = GrpcListParams<
+  ListPartitionsRequest.OrderByField,
+  ListPartitionsRequest.OrderDirection,
+  ListPartitionsRequest.Filter.AsObject
 >;
 
 type GrpcListParams<

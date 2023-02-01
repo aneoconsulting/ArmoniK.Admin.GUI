@@ -4,112 +4,84 @@ import {
   BaseGrpcService,
   ListPartitionsRequest,
   ListPartitionsResponse,
-  GrpcParams,
+  GrpcParamsService,
   GetPartitionResponse,
   GetPartitionRequest,
+  GrpcListPartitionsParams,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcPartitionsService extends BaseGrpcService {
-  constructor(private _partitionsClient: PartitionsClient) {
+  constructor(private _partitionsClient: PartitionsClient, private _grpcParamsService: GrpcParamsService) {
     super();
   }
 
-  public urlToGrpcParams(
-    urlParams: Record<string, string | number>
-  ): GrpcParams<
-    ListPartitionsRequest.OrderByField,
-    ListPartitionsRequest.OrderDirection,
-    ListPartitionsRequest.Filter.AsObject
-  > {
-    const grpcParams: GrpcParams<
+  public createListRequestParams(state: ClrDatagridStateInterface): GrpcListPartitionsParams {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
+
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
       ListPartitionsRequest.OrderByField,
-      ListPartitionsRequest.OrderDirection,
-      ListPartitionsRequest.Filter.AsObject
-    > = {};
+      ListPartitionsRequest.OrderDirection
+    >(state);
 
-    const filter: ListPartitionsRequest.Filter.AsObject = {
-      id: '',
-      parentPartitionId: '',
-      podMax: '0',
-      podReserved: '0',
-      preemptionPercentage: '0',
-      priority: '0',
-    };
+    const filter =
+      this._grpcParamsService.createFilterParams<ListPartitionsRequest.Filter.AsObject>(
+        state
+      );
 
-    for (const [key, value] of Object.entries(urlParams)) {
-      switch (key) {
-        case 'page': {
-          grpcParams.page = value as number;
-          break;
-        }
-        case 'PageSize': {
-          grpcParams.pageSize = value as number;
-          break;
-        }
-        case 'order': {
-          grpcParams.order = value as number;
-          break;
-        }
-        case 'orderBy': {
-          grpcParams.orderBy = value as number;
-          break;
-        }
-        case 'id': {
-          filter.id = value as string;
-          break;
-        }
-        case 'parentPartitionId': {
-          filter.parentPartitionId = value as string;
-          break;
-        }
-        case 'podMax': {
-          filter.podMax = value.toString();
-          break;
-        }
-        case 'podReserved': {
-          filter.podReserved = value.toString();
-          break;
-        }
-        case 'preemptionPercentage': {
-          filter.preemptionPercentage = value.toString();
-          break;
-        }
-        case 'priority': {
-          filter.priority = value.toString();
-          break;
-        }
-      }
+    return {
+      page,
+      pageSize,
+      order,
+      orderBy: orderBy ?? ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
+      filter
     }
-    grpcParams.filter = filter;
-    return grpcParams;
   }
 
-  public list$(
-    params: GrpcParams<
-      ListPartitionsRequest.OrderByField,
-      ListPartitionsRequest.OrderDirection,
-      ListPartitionsRequest.Filter.AsObject
-    >
-  ): Observable<ListPartitionsResponse> {
-    const options = new ListPartitionsRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-        direction:
-          params.order ||
-          ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter,
-    });
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListPartitionsParams) {
+    return {
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
+      ...filter
+    };
+  }
 
-    return this._partitionsClient
-      .listPartitions(options)
-      .pipe(takeUntil(this._timeout$));
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListPartitionsParams): ListPartitionsRequest {
+    return new ListPartitionsRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter
+    })
+  }
+
+  public list$(options: ListPartitionsRequest): Observable<ListPartitionsResponse> {
+    return this._partitionsClient.listPartitions(options).pipe(takeUntil(this._timeout$));
   }
 
   public get$(paramId: string): Observable<GetPartitionResponse> {
