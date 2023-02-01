@@ -67,10 +67,6 @@ export class IdFilterComponent
     this.changes.emit();
   }
 
-  reset() {
-    this.inputValue = null;
-  }
-
   isActive(): boolean {
     return !!this.inputValue && this.inputValue.length != 0;
   }

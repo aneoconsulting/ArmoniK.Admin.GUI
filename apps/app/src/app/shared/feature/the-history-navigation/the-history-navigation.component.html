@@ -5,7 +5,7 @@
     <ng-container *ngFor="let item of history$ | async">
       <a
         class="nav-link"
-        [routerLink]="generateRouterLink(item.url)"
+        [routerLink]="['/', item.url]"
         [queryParams]="item.queryParams"
         [title]="item.title"
       >

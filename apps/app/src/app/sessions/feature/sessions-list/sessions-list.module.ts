@@ -19,13 +19,7 @@ import {
 
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
-import {
-  DateFilterComponent,
-  IdFilterComponent,
-  SelectFilterComponent,
-} from '../../../shared/feature/filters';
 import { ActionBarComponent } from '../../../shared/feature';
-import { FormsModule } from '@angular/forms';
 
 /**
  * Sessions list module
@@ -46,10 +40,6 @@ import { FormsModule } from '@angular/forms';
     AsyncPipe,
     DatePipe,
     JsonPipe,
-    IdFilterComponent,
-    DateFilterComponent,
-    SelectFilterComponent,
-    FormsModule,
   ],
   providers: [GrpcSessionsService, GrpcPagerService],
 })

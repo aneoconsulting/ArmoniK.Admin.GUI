@@ -16,114 +16,37 @@
         (clearSort)="clearOrder()"
       >
       </app-action-bar>
-
-      <div>
-        <input
-          class="clr-input"
-          i18n-placeholder
-          placeholder="Application Name"
-          [(ngModel)]="applicationName"
-          (ngModelChange)="onApplicationFilterChange()"
-        />
-        <label>
-          <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
-            <cds-icon shape="info-circle" size="22"></cds-icon>
-            <span class="tooltip-content" i18n>
-              Please enter the full application name.
-            </span>
-          </div>
-        </label>
-
-        <input
-          class="clr-input"
-          i18n-placeholder
-          placeholder="Application Version"
-          [(ngModel)]="applicationVersion"
-          (ngModelChange)="onApplicationFilterChange()"
-        />
-        <label>
-          <div role="tooltip" aria-haspopup="true" class="tooltip tooptip-sm">
-            <cds-icon shape="info-circle" size="22"></cds-icon>
-            <span class="tooltip-content" i18n>
-              Please enter the full application version.
-            </span>
-          </div>
-        </label>
-
-        <button
-          class="btn btn-sm"
-          [disabled]="!hasApplicationFilter"
-          (click)="clearApplicationFilter()"
-          i18n
-        >
-          Clear the filter
-        </button>
-      </div>
     </clr-dg-action-bar>
 
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
       [clrDgSortOrder]="
-      defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
-    "
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
+      "
     >
       <span i18n> Session ID </span>
-      <clr-dg-filter [clrDgFilter]="sessionFilterComponent">
-        <app-id-filter
-          [name]="'sessionId'"
-          [inputValue]="sessionFilter"
-          #sessionFilterComponent
-        >
-        </app-id-filter>
-      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
     >
       <span i18n> Status </span>
-      <clr-dg-filter [clrDgFilter]="statusFilterComponent">
-        <app-select-filter
-          [name]="'status'"
-          [selectedValue]="statusFilter"
-          [selectionList]="sessionsStatusList"
-          #statusFilterComponent
-        >
-        </app-select-filter>
-      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
       [clrDgSortOrder]="
-      defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
-    "
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
+      "
     >
       <span i18n> Created at </span>
-      <clr-dg-filter [clrDgFilter]="createdDateFilter">
-        <app-date-filter
-          [name]="'created'"
-          [beforeDate]="createdBeforeFilter"
-          [afterDate]="createdAfterFilter"
-          #createdDateFilter
-        >
-        </app-date-filter>
-      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CANCELLED_AT.toString()"
       [clrDgSortOrder]="
-      defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
-    "
+        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CANCELLED_AT)
+      "
     >
       <span i18n> Closed at </span>
-      <clr-dg-filter [clrDgFilter]="closedDateFilter">
-        <app-date-filter
-          [name]="'cancelled'"
-          [beforeDate]="cancelledBeforeFilter"
-          [afterDate]="cancelledAfterFilter"
-          #closedDateFilter
-        ></app-date-filter>
-      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column i18n> Actions </clr-dg-column>
 
@@ -193,9 +116,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="pageSize || 10"
+        [clrDgPageSize]="(queryParam$('pageSize') | async) || 10"
         [clrDgTotalItems]="(totalSessions$ | async) ?? 0"
-        [clrDgPage]="(page || 0) + 1"
+        [clrDgPage]="((queryParam$('page') | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
           <span i18n> Per Page </span>

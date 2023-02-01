@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import {
   ApplicationsClient,
-  PartitionsClient,
   ResultsClient,
   SessionsClient,
   TasksClient,
@@ -37,10 +36,6 @@ export class AuthorizationService {
 
   public canCancelTasks(): boolean {
     return this._can<TasksClient>('CancelTasks', 'Tasks');
-  }
-
-  public canListPartitions(): boolean {
-    return this._can<PartitionsClient>('ListPartitions', 'Partitions');
   }
 
   private _can<T>(action: Action<T>, service: string): boolean {

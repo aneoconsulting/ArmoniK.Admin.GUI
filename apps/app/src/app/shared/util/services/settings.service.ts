@@ -135,6 +135,20 @@ export class SettingsService {
   }
 
   /**
+   * Get query params from route and return them as string
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryStringParam(
+    queryParams: ActivatedRouteSnapshot['queryParams'],
+    param: string
+  ): string {
+    return queryParams[param] ? (queryParams[param] as string) : '';
+  }
+
+  /**
    * Get query params from route and return them as a list
    *
    * @param param
@@ -145,11 +159,7 @@ export class SettingsService {
     queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
   ): number[] {
-    const params: string[] = queryParams[param];
-    if (params) {
-      return params.map((elem) => parseInt(elem));
-    }
-    return [];
+    return queryParams[param] ? (queryParams[param] as number[]) : [];
   }
 
   /**
@@ -157,13 +167,13 @@ export class SettingsService {
    *
    * @param param
    *
-   * @returns Observable
+   * @returns Observable<string>
    */
-  public queryParam<T>(
+  public queryParam(
     queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
-  ): T | null {
-    return queryParams[param] ? (queryParams[param] as T) : null;
+  ): number {
+    return queryParams[param] ? (queryParams[param] as number) : 0;
   }
 
   /**

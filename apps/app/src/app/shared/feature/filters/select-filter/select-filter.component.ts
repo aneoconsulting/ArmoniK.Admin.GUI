@@ -41,10 +41,6 @@ export class SelectFilterComponent
     this.changes.emit();
   }
 
-  reset(): void {
-    this.selectedValue = null;
-  }
-
   trackByLabel(_: number, item: { value: number; label: string }): string {
     return item.label;
   }

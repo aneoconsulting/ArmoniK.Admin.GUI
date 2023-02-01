@@ -20,8 +20,4 @@ export class TheHistoryNavigationComponent {
   public get history$(): Observable<HistoryItem[]> {
     return this._historyService.history$;
   }
-
-  public generateRouterLink(url: string[]): string[] {
-    return ['/', ...url];
-  }
 }

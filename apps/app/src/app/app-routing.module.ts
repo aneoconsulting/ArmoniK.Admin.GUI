@@ -29,13 +29,6 @@ const routes: Routes = [
           ).then((m) => m.ApplicationsShellModule),
       },
       {
-        path: 'partitions',
-        loadChildren: () =>
-          import(
-            './partitions/feature/partitions-shell/partitions-shell.module'
-          ).then((m) => m.PartitionsShellModule),
-      },
-      {
         path: 'sessions',
         loadChildren: () =>
           import(

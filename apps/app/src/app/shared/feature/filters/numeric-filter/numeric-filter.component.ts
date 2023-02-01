@@ -35,10 +35,6 @@ export class NumericFilterComponent
     this.changes.emit();
   }
 
-  reset() {
-    this.selectedValue = null;
-  }
-
   isActive(): boolean {
     return !!this.selectedValue && this.selectedValue !== 0;
   }
