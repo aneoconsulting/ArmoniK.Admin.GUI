@@ -62,13 +62,13 @@
     >
       <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilter">
-        <app-select-filter
-          [name]="'status'"
-          [selectedValue]="filterStatus"
-          [selectionList]="taskStatusList"
+        <app-combobox-filter
           #statusFilter
+          name="status"
+          [selectedValues]="filterSelectedStatus"
+          [selectionList]="taskStatusList"
         >
-        </app-select-filter>
+        </app-combobox-filter>
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column

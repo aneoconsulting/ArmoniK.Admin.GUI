@@ -19,8 +19,14 @@ import {
 
 import { SessionsListRoutingModule } from './sessions-list-routing.module';
 import { SessionsListComponent } from './sessions-list.page';
+import {
+  DateFilterComponent,
+  IdFilterComponent,
+  SelectFilterComponent,
+} from '../../../shared/feature/filters';
 import { ActionBarComponent } from '../../../shared/feature';
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Sessions list module
@@ -42,6 +48,10 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
     AsyncPipe,
     DatePipe,
     JsonPipe,
+    IdFilterComponent,
+    DateFilterComponent,
+    SelectFilterComponent,
+    FormsModule,
   ],
   providers: [GrpcSessionsService, GrpcParamsService],
 })

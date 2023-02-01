@@ -15,9 +15,7 @@ import {
   Subject,
   catchError,
   concatMap,
-  distinctUntilChanged,
   first,
-  map,
   merge,
   of,
   switchMap,
@@ -25,6 +23,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
+import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
 
 @Component({
@@ -59,6 +58,8 @@ export class SessionsListComponent {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
+      this.setApplicationFilter('applicationName', this.applicationName);
+      this.setApplicationFilter('applicationVersion', this.applicationVersion);
       const params = this._grpcSessionsService.createListRequestParams(state);
       const queryParams =
         this._grpcSessionsService.createListRequestQueryParams(params);
@@ -88,11 +89,71 @@ export class SessionsListComponent {
     switchMap(() => this._listSessions$())
   );
 
+  sessionsStatusList: { value: number; label: string }[] = [
+    ...Object.keys(SessionStatus)
+      .filter((key) => !Number.isInteger(parseInt(key)))
+      .map((key) => ({
+        value: SessionStatus[key as keyof typeof SessionStatus],
+        label: this.getStatusLabel(
+          SessionStatus[key as keyof typeof SessionStatus]
+        ),
+      })),
+  ];
+
+  /**
+   * Filter observables.
+   * They permit to avoid the endless loop due to the async pipe with the functions.
+   */
+  sessionFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'sessionId'
+  );
+  statusFilter: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'status'
+  );
+  createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtBefore'
+  );
+  createdAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'createdAtAfter'
+  );
+  cancelledBeforeFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'cancelledAtBefore'
+  );
+  cancelledAfterFilter: Date | null = this._settingsService.queryDateParam(
+    this._activatedRoute.snapshot.queryParams,
+    'cancelledAtAfter'
+  );
+
+  pageSize: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'pageSize'
+  );
+  page: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'page'
+  );
+
+  applicationName: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'applicationName'
+  );
+
+  applicationVersion: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'applicationVersion'
+  );
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
-    private _authorizationService: AuthorizationService
+    private _authorizationService: AuthorizationService,
+    private _settingsService: SettingsService
   ) {}
 
   public get OrderByField() {
@@ -218,21 +279,6 @@ export class SessionsListComponent {
   }
 
   /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
    * Save state
    *
    * @param state
@@ -248,6 +294,46 @@ export class SessionsListComponent {
    */
   private _restoreState(): ClrDatagridStateInterface {
     return this._state;
+  }
+
+  public get hasApplicationFilter() {
+    return this.applicationName !== '' || this.applicationVersion !== '';
+  }
+
+  /**
+   * Add or remove an application related filter to the filters.
+   *
+   * Application filters works independently from other filters, since are not part of the Session Response.
+   *
+   * @param property The property of the filter
+   * @param value The value of the filter
+   */
+  public setApplicationFilter(property: string, value: string | null) {
+    if (value) {
+      if (!this._state.filters) {
+        this._state.filters = [];
+      }
+      const filter = this._state.filters.find((f) => f.property === property);
+      if (filter) {
+        filter.value = value;
+      } else {
+        this._state.filters?.push({
+          property: property,
+          value: value,
+        });
+      }
+    } else if (this._state.filters) {
+      this._state.filters = this._state.filters.filter(
+        (f) => f.property !== property
+      );
+      if (this._state.filters.length === 0) {
+        delete this._state.filters;
+      }
+    }
+  }
+
+  public onApplicationFilterChange() {
+    this._subjectDatagrid.next(this._state);
   }
 
   /**
@@ -323,7 +409,30 @@ export class SessionsListComponent {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters(): void {
-    delete this._state.filters;
+    this._state.filters?.forEach((f) => {
+      // Permit to avoid filter to stay active after clearing
+      if (
+        f.property !== 'applicationVersion' &&
+        f.property !== 'applicationName'
+      ) {
+        f.clear();
+      }
+      f = undefined;
+    });
+    //Clearing applicationName and applicationVersion
+    this.applicationName = null;
+    this.applicationVersion = null;
+    this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Clear the application filters.
+   *
+   * The filters themselves are not destroyed, but the strings they are build upon are set to empty.
+   */
+  clearApplicationFilter(): void {
+    this.applicationName = null;
+    this.applicationVersion = null;
     this._subjectDatagrid.next(this._state);
   }
 }

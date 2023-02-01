@@ -65,6 +65,11 @@ export class DateFilterComponent
     this.changes.emit();
   }
 
+  reset() {
+    this.beforeDate = null;
+    this.afterDate = null;
+  }
+
   /**
    * Check if the filter is active
    */

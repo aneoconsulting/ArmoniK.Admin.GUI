@@ -118,7 +118,7 @@ export class TasksListComponent implements OnInit {
     'sessionId'
   );
 
-  filterStatus: number | null = this._settingsService.queryParam(
+  filterSelectedStatus: number[] = this._settingsService.queryListParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -465,6 +465,10 @@ export class TasksListComponent implements OnInit {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters(): void {
+    // Reset the filters so that they doesn't stay active
+    this._state.filters?.forEach((filter) => {
+      filter.reset();
+    });
     delete this._state.filters;
     this._subjectDatagrid.next(this._state);
   }
