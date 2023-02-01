@@ -310,6 +310,9 @@ export class PartitionsListComponent {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters() {
+    this._state.filters?.forEach((filter) => {
+      filter.reset();
+    });
     delete this._state.filters;
     this.refreshPartitions(this._state);
   }
