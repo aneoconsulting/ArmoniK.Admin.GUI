@@ -82,19 +82,19 @@ export class ResultsListComponent implements OnInit {
    * Observable filters
    * Permits to avoid redundant calls of queryParams function due to async pipe.
    */
-  nameFilter: string = this._settingsService.queryStringParam(
+  nameFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'name'
   );
-  taskIdFilter: string = this._settingsService.queryStringParam(
+  taskIdFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
-  sessionIdFilter: string = this._settingsService.queryStringParam(
+  sessionIdFilter: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'sessionId'
   );
-  statusFilter: number = this._settingsService.queryParam(
+  statusFilter: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -107,11 +107,11 @@ export class ResultsListComponent implements OnInit {
     'createdAtAfter'
   );
 
-  pageSize: number = this._settingsService.queryParam(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number = this._settingsService.queryParam(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );
@@ -311,6 +311,10 @@ export class ResultsListComponent implements OnInit {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters(): void {
+    // Reset the filters so that they doesn't stay active
+    this._state.filters?.forEach((filter) => {
+      filter.reset();
+    });
     delete this._state.filters;
     this._subjectDatagrid.next(this._state);
   }

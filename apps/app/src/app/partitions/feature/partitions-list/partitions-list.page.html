@@ -1,0 +1,179 @@
+<section>
+  <h1 i18n>Partitions</h1>
+
+  <clr-datagrid
+    (clrDgRefresh)="refreshPartitions($event)"
+    [clrDgLoading]="(loadingPartitions$ | async) ?? false"
+  >
+    <clr-dg-action-bar>
+      <app-action-bar
+        [stopInterval$]="stopInterval$"
+        [isFiltered]="isFiltered()"
+        [isOrdered]="isOrdered()"
+        (refresh)="manualRefreshPartitions()"
+        (updateInterval)="onUpdateInterval($event)"
+        (clearFilters)="clearAllFilters()"
+        (clearSort)="clearOrder()"
+      >
+      </app-action-bar>
+    </clr-dg-action-bar>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_ID.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ID)"
+    >
+      <span i18n>Id</span>
+      <clr-dg-filter [clrDgFilter]="idFilter">
+        <app-id-filter name="id" [inputValue]="filterPartitionId" #idFilter>
+        </app-id-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_PARENT_PARTITION_IDS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PARENT_PARTITION_IDS)"
+    >
+      <span i18n>Parent</span>
+      <clr-dg-filter [clrDgFilter]="idParentFilter">
+        <app-id-filter
+          name="parentId"
+          [inputValue]="filterParentId"
+          #idParentFilter
+        >
+        </app-id-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_POD_RESERVED.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_POD_RESERVED)"
+    >
+      <span i18n>Reserved pods</span>
+      <clr-dg-filter [clrDgFilter]="reservedPodFilter">
+        <app-numeric-filter
+          #reservedPodFilter
+          name="podReserved"
+          [selectedValue]="filterPodReserved"
+        >
+        </app-numeric-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_POD_MAX.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_POD_MAX)"
+    >
+      <span i18n>Maximum pods</span>
+      <clr-dg-filter [clrDgFilter]="maxPodFilter">
+        <app-numeric-filter
+          #maxPodFilter
+          name="podMax"
+          [selectedValue]="filterPodMax"
+        >
+        </app-numeric-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE)"
+    >
+      <span i18n>Percentage</span>
+      <clr-dg-filter [clrDgFilter]="percentageFilter">
+        <app-numeric-filter
+          #percentageFilter
+          name="preemptionPercentage"
+          [selectedValue]="filterPreemption"
+        >
+        </app-numeric-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_PRIORITY.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_PRIORITY)"
+    >
+      <span i18n>Priority</span>
+      <clr-dg-filter [clrDgFilter]="priorityFilter">
+        <app-numeric-filter
+          #priorityFilter
+          name="priority"
+          [selectedValue]="filterPriority"
+        >
+        </app-numeric-filter>
+      </clr-dg-filter>
+    </clr-dg-column>
+    <clr-dg-column i18n> Actions </clr-dg-column>
+
+    <ng-container *ngIf="loadPartitions$ | async as list">
+      <clr-dg-row
+        *ngFor="let partition of list.partitions; trackBy: trackByPartition"
+      >
+        <clr-dg-cell> {{ partition.id }} </clr-dg-cell>
+        <clr-dg-cell>
+          <div class="partition-parent-cell">
+            <ng-container *ngFor="let parent of partition.parentPartitionIds">
+              <a
+                [routerLink]="['/', 'partitions']"
+                [queryParams]="mergeWithCurrentQueryParams({parentPartitionIds:parent})"
+              >
+                {{parent}}
+              </a>
+            </ng-container>
+          </div>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <a
+            [routerLink]="['/', 'partitions']"
+            [queryParams]="mergeWithCurrentQueryParams({ podReserved: partition.podReserved })"
+          >
+            {{ partition.podReserved }}
+          </a>
+        </clr-dg-cell>
+        <clr-dg-cell> {{ partition.podMax }} </clr-dg-cell>
+        <clr-dg-cell> {{ partition.preemptionPercentage }} </clr-dg-cell>
+        <clr-dg-cell> {{ partition.priority }} </clr-dg-cell>
+        <clr-dg-cell>
+          <button
+            type="button"
+            [clrLoading]="(loadingSinglePartition$ | async) === partition.id"
+            class="btn btn-sm btn-secondary"
+            (click)="viewPartitionDetail(partition.id!)"
+          >
+            <cds-icon shape="eye"></cds-icon>
+            <span i18n> Details </span>
+          </button>
+        </clr-dg-cell>
+      </clr-dg-row>
+    </ng-container>
+    <clr-dg-footer>
+      <clr-dg-pagination>
+        <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]" i18n>
+          Partitions per page
+        </clr-dg-page-size>
+        <span *ngIf="(totalPartitions$ | async) ?? 0 > 1 as total">
+          {{ total }} { total, plural, =1 {partition} other {partitions}}
+        </span>
+      </clr-dg-pagination>
+    </clr-dg-footer>
+  </clr-datagrid>
+</section>
+
+<clr-modal
+  [clrModalOpen]="(isGetPartitionModalOpened$ | async) || false"
+  [clrModalClosable]="false"
+  [clrModalSize]="'lg'"
+  *ngIf="loadSinglePartition$ | async as partition"
+>
+  <h3 class="modal-title">
+    <span i18n> Partition </span>
+    {{ partition.partition!.id }}
+  </h3>
+  <div class="modal-body">
+    <pre>{{ partition.partition! | json }}</pre>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="closeGetPartitionModal()"
+      i18n
+    >
+      Close
+    </button>
+  </div>
+</clr-modal>

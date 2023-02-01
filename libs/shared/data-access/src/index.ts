@@ -45,6 +45,14 @@ export {
 } from './lib/proto/generated/tasks-common.pb';
 export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
 export {
+  GetPartitionRequest,
+  GetPartitionResponse,
+  ListPartitionsRequest,
+  ListPartitionsResponse,
+  PartitionRaw,
+} from './lib/proto/generated/partitions-common.pb';
+export { PartitionsClient } from './lib/proto/generated/partitions-service.pbsc';
+export {
   BaseGrpcService,
   GrpcPagerService,
   HealthCheckService,

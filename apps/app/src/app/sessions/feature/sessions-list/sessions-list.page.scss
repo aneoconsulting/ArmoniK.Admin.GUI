@@ -1,5 +1,10 @@
-.datagrid-action-bar {
-  margin-top: 0;
+clr-dg-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tooltip {
+  margin-right: 0.6rem;
 }
 
 clr-dg-cell {

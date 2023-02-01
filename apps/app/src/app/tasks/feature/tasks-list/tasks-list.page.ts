@@ -109,17 +109,17 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterTaskId: string = this._settingsService.queryStringParam(
+  filterTaskId: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'taskId'
   );
 
-  filterSessionId: string = this._settingsService.queryStringParam(
+  filterSessionId: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'sessionId'
   );
 
-  filterStatus: number = this._settingsService.queryParam(
+  filterSelectedStatus: number[] = this._settingsService.queryListParam(
     this._activatedRoute.snapshot.queryParams,
     'status'
   );
@@ -154,11 +154,11 @@ export class TasksListComponent implements OnInit {
     'endedAtAfter'
   );
 
-  pageSize: number = this._settingsService.queryParam(
+  pageSize: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'pageSize'
   );
-  page: number = this._settingsService.queryParam(
+  page: number | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'page'
   );
@@ -462,6 +462,10 @@ export class TasksListComponent implements OnInit {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters(): void {
+    // Reset the filters so that they doesn't stay active
+    this._state.filters?.forEach((filter) => {
+      filter.reset();
+    });
     delete this._state.filters;
     this._subjectDatagrid.next(this._state);
   }
