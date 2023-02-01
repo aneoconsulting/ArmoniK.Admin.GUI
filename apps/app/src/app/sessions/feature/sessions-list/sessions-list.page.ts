@@ -157,7 +157,6 @@ export class SessionsListComponent {
     private _settingsService: SettingsService,
     private _authorizationService: AuthorizationService,
     private _grpcPagerService: GrpcPagerService,
-    private _settingsService: SettingsService
   ) {}
 
   public get refreshIntervalValue() {
