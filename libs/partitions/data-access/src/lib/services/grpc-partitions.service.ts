@@ -14,11 +14,16 @@ import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcPartitionsService extends BaseGrpcService {
-  constructor(private _partitionsClient: PartitionsClient, private _grpcParamsService: GrpcParamsService) {
+  constructor(
+    private _partitionsClient: PartitionsClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  public createListRequestParams(state: ClrDatagridStateInterface): GrpcListPartitionsParams {
+  public createListRequestParams(
+    state: ClrDatagridStateInterface
+  ): GrpcListPartitionsParams {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
@@ -36,8 +41,8 @@ export class GrpcPartitionsService extends BaseGrpcService {
       pageSize,
       order,
       orderBy: orderBy ?? ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-      filter
-    }
+      filter,
+    };
   }
 
   public createListRequestQueryParams({
@@ -58,7 +63,7 @@ export class GrpcPartitionsService extends BaseGrpcService {
         order !== ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
           : undefined,
-      ...filter
+      ...filter,
     };
   }
 
@@ -76,12 +81,16 @@ export class GrpcPartitionsService extends BaseGrpcService {
         field: orderBy,
         direction: order,
       },
-      filter
-    })
+      filter,
+    });
   }
 
-  public list$(options: ListPartitionsRequest): Observable<ListPartitionsResponse> {
-    return this._partitionsClient.listPartitions(options).pipe(takeUntil(this._timeout$));
+  public list$(
+    options: ListPartitionsRequest
+  ): Observable<ListPartitionsResponse> {
+    return this._partitionsClient
+      .listPartitions(options)
+      .pipe(takeUntil(this._timeout$));
   }
 
   public get$(paramId: string): Observable<GetPartitionResponse> {

@@ -3,6 +3,6 @@ export {
   GrpcListSessionsParams,
   GrpcListTasksParams,
   GrpcListResultsParams,
-  GrpcListPartitionsParams
+  GrpcListPartitionsParams,
 } from './grpc-list-params.type';
 export { HealthCheckResponse } from './health-check-response.type';

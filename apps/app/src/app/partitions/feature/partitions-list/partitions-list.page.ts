@@ -46,8 +46,10 @@ export class PartitionsListComponent {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPartitionsService.createListRequestParams(state);
-        const queryParams = this._grpcPartitionsService.createListRequestQueryParams(params);
+        const params =
+          this._grpcPartitionsService.createListRequestParams(state);
+        const queryParams =
+          this._grpcPartitionsService.createListRequestQueryParams(params);
         await this._router.navigate([], {
           queryParams,
           relativeTo: this._activatedRoute,
@@ -229,8 +231,9 @@ export class PartitionsListComponent {
 
   private _listPartitions$(): Observable<ListPartitionsResponse> {
     const state = this._restoreState();
-    const params = this._grpcPartitionsService.createListRequestParams(state)
-    const grpcParams = this._grpcPartitionsService.createListRequestOptions(params);
+    const params = this._grpcPartitionsService.createListRequestParams(state);
+    const grpcParams =
+      this._grpcPartitionsService.createListRequestOptions(params);
     return this._grpcPartitionsService.list$(grpcParams).pipe(
       catchError((error) => {
         console.log(error);

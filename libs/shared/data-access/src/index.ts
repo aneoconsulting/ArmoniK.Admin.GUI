@@ -62,5 +62,5 @@ export {
   GrpcListSessionsParams,
   GrpcListTasksParams,
   GrpcListResultsParams,
-  GrpcListPartitionsParams
+  GrpcListPartitionsParams,
 } from './lib/types';
