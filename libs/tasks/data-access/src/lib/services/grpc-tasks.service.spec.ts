@@ -144,7 +144,7 @@ describe('GrpcTasksService', () => {
         },
         filter: {
           sessionId: '',
-          status: 0,
+          status: [],
         },
       })
     );
@@ -170,7 +170,7 @@ describe('GrpcTasksService', () => {
         },
         filter: {
           sessionId: 'Some test sessionId',
-          status: 0,
+          status: [],
         },
       })
     );
