@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TaskStatus } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
@@ -18,16 +12,12 @@ import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
   imports: [ClarityModule, FormsModule, CommonModule],
 })
 export class ComboBoxFilterComponent
-  implements ClrDatagridFilterInterface<TaskStatus>, OnDestroy
+  implements ClrDatagridFilterInterface<TaskStatus>
 {
   @Input() name = '';
   @Input() selectedValues: number[] | null = [];
   @Input() selectionList: { value: number; label: string }[] = [];
   @Output() changes = new EventEmitter<never>();
-
-  ngOnDestroy(): void {
-    this.selectedValues = null;
-  }
 
   get value(): number[] {
     return this.selectedValues ?? [];

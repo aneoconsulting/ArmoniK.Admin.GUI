@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 
@@ -16,9 +10,7 @@ import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
   styleUrls: ['./date-filter.component.scss'],
   imports: [ClarityModule, FormsModule, CommonModule],
 })
-export class DateFilterComponent
-  implements ClrDatagridFilterInterface<string>, OnDestroy
-{
+export class DateFilterComponent implements ClrDatagridFilterInterface<string> {
   @Output() changes = new EventEmitter<never>();
 
   @Input() name = '';
@@ -34,11 +26,6 @@ export class DateFilterComponent
       before: this.beforeDate ? this.beforeDate.getTime() : null,
       after: this.afterDate ? this.afterDate.getTime() : null,
     };
-  }
-
-  ngOnDestroy(): void {
-    this.beforeDate = null;
-    this.afterDate = null;
   }
 
   onDateChange() {
