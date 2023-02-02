@@ -86,14 +86,6 @@ export class ApplicationsListComponent {
     this._activatedRoute.snapshot.queryParams,
     'service'
   );
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
-  );
 
   constructor(
     private _router: Router,
