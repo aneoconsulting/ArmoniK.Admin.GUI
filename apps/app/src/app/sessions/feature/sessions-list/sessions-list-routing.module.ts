@@ -5,7 +5,7 @@ import { SessionsListComponent } from './sessions-list.page';
 const route: Routes = [
   {
     path: '',
-    title: 'Sessions List',
+    title: $localize`Sessions List`,
     component: SessionsListComponent,
   },
 ];
