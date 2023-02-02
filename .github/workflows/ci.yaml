@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   setup:
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +45,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: "yarn"
+          cache: 'yarn'
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
@@ -59,6 +60,7 @@ jobs:
         run: yarn proto:generate
 
   validate-code:
+    name: Validate Code
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -71,7 +73,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: "yarn"
+          cache: 'yarn'
 
       - name: Restore Node Modules
         id: node-cache
@@ -90,6 +92,7 @@ jobs:
         run: yarn ng affected --target=lint --parallel=3
 
   unit-tests:
+    name: Unit Tests
     needs: [setup, validate-code]
     runs-on: ubuntu-latest
     steps:
@@ -102,7 +105,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: "yarn"
+          cache: 'yarn'
 
       - name: Restore Node Modules
         id: node-cache
@@ -204,6 +207,7 @@ jobs:
   #         path: ./dist/cypress/apps/app-e2e/videos
 
   build:
+    name: Build
     needs: [setup, validate-code, unit-tests]
     runs-on: ubuntu-latest
     steps:
@@ -256,6 +260,7 @@ jobs:
   #       run: yarn docs:build
 
   build-push-docker-images:
+    name: Build and push Docker image
     needs: [setup, validate-code]
     runs-on: ubuntu-latest
     strategy:
@@ -275,7 +280,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: "yarn"
+          cache: 'yarn'
 
       # - name: Restore Yarn Cache
       #   id: yarn-cache
