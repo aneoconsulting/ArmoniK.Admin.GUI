@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 RUN npm install -g nx
 
 COPY .yarn/** ./
+RUN ls .yarn
 COPY .yarnrc.yml ./
 COPY package.json ./
 COPY yarn.lock ./
