@@ -117,7 +117,9 @@ export class ResultsListComponent implements OnInit {
         .filter((key) => !Number.isInteger(parseInt(key)))
         .map((key) => ({
           value: ResultStatus[key as keyof typeof ResultStatus] as number,
-          label: key,
+          label: this.getStatusLabel(
+            ResultStatus[key as keyof typeof ResultStatus]
+          ),
         })),
     ];
   }
