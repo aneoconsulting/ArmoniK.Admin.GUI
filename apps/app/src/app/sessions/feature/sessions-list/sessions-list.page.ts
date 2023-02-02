@@ -127,15 +127,6 @@ export class SessionsListComponent {
     'cancelledAtAfter'
   );
 
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
-  );
-
   applicationName: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'applicationName'
@@ -154,6 +145,20 @@ export class SessionsListComponent {
     private _grpcPagerService: GrpcPagerService,
     private _settingsService: SettingsService
   ) {}
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
+  }
 
   public get OrderByField() {
     return ListSessionsRequest.OrderByField;
@@ -293,7 +298,7 @@ export class SessionsListComponent {
   }
 
   public get hasApplicationFilter() {
-    return this.applicationName !== '' || this.applicationVersion !== '';
+    return this.applicationName !== null || this.applicationVersion !== null;
   }
 
   /**

@@ -120,15 +120,6 @@ export class PartitionsListComponent {
     'priority'
   );
 
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.queryParamMap,
-    'page'
-  );
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.queryParamMap,
-    'pageSize'
-  );
-
   constructor(
     private _settingsService: SettingsService,
     private _grpcPagerService: GrpcPagerService,
@@ -136,6 +127,20 @@ export class PartitionsListComponent {
     private _grpcPartitionsService: GrpcPartitionsService,
     private _router: Router
   ) {}
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
+  }
 
   public get OrderByField() {
     return ListPartitionsRequest.OrderByField;
