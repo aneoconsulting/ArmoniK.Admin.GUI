@@ -260,7 +260,7 @@ jobs:
   #       run: yarn docs:build
 
   build-push-docker-images:
-    name: Build and push Docker image
+    # name: Build and push Docker image # Need to change requirement in settings
     needs: [setup]
     runs-on: ubuntu-latest
     strategy:
