@@ -226,7 +226,7 @@ jobs:
   #       run: yarn docs:build
 
   build-push-docker-images:
-    needs: [setup, validate-code, build]
+    needs: [setup, validate-code]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -281,3 +281,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile.file }}
+          cache-from: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache
+          cache-to: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache,mode=max
