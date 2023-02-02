@@ -103,15 +103,6 @@ export class ResultsListComponent implements OnInit {
     'createdAtAfter'
   );
 
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
-  );
-
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -131,6 +122,20 @@ export class ResultsListComponent implements OnInit {
           ),
         })),
     ];
+  }
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
   }
 
   public get OrderByField() {

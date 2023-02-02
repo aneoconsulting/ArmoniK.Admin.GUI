@@ -29,7 +29,18 @@
       </a>
       <div class="nav-divider"></div>
       <a
-        *ngFor="let link of links; trackBy: trackByLabel"
+        *ngFor="let link of dataLinks; trackBy: trackByLabel"
+        clrVerticalNavLink
+        [routerLink]="link.path"
+        [queryParams]="link.queryParams"
+        routerLinkActive="active"
+      >
+        <cds-icon [attr.shape]="link.shape" clrVerticalNavIcon></cds-icon>
+        {{ link.label }}</a
+      >
+      <div class="nav-divider"></div>
+      <a
+        *ngFor="let link of computedLinks; trackBy: trackByLabel"
         clrVerticalNavLink
         [routerLink]="link.path"
         [queryParams]="link.queryParams"
