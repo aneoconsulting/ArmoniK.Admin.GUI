@@ -718,5 +718,11 @@
         <target>Mon profil</target>
       </segment>
     </unit>
+    <unit id="186236568870281953">
+      <segment state="initial">
+        <source>History</source>
+        <target>Historique</target>
+      </segment>
+    </unit>
   </file>
 </xliff>

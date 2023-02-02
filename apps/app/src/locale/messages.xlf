@@ -594,5 +594,10 @@
         <source>My Profile</source>
       </segment>
     </unit>
+    <unit id="186236568870281953">
+      <segment>
+        <source>History</source>
+      </segment>
+    </unit>
   </file>
 </xliff>
