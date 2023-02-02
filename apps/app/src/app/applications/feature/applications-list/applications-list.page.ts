@@ -80,6 +80,21 @@ export class ApplicationsListComponent {
     private _grpcPagerService: GrpcPagerService
   ) {}
 
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
+  }
+
+
   public get OrderByField() {
     return ListApplicationsRequest.OrderByField;
   }
