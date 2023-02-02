@@ -18,7 +18,7 @@ export class ErrorComponent {
 
   get message$(): Observable<string> {
     return this._route.queryParamMap.pipe(
-      map((params) => params.get('message') || 'Page not found')
+      map((params) => params.get('message') || $localize`Page not found.`)
     );
   }
 }

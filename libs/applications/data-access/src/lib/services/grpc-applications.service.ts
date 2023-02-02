@@ -14,6 +14,64 @@ export class GrpcApplicationsService extends BaseGrpcService {
     super();
   }
 
+  public urlToGrpcParams(
+    params: Record<string, string | number>
+  ): GrpcParams<
+    ListApplicationsRequest.OrderByField,
+    ListApplicationsRequest.OrderDirection,
+    ListApplicationsRequest.Filter.AsObject
+  > {
+    const grpcParams: GrpcParams<
+      ListApplicationsRequest.OrderByField,
+      ListApplicationsRequest.OrderDirection,
+      ListApplicationsRequest.Filter.AsObject
+    > = {};
+    const filter = {
+      name: '',
+      namespace: '',
+      service: '',
+      version: '',
+    };
+    for (const [key, value] of Object.entries(params)) {
+      switch (key) {
+        case 'page': {
+          grpcParams.page = value as number;
+          break;
+        }
+        case 'pageSize': {
+          grpcParams.pageSize = value as number;
+          break;
+        }
+        case 'order': {
+          grpcParams.order = value as number;
+          break;
+        }
+        case 'orderBy': {
+          grpcParams.orderBy = value as number;
+          break;
+        }
+        case 'name': {
+          filter.name = value as string;
+          break;
+        }
+        case 'namespace': {
+          filter.namespace = value as string;
+          break;
+        }
+        case 'version': {
+          filter.version = value as string;
+          break;
+        }
+        case 'service': {
+          filter.service = value as string;
+          break;
+        }
+      }
+    }
+    grpcParams.filter = filter;
+    return grpcParams;
+  }
+
   public list$(
     params: GrpcParams<
       ListApplicationsRequest.OrderByField,
@@ -32,14 +90,8 @@ export class GrpcApplicationsService extends BaseGrpcService {
           params.order ||
           ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       },
-      filter: {
-        name: '',
-        namespace: '',
-        service: '',
-        version: '',
-      },
+      filter: params.filter,
     });
-
     return this._applicationsClient
       .listApplications(options)
       .pipe(takeUntil(this._timeout$));

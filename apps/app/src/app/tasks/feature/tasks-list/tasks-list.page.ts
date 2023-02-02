@@ -150,15 +150,6 @@ export class TasksListComponent implements OnInit {
     'endedAtAfter'
   );
 
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
-  );
-
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -179,6 +170,20 @@ export class TasksListComponent implements OnInit {
           ),
         })),
     ];
+  }
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
   }
 
   public get OrderByField(): typeof ListTasksRequest.OrderByField {
