@@ -18,12 +18,6 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: "yarn"
-
       - name: Cache Node Modules
         id: node-cache
         uses: actions/cache@v3
@@ -31,12 +25,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Cache Yarn
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: .yarn
-          key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
+      # - name: Cache Yarn
+      #   id: yarn-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: .yarn
+      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
 
       - name: Cache Protos
         id: proto-cache
@@ -44,6 +38,13 @@ jobs:
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+
+      - name: Use Node.js
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: "yarn"
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
@@ -270,12 +271,12 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Restore Yarn Cache
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: .yarn
-          key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
+      # - name: Restore Yarn Cache
+      #   id: yarn-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: .yarn
+      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
 
       - name: Restore Protos
         id: proto-cache
