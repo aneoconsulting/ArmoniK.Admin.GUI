@@ -6,12 +6,14 @@ WORKDIR /usr/src/app
 
 RUN npm install -g nx
 
-COPY .yarn ./
+COPY .yarn/releases/* ./.yarn/releases/
+COPY .yarn/cache ./.yarn/cache/
+COPY .yarnrc.yml ./
 COPY package.json ./
 COPY yarn.lock ./
 COPY decorate-angular-cli.js ./
 
-RUN yarn
+RUN yarn --immutable
 
 COPY . .
 
