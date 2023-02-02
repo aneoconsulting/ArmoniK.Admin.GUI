@@ -245,20 +245,6 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Restore Protos
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
