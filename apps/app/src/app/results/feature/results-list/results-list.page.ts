@@ -103,15 +103,6 @@ export class ResultsListComponent implements OnInit {
     'createdAtAfter'
   );
 
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
-  );
-
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -126,9 +117,25 @@ export class ResultsListComponent implements OnInit {
         .filter((key) => !Number.isInteger(parseInt(key)))
         .map((key) => ({
           value: ResultStatus[key as keyof typeof ResultStatus] as number,
-          label: key,
+          label: this.getStatusLabel(
+            ResultStatus[key as keyof typeof ResultStatus]
+          ),
         })),
     ];
+  }
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
   }
 
   public get OrderByField() {

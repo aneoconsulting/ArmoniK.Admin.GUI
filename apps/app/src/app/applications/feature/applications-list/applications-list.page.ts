@@ -86,14 +86,6 @@ export class ApplicationsListComponent {
     this._activatedRoute.snapshot.queryParams,
     'service'
   );
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
-  );
 
   constructor(
     private _router: Router,
@@ -102,6 +94,20 @@ export class ApplicationsListComponent {
     private _grpcApplicationsService: GrpcApplicationsService,
     private _grpcPagerService: GrpcPagerService
   ) {}
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
+  }
 
   public get OrderByField() {
     return ListApplicationsRequest.OrderByField;
