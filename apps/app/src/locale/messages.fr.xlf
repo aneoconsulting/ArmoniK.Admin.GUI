@@ -676,5 +676,11 @@
         <target>/admin/fr/</target>
       </segment>
     </unit>
+    <unit id="8574063679938854809">
+      <segment state="initial">
+        <source>Page not found.</source>
+        <target>Cette page n'existe pas.</target>
+      </segment>
+    </unit>
   </file>
 </xliff>
