@@ -105,11 +105,6 @@ export class TasksListComponent implements OnInit {
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
    */
-  filterTaskId: string | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'taskId'
-  );
-
   filterSessionId: string | null = this._settingsService.queryParam(
     this._activatedRoute.snapshot.queryParams,
     'sessionId'
