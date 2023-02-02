@@ -17,7 +17,7 @@ import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 export class AppComponent implements OnInit {
   public loadingUser = false;
 
-  tableLinks: AppNavLink[] = [
+  dataLinks: AppNavLink[] = [
     {
       path: ['/', 'applications'],
       label: $localize`Applications`,
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
     },
   ];
 
-  dataLinks: AppNavLink[] = [
+  computedLinks: AppNavLink[] = [
     {
       path: ['/', 'sessions'],
       label: $localize`Sessions`,
