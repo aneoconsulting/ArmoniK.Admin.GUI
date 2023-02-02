@@ -23,24 +23,56 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
     >
       <span i18n> Name </span>
+      <clr-dg-filter [clrDgFilter]="nameFilterComponent">
+        <app-id-filter
+          #nameFilterComponent
+          name="name"
+          [inputValue]="nameFilter"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_VERSION.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_VERSION)"
     >
       <span i18n> Version </span>
+      <clr-dg-filter [clrDgFilter]="versionFilterComponent">
+        <app-id-filter
+          #versionFilterComponent
+          name="version"
+          [inputValue]="versionFilter"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_NAMESPACE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAMESPACE)"
     >
       <span i18n> Namespace </span>
+      <clr-dg-filter [clrDgFilter]="namespaceFilterComponent">
+        <app-id-filter
+          #namespaceFilterComponent
+          name="namespace"
+          [inputValue]="namespaceFilter"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SERVICE.toString()"
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_SERVICE)"
     >
       <span i18n> Service </span>
+      <clr-dg-filter [clrDgFilter]="serviceFilterComponent">
+        <app-id-filter
+          #serviceFilterComponent
+          name="service"
+          [inputValue]="serviceFilter"
+        >
+        </app-id-filter>
+      </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column i18n> Actions </clr-dg-column>
 
