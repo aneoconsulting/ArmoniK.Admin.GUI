@@ -123,10 +123,10 @@ describe('GrpcTasksService', () => {
         filter: {
           id: '',
           parentPartitionId: '',
-          podMax: '',
-          podReserved: '',
-          preemptionPercentage: '',
-          priority: '',
+          podMax: 0,
+          podReserved: 0,
+          preemptionPercentage: 0,
+          priority: 0,
         },
       })
     );
@@ -153,10 +153,10 @@ describe('GrpcTasksService', () => {
         filter: {
           id: 'Some test id',
           parentPartitionId: '',
-          podMax: '',
-          podReserved: '',
-          preemptionPercentage: '',
-          priority: '',
+          podMax: 0,
+          podReserved: 0,
+          preemptionPercentage: 0,
+          priority: 0,
         },
       })
     );
