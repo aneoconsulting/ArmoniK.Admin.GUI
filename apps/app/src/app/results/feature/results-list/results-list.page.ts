@@ -23,6 +23,7 @@ import {
   tap,
   timer,
 } from 'rxjs';
+import { IdFilterComponent, SelectFilterComponent } from '../../../shared/feature/filters';
 import { SettingsService } from '../../../shared/util';
 
 @Component({
@@ -289,6 +290,17 @@ export class ResultsListComponent implements OnInit {
   clearOrder(): void {
     delete this._state.sort;
     this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   * 
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(filter: IdFilterComponent | SelectFilterComponent, value: string | number) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**

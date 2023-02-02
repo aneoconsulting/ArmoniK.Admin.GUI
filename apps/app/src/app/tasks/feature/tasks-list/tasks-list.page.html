@@ -36,7 +36,7 @@
     >
       <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter name="id" [inputValue]="filterTaskId" #idFilter>
+        <app-id-filter name="id" [selectedValue]="filterTaskId" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -50,7 +50,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           name="sessionId"
-          [inputValue]="filterSessionId"
+          [selectedValue]="filterSessionId"
           #sessionFilter
         >
         </app-id-filter>
@@ -133,6 +133,7 @@
           <a
             [routerLink]="['/', 'tasks']"
             [queryParams]="{ sessionId: task.sessionId }"
+            (click)="setFilterViaGridLink(sessionFilter, task.sessionId)"
           >
             {{ task.sessionId }}
           </a>
@@ -141,6 +142,7 @@
           <a
             [routerLink]="['/', 'tasks']"
             [queryParams]="{ status: task.status }"
+            (click)="setComboboxFilter(statusFilter, task.status)"
           >
             <span
               [ngClass]="{

@@ -26,7 +26,7 @@
       <clr-dg-filter [clrDgFilter]="nameFilterComponent">
         <app-id-filter
           [name]="'name'"
-          [inputValue]="nameFilter"
+          [selectedValue]="nameFilter"
           #nameFilterComponent
         >
         </app-id-filter>
@@ -40,7 +40,7 @@
     >
       <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="taskFilter">
-        <app-id-filter name="taskId" [inputValue]="taskIdFilter" #taskFilter>
+        <app-id-filter name="taskId" [selectedValue]="taskIdFilter" #taskFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -54,7 +54,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           name="sessionId"
-          [inputValue]="sessionIdFilter"
+          [selectedValue]="sessionIdFilter"
           #sessionFilter
         >
         </app-id-filter>
@@ -101,6 +101,7 @@
           <a
             [routerLink]="['/', 'results']"
             [queryParams]="{ ownerTaskId: result.ownerTaskId }"
+            (click)="setFilterViaGridLink(taskFilter, result.ownerTaskId)"
           >
             {{ result.ownerTaskId }}
           </a>
@@ -109,6 +110,7 @@
           <a
             [routerLink]="['/', 'results']"
             [queryParams]="{ sessionId: result.sessionId }"
+            (click)="setFilterViaGridLink(sessionFilter, result.sessionId)"
           >
             {{ result.sessionId }}
           </a>
@@ -117,6 +119,7 @@
           <a
             [routerLink]="['/', 'results']"
             [queryParams]="{ status: result.status }"
+            (click)="setFilterViaGridLink(statusFilterComponent, result.status)"
           >
             <span
               [ngClass]="{
