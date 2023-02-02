@@ -298,7 +298,7 @@ export class SessionsListComponent {
   }
 
   public get hasApplicationFilter() {
-    return this.applicationName !== '' || this.applicationVersion !== '';
+    return this.applicationName !== null || this.applicationVersion !== null;
   }
 
   /**
