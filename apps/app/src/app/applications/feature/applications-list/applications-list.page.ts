@@ -15,8 +15,6 @@ import {
   Subject,
   catchError,
   concatMap,
-  distinctUntilChanged,
-  map,
   merge,
   of,
   switchMap,
@@ -70,6 +68,31 @@ export class ApplicationsListComponent {
   ).pipe(
     tap(() => this.loadingApplications$.next(true)),
     switchMap(() => this._listApplications$())
+  );
+
+  nameFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'name'
+  );
+  versionFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'version'
+  );
+  namespaceFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'namespace'
+  );
+  serviceFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'service'
+  );
+  pageSize: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'pageSize'
+  );
+  page: number | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'page'
   );
 
   constructor(
@@ -151,21 +174,6 @@ export class ApplicationsListComponent {
   }
 
   /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
-  }
-
-  /**
    * Track by application
    *
    * @param _
@@ -202,8 +210,8 @@ export class ApplicationsListComponent {
    */
   private _listApplications$(): Observable<ListApplicationsResponse> {
     const params = this._grpcPagerService.createParams(this._restoreState());
-
-    return this._grpcApplicationsService.list$(params).pipe(
+    const grpcParams = this._grpcApplicationsService.urlToGrpcParams(params);
+    return this._grpcApplicationsService.list$(grpcParams).pipe(
       catchError((error) => {
         console.error(error);
         this._stopInterval.next();
