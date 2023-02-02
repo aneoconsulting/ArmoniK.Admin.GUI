@@ -404,7 +404,7 @@ export class SessionsListComponent {
 
   /**
    * Set a new filter value via clicking a link in the datagrid.
-   * 
+   *
    * @param filter the filter to change.
    * @param value the new filter value.
    */

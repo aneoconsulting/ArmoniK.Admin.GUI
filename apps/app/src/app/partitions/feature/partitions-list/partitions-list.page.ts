@@ -24,7 +24,10 @@ import {
   timer,
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
-import { IdFilterComponent, NumericFilterComponent } from '../../../shared/feature/filters';
+import {
+  IdFilterComponent,
+  NumericFilterComponent,
+} from '../../../shared/feature/filters';
 
 @Component({
   selector: 'app-partitions-list',
@@ -300,11 +303,14 @@ export class PartitionsListComponent {
 
   /**
    * Set a new filter value via clicking a link in the datagrid.
-   * 
+   *
    * @param filter the filter to change.
    * @param value the new filter value.
    */
-  setFilterViaGridLink(filter: NumericFilterComponent | IdFilterComponent, value: number | string) {
+  setFilterViaGridLink(
+    filter: NumericFilterComponent | IdFilterComponent,
+    value: number | string
+  ) {
     filter.selectedValue = value;
     filter.changes.emit();
   }
