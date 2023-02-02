@@ -143,7 +143,12 @@
       </clr-dg-row>
     </ng-container>
     <clr-dg-footer>
-      <clr-dg-pagination>
+      <clr-dg-pagination
+        #pagination
+        [clrDgPageSize]="(pageSize$ | async) || 10"
+        [clrDgTotalItems]="(totalPartitions$ | async) ?? 0"
+        [clrDgPage]="((page$ | async) || 0) + 1"
+      >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]" i18n>
           Partitions per page
         </clr-dg-page-size>
