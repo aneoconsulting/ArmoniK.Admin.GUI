@@ -176,11 +176,12 @@ export class SettingsService {
    */
   public queryParam$(
     queryParamMap: Observable<ParamMap>,
-    param: string): Observable<number> {
+    param: string
+  ): Observable<number> {
     return queryParamMap.pipe(
       map((params) => params.get(param)),
       map((value) => Number(value)),
       distinctUntilChanged()
-    )
+    );
   }
 }

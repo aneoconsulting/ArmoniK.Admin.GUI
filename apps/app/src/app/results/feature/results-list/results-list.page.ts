@@ -136,7 +136,6 @@ export class ResultsListComponent implements OnInit {
     );
   }
 
-
   public get OrderByField() {
     return ListResultsRequest.OrderByField;
   }

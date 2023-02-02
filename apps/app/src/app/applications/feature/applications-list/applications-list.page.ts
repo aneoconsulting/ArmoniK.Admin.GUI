@@ -94,7 +94,6 @@ export class ApplicationsListComponent {
     );
   }
 
-
   public get OrderByField() {
     return ListApplicationsRequest.OrderByField;
   }

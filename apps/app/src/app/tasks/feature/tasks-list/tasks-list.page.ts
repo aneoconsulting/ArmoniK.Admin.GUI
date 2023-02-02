@@ -186,7 +186,6 @@ export class TasksListComponent implements OnInit {
     );
   }
 
-
   public get OrderByField(): typeof ListTasksRequest.OrderByField {
     return ListTasksRequest.OrderByField;
   }

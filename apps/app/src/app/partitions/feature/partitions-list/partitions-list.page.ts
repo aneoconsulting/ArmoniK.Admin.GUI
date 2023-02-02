@@ -142,7 +142,6 @@ export class PartitionsListComponent {
     );
   }
 
-
   public get OrderByField() {
     return ListPartitionsRequest.OrderByField;
   }
