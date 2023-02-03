@@ -19,12 +19,12 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      # - name: Cache Node Modules
-      #   id: node-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: node_modules
-      #     key: node-modules-${{ hashFiles('yarn.lock') }}
+      - name: Cache Node Modules
+        id: node-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
 
       # - name: Cache Yarn
       #   id: yarn-cache
@@ -41,12 +41,14 @@ jobs:
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Use Node.js
+        if: steps.node-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
           cache: 'yarn'
 
       - name: Install Dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn --immutable
 
       - name: Install Protoc
@@ -73,12 +75,12 @@ jobs:
           node-version: 18.x
           cache: 'yarn'
 
-      # - name: Restore Node Modules
-      #   id: node-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: node_modules
-      #     key: node-modules-${{ hashFiles('yarn.lock') }}
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
 
       - uses: nrwl/nx-set-shas@v2
         with:
@@ -105,12 +107,12 @@ jobs:
           node-version: 18.x
           cache: 'yarn'
 
-      # - name: Restore Node Modules
-      #   id: node-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: node_modules
-      #     key: node-modules-${{ hashFiles('yarn.lock') }}
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
 
       - uses: nrwl/nx-set-shas@v2
         with:
@@ -214,18 +216,12 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      # - name: Restore Node Modules
-      #   id: node-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: node_modules
-      #     key: node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - name: Restore Node Modules
+        id: node-cache
+        uses: actions/cache@v3
         with:
-          node-version: 18.x
-          cache: 'yarn'
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
 
       - uses: nrwl/nx-set-shas@v2
         with:
