@@ -26,12 +26,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Cache Yarn
-        id: yarn-cache
-        uses: actions/cache@v3
-        with:
-          path: .yarn
-          key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
+      # - name: Cache Yarn
+      #   id: yarn-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: .yarn
+      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
 
       - name: Cache Protos
         id: proto-cache
@@ -41,7 +41,6 @@ jobs:
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Use Node.js
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
