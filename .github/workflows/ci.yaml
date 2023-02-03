@@ -41,7 +41,7 @@ jobs:
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Use Node.js
-        # if: steps.node-cache.outputs.cache-hit != 'true'
+        if: steps.node-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
