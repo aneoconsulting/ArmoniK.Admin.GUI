@@ -49,7 +49,10 @@ export class PartitionsListComponent {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPagerService.createParams(state);
+        const params = this._grpcPagerService.createParams(
+          state,
+          this._intervalValue
+        );
         await this._router.navigate([], {
           queryParams: params,
           relativeTo: this._activatedRoute,

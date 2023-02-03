@@ -63,7 +63,10 @@ export class SessionsListComponent {
     concatMap(async (state) => {
       this.setApplicationFilter('applicationName', this.applicationName);
       this.setApplicationFilter('applicationVersion', this.applicationVersion);
-      const urlParams = this._grpcPagerService.createParams(state);
+      const urlParams = this._grpcPagerService.createParams(
+        state,
+        this._intervalValue
+      );
       await this._router.navigate([], {
         queryParams: urlParams,
         relativeTo: this._activatedRoute,
