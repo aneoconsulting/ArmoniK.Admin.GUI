@@ -46,6 +46,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
@@ -74,6 +75,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
       - name: Restore Node Modules
         id: node-cache
@@ -281,6 +283,7 @@ jobs:
         with:
           node-version: 18.x
           cache: 'yarn'
+          cache-dependency-path: yarn.lock
 
       # - name: Restore Yarn Cache
       #   id: yarn-cache
