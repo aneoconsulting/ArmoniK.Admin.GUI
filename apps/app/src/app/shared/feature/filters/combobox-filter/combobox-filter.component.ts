@@ -51,6 +51,10 @@ export class ComboBoxFilterComponent
     this.changes.emit();
   }
 
+  reset(): void {
+    this.selectedValues = [];
+  }
+
   /**
    * Unused but required by the interface.
    */

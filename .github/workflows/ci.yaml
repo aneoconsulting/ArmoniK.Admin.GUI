@@ -5,8 +5,13 @@ on:
       - main
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   setup:
+    name: Setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,12 +26,26 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
+      # - name: Cache Yarn
+      #   id: yarn-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: .yarn
+      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
+
       - name: Cache Protos
         id: proto-cache
         uses: actions/cache@v3
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+
+      - name: Use Node.js
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
@@ -41,6 +60,7 @@ jobs:
         run: yarn proto:generate
 
   validate-code:
+    name: Validate Code
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -48,6 +68,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
 
       - name: Restore Node Modules
         id: node-cache
@@ -66,6 +92,7 @@ jobs:
         run: yarn ng affected --target=lint --parallel=3
 
   unit-tests:
+    name: Unit Tests
     needs: [setup, validate-code]
     runs-on: ubuntu-latest
     steps:
@@ -73,6 +100,12 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
 
       - name: Restore Node Modules
         id: node-cache
@@ -174,7 +207,8 @@ jobs:
   #         path: ./dist/cypress/apps/app-e2e/videos
 
   build:
-    needs: [setup, validate-code, unit-tests]
+    name: Build
+    needs: [setup, validate-code]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -203,30 +237,31 @@ jobs:
       - name: Build all
         run: yarn ng affected --target=build --parallel=3
 
-  build-docs:
-    needs: [setup, validate-code]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
+  # build-docs:
+  #   needs: [setup, validate-code]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #         submodules: true
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+  #     - name: Restore Node Modules
+  #       id: node-cache
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: node_modules
+  #         key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Set Node Env
-        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+  #     - name: Set Node Env
+  #       run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
-      - name: Build
-        run: yarn docs:build
+  #     - name: Build
+  #       run: yarn docs:build
 
   build-push-docker-images:
-    needs: [setup, validate-code, build, build-docs]
+    # name: Build and push Docker image # Need to change requirement in settings
+    needs: [setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -241,12 +276,18 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          node-version: 18.x
+          cache: 'yarn'
+
+      # - name: Restore Yarn Cache
+      #   id: yarn-cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: .yarn
+      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
 
       - name: Restore Protos
         id: proto-cache
@@ -273,11 +314,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: ${{ github.event_name != 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ${{ matrix.dockerfile.file }}
+          cache-from: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache
+          cache-to: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache,mode=max
