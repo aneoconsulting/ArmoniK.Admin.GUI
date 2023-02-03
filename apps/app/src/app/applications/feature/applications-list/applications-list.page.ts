@@ -102,7 +102,7 @@ export class ApplicationsListComponent {
   public get refreshIntervalValue() {
     return this._intervalValue;
   }
-  
+
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(
       this._activatedRoute.queryParamMap,

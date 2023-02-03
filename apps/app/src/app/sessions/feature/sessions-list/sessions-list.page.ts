@@ -38,7 +38,7 @@ export class SessionsListComponent {
   private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
   );
-  
+
   /** Get a single session */
   private _opened$ = new BehaviorSubject<boolean>(false);
   private _subjectSingleSession = new Subject<string>();
@@ -149,7 +149,7 @@ export class SessionsListComponent {
     private _grpcPagerService: GrpcPagerService,
     private _settingsService: SettingsService
   ) {}
-  
+
   public get refreshIntervalValue() {
     return this._intervalValue;
   }
