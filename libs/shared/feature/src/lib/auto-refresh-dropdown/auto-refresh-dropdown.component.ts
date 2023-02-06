@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClrDropdownModule } from '@clr/angular';
 
@@ -14,7 +14,7 @@ export const DisabledIntervalValue = -1; // Use -1 to stop interval because 0 is
   selector: 'armonik-admin-gui-auto-refresh-dropdown',
   templateUrl: './auto-refresh-dropdown.component.html',
   styleUrls: ['./auto-refresh-dropdown.component.scss'],
-  imports: [ClrDropdownModule, NgIf, NgFor, AsyncPipe],
+  imports: [ClrDropdownModule, NgIf, NgFor],
 })
 export class AutoRefreshDropdownComponent {
   @Input() actualInterval = 10000;
