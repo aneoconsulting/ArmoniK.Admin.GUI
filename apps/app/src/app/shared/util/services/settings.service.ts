@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRouteSnapshot, ParamMap } from '@angular/router';
+import { BehaviorSubject, Observable, map, distinctUntilChanged } from 'rxjs';
 
 @Injectable()
 export class SettingsService {
