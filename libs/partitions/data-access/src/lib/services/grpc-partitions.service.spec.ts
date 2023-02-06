@@ -1,9 +1,16 @@
 import { TestBed } from '@angular/core/testing';
-import { GrpcParamsService, ListPartitionsRequest, PartitionsClient } from '@armonik.admin.gui/shared/data-access';
+import {
+  GrpcParamsService,
+  ListPartitionsRequest,
+  PartitionsClient,
+} from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcPartitionsService } from './grpc-partitions.service';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-import { ClrDatagridComparatorInterface, ClrDatagridStateInterface } from '@clr/angular';
+import {
+  ClrDatagridComparatorInterface,
+  ClrDatagridStateInterface,
+} from '@clr/angular';
 
 describe('GrpcTasksService', () => {
   let service: GrpcPartitionsService;
@@ -27,7 +34,7 @@ describe('GrpcTasksService', () => {
     expect(service).toBeTruthy();
   });
 
-    it('should create a default list of request params', () => {
+  it('should create a default list of request params', () => {
     const state: ClrDatagridStateInterface = {};
     const requestParams = service.createListRequestParams(state);
     expect(requestParams).toEqual({
