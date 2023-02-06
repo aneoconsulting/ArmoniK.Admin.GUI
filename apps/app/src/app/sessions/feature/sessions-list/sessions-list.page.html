@@ -93,6 +93,12 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
+      [clrDgField]="OrderByField.ORDER_BY_FIELD_DURATION.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_DURATION)"
+    >
+      <span i18n>Duration</span>
+    </clr-dg-column>
+    <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
       [clrDgSortOrder]="
       defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
@@ -147,6 +153,7 @@
             </span>
           </a>
         </clr-dg-cell>
+        <clr-dg-cell> {{ session.duration }} </clr-dg-cell>
         <clr-dg-cell>
           <span *ngIf="session.createdAt; else empty">
             {{ session.createdAt.toISOString() | date: 'yyyy-MM-dd &nbsp;
