@@ -165,4 +165,23 @@ export class SettingsService {
   ): T | null {
     return queryParams[param] ? (queryParams[param] as T) : null;
   }
+
+  /**
+   * Get query params from route and return them as string
+   * Used for pager params.
+   *
+   * @param param
+   *
+   * @returns Observable<string>
+   */
+  public queryParam$(
+    queryParamMap: Observable<ParamMap>,
+    param: string
+  ): Observable<number> {
+    return queryParamMap.pipe(
+      map((params) => params.get(param)),
+      map((value) => Number(value)),
+      distinctUntilChanged()
+    );
+  }
 }

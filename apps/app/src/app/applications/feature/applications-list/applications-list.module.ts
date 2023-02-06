@@ -11,6 +11,7 @@ import { ApplicationsListRoutingModule } from './applications-list-routing.modul
 import { ActionBarComponent } from '../../../shared/feature';
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import { ApplicationsListComponent } from './applications-list.page';
+import { IdFilterComponent } from '../../../shared/feature/filters';
 
 @NgModule({
   declarations: [ApplicationsListComponent],
@@ -27,6 +28,7 @@ import { ApplicationsListComponent } from './applications-list.page';
     DatePipe,
     NgFor,
     NgIf,
+    IdFilterComponent,
   ],
   providers: [GrpcApplicationsService, GrpcParamsService],
 })

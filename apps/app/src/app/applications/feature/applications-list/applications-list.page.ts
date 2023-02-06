@@ -14,8 +14,6 @@ import {
   Subject,
   catchError,
   concatMap,
-  distinctUntilChanged,
-  map,
   merge,
   of,
   switchMap,
@@ -76,12 +74,43 @@ export class ApplicationsListComponent {
     switchMap(() => this._listApplications$())
   );
 
+  nameFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'name'
+  );
+  versionFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'version'
+  );
+  namespaceFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'namespace'
+  );
+  serviceFilter: string | null = this._settingsService.queryParam(
+    this._activatedRoute.snapshot.queryParams,
+    'service'
+  );
+
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService
   ) {}
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
+  }
 
   public get OrderByField() {
     return ListApplicationsRequest.OrderByField;
@@ -153,21 +182,6 @@ export class ApplicationsListComponent {
    */
   public manualRefreshApplications(): void {
     this._subjectManual.next();
-  }
-
-  /**
-   * Get query params from route
-   *
-   * @param param
-   *
-   * @returns Observable<string>
-   */
-  public queryParam$(param: string): Observable<number> {
-    return this._activatedRoute.queryParamMap.pipe(
-      map((params) => params.get(param)),
-      map((value) => Number(value)),
-      distinctUntilChanged()
-    );
   }
 
   /**

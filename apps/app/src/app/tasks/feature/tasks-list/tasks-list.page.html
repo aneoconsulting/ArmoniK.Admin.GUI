@@ -232,9 +232,9 @@
     <clr-dg-footer>
       <clr-dg-pagination
         #pagination
-        [clrDgPageSize]="pageSize || 10"
+        [clrDgPageSize]="(pageSize$ | async) || 10"
         [clrDgTotalItems]="(totalTasks$ | async) ?? 0"
-        [clrDgPage]="(page || 0) + 1"
+        [clrDgPage]="((page$ | async) || 0) + 1"
       >
         <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
           <span i18n> Per Page </span>
