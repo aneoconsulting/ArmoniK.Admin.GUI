@@ -7,6 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FiltersEnum } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({
@@ -19,14 +20,27 @@ import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 export class DateFilterComponent
   implements ClrDatagridFilterInterface<string>, OnDestroy
 {
+  readonly type = FiltersEnum.TIME;
+
   @Output() changes = new EventEmitter<never>();
 
   @Input() name = '';
   @Input() beforeDate: Date | null = null;
   @Input() afterDate: Date | null = null;
 
-  get property(): string {
-    return this.name + 'At';
+  get property(): { after: string; before: string } {
+    return {
+      before: this._propertyBefore,
+      after: this._propertyAfter,
+    };
+  }
+
+  private get _propertyBefore(): string {
+    return `${this.name}Before`;
+  }
+
+  private get _propertyAfter(): string {
+    return `${this.name}After`;
   }
 
   get value(): { before: number | null; after: number | null } {

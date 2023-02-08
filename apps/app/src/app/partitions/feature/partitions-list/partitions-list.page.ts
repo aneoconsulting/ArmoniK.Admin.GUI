@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   GetPartitionResponse,
-  GrpcPagerService,
   ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
@@ -47,9 +46,12 @@ export class PartitionsListComponent {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPagerService.createParams(state);
+        const params =
+          this._grpcPartitionsService.createListRequestParams(state);
+        const queryParams =
+          this._grpcPartitionsService.createListRequestQueryParams(params);
         await this._router.navigate([], {
-          queryParams: params,
+          queryParams,
           relativeTo: this._activatedRoute,
         });
         return state;
@@ -122,7 +124,6 @@ export class PartitionsListComponent {
 
   constructor(
     private _settingsService: SettingsService,
-    private _grpcPagerService: GrpcPagerService,
     private _activatedRoute: ActivatedRoute,
     private _grpcPartitionsService: GrpcPartitionsService,
     private _router: Router
@@ -234,8 +235,10 @@ export class PartitionsListComponent {
   }
 
   private _listPartitions$(): Observable<ListPartitionsResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
-    const grpcParams = this._grpcPartitionsService.urlToGrpcParams(urlParams);
+    const state = this._restoreState();
+    const params = this._grpcPartitionsService.createListRequestParams(state);
+    const grpcParams =
+      this._grpcPartitionsService.createListRequestOptions(params);
     return this._grpcPartitionsService.list$(grpcParams).pipe(
       catchError((error) => {
         console.log(error);
