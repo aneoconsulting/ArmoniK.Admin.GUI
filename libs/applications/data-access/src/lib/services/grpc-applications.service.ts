@@ -2,96 +2,91 @@ import { Injectable } from '@angular/core';
 import {
   ApplicationsClient,
   BaseGrpcService,
-  GrpcParams,
   ListApplicationsRequest,
   ListApplicationsResponse,
+  GrpcListApplicationsParams,
+  GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcApplicationsService extends BaseGrpcService {
-  constructor(private _applicationsClient: ApplicationsClient) {
+  constructor(
+    private _applicationsClient: ApplicationsClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  public urlToGrpcParams(
-    params: Record<string, string | number>
-  ): GrpcParams<
-    ListApplicationsRequest.OrderByField,
-    ListApplicationsRequest.OrderDirection,
-    ListApplicationsRequest.Filter.AsObject
-  > {
-    const grpcParams: GrpcParams<
+  public createListRequestParams(
+    state: ClrDatagridStateInterface
+  ): GrpcListApplicationsParams {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
+
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
       ListApplicationsRequest.OrderByField,
-      ListApplicationsRequest.OrderDirection,
-      ListApplicationsRequest.Filter.AsObject
-    > = {};
-    const filter = {
-      name: '',
-      namespace: '',
-      service: '',
-      version: '',
+      ListApplicationsRequest.OrderDirection
+    >(state);
+
+    const filter =
+      this._grpcParamsService.createFilterParams<ListApplicationsRequest.Filter.AsObject>(
+        state
+      );
+
+    return {
+      page,
+      pageSize,
+      orderBy:
+        orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      order,
+      filter,
     };
-    for (const [key, value] of Object.entries(params)) {
-      switch (key) {
-        case 'page': {
-          grpcParams.page = value as number;
-          break;
-        }
-        case 'pageSize': {
-          grpcParams.pageSize = value as number;
-          break;
-        }
-        case 'order': {
-          grpcParams.order = value as number;
-          break;
-        }
-        case 'orderBy': {
-          grpcParams.orderBy = value as number;
-          break;
-        }
-        case 'name': {
-          filter.name = value as string;
-          break;
-        }
-        case 'namespace': {
-          filter.namespace = value as string;
-          break;
-        }
-        case 'version': {
-          filter.version = value as string;
-          break;
-        }
-        case 'service': {
-          filter.service = value as string;
-          break;
-        }
-      }
-    }
-    grpcParams.filter = filter;
-    return grpcParams;
+  }
+
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListApplicationsParams) {
+    return {
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
+      ...filter,
+    };
+  }
+
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListApplicationsParams): ListApplicationsRequest {
+    return new ListApplicationsRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter,
+    });
   }
 
   public list$(
-    params: GrpcParams<
-      ListApplicationsRequest.OrderByField,
-      ListApplicationsRequest.OrderDirection,
-      ListApplicationsRequest.Filter.AsObject
-    >
+    options: ListApplicationsRequest
   ): Observable<ListApplicationsResponse> {
-    const options = new ListApplicationsRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
-        direction:
-          params.order ||
-          ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter,
-    });
     return this._applicationsClient
       .listApplications(options)
       .pipe(takeUntil(this._timeout$));
