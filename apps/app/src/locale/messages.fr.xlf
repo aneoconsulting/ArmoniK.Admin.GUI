@@ -595,13 +595,13 @@
     <unit id="2887251461858216261">
       <segment state="initial">
         <source>Application Name</source>
-        <target>Nom de l'application</target>
+        <target>Nom de l&apos;application</target>
       </segment>
     </unit>
     <unit id="8245536584787530067">
       <segment state="initial">
         <source>Application Version</source>
-        <target>Version de l'application</target>
+        <target>Version de l&apos;application</target>
       </segment>
     </unit>
     <unit id="684380972110439395">
@@ -679,7 +679,49 @@
     <unit id="8574063679938854809">
       <segment state="initial">
         <source>Page not found.</source>
-        <target>Cette page n'existe pas.</target>
+        <target>Cette page n&apos;existe pas.</target>
+      </segment>
+    </unit>
+    <unit id="1738572071959382519">
+      <segment state="initial">
+        <source>Applications List</source>
+        <target>Liste des applications</target>
+      </segment>
+    </unit>
+    <unit id="1867753999733067155">
+      <segment state="initial">
+        <source>Partitions List</source>
+        <target>Liste des partitions</target>
+      </segment>
+    </unit>
+    <unit id="7260113078157600598">
+      <segment state="initial">
+        <source>Results List</source>
+        <target>Liste des résultats</target>
+      </segment>
+    </unit>
+    <unit id="5128465182244015957">
+      <segment state="initial">
+        <source>Sessions List</source>
+        <target>Liste des sessions</target>
+      </segment>
+    </unit>
+    <unit id="880840161586930848">
+      <segment state="initial">
+        <source>Tasks List</source>
+        <target>Liste des tâches</target>
+      </segment>
+    </unit>
+    <unit id="2127032578120864096">
+      <segment state="initial">
+        <source>My Profile</source>
+        <target>Mon profil</target>
+      </segment>
+    </unit>
+    <unit id="186236568870281953">
+      <segment state="initial">
+        <source>History</source>
+        <target>Historique</target>
       </segment>
     </unit>
   </file>
