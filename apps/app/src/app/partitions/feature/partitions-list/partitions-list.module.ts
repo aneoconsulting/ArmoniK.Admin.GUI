@@ -1,7 +1,7 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridModule,
   ClrLoadingModule,
@@ -28,6 +28,6 @@ import { PartitionsListComponent } from './partitions-list.page';
     IdFilterComponent,
     NumericFilterComponent,
   ],
-  providers: [GrpcPartitionsService, GrpcPagerService],
+  providers: [GrpcPartitionsService, GrpcParamsService],
 })
 export class PartitionsListModule {}

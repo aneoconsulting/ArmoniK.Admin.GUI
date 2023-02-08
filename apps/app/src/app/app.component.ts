@@ -21,7 +21,6 @@ export class AppComponent implements OnInit {
     {
       path: ['/', 'applications'],
       label: $localize`Applications`,
-      queryParams: { page: 0, pageSize: 10 },
       shape: 'bundle',
     },
     {
@@ -35,7 +34,6 @@ export class AppComponent implements OnInit {
     {
       path: ['/', 'sessions'],
       label: $localize`Sessions`,
-      queryParams: { page: 0, pageSize: 10 },
       shape: 'nodes',
     },
     {

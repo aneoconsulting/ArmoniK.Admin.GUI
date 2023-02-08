@@ -132,7 +132,7 @@
         <clr-dg-cell>
           <a
             [routerLink]="['/', 'tasks']"
-            [queryParams]="{ sessionId: task.sessionId }"
+            [queryParams]="mergeWithCurrentQueryParams({sessionId: task.sessionId })"
           >
             {{ task.sessionId }}
           </a>
@@ -140,7 +140,7 @@
         <clr-dg-cell class="status">
           <a
             [routerLink]="['/', 'tasks']"
-            [queryParams]="{ status: task.status }"
+            [queryParams]="mergeWithCurrentQueryParams({status: task.status })"
           >
             <span
               [ngClass]="{
