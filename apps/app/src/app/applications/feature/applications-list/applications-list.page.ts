@@ -48,7 +48,10 @@ export class ApplicationsListComponent {
       const params =
         this._grpcApplicationsService.createListRequestParams(state);
       const queryParams =
-        this._grpcApplicationsService.createListRequestQueryParams(params, this._intervalValue);
+        this._grpcApplicationsService.createListRequestQueryParams(
+          params,
+          this._intervalValue
+        );
 
       await this._router.navigate([], {
         queryParams,

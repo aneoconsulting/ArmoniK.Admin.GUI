@@ -77,14 +77,16 @@ describe('GrpcSessionsService', () => {
   });
 
   it('should create a default request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 0,
-      pageSize: 10,
-      orderBy: ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-      order: ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-      filter: {} as ListSessionsRequest.Filter,
-    },
-    10000);
+    const result = service.createListRequestQueryParams(
+      {
+        page: 0,
+        pageSize: 10,
+        orderBy: ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+        order: ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        filter: {} as ListSessionsRequest.Filter,
+      },
+      10000
+    );
     expect(result).toEqual({
       page: undefined,
       pageSize: undefined,
@@ -101,16 +103,17 @@ describe('GrpcSessionsService', () => {
   });
 
   it('should create a request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 2,
-      pageSize: 50,
-      orderBy: ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
-      order: ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      filter: {
-        sessionId: 'Some test sessionId',
-      } as ListSessionsRequest.Filter,
-    },
-    30000
+    const result = service.createListRequestQueryParams(
+      {
+        page: 2,
+        pageSize: 50,
+        orderBy: ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
+        order: ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        filter: {
+          sessionId: 'Some test sessionId',
+        } as ListSessionsRequest.Filter,
+      },
+      30000
     );
     expect(result).toEqual({
       page: 2,

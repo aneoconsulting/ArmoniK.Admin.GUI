@@ -81,14 +81,15 @@ describe('GrpcApplicationsService', () => {
   });
 
   it('should create a default request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 0,
-      pageSize: 10,
-      orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
-      order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-      filter: {} as ListApplicationsRequest.Filter,
-    },
-    10000
+    const result = service.createListRequestQueryParams(
+      {
+        page: 0,
+        pageSize: 10,
+        orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+        order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        filter: {} as ListApplicationsRequest.Filter,
+      },
+      10000
     );
     expect(result).toEqual({
       page: undefined,
@@ -100,16 +101,17 @@ describe('GrpcApplicationsService', () => {
   });
 
   it('should create a request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 2,
-      pageSize: 50,
-      orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
-      order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      filter: {
-        name: 'Some test name',
-      } as ListApplicationsRequest.Filter,
-    },
-    30000
+    const result = service.createListRequestQueryParams(
+      {
+        page: 2,
+        pageSize: 50,
+        orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+        order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        filter: {
+          name: 'Some test name',
+        } as ListApplicationsRequest.Filter,
+      },
+      30000
     );
     expect(result).toEqual({
       page: 2,

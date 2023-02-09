@@ -64,7 +64,10 @@ export class SessionsListComponent {
       this.setApplicationFilter('applicationVersion', this.applicationVersion);
       const params = this._grpcSessionsService.createListRequestParams(state);
       const queryParams =
-        this._grpcSessionsService.createListRequestQueryParams(params, this._intervalValue);
+        this._grpcSessionsService.createListRequestQueryParams(
+          params,
+          this._intervalValue
+        );
 
       await this._router.navigate([], {
         queryParams,

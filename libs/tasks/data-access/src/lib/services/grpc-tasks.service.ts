@@ -48,18 +48,14 @@ export class GrpcTasksService extends BaseGrpcService {
     };
   }
 
-  public createListRequestQueryParams({
-    page,
-    pageSize,
-    orderBy,
-    order,
-    filter,
-  }: GrpcListTasksParams,
-  refreshInterval: number) {
-  return {
-    page: page !== 0 ? page : undefined,
-    pageSize: pageSize !== 10 ? pageSize : undefined,
-    interval: refreshInterval !== 10000 ? refreshInterval : undefined,
+  public createListRequestQueryParams(
+    { page, pageSize, orderBy, order, filter }: GrpcListTasksParams,
+    refreshInterval: number
+  ) {
+    return {
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
           ? orderBy

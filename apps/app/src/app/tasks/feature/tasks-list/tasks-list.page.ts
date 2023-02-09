@@ -53,8 +53,10 @@ export class TasksListComponent implements OnInit {
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
         const params = this._grpcTasksService.createListRequestParams(state);
-        const queryParams =
-          this._grpcTasksService.createListRequestQueryParams(params, this._intervalValue);
+        const queryParams = this._grpcTasksService.createListRequestQueryParams(
+          params,
+          this._intervalValue
+        );
 
         await this._router.navigate([], {
           queryParams,
