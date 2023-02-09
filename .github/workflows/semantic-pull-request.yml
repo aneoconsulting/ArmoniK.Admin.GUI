@@ -1,4 +1,4 @@
-name: 'Lint PR'
+name: "Lint PR"
 
 on:
   pull_request_target:
@@ -8,6 +8,10 @@ on:
       - synchronize
 
 permissions: {}
+
+concurrency:
+  group: pr-title-lint-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   main:

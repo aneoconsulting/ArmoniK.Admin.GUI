@@ -1,11 +1,9 @@
-name: CD Docker
+name: Release Images
 
 on:
   push:
-    branches:
-      - 'main'
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   docker:
@@ -27,7 +25,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Restore Node Modules
         id: node-cache
@@ -64,9 +62,7 @@ jobs:
             dockerhubaneo/${{ matrix.dockerfile.name }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
             type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
