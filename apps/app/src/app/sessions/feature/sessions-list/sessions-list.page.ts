@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
 import {
   GetSessionResponse,
-  GrpcPagerService,
   ListSessionsRequest,
   ListSessionsResponse,
   SessionStatus,
@@ -63,12 +62,12 @@ export class SessionsListComponent {
     concatMap(async (state) => {
       this.setApplicationFilter('applicationName', this.applicationName);
       this.setApplicationFilter('applicationVersion', this.applicationVersion);
-      const urlParams = this._grpcPagerService.createParams(
-        state,
-        this._intervalValue
-      );
+      const params = this._grpcSessionsService.createListRequestParams(state);
+      const queryParams =
+        this._grpcSessionsService.createListRequestQueryParams(params);
+
       await this._router.navigate([], {
-        queryParams: urlParams,
+        queryParams,
         relativeTo: this._activatedRoute,
       });
       return state;
@@ -146,7 +145,6 @@ export class SessionsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _grpcSessionsService: GrpcSessionsService,
     private _authorizationService: AuthorizationService,
-    private _grpcPagerService: GrpcPagerService,
     private _settingsService: SettingsService
   ) {}
 
@@ -201,6 +199,7 @@ export class SessionsListComponent {
     this._subjectDatagrid.next(this._state);
   }
 
+  // TODO: Move to a service (once https://github.com/aneoconsulting/ArmoniK.Api/issues/87 is resolved)
   public defaultSortOrder(
     field: ListSessionsRequest.OrderByField
   ): ClrDatagridSortOrder {
@@ -211,9 +210,11 @@ export class SessionsListComponent {
     if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
 
     const order =
-      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
+      ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC;
 
-    if (order === -1) return ClrDatagridSortOrder.DESC;
+    if (order === ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC)
+      return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
   }
@@ -350,11 +351,11 @@ export class SessionsListComponent {
    * @returns Observable<ListSessionsResponse>
    */
   private _listSessions$(): Observable<ListSessionsResponse> {
-    this.setApplicationFilter('applicationName', this.applicationName);
-    this.setApplicationFilter('applicationVersion', this.applicationVersion);
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
-    const grpcParams = this._grpcSessionsService.urlToGrpcParams(urlParams);
-    return this._grpcSessionsService.list$(grpcParams).pipe(
+    const state = this._restoreState();
+    const params = this._grpcSessionsService.createListRequestParams(state);
+    const options = this._grpcSessionsService.createListRequestOptions(params);
+
+    return this._grpcSessionsService.list$(options).pipe(
       catchError((error: Error) => {
         console.error(error);
         this._stopInterval.next();

@@ -1,6 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["**/*.ts"],
+  "include": [
+    "**/*.ts",
+    "../../libs/shared/data-access/src/lib/enums/filters.enum.ts",
+    "../../libs/shared/data-access/src/lib/enums/filters.enum.ts"
+  ],
   "compilerOptions": {
     "types": ["jasmine", "node"]
   }

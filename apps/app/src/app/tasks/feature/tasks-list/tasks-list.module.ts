@@ -8,7 +8,6 @@ import {
 } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import {
   ClrDatagridModule,
@@ -25,6 +24,7 @@ import {
 } from '../../../shared/feature/filters';
 import { TasksListRoutingModule } from './tasks-list-routing.module';
 import { TasksListComponent } from './tasks-list.page';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 
 /**
  * Tasks list module
@@ -49,6 +49,6 @@ import { TasksListComponent } from './tasks-list.page';
     NgFor,
     NgIf,
   ],
-  providers: [GrpcTasksService, GrpcPagerService],
+  providers: [GrpcTasksService, GrpcParamsService],
 })
 export class TasksListModule {}

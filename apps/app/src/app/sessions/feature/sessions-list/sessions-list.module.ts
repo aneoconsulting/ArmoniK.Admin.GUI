@@ -9,7 +9,6 @@ import {
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridModule,
   ClrIconModule,
@@ -25,6 +24,7 @@ import {
   SelectFilterComponent,
 } from '../../../shared/feature/filters';
 import { ActionBarComponent } from '../../../shared/feature';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import { FormsModule } from '@angular/forms';
 
 /**
@@ -51,6 +51,6 @@ import { FormsModule } from '@angular/forms';
     SelectFilterComponent,
     FormsModule,
   ],
-  providers: [GrpcSessionsService, GrpcPagerService],
+  providers: [GrpcSessionsService, GrpcParamsService],
 })
 export class SessionsListModule {}

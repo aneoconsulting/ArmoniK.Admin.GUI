@@ -5,7 +5,7 @@ import { TasksListComponent } from './tasks-list.page';
 const routes: Routes = [
   {
     path: '',
-    title: 'Tasks List',
+    title: $localize`Tasks List`,
     component: TasksListComponent,
   },
 ];

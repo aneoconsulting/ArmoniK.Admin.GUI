@@ -1,7 +1,6 @@
 import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
-import { GrpcPagerService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridModule,
   ClrDropdownModule,
@@ -9,6 +8,7 @@ import {
 } from '@clr/angular';
 import { ApplicationsListRoutingModule } from './applications-list-routing.module';
 import { ActionBarComponent } from '../../../shared/feature';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import { ApplicationsListComponent } from './applications-list.page';
 import { IdFilterComponent } from '../../../shared/feature/filters';
 
@@ -28,6 +28,6 @@ import { IdFilterComponent } from '../../../shared/feature/filters';
     NgIf,
     IdFilterComponent,
   ],
-  providers: [GrpcApplicationsService, GrpcPagerService],
+  providers: [GrpcApplicationsService, GrpcParamsService],
 })
 export class ApplicationsListModule {}
