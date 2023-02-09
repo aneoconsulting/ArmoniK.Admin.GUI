@@ -15,7 +15,9 @@ Also, each PR generate a new Docker image with the PR number as tag (ex: `pr-345
 
 The build and publishing method and quality of edge releases are the same as stable ones. The only difference is that you should open check the GitHub repository for updates. There is a slight change of regressions not being caught during the review process and by the automated tests. Therefore, we internally use this channel to double-check everything before each release.
 
-| Event | Description | Tag |
+## Releases per event
+
+| Event | Description | Tag(s) |
 | --- | --- | --- |
 | **Release** | When a new version is published | `latest`, `<major>`, `<major>.<minor>`, `<version>` |
 | **Edge** | When a new commit landing on main | `edge` |
