@@ -5,6 +5,7 @@ import { PartitionsListComponent } from './partitions-list.page';
 const routes: Routes = [
   {
     path: '',
+    title: $localize`Partitions List`,
     component: PartitionsListComponent,
   },
 ];

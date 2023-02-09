@@ -5,7 +5,7 @@ import { ResultsListComponent } from './results-list.page';
 const routes: Routes = [
   {
     path: '',
-    title: 'Results List',
+    title: $localize`Results List`,
     component: ResultsListComponent,
   },
 ];

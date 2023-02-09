@@ -1,121 +1,99 @@
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,
-  GrpcParams,
+  GrpcListResultsParams,
+  GrpcParamsService,
   ListResultsRequest,
   ListResultsResponse,
   ResultsClient,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcResultsService extends BaseGrpcService {
-  constructor(private _resultsClient: ResultsClient) {
+  constructor(
+    private _resultsClient: ResultsClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  /**
-   * Transform an urlParams into a real GrpcParams object designed for retrieving tasks data
-   *
-   * @param urlParams Record<string, string | number>
-   * @returns GrpcParams<
-   *            ListResultsRequest.OrderByField,
-   *            ListResultsRequest.OrderDirection,
-   *            ListResultsRequest.Filter.AsObject
-   *          >
-   */
-  public urlToGrpcParams(
-    urlParams: Record<string, string | number>
-  ): GrpcParams<
-    ListResultsRequest.OrderByField,
-    ListResultsRequest.OrderDirection,
-    ListResultsRequest.Filter.AsObject
-  > {
-    const grpcParams: GrpcParams<
+  public createListRequestParams(
+    state: ClrDatagridStateInterface
+  ): GrpcListResultsParams {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
+
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
       ListResultsRequest.OrderByField,
-      ListResultsRequest.OrderDirection,
-      ListResultsRequest.Filter.AsObject
-    > = {};
+      ListResultsRequest.OrderDirection
+    >(state);
 
-    const filter: ListResultsRequest.Filter.AsObject = {
-      sessionId: '',
-      name: '',
-      ownerTaskId: '',
-      status: 0,
+    const filter =
+      this._grpcParamsService.createFilterParams<ListResultsRequest.Filter.AsObject>(
+        state
+      );
+
+    return {
+      page,
+      pageSize,
+      orderBy:
+        orderBy ?? ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      order,
+      filter,
     };
-
-    for (const [key, value] of Object.entries(urlParams)) {
-      switch (key) {
-        case 'page': {
-          grpcParams.page = value as number;
-          break;
-        }
-        case 'PageSize': {
-          grpcParams.pageSize = value as number;
-          break;
-        }
-        case 'order': {
-          grpcParams.order = value as number;
-          break;
-        }
-        case 'orderBy': {
-          grpcParams.orderBy = value as number;
-          break;
-        }
-        case 'name': {
-          filter.name = value as string;
-          break;
-        }
-        case 'sessionId': {
-          filter.sessionId = value as string;
-          break;
-        }
-        case 'taskId': {
-          filter.ownerTaskId = value as string;
-          break;
-        }
-        case 'status': {
-          filter.status = value as number;
-          break;
-        }
-        case 'createdAtBefore': {
-          filter.createdBefore = this._createTimeFilter(value as number);
-          break;
-        }
-        case 'createdAtAfter': {
-          // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
-          filter.createdAfter = this._createTimeFilter(
-            (value as number) + 86400000
-          );
-          break;
-        }
-      }
-    }
-    grpcParams.filter = filter;
-    return grpcParams;
   }
 
-  public list$(
-    params: GrpcParams<
-      ListResultsRequest.OrderByField,
-      ListResultsRequest.OrderDirection,
-      ListResultsRequest.Filter.AsObject
-    >
-  ): Observable<ListResultsResponse> {
-    const options = new ListResultsRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction:
-          params.order ||
-          ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter,
-    });
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListResultsParams) {
+    return {
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
+      name: filter?.name,
+      ownerTaskId: filter?.ownerTaskId,
+      sessionId: filter?.sessionId,
+      status: filter?.status,
+      createdBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdBefore
+      ),
+      createdAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdAfter
+      ),
+    };
+  }
 
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListResultsParams): ListResultsRequest {
+    return new ListResultsRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter,
+    });
+  }
+
+  public list$(options: ListResultsRequest): Observable<ListResultsResponse> {
     return this._resultsClient
       .listResults(options)
       .pipe(takeUntil(this._timeout$));

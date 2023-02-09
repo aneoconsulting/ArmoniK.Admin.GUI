@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   CancelTasksResponse,
   GetTaskResponse,
-  GrpcPagerService,
   ListTasksRequest,
   ListTasksResponse,
   TaskStatus,
@@ -51,11 +50,15 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.asObservable().pipe(
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
-        const params = this._grpcPagerService.createParams(state);
+        const params = this._grpcTasksService.createListRequestParams(state);
+        const queryParams =
+          this._grpcTasksService.createListRequestQueryParams(params);
+
         await this._router.navigate([], {
-          queryParams: params,
+          queryParams,
           relativeTo: this._activatedRoute,
         });
+
         return state;
       })
     );
@@ -117,50 +120,40 @@ export class TasksListComponent implements OnInit {
 
   filterCreatedBefore: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtBefore'
+    'createdBefore'
   );
 
   filterCreatedAfter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtAfter'
+    'createdAfter'
   );
 
   filterStartedBefore: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'startedAtBefore'
+    'startedBefore'
   );
 
   filterStartedAfter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'startedAtAfter'
+    'startedAfter'
   );
 
   filterEndedBefore: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'endedAtBefore'
+    'endedBefore'
   );
 
   filterEndedAfter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'endedAtAfter'
-  );
-
-  pageSize: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'pageSize'
-  );
-  page: number | null = this._settingsService.queryParam(
-    this._activatedRoute.snapshot.queryParams,
-    'page'
+    'endedAfter'
   );
 
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
-    private _authorizationService: AuthorizationService,
     private _grpcTasksService: GrpcTasksService,
-    private _grpcPagerService: GrpcPagerService
+    private _authorizationService: AuthorizationService
   ) {}
 
   ngOnInit(): void {
@@ -174,6 +167,20 @@ export class TasksListComponent implements OnInit {
           ),
         })),
     ];
+  }
+
+  public get page$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'page'
+    );
+  }
+
+  public get pageSize$(): Observable<number> {
+    return this._settingsService.queryParam$(
+      this._activatedRoute.queryParamMap,
+      'pageSize'
+    );
   }
 
   public get OrderByField(): typeof ListTasksRequest.OrderByField {
@@ -258,11 +265,17 @@ export class TasksListComponent implements OnInit {
     if (orderBy !== field) return ClrDatagridSortOrder.UNSORTED;
 
     const order =
-      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) || 1;
+      Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
+      ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC;
 
-    if (order === -1) return ClrDatagridSortOrder.DESC;
+    if (order === ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC)
+      return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
+  }
+
+  public mergeWithCurrentQueryParams(newQueryParams: Params): Params {
+    return { ...this._activatedRoute.snapshot.queryParams, ...newQueryParams };
   }
 
   /**
@@ -374,9 +387,11 @@ export class TasksListComponent implements OnInit {
    * @returns Observable<ListTasksResponse>
    */
   private _listTasks$(): Observable<ListTasksResponse> {
-    const urlParams = this._grpcPagerService.createParams(this._restoreState());
-    const grpcParams = this._grpcTasksService.urlToGrpcParams(urlParams);
-    return this._grpcTasksService.list$(grpcParams).pipe(
+    const state = this._restoreState();
+    const params = this._grpcTasksService.createListRequestParams(state);
+    const options = this._grpcTasksService.createListRequestOptions(params);
+
+    return this._grpcTasksService.list$(options).pipe(
       catchError((error) => {
         console.error(error);
         this._stopInterval.next();

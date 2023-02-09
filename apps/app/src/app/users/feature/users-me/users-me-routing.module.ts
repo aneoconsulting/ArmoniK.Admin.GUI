@@ -5,7 +5,7 @@ import { UsersMeComponent } from './users-me.page';
 const routes: Routes = [
   {
     path: '',
-    title: 'My Profile',
+    title: $localize`My Profile`,
     component: UsersMeComponent,
   },
 ];
