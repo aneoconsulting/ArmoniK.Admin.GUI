@@ -50,10 +50,12 @@ export class GrpcResultsService extends BaseGrpcService {
     orderBy,
     order,
     filter,
-  }: GrpcListResultsParams) {
-    return {
-      page: page !== 0 ? page : undefined,
-      pageSize: pageSize !== 10 ? pageSize : undefined,
+  }: GrpcListResultsParams,
+  refreshInterval: number) {
+  return {
+    page: page !== 0 ? page : undefined,
+    pageSize: pageSize !== 10 ? pageSize : undefined,
+    interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
           ? orderBy

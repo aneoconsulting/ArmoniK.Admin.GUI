@@ -51,7 +51,7 @@ export class PartitionsListComponent {
         const params =
           this._grpcPartitionsService.createListRequestParams(state);
         const queryParams =
-          this._grpcPartitionsService.createListRequestQueryParams(params);
+          this._grpcPartitionsService.createListRequestQueryParams(params, this._intervalValue);
         await this._router.navigate([], {
           queryParams,
           relativeTo: this._activatedRoute,

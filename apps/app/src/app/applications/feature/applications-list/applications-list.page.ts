@@ -45,14 +45,10 @@ export class ApplicationsListComponent {
   private _triggerDatagrid$ = this._subjectDatagrid.asObservable().pipe(
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
-        // const params = this._grpcPagerService.createParams(
-        //   state,
-        //   this._intervalValue
-        // );
       const params =
         this._grpcApplicationsService.createListRequestParams(state);
       const queryParams =
-        this._grpcApplicationsService.createListRequestQueryParams(params);
+        this._grpcApplicationsService.createListRequestQueryParams(params, this._intervalValue);
 
       await this._router.navigate([], {
         queryParams,

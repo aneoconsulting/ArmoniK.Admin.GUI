@@ -54,10 +54,12 @@ export class GrpcTasksService extends BaseGrpcService {
     orderBy,
     order,
     filter,
-  }: GrpcListTasksParams) {
-    return {
-      page: page !== 0 ? page : undefined,
-      pageSize: pageSize !== 10 ? pageSize : undefined,
+  }: GrpcListTasksParams,
+  refreshInterval: number) {
+  return {
+    page: page !== 0 ? page : undefined,
+    pageSize: pageSize !== 10 ? pageSize : undefined,
+    interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
           ? orderBy

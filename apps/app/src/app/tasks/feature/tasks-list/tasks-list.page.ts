@@ -54,7 +54,7 @@ export class TasksListComponent implements OnInit {
       concatMap(async (state) => {
         const params = this._grpcTasksService.createListRequestParams(state);
         const queryParams =
-          this._grpcTasksService.createListRequestQueryParams(params);
+          this._grpcTasksService.createListRequestQueryParams(params, this._intervalValue);
 
         await this._router.navigate([], {
           queryParams,
