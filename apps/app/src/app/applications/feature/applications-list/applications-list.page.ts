@@ -5,7 +5,7 @@ import {
   ApplicationRaw,
   ListApplicationsRequest,
   ListApplicationsResponse,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {

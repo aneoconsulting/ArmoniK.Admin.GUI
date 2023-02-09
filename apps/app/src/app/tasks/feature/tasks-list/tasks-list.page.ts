@@ -7,7 +7,7 @@ import {
   ListTasksResponse,
   TaskStatus,
   TaskSummary,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';

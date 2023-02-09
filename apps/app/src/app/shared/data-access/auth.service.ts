@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '@armonik.admin.gui/shared/data-access';
+import { User } from '@aneoconsultingfr/armonik.api';
 import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()

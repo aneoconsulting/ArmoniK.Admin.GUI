@@ -5,7 +5,7 @@ import {
   ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';

@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { ResultsClient } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcAuthService } from './grpc-auth.service';
@@ -17,7 +16,7 @@ describe('GrpcAuthService', () => {
           },
         }),
       ],
-      providers: [GrpcAuthService, ResultsClient],
+      providers: [GrpcAuthService],
     });
     service = TestBed.inject(GrpcAuthService);
   });

@@ -1,15 +1,17 @@
+import {
+  TasksClient,
+  ListTasksRequest,
+  ListTasksResponse,
+  GetTaskResponse,
+  GetTaskRequest,
+  CancelTasksResponse,
+  CancelTasksRequest,
+} from '@aneoconsultingfr/armonik.api';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,
-  CancelTasksRequest,
-  CancelTasksResponse,
-  GetTaskRequest,
-  GetTaskResponse,
   GrpcListTasksParams,
   GrpcParamsService,
-  ListTasksRequest,
-  ListTasksResponse,
-  TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';

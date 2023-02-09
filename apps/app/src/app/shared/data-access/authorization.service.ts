@@ -6,7 +6,7 @@ import {
   ResultsClient,
   SessionsClient,
   TasksClient,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api';
 
 // type Service<T extends string> = T extends `${infer S}Client` ? S : never;
 type Action<T> = Capitalize<Exclude<keyof T, '$raw'> & string>;
@@ -54,7 +54,9 @@ export class AuthorizationService {
       return false;
     }
 
-    const permission = permissions.find((p) => p === `${service}:${action}`);
+    const permission = permissions.find(
+      (p: string) => p === `${service}:${action}`
+    );
     return !!permission;
   }
 }

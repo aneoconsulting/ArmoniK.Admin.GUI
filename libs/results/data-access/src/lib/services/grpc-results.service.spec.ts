@@ -1,9 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import {
-  GrpcParamsService,
   ListResultsRequest,
   ResultsClient,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api';
 import {
   ClrDatagridComparatorInterface,
   ClrDatagridStateInterface,
@@ -11,6 +10,7 @@ import {
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcResultsService } from './grpc-results.service';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 
 describe('GrpcResultsService', () => {
   let service: GrpcResultsService;
