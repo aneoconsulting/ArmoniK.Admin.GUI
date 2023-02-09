@@ -83,10 +83,13 @@ describe('GrpcTasksService', () => {
       orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
       order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
       filter: {} as ListPartitionsRequest.Filter,
-    });
+    },
+    10000
+    );
     expect(result).toEqual({
       page: undefined,
       pageSize: undefined,
+      interval: undefined,
       orderBy: undefined,
       order: undefined,
     });
@@ -101,10 +104,13 @@ describe('GrpcTasksService', () => {
       filter: {
         id: 'Some test id',
       } as ListPartitionsRequest.Filter,
-    });
+    },
+    30000
+    );
     expect(result).toEqual({
       page: 2,
       pageSize: 50,
+      interval: 30000,
       orderBy: 4,
       order: 2,
       id: 'Some test id',

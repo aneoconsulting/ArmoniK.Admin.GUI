@@ -83,10 +83,12 @@ describe('GrpcTasksService', () => {
       orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
       order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
       filter: {} as ListTasksRequest.Filter,
-    });
+    },
+    10000);
     expect(result).toEqual({
       page: undefined,
       pageSize: undefined,
+      interval: undefined,
       orderBy: undefined,
       order: undefined,
       createdAfter: undefined,
@@ -109,10 +111,13 @@ describe('GrpcTasksService', () => {
       filter: {
         sessionId: 'Some test sessionId',
       } as ListTasksRequest.Filter,
-    });
+    },
+    30000
+    );
     expect(result).toEqual({
       page: 2,
       pageSize: 50,
+      interval: 30000,
       orderBy: 5,
       order: 2,
       sessionId: 'Some test sessionId',

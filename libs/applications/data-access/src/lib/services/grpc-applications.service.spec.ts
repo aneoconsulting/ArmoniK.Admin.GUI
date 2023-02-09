@@ -87,10 +87,13 @@ describe('GrpcApplicationsService', () => {
       orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
       order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
       filter: {} as ListApplicationsRequest.Filter,
-    });
+    },
+    10000
+    );
     expect(result).toEqual({
       page: undefined,
       pageSize: undefined,
+      interval: undefined,
       orderBy: undefined,
       order: undefined,
     });
@@ -105,10 +108,13 @@ describe('GrpcApplicationsService', () => {
       filter: {
         name: 'Some test name',
       } as ListApplicationsRequest.Filter,
-    });
+    },
+    30000
+    );
     expect(result).toEqual({
       page: 2,
       pageSize: 50,
+      interval: 30000,
       orderBy: 3,
       order: 2,
       name: 'Some test name',
