@@ -22,6 +22,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'dashboard',
+        loadChildren: () =>
+          import(
+            './dashboard/feature/dashboard-shell/dashboard-shell.module'
+          ).then((m) => m.DashboardShellModule),
+      },
+      {
         path: 'applications',
         loadChildren: () =>
           import(
@@ -96,4 +103,4 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -28,6 +28,11 @@
         </ng-container>
       </a>
       <div class="nav-divider"></div>
+      <a clrVerticalNavLink [routerLink]="['/', 'dashboard']">
+        <cds-icon shape="home" clrVerticalNavIcon></cds-icon>
+          <span i18n> Dashboard </span>
+      </a>
+      <div class="nav-divider"></div>
       <a
         *ngFor="let link of dataLinks; trackBy: trackByLabel"
         clrVerticalNavLink
