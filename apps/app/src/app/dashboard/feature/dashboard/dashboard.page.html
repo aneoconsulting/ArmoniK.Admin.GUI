@@ -1,1 +1,20 @@
 <h1 i18n>Dashboard</h1>
+
+<section class="tasks">
+  <h2 i18n>Tasks</h2>
+  <p class="p2">Grouped by status</p>
+  <app-every-tasks-by-status></app-every-tasks-by-status>
+</section>
+
+<section class="applications">
+  <h2 i18n>Applications</h2>
+  <ul *ngIf="loadApplications$ | async as applications; else loading" class="clr-row">
+    <li *ngFor="let application of applications.applications" class="clr-col-12 clr-col-lg-6">
+      <app-application-card [application]="application"></app-application-card>
+    </li>
+  </ul>
+</section>
+
+<ng-template #loading>
+  loading...
+</ng-template>

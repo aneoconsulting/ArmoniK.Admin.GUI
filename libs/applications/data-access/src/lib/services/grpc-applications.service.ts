@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import {
   ApplicationsClient,
   BaseGrpcService,
-  ListApplicationsRequest,
-  ListApplicationsResponse,
+  CountTasksByStatusApplicationRequest,
+  CountTasksByStatusApplicationResponse,
   GrpcListApplicationsParams,
   GrpcParamsService,
+  ListApplicationsRequest,
+  ListApplicationsResponse
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
@@ -89,6 +91,22 @@ export class GrpcApplicationsService extends BaseGrpcService {
   ): Observable<ListApplicationsResponse> {
     return this._applicationsClient
       .listApplications(options)
+      .pipe(takeUntil(this._timeout$));
+  }
+
+  public countTasksByStatus$(
+    {
+      name,
+      version,
+    }: { name: string; version: string },
+  ): Observable<CountTasksByStatusApplicationResponse> {
+    const options = new CountTasksByStatusApplicationRequest({
+      name,
+      version,
+    });
+
+    return this._applicationsClient
+      .countTasksByStatus(options)
       .pipe(takeUntil(this._timeout$));
   }
 }

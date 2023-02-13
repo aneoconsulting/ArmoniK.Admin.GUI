@@ -1,0 +1,34 @@
+h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h4.card-title {
+  margin-bottom: 0;
+}
+
+div.card-text {
+  margin-top: 0.5rem;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: 0.5rem;
+
+  margin-top: 0;
+}
+
+dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+h4.tasks+.p2 {
+  margin-top: -0.125rem;
+}
+
+h4.tasks {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}

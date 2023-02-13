@@ -9,6 +9,8 @@ import {
   GrpcParamsService,
   ListTasksRequest,
   ListTasksResponse,
+  CountTasksByStatusRequest,
+  CountTasksByStatusResponse,
   TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
@@ -126,6 +128,14 @@ export class GrpcTasksService extends BaseGrpcService {
 
     return this._tasksClient
       .cancelTasks(options)
+      .pipe(takeUntil(this._timeout$));
+  }
+
+  public countTasksByStatus$(): Observable<CountTasksByStatusResponse> {
+    const options = new CountTasksByStatusRequest();
+
+    return this._tasksClient
+      .countTasksByStatus(options)
       .pipe(takeUntil(this._timeout$));
   }
 }

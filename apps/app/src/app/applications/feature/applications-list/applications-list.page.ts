@@ -96,7 +96,7 @@ export class ApplicationsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService
-  ) {}
+  ) { }
 
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(

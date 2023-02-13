@@ -3,6 +3,8 @@ export {
   ApplicationRaw,
   ListApplicationsRequest,
   ListApplicationsResponse,
+  CountTasksByStatusRequest as CountTasksByStatusApplicationRequest,
+  CountTasksByStatusResponse as CountTasksByStatusApplicationResponse,
 } from './lib/proto/generated/applications-common.pb';
 export { ApplicationsClient } from './lib/proto/generated/applications-service.pbsc';
 export {
@@ -40,6 +42,8 @@ export {
   GetTaskResponse,
   ListTasksRequest,
   ListTasksResponse,
+  CountTasksByStatusRequest,
+  CountTasksByStatusResponse,
   TaskRaw,
   TaskSummary,
 } from './lib/proto/generated/tasks-common.pb';

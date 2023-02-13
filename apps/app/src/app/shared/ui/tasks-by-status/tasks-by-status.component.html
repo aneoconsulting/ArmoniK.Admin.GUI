@@ -1,0 +1,15 @@
+<div class="lists">
+  <ul *ngFor="let col of formattedData(); trackBy: trackGroup">
+    <li *ngFor="let row of col.value; trackBy: trackStatus" class="status">
+      <div class="status-dot" [class]="row.className"></div>
+      <div class="data">
+        <span class="status-name">
+          {{ row.name }}
+        </span>
+        <span class="status-value">
+          {{ row.value }}
+        </span>
+      </div>
+    </li>
+  </ul>
+</div>
