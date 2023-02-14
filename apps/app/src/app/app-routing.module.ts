@@ -9,7 +9,7 @@ import { Injectable, NgModule } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'applications', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: '',
     canActivate: [CanActivateUser],
