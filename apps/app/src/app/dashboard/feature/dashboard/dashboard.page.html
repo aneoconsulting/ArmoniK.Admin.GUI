@@ -8,6 +8,7 @@
 
 <section class="applications">
   <h2 i18n>Applications</h2>
+  <button (click)="nextPage()">Page Suivante</button>
   <ng-container *ngIf="loadApplications$ | async as applications; else loading">
     <ul class="clr-row" *ngIf="applications?.length">
       <li *ngFor="let application of applications; trackBy: trackApplication" class="clr-col-12 clr-col-lg-6">

@@ -14,7 +14,6 @@ import { AsyncPipe, NgIf } from "@angular/common";
 })
 export class EveryTasksByStatusComponent {
   public load$ = timer(0, 2000).pipe(switchMap(() => this._grpcTasksService.countTasksByStatus$()), map((data) => {
-    console.log(data);
     return data.status ?? [];
   }));
 
