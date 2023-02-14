@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { GrpcApplicationsService } from "@armonik.admin.gui/applications/data-access";
 import { ApplicationRaw, ListApplicationsRequest, ListApplicationsResponse } from "@armonik.admin.gui/shared/data-access";
-import { Observable, switchMap, timer } from "rxjs";
+import { Observable, switchMap, timer, map } from "rxjs";
 
 @Component({
   selector: "app-dashboard",
@@ -22,13 +22,29 @@ export class DashboardComponent {
       namespace: "",
     },
   });
-  public loadApplications$ = timer(0, 2000).pipe(switchMap(() => this._loadApplications()));
+  public loadApplications$ = timer(0, 2000).pipe(switchMap(() => this._loadApplications())).pipe(map((data) => {
+    const sortedApplications = data.applications?.sort((applicationA, applicationB) => {
+      const idA = `${applicationA.name}${applicationA.version}`
+      const idB = `${applicationB.name}${applicationB.version}`
+
+      if (idA < idB) {
+        return -1;
+      }
+      if (idA > idB) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    return sortedApplications ?? [];
+  }));
 
   constructor(
     private _grpcApplicationsService: GrpcApplicationsService,
   ) { }
 
-  public trackApplication(index: number, item: ApplicationRaw): string {
+  public trackApplication(_: number, item: ApplicationRaw): string {
     return item.name + item.version;
   }
 

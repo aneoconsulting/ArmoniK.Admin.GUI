@@ -9,13 +9,12 @@
 <section class="applications">
   <h2 i18n>Applications</h2>
   <ng-container *ngIf="loadApplications$ | async as applications; else loading">
-    <ul class="clr-row" *ngIf="applications.applications?.length">
-      <li *ngFor="let application of applications.applications; trackBy: trackApplication"
-        class="clr-col-12 clr-col-lg-6">
+    <ul class="clr-row" *ngIf="applications?.length">
+      <li *ngFor="let application of applications; trackBy: trackApplication" class="clr-col-12 clr-col-lg-6">
         <app-application-card [application]="application"></app-application-card>
       </li>
     </ul>
-    <ng-container *ngIf="applications.applications?.length === 0">
+    <ng-container *ngIf="applications?.length === 0">
       <p i18n>No applications</p>
     </ng-container>
   </ng-container>
