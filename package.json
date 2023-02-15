@@ -20,7 +20,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api": "^3.3.1-SNAPSHOT.33.33b48cc",
+    "@aneoconsultingfr/armonik.api": "next",
     "@angular/animations": "~14.2.7",
     "@angular/common": "~14.2.12",
     "@angular/compiler": "~14.2.12",
