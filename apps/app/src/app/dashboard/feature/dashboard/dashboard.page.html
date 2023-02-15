@@ -2,13 +2,19 @@
 
 <section class="tasks">
   <h2 i18n>Tasks</h2>
+  <!-- Add the sum using a output from every tasks by status component -->
   <p class="p2">Grouped by status</p>
   <app-every-tasks-by-status></app-every-tasks-by-status>
 </section>
 
 <section class="applications">
-  <h2 i18n>Applications</h2>
-  <button (click)="nextPage()">Page Suivante</button>
+  <div class="clr-row clr-justify-content-between clr-align-items-end">
+    <h2 i18n>Applications <span *ngIf="total > 0">- {{ total }}</span></h2>
+    <clr-button-group class="btn-primary-outline">
+      <clr-button (click)="previousPage()" [disabled]="isFirstPage()" i18n>Previous Page</clr-button>
+      <clr-button (click)="nextPage()" [disabled]="isLastPage()" i18n>Next Page</clr-button>
+    </clr-button-group>
+  </div>
   <ng-container *ngIf="loadApplications$ | async as applications; else loading">
     <ul class="clr-row" *ngIf="applications?.length">
       <li *ngFor="let application of applications; trackBy: trackApplication" class="clr-col-12 clr-col-lg-6">

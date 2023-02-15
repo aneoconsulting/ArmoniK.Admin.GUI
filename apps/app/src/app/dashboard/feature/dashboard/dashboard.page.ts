@@ -10,10 +10,17 @@ import { Observable, switchMap, timer, map, Subject, merge, tap } from "rxjs";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
+  public total = 0;
+  private _pageSize = 2;
   private _currentPage = 0;
   private _loadApplicationsSubject = new Subject<void>();
 
-  public loadApplications$ = merge(timer(0, 2000), this._loadApplicationsSubject).pipe(switchMap(() => this._loadApplications()), map((data) => {
+  public loadApplications$ = merge(timer(0, 2000), this._loadApplicationsSubject).pipe(switchMap(() => this._loadApplications()), tap((data) => {
+    this.total = data.total;
+    console.log(data)
+  }), map((data) => {
+    // Will be removed when the backend will be fixed
+    // @see https://github.com/aneoconsulting/ArmoniK.Api/issues/164
     const sortedApplications = data.applications?.sort((applicationA, applicationB) => {
       const idA = `${applicationA.name}${applicationA.version}`
       const idB = `${applicationB.name}${applicationB.version}`
@@ -35,6 +42,19 @@ export class DashboardComponent {
     private _grpcApplicationsService: GrpcApplicationsService,
   ) { }
 
+  public isFirstPage() {
+    return this._currentPage === 0;
+  }
+
+  public isLastPage() {
+    return this._currentPage === (this.total / this._pageSize) - 1;
+  }
+
+  public previousPage() {
+    this._currentPage--;
+    this._loadApplicationsSubject.next();
+  }
+
   public nextPage() {
     this._currentPage++;
     this._loadApplicationsSubject.next();
@@ -47,7 +67,7 @@ export class DashboardComponent {
   private _loadApplications(): Observable<ListApplicationsResponse> {
     const options = this._grpcApplicationsService.createListRequestOptions({
       page: this._currentPage,
-      pageSize: 10,
+      pageSize: this._pageSize,
       orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
       order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
       filter: {

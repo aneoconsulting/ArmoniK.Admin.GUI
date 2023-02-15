@@ -7,6 +7,7 @@ import { AsyncPipe } from "@angular/common";
 import { DashboardComponent } from "./dashboard.page";
 import { GrpcTasksService } from "@armonik.admin.gui/tasks/data-access";
 import { ApplicationCardComponent, EveryTasksByStatusComponent } from "../../../shared/feature";
+import { ClrButtonGroupModule } from "@clr/angular";
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { ApplicationCardComponent, EveryTasksByStatusComponent } from "../../../
     EveryTasksByStatusComponent,
     ApplicationCardComponent,
     DashboardRoutingModule,
+    ClrButtonGroupModule,
     NgIf,
     NgFor,
     AsyncPipe,
