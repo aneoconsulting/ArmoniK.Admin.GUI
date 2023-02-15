@@ -7,7 +7,7 @@ import {
   GrpcListApplicationsParams,
   GrpcParamsService,
   ListApplicationsRequest,
-  ListApplicationsResponse
+  ListApplicationsResponse,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
@@ -94,12 +94,13 @@ export class GrpcApplicationsService extends BaseGrpcService {
       .pipe(takeUntil(this._timeout$));
   }
 
-  public countTasksByStatus$(
-    {
-      name,
-      version,
-    }: { name: string; version: string },
-  ): Observable<CountTasksByStatusApplicationResponse> {
+  public countTasksByStatus$({
+    name,
+    version,
+  }: {
+    name: string;
+    version: string;
+  }): Observable<CountTasksByStatusApplicationResponse> {
     const options = new CountTasksByStatusApplicationRequest({
       name,
       version,

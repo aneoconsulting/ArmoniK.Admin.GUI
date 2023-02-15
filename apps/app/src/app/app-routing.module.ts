@@ -103,4 +103,4 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

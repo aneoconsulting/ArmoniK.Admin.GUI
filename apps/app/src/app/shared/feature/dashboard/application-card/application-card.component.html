@@ -15,13 +15,13 @@
     <h4 i18n class="card-title tasks">Tasks</h4>
     <p class="p2">Grouped by status</p>
     <div class="card-text">
-      <ng-container *ngIf="loadCountTasksByStatus$ | async as data; else loading">
+      <ng-container
+        *ngIf="loadCountTasksByStatus$ | async as data; else loading"
+      >
         <app-tasks-by-status [data]="data"></app-tasks-by-status>
       </ng-container>
     </div>
   </div>
 </article>
 
-<ng-template #loading>
-  loading...
-</ng-template>
+<ng-template #loading> loading... </ng-template>

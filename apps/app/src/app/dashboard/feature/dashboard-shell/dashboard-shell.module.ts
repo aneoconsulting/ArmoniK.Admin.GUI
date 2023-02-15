@@ -1,9 +1,7 @@
-import { NgModule } from "@angular/core";
-import { DashboardShellRoutingModule } from "./dashboard-shell-routing.module";
+import { NgModule } from '@angular/core';
+import { DashboardShellRoutingModule } from './dashboard-shell-routing.module';
 
 @NgModule({
-  imports: [
-    DashboardShellRoutingModule
-  ],
+  imports: [DashboardShellRoutingModule],
 })
-export class DashboardShellModule { }
+export class DashboardShellModule {}
