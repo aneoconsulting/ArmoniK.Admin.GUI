@@ -22,6 +22,9 @@ dl {
 dd {
   margin: 0;
   font-weight: 500;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 h4.tasks+.p2 {
