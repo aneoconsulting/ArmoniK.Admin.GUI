@@ -10,6 +10,8 @@ import { Observable, switchMap, timer, map, Subject, merge, tap } from "rxjs";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
+  public totalTasks = 0;
+
   public total = 0;
   private _pageSize = 2;
   private _currentPage = 0;
@@ -58,6 +60,10 @@ export class DashboardComponent {
   public nextPage() {
     this._currentPage++;
     this._loadApplicationsSubject.next();
+  }
+
+  public getTotalTasks(total: number) {
+    this.totalTasks = total;
   }
 
   public trackApplication(_: number, item: ApplicationRaw): string {

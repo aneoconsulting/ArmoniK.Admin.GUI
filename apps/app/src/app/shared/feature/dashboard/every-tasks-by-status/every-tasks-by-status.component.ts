@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
 import { GrpcTasksService } from "@armonik.admin.gui/tasks/data-access";
-import { map, switchMap, timer } from "rxjs";
+import { map, switchMap, tap, timer } from "rxjs";
 import { TasksByStatusComponent } from "../../../ui/";
 import { AsyncPipe, NgIf } from "@angular/common";
 
@@ -13,7 +13,14 @@ import { AsyncPipe, NgIf } from "@angular/common";
   imports: [TasksByStatusComponent, AsyncPipe, NgIf],
 })
 export class EveryTasksByStatusComponent {
-  public load$ = timer(0, 2000).pipe(switchMap(() => this._grpcTasksService.countTasksByStatus$()), map((data) => {
+  @Output() total = new EventEmitter<number>();
+
+  public load$ = timer(0, 2000).pipe(switchMap(() => this._grpcTasksService.countTasksByStatus$()), tap(
+    (data) => {
+      const total = data.status?.reduce((acc, item) => acc + item.count, 0) ?? 0;
+      this.total.emit(total);
+    },
+  ), map((data) => {
     return data.status ?? [];
   }));
 

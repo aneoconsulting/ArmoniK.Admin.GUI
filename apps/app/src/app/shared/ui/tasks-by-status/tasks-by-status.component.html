@@ -7,7 +7,7 @@
           {{ row.name }}
         </span>
         <span class="status-value">
-          {{ row.value }}
+          {{ row.value }} ({{ row.value / total() | percent: '1.0-2' }})
         </span>
       </div>
     </li>

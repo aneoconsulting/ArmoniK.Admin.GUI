@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from "@angular/common";
+import { AsyncPipe, NgFor, NgIf, PercentPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { TaskStatus } from "@armonik.admin.gui/shared/data-access";
 import { Subject, map, tap } from "rxjs";
@@ -16,7 +16,7 @@ type StatusItem = {
   templateUrl: "./tasks-by-status.component.html",
   styleUrls: ["./tasks-by-status.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, NgFor, AsyncPipe]
+  imports: [NgIf, NgFor, AsyncPipe, PercentPipe]
 })
 export class TasksByStatusComponent {
   @Input() data: { status: number, count: number }[] | null;
@@ -119,6 +119,14 @@ export class TasksByStatusComponent {
     };
 
     return Array.from(groups, ([key, value]) => ({ key, value }));
+  }
+
+  public total() {
+    if (!this.data) {
+      return 0;
+    }
+
+    return this.data.reduce((acc, item) => acc + item.count, 0);
   }
 
   public trackGroup(_: number, group: { key: number }) {
