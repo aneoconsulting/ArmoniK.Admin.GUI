@@ -1,34 +1,34 @@
 <h1 i18n>Dashboard</h1>
 
 <section class="tasks">
-  <h2 i18n>Tasks <span *ngIf="totalTasks">- {{ totalTasks }}</span></h2>
+  <h2><span i18n>
+      Tasks
+    </span>
+    <span *ngIf="totalTasks">
+      - {{ totalTasks }}
+    </span>
+  </h2>
   <p class="p2">Grouped by status</p>
-  <app-every-tasks-by-status
-    (total)="getTotalTasks($event)"
-  ></app-every-tasks-by-status>
+  <app-every-tasks-by-status (total)="getTotalTasks($event)"></app-every-tasks-by-status>
 </section>
 
 <section class="applications">
   <div class="clr-row clr-justify-content-between clr-align-items-end">
-    <h2 i18n>Applications <span *ngIf="total > 0">- {{ total }}</span></h2>
+    <h2>
+      <span i18n>Applications</span>
+      <span *ngIf="total > 0">
+        - {{ total }}
+      </span>
+    </h2>
     <clr-button-group class="btn-primary-outline">
-      <clr-button (click)="previousPage()" [disabled]="isFirstPage()" i18n
-        >Previous Page</clr-button
-      >
-      <clr-button (click)="nextPage()" [disabled]="isLastPage()" i18n
-        >Next Page</clr-button
-      >
+      <clr-button (click)="previousPage()" [disabled]="isFirstPage()" i18n>Previous Page</clr-button>
+      <clr-button (click)="nextPage()" [disabled]="isLastPage()" i18n>Next Page</clr-button>
     </clr-button-group>
   </div>
   <ng-container *ngIf="loadApplications$ | async as applications; else loading">
     <ul class="clr-row" *ngIf="applications?.length">
-      <li
-        *ngFor="let application of applications; trackBy: trackApplication"
-        class="clr-col-12 clr-col-lg-6"
-      >
-        <app-application-card
-          [application]="application"
-        ></app-application-card>
+      <li *ngFor="let application of applications; trackBy: trackApplication" class="clr-col-12 clr-col-lg-6">
+        <app-application-card [application]="application"></app-application-card>
       </li>
     </ul>
     <ng-container *ngIf="applications?.length === 0">

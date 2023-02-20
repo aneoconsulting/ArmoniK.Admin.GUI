@@ -724,5 +724,59 @@
         <target>Historique</target>
       </segment>
     </unit>
+    <unit id="1137318306951557633">
+      <segment state="initial">
+        <source> Dashboard </source>
+        <target> Tableau de bord </target>
+      </segment>
+    </unit>
+    <unit id="6570363013146073520">
+      <segment state="initial">
+        <source>Dashboard</source>
+        <target>Tableau de bord</target>
+      </segment>
+    </unit>
+    <unit id="7708583428094273381">
+      <segment state="initial">
+        <source>Previous Page</source>
+        <target>Page précédente</target>
+      </segment>
+    </unit>
+    <unit id="6900799038363597616">
+      <segment state="initial">
+        <source>Next Page</source>
+        <target>Page suivante</target>
+      </segment>
+    </unit>
+    <unit id="6788258623523629471">
+      <segment state="initial">
+        <source>No applications</source>
+        <target>Aucune application</target>
+      </segment>
+    </unit>
+    <unit id="2849064100927111571">
+      <segment state="initial">
+        <source>loading...</source>
+        <target>chargement...</target>
+      </segment>
+    </unit>
+    <unit id="3294686077659093992">
+      <segment state="initial">
+        <source>Namespace</source>
+        <target>Namespace</target>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <segment state="initial">
+        <source>Service</source>
+        <target>Service</target>
+      </segment>
+    </unit>
+    <unit id="8529118008397001820">
+      <segment state="initial">
+        <source> Tasks </source>
+        <target> Tâches </target>
+      </segment>
+    </unit>
   </file>
 </xliff>

@@ -599,5 +599,50 @@
         <source>History</source>
       </segment>
     </unit>
+    <unit id="1137318306951557633">
+      <segment>
+        <source> Dashboard </source>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <segment>
+        <source>Service</source>
+      </segment>
+    </unit>
+    <unit id="2849064100927111571">
+      <segment>
+        <source>loading...</source>
+      </segment>
+    </unit>
+    <unit id="3294686077659093992">
+      <segment>
+        <source>Namespace</source>
+      </segment>
+    </unit>
+    <unit id="6570363013146073520">
+      <segment>
+        <source>Dashboard</source>
+      </segment>
+    </unit>
+    <unit id="6788258623523629471">
+      <segment>
+        <source>No applications</source>
+      </segment>
+    </unit>
+    <unit id="6900799038363597616">
+      <segment>
+        <source>Next Page</source>
+      </segment>
+    </unit>
+    <unit id="7708583428094273381">
+      <segment>
+        <source>Previous Page</source>
+      </segment>
+    </unit>
+    <unit id="8529118008397001820">
+      <segment>
+        <source> Tasks </source>
+      </segment>
+    </unit>
   </file>
 </xliff>
