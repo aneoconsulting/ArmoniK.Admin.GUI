@@ -5,149 +5,106 @@ import {
   CancelSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
-  GrpcParams,
+  GrpcListSessionsParams,
+  GrpcParamsService,
   ListSessionsRequest,
   ListSessionsResponse,
   SessionsClient,
 } from '@armonik.admin.gui/shared/data-access';
+import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()
 export class GrpcSessionsService extends BaseGrpcService {
-  constructor(private _sessionsClient: SessionsClient) {
+  constructor(
+    private _sessionsClient: SessionsClient,
+    private _grpcParamsService: GrpcParamsService
+  ) {
     super();
   }
 
-  /**
-   * Transform an urlParams into a real GrpcParams object designed for retrieving session data
-   *
-   * @param urlParams Record<string, string | number>
-   * @returns GrpcParams<
-   *            ListSessionsRequest.OrderByField,
-   *            ListSessionsRequest.OrderDirection,
-   *            ListSessionsRequest.Filter.AsObject
-   *          >
-   */
-  public urlToGrpcParams(
-    urlParams: Record<string, string | number>
-  ): GrpcParams<
-    ListSessionsRequest.OrderByField,
-    ListSessionsRequest.OrderDirection,
-    ListSessionsRequest.Filter.AsObject
-  > {
-    const grpcParams: GrpcParams<
-      ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection,
-      ListSessionsRequest.Filter.AsObject
-    > = {};
-    const filter: ListSessionsRequest.Filter.AsObject = {
-      applicationName: '',
-      applicationVersion: '',
-      sessionId: '',
-      status: 0,
-    };
+  public createListRequestParams(state: ClrDatagridStateInterface) {
+    const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
-    for (const [key, value] of Object.entries(urlParams)) {
-      switch (key) {
-        case 'page': {
-          grpcParams.page = value as number;
-          break;
-        }
-        case 'pageSize': {
-          grpcParams.pageSize = value as number;
-          break;
-        }
-        case 'order': {
-          grpcParams.order = value as number;
-          break;
-        }
-        case 'orderBy': {
-          grpcParams.orderBy = value as number;
-          break;
-        }
-        case 'applicationName': {
-          filter.applicationName = value as string;
-          break;
-        }
-        case 'applicationVersion': {
-          filter.applicationVersion = value as string;
-          break;
-        }
-        case 'sessionId': {
-          filter.sessionId = value as string;
-          break;
-        }
-        case 'status': {
-          filter.status = value as number;
-          break;
-        }
-        case 'createdAtBefore': {
-          filter.createdBefore = this._createTimeFilter(value as number);
-          break;
-        }
-        case 'createdAtAfter': {
-          // The date filter is giving a date on day to soon for the "afters" values. So we had a day.
-          filter.createdAfter = this._createTimeFilter(
-            (value as number) + 86400000
-          );
-          break;
-        }
-        case 'cancelledAtBefore': {
-          filter.cancelledBefore = this._createTimeFilter(value as number);
-          break;
-        }
-        case 'cancelledAtAfter': {
-          filter.cancelledAfter = this._createTimeFilter(
-            (value as number) + 86400000
-          );
-          break;
-        }
-      }
-    }
-    grpcParams.filter = filter;
-    return grpcParams;
+    const { orderBy, order } = this._grpcParamsService.createSortParams<
+      ListSessionsRequest.OrderByField,
+      ListSessionsRequest.OrderDirection
+    >(state);
+
+    const filter =
+      this._grpcParamsService.createFilterParams<ListSessionsRequest.Filter.AsObject>(
+        state
+      );
+
+    return {
+      page,
+      pageSize,
+      orderBy:
+        orderBy ?? ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      order,
+      filter,
+    };
   }
 
-  /**
-   * Get a list of sessions
-   *
-   * @param params
-   *
-   * @returns Observable<ListSessionsResponse>
-   */
-  public list$(
-    params: GrpcParams<
-      ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection,
-      ListSessionsRequest.Filter.AsObject
-    >
-  ): Observable<ListSessionsResponse> {
-    const options = new ListSessionsRequest({
-      page: params.page || 0,
-      pageSize: params.pageSize || 10,
-      sort: {
-        field:
-          params.orderBy ||
-          ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        direction:
-          params.order ||
-          ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      },
-      filter: params.filter,
-    });
+  public createListRequestQueryParams({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListSessionsParams) {
+    return {
+      page: page !== 0 ? page : undefined,
+      pageSize: pageSize !== 10 ? pageSize : undefined,
+      orderBy:
+        orderBy !== ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+          ? orderBy
+          : undefined,
+      order:
+        order !== ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
+          ? order
+          : undefined,
+      sessionId: filter?.sessionId,
+      status: filter?.status,
+      createdBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdBefore
+      ),
+      createdAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.createdAfter
+      ),
+      cancelledBefore: this._grpcParamsService.getTimeStampSeconds(
+        filter?.cancelledBefore
+      ),
+      cancelledAfter: this._grpcParamsService.getTimeStampSeconds(
+        filter?.cancelledAfter
+      ),
+    };
+  }
 
+  public createListRequestOptions({
+    page,
+    pageSize,
+    orderBy,
+    order,
+    filter,
+  }: GrpcListSessionsParams): ListSessionsRequest {
+    return new ListSessionsRequest({
+      page,
+      pageSize,
+      sort: {
+        field: orderBy,
+        direction: order,
+      },
+      filter,
+    });
+  }
+
+  public list$(options: ListSessionsRequest): Observable<ListSessionsResponse> {
     return this._sessionsClient
       .listSessions(options)
       .pipe(takeUntil(this._timeout$));
   }
 
-  /**
-   * Get a session
-   *
-   * @param sessionId
-   *
-   * @returns Observable<GetSessionResponse>
-   */
   public get$(sessionId: string): Observable<GetSessionResponse> {
     const options = new GetSessionRequest({
       sessionId,
@@ -158,13 +115,6 @@ export class GrpcSessionsService extends BaseGrpcService {
       .pipe(takeUntil(this._timeout$));
   }
 
-  /**
-   * Cancel a session
-   *
-   * @param sessionId
-   *
-   * @returns Observable<CancelSessionResponse>
-   */
   public cancel$(sessionId: string): Observable<CancelSessionResponse> {
     const options = new CancelSessionRequest({
       sessionId,

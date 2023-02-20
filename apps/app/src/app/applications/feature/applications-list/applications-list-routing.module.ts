@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 const routes: Routes = [
   {
     path: '',
-    title: 'Applications List',
+    title: $localize`Applications List`,
     component: ApplicationsListComponent,
   },
 ];

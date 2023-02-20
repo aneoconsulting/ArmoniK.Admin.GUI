@@ -40,7 +40,11 @@
     >
       <span i18n> Task ID </span>
       <clr-dg-filter [clrDgFilter]="taskFilter">
-        <app-id-filter name="taskId" [selectedValue]="taskIdFilter" #taskFilter>
+        <app-id-filter
+          name="ownerTaskId"
+          [selectedValue]="taskIdFilter"
+          #taskFilter
+        >
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
