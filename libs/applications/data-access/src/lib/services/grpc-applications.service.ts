@@ -40,7 +40,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page,
       pageSize,
       orderBy:
-        orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+        [orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
       order,
       filter,
     };
@@ -56,10 +56,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
-      orderBy:
-        orderBy !== ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
-          ? orderBy
-          : undefined,
+      orderBy,
       order:
         order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
@@ -79,7 +76,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        field: orderBy,
+        fields: [...orderBy],
         direction: order,
       },
       filter,

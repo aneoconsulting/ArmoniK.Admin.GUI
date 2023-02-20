@@ -1,16 +1,15 @@
+import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { JsonPipe, NgFor, NgIf } from '@angular/common';
-import { DashboardRoutingModule } from './dashboard-routing.module';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
-import { AsyncPipe } from '@angular/common';
-import { DashboardComponent } from './dashboard.page';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
+import { ClrButtonGroupModule } from '@clr/angular';
 import {
   ApplicationCardComponent,
   EveryTasksByStatusComponent,
 } from '../../../shared/feature';
-import { ClrButtonGroupModule } from '@clr/angular';
+import { DashboardRoutingModule } from './dashboard-routing.module';
+import { DashboardComponent } from './dashboard.page';
 
 @NgModule({
   declarations: [DashboardComponent],
@@ -20,10 +19,10 @@ import { ClrButtonGroupModule } from '@clr/angular';
     DashboardRoutingModule,
     ClrButtonGroupModule,
     NgIf,
-    NgFor,
+    NgForOf,
     AsyncPipe,
     JsonPipe,
   ],
   providers: [GrpcParamsService, GrpcApplicationsService, GrpcTasksService],
 })
-export class DashboardModule {}
+export class DashboardModule { }

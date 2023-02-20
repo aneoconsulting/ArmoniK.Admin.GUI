@@ -5,7 +5,7 @@ import { ListSessionsRequest } from '../proto/generated/sessions-common.pb';
 import { ListTasksRequest } from '../proto/generated/tasks-common.pb';
 
 export type GrpcListApplicationsParams = GrpcListParams<
-  ListApplicationsRequest.OrderByField,
+  ListApplicationsRequest.OrderByField[],
   ListApplicationsRequest.OrderDirection,
   ListApplicationsRequest.Filter.AsObject
 >;
@@ -35,7 +35,7 @@ export type GrpcListPartitionsParams = GrpcListParams<
 >;
 
 type GrpcListParams<
-  T extends number,
+  T extends number | number[],
   K extends number,
   J extends Record<string, any>
 > = {
