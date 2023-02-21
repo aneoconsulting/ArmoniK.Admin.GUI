@@ -1,4 +1,4 @@
-export { ExternalServicesEnum } from './lib/enums';
+export { ExternalServicesEnum, FiltersEnum } from './lib/enums';
 export {
   ApplicationRaw,
   ListApplicationsRequest,
@@ -54,7 +54,13 @@ export {
 export { PartitionsClient } from './lib/proto/generated/partitions-service.pbsc';
 export {
   BaseGrpcService,
-  GrpcPagerService,
+  GrpcParamsService,
   HealthCheckService,
 } from './lib/services';
-export { GrpcParams } from './lib/types';
+export {
+  GrpcListApplicationsParams,
+  GrpcListSessionsParams,
+  GrpcListTasksParams,
+  GrpcListResultsParams,
+  GrpcListPartitionsParams,
+} from './lib/types';

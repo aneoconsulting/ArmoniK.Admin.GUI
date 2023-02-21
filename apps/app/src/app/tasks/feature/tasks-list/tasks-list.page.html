@@ -35,10 +35,7 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
       <span i18n> Task ID </span>
-      <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter name="id" [inputValue]="filterTaskId" #idFilter>
-        </app-id-filter>
-      </clr-dg-filter>
+      <clr-dg-filter [hidden]="true"> </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -132,7 +129,7 @@
         <clr-dg-cell>
           <a
             [routerLink]="['/', 'tasks']"
-            [queryParams]="{ sessionId: task.sessionId }"
+            [queryParams]="mergeWithCurrentQueryParams({sessionId: task.sessionId })"
           >
             {{ task.sessionId }}
           </a>
@@ -140,7 +137,7 @@
         <clr-dg-cell class="status">
           <a
             [routerLink]="['/', 'tasks']"
-            [queryParams]="{ status: task.status }"
+            [queryParams]="mergeWithCurrentQueryParams({status: task.status })"
           >
             <span
               [ngClass]="{

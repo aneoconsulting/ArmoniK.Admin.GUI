@@ -26,13 +26,6 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      # - name: Cache Yarn
-      #   id: yarn-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: .yarn
-      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
-
       - name: Cache Protos
         id: proto-cache
         uses: actions/cache@v3
@@ -69,12 +62,6 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'yarn'
-
       - name: Restore Node Modules
         id: node-cache
         uses: actions/cache@v3
@@ -100,12 +87,6 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'yarn'
 
       - name: Restore Node Modules
         id: node-cache
