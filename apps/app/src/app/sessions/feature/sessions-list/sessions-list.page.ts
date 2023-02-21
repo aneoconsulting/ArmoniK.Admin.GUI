@@ -305,7 +305,7 @@ export class SessionsListComponent {
   public getDuration(startDate: Timestamp, endDate?: Timestamp): string {
     const computed =
       (endDate
-        ? parseInt(endDate?.seconds as string)
+        ? parseInt(endDate.seconds as string)
         : parseInt((Date.now() / 1000).toFixed(0))) -
       parseInt(startDate.seconds as string);
     return this.formatDuration(computed);
