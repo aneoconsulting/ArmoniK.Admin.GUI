@@ -45,8 +45,6 @@ Thumbs.db
 proxy.conf.json
 apps/app/src/app/core/types/proto/*.ts
 
-libs/shared/data-access/src/lib/proto/generated/*.ts
-
 .yarn/*
 !.yarn/releases
 !yarn.lock
@@ -54,5 +52,3 @@ libs/shared/data-access/src/lib/proto/generated/*.ts
 .vitepress/
 .docs/.vitepress/dist
 .docs/.vitepress/cache
-
-

@@ -26,31 +26,16 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('yarn.lock') }}
 
-      - name: Cache Protos
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
-
       - name: Use Node.js
         if: steps.node-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn --immutable
-
-      - name: Install Protoc
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        uses: arduino/setup-protoc@v1
-
-      - name: Build protos
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        run: yarn proto:generate
 
   validate-code:
     name: Validate Code
@@ -98,13 +83,6 @@ jobs:
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
-
-      - name: Restore Protos
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Run Unit Tests
         run: yarn ng affected --target=test --parallel=3 --code-coverage
@@ -208,13 +186,6 @@ jobs:
         with:
           main-branch-name: main
 
-      - name: Restore Protoc
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
-
       - name: Build all
         run: yarn ng affected --target=build --parallel=3
 
@@ -261,7 +232,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'yarn'
+          cache: "yarn"
 
       # - name: Restore Yarn Cache
       #   id: yarn-cache
@@ -269,13 +240,6 @@ jobs:
       #   with:
       #     path: .yarn
       #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
-
-      - name: Restore Protos
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Docker meta
         id: meta
