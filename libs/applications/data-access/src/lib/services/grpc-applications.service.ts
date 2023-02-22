@@ -37,8 +37,9 @@ export class GrpcApplicationsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        [orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
+      orderBy: [
+        orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      ],
       order,
       filter,
     };

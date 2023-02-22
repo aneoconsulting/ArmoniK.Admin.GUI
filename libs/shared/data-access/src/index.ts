@@ -18,7 +18,7 @@ export {
   ListResultsRequest,
   ListResultsResponse,
   ResultRaw,
-} from '@aneoconsultingfr/armonik.api.angular'
+} from '@aneoconsultingfr/armonik.api.angular';
 export { ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 export { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 export {

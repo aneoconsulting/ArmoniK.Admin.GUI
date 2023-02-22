@@ -3,9 +3,9 @@ name: CD Docker
 on:
   push:
     branches:
-      - "main"
+      - 'main'
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   docker:
@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: "yarn"
+          cache: 'yarn'
 
       - name: Restore Node Modules
         id: node-cache
