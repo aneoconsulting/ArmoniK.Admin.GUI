@@ -77,34 +77,42 @@ describe('GrpcTasksService', () => {
   });
 
   it('should create a default request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 0,
-      pageSize: 10,
-      orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-      order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-      filter: {} as ListPartitionsRequest.Filter,
-    });
+    const result = service.createListRequestQueryParams(
+      {
+        page: 0,
+        pageSize: 10,
+        orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
+        order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        filter: {} as ListPartitionsRequest.Filter,
+      },
+      10000
+    );
     expect(result).toEqual({
       page: undefined,
       pageSize: undefined,
+      interval: undefined,
       orderBy: undefined,
       order: undefined,
     });
   });
 
   it('should create a request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 2,
-      pageSize: 50,
-      orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
-      order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      filter: {
-        id: 'Some test id',
-      } as ListPartitionsRequest.Filter,
-    });
+    const result = service.createListRequestQueryParams(
+      {
+        page: 2,
+        pageSize: 50,
+        orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
+        order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        filter: {
+          id: 'Some test id',
+        } as ListPartitionsRequest.Filter,
+      },
+      30000
+    );
     expect(result).toEqual({
       page: 2,
       pageSize: 50,
+      interval: 30000,
       orderBy: 4,
       order: 2,
       id: 'Some test id',

@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
-
-import { Observable } from 'rxjs';
 import { ClearFiltersComponent } from '../filters';
 import { ClearOrderComponent } from '../clear-order/clear-order.component';
 
@@ -19,7 +17,7 @@ import { ClearOrderComponent } from '../clear-order/clear-order.component';
   styleUrls: ['./action-bar.component.scss'],
 })
 export class ActionBarComponent {
-  @Input() stopInterval$ = new Observable<void>();
+  @Input() refreshInterval = 10000;
   @Input() isOrdered = false;
   @Input() isFiltered = false;
 
