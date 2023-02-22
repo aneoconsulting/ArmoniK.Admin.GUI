@@ -125,6 +125,9 @@
         ></app-date-filter>
       </clr-dg-filter>
     </clr-dg-column>
+    <clr-dg-column>
+      <span i18n>Duration</span>
+    </clr-dg-column>
     <clr-dg-column i18n> Actions </clr-dg-column>
 
     <ng-container *ngIf="loadSessions$ | async as list">
@@ -157,6 +160,11 @@
           <span *ngIf="session.cancelledAt; else empty">
             {{ session.cancelledAt.toISOString() | date: 'yyyy-MM-dd &nbsp;
             HH:mm:ss.SSS' }}
+          </span>
+        </clr-dg-cell>
+        <clr-dg-cell>
+          <span *ngIf="session.createdAt; else empty">
+            {{ getDuration(session.createdAt, session.cancelledAt) }}
           </span>
         </clr-dg-cell>
         <clr-dg-cell>
