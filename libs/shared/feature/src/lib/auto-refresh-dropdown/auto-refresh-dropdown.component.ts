@@ -1,16 +1,6 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClrDropdownModule } from '@clr/angular';
-
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 type Interval = {
   value: number;
@@ -24,38 +14,21 @@ export const DisabledIntervalValue = -1; // Use -1 to stop interval because 0 is
   selector: 'armonik-admin-gui-auto-refresh-dropdown',
   templateUrl: './auto-refresh-dropdown.component.html',
   styleUrls: ['./auto-refresh-dropdown.component.scss'],
-  imports: [ClrDropdownModule, NgIf, NgFor, AsyncPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ClrDropdownModule, NgIf, NgFor],
 })
-export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
-  @Input() manualStop$ = new Observable<void>();
+export class AutoRefreshDropdownComponent {
+  @Input() actualInterval = 10000;
   @Output() refreshIntervalChange = new EventEmitter<number>();
 
   private _intervalsValues = [10_000, 30_000, 60_000, 120_000];
-  private _initialIntervalValue = this._intervalsValues[0];
   private _disabledIntervalValue = DisabledIntervalValue;
 
-  public intervals: Interval[] = this._intervalsValues.map((interval) => ({
-    value: interval,
-    label: this._formatInterval(interval),
-  }));
+  public intervals: Interval[] = this._intervalsValues.map((interval) =>
+    this._toInterval(interval)
+  );
 
-  private _currentInterval = new BehaviorSubject<Interval>(this.intervals[0]);
-
-  public currentInterval$ = this._currentInterval.asObservable();
-
-  private _manualStopSubscription: Subscription | undefined;
-
-  ngOnInit(): void {
-    this.refreshIntervalChange.emit(this._initialIntervalValue);
-
-    this._manualStopSubscription = this.manualStop$.subscribe(() => {
-      this._disableCurrentInterval();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this._manualStopSubscription?.unsubscribe();
+  public get interval() {
+    return this._toInterval(this.actualInterval);
   }
 
   /**
@@ -64,7 +37,7 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
    * @param interval Interval in milliseconds
    */
   public onIntervalChange(interval: Interval): void {
-    this._currentInterval.next(interval);
+    this.actualInterval = interval.value;
     this.refreshIntervalChange.emit(interval.value);
   }
 
@@ -72,7 +45,6 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
    * Stop interval.
    */
   public onIntervalStop(): void {
-    this._disableCurrentInterval();
     this.refreshIntervalChange.emit(this._disabledIntervalValue);
   }
 
@@ -86,16 +58,6 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
    */
   public trackByInterval(index: number, interval: Interval): number {
     return interval.value;
-  }
-
-  /**
-   * Disable current interval.
-   */
-  private _disableCurrentInterval(): void {
-    this._currentInterval.next({
-      value: this._disabledIntervalValue,
-      label: '', // Label is not used when interval is stopped
-    });
   }
 
   /**
@@ -114,5 +76,12 @@ export class AutoRefreshDropdownComponent implements OnInit, OnDestroy {
     }
 
     return `${seconds}s`;
+  }
+
+  private _toInterval(interval: number): Interval {
+    return {
+      value: interval,
+      label: this._formatInterval(interval),
+    };
   }
 }
