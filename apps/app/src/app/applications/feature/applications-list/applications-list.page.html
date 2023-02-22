@@ -7,7 +7,7 @@
   >
     <clr-dg-action-bar>
       <app-action-bar
-        [stopInterval$]="stopInterval$"
+        [refreshInterval]="refreshIntervalValue"
         [isFiltered]="isFiltered()"
         [isOrdered]="isOrdered()"
         (refresh)="manualRefreshApplications()"

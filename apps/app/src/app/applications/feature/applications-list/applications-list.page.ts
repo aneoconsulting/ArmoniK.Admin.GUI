@@ -31,10 +31,12 @@ import { SettingsService } from '../../../shared/util';
 })
 export class ApplicationsListComponent {
   private _state: ClrDatagridStateInterface = {};
+  private _intervalValue = this._settingsService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
@@ -46,7 +48,10 @@ export class ApplicationsListComponent {
       const params =
         this._grpcApplicationsService.createListRequestParams(state);
       const queryParams =
-        this._grpcApplicationsService.createListRequestQueryParams(params);
+        this._grpcApplicationsService.createListRequestQueryParams(
+          params,
+          this._intervalValue
+        );
 
       await this._router.navigate([], {
         queryParams,
@@ -56,11 +61,10 @@ export class ApplicationsListComponent {
       return state;
     })
   );
-  private _triggerInterval$ = this._intervalValue
-    .asObservable()
-    .pipe(
-      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
-    );
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingApplications$ = new BehaviorSubject<boolean>(true);
   totalApplications$ = new BehaviorSubject<number>(0);
@@ -98,6 +102,10 @@ export class ApplicationsListComponent {
     private _grpcApplicationsService: GrpcApplicationsService
   ) {}
 
+  public get refreshIntervalValue() {
+    return this._intervalValue;
+  }
+
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(
       this._activatedRoute.queryParamMap,
@@ -125,12 +133,11 @@ export class ApplicationsListComponent {
   }
 
   public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
+    this._intervalValue = value;
+    this._subjectDatagrid.next(this._state);
   }
 
   public defaultSortOrder(
