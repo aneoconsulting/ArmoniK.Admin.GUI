@@ -31,11 +31,13 @@ import { SettingsService } from '../../../shared/util';
 })
 export class PartitionsListComponent {
   private _state: ClrDatagridStateInterface = {};
+  private _intervalValue = this._settingsService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   /** Get partitions */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
@@ -49,7 +51,10 @@ export class PartitionsListComponent {
         const params =
           this._grpcPartitionsService.createListRequestParams(state);
         const queryParams =
-          this._grpcPartitionsService.createListRequestQueryParams(params);
+          this._grpcPartitionsService.createListRequestQueryParams(
+            params,
+            this._intervalValue
+          );
         await this._router.navigate([], {
           queryParams,
           relativeTo: this._activatedRoute,
@@ -57,11 +62,10 @@ export class PartitionsListComponent {
         return state;
       })
     );
-  private _triggerInterval$: Observable<number> = this._intervalValue
-    .asObservable()
-    .pipe(
-      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
-    );
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingPartitions$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     true
@@ -129,6 +133,10 @@ export class PartitionsListComponent {
     private _router: Router
   ) {}
 
+  public get refreshIntervalValue() {
+    return this._intervalValue;
+  }
+
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(
       this._activatedRoute.queryParamMap,
@@ -156,11 +164,11 @@ export class PartitionsListComponent {
   }
 
   public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-    // Stop interval
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
+    this._intervalValue = value;
+    this._subjectDatagrid.next(this._state);
   }
 
   /**
