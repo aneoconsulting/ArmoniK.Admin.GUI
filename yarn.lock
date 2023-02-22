@@ -22,6 +22,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aneoconsultingfr/armonik.api.angular@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@aneoconsultingfr/armonik.api.angular@npm:3.4.0"
+  dependencies:
+    tslib: ^2.3.0
+  peerDependencies:
+    "@angular/common": ^15.1.0
+    "@angular/core": ^15.1.0
+    "@ngx-grpc/common": ^3.1.1
+    "@ngx-grpc/core": ^3.1.1
+    "@ngx-grpc/well-known-types": ^3.1.1
+    google-protobuf: ^3.21.2
+    rxjs: ~7.8.0
+  checksum: cecd714207dff11b6f667f5f0c13107a0bbb8ec88517db3fd3f3df07f1b35f83fd6e4df7459634a9e2f600f6dbd5613447d9f2377c8e079da93f340c245a8d45
+  languageName: node
+  linkType: hard
+
 "@angular-devkit/architect@npm:0.1402.10":
   version: 0.1402.10
   resolution: "@angular-devkit/architect@npm:0.1402.10"
@@ -4562,6 +4579,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "armonik.admin.gui@workspace:."
   dependencies:
+    "@aneoconsultingfr/armonik.api.angular": ^3.4.0
     "@angular-devkit/build-angular": ~14.2.10
     "@angular-eslint/eslint-plugin": ~13.1.0
     "@angular-eslint/eslint-plugin-template": ~13.1.0

@@ -3,24 +3,24 @@ export {
   ApplicationRaw,
   ListApplicationsRequest,
   ListApplicationsResponse,
-} from './lib/proto/generated/applications-common.pb';
-export { ApplicationsClient } from './lib/proto/generated/applications-service.pbsc';
+} from '@aneoconsultingfr/armonik.api.angular';
+export { ApplicationsClient } from '@aneoconsultingfr/armonik.api.angular';
 export {
   GetCurrentUserRequest,
   GetCurrentUserResponse,
   User,
-} from './lib/proto/generated/auth-common.pb';
-export { AuthenticationClient } from './lib/proto/generated/auth-service.pbsc';
-export { ResultStatus } from './lib/proto/generated/result-status.pb';
+} from '@aneoconsultingfr/armonik.api.angular';
+export { AuthenticationClient } from '@aneoconsultingfr/armonik.api.angular';
+export { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 export {
   GetOwnerTaskIdRequest,
   GetOwnerTaskIdResponse,
   ListResultsRequest,
   ListResultsResponse,
   ResultRaw,
-} from './lib/proto/generated/results-common.pb';
-export { ResultsClient } from './lib/proto/generated/results-service.pbsc';
-export { SessionStatus } from './lib/proto/generated/session-status.pb';
+} from '@aneoconsultingfr/armonik.api.angular'
+export { ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+export { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 export {
   CancelSessionRequest,
   CancelSessionResponse,
@@ -28,9 +28,9 @@ export {
   GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
-} from './lib/proto/generated/sessions-common.pb';
-export { SessionsClient } from './lib/proto/generated/sessions-service.pbsc';
-export { TaskStatus } from './lib/proto/generated/task-status.pb';
+} from '@aneoconsultingfr/armonik.api.angular';
+export { SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+export { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 export {
   CancelTasksRequest,
   CancelTasksResponse,
@@ -42,16 +42,16 @@ export {
   ListTasksResponse,
   TaskRaw,
   TaskSummary,
-} from './lib/proto/generated/tasks-common.pb';
-export { TasksClient } from './lib/proto/generated/tasks-service.pbsc';
+} from '@aneoconsultingfr/armonik.api.angular';
+export { TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 export {
   GetPartitionRequest,
   GetPartitionResponse,
   ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
-} from './lib/proto/generated/partitions-common.pb';
-export { PartitionsClient } from './lib/proto/generated/partitions-service.pbsc';
+} from '@aneoconsultingfr/armonik.api.angular';
+export { PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
 export {
   BaseGrpcService,
   GrpcParamsService,
