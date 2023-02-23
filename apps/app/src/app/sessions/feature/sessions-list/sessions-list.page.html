@@ -71,7 +71,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilterComponent">
         <app-id-filter
           [name]="'sessionId'"
-          [inputValue]="sessionFilter"
+          [selectedValue]="sessionFilter"
           #sessionFilterComponent
         >
         </app-id-filter>
@@ -137,6 +137,7 @@
           <a
             [routerLink]="['/', 'sessions']"
             [queryParams]="{ status: session.status }"
+            (click)="setFilterViaGridLink(statusFilterComponent, session.status)"
           >
             <span
               [ngClass]="{

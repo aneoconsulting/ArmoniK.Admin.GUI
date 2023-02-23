@@ -25,6 +25,7 @@ import {
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
+import { SelectFilterComponent } from '../../../shared/feature/filters';
 import { Timestamp } from '@grpc/grpc-js/build/src/generated/google/protobuf/Timestamp';
 
 @Component({
@@ -439,6 +440,17 @@ export class SessionsListComponent {
    */
   isFiltered(): boolean {
     return !!this._state.filters;
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(filter: SelectFilterComponent, value: number) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**

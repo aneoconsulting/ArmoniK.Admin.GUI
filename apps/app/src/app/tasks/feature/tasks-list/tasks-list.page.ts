@@ -27,6 +27,10 @@ import {
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
+import {
+  ComboBoxFilterComponent,
+  IdFilterComponent,
+} from '../../../shared/feature/filters';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -456,6 +460,28 @@ export class TasksListComponent implements OnInit {
   clearOrder(): void {
     delete this._state.sort;
     this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Set a new value to the combobox filter via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setComboboxFilter(filter: ComboBoxFilterComponent, value: number) {
+    filter.selectedValues = [value];
+    filter.changes.emit();
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(filter: IdFilterComponent, value: string) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**
