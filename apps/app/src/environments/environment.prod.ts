@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseHref: '/admin/',
+  baseHref: '/old-admin/',
 };
