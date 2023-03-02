@@ -205,9 +205,16 @@ jobs:
       - name: Build all
         run: npx nx affected --target=build --parallel=3
 
-  build-push-docker-app-image:
+  build-push-docker-images:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile:
+          - name: armonik_admin_app
+            file: app.Dockerfile
+          - name: armonik_admin_api
+            file: api.Dockerfile
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -234,7 +241,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            dockerhubaneo/armonik_admin_app
+            dockerhubaneo/${{ matrix.dockerfile.name }}
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=pr
@@ -253,52 +260,4 @@ jobs:
           push: ${{ github.event_name != 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: app.Dockerfile
-
-build-push-docker-api-image:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          submodules: true
-
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: npm run proto:generate
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: |
-            dockerhubaneo/armonik_admin_api
-          tags: |
-            type=ref,event=pr
-
-      - name: Login to DockerHub
-        if: github.event_name != 'push'
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: ${{ github.event_name != 'push' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          file: api.Dockerfile
+          file: ${{ matrix.dockerfile.file }}
