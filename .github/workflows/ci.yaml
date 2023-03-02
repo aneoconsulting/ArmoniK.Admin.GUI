@@ -25,6 +25,21 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Cache protos
+        id: proto-cache
+        uses: actions/cache@v2
+        with:
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
+
+      - name: Install Protoc
+        if: steps.proto-cache.outputs.cache-hit != 'true'
+        uses: arduino/setup-protoc@v1
+
+      - name: Build proto
+        if: steps.proto-cache.outputs.cache-hit != 'true'
+        run: yarn proto:generate
+
   validate-code:
     needs: setup
     runs-on: ubuntu-latest
@@ -66,15 +81,16 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
+      - name: Restore Protos
+        id: proto-cache
+        uses: actions/cache@v2
+        with:
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
+
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
-
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: npm run proto:generate
 
       - name: Run Unit Tests
         run: npx nx affected --target=test --parallel=3 --code-coverage
@@ -117,7 +133,7 @@ jobs:
 
   e2e-tests:
     needs: validate-code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -151,11 +167,12 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: npm run proto:generate
+      - name: Restore Protos
+        id: proto-cache
+        uses: actions/cache@v2
+        with:
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -196,11 +213,12 @@ jobs:
         with:
           main-branch-name: main
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: npm run proto:generate
+      - name: Restore Protos
+        id: proto-cache
+        uses: actions/cache@v2
+        with:
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Build all
         run: npx nx affected --target=build --parallel=3
@@ -224,16 +242,17 @@ jobs:
 
       - name: Restore Node Modules
         id: node-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-
-      - name: Build proto
-        run: npm run proto:generate
+      - name: Restore Protos
+        id: proto-cache
+        uses: actions/cache@v2
+        with:
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Docker meta
         id: meta
