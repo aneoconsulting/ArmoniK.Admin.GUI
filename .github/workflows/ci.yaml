@@ -30,10 +30,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: apps/app/src/app/core/types/proto
-          key: proto-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Install Protoc
-        if: steps.proto-cache.outputs.cache-hit != true
+        if: steps.proto-cache.outputs.cache-hit != 'true'
         uses: arduino/setup-protoc@v1
 
       - name: Build proto
