@@ -27,7 +27,7 @@ jobs:
 
       - name: Cache protos
         id: proto-cache
-        uses: actions/cache
+        uses: actions/cache@v2
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: proto-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
@@ -83,7 +83,7 @@ jobs:
 
       - name: Restore Protos
         id: proto-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
@@ -169,7 +169,7 @@ jobs:
 
       - name: Restore Protos
         id: proto-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
@@ -215,7 +215,7 @@ jobs:
 
       - name: Restore Protos
         id: proto-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
@@ -242,14 +242,14 @@ jobs:
 
       - name: Restore Node Modules
         id: node-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Restore Protos
         id: proto-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: libs/shared/data-access/src/lib/proto/generated
           key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
