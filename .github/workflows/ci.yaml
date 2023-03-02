@@ -29,8 +29,8 @@ jobs:
         id: proto-cache
         uses: actions/cache@v2
         with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: proto-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+          path: apps/app/src/app/core/types/proto
+          key: proto-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Install Protoc
         if: steps.proto-cache.outputs.cache-hit != true
@@ -85,8 +85,8 @@ jobs:
         id: proto-cache
         uses: actions/cache@v2
         with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - uses: nrwl/nx-set-shas@v2
         with:
@@ -171,8 +171,8 @@ jobs:
         id: proto-cache
         uses: actions/cache@v2
         with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
@@ -217,8 +217,8 @@ jobs:
         id: proto-cache
         uses: actions/cache@v2
         with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Build all
         run: npx nx affected --target=build --parallel=3
@@ -251,8 +251,8 @@ jobs:
         id: proto-cache
         uses: actions/cache@v2
         with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+          path: apps/app/src/app/core/types/proto
+          key: protobuf-${{ hashFiles('apps/app/src/assets/ArmoniK.Api/Protos/V1/*.proto') }}
 
       - name: Docker meta
         id: meta
