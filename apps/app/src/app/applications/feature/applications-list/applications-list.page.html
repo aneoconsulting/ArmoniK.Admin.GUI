@@ -7,7 +7,7 @@
   >
     <clr-dg-action-bar>
       <app-action-bar
-        [stopInterval$]="stopInterval$"
+        [refreshInterval]="refreshIntervalValue"
         [isFiltered]="isFiltered()"
         [isOrdered]="isOrdered()"
         (refresh)="manualRefreshApplications()"
@@ -27,7 +27,7 @@
         <app-id-filter
           #nameFilterComponent
           name="name"
-          [inputValue]="nameFilter"
+          [selectedValue]="nameFilter"
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -41,7 +41,7 @@
         <app-id-filter
           #versionFilterComponent
           name="version"
-          [inputValue]="versionFilter"
+          [selectedValue]="versionFilter"
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -55,7 +55,7 @@
         <app-id-filter
           #namespaceFilterComponent
           name="namespace"
-          [inputValue]="namespaceFilter"
+          [selectedValue]="namespaceFilter"
         >
         </app-id-filter>
       </clr-dg-filter>
@@ -69,7 +69,7 @@
         <app-id-filter
           #serviceFilterComponent
           name="service"
-          [inputValue]="serviceFilter"
+          [selectedValue]="serviceFilter"
         >
         </app-id-filter>
       </clr-dg-filter>

@@ -30,7 +30,7 @@ export class IdFilterComponent
   @Output() changes = new EventEmitter<never>();
 
   @Input() name = '';
-  @Input() inputValue: string | null = '';
+  @Input() selectedValue: string | null = '';
 
   public input = new Subject<string>();
   private _input$ = this.input.asObservable();
@@ -41,7 +41,7 @@ export class IdFilterComponent
   }
 
   get value() {
-    return this.inputValue;
+    return this.selectedValue;
   }
 
   ngOnInit(): void {
@@ -55,24 +55,24 @@ export class IdFilterComponent
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
-    this.inputValue = null;
+    this.selectedValue = null;
   }
 
   onChange() {
-    this.input.next(this.inputValue ?? '');
+    this.input.next(this.selectedValue ?? '');
   }
 
   clear() {
-    this.inputValue = '';
+    this.selectedValue = '';
     this.changes.emit();
   }
 
   reset() {
-    this.inputValue = null;
+    this.selectedValue = null;
   }
 
   isActive(): boolean {
-    return !!this.inputValue && this.inputValue.length != 0;
+    return !!this.selectedValue && this.selectedValue.length != 0;
   }
 
   /**

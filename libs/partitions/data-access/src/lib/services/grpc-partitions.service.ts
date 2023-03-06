@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
 import {
-  PartitionsClient,
-  BaseGrpcService,
+  GetPartitionRequest,
+  GetPartitionResponse,
   ListPartitionsRequest,
   ListPartitionsResponse,
+  PartitionsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
   GrpcParamsService,
-  GetPartitionResponse,
-  GetPartitionRequest,
   GrpcListPartitionsParams,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
@@ -45,16 +47,14 @@ export class GrpcPartitionsService extends BaseGrpcService {
     };
   }
 
-  public createListRequestQueryParams({
-    page,
-    pageSize,
-    orderBy,
-    order,
-    filter,
-  }: GrpcListPartitionsParams) {
+  public createListRequestQueryParams(
+    { page, pageSize, orderBy, order, filter }: GrpcListPartitionsParams,
+    refreshInterval: number
+  ) {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
+      interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID
           ? orderBy

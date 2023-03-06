@@ -19,7 +19,7 @@
       </button>
 
       <app-action-bar
-        [stopInterval$]="stopInterval$"
+        [refreshInterval]="refreshIntervalValue"
         [isFiltered]="isFiltered()"
         [isOrdered]="isOrdered()"
         (refresh)="manualRefreshTasks()"
@@ -35,10 +35,7 @@
       [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
     >
       <span i18n> Task ID </span>
-      <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter name="id" [inputValue]="filterTaskId" #idFilter>
-        </app-id-filter>
-      </clr-dg-filter>
+      <clr-dg-filter [hidden]="true"> </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
       [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
@@ -50,7 +47,7 @@
       <clr-dg-filter [clrDgFilter]="sessionFilter">
         <app-id-filter
           name="sessionId"
-          [inputValue]="filterSessionId"
+          [selectedValue]="filterSessionId"
           #sessionFilter
         >
         </app-id-filter>
@@ -133,6 +130,7 @@
           <a
             [routerLink]="['/', 'tasks']"
             [queryParams]="mergeWithCurrentQueryParams({sessionId: task.sessionId })"
+            (click)="setFilterViaGridLink(sessionFilter, task.sessionId)"
           >
             {{ task.sessionId }}
           </a>
@@ -141,6 +139,7 @@
           <a
             [routerLink]="['/', 'tasks']"
             [queryParams]="mergeWithCurrentQueryParams({status: task.status })"
+            (click)="setComboboxFilter(statusFilter, task.status)"
           >
             <span
               [ngClass]="{

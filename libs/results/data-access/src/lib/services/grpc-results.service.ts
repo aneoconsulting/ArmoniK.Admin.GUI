@@ -1,11 +1,13 @@
+import {
+  ListResultsRequest,
+  ListResultsResponse,
+  ResultsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,
   GrpcListResultsParams,
   GrpcParamsService,
-  ListResultsRequest,
-  ListResultsResponse,
-  ResultsClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
@@ -44,16 +46,14 @@ export class GrpcResultsService extends BaseGrpcService {
     };
   }
 
-  public createListRequestQueryParams({
-    page,
-    pageSize,
-    orderBy,
-    order,
-    filter,
-  }: GrpcListResultsParams) {
+  public createListRequestQueryParams(
+    { page, pageSize, orderBy, order, filter }: GrpcListResultsParams,
+    refreshInterval: number
+  ) {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
+      interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
           ? orderBy

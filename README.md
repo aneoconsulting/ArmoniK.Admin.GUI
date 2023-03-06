@@ -49,14 +49,6 @@ Go to the project directory
   yarn
 ```
 
-### Generate types from Proto files
-
-These types are generated from the Proto files in `/libs/shared/data-access/src/lib/proto/generated` and use to request the gRPC services.
-
-```sh
-yarn generate:proto
-```
-
 ### Generate translations
 
 ```sh

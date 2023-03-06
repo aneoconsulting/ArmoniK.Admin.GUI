@@ -9,7 +9,6 @@ import {
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
 import {
   ClrDatagridModule,
   ClrIconModule,
@@ -34,7 +33,6 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [SessionsListComponent],
   imports: [
-    AutoRefreshDropdownComponent,
     RouterModule,
     SessionsListRoutingModule,
     ClrDatagridModule,

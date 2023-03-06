@@ -6,7 +6,7 @@ import {
   ResultsClient,
   SessionsClient,
   TasksClient,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api.angular';
 
 // type Service<T extends string> = T extends `${infer S}Client` ? S : never;
 type Action<T> = Capitalize<Exclude<keyof T, '$raw'> & string>;
