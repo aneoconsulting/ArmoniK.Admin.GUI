@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import {
   GrpcParamsService,
-  ListPartitionsRequest,
-  PartitionsClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcPartitionsService } from './grpc-partitions.service';
@@ -11,6 +9,7 @@ import {
   ClrDatagridComparatorInterface,
   ClrDatagridStateInterface,
 } from '@clr/angular';
+import { ListPartitionsRequest, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcTasksService', () => {
   let service: GrpcPartitionsService;

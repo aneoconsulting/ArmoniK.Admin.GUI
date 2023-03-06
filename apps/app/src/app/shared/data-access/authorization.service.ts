@@ -1,19 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import {
-  ApplicationsClient,
-  PartitionsClient,
-  ResultsClient,
-  SessionsClient,
-  TasksClient,
-} from '@armonik.admin.gui/shared/data-access';
+import { ApplicationsClient, PartitionsClient, ResultsClient, SessionsClient, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 
 // type Service<T extends string> = T extends `${infer S}Client` ? S : never;
 type Action<T> = Capitalize<Exclude<keyof T, '$raw'> & string>;
 
 @Injectable()
 export class AuthorizationService {
-  constructor(private _authService: AuthService) {}
+  constructor(private _authService: AuthService) { }
 
   public canListApplications(): boolean {
     return this._can<ApplicationsClient>('ListApplications', 'Applications');

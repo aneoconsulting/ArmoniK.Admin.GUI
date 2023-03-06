@@ -1,9 +1,7 @@
+import { ApplicationsClient, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
-  ApplicationsClient,
   BaseGrpcService,
-  ListApplicationsRequest,
-  ListApplicationsResponse,
   GrpcListApplicationsParams,
   GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';

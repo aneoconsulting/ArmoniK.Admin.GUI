@@ -1,8 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import {
   GrpcParamsService,
-  ListTasksRequest,
-  TasksClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcTasksService } from './grpc-tasks.service';
@@ -11,6 +9,7 @@ import {
   ClrDatagridComparatorInterface,
   ClrDatagridStateInterface,
 } from '@clr/angular';
+import { ListTasksRequest, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcTasksService', () => {
   let service: GrpcTasksService;

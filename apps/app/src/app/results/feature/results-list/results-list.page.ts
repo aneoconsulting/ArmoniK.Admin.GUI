@@ -1,12 +1,7 @@
+import { ListResultsRequest, ListResultsResponse, ResultRaw, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
-import {
-  ListResultsRequest,
-  ListResultsResponse,
-  ResultRaw,
-  ResultStatus,
-} from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -113,7 +108,7 @@ export class ResultsListComponent implements OnInit {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcResultsService: GrpcResultsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.statusList = [

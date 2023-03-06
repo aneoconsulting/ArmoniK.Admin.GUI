@@ -1,12 +1,7 @@
+import { GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
-import {
-  GetSessionResponse,
-  ListSessionsRequest,
-  ListSessionsResponse,
-  SessionStatus,
-} from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -23,8 +18,8 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
+import { SettingsService } from '../../../shared/util';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -149,7 +144,7 @@ export class SessionsListComponent {
     private _grpcSessionsService: GrpcSessionsService,
     private _authorizationService: AuthorizationService,
     private _settingsService: SettingsService
-  ) {}
+  ) { }
 
   public get refreshIntervalValue() {
     return this._intervalValue;

@@ -1,22 +1,17 @@
+import { GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@aneoconsultingfr/armonik.api.angular';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {
-  GetPartitionResponse,
-  ListPartitionsRequest,
-  ListPartitionsResponse,
-  PartitionRaw,
-} from '@armonik.admin.gui/shared/data-access';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,
@@ -131,7 +126,7 @@ export class PartitionsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _grpcPartitionsService: GrpcPartitionsService,
     private _router: Router
-  ) {}
+  ) { }
 
   public get refreshIntervalValue() {
     return this._intervalValue;

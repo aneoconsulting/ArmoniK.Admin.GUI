@@ -1,11 +1,9 @@
+import { ListResultsRequest, ListResultsResponse, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,
   GrpcListResultsParams,
   GrpcParamsService,
-  ListResultsRequest,
-  ListResultsResponse,
-  ResultsClient,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
