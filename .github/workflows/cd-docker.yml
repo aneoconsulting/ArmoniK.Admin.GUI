@@ -40,9 +40,6 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
 
-      - name: Build proto
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        run: yarn proto:generate
 
       - name: Docker meta
         id: meta
