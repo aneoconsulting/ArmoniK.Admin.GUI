@@ -20,6 +20,8 @@ import {
 } from 'rxjs';
 import { AuthorizationService } from '../../../shared/data-access';
 import { SettingsService } from '../../../shared/util';
+import { SelectFilterComponent } from '../../../shared/feature/filters';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -303,6 +305,29 @@ export class SessionsListComponent {
     return this._state;
   }
 
+  public getDuration(startDate: Timestamp, endDate?: Timestamp): string {
+    const computed =
+      (endDate
+        ? parseInt(endDate.seconds as string)
+        : parseInt((Date.now() / 1000).toFixed(0))) -
+      parseInt(startDate.seconds as string);
+    return this.formatDuration(computed);
+  }
+
+  public formatDuration(computed: number): string {
+    const seconds = computed % 60;
+    const minutes = Math.floor(computed / 60) % 60;
+    const hours = Math.floor(computed / 3600) % 24;
+    const days = Math.floor(computed / 86400);
+    return (
+      (days > 0 ? days + $localize`d ` : '') +
+      (hours > 0 ? hours + 'h ' : '') +
+      (minutes > 0 ? minutes + 'm ' : '') +
+      seconds +
+      's'
+    );
+  }
+
   public get hasApplicationFilter() {
     return this.applicationName !== null || this.applicationVersion !== null;
   }
@@ -410,6 +435,17 @@ export class SessionsListComponent {
    */
   isFiltered(): boolean {
     return !!this._state.filters;
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(filter: SelectFilterComponent, value: number) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**

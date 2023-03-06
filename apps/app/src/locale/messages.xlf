@@ -599,5 +599,15 @@
         <source>History</source>
       </segment>
     </unit>
+    <unit id="7410432243549869948">
+      <segment>
+        <source>Duration</source>
+      </segment>
+    </unit>
+    <unit id="8655239516431228340">
+      <segment>
+        <source>d </source>
+      </segment>
+    </unit>
   </file>
 </xliff>
