@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
 import {
   ApplicationsClient,
-  BaseGrpcService,
   ListApplicationsRequest,
   ListApplicationsResponse,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
   GrpcListApplicationsParams,
   GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
@@ -37,8 +39,9 @@ export class GrpcApplicationsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
+      orderBy: [
         orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      ],
       order,
       filter,
     };
@@ -52,10 +55,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
-      orderBy:
-        orderBy !== ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
-          ? orderBy
-          : undefined,
+      orderBy,
       order:
         order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
@@ -75,7 +75,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        field: orderBy,
+        fields: [...orderBy],
         direction: order,
       },
       filter,

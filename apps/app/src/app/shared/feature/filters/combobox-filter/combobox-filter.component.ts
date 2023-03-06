@@ -1,3 +1,4 @@
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -7,7 +8,6 @@ import {
   Output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TaskStatus } from '@armonik.admin.gui/shared/data-access';
 import { ClarityModule, ClrDatagridFilterInterface } from '@clr/angular';
 
 @Component({

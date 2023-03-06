@@ -1,7 +1,7 @@
+import { GetCurrentUserResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
-import { GetCurrentUserResponse } from '@armonik.admin.gui/shared/data-access';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';

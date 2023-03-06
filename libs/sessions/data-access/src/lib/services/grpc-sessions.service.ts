@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
 import {
-  BaseGrpcService,
   CancelSessionRequest,
   CancelSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
-  GrpcListSessionsParams,
-  GrpcParamsService,
   ListSessionsRequest,
   ListSessionsResponse,
   SessionsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
+  GrpcListSessionsParams,
+  GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';

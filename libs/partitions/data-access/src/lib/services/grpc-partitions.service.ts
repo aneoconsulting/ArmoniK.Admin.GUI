@@ -1,12 +1,14 @@
-import { Injectable } from '@angular/core';
 import {
-  PartitionsClient,
-  BaseGrpcService,
+  GetPartitionRequest,
+  GetPartitionResponse,
   ListPartitionsRequest,
   ListPartitionsResponse,
+  PartitionsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
   GrpcParamsService,
-  GetPartitionResponse,
-  GetPartitionRequest,
   GrpcListPartitionsParams,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';

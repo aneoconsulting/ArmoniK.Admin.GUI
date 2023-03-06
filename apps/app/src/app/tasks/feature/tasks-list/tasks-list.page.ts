@@ -1,13 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {
-  CancelTasksResponse,
-  GetTaskResponse,
-  ListTasksRequest,
-  ListTasksResponse,
-  TaskStatus,
-  TaskSummary,
-} from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -27,6 +19,14 @@ import {
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
+import {
+  CancelTasksResponse,
+  GetTaskResponse,
+  ListTasksRequest,
+  ListTasksResponse,
+  TaskStatus,
+  TaskSummary,
+} from '@aneoconsultingfr/armonik.api.angular';
 import {
   ComboBoxFilterComponent,
   IdFilterComponent,

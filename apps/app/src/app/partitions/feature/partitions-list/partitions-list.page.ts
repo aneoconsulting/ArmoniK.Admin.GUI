@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   GetPartitionResponse,
   ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
   BehaviorSubject,
+  Observable,
+  Subject,
   catchError,
   concatMap,
   merge,
-  Observable,
   of,
-  Subject,
   switchMap,
   takeUntil,
   tap,

@@ -1,9 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  ApplicationsClient,
-  GrpcParamsService,
-  ListApplicationsRequest,
-} from '@armonik.admin.gui/shared/data-access';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridComparatorInterface,
   ClrDatagridStateInterface,
@@ -11,6 +7,10 @@ import {
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcApplicationsService } from './grpc-applications.service';
+import {
+  ApplicationsClient,
+  ListApplicationsRequest,
+} from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcApplicationsService', () => {
   let service: GrpcApplicationsService;
@@ -44,7 +44,7 @@ describe('GrpcApplicationsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
       order: 1,
       filter: {} as ListApplicationsRequest.Filter,
     });
@@ -72,7 +72,7 @@ describe('GrpcApplicationsService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE],
       order: 2,
       filter: {
         name: 'Some test name',
@@ -85,7 +85,7 @@ describe('GrpcApplicationsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+        orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
         order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
         filter: {} as ListApplicationsRequest.Filter,
       },
@@ -95,7 +95,7 @@ describe('GrpcApplicationsService', () => {
       page: undefined,
       pageSize: undefined,
       interval: undefined,
-      orderBy: undefined,
+      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
       order: undefined,
     });
   });
@@ -105,7 +105,9 @@ describe('GrpcApplicationsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+        orderBy: [
+          ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+        ],
         order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
         filter: {
           name: 'Some test name',
@@ -117,7 +119,7 @@ describe('GrpcApplicationsService', () => {
       page: 2,
       pageSize: 50,
       interval: 30000,
-      orderBy: 3,
+      orderBy: [3],
       order: 2,
       name: 'Some test name',
     });
@@ -127,7 +129,7 @@ describe('GrpcApplicationsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
       order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
       filter: {} as ListApplicationsRequest.Filter,
     });
@@ -136,7 +138,7 @@ describe('GrpcApplicationsService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-          field: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+          fields: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
           direction: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
         },
         filter: {
@@ -153,7 +155,7 @@ describe('GrpcApplicationsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE],
       order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
       filter: {
         name: 'Some test name',
@@ -164,7 +166,9 @@ describe('GrpcApplicationsService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          field: ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+          fields: [
+            ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+          ],
           direction:
             ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
         },

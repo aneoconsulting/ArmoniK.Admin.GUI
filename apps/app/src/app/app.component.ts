@@ -3,11 +3,11 @@ import { NavigationEnd, Router } from '@angular/router';
 import {
   ExternalServicesEnum,
   HealthCheckService,
-  User,
 } from '@armonik.admin.gui/shared/data-access';
 import { Observable, distinctUntilChanged, filter, merge, take } from 'rxjs';
 import { AuthService } from './shared/data-access/auth.service';
 import { AppNavLink, HistoryService, SettingsService } from './shared/util';
+import { User } from '@aneoconsultingfr/armonik.api.angular';
 
 @Component({
   selector: 'app-root',
