@@ -1,4 +1,12 @@
-import { CancelTasksRequest, CancelTasksResponse, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  CancelTasksRequest,
+  CancelTasksResponse,
+  GetTaskRequest,
+  GetTaskResponse,
+  ListTasksRequest,
+  ListTasksResponse,
+  TasksClient,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,

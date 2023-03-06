@@ -10,7 +10,7 @@ import { AuthService } from '../../../shared/data-access/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersMeComponent {
-  constructor(private _authService: AuthService) { }
+  constructor(private _authService: AuthService) {}
 
   public get currentUser$(): Observable<User | null> {
     return this._authService.user$;

@@ -1,4 +1,12 @@
-import { CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  CancelSessionRequest,
+  CancelSessionResponse,
+  GetSessionRequest,
+  GetSessionResponse,
+  ListSessionsRequest,
+  ListSessionsResponse,
+  SessionsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,

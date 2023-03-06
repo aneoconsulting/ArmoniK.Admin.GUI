@@ -19,7 +19,14 @@ import {
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
-import { CancelTasksResponse, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskStatus, TaskSummary } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  CancelTasksResponse,
+  GetTaskResponse,
+  ListTasksRequest,
+  ListTasksResponse,
+  TaskStatus,
+  TaskSummary,
+} from '@aneoconsultingfr/armonik.api.angular';
 import {
   ComboBoxFilterComponent,
   IdFilterComponent,
@@ -154,7 +161,7 @@ export class TasksListComponent implements OnInit {
     private _settingsService: SettingsService,
     private _grpcTasksService: GrpcTasksService,
     private _authorizationService: AuthorizationService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.taskStatusList = [

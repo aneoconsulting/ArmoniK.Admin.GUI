@@ -14,7 +14,7 @@ export class CanActivateUser implements CanActivate {
     private _router: Router,
     private _grpcAuthService: GrpcAuthService,
     private _authService: AuthService
-  ) { }
+  ) {}
 
   canActivate(): Observable<boolean> {
     this._authService.loading$.next(true);

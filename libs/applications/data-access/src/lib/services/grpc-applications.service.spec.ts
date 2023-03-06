@@ -1,7 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  GrpcParamsService,
-} from '@armonik.admin.gui/shared/data-access';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClrDatagridComparatorInterface,
   ClrDatagridStateInterface,
@@ -9,7 +7,10 @@ import {
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcApplicationsService } from './grpc-applications.service';
-import { ApplicationsClient, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  ApplicationsClient,
+  ListApplicationsRequest,
+} from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcApplicationsService', () => {
   let service: GrpcApplicationsService;
@@ -104,7 +105,9 @@ describe('GrpcApplicationsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE],
+        orderBy: [
+          ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+        ],
         order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
         filter: {
           name: 'Some test name',
@@ -163,7 +166,9 @@ describe('GrpcApplicationsService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          fields: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE],
+          fields: [
+            ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+          ],
           direction:
             ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
         },

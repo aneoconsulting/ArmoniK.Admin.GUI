@@ -1,4 +1,10 @@
-import { GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  GetPartitionRequest,
+  GetPartitionResponse,
+  ListPartitionsRequest,
+  ListPartitionsResponse,
+  PartitionsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,

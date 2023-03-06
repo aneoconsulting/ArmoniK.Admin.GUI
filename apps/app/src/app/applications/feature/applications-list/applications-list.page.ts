@@ -1,4 +1,8 @@
-import { ApplicationRaw, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  ApplicationRaw,
+  ListApplicationsRequest,
+  ListApplicationsResponse,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
@@ -96,7 +100,7 @@ export class ApplicationsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _settingsService: SettingsService,
     private _grpcApplicationsService: GrpcApplicationsService
-  ) { }
+  ) {}
 
   public get refreshIntervalValue() {
     return this._intervalValue;

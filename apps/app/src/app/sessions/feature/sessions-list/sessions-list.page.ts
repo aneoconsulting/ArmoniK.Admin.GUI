@@ -1,4 +1,9 @@
-import { GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  GetSessionResponse,
+  ListSessionsRequest,
+  ListSessionsResponse,
+  SessionStatus,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
@@ -146,7 +151,7 @@ export class SessionsListComponent {
     private _grpcSessionsService: GrpcSessionsService,
     private _authorizationService: AuthorizationService,
     private _settingsService: SettingsService
-  ) { }
+  ) {}
 
   public get refreshIntervalValue() {
     return this._intervalValue;

@@ -1,4 +1,9 @@
-import { GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionRaw } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  GetPartitionResponse,
+  ListPartitionsRequest,
+  ListPartitionsResponse,
+  PartitionRaw,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GrpcPartitionsService } from '@armonik.admin.gui/partitions/data-access';
@@ -130,7 +135,7 @@ export class PartitionsListComponent {
     private _activatedRoute: ActivatedRoute,
     private _grpcPartitionsService: GrpcPartitionsService,
     private _router: Router
-  ) { }
+  ) {}
 
   public get refreshIntervalValue() {
     return this._intervalValue;

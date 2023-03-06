@@ -1,4 +1,8 @@
-import { ListResultsRequest, ListResultsResponse, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  ListResultsRequest,
+  ListResultsResponse,
+  ResultsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
   BaseGrpcService,
