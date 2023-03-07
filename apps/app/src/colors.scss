@@ -26,4 +26,21 @@
   // Cancelled
   --cancelled-500: hsl(198, 80%, 46%);
   --cancelled-900: hsl(198, 100%, 21%);
+
+  // Colors
+  --color-grey: hsl(0, 0%, 80%);
+  --color-orange: hsl(32, 95%, 44%);
+  --color-yellow: hsl(41, 96%, 40%);
+  --color-green: hsl(142, 76%, 36%);
+  --color-amber: hsl(21, 90%, 48%);
+  --color-red: hsl(0, 72%, 51%);
+
+  // Outlines
+  --outline-color-grey: hsl(0, 0%, 80%, 0.7);
+  --outline-color-orange: hsl(32, 95%, 44%, 0.7);
+  --outline-color-yellow: hsl(41, 96%, 40%, 0.7);
+  --outline-color-green: hsl(142, 76%, 36%, 0.7);
+  --outline-color-amber: hsl(21, 90%, 48%, 0.7);
+  --outline-color-red: hsl(0, 72%, 51%, 0.7);
+
 }

@@ -23,6 +23,7 @@ import {
   userIcon,
   objectsIcon,
   homeIcon,
+  eyeHideIcon,
 } from '@cds/core/icon';
 import {
   ClrIconModule,
@@ -90,7 +91,8 @@ export class AppModule {
       starIcon,
       certificateIcon,
       objectsIcon,
-      homeIcon
+      homeIcon,
+      eyeHideIcon
     );
   }
 }

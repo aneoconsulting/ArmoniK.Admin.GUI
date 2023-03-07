@@ -72,3 +72,83 @@ ul {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
+
+
+// with drag and drop
+
+.tasks {
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    .new-group {
+      opacity: 0;
+    }
+
+  }
+
+  &:hover .actions .new-group {
+    opacity: 1;
+
+    transition: opacity var(--transition-duration) var(--transition-timing-function);
+  }
+
+  .groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 2rem;
+
+    .item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+
+      text-transform: capitalize;
+
+      .dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        outline: 2px solid;
+        background-color: var(--color);
+        outline-color: var(--outline-color);
+      }
+
+      .remove {
+        opacity: 0;
+      }
+
+      &:hover .remove {
+        opacity: 1;
+
+        transition: opacity var(--transition-duration) var(--transition-timing-function);
+      }
+
+    }
+  }
+}
+
+.item.cdk-drag-preview {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  opacity: 0.6;
+  text-transform: capitalize;
+
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    outline: 2px solid;
+    outline-color: var(--outline-color-grey);
+  }
+
+  .remove {
+    opacity: 0;
+  }
+}

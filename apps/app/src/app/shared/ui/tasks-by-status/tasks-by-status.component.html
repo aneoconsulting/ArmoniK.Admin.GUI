@@ -1,6 +1,6 @@
 <div class="lists">
   <ul *ngFor="let col of formattedData(); trackBy: trackGroup">
-    <li *ngFor="let row of col.value; trackBy: trackStatus" class="status">
+    <li *ngFor="let row of col.value; trackBy: trackStatus" class="status" cdkDrag>
       <div class="status-dot" [class]="row.className"></div>
       <div class="data">
         <span class="status-name">
@@ -12,4 +12,43 @@
       </div>
     </li>
   </ul>
+</div>
+
+<div class="tasks">
+  <div class="actions">
+    <!-- Add a modal to view removed items -->
+    <button class="new-group btn btn-outline" type="button">
+      Removed items
+    </button>
+    <button (click)="createNewGroup()" class="new-group btn btn-primary" type="button">
+      <!-- Add a modal to create a new group -->
+      <!-- Add a name to each group -->
+      New group
+    </button>
+  </div>
+  <div cdkDropListGroup class="groups">
+    <!-- Add the name to the group -->
+    <!-- Add the ability to remove a group (each item goes to removed items -->
+    <!-- Add the ability to rename a group -->
+    <!-- Add a reset css (using clarity) -->
+    <div *ngFor="let group of groups; index as i; trackBy: trackByItems" cdkDropList [cdkDropListData]="group.items"
+      (cdkDropListDropped)="drop($event)" class="group"
+      [attr.style]="'--color: var(--color-' + group.color + ');--outline-color: var(--outline-color-' + group.color + ')'">
+      <ng-container *ngFor="let item of group.items; index as i; trackBy: trackByItem">
+        <div cdkDrag class="item">
+          <div class="dot"></div>
+          <span>
+            <!-- Add value and connect it to data input -->
+            {{ item.name }}
+          </span>
+          <span>
+            <button (click)="onRemove(item)" class="remove btn btn-sm btn-danger btn-icon"
+              [title]="'Remove ' + item.name" type="button">
+              <cds-icon shape="eye-hide" solid></cds-icon>
+            </button>
+          </span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>
