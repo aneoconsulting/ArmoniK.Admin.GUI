@@ -24,6 +24,8 @@ import {
   objectsIcon,
   homeIcon,
   eyeHideIcon,
+  pencilIcon,
+  trashIcon,
 } from '@cds/core/icon';
 import {
   ClrIconModule,
@@ -92,7 +94,9 @@ export class AppModule {
       certificateIcon,
       objectsIcon,
       homeIcon,
-      eyeHideIcon
+      eyeHideIcon,
+      pencilIcon,
+      trashIcon
     );
   }
 }

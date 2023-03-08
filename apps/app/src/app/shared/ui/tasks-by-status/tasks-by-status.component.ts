@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { TaskStatus } from '@armonik.admin.gui/shared/data-access';
-import { ClrIconModule } from '@clr/angular';
+import { ClrIconModule, ClrModalModule } from '@clr/angular';
 
 type StatusItem = {
   className: string;
@@ -23,11 +23,13 @@ type Item = {
 }
 
 type Group = {
+  name: string;
   color: string;
   items: Item[];
 }
 
 type StoredGroup = {
+  name: string;
   color: string;
   items: TaskStatus[];
 }
@@ -40,15 +42,22 @@ type StoredRemovedItem = TaskStatus;
   templateUrl: './tasks-by-status.component.html',
   styleUrls: ['./tasks-by-status.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, NgFor, AsyncPipe, PercentPipe, DragDropModule, ClrIconModule],
+  imports: [NgIf, NgFor, AsyncPipe, PercentPipe, DragDropModule, ClrIconModule, ClrModalModule],
 })
 export class TasksByStatusComponent implements OnInit {
   @Input() data: { status: number; count: number }[] | null;
 
+  // Storage
   public groupsStorageKey = 'task-status-groups';
   public removedItemsStorageKey = 'task-status-removed-items';
+
+  // Items
   public removedItems: Item[] = [];
   public groups: Group[] = [];
+
+  // Modals
+  public isModalViewRemovedItemsOpened = false;
+
 
   public ngOnInit() {
     const { groups, removedItems } = this._load();
@@ -75,9 +84,35 @@ export class TasksByStatusComponent implements OnInit {
 
   public createNewGroup() {
     this.groups.push({
+      name: 'New group',
       color: '',
       items: [],
     });
+  }
+
+  public deleteGroup(group: Group) {
+    this.groups = this.groups.filter((g) => g !== group)
+    // Set items to removed items
+    this.removedItems = [...this.removedItems, ...group.items];
+
+    this._save();
+  }
+
+
+  public openModalViewRemovedItems() {
+    this.isModalViewRemovedItemsOpened = true;
+  }
+
+  public openModalRenameGroup(group: Group) {
+    console.log('openModalRenameGroup', group);
+
+    // TODO: Open modal
+  }
+
+  public renameGroup(group: Group, name: string) {
+    console.log('renameGroup', group, name);
+
+    this._save();
   }
 
   drop(event: CdkDragDrop<Item[]>) {
@@ -253,6 +288,7 @@ export class TasksByStatusComponent implements OnInit {
 
   private _save() {
     const groupsData: StoredGroup[] = this.groups.map((group) => ({
+      name: group.name,
       color: group.color,
       items: group.items.map((item) => (item.id)),
     }));
@@ -305,6 +341,7 @@ export class TasksByStatusComponent implements OnInit {
       return firstIndex === index;
     });
 
+
     return filteredRemovedItems;
   }
   private _parseLoadedGroups(groups: StoredGroup[] | null): Group[] | null {
@@ -313,6 +350,7 @@ export class TasksByStatusComponent implements OnInit {
     }
 
     const parsedGroups: Group[] = groups.map((group) => ({
+      name: group.name,
       color: group.color,
       items: group.items.map((item) => ({
         value: 0,
@@ -354,6 +392,7 @@ export class TasksByStatusComponent implements OnInit {
 
   private _defaultGroups: Group[] = [
     {
+      name: 'Unspecified',
       color: 'grey',
       items: [
         {
@@ -364,6 +403,7 @@ export class TasksByStatusComponent implements OnInit {
       ],
     },
     {
+      name: 'In progress',
       color: 'orange',
       items: [
         {
@@ -384,6 +424,7 @@ export class TasksByStatusComponent implements OnInit {
       ],
     },
     {
+      name: 'Running',
       color: 'yellow',
       items: [
         {
@@ -399,6 +440,7 @@ export class TasksByStatusComponent implements OnInit {
       ],
     },
     {
+      name: 'Completed',
       color: 'green',
       items: [
         {
@@ -409,6 +451,7 @@ export class TasksByStatusComponent implements OnInit {
       ],
     },
     {
+      name: 'Cancelled',
       color: 'amber',
       items: [
         {
@@ -424,6 +467,7 @@ export class TasksByStatusComponent implements OnInit {
       ],
     },
     {
+      name: 'Failed',
       color: 'red',
       items: [
         {

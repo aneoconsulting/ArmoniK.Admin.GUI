@@ -100,6 +100,50 @@ ul {
     grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
     gap: 2rem;
 
+    .group {
+      .group-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .group-title {
+          font-size: 0.6rem;
+          font-weight: 700;
+        }
+
+        .group-actions {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-end;
+          gap: 0.25rem;
+
+          button {
+            opacity: 0;
+
+            margin: 0;
+            padding: 0.25rem;
+            color: hsl(198, 0%, 95%);
+            background: inherit;
+            border: none;
+
+            cursor: pointer;
+
+            cds-icon {
+              width: 0.75rem;
+              height: 0.75rem;
+            }
+          }
+        }
+      }
+
+      &:hover .group-header .group-actions button {
+        opacity: 1;
+        transition: opacity var(--transition-duration) var(--transition-timing-function);
+      }
+    }
+
+
     .item {
       display: flex;
       flex-direction: row;
