@@ -1,5 +1,7 @@
 <ng-container *ngIf="load$ | async as data; else loading">
-  <app-tasks-by-status [data]="data"></app-tasks-by-status>
+  <app-tasks-by-status [data]="data">
+    <ng-content section-header></ng-content>
+  </app-tasks-by-status>
 </ng-container>
 
 <ng-template #loading>

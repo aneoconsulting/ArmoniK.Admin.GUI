@@ -4,10 +4,18 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnChanges,
+  OnInit,
+  SimpleChanges
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TaskStatus } from '@armonik.admin.gui/shared/data-access';
-import { ClrIconModule, ClrModalModule } from '@clr/angular';
+import { ClrIconModule, ClrInputModule, ClrModalModule } from '@clr/angular';
+import { RenameGroupComponent } from '../../../dashboard/ui/rename-goup/rename-group.component';
+import { Group, Item, StoredGroup, StoredRemovedItem } from '../../../dashboard/utils/types';
+import { ViewRemovedItemsComponent } from '../../../dashboard/ui/view-removed-items/view-removed-items.component';
+import { GroupActionsButtonComponent } from '../../../dashboard/ui/group-actions-button/group-actions-button.component';
+import { CreateNewGroupComponent } from '../../../dashboard/ui/create-new-group/create-new-group.component';
 
 type StatusItem = {
   className: string;
@@ -16,35 +24,15 @@ type StatusItem = {
   value: number;
 };
 
-type Item = {
-  value: number;
-  id: TaskStatus;
-  name: string;
-}
-
-type Group = {
-  name: string;
-  color: string;
-  items: Item[];
-}
-
-type StoredGroup = {
-  name: string;
-  color: string;
-  items: TaskStatus[];
-}
-
-type StoredRemovedItem = TaskStatus;
-
 @Component({
   standalone: true,
   selector: 'app-tasks-by-status',
   templateUrl: './tasks-by-status.component.html',
   styleUrls: ['./tasks-by-status.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, NgFor, AsyncPipe, PercentPipe, DragDropModule, ClrIconModule, ClrModalModule],
+  imports: [NgIf, NgFor, AsyncPipe, PercentPipe, DragDropModule, ClrIconModule, ClrModalModule, FormsModule, ClrInputModule, RenameGroupComponent, ViewRemovedItemsComponent, GroupActionsButtonComponent, CreateNewGroupComponent],
 })
-export class TasksByStatusComponent implements OnInit {
+export class TasksByStatusComponent implements OnInit, OnChanges {
   @Input() data: { status: number; count: number }[] | null;
 
   // Storage
@@ -57,6 +45,11 @@ export class TasksByStatusComponent implements OnInit {
 
   // Modals
   public isModalViewRemovedItemsOpened = false;
+  public isModalAddGroupOpened = false;
+  public isModalRenameGroupOpened = false;
+
+  public groupToRename: Group | null = null;
+  public groupNewName = '';
 
 
   public ngOnInit() {
@@ -72,7 +65,35 @@ export class TasksByStatusComponent implements OnInit {
 
     this.groups = filteredGroups;
     this.removedItems = filteredRemovedItems;
+
+    this._updateData()
   }
+
+  public ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      this._updateData()
+    }
+  }
+
+  private _updateData() {
+    // Reset values
+    this.groups.forEach((group) => {
+      group.items.forEach((item) => {
+        item.value = 0;
+      });
+    });
+    // Update values
+    this.data?.forEach((item) => {
+      this.groups.forEach((group) => {
+        group.items.forEach((groupItem) => {
+          if (item.status === groupItem.id) {
+            groupItem.value = item.count;
+          }
+        });
+      });
+    });
+  }
+
 
   public trackByItems(_: number, groups: Group) {
     return groups.items.map((i) => i.id).join('-');
@@ -85,9 +106,19 @@ export class TasksByStatusComponent implements OnInit {
   public createNewGroup() {
     this.groups.push({
       name: 'New group',
-      color: '',
+      color: 'orange',
       items: [],
     });
+  }
+
+  public onNewGroup(group: Group) {
+    // We need to create a new group in order to avoid the same reference
+    this.groups.push({
+      name: group.name,
+      color: group.color,
+      items: [],
+    });
+    this._save();
   }
 
   public deleteGroup(group: Group) {
@@ -103,17 +134,35 @@ export class TasksByStatusComponent implements OnInit {
     this.isModalViewRemovedItemsOpened = true;
   }
 
-  public openModalRenameGroup(group: Group) {
-    console.log('openModalRenameGroup', group);
-
-    // TODO: Open modal
+  public onRemovedItemsChange() {
+    this._updateData()
+    this._save()
   }
 
-  public renameGroup(group: Group, name: string) {
-    console.log('renameGroup', group, name);
+
+  public openModalAddGroup() {
+    this.isModalAddGroupOpened = true;
+  }
+
+  public openModalRenameGroup(group: Group) {
+    this.isModalRenameGroupOpened = true;
+    this.groupToRename = group;
+  }
+
+  public onGroupNameChange() {
+    this._save();
+  }
+
+  public onRenameGroup(name: string) {
+    const group = this.groupToRename;
+
+    if (group && name) {
+      group.name = name;
+    }
 
     this._save();
   }
+
 
   drop(event: CdkDragDrop<Item[]>) {
     if (event.previousContainer === event.container) {

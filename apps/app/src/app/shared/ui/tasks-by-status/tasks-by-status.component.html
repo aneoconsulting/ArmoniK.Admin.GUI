@@ -1,35 +1,18 @@
-<div class="lists">
-  <ul *ngFor="let col of formattedData(); trackBy: trackGroup">
-    <li *ngFor="let row of col.value; trackBy: trackStatus" class="status" cdkDrag>
-      <div class="status-dot" [class]="row.className"></div>
-      <div class="data">
-        <span class="status-name">
-          {{ row.name }}
-        </span>
-        <span class="status-value">
-          {{ row.value }} ({{ row.value / total() | percent : '1.0-2' }})
-        </span>
-      </div>
-    </li>
-  </ul>
-</div>
-
 <div class="tasks">
-  <div class="actions">
-    <!-- Add a modal to view removed items -->
-    <button (click)="openModalViewRemovedItems()" class="new-group btn btn-outline" type="button">
-      Removed items
-    </button>
-    <button (click)="createNewGroup()" class="new-group btn btn-primary" type="button">
-      <!-- Add a modal to create a new group -->
-      <!-- Add a name to each group -->
-      New group
-    </button>
+
+  <div class="section-header">
+    <div class="title">
+      <ng-content section-header></ng-content>
+    </div>
+
+    <div class="actions">
+      <app-dashboard-view-removed-items [items]="removedItems" [groups]="groups" (applyChange)="onRemovedItemsChange()">
+      </app-dashboard-view-removed-items>
+      <app-dashboard-create-new-group (newGroup)="onNewGroup($event)"></app-dashboard-create-new-group>
+    </div>
   </div>
+
   <div cdkDropListGroup class="groups">
-    <!-- Add the name to the group -->
-    <!-- Add the ability to remove a group (each item goes to removed items -->
-    <!-- Add the ability to rename a group -->
     <div *ngFor="let group of groups; index as i; trackBy: trackByItems" cdkDropList [cdkDropListData]="group.items"
       (cdkDropListDropped)="drop($event)" class="group"
       [attr.style]="'--color: var(--color-' + group.color + ');--outline-color: var(--outline-color-' + group.color + ')'">
@@ -38,25 +21,20 @@
           {{ group.name }}
         </div>
         <div class="group-actions">
-          <button (click)="openModalRenameGroup(group)" type="button">
-            <span class="sr-only">
-              Rename the group
-            </span>
-            <cds-icon shape="pencil" solid></cds-icon>
-          </button>
-          <button (click)="deleteGroup(group)" type="button">
+          <app-dashboard-rename-group [group]="group" (groupChange)="onGroupNameChange()">
+          </app-dashboard-rename-group>
+          <app-dashboard-group-actions-button (click)="deleteGroup(group)">
             <span class="sr-only">
               Delete the group
             </span>
             <cds-icon shape="trash" solid></cds-icon>
-          </button>
+          </app-dashboard-group-actions-button>
         </div>
       </div>
       <ng-container *ngFor="let item of group.items; index as i; trackBy: trackByItem">
         <div cdkDrag class="item">
           <div class="dot"></div>
           <span>
-            <!-- Add value and connect it to data input -->
             {{ item.name }}
           </span>
           <span>
@@ -68,30 +46,14 @@
               <cds-icon shape="eye-hide" solid></cds-icon>
             </button>
           </span>
+          <span class="value">
+            {{ item.value }}
+            <span class="value-percent">
+              ({{ item.value / total() | percent : '1.0-2' }})
+            </span>
+          </span>
         </div>
       </ng-container>
     </div>
   </div>
 </div>
-
-<clr-modal [(clrModalOpen)]="isModalViewRemovedItemsOpened" [clrModalClosable]="false" class="modal removed-items">
-  <h3 class="modal-title">Removed Items</h3>
-  <div class="modal-body">
-    <ul>
-      <li *ngFor="let item of removedItems">
-        {{ item.name }}
-        <!-- Add a select to add it to a group -->
-        <!-- Add a button to the modal to apply change -->
-      </li>
-    </ul>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary btn-outline" (click)="isModalViewRemovedItemsOpened = false">
-      Close
-    </button>
-    <!-- Update the function invoked when user click on this button -->
-    <button type="button" class="btn btn-primary" (click)="isModalViewRemovedItemsOpened = false">
-      Apply
-    </button>
-  </div>
-</clr-modal>

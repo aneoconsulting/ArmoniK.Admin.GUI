@@ -1,15 +1,18 @@
 <h1 i18n>Dashboard</h1>
 
 <section class="tasks">
-  <h2><span i18n>
-      Tasks
-    </span>
-    <span *ngIf="totalTasks">
-      - {{ totalTasks }}
-    </span>
-  </h2>
-  <p class="p2">Grouped by status</p>
-  <app-every-tasks-by-status (total)="getTotalTasks($event)"></app-every-tasks-by-status>
+  <app-every-tasks-by-status (total)="getTotalTasks($event)">
+    <div section-header>
+      <h2><span i18n>
+          Tasks
+        </span>
+        <span *ngIf="totalTasks">
+          - {{ totalTasks }}
+        </span>
+      </h2>
+      <p class="p2">Grouped by status</p>
+    </div>
+  </app-every-tasks-by-status>
 </section>
 
 <section class="applications">
