@@ -1,0 +1,39 @@
+.tasks {
+  armonik-admin-gui-dashboard-show-tasks-by-status {
+    display: block;
+    margin-top: 1.5rem;
+  }
+
+  .tasks-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 1.25rem;
+
+    h2 {
+      margin-top: 0;
+    }
+
+    h2+p {
+      margin-top: -0.4rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+
+    .header-actions ::ng-deep armonik-admin-gui-dashboard-manage-removed-items>button {
+      opacity: 0;
+    }
+
+    .header-actions ::ng-deep armonik-admin-gui-dashboard-create-new-group>button {
+      opacity: 0;
+    }
+  }
+
+  &:hover .tasks-header .header-actions ::ng-deep button {
+    opacity: 1;
+    transition: opacity var(--transition-duration) var(--transition-timing-function);
+  }
+}

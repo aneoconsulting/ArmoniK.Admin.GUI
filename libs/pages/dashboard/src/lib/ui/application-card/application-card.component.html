@@ -1,0 +1,28 @@
+<article class="card">
+  <h3 class="card-header">
+    {{ application.name }}&nbsp;-&nbsp;{{ application.version }}
+  </h3>
+  <div class="card-block">
+    <h4 class="card-title informations" i18n>Informations</h4>
+    <div class="card-text">
+      <dl>
+        <dt i18n>Namespace</dt>
+        <dd>{{ application.namespace }}</dd>
+        <dt i18n>Service</dt>
+        <dd>{{ application.service ? application.service : '/' }}</dd>
+      </dl>
+    </div>
+    <h4 i18n class="card-title tasks">Tasks</h4>
+    <p class="p2">Grouped by status</p>
+    <div class="card-text">
+      <ng-container *ngIf="loadCountTasksByStatus$ | async as data; else loading">
+        <armonik-admin-gui-dashboard-show-tasks-by-status [data]="data"
+          [groups]="groups"></armonik-admin-gui-dashboard-show-tasks-by-status>
+      </ng-container>
+    </div>
+  </div>
+</article>
+
+<ng-template #loading>
+  <div i18n>loading...</div>
+</ng-template>

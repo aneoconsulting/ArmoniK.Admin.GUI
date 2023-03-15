@@ -1,0 +1,31 @@
+<armonik-admin-gui-dashboard-group-actions-button (click)="openModal()">
+  <span class="sr-only">
+    Rename the group
+  </span>
+  <cds-icon shape="pencil" solid></cds-icon>
+</armonik-admin-gui-dashboard-group-actions-button>
+
+<clr-modal [(clrModalOpen)]="open" [clrModalClosable]="false" class="modal removed-items">
+  <h3 class="modal-title">Rename a group</h3>
+  <div class="modal-body">
+    <div>
+      <span>Current name</span>&nbsp;
+      <span>{{ group.name }}</span>
+    </div>
+    <form clrForm>
+      <clr-input-container>
+        <label>New name</label>
+        <input clrInput type="text" name="name" [(ngModel)]="newGroupName" i18n-placeholder placeholder="Enter a name"
+          required />
+      </clr-input-container>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-outline" (click)="closeModal()">
+      Close
+    </button>
+    <button type="button" class="btn btn-primary" (click)="rename()">
+      Rename
+    </button>
+  </div>
+</clr-modal>

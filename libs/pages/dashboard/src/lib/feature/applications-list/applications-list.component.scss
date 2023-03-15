@@ -1,0 +1,18 @@
+.applications-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+  }
+
+  clr-button-group {
+    margin-right: 0;
+  }
+}
+
+.spinner {
+  margin-top: 1rem;
+}
