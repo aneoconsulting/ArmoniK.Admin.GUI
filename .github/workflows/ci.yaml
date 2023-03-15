@@ -144,7 +144,7 @@ jobs:
   #         path: ./dist/cypress/apps/app-e2e/videos
 
   build:
-    name: Build
+    name: Build App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -169,27 +169,31 @@ jobs:
       - name: Build all
         run: nr ng affected --target=build --parallel=3
 
-  # build-docs:
-  #   needs: [setup, validate-code]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #         submodules: true
+  generate-docs:
+    name: Generate Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #     - name: Restore Node Modules
-  #       id: node-cache
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: node_modules
-  #         key: node-modules-${{ hashFiles('yarn.lock') }}
+      - run: npm install -g pnpm @antfu/ni
 
-  #     - name: Set Node Env
-  #       run: echo "NODE_ENV=production" >> $GITHUB_ENV
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: ".docs/pnpm-lock.yaml"
 
-  #     - name: Build
-  #       run: yarn docs:build
+      - name: Install dependencies
+        run: cd .docs && nci
+
+      - name: Use NODE_ENV=production
+        run: echo "NODE_ENV=production" >> $GITHUB_ENV
+
+      - name: Static HTML export with Nuxt
+        run: cd .docs && nr generate
 
   # Will be updated in #457
   # build-push-docker-images:

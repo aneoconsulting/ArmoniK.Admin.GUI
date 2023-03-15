@@ -9,51 +9,8 @@ on:
       - main
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
-
-      - name: Cache Node Modules
-        id: node-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Cache Protos
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
-
-      - name: Use Node.js
-        if: steps.node-cache.outputs.cache-hit != 'true'
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'yarn'
-
-      - name: Install Dependencies
-        if: steps.node-cache.outputs.cache-hit != 'true'
-        run: yarn --immutable
-
-      - name: Install Protoc
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        uses: arduino/setup-protoc@v1
-
-      - name: Build protos
-        if: steps.proto-cache.outputs.cache-hit != 'true'
-        run: yarn proto:generate
-
   build-push-docker-images:
     name: Build and Push Docker Images
-    needs: [setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -66,20 +23,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          submodules: true
+
+      - run: npm install -g pnpm @antfu/ni
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-          cache: 'yarn'
-
-      - name: Restore Protos
-        id: proto-cache
-        uses: actions/cache@v3
-        with:
-          path: libs/shared/data-access/src/lib/proto/generated
-          key: protobuf-${{ hashFiles('libs/shared/data-access/src/lib/proto/ArmoniK.Api/Protos/V1/*.proto') }}
+          cache: "pnpm"
 
       - name: Docker meta
         id: meta
