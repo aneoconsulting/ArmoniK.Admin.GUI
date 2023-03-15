@@ -10,82 +10,60 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
-
-      - name: Cache Node Modules
-        id: node-cache
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
-
-      - name: Use Node.js
-        if: steps.node-cache.outputs.cache-hit != 'true'
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'yarn'
-
-      - name: Install Dependencies
-        if: steps.node-cache.outputs.cache-hit != 'true'
-        run: yarn --immutable
-
   validate-code:
     name: Validate Code
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          submodules: true
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
+      - run: npm install -g pnpm @antfu/ni
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: nci
 
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
 
       - name: Check code style
-        run: yarn ng format:check
+        run: nr ng format:check
+
       - name: Check code quality
-        run: yarn ng affected --target=lint --parallel=3
+        run: nr ng affected --target=lint --parallel=3
 
   unit-tests:
     name: Unit Tests
-    needs: [setup, validate-code]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          submodules: true
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
+      - run: npm install -g pnpm @antfu/ni
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: nci
 
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
 
       - name: Run Unit Tests
-        run: yarn ng affected --target=test --parallel=3 --code-coverage
+        run: nr ng affected --target=test --parallel=3 --code-coverage
 
       - name: Coverage Report (App)
         # Can't publish on push on main
@@ -167,27 +145,29 @@ jobs:
 
   build:
     name: Build
-    needs: [setup, validate-code]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          submodules: true
 
-      - name: Restore Node Modules
-        id: node-cache
-        uses: actions/cache@v3
+      - run: npm install -g pnpm @antfu/ni
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('yarn.lock') }}
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: nci
 
       - uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: main
 
       - name: Build all
-        run: yarn ng affected --target=build --parallel=3
+        run: nr ng affected --target=build --parallel=3
 
   # build-docs:
   #   needs: [setup, validate-code]
@@ -211,64 +191,65 @@ jobs:
   #     - name: Build
   #       run: yarn docs:build
 
-  build-push-docker-images:
-    # name: Build and push Docker image # Need to change requirement in settings
-    needs: [setup]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dockerfile:
-          - name: armonik_admin_app
-            file: app.Dockerfile
+  # Will be updated in #457
+  # build-push-docker-images:
+  #   # name: Build and push Docker image # Need to change requirement in settings
+  #   needs: [setup]
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       dockerfile:
+  #         - name: armonik_admin_app
+  #           file: app.Dockerfile
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          submodules: true
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #         submodules: true
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'yarn'
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.x
+  #         cache: "yarn"
 
-      # - name: Restore Yarn Cache
-      #   id: yarn-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: .yarn
-      #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
+  #     # - name: Restore Yarn Cache
+  #     #   id: yarn-cache
+  #     #   uses: actions/cache@v3
+  #     #   with:
+  #     #     path: .yarn
+  #     #     key: yarn-${{ hashFiles('yarn.lock', 'package.json') }}
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            dockerhubaneo/${{ matrix.dockerfile.name }}
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=ref,event=pr
+  #     - name: Docker meta
+  #       id: meta
+  #       uses: docker/metadata-action@v3
+  #       with:
+  #         # list of Docker images to use as base name for tags
+  #         images: |
+  #           dockerhubaneo/${{ matrix.dockerfile.name }}
+  #         # generate Docker tags based on the following events/attributes
+  #         tags: |
+  #           type=ref,event=pr
 
-      - name: Login to DockerHub
-        if: github.event_name != 'push'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+  #     - name: Login to DockerHub
+  #       if: github.event_name != 'push'
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKER_HUB_USER }}
+  #         password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v2
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: ${{ github.event_name != 'push' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          file: ${{ matrix.dockerfile.file }}
-          cache-from: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache
-          cache-to: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache,mode=max
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: .
+  #         push: ${{ github.event_name != 'push' }}
+  #         tags: ${{ steps.meta.outputs.tags }}
+  #         labels: ${{ steps.meta.outputs.labels }}
+  #         file: ${{ matrix.dockerfile.file }}
+  #         cache-from: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache
+  #         cache-to: type=registry,ref=dockerhubaneo/${{ matrix.dockerfile.name }}:buildcache,mode=max
