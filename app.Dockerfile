@@ -4,16 +4,13 @@ ARG configuration=production
 
 WORKDIR /usr/src/app
 
-RUN npm install -g nx
+RUN npm install -g nx pnpm @antfu/ni
 
-COPY .yarn/releases/* ./.yarn/releases/
-COPY .yarn/cache ./.yarn/cache/
-COPY .yarnrc.yml ./
 COPY package.json ./
-COPY yarn.lock ./
+COPY pnpm-lock.yaml ./
 COPY decorate-angular-cli.js ./
 
-RUN yarn --immutable
+RUN nci
 
 COPY . .
 
