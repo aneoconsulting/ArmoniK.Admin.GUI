@@ -639,9 +639,139 @@
         <source>Previous Page</source>
       </segment>
     </unit>
-    <unit id="8529118008397001820">
+    <unit id="6583920543416105444">
       <segment>
-        <source> Tasks </source>
+        <source> Tasks</source>
+      </segment>
+    </unit>
+    <unit id="1523600450938035843">
+      <segment>
+        <source> Loading... </source>
+      </segment>
+    </unit>
+    <unit id="1674202514578558795">
+      <segment>
+        <source>New name</source>
+      </segment>
+    </unit>
+    <unit id="1850999561099918087">
+      <segment>
+        <source>yellow</source>
+      </segment>
+    </unit>
+    <unit id="209379737401621079">
+      <segment>
+        <source>grey</source>
+      </segment>
+    </unit>
+    <unit id="2235647076080114570">
+      <segment>
+        <source>Select a color</source>
+      </segment>
+    </unit>
+    <unit id="2788105330327067099">
+      <segment>
+        <source> Apply </source>
+      </segment>
+    </unit>
+    <unit id="3050903050112801884">
+      <segment>
+        <source> Delete the group </source>
+      </segment>
+    </unit>
+    <unit id="3200829095752276260">
+      <segment>
+        <source>Rename a group</source>
+      </segment>
+    </unit>
+    <unit id="362145441313857467">
+      <segment>
+        <source> Hide the item </source>
+      </segment>
+    </unit>
+    <unit id="4215127233487431643">
+      <segment>
+        <source> Removed Items </source>
+      </segment>
+    </unit>
+    <unit id="4236065708078284037">
+      <segment>
+        <source> Create </source>
+      </segment>
+    </unit>
+    <unit id="4296542518018293988">
+      <segment>
+        <source>New group</source>
+      </segment>
+    </unit>
+    <unit id="4524017100327483982">
+      <segment>
+        <source>Select a group</source>
+      </segment>
+    </unit>
+    <unit id="4750497417886366863">
+      <segment>
+        <source>red</source>
+      </segment>
+    </unit>
+    <unit id="4955630191692571673">
+      <segment>
+        <source>orange</source>
+      </segment>
+    </unit>
+    <unit id="5006109153267517336">
+      <segment>
+        <source> Rename </source>
+      </segment>
+    </unit>
+    <unit id="5266849099544964607">
+      <segment>
+        <source> Rename the group </source>
+      </segment>
+    </unit>
+    <unit id="564870720479927873">
+      <segment>
+        <source>Name of your group</source>
+      </segment>
+    </unit>
+    <unit id="5862748743317096016">
+      <segment>
+        <source>Removed Items</source>
+      </segment>
+    </unit>
+    <unit id="6192244276175907743">
+      <segment>
+        <source>green</source>
+      </segment>
+    </unit>
+    <unit id="6469957309043414241">
+      <segment>
+        <source> New group </source>
+      </segment>
+    </unit>
+    <unit id="6477693301935901578">
+      <segment>
+        <source>Grouped by status</source>
+      </segment>
+    </unit>
+    <unit id="699977731672329756">
+      <segment>
+        <source>Current name</source>
+      </segment>
+    </unit>
+    <unit id="7139520592812430718">
+      <segment>
+        <source>Create a group</source>
+      </segment>
+    </unit>
+    <unit id="8614260097416227361">
+      <segment>
+        <source>No tasks</source>
+      </segment>
+    </unit>
+    <unit id="8946464197451351682">
+      <segment>
+        <source>amber</source>
       </segment>
     </unit>
   </file>
