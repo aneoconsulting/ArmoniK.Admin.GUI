@@ -24,7 +24,10 @@ const routes: Routes = [
       {
         path: 'dashboard',
         title: $localize`Dashboard`,
-        loadComponent: () => import('@armonik.admin.gui/pages/dashboard').then((m) => m.DashboardComponent),
+        loadComponent: () =>
+          import('@armonik.admin.gui/pages/dashboard').then(
+            (m) => m.DashboardComponent
+          ),
       },
       {
         path: 'applications',
@@ -101,4 +104,4 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

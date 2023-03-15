@@ -1,9 +1,5 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { map, switchMap, tap, timer } from 'rxjs';
@@ -20,9 +16,18 @@ import { Item } from '../../types/item.type';
   selector: 'armonik-admin-gui-dashboard-tasks-grouped-by-status',
   templateUrl: './tasks-grouped-by-status.component.html',
   styleUrls: ['./tasks-grouped-by-status.component.scss'],
-  imports: [ManageRemovedItemsComponent, ShowTasksByStatusComponent, CreateNewGroupComponent, NgIf, AsyncPipe],
+  imports: [
+    ManageRemovedItemsComponent,
+    ShowTasksByStatusComponent,
+    CreateNewGroupComponent,
+    NgIf,
+    AsyncPipe,
+  ],
   providers: [
-    GrpcTasksService, GrpcParamsService, DashboardTasksService, DashboardDefaultGroupService
+    GrpcTasksService,
+    GrpcParamsService,
+    DashboardTasksService,
+    DashboardDefaultGroupService,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -39,12 +44,13 @@ export class TasksGroupedByStatusComponent implements OnInit {
     }),
     tap((status) => {
       this.total = this._calculateTotal(status);
-    }),
+    })
   );
 
-  constructor(private _grpcTasksService: GrpcTasksService, private _dashboardTasksService: DashboardTasksService) {
-
-  }
+  constructor(
+    private _grpcTasksService: GrpcTasksService,
+    private _dashboardTasksService: DashboardTasksService
+  ) {}
 
   public ngOnInit(): void {
     const { groups, removedItems } = this._dashboardTasksService.load();
@@ -68,7 +74,7 @@ export class TasksGroupedByStatusComponent implements OnInit {
    */
   public onHideItem(itemId: Item['id']): void {
     const item = this.groups.reduce((acc, group) => {
-      const item = group.items.find(item => item.id === itemId);
+      const item = group.items.find((item) => item.id === itemId);
 
       if (item) {
         group.items.splice(group.items.indexOf(item), 1);
@@ -94,8 +100,14 @@ export class TasksGroupedByStatusComponent implements OnInit {
    *
    * @returns void
    */
-  public onRenameGroup({ oldName, newName }: { oldName: string, newName: string }): void {
-    const group = this.groups.find(group => group.name === oldName);
+  public onRenameGroup({
+    oldName,
+    newName,
+  }: {
+    oldName: string;
+    newName: string;
+  }): void {
+    const group = this.groups.find((group) => group.name === oldName);
 
     if (!group) {
       return;
@@ -114,7 +126,7 @@ export class TasksGroupedByStatusComponent implements OnInit {
    * @returns void
    */
   public onDeleteGroup(groupName: string): void {
-    const group = this.groups.find(group => group.name === groupName);
+    const group = this.groups.find((group) => group.name === groupName);
 
     if (!group) {
       return;
@@ -134,7 +146,7 @@ export class TasksGroupedByStatusComponent implements OnInit {
    * @returns void
    */
   public onUpdateRemovedItems(pairing: Map<Item['id'], Group>): void {
-    this.removedItems.forEach(item => {
+    this.removedItems.forEach((item) => {
       const group = pairing.get(item.id);
 
       console.log(group);
@@ -168,7 +180,10 @@ export class TasksGroupedByStatusComponent implements OnInit {
   }
 
   private _save(): void {
-    this._dashboardTasksService.save({ groups: this.groups, removedItems: this.removedItems });
+    this._dashboardTasksService.save({
+      groups: this.groups,
+      removedItems: this.removedItems,
+    });
   }
 
   private _calculateTotal(data: { count: number }[]): number {

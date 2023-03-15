@@ -1,11 +1,19 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
 import { Observable, map, switchMap, timer } from 'rxjs';
 import { ShowTasksByStatusComponent } from '../show-tasks-by-status/show-tasks-by-status.component';
 import { DashboardDefaultGroupService } from '../../data-access/dashboard-default-group.service';
 import { Group } from '../../types/group.type';
-import { ApplicationRaw, CountTasksByStatusApplicationResponse } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  ApplicationRaw,
+  CountTasksByStatusApplicationResponse,
+} from '@aneoconsultingfr/armonik.api.angular';
 
 @Component({
   standalone: true,
@@ -26,9 +34,12 @@ export class ApplicationCardComponent implements OnInit {
     })
   );
 
-  public groups: Group[] = []
+  public groups: Group[] = [];
 
-  constructor(private _grpcApplicationsService: GrpcApplicationsService, private _dashboardDefaultGroupService: DashboardDefaultGroupService) { }
+  constructor(
+    private _grpcApplicationsService: GrpcApplicationsService,
+    private _dashboardDefaultGroupService: DashboardDefaultGroupService
+  ) {}
 
   ngOnInit(): void {
     this.groups = this._dashboardDefaultGroupService.defaultGroups;

@@ -2,18 +2,35 @@
   New group
 </button>
 
-<clr-modal [(clrModalOpen)]="open" [clrModalClosable]="false" class="modal removed-items">
+<clr-modal
+  [(clrModalOpen)]="open"
+  [clrModalClosable]="false"
+  class="modal removed-items"
+>
   <h3 class="modal-title" i18n>Create a group</h3>
 
   <div class="modal-body">
     <form clrForm>
       <clr-input-container>
         <label i18n>Name of your group</label>
-        <input clrInput type="text" i18n-placeholder placeholder="New group" [(ngModel)]="newGroupName" name="name" />
+        <input
+          clrInput
+          type="text"
+          i18n-placeholder
+          placeholder="New group"
+          [(ngModel)]="newGroupName"
+          name="name"
+        />
       </clr-input-container>
       <clr-select-container>
         <label i18n>Select a color</label>
-        <select clrSelect i18n-title title="Select a color" name="color" [(ngModel)]="newGroupColor">
+        <select
+          clrSelect
+          i18n-title
+          title="Select a color"
+          name="color"
+          [(ngModel)]="newGroupColor"
+        >
           <option value="grey" i18n>grey</option>
           <option value="red" i18n>red</option>
           <option value="orange" i18n>orange</option>
@@ -26,7 +43,12 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary btn-outline" (click)="closeModal()" i18n>
+    <button
+      type="button"
+      class="btn btn-primary btn-outline"
+      (click)="closeModal()"
+      i18n
+    >
       Close
     </button>
     <button type="button" class="btn btn-primary" (click)="createGroup()" i18n>

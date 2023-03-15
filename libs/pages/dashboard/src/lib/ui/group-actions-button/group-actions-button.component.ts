@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   standalone: true,
-  selector: "armonik-admin-gui-dashboard-group-actions-button",
-  templateUrl: "./group-actions-button.component.html",
-  styleUrls: ["./group-actions-button.component.scss"],
+  selector: 'armonik-admin-gui-dashboard-group-actions-button',
+  templateUrl: './group-actions-button.component.html',
+  styleUrls: ['./group-actions-button.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GroupActionsButtonComponent {

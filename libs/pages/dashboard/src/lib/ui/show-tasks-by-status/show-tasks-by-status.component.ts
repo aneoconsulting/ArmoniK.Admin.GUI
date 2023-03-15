@@ -1,4 +1,9 @@
-import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgFor, NgIf, PercentPipe } from '@angular/common';
 import {
   Component,
@@ -6,7 +11,7 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClrIconModule, ClrInputModule, ClrModalModule } from '@clr/angular';
@@ -23,7 +28,21 @@ import { RenameGroupComponent } from '../rename-goup/rename-group.component';
   templateUrl: './show-tasks-by-status.component.html',
   styleUrls: ['./show-tasks-by-status.component.scss'],
   // changeDetection: ChangeDetectionStrategy.OnPush, // Performance issue
-  imports: [NgIf, NgFor, AsyncPipe, PercentPipe, DragDropModule, ClrIconModule, ClrModalModule, FormsModule, ClrInputModule, RenameGroupComponent, ManageRemovedItemsComponent, GroupActionsButtonComponent, CreateNewGroupComponent],
+  imports: [
+    NgIf,
+    NgFor,
+    AsyncPipe,
+    PercentPipe,
+    DragDropModule,
+    ClrIconModule,
+    ClrModalModule,
+    FormsModule,
+    ClrInputModule,
+    RenameGroupComponent,
+    ManageRemovedItemsComponent,
+    GroupActionsButtonComponent,
+    CreateNewGroupComponent,
+  ],
 })
 export class ShowTasksByStatusComponent implements OnChanges {
   // Settings
@@ -38,16 +57,25 @@ export class ShowTasksByStatusComponent implements OnChanges {
 
   @Output() public moveItem = new EventEmitter<void>();
   @Output() public hideItem = new EventEmitter<Item['id']>();
-  @Output() public renameGroup = new EventEmitter<{ oldName: string, newName: string }>();
+  @Output() public renameGroup = new EventEmitter<{
+    oldName: string;
+    newName: string;
+  }>();
   @Output() public deleteGroup = new EventEmitter<Group['name']>();
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
-      this._updateData()
+      this._updateData();
     }
   }
 
-  public onRenameGroup({ oldName, newName }: { oldName: string, newName: string }) {
+  public onRenameGroup({
+    oldName,
+    newName,
+  }: {
+    oldName: string;
+    newName: string;
+  }) {
     this.renameGroup.emit({ oldName, newName });
   }
 
@@ -61,13 +89,17 @@ export class ShowTasksByStatusComponent implements OnChanges {
 
   public drop(event: CdkDragDrop<Item[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     } else {
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex,
+        event.currentIndex
       );
     }
 

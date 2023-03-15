@@ -11,4 +11,4 @@ import { TasksGroupedByStatusComponent } from '../tasks-grouped-by-status/tasks-
   providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent { }
+export class DashboardComponent {}

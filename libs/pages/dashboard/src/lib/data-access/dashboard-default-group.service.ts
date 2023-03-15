@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Group } from "../types/group.type";
-import { TaskStatus } from "@aneoconsultingfr/armonik.api.angular";
+import { Injectable } from '@angular/core';
+import { Group } from '../types/group.type';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 
 @Injectable()
 export class DashboardDefaultGroupService {
@@ -95,6 +95,6 @@ export class DashboardDefaultGroupService {
           name: 'error',
         },
       ],
-    }
-  ]
+    },
+  ];
 }

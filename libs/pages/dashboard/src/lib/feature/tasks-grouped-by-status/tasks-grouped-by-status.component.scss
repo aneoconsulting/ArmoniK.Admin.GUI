@@ -16,24 +16,30 @@
       margin-top: 0;
     }
 
-    h2+p {
+    h2 + p {
       margin-top: -0.4rem;
       font-size: 0.8rem;
       font-weight: 500;
     }
 
-
-    .header-actions ::ng-deep armonik-admin-gui-dashboard-manage-removed-items>button {
+    .header-actions
+      ::ng-deep
+      armonik-admin-gui-dashboard-manage-removed-items
+      > button {
       opacity: 0;
     }
 
-    .header-actions ::ng-deep armonik-admin-gui-dashboard-create-new-group>button {
+    .header-actions
+      ::ng-deep
+      armonik-admin-gui-dashboard-create-new-group
+      > button {
       opacity: 0;
     }
   }
 
   &:hover .tasks-header .header-actions ::ng-deep button {
     opacity: 1;
-    transition: opacity var(--transition-duration) var(--transition-timing-function);
+    transition: opacity var(--transition-duration)
+      var(--transition-timing-function);
   }
 }
