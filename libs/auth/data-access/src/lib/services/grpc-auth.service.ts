@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
 import {
   AuthenticationClient,
-  BaseGrpcService,
   GetCurrentUserRequest,
   GetCurrentUserResponse,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import { BaseGrpcService } from '@armonik.admin.gui/shared/data-access';
 import { Observable, takeUntil } from 'rxjs';
 
 @Injectable()

@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
 import {
   ApplicationsClient,
-  BaseGrpcService,
   CountTasksByStatusApplicationRequest,
   CountTasksByStatusApplicationResponse,
-  GrpcListApplicationsParams,
-  GrpcParamsService,
   ListApplicationsRequest,
   ListApplicationsResponse,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
+  GrpcListApplicationsParams,
+  GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
@@ -39,23 +41,22 @@ export class GrpcApplicationsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        [orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
+      orderBy: [
+        orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+      ],
       order,
       filter,
     };
   }
 
-  public createListRequestQueryParams({
-    page,
-    pageSize,
-    orderBy,
-    order,
-    filter,
-  }: GrpcListApplicationsParams) {
+  public createListRequestQueryParams(
+    { page, pageSize, orderBy, order, filter }: GrpcListApplicationsParams,
+    refreshInterval: number
+  ) {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
+      interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy,
       order:
         order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC

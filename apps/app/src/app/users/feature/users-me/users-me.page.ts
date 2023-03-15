@@ -1,6 +1,6 @@
+import { User } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '@armonik.admin.gui/shared/data-access';
 import { AuthService } from '../../../shared/data-access/auth.service';
 
 @Component({

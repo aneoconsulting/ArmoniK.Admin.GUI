@@ -1,8 +1,8 @@
-import { ListApplicationsRequest } from '../proto/generated/applications-common.pb';
-import { ListPartitionsRequest } from '../proto/generated/partitions-common.pb';
-import { ListResultsRequest } from '../proto/generated/results-common.pb';
-import { ListSessionsRequest } from '../proto/generated/sessions-common.pb';
-import { ListTasksRequest } from '../proto/generated/tasks-common.pb';
+import { ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ListPartitionsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ListResultsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ListSessionsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ListTasksRequest } from '@aneoconsultingfr/armonik.api.angular';
 
 export type GrpcListApplicationsParams = GrpcListParams<
   ListApplicationsRequest.OrderByField[],

@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
 import {
   ListResultsRequest,
   ListResultsResponse,
   ResultRaw,
   ResultStatus,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api.angular';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GrpcResultsService } from '@armonik.admin.gui/results/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -22,6 +22,10 @@ import {
   tap,
   timer,
 } from 'rxjs';
+import {
+  IdFilterComponent,
+  SelectFilterComponent,
+} from '../../../shared/feature/filters';
 import { SettingsService } from '../../../shared/util';
 
 @Component({
@@ -32,10 +36,12 @@ import { SettingsService } from '../../../shared/util';
 })
 export class ResultsListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
+  private _intervalValue = this._settingsService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
@@ -45,8 +51,10 @@ export class ResultsListComponent implements OnInit {
     tap((state) => this._saveState(state)),
     concatMap(async (state) => {
       const params = this._grpcResultsService.createListRequestParams(state);
-      const queryParams =
-        this._grpcResultsService.createListRequestQueryParams(params);
+      const queryParams = this._grpcResultsService.createListRequestQueryParams(
+        params,
+        this._intervalValue
+      );
 
       await this._router.navigate([], {
         queryParams,
@@ -55,11 +63,10 @@ export class ResultsListComponent implements OnInit {
       return state;
     })
   );
-  private _triggerInterval$ = this._intervalValue
-    .asObservable()
-    .pipe(
-      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
-    );
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingResults$ = new BehaviorSubject<boolean>(true);
   totalResults$ = new BehaviorSubject<number>(0);
@@ -125,6 +132,10 @@ export class ResultsListComponent implements OnInit {
     ];
   }
 
+  public get refreshIntervalValue() {
+    return this._intervalValue;
+  }
+
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(
       this._activatedRoute.queryParamMap,
@@ -173,12 +184,11 @@ export class ResultsListComponent implements OnInit {
   }
 
   public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
+    this._intervalValue = value;
+    this._subjectDatagrid.next(this._state);
   }
 
   public defaultSortOrder(
@@ -300,6 +310,20 @@ export class ResultsListComponent implements OnInit {
   clearOrder(): void {
     delete this._state.sort;
     this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(
+    filter: IdFilterComponent | SelectFilterComponent,
+    value: string | number
+  ) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**

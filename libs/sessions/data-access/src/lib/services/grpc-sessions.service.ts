@@ -1,15 +1,17 @@
-import { Injectable } from '@angular/core';
 import {
-  BaseGrpcService,
   CancelSessionRequest,
   CancelSessionResponse,
   GetSessionRequest,
   GetSessionResponse,
-  GrpcListSessionsParams,
-  GrpcParamsService,
   ListSessionsRequest,
   ListSessionsResponse,
   SessionsClient,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
+  GrpcListSessionsParams,
+  GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
@@ -46,16 +48,14 @@ export class GrpcSessionsService extends BaseGrpcService {
     };
   }
 
-  public createListRequestQueryParams({
-    page,
-    pageSize,
-    orderBy,
-    order,
-    filter,
-  }: GrpcListSessionsParams) {
+  public createListRequestQueryParams(
+    { page, pageSize, orderBy, order, filter }: GrpcListSessionsParams,
+    refreshInterval: number
+  ) {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
+      interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
           ? orderBy

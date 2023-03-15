@@ -40,7 +40,7 @@ describe('IdFilterComponent', () => {
   });
 
   it('should have a value', () => {
-    component.inputValue = 'test';
+    component.selectedValue = 'test';
     expect(component.value).toEqual('test');
   });
 
@@ -49,9 +49,9 @@ describe('IdFilterComponent', () => {
     component.subscription = component.input.subscribe(
       (value) => (testValue = value)
     );
-    component.inputValue = 'test';
+    component.selectedValue = 'test';
     component.onChange();
-    expect(testValue).toEqual(component.inputValue);
+    expect(testValue).toEqual(component.selectedValue);
   });
 
   it('should emit an event on change', fakeAsync(() => {
@@ -63,9 +63,9 @@ describe('IdFilterComponent', () => {
   }));
 
   it('should have a empty inputValue when the filter is cleared', () => {
-    component.inputValue = 'Not empty value';
+    component.selectedValue = 'Not empty value';
     component.clear();
-    expect(component.inputValue).toEqual('');
+    expect(component.selectedValue).toEqual('');
   });
 
   it('should emit an event when the filter is cleared', () => {
@@ -77,7 +77,7 @@ describe('IdFilterComponent', () => {
 
   describe('Is Active', () => {
     it('should be true when a selection is made', () => {
-      component.inputValue = 'test';
+      component.selectedValue = 'test';
       expect(component.isActive()).toBeTruthy();
     });
 

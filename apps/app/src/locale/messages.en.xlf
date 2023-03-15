@@ -932,6 +932,16 @@
       <segment state="initial">
         <source> Hide the item </source>
         <target> Hide the item </target>
+    <unit id="7410432243549869948">
+      <segment state="initial">
+        <source>Duration</source>
+        <target>Duration</target>
+      </segment>
+    </unit>
+    <unit id="8655239516431228340">
+      <segment state="initial">
+        <source>d </source>
+        <target>d </target>
       </segment>
     </unit>
   </file>

@@ -1,13 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {
-  CancelTasksResponse,
-  GetTaskResponse,
-  ListTasksRequest,
-  ListTasksResponse,
-  TaskStatus,
-  TaskSummary,
-} from '@armonik.admin.gui/shared/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
@@ -27,6 +19,18 @@ import {
 } from 'rxjs';
 import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
+import {
+  CancelTasksResponse,
+  GetTaskResponse,
+  ListTasksRequest,
+  ListTasksResponse,
+  TaskStatus,
+  TaskSummary,
+} from '@aneoconsultingfr/armonik.api.angular';
+import {
+  ComboBoxFilterComponent,
+  IdFilterComponent,
+} from '../../../shared/feature/filters';
 
 @Component({
   selector: 'app-pages-tasks-list',
@@ -35,11 +39,13 @@ import { AuthorizationService } from '../../../shared/data-access';
 })
 export class TasksListComponent implements OnInit {
   private _state: ClrDatagridStateInterface = {};
+  private _intervalValue = this._settingsService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   /** Get tasks */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
@@ -51,8 +57,10 @@ export class TasksListComponent implements OnInit {
       tap((state) => this._saveState(state)),
       concatMap(async (state) => {
         const params = this._grpcTasksService.createListRequestParams(state);
-        const queryParams =
-          this._grpcTasksService.createListRequestQueryParams(params);
+        const queryParams = this._grpcTasksService.createListRequestQueryParams(
+          params,
+          this._intervalValue
+        );
 
         await this._router.navigate([], {
           queryParams,
@@ -62,11 +70,10 @@ export class TasksListComponent implements OnInit {
         return state;
       })
     );
-  private _triggerInterval$: Observable<number> = this._intervalValue
-    .asObservable()
-    .pipe(
-      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
-    );
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingTasks$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   totalTasks$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -169,6 +176,10 @@ export class TasksListComponent implements OnInit {
     ];
   }
 
+  public get refreshIntervalValue() {
+    return this._intervalValue;
+  }
+
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(
       this._activatedRoute.queryParamMap,
@@ -247,12 +258,11 @@ export class TasksListComponent implements OnInit {
   }
 
   public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
+    this._intervalValue = value;
+    this._subjectDatagrid.next(this._state);
   }
 
   public defaultSortOrder(
@@ -450,6 +460,28 @@ export class TasksListComponent implements OnInit {
   clearOrder(): void {
     delete this._state.sort;
     this._subjectDatagrid.next(this._state);
+  }
+
+  /**
+   * Set a new value to the combobox filter via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setComboboxFilter(filter: ComboBoxFilterComponent, value: number) {
+    filter.selectedValues = [value];
+    filter.changes.emit();
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(filter: IdFilterComponent, value: string) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**

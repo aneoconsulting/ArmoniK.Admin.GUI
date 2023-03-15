@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ClarityModule } from '@clr/angular';
-
-import { first, Subject } from 'rxjs';
+import { first } from 'rxjs';
 import {
   AutoRefreshDropdownComponent,
   DisabledIntervalValue,
@@ -28,24 +26,11 @@ describe('AutoRefreshDropdownComponent', () => {
   });
 
   it('should have a default refresh rate', () => {
-    component.currentInterval$.pipe(first()).subscribe((interval) => {
-      expect(interval.value).toBeTruthy();
-    });
+    expect(component.interval.value).toBeTruthy();
   });
 
   it('should have a default refresh rate label', () => {
-    component.currentInterval$.pipe(first()).subscribe((interval) => {
-      expect(interval.label).toBeTruthy();
-    });
-  });
-
-  it('should emit an interval value on init', () => {
-    component.refreshIntervalChange.subscribe((value) => {
-      expect(value).toBeTruthy();
-    });
-
-    component.ngOnInit();
-    component.ngOnDestroy();
+    expect(component.interval.label).toBeTruthy();
   });
 
   it('should emit an interval value on interval change', () => {
@@ -64,18 +49,5 @@ describe('AutoRefreshDropdownComponent', () => {
     });
 
     component.onIntervalStop();
-  });
-
-  it('should disabled the current interval on manual interval stop', () => {
-    const subject = new Subject<void>();
-    component.manualStop$ = subject.asObservable();
-
-    component.ngOnInit(); // Subscribe to manualStop$.
-
-    subject.next(); // Emit a value to stop the interval.
-
-    component.currentInterval$.pipe(first()).subscribe((interval) => {
-      expect(interval.value).toEqual(DisabledIntervalValue);
-    });
   });
 });

@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
 import {
   GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
   SessionStatus,
-} from '@armonik.admin.gui/shared/data-access';
+} from '@aneoconsultingfr/armonik.api.angular';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GrpcSessionsService } from '@armonik.admin.gui/sessions/data-access';
 import { DisabledIntervalValue } from '@armonik.admin.gui/shared/feature';
 import { ClrDatagridSortOrder, ClrDatagridStateInterface } from '@clr/angular';
 import {
@@ -23,8 +23,10 @@ import {
   tap,
   timer,
 } from 'rxjs';
-import { SettingsService } from '../../../shared/util';
 import { AuthorizationService } from '../../../shared/data-access';
+import { SettingsService } from '../../../shared/util';
+import { SelectFilterComponent } from '../../../shared/feature/filters';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 
 @Component({
   selector: 'app-pages-sessions-list',
@@ -34,6 +36,9 @@ import { AuthorizationService } from '../../../shared/data-access';
 })
 export class SessionsListComponent {
   private _state: ClrDatagridStateInterface = {};
+  private _intervalValue = this._settingsService.intervalQueryParam(
+    this._activatedRoute.snapshot.queryParams
+  );
 
   /** Get a single session */
   private _opened$ = new BehaviorSubject<boolean>(false);
@@ -49,7 +54,6 @@ export class SessionsListComponent {
   /** Get sessions */
   private _subjectManual = new Subject<void>();
   private _subjectDatagrid = new Subject<ClrDatagridStateInterface>();
-  private _intervalValue = new Subject<number>();
   private _stopInterval = new Subject<void>();
   public stopInterval$ = this._stopInterval.asObservable();
 
@@ -62,7 +66,10 @@ export class SessionsListComponent {
       this.setApplicationFilter('applicationVersion', this.applicationVersion);
       const params = this._grpcSessionsService.createListRequestParams(state);
       const queryParams =
-        this._grpcSessionsService.createListRequestQueryParams(params);
+        this._grpcSessionsService.createListRequestQueryParams(
+          params,
+          this._intervalValue
+        );
 
       await this._router.navigate([], {
         queryParams,
@@ -71,11 +78,10 @@ export class SessionsListComponent {
       return state;
     })
   );
-  private _triggerInterval$ = this._intervalValue
-    .asObservable()
-    .pipe(
-      switchMap((time) => timer(0, time).pipe(takeUntil(this.stopInterval$)))
-    );
+  private _triggerInterval$: Observable<number> = timer(
+    0,
+    this._intervalValue
+  ).pipe(takeUntil(this.stopInterval$));
 
   loadingSessions$ = new BehaviorSubject<boolean>(true);
   totalSessions$ = new BehaviorSubject<number>(0);
@@ -147,6 +153,10 @@ export class SessionsListComponent {
     private _settingsService: SettingsService
   ) {}
 
+  public get refreshIntervalValue() {
+    return this._intervalValue;
+  }
+
   public get page$(): Observable<number> {
     return this._settingsService.queryParam$(
       this._activatedRoute.queryParamMap,
@@ -187,12 +197,11 @@ export class SessionsListComponent {
   }
 
   public onUpdateInterval(value: number) {
-    this._intervalValue.next(value);
-
-    // Stop interval
     if (value === DisabledIntervalValue) {
       this._stopInterval.next();
     }
+    this._intervalValue = value;
+    this._subjectDatagrid.next(this._state);
   }
 
   // TODO: Move to a service (once https://github.com/aneoconsulting/ArmoniK.Api/issues/87 is resolved)
@@ -299,6 +308,29 @@ export class SessionsListComponent {
    */
   private _restoreState(): ClrDatagridStateInterface {
     return this._state;
+  }
+
+  public getDuration(startDate: Timestamp, endDate?: Timestamp): string {
+    const computed =
+      (endDate
+        ? parseInt(endDate.seconds as string)
+        : parseInt((Date.now() / 1000).toFixed(0))) -
+      parseInt(startDate.seconds as string);
+    return this.formatDuration(computed);
+  }
+
+  public formatDuration(computed: number): string {
+    const seconds = computed % 60;
+    const minutes = Math.floor(computed / 60) % 60;
+    const hours = Math.floor(computed / 3600) % 24;
+    const days = Math.floor(computed / 86400);
+    return (
+      (days > 0 ? days + $localize`d ` : '') +
+      (hours > 0 ? hours + 'h ' : '') +
+      (minutes > 0 ? minutes + 'm ' : '') +
+      seconds +
+      's'
+    );
   }
 
   public get hasApplicationFilter() {
@@ -408,6 +440,17 @@ export class SessionsListComponent {
    */
   isFiltered(): boolean {
     return !!this._state.filters;
+  }
+
+  /**
+   * Set a new filter value via clicking a link in the datagrid.
+   *
+   * @param filter the filter to change.
+   * @param value the new filter value.
+   */
+  setFilterViaGridLink(filter: SelectFilterComponent, value: number) {
+    filter.selectedValue = value;
+    filter.changes.emit();
   }
 
   /**

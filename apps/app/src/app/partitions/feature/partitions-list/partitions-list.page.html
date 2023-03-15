@@ -7,7 +7,7 @@
   >
     <clr-dg-action-bar>
       <app-action-bar
-        [stopInterval$]="stopInterval$"
+        [refreshInterval]="refreshIntervalValue"
         [isFiltered]="isFiltered()"
         [isOrdered]="isOrdered()"
         (refresh)="manualRefreshPartitions()"
@@ -23,7 +23,7 @@
     >
       <span i18n>Id</span>
       <clr-dg-filter [clrDgFilter]="idFilter">
-        <app-id-filter name="id" [inputValue]="filterPartitionId" #idFilter>
+        <app-id-filter name="id" [selectedValue]="filterPartitionId" #idFilter>
         </app-id-filter>
       </clr-dg-filter>
     </clr-dg-column>
@@ -35,7 +35,7 @@
       <clr-dg-filter [clrDgFilter]="idParentFilter">
         <app-id-filter
           name="parentId"
-          [inputValue]="filterParentId"
+          [selectedValue]="filterParentId"
           #idParentFilter
         >
         </app-id-filter>
@@ -110,6 +110,7 @@
               <a
                 [routerLink]="['/', 'partitions']"
                 [queryParams]="mergeWithCurrentQueryParams({parentPartitionIds:parent})"
+                (click)="setFilterViaGridLink(idParentFilter, parent)"
               >
                 {{parent}}
               </a>
@@ -120,6 +121,7 @@
           <a
             [routerLink]="['/', 'partitions']"
             [queryParams]="mergeWithCurrentQueryParams({ podReserved: partition.podReserved })"
+            (click)="setFilterViaGridLink(reservedPodFilter, partition.podReserved)"
           >
             {{ partition.podReserved }}
           </a>

@@ -1,9 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  GrpcParamsService,
-  ListTasksRequest,
-  TasksClient,
-} from '@armonik.admin.gui/shared/data-access';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcTasksService } from './grpc-tasks.service';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
@@ -11,6 +7,10 @@ import {
   ClrDatagridComparatorInterface,
   ClrDatagridStateInterface,
 } from '@clr/angular';
+import {
+  ListTasksRequest,
+  TasksClient,
+} from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcTasksService', () => {
   let service: GrpcTasksService;
@@ -77,16 +77,20 @@ describe('GrpcTasksService', () => {
   });
 
   it('should create a default request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 0,
-      pageSize: 10,
-      orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-      order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
-      filter: {} as ListTasksRequest.Filter,
-    });
+    const result = service.createListRequestQueryParams(
+      {
+        page: 0,
+        pageSize: 10,
+        orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+        order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        filter: {} as ListTasksRequest.Filter,
+      },
+      10000
+    );
     expect(result).toEqual({
       page: undefined,
       pageSize: undefined,
+      interval: undefined,
       orderBy: undefined,
       order: undefined,
       createdAfter: undefined,
@@ -101,18 +105,22 @@ describe('GrpcTasksService', () => {
   });
 
   it('should create a request query', () => {
-    const result = service.createListRequestQueryParams({
-      page: 2,
-      pageSize: 50,
-      orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
-      order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
-      filter: {
-        sessionId: 'Some test sessionId',
-      } as ListTasksRequest.Filter,
-    });
+    const result = service.createListRequestQueryParams(
+      {
+        page: 2,
+        pageSize: 50,
+        orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
+        order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        filter: {
+          sessionId: 'Some test sessionId',
+        } as ListTasksRequest.Filter,
+      },
+      30000
+    );
     expect(result).toEqual({
       page: 2,
       pageSize: 50,
+      interval: 30000,
       orderBy: 5,
       order: 2,
       sessionId: 'Some test sessionId',

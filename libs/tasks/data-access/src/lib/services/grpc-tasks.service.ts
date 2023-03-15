@@ -1,17 +1,19 @@
-import { Injectable } from '@angular/core';
 import {
-  BaseGrpcService,
   CancelTasksRequest,
   CancelTasksResponse,
   GetTaskRequest,
   GetTaskResponse,
-  GrpcListTasksParams,
-  GrpcParamsService,
   ListTasksRequest,
   ListTasksResponse,
   CountTasksByStatusRequest,
   CountTasksByStatusResponse,
   TasksClient,
+} from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import {
+  BaseGrpcService,
+  GrpcListTasksParams,
+  GrpcParamsService,
 } from '@armonik.admin.gui/shared/data-access';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Observable, takeUntil } from 'rxjs';
@@ -50,16 +52,14 @@ export class GrpcTasksService extends BaseGrpcService {
     };
   }
 
-  public createListRequestQueryParams({
-    page,
-    pageSize,
-    orderBy,
-    order,
-    filter,
-  }: GrpcListTasksParams) {
+  public createListRequestQueryParams(
+    { page, pageSize, orderBy, order, filter }: GrpcListTasksParams,
+    refreshInterval: number
+  ) {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
+      interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
         orderBy !== ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
           ? orderBy

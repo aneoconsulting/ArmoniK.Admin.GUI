@@ -8,7 +8,6 @@ import {
 } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AutoRefreshDropdownComponent } from '@armonik.admin.gui/shared/feature';
 import { GrpcTasksService } from '@armonik.admin.gui/tasks/data-access';
 import {
   ClrDatagridModule,
@@ -33,7 +32,6 @@ import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 @NgModule({
   declarations: [TasksListComponent],
   imports: [
-    AutoRefreshDropdownComponent,
     RouterModule,
     ClrDatagridModule,
     ClrLoadingModule,
