@@ -13,7 +13,7 @@
       </dl>
     </div>
     <h4 i18n class="card-title tasks">Tasks</h4>
-    <p class="p2">Grouped by status</p>
+    <p class="p2" i18n>Grouped by status</p>
     <div class="card-text">
       <ng-container *ngIf="loadCountTasksByStatus$ | async as data; else loading">
         <armonik-admin-gui-dashboard-show-tasks-by-status [data]="data"

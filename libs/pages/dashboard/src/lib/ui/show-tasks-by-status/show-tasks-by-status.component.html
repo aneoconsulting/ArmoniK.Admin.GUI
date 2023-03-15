@@ -12,7 +12,7 @@
           *ngIf="enableRenameGroup">
         </armonik-admin-gui-dashboard-rename-group>
         <armonik-admin-gui-dashboard-group-actions-button (click)="onDeleteGroup(group)" *ngIf="enableDeleteGroup">
-          <span class="sr-only">
+          <span class="sr-only" i18n>
             Delete the group
           </span>
           <cds-icon shape="trash" solid></cds-icon>
@@ -29,7 +29,7 @@
           <span *ngIf="enableRemoveItem">
             <button (click)="onHideItem(item)" class="hide btn btn-sm btn-danger btn-icon" [title]="'Hide ' + item.name"
               type="button">
-              <span class="sr-only">
+              <span class="sr-only" i18n>
                 Hide the item
               </span>
               <cds-icon shape="eye-hide" solid></cds-icon>
