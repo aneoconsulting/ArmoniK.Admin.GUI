@@ -3,8 +3,8 @@ import { StoredGroup } from "../types/stored-group.item";
 import { StoredRemovedItem } from "../types/stored-removed-item.type";
 import { Group } from "../types/group.type";
 import { Item } from "../types/item.type";
-import { TaskStatus } from "@armonik.admin.gui/shared/data-access";
 import { DashboardDefaultGroupService } from "./dashboard-default-group.service";
+import { TaskStatus } from "@aneoconsultingfr/armonik.api.angular";
 
 @Injectable()
 export class DashboardTasksService {

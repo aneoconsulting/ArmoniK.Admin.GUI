@@ -1,14 +1,11 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { GrpcApplicationsService } from '@armonik.admin.gui/applications/data-access';
-import {
-  ApplicationRaw,
-  CountTasksByStatusApplicationResponse,
-} from '@armonik.admin.gui/shared/data-access';
 import { Observable, map, switchMap, timer } from 'rxjs';
 import { ShowTasksByStatusComponent } from '../show-tasks-by-status/show-tasks-by-status.component';
 import { DashboardDefaultGroupService } from '../../data-access/dashboard-default-group.service';
 import { Group } from '../../types/group.type';
+import { ApplicationRaw, CountTasksByStatusApplicationResponse } from '@aneoconsultingfr/armonik.api.angular';
 
 @Component({
   standalone: true,

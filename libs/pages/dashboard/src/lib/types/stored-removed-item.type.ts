@@ -1,3 +1,3 @@
-import { TaskStatus } from "@armonik.admin.gui/shared/data-access";
+import { TaskStatus } from "@aneoconsultingfr/armonik.api.angular";
 
 export type StoredRemovedItem = TaskStatus;

@@ -1,10 +1,11 @@
 import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { GrpcApplicationsService } from "@armonik.admin.gui/applications/data-access";
-import { ApplicationRaw, GrpcParamsService, ListApplicationsRequest, ListApplicationsResponse } from "@armonik.admin.gui/shared/data-access";
 import { ClrButtonModule } from "@clr/angular";
-import { Observable, map, merge, switchMap, tap, timer } from "rxjs";
+import { Observable, map, switchMap, tap, timer } from "rxjs";
 import { ApplicationCardComponent } from "../../ui/application-card/application-card.component";
+import { GrpcParamsService } from "@armonik.admin.gui/shared/data-access";
+import { ApplicationRaw, ListApplicationsRequest, ListApplicationsResponse } from "@aneoconsultingfr/armonik.api.angular";
 
 @Component({
   standalone: true,

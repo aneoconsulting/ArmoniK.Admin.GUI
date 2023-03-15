@@ -1,4 +1,4 @@
-import { TaskStatus } from "@armonik.admin.gui/shared/data-access";
+import { TaskStatus } from "@aneoconsultingfr/armonik.api.angular";
 import { Color } from "./color.type";
 
 export type StoredGroup = {

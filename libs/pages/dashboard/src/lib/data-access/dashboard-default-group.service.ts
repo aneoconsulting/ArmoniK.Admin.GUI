@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { TaskStatus } from "@armonik.admin.gui/shared/data-access";
 import { Group } from "../types/group.type";
+import { TaskStatus } from "@aneoconsultingfr/armonik.api.angular";
 
 @Injectable()
 export class DashboardDefaultGroupService {
