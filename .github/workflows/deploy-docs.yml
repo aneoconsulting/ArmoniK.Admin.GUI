@@ -17,38 +17,34 @@ concurrency:
 
 jobs:
   build-docs:
-    name: Setup
+    name: Build Docs
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .docs
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - run: npm install -g pnpm @antfu/ni
+      - run: npm i -g pnpm @antfu/ni
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'pnpm'
+          cache-dependency-path: '.docs/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: nci
+        run: cd .docs && nci
 
       - name: Use NODE_ENV=production
         run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
       - name: Static HTML export with Nuxt
-        run: nr generate
+        run: cd .docs && nr generate
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: .output/public
+          path: .docs/.output/public
 
   deploy:
     needs: build-docs
