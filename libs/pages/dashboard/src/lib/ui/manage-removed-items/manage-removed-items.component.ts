@@ -1,23 +1,24 @@
+import { AsyncPipe, NgFor } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  Output,
+  Output
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClrFormsModule, ClrInputModule, ClrModalModule } from '@clr/angular';
-import { NgFor } from '@angular/common';
-import { GroupActionsButtonComponent } from '../group-actions-button/group-actions-button.component';
+import { BehaviorSubject } from 'rxjs';
 import { Group } from '../../types/group.type';
 import { Item } from '../../types/item.type';
+import { GroupActionsButtonComponent } from '../group-actions-button/group-actions-button.component';
 
 @Component({
   standalone: true,
   selector: 'armonik-admin-gui-dashboard-manage-removed-items',
   templateUrl: './manage-removed-items.component.html',
   styleUrls: ['./manage-removed-items.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // Document more about this in order to understand why sometimes it doesn't work
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ClrModalModule,
     ClrInputModule,
@@ -25,6 +26,7 @@ import { Item } from '../../types/item.type';
     NgFor,
     GroupActionsButtonComponent,
     ClrFormsModule,
+    AsyncPipe
   ],
 })
 export class ManageRemovedItemsComponent {
@@ -34,6 +36,8 @@ export class ManageRemovedItemsComponent {
 
   @Input() public items: Item[] = [];
   @Input() public groups: Group[] = [];
+
+  private _items$ = new BehaviorSubject<Item[]>(this.items);
 
   public open = false;
   private _pairing = new Map<Item['id'], Group>();

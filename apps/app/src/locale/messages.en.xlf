@@ -778,7 +778,7 @@
         <target> Tasks</target>
       </segment>
     </unit>
-    <unit id="1523600450938035843">
+    <unit id="4299467318965233262">
       <segment state="initial">
         <source> Loading... </source>
         <target> Loading... </target>
@@ -892,7 +892,7 @@
         <target> Apply </target>
       </segment>
     </unit>
-    <unit id="5266849099544964607">
+    <unit id="8723856721172058289">
       <segment state="initial">
         <source> Rename the group </source>
         <target> Rename the group </target>
@@ -922,13 +922,13 @@
         <target> Rename </target>
       </segment>
     </unit>
-    <unit id="3050903050112801884">
+    <unit id="8969294140896563779">
       <segment state="initial">
         <source> Delete the group </source>
         <target> Delete the group </target>
       </segment>
     </unit>
-    <unit id="362145441313857467">
+    <unit id="8184608873708049182">
       <segment state="initial">
         <source> Hide the item </source>
         <target> Hide the item </target>

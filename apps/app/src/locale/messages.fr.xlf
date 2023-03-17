@@ -778,7 +778,7 @@
         <target> Tâches </target>
       </segment>
     </unit>
-    <unit id="1523600450938035843">
+    <unit id="4299467318965233262">
       <segment state="initial">
         <source> Loading... </source>
         <target> Chargement... </target>
@@ -871,7 +871,7 @@
     <unit id="4215127233487431643">
       <segment state="initial">
         <source> Removed Items </source>
-        <target> Retirer l'élément </target>
+        <target> Retirer l&apos;élément </target>
       </segment>
     </unit>
     <unit id="5862748743317096016">
@@ -892,7 +892,7 @@
         <target> Valider </target>
       </segment>
     </unit>
-    <unit id="5266849099544964607">
+    <unit id="8723856721172058289">
       <segment state="initial">
         <source> Rename the group </source>
         <target> Renomer le gropue </target>
@@ -922,13 +922,13 @@
         <target> Renomer </target>
       </segment>
     </unit>
-    <unit id="3050903050112801884">
+    <unit id="8969294140896563779">
       <segment state="initial">
         <source> Delete the group </source>
         <target> Supprimer le groupe </target>
       </segment>
     </unit>
-    <unit id="362145441313857467">
+    <unit id="8184608873708049182">
       <segment state="initial">
         <source> Hide the item </source>
         <target> Cacher le groupe </target>
