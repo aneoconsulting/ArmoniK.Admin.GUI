@@ -30,10 +30,8 @@ const routes: Routes = [
       },
       {
         path: 'partitions',
-        loadChildren: () =>
-          import(
-            './partitions/feature/partitions-shell/partitions-shell.module'
-          ).then((m) => m.PartitionsShellModule),
+        loadComponent: () =>
+          import('@armonik.admin.gui/pages/partitions').then((m) => m.PartitionsListComponent),
       },
       {
         path: 'sessions',
@@ -96,4 +94,4 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

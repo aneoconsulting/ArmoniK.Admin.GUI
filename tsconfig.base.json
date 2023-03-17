@@ -21,6 +21,9 @@
       "@armonik.admin.gui/auth/data-access": [
         "libs/auth/data-access/src/index.ts"
       ],
+      "@armonik.admin.gui/pages/partitions": [
+        "libs/pages/partitions/src/index.ts"
+      ],
       "@armonik.admin.gui/partitions/data-access": [
         "libs/partitions/data-access/src/index.ts"
       ],

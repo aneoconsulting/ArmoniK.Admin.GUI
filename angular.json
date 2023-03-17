@@ -5,6 +5,7 @@
     "app-e2e": "apps/app-e2e",
     "applications-data-access": "libs/applications/data-access",
     "auth-data-access": "libs/auth/data-access",
+    "pages-partitions": "libs/pages/partitions",
     "partitions-data-access": "libs/partitions/data-access",
     "results-data-access": "libs/results/data-access",
     "sessions-data-access": "libs/sessions/data-access",

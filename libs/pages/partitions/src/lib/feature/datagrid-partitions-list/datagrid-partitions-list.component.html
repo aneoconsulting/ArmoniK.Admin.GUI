@@ -1,0 +1,34 @@
+<clr-datagrid (clrDgRefresh)="onRefresh($event)" [clrDgLoading]="loading">
+
+  <clr-dg-column [clrDgField]="'id'" [clrDgSortOrder]="getQueryParamsOrderByColumn('id')">
+    <span i18n> Id </span>
+  </clr-dg-column>
+
+  <clr-dg-column [clrDgField]="'priority'" [clrDgSortOrder]="getQueryParamsOrderByColumn('priority')">
+    <span i18n> Priority </span>
+  </clr-dg-column>
+  <clr-dg-column i18n> Actions </clr-dg-column>
+
+  <ng-container *ngIf="list$ | async as list">
+    <clr-dg-row *ngFor="let partition of list.partitions; trackBy: trackByPartition">
+      <clr-dg-cell> {{ partition.id }} </clr-dg-cell>
+      <clr-dg-cell> {{ partition.priority }} </clr-dg-cell>
+      <clr-dg-cell>
+        <armonik-admin-gui-datagrid-partitions-get></armonik-admin-gui-datagrid-partitions-get>
+      </clr-dg-cell>
+    </clr-dg-row>
+  </ng-container>
+
+  <clr-dg-footer>
+    <clr-dg-pagination [clrDgPageSize]="getQueryParamsPageSize()" [clrDgTotalItems]="total"
+      [clrDgPage]="getQueryParamsPage()">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]">
+        <span i18n>Partitions per page</span>
+      </clr-dg-page-size>
+      <span>
+        {{ total }} { total, plural, =1 { partition } other { partitions } }
+      </span>
+    </clr-dg-pagination>
+  </clr-dg-footer>
+
+</clr-datagrid>
