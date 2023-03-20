@@ -1,10 +1,5 @@
 import { AsyncPipe, NgFor } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ClrFormsModule, ClrInputModule, ClrModalModule } from '@clr/angular';
 import { BehaviorSubject } from 'rxjs';
@@ -26,7 +21,7 @@ import { GroupActionsButtonComponent } from '../group-actions-button/group-actio
     NgFor,
     GroupActionsButtonComponent,
     ClrFormsModule,
-    AsyncPipe
+    AsyncPipe,
   ],
 })
 export class ManageRemovedItemsComponent {

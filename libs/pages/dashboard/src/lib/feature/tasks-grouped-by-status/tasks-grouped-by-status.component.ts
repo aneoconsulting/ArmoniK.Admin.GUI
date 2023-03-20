@@ -50,7 +50,7 @@ export class TasksGroupedByStatusComponent implements OnInit {
   constructor(
     private _grpcTasksService: GrpcTasksService,
     private _dashboardTasksService: DashboardTasksService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     const { groups, removedItems } = this._dashboardTasksService.load();
@@ -153,14 +153,13 @@ export class TasksGroupedByStatusComponent implements OnInit {
         return;
       }
       group.items.push(item);
-      addedItems.push(item)
-
+      addedItems.push(item);
     });
 
     // Remove all added Items
     addedItems.forEach((item: Item) => {
       this.removedItems.splice(this.removedItems.indexOf(item), 1);
-    })
+    });
 
     this._save();
   }
