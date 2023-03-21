@@ -275,7 +275,9 @@ export class ApplicationsListComponent {
    * Clear all filters currently applied to the datagrid
    */
   clearAllFilters(): void {
-    delete this._state.filters;
+    this._state.filters?.forEach((f) => {
+      f.clear();
+    });
     this._subjectDatagrid.next(this._state);
   }
 }
