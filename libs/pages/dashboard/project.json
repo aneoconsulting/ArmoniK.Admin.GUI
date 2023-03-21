@@ -1,0 +1,27 @@
+{
+  "name": "pages-dashboard",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/pages/dashboard/src",
+  "prefix": "armonik.admin.gui",
+  "targets": {
+    "test": {
+      "executor": "@angular-devkit/build-angular:karma",
+      "options": {
+        "main": "libs/pages/dashboard/src/test.ts",
+        "tsConfig": "libs/pages/dashboard/tsconfig.spec.json",
+        "karmaConfig": "libs/pages/dashboard/karma.conf.js"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/pages/dashboard/**/*.ts",
+          "libs/pages/dashboard/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

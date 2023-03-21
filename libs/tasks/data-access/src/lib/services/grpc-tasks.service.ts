@@ -5,6 +5,8 @@ import {
   GetTaskResponse,
   ListTasksRequest,
   ListTasksResponse,
+  CountTasksByStatusRequest,
+  CountTasksByStatusResponse,
   TasksClient,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
@@ -126,6 +128,14 @@ export class GrpcTasksService extends BaseGrpcService {
 
     return this._tasksClient
       .cancelTasks(options)
+      .pipe(takeUntil(this._timeout$));
+  }
+
+  public countTasksByStatus$(): Observable<CountTasksByStatusResponse> {
+    const options = new CountTasksByStatusRequest();
+
+    return this._tasksClient
+      .countTasksByStatus(options)
       .pipe(takeUntil(this._timeout$));
   }
 }
