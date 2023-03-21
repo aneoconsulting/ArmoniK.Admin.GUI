@@ -57,7 +57,11 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
-      orderBy,
+      orderBy: !orderBy.includes(
+        ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
+      )
+        ? orderBy
+        : undefined,
       order:
         order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
