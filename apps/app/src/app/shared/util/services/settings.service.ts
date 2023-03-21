@@ -145,9 +145,11 @@ export class SettingsService {
     queryParams: ActivatedRouteSnapshot['queryParams'],
     param: string
   ): number[] {
-    const params: string[] = queryParams[param];
+    const params: string | string[] = queryParams[param];
     if (params) {
-      return params.map((elem) => parseInt(elem));
+      return typeof params !== 'string'
+        ? params.map((elem) => parseInt(elem))
+        : [parseInt(params)];
     }
     return [];
   }
