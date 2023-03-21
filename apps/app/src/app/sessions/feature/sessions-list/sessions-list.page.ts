@@ -120,19 +120,19 @@ export class SessionsListComponent {
   );
   createdBeforeFilter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtBefore'
+    'createdBefore'
   );
   createdAfterFilter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'createdAtAfter'
+    'createdAfter'
   );
   cancelledBeforeFilter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'cancelledAtBefore'
+    'cancelledBefore'
   );
   cancelledAfterFilter: Date | null = this._settingsService.queryDateParam(
     this._activatedRoute.snapshot.queryParams,
-    'cancelledAtAfter'
+    'cancelledAfter'
   );
 
   applicationName: string | null = this._settingsService.queryParam(
