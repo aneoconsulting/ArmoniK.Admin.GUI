@@ -599,6 +599,181 @@
         <source>History</source>
       </segment>
     </unit>
+    <unit id="1137318306951557633">
+      <segment>
+        <source> Dashboard </source>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <segment>
+        <source>Service</source>
+      </segment>
+    </unit>
+    <unit id="2849064100927111571">
+      <segment>
+        <source>loading...</source>
+      </segment>
+    </unit>
+    <unit id="3294686077659093992">
+      <segment>
+        <source>Namespace</source>
+      </segment>
+    </unit>
+    <unit id="6570363013146073520">
+      <segment>
+        <source>Dashboard</source>
+      </segment>
+    </unit>
+    <unit id="6788258623523629471">
+      <segment>
+        <source>No applications</source>
+      </segment>
+    </unit>
+    <unit id="6900799038363597616">
+      <segment>
+        <source>Next Page</source>
+      </segment>
+    </unit>
+    <unit id="7708583428094273381">
+      <segment>
+        <source>Previous Page</source>
+      </segment>
+    </unit>
+    <unit id="6583920543416105444">
+      <segment>
+        <source> Tasks</source>
+      </segment>
+    </unit>
+    <unit id="4299467318965233262">
+      <segment>
+        <source> Loading... </source>
+      </segment>
+    </unit>
+    <unit id="1674202514578558795">
+      <segment>
+        <source>New name</source>
+      </segment>
+    </unit>
+    <unit id="1850999561099918087">
+      <segment>
+        <source>yellow</source>
+      </segment>
+    </unit>
+    <unit id="209379737401621079">
+      <segment>
+        <source>grey</source>
+      </segment>
+    </unit>
+    <unit id="2235647076080114570">
+      <segment>
+        <source>Select a color</source>
+      </segment>
+    </unit>
+    <unit id="2788105330327067099">
+      <segment>
+        <source> Apply </source>
+      </segment>
+    </unit>
+    <unit id="8969294140896563779">
+      <segment>
+        <source> Delete the group </source>
+      </segment>
+    </unit>
+    <unit id="3200829095752276260">
+      <segment>
+        <source>Rename a group</source>
+      </segment>
+    </unit>
+    <unit id="8184608873708049182">
+      <segment>
+        <source> Hide the item </source>
+      </segment>
+    </unit>
+    <unit id="4215127233487431643">
+      <segment>
+        <source> Removed Items </source>
+      </segment>
+    </unit>
+    <unit id="4236065708078284037">
+      <segment>
+        <source> Create </source>
+      </segment>
+    </unit>
+    <unit id="4296542518018293988">
+      <segment>
+        <source>New group</source>
+      </segment>
+    </unit>
+    <unit id="4524017100327483982">
+      <segment>
+        <source>Select a group</source>
+      </segment>
+    </unit>
+    <unit id="4750497417886366863">
+      <segment>
+        <source>red</source>
+      </segment>
+    </unit>
+    <unit id="4955630191692571673">
+      <segment>
+        <source>orange</source>
+      </segment>
+    </unit>
+    <unit id="5006109153267517336">
+      <segment>
+        <source> Rename </source>
+      </segment>
+    </unit>
+    <unit id="8723856721172058289">
+      <segment>
+        <source> Rename the group </source>
+      </segment>
+    </unit>
+    <unit id="564870720479927873">
+      <segment>
+        <source>Name of your group</source>
+      </segment>
+    </unit>
+    <unit id="5862748743317096016">
+      <segment>
+        <source>Removed Items</source>
+      </segment>
+    </unit>
+    <unit id="6192244276175907743">
+      <segment>
+        <source>green</source>
+      </segment>
+    </unit>
+    <unit id="6469957309043414241">
+      <segment>
+        <source> New group </source>
+      </segment>
+    </unit>
+    <unit id="6477693301935901578">
+      <segment>
+        <source>Grouped by status</source>
+      </segment>
+    </unit>
+    <unit id="699977731672329756">
+      <segment>
+        <source>Current name</source>
+      </segment>
+    </unit>
+    <unit id="7139520592812430718">
+      <segment>
+        <source>Create a group</source>
+      </segment>
+    </unit>
+    <unit id="8614260097416227361">
+      <segment>
+        <source>No tasks</source>
+      </segment>
+    </unit>
+    <unit id="8946464197451351682">
+      <segment>
+        <source>amber</source>
+      </segment>
+    </unit>
     <unit id="7410432243549869948">
       <segment>
         <source>Duration</source>

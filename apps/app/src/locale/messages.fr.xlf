@@ -724,6 +724,216 @@
         <target>Historique</target>
       </segment>
     </unit>
+    <unit id="1137318306951557633">
+      <segment state="initial">
+        <source> Dashboard </source>
+        <target> Tableau de bord </target>
+      </segment>
+    </unit>
+    <unit id="6570363013146073520">
+      <segment state="initial">
+        <source>Dashboard</source>
+        <target>Tableau de bord</target>
+      </segment>
+    </unit>
+    <unit id="7708583428094273381">
+      <segment state="initial">
+        <source>Previous Page</source>
+        <target>Page précédente</target>
+      </segment>
+    </unit>
+    <unit id="6900799038363597616">
+      <segment state="initial">
+        <source>Next Page</source>
+        <target>Page suivante</target>
+      </segment>
+    </unit>
+    <unit id="6788258623523629471">
+      <segment state="initial">
+        <source>No applications</source>
+        <target>Aucune application</target>
+      </segment>
+    </unit>
+    <unit id="2849064100927111571">
+      <segment state="initial">
+        <source>loading...</source>
+        <target>chargement...</target>
+      </segment>
+    </unit>
+    <unit id="3294686077659093992">
+      <segment state="initial">
+        <source>Namespace</source>
+        <target>Namespace</target>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <segment state="initial">
+        <source>Service</source>
+        <target>Service</target>
+      </segment>
+    </unit>
+    <unit id="6583920543416105444">
+      <segment state="initial">
+        <source> Tasks</source>
+        <target> Tâches </target>
+      </segment>
+    </unit>
+    <unit id="4299467318965233262">
+      <segment state="initial">
+        <source> Loading... </source>
+        <target> Chargement... </target>
+      </segment>
+    </unit>
+    <unit id="6477693301935901578">
+      <segment state="initial">
+        <source>Grouped by status</source>
+        <target>Groupées par statut</target>
+      </segment>
+    </unit>
+    <unit id="8614260097416227361">
+      <segment state="initial">
+        <source>No tasks</source>
+        <target>Pas de tâches</target>
+      </segment>
+    </unit>
+    <unit id="6469957309043414241">
+      <segment state="initial">
+        <source> New group </source>
+        <target> Nouveau groupe </target>
+      </segment>
+    </unit>
+    <unit id="7139520592812430718">
+      <segment state="initial">
+        <source>Create a group</source>
+        <target>Créer un groupe</target>
+      </segment>
+    </unit>
+    <unit id="564870720479927873">
+      <segment state="initial">
+        <source>Name of your group</source>
+        <target>Nom de votre groupe</target>
+      </segment>
+    </unit>
+    <unit id="4296542518018293988">
+      <segment state="initial">
+        <source>New group</source>
+        <target>Nouveau groupe</target>
+      </segment>
+    </unit>
+    <unit id="2235647076080114570">
+      <segment state="initial">
+        <source>Select a color</source>
+        <target>Sélectionner une couleur</target>
+      </segment>
+    </unit>
+    <unit id="209379737401621079">
+      <segment state="initial">
+        <source>grey</source>
+        <target>gris</target>
+      </segment>
+    </unit>
+    <unit id="4750497417886366863">
+      <segment state="initial">
+        <source>red</source>
+        <target>rouge</target>
+      </segment>
+    </unit>
+    <unit id="4955630191692571673">
+      <segment state="initial">
+        <source>orange</source>
+        <target>orange</target>
+      </segment>
+    </unit>
+    <unit id="1850999561099918087">
+      <segment state="initial">
+        <source>yellow</source>
+        <target>jaune</target>
+      </segment>
+    </unit>
+    <unit id="6192244276175907743">
+      <segment state="initial">
+        <source>green</source>
+        <target>green</target>
+      </segment>
+    </unit>
+    <unit id="8946464197451351682">
+      <segment state="initial">
+        <source>amber</source>
+        <target>ambre</target>
+      </segment>
+    </unit>
+    <unit id="4236065708078284037">
+      <segment state="initial">
+        <source> Create </source>
+        <target> Créer </target>
+      </segment>
+    </unit>
+    <unit id="4215127233487431643">
+      <segment state="initial">
+        <source> Removed Items </source>
+        <target> Retirer l&apos;élément </target>
+      </segment>
+    </unit>
+    <unit id="5862748743317096016">
+      <segment state="initial">
+        <source>Removed Items</source>
+        <target>Éléments retirés</target>
+      </segment>
+    </unit>
+    <unit id="4524017100327483982">
+      <segment state="initial">
+        <source>Select a group</source>
+        <target>Sélectionner un groupe</target>
+      </segment>
+    </unit>
+    <unit id="2788105330327067099">
+      <segment state="initial">
+        <source> Apply </source>
+        <target> Valider </target>
+      </segment>
+    </unit>
+    <unit id="8723856721172058289">
+      <segment state="initial">
+        <source> Rename the group </source>
+        <target> Renomer le gropue </target>
+      </segment>
+    </unit>
+    <unit id="3200829095752276260">
+      <segment state="initial">
+        <source>Rename a group</source>
+        <target>Renomver un group</target>
+      </segment>
+    </unit>
+    <unit id="699977731672329756">
+      <segment state="initial">
+        <source>Current name</source>
+        <target>Nom actuel</target>
+      </segment>
+    </unit>
+    <unit id="1674202514578558795">
+      <segment state="initial">
+        <source>New name</source>
+        <target>Nouveau nom</target>
+      </segment>
+    </unit>
+    <unit id="5006109153267517336">
+      <segment state="initial">
+        <source> Rename </source>
+        <target> Renomer </target>
+      </segment>
+    </unit>
+    <unit id="8969294140896563779">
+      <segment state="initial">
+        <source> Delete the group </source>
+        <target> Supprimer le groupe </target>
+      </segment>
+    </unit>
+    <unit id="8184608873708049182">
+      <segment state="initial">
+        <source> Hide the item </source>
+        <target> Cacher le groupe </target>
+      </segment>
+    </unit>
     <unit id="7410432243549869948">
       <segment state="initial">
         <source>Duration</source>

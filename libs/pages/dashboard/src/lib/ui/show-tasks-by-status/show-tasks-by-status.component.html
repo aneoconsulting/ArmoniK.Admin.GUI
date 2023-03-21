@@ -1,0 +1,67 @@
+<div cdkDropListGroup class="groups">
+  <div
+    *ngFor="let group of groups; index as i; trackBy: trackByItems"
+    cdkDropList
+    [cdkDropListDisabled]="!enableMoveItem"
+    [cdkDropListData]="group.items"
+    (cdkDropListDropped)="drop($event)"
+    class="group"
+    [attr.style]="
+      '--color: var(--color-' +
+      group.color +
+      ');--outline-color: var(--outline-color-' +
+      group.color +
+      ')'
+    "
+  >
+    <div class="group-header">
+      <div class="group-title">
+        {{ group.name }}
+      </div>
+      <div class="group-actions">
+        <armonik-admin-gui-dashboard-rename-group
+          [group]="group"
+          (groupChange)="onRenameGroup($event)"
+          *ngIf="enableRenameGroup"
+        >
+        </armonik-admin-gui-dashboard-rename-group>
+        <armonik-admin-gui-dashboard-group-actions-button
+          (click)="onDeleteGroup(group)"
+          *ngIf="enableDeleteGroup"
+        >
+          <span class="sr-only" i18n> Delete the group </span>
+          <cds-icon shape="trash" solid></cds-icon>
+        </armonik-admin-gui-dashboard-group-actions-button>
+      </div>
+    </div>
+    <div class="group-items">
+      <ng-container
+        *ngFor="let item of group.items; index as i; trackBy: trackByItem"
+      >
+        <div cdkDrag class="item">
+          <div class="dot"></div>
+          <span>
+            {{ item.name }}
+          </span>
+          <span *ngIf="enableRemoveItem">
+            <button
+              (click)="onHideItem(item)"
+              class="hide btn btn-sm btn-danger btn-icon"
+              [title]="'Hide ' + item.name"
+              type="button"
+            >
+              <span class="sr-only" i18n> Hide the item </span>
+              <cds-icon shape="eye-hide" solid></cds-icon>
+            </button>
+          </span>
+          <span class="value">
+            {{ item.value }}
+            <span class="value-percent">
+              ({{ item.value / total() | percent : '1.0-2' }})
+            </span>
+          </span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
