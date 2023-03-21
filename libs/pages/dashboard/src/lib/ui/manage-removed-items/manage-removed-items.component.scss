@@ -1,0 +1,11 @@
+.modal-body {
+  .items {
+    display: grid;
+    grid-template-columns: repeat(2, min-content);
+    gap: 1rem;
+
+    clr-select-container {
+      margin: 0;
+    }
+  }
+}

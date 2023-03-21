@@ -1,0 +1,50 @@
+<button
+  (click)="openModal()"
+  class="btn btn-primary btn-outline"
+  type="button"
+  [disabled]="items.length === 0"
+  i18n
+>
+  Removed Items
+</button>
+
+<clr-modal
+  [(clrModalOpen)]="open"
+  [clrModalClosable]="false"
+  class="modal removed-items"
+>
+  <h3 class="modal-title" i18n>Removed Items</h3>
+  <div class="modal-body">
+    <div class="items">
+      <ng-container *ngFor="let item of items">
+        <div>{{ item.name }}</div>
+        <clr-select-container>
+          <select
+            clrSelect
+            name="group"
+            title="Select a group"
+            (change)="onSelectGroup(item, $event)"
+          >
+            <option value="" i18n>Select a group</option>
+            <option *ngFor="let group of groups" [value]="group.name">
+              {{ group.name }}
+            </option>
+          </select>
+        </clr-select-container>
+      </ng-container>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary btn-outline"
+      (click)="closeModal()"
+      i18n
+    >
+      Close
+    </button>
+    <button type="button" class="btn btn-primary" (click)="updateItems()" i18n>
+      Apply
+    </button>
+  </div>
+</clr-modal>
