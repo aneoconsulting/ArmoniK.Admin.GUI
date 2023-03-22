@@ -3,6 +3,7 @@ import { ClrDatagridSortOrder, ClrDatagridStateInterface } from "@clr/angular";
 import { UrlService } from "./url.service";
 import { DatagridState } from "../types/datagrid-state";
 import { DatagridFilter } from "../types/datagrid-filter";
+import { Observable, combineLatest, distinct, filter, map, tap } from "rxjs";
 
 @Injectable()
 export class DatagridService {
@@ -16,6 +17,7 @@ export class DatagridService {
   }
 
   public datagridStateToQueryParams(datagridState: DatagridState): Record<string, string | number> {
+    console.log('datagridStateToQueryParams', datagridState);
     return {
       page: datagridState.page,
       pageSize: datagridState.pageSize,
@@ -27,9 +29,10 @@ export class DatagridService {
 
 
   public clrStateToDatagridState(state: ClrDatagridStateInterface): DatagridState {
+    console.log('clrStateToDatagridState', state);
     return {
-      page: state?.page?.current ?? 0,
-      pageSize: state?.page?.size ?? 0,
+      page: state?.page?.current ?? 1,
+      pageSize: state?.page?.size ?? 10,
       orderBy: (state?.sort?.by) as string ?? '',
       order: state?.sort?.reverse ? -1 : 1,
       filters: state?.filters?.map(filter => ({
@@ -39,24 +42,40 @@ export class DatagridService {
     };
   }
 
-  public getQueryParamsPage(): number {
-    return Number(this._urlService.getQueryParams('page'));
+  public getQueryParamsPage$(): Observable<number> {
+    return this._urlService.getQueryParams$('page').pipe(
+      map(page => page ? Number(page) : 1)
+    );
   }
 
-  public getQueryParamsPageSize(): number {
-    return Number(this._urlService.getQueryParams('pageSize'));
+  public getQueryParamsPageSize$(): Observable<number> {
+    return this._urlService.getQueryParams$('pageSize').pipe(
+      map(pageSize => pageSize ? Number(pageSize) : 10)
+    );
   }
 
-  public getQueryParamsOrderByColumn(columnName: string): ClrDatagridSortOrder {
-    const orderBy = this._urlService.getQueryParams('orderBy');
-    const order = this._urlService.getQueryParams('order');
+  public getQueryParamsOrderByColumn$(columnName: string): Observable<ClrDatagridSortOrder> {
+    return combineLatest([
+      this._urlService.getQueryParams$('orderBy').pipe(
+        filter(orderBy => !!orderBy)
+      ),
+      this._urlService.getQueryParams$('order').pipe(
+        filter(order => !!order)
+      ),
+    ]).pipe(
+      map(([orderBy, order]) => {
+        if (!orderBy || !order) {
+          return ClrDatagridSortOrder.UNSORTED;
+        }
 
-    if (orderBy === columnName) {
-      return Number(order) as ClrDatagridSortOrder.ASC | ClrDatagridSortOrder.DESC;
-    }
-
-    // If column name is not the same as orderBy, return UNSORTED
-    return ClrDatagridSortOrder.UNSORTED;
+        if (orderBy === columnName) {
+          return Number(order) as ClrDatagridSortOrder.ASC | ClrDatagridSortOrder.DESC;
+        } else {
+          return ClrDatagridSortOrder.UNSORTED;
+        }
+      }
+      ),
+    )
   }
 
   private _flattenFilters(filters: DatagridFilter[]): { [key: string]: string } {

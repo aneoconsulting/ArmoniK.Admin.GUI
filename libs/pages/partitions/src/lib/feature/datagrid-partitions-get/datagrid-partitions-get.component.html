@@ -1,8 +1,22 @@
-<button type="button" title="Open the modal" i18n-title class="btn btn-sm btn-secondary" (click)="openModal()">
-  <cds-icon shape="eye"></cds-icon>
-  <span i18n class="sr-only">
-    Open the modal
-  </span>
-</button>
-
-{{ open }}
+<clr-modal [clrModalOpen]="open" [clrModalClosable]="false" [clrModalSize]="'lg'">
+  <h3 class="modal-title">
+    <span i18n> Partition </span>
+    {{ partitionId }}
+  </h3>
+  <div class="modal-body">
+    <ng-container *ngIf="get$ | async as partition">
+      <pre *ngIf="!loading">{{ partition | json }}</pre>
+    </ng-container>
+    <!-- TODO: Move to a component -->
+    <div class="loading clr-row clr-justify-content-center" *ngIf="loading">
+      <div class="clr-col-1">
+        <span class="spinner" i18n> Loading... </span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeModal()" i18n>
+      Close
+    </button>
+  </div>
+</clr-modal>

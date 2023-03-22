@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { GrpcPartitionsService } from "@armonik.admin.gui/partitions/data-access";
 import { GrpcParamsService } from "@armonik.admin.gui/shared/data-access";
 import { ClrDatagridModule, ClrDatagridSortOrder, ClrDatagridStateInterface, ClrIconModule } from "@clr/angular";
-import { Subject, merge, switchMap, tap } from "rxjs";
+import { Observable, Subject, catchError, distinct, merge, switchMap, tap } from "rxjs";
 import { DatagridService } from "../../data-access/datagrid.service";
 import { PartitionsListService } from "../../data-access/partitions-list.service";
 import { UrlService } from "../../data-access/url.service";
@@ -16,6 +16,7 @@ import { DatagridPartitionsGetComponent } from "../datagrid-partitions-get/datag
   templateUrl: './datagrid-partitions-list.component.html',
   styleUrls: ['./datagrid-partitions-list.component.scss'],
   imports: [
+    ClrIconModule,
     ClrDatagridModule,
     DatagridPartitionsGetComponent,
     AsyncPipe, NgIf, NgForOf
@@ -30,37 +31,56 @@ import { DatagridPartitionsGetComponent } from "../datagrid-partitions-get/datag
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatagridPartitionsListComponent {
+  // Get
+  public open = false;
+  public currentPartitionId = '';
+
+  // List
   private _state: ClrDatagridStateInterface = {};
 
   public total = 0;
   public loading = true;
+  public lastError: string | null = null;
 
   public refresh$ = new Subject<void>();
 
   public list$ = merge(
     this.refresh$,
   ).pipe(
-    tap(() => this.loading = true),
-    switchMap(() => this._partitionsListService.list$({}).pipe(
-      tap((data) => {
-        this.loading = false;
-        this.total = data.total;
-      }))
-    )
+    tap(() => {
+      this.loading = true
+      this.lastError = null
+    }),
+    switchMap(() => {
+      return this._partitionsListService.list$(this._state).pipe(
+        catchError((error) => {
+          this.loading = false;
+          this.lastError = error.message
+          console.error(error);
+          return [];
+        }),
+      )
+    }
+    ),
+    tap((data) => {
+      this.loading = false;
+      this.total = data.total;
+    }),
   )
+
 
   constructor(private _partitionsListService: PartitionsListService, private _urlService: UrlService, private _datagridService: DatagridService) { }
 
-  public getQueryParamsPage(): number {
-    return this._datagridService.getQueryParamsPage();
+  public getQueryParamsPage$(): Observable<number> {
+    return this._datagridService.getQueryParamsPage$();
   }
 
-  public getQueryParamsPageSize(): number {
-    return this._datagridService.getQueryParamsPageSize();
+  public getQueryParamsPageSize$(): Observable<number> {
+    return this._datagridService.getQueryParamsPageSize$();
   }
 
-  public getQueryParamsOrderByColumn(columnName: string): ClrDatagridSortOrder {
-    return this._datagridService.getQueryParamsOrderByColumn(columnName);
+  public getQueryParamsOrderByColumn$(columnName: string): Observable<ClrDatagridSortOrder> {
+    return this._datagridService.getQueryParamsOrderByColumn$(columnName);
   }
 
   public onRefresh(state: ClrDatagridStateInterface) {
@@ -71,7 +91,11 @@ export class DatagridPartitionsListComponent {
     this._urlService.updateQueryParams(queryParams);
 
     this.refresh$.next();
+  }
 
+  public viewPartition(partitionId: string) {
+    this.currentPartitionId = partitionId;
+    this.open = true;
   }
 
   public trackByPartition(_: number, item: PartitionRaw) {
