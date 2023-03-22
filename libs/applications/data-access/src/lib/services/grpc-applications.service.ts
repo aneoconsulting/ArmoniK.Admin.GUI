@@ -1,5 +1,7 @@
 import {
   ApplicationsClient,
+  CountTasksByStatusApplicationRequest,
+  CountTasksByStatusApplicationResponse,
   ListApplicationsRequest,
   ListApplicationsResponse,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -55,7 +57,11 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
-      orderBy,
+      orderBy: !orderBy.includes(
+        ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
+      )
+        ? orderBy
+        : undefined,
       order:
         order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
           ? order
@@ -87,6 +93,23 @@ export class GrpcApplicationsService extends BaseGrpcService {
   ): Observable<ListApplicationsResponse> {
     return this._applicationsClient
       .listApplications(options)
+      .pipe(takeUntil(this._timeout$));
+  }
+
+  public countTasksByStatus$({
+    name,
+    version,
+  }: {
+    name: string;
+    version: string;
+  }): Observable<CountTasksByStatusApplicationResponse> {
+    const options = new CountTasksByStatusApplicationRequest({
+      name,
+      version,
+    });
+
+    return this._applicationsClient
+      .countTasksByStatus(options)
       .pipe(takeUntil(this._timeout$));
   }
 }

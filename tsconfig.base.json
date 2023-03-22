@@ -10,7 +10,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": ["ES2022", "dom"],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -24,6 +27,9 @@
       "@armonik.admin.gui/pages/partitions": [
         "libs/pages/partitions/src/index.ts"
       ],
+      "@armonik.admin.gui/pages/dashboard": [
+        "libs/pages/dashboard/src/index.ts"
+      ],
       "@armonik.admin.gui/partitions/data-access": [
         "libs/partitions/data-access/src/index.ts"
       ],
@@ -36,11 +42,16 @@
       "@armonik.admin.gui/shared/data-access": [
         "libs/shared/data-access/src/index.ts"
       ],
-      "@armonik.admin.gui/shared/feature": ["libs/shared/feature/src/index.ts"],
+      "@armonik.admin.gui/shared/feature": [
+        "libs/shared/feature/src/index.ts"
+      ],
       "@armonik.admin.gui/tasks/data-access": [
         "libs/tasks/data-access/src/index.ts"
       ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

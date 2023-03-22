@@ -6,6 +6,7 @@
     "applications-data-access": "libs/applications/data-access",
     "auth-data-access": "libs/auth/data-access",
     "pages-partitions": "libs/pages/partitions",
+    "pages-dashboard": "libs/pages/dashboard",
     "partitions-data-access": "libs/partitions/data-access",
     "results-data-access": "libs/results/data-access",
     "sessions-data-access": "libs/sessions/data-access",

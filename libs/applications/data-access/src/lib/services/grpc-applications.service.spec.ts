@@ -95,7 +95,7 @@ describe('GrpcApplicationsService', () => {
       page: undefined,
       pageSize: undefined,
       interval: undefined,
-      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
+      orderBy: undefined,
       order: undefined,
     });
   });

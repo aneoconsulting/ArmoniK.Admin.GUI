@@ -9,7 +9,7 @@ import { Injectable, NgModule } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'applications', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {
     path: '',
     canActivate: [CanActivateUser],
@@ -19,6 +19,14 @@ const routes: Routes = [
         loadChildren: () =>
           import('./users/feature/users-shell/users-shell.module').then(
             (m) => m.UsersShellModule
+          ),
+      },
+      {
+        path: 'dashboard',
+        title: $localize`Dashboard`,
+        loadComponent: () =>
+          import('@armonik.admin.gui/pages/dashboard').then(
+            (m) => m.DashboardComponent
           ),
       },
       {
