@@ -18,6 +18,13 @@ export class UrlService {
   }
 
   public updateQueryParams(queryParams: Record<string, string | number>) {
+    // If active route has no queryParams, we need to override current url in history
+    if (Object.keys(this._activatedRoute.snapshot.queryParams).length === 0) {
+      this._router.navigate([], { queryParams, replaceUrl: true });
+      return;
+    }
+
+    // Otherwise, we just add new url to history
     this._router.navigate([], { queryParams });
   }
 

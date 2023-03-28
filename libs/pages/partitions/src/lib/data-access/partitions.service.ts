@@ -3,7 +3,7 @@ import { GrpcPartitionsService } from "@armonik.admin.gui/partitions/data-access
 import { ClrDatagridStateInterface } from "@clr/angular";
 
 @Injectable()
-export class PartitionsListService {
+export class PartitionsService {
   constructor(
     private _grpcPartitionsService: GrpcPartitionsService,
   ) { }
@@ -19,5 +19,9 @@ export class PartitionsListService {
     console.log('grpcParams', grpcParams);
 
     return this._grpcPartitionsService.list$(grpcParams);
+  }
+
+  get$(partitionId: string) {
+    return this._grpcPartitionsService.get$(partitionId);
   }
 }

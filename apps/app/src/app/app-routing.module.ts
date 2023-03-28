@@ -4,9 +4,11 @@ import {
   Routes,
   TitleStrategy,
 } from '@angular/router';
-import { CanActivateUser } from './shared/data-access';
+import { AuthorizationService, CanActivateUser } from './shared/data-access';
 import { Injectable, NgModule } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { CanActivatePartitionsListService } from './partitions/data-access';
+import { RedirectService } from './shared/util';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -38,8 +40,14 @@ const routes: Routes = [
       },
       {
         path: 'partitions',
+        canActivate: [CanActivatePartitionsListService],
         loadComponent: () =>
           import('@armonik.admin.gui/pages/partitions').then((m) => m.PartitionsListComponent),
+      },
+      {
+        path: 'partitions/:partitionId',
+        loadComponent: () =>
+          import('@armonik.admin.gui/pages/partitions').then((m) => m.PartitionGetComponent),
       },
       {
         path: 'sessions',
@@ -99,6 +107,9 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
       provide: TitleStrategy,
       useClass: TemplatePageTitleStrategy,
     },
+    AuthorizationService,
+    RedirectService,
+    CanActivatePartitionsListService
   ],
   exports: [RouterModule],
 })

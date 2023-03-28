@@ -1,12 +1,13 @@
 <clr-datagrid (clrDgRefresh)="onRefresh($event)" [clrDgLoading]="loading">
+  <!-- TODO: Add the autorefresh -->
 
-  <!-- TODO: fix column name using type -->
-  <clr-dg-column [clrDgField]="'1'" [clrDgSortOrder]="(getQueryParamsOrderByColumn$('1') | async)!">
+  <clr-dg-column [clrDgField]="fields.id" [clrDgSortOrder]="(getQueryParamsOrderByColumn$(fields.id) | async)!">
     <span i18n> Id </span>
   </clr-dg-column>
 
   <!-- There a known bug that fire 2 requests when using browser history and navigating from id to priority. Could come from Clarity. -->
-  <clr-dg-column [clrDgField]="'2'" [clrDgSortOrder]="(getQueryParamsOrderByColumn$('2') | async)!">
+  <clr-dg-column [clrDgField]="fields.priority"
+    [clrDgSortOrder]="(getQueryParamsOrderByColumn$(fields.priority) | async)!">
     <span i18n> Priority </span>
   </clr-dg-column>
   <clr-dg-column i18n> Actions </clr-dg-column>
@@ -16,13 +17,12 @@
       <clr-dg-cell> {{ partition.id }} </clr-dg-cell>
       <clr-dg-cell> {{ partition.priority }} </clr-dg-cell>
       <clr-dg-cell>
-        <button type="button" title="Open the modal" i18n-title class="btn btn-sm btn-secondary"
-          (click)="viewPartition(partition.id)">
+        <a [routerLink]="['/', 'partitions', partition.id]" type="button" class="btn btn-sm btn-secondary">
           <cds-icon shape="eye"></cds-icon>
           <span i18n class="sr-only">
-            Open the modal
+            View partition {{ partition.id }}
           </span>
-        </button>
+        </a>
       </clr-dg-cell>
     </clr-dg-row>
   </ng-container>
@@ -39,6 +39,3 @@
     </clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>
-
-<armonik-admin-gui-datagrid-partitions-get [(open)]="open"
-  [(partitionId)]="currentPartitionId"></armonik-admin-gui-datagrid-partitions-get>
