@@ -5,11 +5,7 @@
         <a routerLink="/">
           <span class="title">
             <figure>
-              <img
-                src="assets/images/armonik-logo.png"
-                alt="ArmoniK logo"
-                i18n-alt
-              />
+              <img src="assets/images/armonik-logo.png" alt="ArmoniK logo" i18n-alt />
             </figure>
             &nbsp; - &nbsp;
             <app-pages-the-header-time></app-pages-the-header-time>
@@ -33,44 +29,25 @@
         <span i18n> Dashboard </span>
       </a>
       <div class="nav-divider"></div>
-      <a
-        *ngFor="let link of dataLinks; trackBy: trackByLabel"
-        clrVerticalNavLink
-        [routerLink]="link.path"
-        [queryParams]="link.queryParams"
-        routerLinkActive="active"
-      >
+      <a *ngFor="let link of dataLinks; trackBy: trackByLabel" clrVerticalNavLink [routerLink]="link.path"
+        [queryParams]="link.queryParams" routerLinkActive="active">
         <cds-icon [attr.shape]="link.shape" clrVerticalNavIcon></cds-icon>
-        {{ link.label }}</a
-      >
+        {{ link.label }}</a>
       <div class="nav-divider"></div>
-      <a
-        *ngFor="let link of computedLinks; trackBy: trackByLabel"
-        clrVerticalNavLink
-        [routerLink]="link.path"
-        [queryParams]="link.queryParams"
-        routerLinkActive="active"
-      >
+      <a *ngFor="let link of computedLinks; trackBy: trackByLabel" clrVerticalNavLink [routerLink]="link.path"
+        [queryParams]="link.queryParams" routerLinkActive="active">
         <cds-icon [attr.shape]="link.shape" clrVerticalNavIcon></cds-icon>
-        {{ link.label }}</a
-      >
-      <ng-container
-        *ngIf="{
+        {{ link.label }}</a>
+      <ng-container *ngIf="{
           seq: settingsService.seqSubject$ | async,
           grafana: settingsService.grafanaSubject$ | async
-        } as isUp"
-      >
+        } as isUp">
         <div class="nav-divider" *ngIf="isUp.seq || isUp.grafana"></div>
         <a clrVerticalNavLink href="/seq/" target="_blank" *ngIf="isUp.seq">
           <cds-icon shape="crosshairs" clrVerticalNavIcon></cds-icon>
           <span i18n> Seq </span>
         </a>
-        <a
-          clrVerticalNavLink
-          href="/grafana/"
-          target="_blank"
-          *ngIf="isUp.grafana"
-        >
+        <a clrVerticalNavLink href="/grafana/" target="_blank" *ngIf="isUp.grafana">
           <cds-icon shape="line-chart" clrVerticalNavIcon></cds-icon>
           <span i18n> Grafana </span>
         </a>
@@ -79,21 +56,12 @@
       <app-pages-the-favorites-navigation></app-pages-the-favorites-navigation>
       <app-pages-the-history-navigation></app-pages-the-history-navigation>
       <div class="bottom">
-        <a
-          clrVerticalNavLink
-          href="https://aneoconsulting.github.io/ArmoniK.Admin.GUI/"
-          rel="noopener"
-          target="_blank"
-        >
+        <a clrVerticalNavLink href="https://aneoconsulting.github.io/ArmoniK.Admin.GUI/" rel="noopener" target="_blank">
           <cds-icon shape="help" clrVerticalNavIcon></cds-icon>
           <span i18n> Documentation </span>
         </a>
-        <a
-          clrVerticalNavLink
-          href="https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases"
-          rel="noopener"
-          target="_blank"
-        >
+        <a clrVerticalNavLink href="https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases" rel="noopener"
+          target="_blank">
           <cds-icon shape="new" clrVerticalNavIcon></cds-icon>
           <span i18n> Changelog </span>
         </a>

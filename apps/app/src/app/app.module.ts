@@ -26,6 +26,7 @@ import {
   eyeHideIcon,
   pencilIcon,
   trashIcon,
+  refreshIcon,
 } from '@cds/core/icon';
 import {
   ClrIconModule,
@@ -44,6 +45,7 @@ import {
 } from './shared/feature';
 import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
 import { CoreModule } from './shared/util';
+import { DatagridStorageService } from 'libs/pages/partitions/src/lib/data-access/datagrid-storage.service';
 /**
  * Load app data
  */
@@ -78,6 +80,7 @@ export class AppModule {
     ClarityIcons.addIcons(
       userIcon,
       crosshairsIcon,
+      refreshIcon,
       bundleIcon,
       lineChartIcon,
       angleIcon,

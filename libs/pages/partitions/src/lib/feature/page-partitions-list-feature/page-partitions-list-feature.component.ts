@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { DatagridStorageService } from "../../data-access/datagrid-storage.service";
 import { DatagridPartitionsListComponent } from "../datagrid-partitions-list/datagrid-partitions-list.component";
 
 @Component({
@@ -11,4 +12,5 @@ import { DatagridPartitionsListComponent } from "../datagrid-partitions-list/dat
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PartitionsListComponent { }
+export class PartitionsListComponent {
+}

@@ -1,5 +1,10 @@
 <clr-datagrid (clrDgRefresh)="onRefresh($event)" [clrDgLoading]="loading">
-  <!-- TODO: Add the autorefresh -->
+  <clr-dg-action-bar>
+    <armonik-admin-gui-refresh-button (refresh)="onManualRefresh()"></armonik-admin-gui-refresh-button>
+    <armonik-admin-gui-auto-refresh-button (refresh)="onAutoRefresh()" (intervalChange)="onIntervalChange($event)"
+      [interval]="restoreCurrentInterval()">
+    </armonik-admin-gui-auto-refresh-button>
+  </clr-dg-action-bar>
 
   <clr-dg-column [clrDgField]="fields.id" [clrDgSortOrder]="(getQueryParamsOrderByColumn$(fields.id) | async)!">
     <span i18n> Id </span>

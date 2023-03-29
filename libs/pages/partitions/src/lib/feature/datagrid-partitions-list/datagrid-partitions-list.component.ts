@@ -6,9 +6,14 @@ import { GrpcPartitionsService } from "@armonik.admin.gui/partitions/data-access
 import { GrpcParamsService } from "@armonik.admin.gui/shared/data-access";
 import { ClrDatagridModule, ClrDatagridSortOrder, ClrDatagridStateInterface, ClrIconModule } from "@clr/angular";
 import { Observable, Subject, catchError, merge, switchMap, tap } from "rxjs";
-import { DatagridService } from "../../data-access/datagrid.service";
+import { DatagridStorageService } from "../../data-access/datagrid-storage.service";
+import { DatagridURLService } from "../../data-access/datagrid-url.service";
+import { DatagridUtilsService } from "../../data-access/datagrid-utils.service";
 import { PartitionsService } from "../../data-access/partitions.service";
-import { UrlService } from "../../data-access/url.service";
+import { StorageService } from "../../data-access/storage.service";
+import { URLService } from "../../data-access/url.service";
+import { AutoRefreshButtonComponent } from "../../ui/auto-refresh-button/auto-refresh-button.component";
+import { RefreshButtonComponent } from "../../ui/refresh-button/refresh-button.component";
 
 @Component({
   standalone: true,
@@ -19,14 +24,19 @@ import { UrlService } from "../../data-access/url.service";
     RouterModule,
     ClrIconModule,
     ClrDatagridModule,
+    RefreshButtonComponent,
+    AutoRefreshButtonComponent,
     AsyncPipe, NgIf, NgForOf
   ],
   providers: [
     GrpcParamsService,
     GrpcPartitionsService,
     PartitionsService,
-    DatagridService,
-    UrlService
+    StorageService,
+    URLService,
+    DatagridURLService,
+    DatagridUtilsService,
+    DatagridStorageService,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -68,27 +78,48 @@ export class DatagridPartitionsListComponent {
     }),
   )
 
-  constructor(private _partitionsListService: PartitionsService, private _urlService: UrlService, private _datagridService: DatagridService) { }
+  constructor(private _partitionsListService: PartitionsService, private _urlService: URLService, private _datagridURLService: DatagridURLService, private _datagridStorageService: DatagridStorageService, private _datagridUtilsService: DatagridUtilsService) { }
 
   public getQueryParamsPage$(): Observable<number> {
-    return this._datagridService.getQueryParamsPage$();
+    return this._datagridURLService.getQueryParamsPage$();
   }
 
   public getQueryParamsPageSize$(): Observable<number> {
-    return this._datagridService.getQueryParamsPageSize$();
+    return this._datagridURLService.getQueryParamsPageSize$();
   }
 
   public getQueryParamsOrderByColumn$(columnName: string): Observable<ClrDatagridSortOrder> {
-    return this._datagridService.getQueryParamsOrderByColumn$(columnName);
+    return this._datagridURLService.getQueryParamsOrderByColumn$(columnName);
   }
 
   public onRefresh(state: ClrDatagridStateInterface) {
     this._updateState(state);
 
-    const queryParams = this._datagridService.generateQueryParams(state);
+    const queryParams = this._datagridUtilsService.generateQueryParams(state);
+    this.saveQueryParams(queryParams);
     this._urlService.updateQueryParams(queryParams);
 
     this.refresh$.next();
+  }
+
+  public onManualRefresh() {
+    this.refresh$.next();
+  }
+
+  public onAutoRefresh() {
+    this.refresh$.next();
+  }
+
+  public onIntervalChange(value: number | null) {
+    this._datagridStorageService.saveCurrentInterval(value)
+  }
+
+  public restoreCurrentInterval() {
+    return this._datagridStorageService.restoreCurrentInterval()
+  }
+
+  public saveQueryParams(value: Record<string, string | number>) {
+    this._datagridStorageService.saveQueryParams(value)
   }
 
   public trackByPartition(_: number, item: PartitionRaw) {

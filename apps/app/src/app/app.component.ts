@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
     private _historyService: HistoryService,
     private _authService: AuthService,
     public settingsService: SettingsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     merge(

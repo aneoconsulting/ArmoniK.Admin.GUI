@@ -3,28 +3,52 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, map } from "rxjs";
 
 @Injectable()
-export class UrlService {
+export class URLService {
   constructor(
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
   ) { }
 
+  /**
+   * Get a query param using his name.
+   * @param name
+   *
+   * @returns string | undefined
+   */
   public getQueryParams(name: string): string | undefined {
     return this._activatedRoute.snapshot.queryParams[name];
   }
 
+  /**
+   * Get an observable of query param using his name.
+   * @param name
+   *
+   * @returns Observable<string | undefined>
+   */
   public getQueryParams$(name: string): Observable<string | undefined> {
     return this._activatedRoute.queryParams.pipe(map(params => params[name]));
   }
 
+  /**
+   * Get an uri of current route.
+   */
+  public currentURI() {
+    return this._activatedRoute.snapshot.url.map((segment) => segment.path).join('/');
+  }
+
+  /**
+   * Update query params of the current route.
+   *
+   * If active route has no query params, we override replace the URL (override url in history).
+   * Otherwise, we just push new url to history.
+   * @param queryParams
+   */
   public updateQueryParams(queryParams: Record<string, string | number>) {
-    // If active route has no queryParams, we need to override current url in history
     if (Object.keys(this._activatedRoute.snapshot.queryParams).length === 0) {
       this._router.navigate([], { queryParams, replaceUrl: true });
       return;
     }
 
-    // Otherwise, we just add new url to history
     this._router.navigate([], { queryParams });
   }
 
