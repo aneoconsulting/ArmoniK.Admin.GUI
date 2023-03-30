@@ -38,6 +38,17 @@ export class DatagridURLService {
   }
 
   /**
+   * Get query params for filtering by column.
+   * If column is not filtered, return empty string.
+   */
+  public getQueryParamsFilterByColumn$(columnName: string): Observable<string> {
+    return this._URLService.getQueryParams$(columnName).pipe(
+      startWith(this._restoreQueryParams()[columnName]),
+      map(filter => filter ? filter as string : ''),
+    );
+  }
+
+  /**
    * Get query params for sorting by column. If column is not sorted, return UNSORTED.
    * Compare provided column name with orderBy query param to calculate sort order.
    * @param columnName
@@ -48,11 +59,9 @@ export class DatagridURLService {
     return combineLatest([
       this._URLService.getQueryParams$('orderBy').pipe(
         startWith(this._restoreQueryParams()['orderBy']),
-        filter(orderBy => !!orderBy),
       ),
       this._URLService.getQueryParams$('order').pipe(
         startWith(this._restoreQueryParams()['order']),
-        filter(order => !!order),
       ),
     ]).pipe(
       map(([orderBy, order]) => {
@@ -68,6 +77,21 @@ export class DatagridURLService {
       }
       ),
     )
+  }
+
+  /**
+   * Reset sorting query params to their default value.
+   */
+  public resetSortFromQueryParams(): void {
+    // Using 'order' has no effect.
+    this._URLService.resetQueryParamsByRemoving(['orderBy']);
+  }
+
+  /**
+   * Remove filtering from query params.
+   */
+  public resetFilteringFromQueryParams(): void {
+    this._URLService.resetQueryParamsByKeeping(['page', 'pageSize', 'orderBy', 'order']);
   }
 
   /**

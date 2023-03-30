@@ -14,6 +14,8 @@ import { StorageService } from "../../data-access/storage.service";
 import { URLService } from "../../data-access/url.service";
 import { AutoRefreshButtonComponent } from "../../ui/auto-refresh-button/auto-refresh-button.component";
 import { RefreshButtonComponent } from "../../ui/refresh-button/refresh-button.component";
+import { ActionsDropdownComponent } from "../../ui/actions-dropdown/actions-dropdown.component";
+import { IdFilterComponent } from "../../ui/id-filter/id-filter.component";
 
 @Component({
   standalone: true,
@@ -26,6 +28,8 @@ import { RefreshButtonComponent } from "../../ui/refresh-button/refresh-button.c
     ClrDatagridModule,
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
+    ActionsDropdownComponent,
+    IdFilterComponent,
     AsyncPipe, NgIf, NgForOf
   ],
   providers: [
@@ -63,6 +67,7 @@ export class DatagridPartitionsListComponent {
     }),
     switchMap(() => {
       return this._partitionsListService.list$(this._state).pipe(
+        // TODO: Catch error and show it in the UI
         catchError((error) => {
           this.loading = false;
           this.lastError = error.message
@@ -92,6 +97,10 @@ export class DatagridPartitionsListComponent {
     return this._datagridURLService.getQueryParamsOrderByColumn$(columnName);
   }
 
+  public getQueryParamsFilterByColumn$(columnName: string): Observable<string> {
+    return this._datagridURLService.getQueryParamsFilterByColumn$(columnName);
+  }
+
   public onRefresh(state: ClrDatagridStateInterface) {
     this._updateState(state);
 
@@ -116,6 +125,16 @@ export class DatagridPartitionsListComponent {
 
   public restoreCurrentInterval() {
     return this._datagridStorageService.restoreCurrentInterval()
+  }
+
+  public onClearFilters() {
+    this._datagridURLService.resetFilteringFromQueryParams();
+    // Because of a bug, we need to refresh the datagrid manually
+    this.refresh$.next();
+  }
+
+  public onClearSort() {
+    this._datagridURLService.resetSortFromQueryParams();
   }
 
   public saveQueryParams(value: Record<string, string | number>) {

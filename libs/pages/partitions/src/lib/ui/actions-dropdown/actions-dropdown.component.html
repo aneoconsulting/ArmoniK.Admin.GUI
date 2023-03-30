@@ -1,0 +1,10 @@
+<clr-dropdown>
+  <button class="btn btn-sm btn-link" clrDropdownTrigger>
+    <span i18n>Actions</span>
+    <cds-icon shape="angle" direction="down"></cds-icon>
+  </button>
+  <clr-dropdown-menu clrPosition="bottom-right" *clrIfOpen>
+    <button type="button" clrDropdownItem (click)="onClearSorting()">Clear Sorting</button>
+    <button type="button" clrDropdownItem (click)="onClearFilters()">Clear Filters</button>
+  </clr-dropdown-menu>
+</clr-dropdown>

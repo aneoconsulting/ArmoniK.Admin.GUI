@@ -1,13 +1,22 @@
 <clr-datagrid (clrDgRefresh)="onRefresh($event)" [clrDgLoading]="loading">
-  <clr-dg-action-bar>
-    <armonik-admin-gui-refresh-button (refresh)="onManualRefresh()"></armonik-admin-gui-refresh-button>
-    <armonik-admin-gui-auto-refresh-button (refresh)="onAutoRefresh()" (intervalChange)="onIntervalChange($event)"
-      [interval]="restoreCurrentInterval()">
-    </armonik-admin-gui-auto-refresh-button>
+  <clr-dg-action-bar class="clr-row clr-justify-content-between clr-align-items-center">
+    <div>
+      <armonik-admin-gui-refresh-button (refresh)="onManualRefresh()"></armonik-admin-gui-refresh-button>
+      <armonik-admin-gui-auto-refresh-button (refresh)="onAutoRefresh()" (intervalChange)="onIntervalChange($event)"
+        [interval]="restoreCurrentInterval()">
+      </armonik-admin-gui-auto-refresh-button>
+    </div>
+    <armonik-admin-gui-actions-dropdown (clearFilters)="onClearFilters()"
+      (clearSort)="onClearSort()"></armonik-admin-gui-actions-dropdown>
   </clr-dg-action-bar>
 
   <clr-dg-column [clrDgField]="fields.id" [clrDgSortOrder]="(getQueryParamsOrderByColumn$(fields.id) | async)!">
     <span i18n> Id </span>
+    <clr-dg-filter [clrDgFilter]="idFilter">
+      <!-- TODO: update this filter to avoid sync issue when clearing -->
+      <armonik-admin-gui-id-filter name="id" [selectedValue]="getQueryParamsFilterByColumn$('id') | async" #idFilter>
+      </armonik-admin-gui-id-filter>
+    </clr-dg-filter>
   </clr-dg-column>
 
   <!-- There a known bug that fire 2 requests when using browser history and navigating from id to priority. Could come from Clarity. -->
