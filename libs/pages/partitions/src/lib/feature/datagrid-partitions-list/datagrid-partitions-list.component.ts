@@ -1,21 +1,16 @@
 import { ListPartitionsRequest, PartitionRaw } from "@aneoconsultingfr/armonik.api.angular";
 import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { RouterModule } from "@angular/router";
+import { Params, RouterModule } from "@angular/router";
 import { GrpcPartitionsService } from "@armonik.admin.gui/partitions/data-access";
-import { GrpcParamsService } from "@armonik.admin.gui/shared/data-access";
+import { DatagridService, DatagridStorageService, DatagridURLService, DatagridUtilsService, GrpcParamsService, StorageService, URLService } from "@armonik.admin.gui/shared/data-access";
 import { ClrDatagridModule, ClrDatagridSortOrder, ClrDatagridStateInterface, ClrIconModule } from "@clr/angular";
 import { Observable, Subject, catchError, merge, switchMap, tap } from "rxjs";
-import { DatagridStorageService } from "../../data-access/datagrid-storage.service";
-import { DatagridURLService } from "../../data-access/datagrid-url.service";
-import { DatagridUtilsService } from "../../data-access/datagrid-utils.service";
-import { PartitionsService } from "../../data-access/partitions.service";
-import { StorageService } from "../../data-access/storage.service";
-import { URLService } from "../../data-access/url.service";
 import { AutoRefreshButtonComponent } from "../../ui/auto-refresh-button/auto-refresh-button.component";
 import { RefreshButtonComponent } from "../../ui/refresh-button/refresh-button.component";
 import { ActionsDropdownComponent } from "../../ui/actions-dropdown/actions-dropdown.component";
 import { IdFilterComponent } from "../../ui/id-filter/id-filter.component";
+import { PartitionsService } from "../../data-access/partitions.service";
 
 @Component({
   standalone: true,
@@ -41,6 +36,7 @@ import { IdFilterComponent } from "../../ui/id-filter/id-filter.component";
     DatagridURLService,
     DatagridUtilsService,
     DatagridStorageService,
+    DatagridService,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -83,7 +79,7 @@ export class DatagridPartitionsListComponent {
     }),
   )
 
-  constructor(private _partitionsListService: PartitionsService, private _urlService: URLService, private _datagridURLService: DatagridURLService, private _datagridStorageService: DatagridStorageService, private _datagridUtilsService: DatagridUtilsService) { }
+  constructor(private _partitionsListService: PartitionsService, private _urlService: URLService, private _datagridURLService: DatagridURLService, private _datagridStorageService: DatagridStorageService, private _datagridUtilsService: DatagridUtilsService, private _datagridService: DatagridService) { }
 
   public getQueryParamsPage$(): Observable<number> {
     return this._datagridURLService.getQueryParamsPage$();
@@ -105,7 +101,7 @@ export class DatagridPartitionsListComponent {
     this._updateState(state);
 
     const queryParams = this._datagridUtilsService.generateQueryParams(state);
-    this.saveQueryParams(queryParams);
+    this.saveQueryParams('partitions',queryParams);
     this._urlService.updateQueryParams(queryParams);
 
     this.refresh$.next();
@@ -129,16 +125,22 @@ export class DatagridPartitionsListComponent {
 
   public onClearFilters() {
     this._datagridURLService.resetFilteringFromQueryParams();
+    // Add it to a function in the datagrid service with a call to clear the url (2 in 1)
+    this._state.filters = [];
     // Because of a bug, we need to refresh the datagrid manually
     this.refresh$.next();
   }
 
   public onClearSort() {
     this._datagridURLService.resetSortFromQueryParams();
+    this._state.sort = {
+      by: '',
+      reverse: false,
+    };
   }
 
-  public saveQueryParams(value: Record<string, string | number>) {
-    this._datagridStorageService.saveQueryParams(value)
+  public saveQueryParams(name: string,params: Params) {
+    this._datagridService.saveQueryParams(name, params);
   }
 
   public trackByPartition(_: number, item: PartitionRaw) {

@@ -29,10 +29,17 @@
         <span i18n> Dashboard </span>
       </a>
       <div class="nav-divider"></div>
-      <a *ngFor="let link of dataLinks; trackBy: trackByLabel" clrVerticalNavLink [routerLink]="link.path"
-        [queryParams]="link.queryParams" routerLinkActive="active">
-        <cds-icon [attr.shape]="link.shape" clrVerticalNavIcon></cds-icon>
-        {{ link.label }}</a>
+
+      <a clrVerticalNavLink routerLinkActive="active" [routerLink]="['/', 'applications']" [queryParams]="restoreQueryParams$('applications') | async">
+        <cds-icon shape="bundle" clrVerticalNavIcon></cds-icon>
+        <span i18n> Applications </span>
+      </a>
+
+      <a clrVerticalNavLink routerLinkActive="active" [routerLink]="['/', 'partitions']" [queryParams]="restoreQueryParams$('partitions') | async">
+        <cds-icon shape="objects" clrVerticalNavIcon></cds-icon>
+        <span i18n> Partitions </span>
+      </a>
+
       <div class="nav-divider"></div>
       <a *ngFor="let link of computedLinks; trackBy: trackByLabel" clrVerticalNavLink [routerLink]="link.path"
         [queryParams]="link.queryParams" routerLinkActive="active">

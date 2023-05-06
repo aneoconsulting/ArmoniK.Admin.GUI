@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { ClrDropdownModule } from "@clr/angular";
-import { Interval } from "../../types/interval";
 import { Subscription, timer } from "rxjs";
 import { NgForOf, NgIf } from "@angular/common";
 import '@angular/localize/init';
+import { Interval } from "@armonik.admin.gui/shared/data-access";
 
 // TODO: Add many tests
 @Component({

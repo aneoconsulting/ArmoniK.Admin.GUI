@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import {
+  DatagridService,
+  DatagridStorageService,
   ExternalServicesEnum,
   HealthCheckService,
 } from '@armonik.admin.gui/shared/data-access';
@@ -16,19 +18,6 @@ import { User } from '@aneoconsultingfr/armonik.api.angular';
 })
 export class AppComponent implements OnInit {
   public loadingUser = false;
-
-  dataLinks: AppNavLink[] = [
-    {
-      path: ['/', 'applications'],
-      label: $localize`Applications`,
-      shape: 'bundle',
-    },
-    {
-      path: ['/', 'partitions'],
-      label: $localize`Partitions`,
-      shape: 'objects',
-    },
-  ];
 
   computedLinks: AppNavLink[] = [
     {
@@ -53,6 +42,7 @@ export class AppComponent implements OnInit {
     private _healthCheckService: HealthCheckService,
     private _historyService: HistoryService,
     private _authService: AuthService,
+    private _datagridService: DatagridService,
     public settingsService: SettingsService
   ) { }
 
@@ -95,6 +85,10 @@ export class AppComponent implements OnInit {
 
   public get loadingCurrentUser$(): Observable<boolean> {
     return this._authService.loading$;
+  }
+
+  public restoreQueryParams$(name: string) {
+    return this._datagridService.restoreQueryParams$(name);
   }
 
   /** Used to track label

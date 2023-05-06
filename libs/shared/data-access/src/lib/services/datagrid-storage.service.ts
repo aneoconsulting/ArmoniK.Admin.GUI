@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { StorageService } from "./storage.service";
 import { URLService } from "./url.service";
+import { Params } from "@angular/router";
 
 @Injectable()
 export class DatagridStorageService {
@@ -30,8 +31,8 @@ export class DatagridStorageService {
    * @param value
    * @returns void
    */
-  public saveQueryParams(value: Record<string, string | number>) {
-    this._storageService.save(this._queryParamsKey(), value)
+  public saveQueryParams(name: string, params: Params) {
+    this._storageService.save(this._queryParamsKey(name), params)
   }
 
   /**
@@ -39,15 +40,15 @@ export class DatagridStorageService {
    * @returns null if value is not found in storage
    * @returns value if value is found in storage
    */
-  public restoreQueryParams(): Record<string, string | number> | null {
-    return this._storageService.restore(this._queryParamsKey()) as Record<string, string | number> | null
+  public restoreQueryParams(name?: string): Record<string, string | number> | null {
+    return this._storageService.restore(this._queryParamsKey(name)) as Record<string, string | number> | null
   }
 
   /**
    * Generate key for query params.
    */
-  private _queryParamsKey() {
-    return this._URLService.currentURI() + '-query-params'
+  private _queryParamsKey(name?: string) {
+    return (name || this._URLService.currentURI()) + '-query-params'
   }
 
   /**

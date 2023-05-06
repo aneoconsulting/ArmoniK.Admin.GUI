@@ -4,5 +4,7 @@ export {
   GrpcListTasksParams,
   GrpcListResultsParams,
   GrpcListPartitionsParams,
+
 } from './grpc-list-params.type';
 export { HealthCheckResponse } from './health-check-response.type';
+export { Interval } from './interval'

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { DatagridStorageService } from "../../data-access/datagrid-storage.service";
 import { DatagridPartitionsListComponent } from "../datagrid-partitions-list/datagrid-partitions-list.component";
 
 @Component({
@@ -13,4 +12,7 @@ import { DatagridPartitionsListComponent } from "../datagrid-partitions-list/dat
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PartitionsListComponent {
+  // TODO: when navigating to this page, the datagrid should be restored from storage
+  // Add the url from storage to internal links
+  // if no query, use storage, otherwise use query
 }

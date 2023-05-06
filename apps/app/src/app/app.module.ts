@@ -2,7 +2,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { GrpcAuthService } from '@armonik.admin.gui/auth/data-access';
-import { HealthCheckService } from '@armonik.admin.gui/shared/data-access';
+import { DatagridService, DatagridStorageService, DatagridURLService, HealthCheckService, StorageService, URLService } from '@armonik.admin.gui/shared/data-access';
 import {
   ClarityIcons,
   angleIcon,
@@ -45,7 +45,6 @@ import {
 } from './shared/feature';
 import { TheFavoritesModalComponent, TheHeaderComponent } from './shared/ui';
 import { CoreModule } from './shared/util';
-import { DatagridStorageService } from 'libs/pages/partitions/src/lib/data-access/datagrid-storage.service';
 /**
  * Load app data
  */
@@ -71,6 +70,11 @@ import { DatagridStorageService } from 'libs/pages/partitions/src/lib/data-acces
     GrpcAuthService,
     HealthCheckService,
     CanActivateUser,
+    DatagridURLService,
+    URLService,
+    DatagridStorageService,
+    StorageService,
+    DatagridService,
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],

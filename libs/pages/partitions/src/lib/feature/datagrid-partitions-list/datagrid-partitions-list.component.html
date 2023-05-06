@@ -13,7 +13,6 @@
   <clr-dg-column [clrDgField]="fields.id" [clrDgSortOrder]="(getQueryParamsOrderByColumn$(fields.id) | async)!">
     <span i18n> Id </span>
     <clr-dg-filter [clrDgFilter]="idFilter">
-      <!-- TODO: update this filter to avoid sync issue when clearing -->
       <armonik-admin-gui-id-filter name="id" [selectedValue]="getQueryParamsFilterByColumn$('id') | async" #idFilter>
       </armonik-admin-gui-id-filter>
     </clr-dg-filter>

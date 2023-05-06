@@ -3,6 +3,12 @@ export {
   BaseGrpcService,
   GrpcParamsService,
   HealthCheckService,
+  DatagridURLService,
+  DatagridStorageService,
+  StorageService,
+  URLService,
+  DatagridUtilsService,
+  DatagridService
 } from './lib/services';
 export {
   GrpcListApplicationsParams,
@@ -10,4 +16,5 @@ export {
   GrpcListTasksParams,
   GrpcListResultsParams,
   GrpcListPartitionsParams,
+  Interval
 } from './lib/types';
