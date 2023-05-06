@@ -8,6 +8,7 @@ import { Observable, distinctUntilChanged, filter, merge, take } from 'rxjs';
 import { AuthService } from './shared/data-access/auth.service';
 import { AppNavLink, HistoryService, SettingsService } from './shared/util';
 import { User } from '@aneoconsultingfr/armonik.api.angular';
+import pkg from '../../../../package.json';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { User } from '@aneoconsultingfr/armonik.api.angular';
 })
 export class AppComponent implements OnInit {
   public loadingUser = false;
+  public version = pkg.version;
 
   dataLinks: AppNavLink[] = [
     {
