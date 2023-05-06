@@ -33,6 +33,9 @@ jobs:
       - name: Install dependencies
         run: nci
 
+      - name: Verify version between package.json and tag
+        run: node ./scripts/verify-mismatch-version.mjs
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
