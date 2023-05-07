@@ -15,11 +15,11 @@ import { PartitionsClient, ListPartitionsRequest, ListPartitionsResponse, Partit
   ],
   template: `<h1>Partitions</h1>
 
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z4" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+  <table mat-table [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-      <th mat-header-cell *matHeaderCellDef cdkDrag> {{column}} </th>
-      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+      <th mat-header-cell *matHeaderCellDef cdkDrag> {{ column }} </th>
+      <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

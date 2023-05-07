@@ -1,14 +1,17 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { GrpcCoreModule } from '@ngx-grpc/core';
+import { NavigationComponent } from './components/navigation/navigation.component';
 
 @Component({
   selector: 'app-root',
   imports: [
-    RouterModule
+    NavigationComponent,
+    RouterModule,
   ],
   template: `
-  <router-outlet></router-outlet>
+  <app-navigation>
+    <router-outlet></router-outlet>
+  </app-navigation>
   `,
   standalone: true
 })
