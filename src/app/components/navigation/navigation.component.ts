@@ -30,6 +30,10 @@ import { RouterModule } from '@angular/router';
           [mode]="(isHandset$ | async) ? 'over' : 'side'"
           [opened]="(isHandset$ | async) === false">
         <mat-nav-list>
+          <a mat-list-item routerLink="/applications">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="inventory_2"></mat-icon>
+            <div matListItemTitle> Applications </div>
+          </a>
           <a mat-list-item routerLink="/partitions">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="data_object"></mat-icon>
             <div matListItemTitle> Partitions </div>
