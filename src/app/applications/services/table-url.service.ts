@@ -15,7 +15,7 @@ export class TableURLService {
     if(data && parse) {
       return JSON.parse(data) as T;
     } else if (data) {
-      return data as string;
+      return data as T;
     }
 
     return null;

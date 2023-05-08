@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { TableURLService } from "./table-url.service";
 import { TableStorageService } from "./table-storage.service";
-import { ListRequestOptions } from "../types";
+import { ListOptions } from "../types";
+import { SortDirection } from "@angular/material/sort";
 
 /**
  * Service to save and restore table state using the URL and the storage.
@@ -26,22 +27,31 @@ export class TableService {
   /**
    * Restore options from the storage
    */
-  // TODO: must extend the options interface
-  restoreOptions<T>(tableName: string, defaultOptions: ListRequestOptions): T | null {
+  restoreOptions<T extends string>(tableName: string, defaultOptions: ListOptions<T>): ListOptions<T> {
     const storageKey = this._buildKey(tableName, this._optionsKey);
-    const storageData = this._tableStorageService.restore<T>(storageKey) as any;
+    const storageData = this._tableStorageService.restore<T>(storageKey) as ListOptions<T> | null;
+
+    function convertValueToNumber(value: unknown): number | null {
+      const numberValue = Number(value);
+
+      if (isNaN(numberValue)) {
+        return null;
+      }
+
+      return numberValue;
+    }
 
 
-    const options = {
-      pageIndex: this._tableURLService.getQueryParams('pageIndex', false) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
-      pageSize: this._tableURLService.getQueryParams('pageSize', false) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
+    const options: ListOptions<T> = {
+      pageIndex: convertValueToNumber(this._tableURLService.getQueryParams('pageIndex', false)) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
+      pageSize: convertValueToNumber(this._tableURLService.getQueryParams('pageSize', false)) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
       sort: {
-        active: this._tableURLService.getQueryParams('sort', false) ?? storageData?.sort ?? defaultOptions?.sort.active,
-        direction: this._tableURLService.getQueryParams('order', false) ?? storageData?.order ?? defaultOptions?.sort.direction,
+        active: this._tableURLService.getQueryParams<T>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
+        direction: this._tableURLService.getQueryParams<SortDirection>('order', false) ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
       },
     }
 
-    return options as T
+    return options
   }
 
   /**

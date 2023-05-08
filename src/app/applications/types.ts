@@ -18,11 +18,13 @@ export interface FiltersDialogData {
   filters: Filter[]
 }
 
-export interface ListRequestOptions {
+export interface ListOptions<T extends string> {
   pageIndex: number
   pageSize: number
   sort: {
-    active: ApplicationColumn
+    active: T
     direction: SortDirection
   }
 }
+
+export type ListApplicationsOptions = ListOptions<ApplicationColumn>

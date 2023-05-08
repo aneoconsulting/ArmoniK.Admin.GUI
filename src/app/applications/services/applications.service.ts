@@ -1,7 +1,7 @@
 import { ApplicationsClient, ListApplicationsRequest } from "@aneoconsultingfr/armonik.api.angular";
 import { Injectable } from "@angular/core";
 import { TableService } from "./table.service";
-import { ApplicationColumn, Filter, ListRequestOptions } from "../types";
+import { ApplicationColumn, Filter, ListApplicationsOptions } from "../types";
 import { SortDirection } from "@angular/material/sort";
 
 
@@ -13,7 +13,7 @@ import { SortDirection } from "@angular/material/sort";
 export class ApplicationsService {
   private _tableName = 'applications';
   private _defaultColumn: ApplicationColumn[] = ['name', 'version'];
-  private _defaultOptions:ListRequestOptions = {
+  private _defaultOptions: ListApplicationsOptions = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -40,7 +40,7 @@ export class ApplicationsService {
 
   constructor(private _applicationsClient: ApplicationsClient, private _tableService: TableService) {}
 
-  generateSharableURL(options: ListRequestOptions) {
+  generateSharableURL(options: ListApplicationsOptions) {
     // TODO: Use the URL service
     return "/applications?sort=" + options.sort.active + "&order=" + options.sort.direction + "&pageIndex=" + options.pageIndex + "&pageSize=" + options.pageSize;
   }
@@ -49,12 +49,12 @@ export class ApplicationsService {
    * Options
    */
 
-  saveOptions(options: ListRequestOptions) {
+  saveOptions(options: ListApplicationsOptions) {
     this._tableService.saveOptions(this._tableName, options);
   }
 
-  restoreOptions(): ListRequestOptions {
-    const options = this._tableService.restoreOptions<ListRequestOptions>(this._tableName, this._defaultOptions);
+  restoreOptions(): ListApplicationsOptions {
+    const options = this._tableService.restoreOptions<ApplicationColumn>(this._tableName, this._defaultOptions);
 
     if (!options) {
       return this._defaultOptions;
@@ -91,7 +91,7 @@ export class ApplicationsService {
    * gRPC
    */
 
-  listApplications(options: ListRequestOptions) {
+  listApplications(options: ListApplicationsOptions) {
     const listApplicationsRequest = new ListApplicationsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,

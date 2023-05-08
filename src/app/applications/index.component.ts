@@ -20,7 +20,7 @@ import { ApplicationsService } from "./services/applications.service";
 import { TableStorageService } from "./services/table-storage.service";
 import { TableURLService } from "./services/table-url.service";
 import { TableService } from "./services/table.service";
-import { ApplicationColumn, Filter, ListRequestOptions } from "./types";
+import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
 
 @Component({
   selector: 'app-applications',
@@ -149,7 +149,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   isLoading = true;
   data: ApplicationRaw.AsObject[] = [];
   total = 0;
-  options: ListRequestOptions
+  options: ListApplicationsOptions
 
   sharableURL: string
   copied = false;
