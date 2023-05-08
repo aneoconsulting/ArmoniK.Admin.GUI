@@ -28,3 +28,7 @@ export interface ListOptions<T extends string> {
 }
 
 export type ListApplicationsOptions = ListOptions<ApplicationColumn>
+
+export interface AutoRefreshDialogData {
+  value: number
+}

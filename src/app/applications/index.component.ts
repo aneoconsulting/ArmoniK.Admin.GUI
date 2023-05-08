@@ -13,7 +13,7 @@ import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { catchError, map, merge, of, startWith, switchMap } from "rxjs";
+import { Subject, catchError, interval, map, merge, of, startWith, switchMap } from "rxjs";
 import { FiltersDialogComponent } from "./components/filters-dialog.component";
 import { ModifyColumnsDialogComponent } from "./components/modify-columns-dialog.component";
 import { ApplicationsService } from "./services/applications.service";
@@ -21,13 +21,14 @@ import { TableStorageService } from "./services/table-storage.service";
 import { TableURLService } from "./services/table-url.service";
 import { TableService } from "./services/table.service";
 import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
+import { MatMenuModule } from "@angular/material/menu";
+import { AutoRefreshDialogComponent } from "./components/auto-refresh-dialog.component";
 
 @Component({
   selector: 'app-applications',
   template: `
 <div class="header">
   <h1>Applications</h1>
-  {{ options | json }}
   <!-- Create a component -->
   <button mat-icon-button aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied">
     <mat-icon aria-hidden="true" fontIcon="share" *ngIf="!copied"></mat-icon>
@@ -37,13 +38,16 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
 
 <mat-toolbar>
   <mat-toolbar-row class="actions">
-    <!-- TODO: add an refresh and auto-refresh button -->
-    <button mat-flat-button color="primary">
+    <button mat-flat-button color="primary" (click)="onRefresh()" [matTooltip]="!intervalValue ? 'Auto Refresh Disabled' : 'Auto Refresh: ' + intervalValue + ' seconds'">
       <mat-icon aria-hidden="true" fontIcon="refresh"></mat-icon>
       <span>Refresh</span>
     </button>
-    <button mat-stroked-button (click)="openModifyColumnsDialog()">Modify Columns</button>
-    <!-- Add a menu (vertical 3 dots) to reset columns, reset filter (delete local storage) and options (delete local storage and get default) -->
+
+    <div>
+      <button mat-stroked-button (click)="openAutoRefreshDialog()">Setup Auto Refresh</button>
+      <button mat-stroked-button (click)="openModifyColumnsDialog()">Modify Columns</button>
+    </div>
+    <!-- Add a menu (vertical 3 dots) to reset columns, reset filter (bottom right) (delete local storage) and options (delete local storage and get default) -->
   </mat-toolbar-row>
   <mat-toolbar-row>
     <!-- TODO: Create a component -->
@@ -100,6 +104,10 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
     justify-content: space-between;
   }
 
+  button + button {
+    margin-left: 1rem;
+  }
+
   .container {
     position: relative;
   }
@@ -140,7 +148,6 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
   imports: [
     NgForOf,
     NgIf,
-    JsonPipe,
     DragDropModule,
     ClipboardModule,
     MatToolbarModule,
@@ -151,6 +158,7 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
     MatPaginatorModule,
     MatDialogModule,
     MatIconModule,
+    MatMenuModule,
     MatChipsModule,
     MatTooltipModule
   ]
@@ -168,8 +176,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
   sharableURL: string
   copied = false;
 
+  intervalValue: number;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  refresh: Subject<void> = new Subject<void>();
+  interval: Subject<void> = new Subject<void>();
+
   // We need to create a component for the filters
 
   constructor(private _dialog: MatDialog, private _applicationsService: ApplicationsService) {}
@@ -179,6 +192,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     this.options = this._applicationsService.restoreOptions();
     this.filters = this._applicationsService.restoreFilters();
+    // TODO: setup intervalValue
 
     this.sharableURL = this._applicationsService.generateSharableURL(this.options);
   }
@@ -187,7 +201,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
     // If the user change the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-    merge(this.sort.sortChange, this.paginator.page)
+    merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval.pipe(switchMap(() => interval(this.intervalValue))))
+    // Add a way to stop and restart the interval when the value change (check for previous gui)
     .pipe(
       startWith({}),
       switchMap(() => {
@@ -243,6 +258,25 @@ export class IndexComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Open dialog to setup auto refresh
+   */
+  openAutoRefreshDialog(): void {
+    // Get value from the storage
+    const dialogRef = this._dialog.open(AutoRefreshDialogComponent, {
+      data: {
+        value: 0
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(value => {
+      // Handle the 0 case
+
+      console.log(value);
+      this.intervalValue = value
+    });
+  }
+
+  /**
    * Open dialog to allow user to add filters
    */
   openFiltersDialog(): void {
@@ -262,6 +296,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
       this._applicationsService.saveFilters(this.filters);
     });
+  }
+
+  onRefresh() {
+    this.refresh.next();
   }
 
   /**

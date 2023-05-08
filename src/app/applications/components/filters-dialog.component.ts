@@ -1,14 +1,14 @@
+import { NgForOf, NgIf } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatMenuModule } from "@angular/material/menu";
-import { ApplicationColumn, Filter, FiltersDialogData } from "../types";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
-import { JsonPipe, NgForOf, NgIf } from "@angular/common";
-import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { ApplicationColumn, Filter, FiltersDialogData } from "../types";
 
 @Component({
   selector: "app-filters-dialog",
