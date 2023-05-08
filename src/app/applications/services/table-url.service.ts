@@ -20,12 +20,4 @@ export class TableURLService {
 
     return null;
   }
-
-  // Maybe, it's not necessary to add query to the URL but a button to share the URL can be a better idea.
-  navigate(queryParams: Record<string, unknown>) {
-    this._router.navigate([], {
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
 }

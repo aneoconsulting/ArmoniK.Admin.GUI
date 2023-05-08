@@ -31,16 +31,19 @@ export class TableService {
     const storageKey = this._buildKey(tableName, this._optionsKey);
     const storageData = this._tableStorageService.restore<T>(storageKey) as ListOptions<T> | null;
 
-    function convertValueToNumber(value: unknown): number | null {
+    function convertValueToNumber(value: string | null): number | null {
+      if (!value) {
+        return null;
+      }
+
       const numberValue = Number(value);
 
-      if (isNaN(numberValue)) {
+      if (Number.isNaN(numberValue)) {
         return null;
       }
 
       return numberValue;
     }
-
 
     const options: ListOptions<T> = {
       pageIndex: convertValueToNumber(this._tableURLService.getQueryParams('pageIndex', false)) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,

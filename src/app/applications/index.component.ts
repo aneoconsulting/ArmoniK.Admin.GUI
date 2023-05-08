@@ -1,7 +1,7 @@
 import { ApplicationRaw } from "@aneoconsultingfr/armonik.api.angular";
 import { CdkDragDrop, DragDropModule, moveItemInArray } from "@angular/cdk/drag-drop";
 import {ClipboardModule} from "@angular/cdk/clipboard";
-import { NgForOf, NgIf } from "@angular/common";
+import { JsonPipe, NgForOf, NgIf } from "@angular/common";
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatChipsModule } from '@angular/material/chips';
@@ -27,6 +27,7 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
   template: `
 <div class="header">
   <h1>Applications</h1>
+  {{ options | json }}
   <!-- Create a component -->
   <button mat-icon-button aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied">
     <mat-icon aria-hidden="true" fontIcon="share" *ngIf="!copied"></mat-icon>
@@ -35,12 +36,17 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
 </div>
 
 <mat-toolbar>
-  <mat-toolbar-row>
+  <mat-toolbar-row class="actions">
     <!-- TODO: add an refresh and auto-refresh button -->
+    <button mat-flat-button color="primary">
+      <mat-icon aria-hidden="true" fontIcon="refresh"></mat-icon>
+      <span>Refresh</span>
+    </button>
     <button mat-stroked-button (click)="openModifyColumnsDialog()">Modify Columns</button>
     <!-- Add a menu (vertical 3 dots) to reset columns, reset filter (delete local storage) and options (delete local storage and get default) -->
   </mat-toolbar-row>
   <mat-toolbar-row>
+    <!-- TODO: Create a component -->
     <mat-chip-listbox aria-label="Filters view" *ngIf="filters.length > 0 && filters[0].name !== null">
         <ng-container *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
         <mat-chip [matTooltip]="filter.value ? 'Value: ' + filter.value: 'No value'">
@@ -87,6 +93,13 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
     margin: 0;
   }
 
+  .actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .container {
     position: relative;
   }
@@ -127,6 +140,7 @@ import { ApplicationColumn, Filter, ListApplicationsOptions } from "./types";
   imports: [
     NgForOf,
     NgIf,
+    JsonPipe,
     DragDropModule,
     ClipboardModule,
     MatToolbarModule,
