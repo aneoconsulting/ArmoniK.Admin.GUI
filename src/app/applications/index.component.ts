@@ -7,12 +7,16 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatChipsModule } from '@angular/material/chips';
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { ModifyColumnsDialogComponent } from "./components/modify-columns-dialog.component";
 import { ApplicationsService } from "./services/applications.service";
 import { TableService } from "./services/table.service";
-import { ApplicationColumn } from "./types";
+import { ApplicationColumn, Filter } from "./types";
 import { tap } from "rxjs";
+import { MatIconModule } from "@angular/material/icon";
+import { FiltersDialogComponent } from "./components/filters-dialog.component";
 
 @Component({
   selector: 'app-applications',
@@ -20,7 +24,22 @@ import { tap } from "rxjs";
 <h1>Applications</h1>
 
 <mat-toolbar>
-  <button mat-stroked-button (click)="openModifyColumnsDialog()">Modify Columns</button>
+  <mat-toolbar-row>
+    <button mat-stroked-button (click)="openModifyColumnsDialog()">Modify Columns</button>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <mat-chip-listbox aria-label="Filters view" *ngIf="filters.length > 0">
+        <ng-container *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
+        <mat-chip [matTooltip]="filter.value ? 'Value: ' + filter.value: 'No value'">
+          <span> {{ filter.name }} </span>
+        </mat-chip>
+      </ng-container>
+    </mat-chip-listbox>
+    <button mat-button (click)="openFiltersDialog()">
+      <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+      <span>Manage filters</span>
+    </button>
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <div class="container">
@@ -64,6 +83,10 @@ import { tap } from "rxjs";
     align-items: center;
     justify-content: center;
   }
+
+  mat-chip-listbox + button {
+    margin-left: 1rem;
+  }
   `],
   standalone: true,
   providers: [
@@ -83,10 +106,15 @@ import { tap } from "rxjs";
     MatButtonModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit {
+  filters: Filter[] = [];
+
   displayedColumns: ApplicationColumn[] = ['name', 'version'];
 
   isApplicationsLoaded = false;
@@ -135,6 +163,26 @@ export class IndexComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * Open dialog to allow user to add filters
+   */
+  openFiltersDialog(): void {
+    const dialogRef = this._dialog.open(FiltersDialogComponent, {
+      data: {
+        filters: this.filters,
+        availableColumns: this.availableColumns()
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(!result) {
+        return;
+      }
+
+      this.filters = result;
+    });
+  }
+
+  /**
    * Reorder the columns when a column is dropped
    */
   drop(event: CdkDragDrop<string[]>) {
@@ -144,6 +192,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   availableColumns(): ApplicationColumn[] {
     return ['name', 'namespace', 'service', 'version'];
+  }
+
+  trackByFilter(index: number, filter: Filter): string {
+    return filter.name ?? '';
   }
 
   private _saveColumns(): void {
