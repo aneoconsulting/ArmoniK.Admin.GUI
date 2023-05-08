@@ -29,7 +29,7 @@
             "type": "element",
             "prefix": "app",
             "style": "kebab-case"
-          }
+          },
         ]
       }
     },

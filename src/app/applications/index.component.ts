@@ -1,34 +1,47 @@
 import { ApplicationRaw } from "@aneoconsultingfr/armonik.api.angular";
 import { CdkDragDrop, DragDropModule, moveItemInArray } from "@angular/cdk/drag-drop";
+import {ClipboardModule} from "@angular/cdk/clipboard";
 import { NgForOf, NgIf } from "@angular/common";
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { MatPaginatorModule } from "@angular/material/paginator";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { MatTableModule } from "@angular/material/table";
-import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatSort, MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from "@angular/material/table";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { catchError, map, merge, of, startWith, switchMap } from "rxjs";
+import { FiltersDialogComponent } from "./components/filters-dialog.component";
 import { ModifyColumnsDialogComponent } from "./components/modify-columns-dialog.component";
 import { ApplicationsService } from "./services/applications.service";
+import { TableStorageService } from "./services/table-storage.service";
+import { TableURLService } from "./services/table-url.service";
 import { TableService } from "./services/table.service";
-import { ApplicationColumn, Filter } from "./types";
-import { tap } from "rxjs";
-import { MatIconModule } from "@angular/material/icon";
-import { FiltersDialogComponent } from "./components/filters-dialog.component";
+import { ApplicationColumn, Filter, ListRequestOptions } from "./types";
 
 @Component({
   selector: 'app-applications',
   template: `
-<h1>Applications</h1>
+<div class="header">
+  <h1>Applications</h1>
+  <!-- Create a component -->
+  <button mat-icon-button aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied">
+    <mat-icon aria-hidden="true" fontIcon="share" *ngIf="!copied"></mat-icon>
+    <mat-icon aria-hidden="true" fontIcon="check" *ngIf="copied"></mat-icon>
+  </button>
+</div>
 
 <mat-toolbar>
   <mat-toolbar-row>
+    <!-- TODO: add an refresh and auto-refresh button -->
     <button mat-stroked-button (click)="openModifyColumnsDialog()">Modify Columns</button>
+    <!-- Add a menu (vertical 3 dots) to reset columns, reset filter (delete local storage) and options (delete local storage and get default) -->
   </mat-toolbar-row>
   <mat-toolbar-row>
-    <mat-chip-listbox aria-label="Filters view" *ngIf="filters.length > 0">
+    <mat-chip-listbox aria-label="Filters view" *ngIf="filters.length > 0 && filters[0].name !== null">
         <ng-container *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
         <mat-chip [matTooltip]="filter.value ? 'Value: ' + filter.value: 'No value'">
           <span> {{ filter.name }} </span>
@@ -43,13 +56,13 @@ import { FiltersDialogComponent } from "./components/filters-dialog.component";
 </mat-toolbar>
 
 <div class="container">
-  <div class="loading-shade" *ngIf="!isApplicationsLoaded">
+  <div class="loading-shade" *ngIf="isLoading">
     <mat-spinner></mat-spinner>
   </div>
   <div class="table-container">
-    <table mat-table [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+    <table mat-table matSort [matSortActive]="options.sort.active" [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
       <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-        <th mat-header-cell *matHeaderCellDef cdkDrag> {{ column }} </th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef cdkDrag> {{ column }} </th>
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
       </ng-container>
 
@@ -58,10 +71,22 @@ import { FiltersDialogComponent } from "./components/filters-dialog.component";
     </table>
   </div>
 
-  <mat-paginator [length]="applicationsLength" [pageSize]="10" aria-label="Select page of applications"></mat-paginator>
+  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of applications"></mat-paginator>
 </div>
   `,
   styles: [`
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    margin: 0;
+  }
+
   .container {
     position: relative;
   }
@@ -91,6 +116,8 @@ import { FiltersDialogComponent } from "./components/filters-dialog.component";
   standalone: true,
   providers: [
     ApplicationsService,
+    TableStorageService,
+    TableURLService,
     TableService,
     {
       provide: Storage,
@@ -101,10 +128,12 @@ import { FiltersDialogComponent } from "./components/filters-dialog.component";
     NgForOf,
     NgIf,
     DragDropModule,
+    ClipboardModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
     MatButtonModule,
     MatTableModule,
+    MatSortModule,
     MatPaginatorModule,
     MatDialogModule,
     MatIconModule,
@@ -115,30 +144,66 @@ import { FiltersDialogComponent } from "./components/filters-dialog.component";
 export class IndexComponent implements OnInit, AfterViewInit {
   filters: Filter[] = [];
 
-  displayedColumns: ApplicationColumn[] = ['name', 'version'];
+  displayedColumns: ApplicationColumn[] = [];
 
-  isApplicationsLoaded = false;
-  applicationsLength = 0;
-  dataSource: ApplicationRaw.AsObject[] = [];
+  isLoading = true;
+  data: ApplicationRaw.AsObject[] = [];
+  total = 0;
+  options: ListRequestOptions
 
-  constructor(private _dialog: MatDialog, private _tableService: TableService, private _applicationsService: ApplicationsService) {}
+  sharableURL: string
+  copied = false;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  // We need to create a component for the filters
+
+  constructor(private _dialog: MatDialog, private _applicationsService: ApplicationsService) {}
 
   ngOnInit(): void {
-   const columns = this._tableService.restoreColumns('applications') as ApplicationColumn[];
+   this.displayedColumns = this._applicationsService.restoreColumns();
 
-    if (columns) {
-      this.displayedColumns = columns;
-    }
+    this.options = this._applicationsService.restoreOptions();
+    this.filters = this._applicationsService.restoreFilters();
+
+    this.sharableURL = this._applicationsService.generateSharableURL(this.options);
   }
 
   ngAfterViewInit(): void {
-    this._applicationsService.listApplications()
-      .pipe(tap(() => this.isApplicationsLoaded = false))
-      .subscribe(data => {
-        this.isApplicationsLoaded = true;
-        this.applicationsLength = data.total ?? 0;
-        this.dataSource = data.applications ?? [];
-      });
+    // If the user change the sort order, reset back to the first page.
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+
+    merge(this.sort.sortChange, this.paginator.page)
+    .pipe(
+      startWith({}),
+      switchMap(() => {
+        this.isLoading = true
+
+        const options = {
+          pageIndex: this.paginator.pageIndex,
+          pageSize: this.paginator.pageSize,
+          sort: {
+            active: this.sort.active as ApplicationColumn,
+            direction: this.sort.direction,
+          }
+        }
+
+        this.sharableURL = this._applicationsService.generateSharableURL(options);
+        this._applicationsService.saveOptions(options);
+
+        // TODO: Brancher les filtres et les saves ici (et depuis les subscribe, envoyer un merge)
+        return this._applicationsService.listApplications(options).pipe(catchError(() => of(null)))
+      }),
+      map(data => {
+        this.isLoading = false;
+        this.total = data?.total ?? 0;
+
+        return data?.applications ?? [];
+      })
+    )
+    .subscribe(data => {
+      this.data = data;
+    });
   }
 
   /**
@@ -148,7 +213,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     const dialogRef = this._dialog.open(ModifyColumnsDialogComponent, {
       data: {
         currentColumns: this.displayedColumns,
-        availableColumns: this.availableColumns()
+        availableColumns: this._applicationsService.availableColumns
       }
     });
 
@@ -158,7 +223,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
       }
 
       this.displayedColumns = result;
-      this._saveColumns();
+
+      this._applicationsService.saveColumns(this.displayedColumns);
     });
   }
 
@@ -169,7 +235,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     const dialogRef = this._dialog.open(FiltersDialogComponent, {
       data: {
         filters: this.filters,
-        availableColumns: this.availableColumns()
+        availableColumns: this._applicationsService.availableColumns
       }
     })
 
@@ -179,27 +245,27 @@ export class IndexComponent implements OnInit, AfterViewInit {
       }
 
       this.filters = result;
+
+      this._applicationsService.saveFilters(this.filters);
     });
   }
 
   /**
    * Reorder the columns when a column is dropped
    */
-  drop(event: CdkDragDrop<string[]>) {
+  onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-    this._saveColumns();
+
+    this._applicationsService.saveColumns(this.displayedColumns);
   }
 
-  availableColumns(): ApplicationColumn[] {
-    return ['name', 'namespace', 'service', 'version'];
+  onCopied() {
+    this.copied = true;
+
+    setTimeout(() => this.copied = false, 1000);
   }
 
-  trackByFilter(index: number, filter: Filter): string {
+  trackByFilter(_: number, filter: Filter): string {
     return filter.name ?? '';
   }
-
-  private _saveColumns(): void {
-    this._tableService.saveColumns('applications', this.displayedColumns);
-  }
-
 }

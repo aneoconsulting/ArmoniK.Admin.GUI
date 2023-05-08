@@ -1,14 +1,15 @@
-import { Component, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { CdkScrollableModule } from '@angular/cdk/scrolling';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -24,7 +25,7 @@ import { RouterModule } from '@angular/router';
       </button>
       <span>ArmoniK</span>
     </mat-toolbar>
-    <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav-container autosize class="sidenav-container">
       <mat-sidenav #drawer class="sidenav"
           [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
           [mode]="(isHandset$ | async) ? 'over' : 'side'"
@@ -34,12 +35,6 @@ import { RouterModule } from '@angular/router';
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="inventory_2"></mat-icon>
             <div matListItemTitle> Applications </div>
           </a>
-          <a mat-list-item routerLink="/partitions">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="data_object"></mat-icon>
-            <div matListItemTitle> Partitions </div>
-          </a>
-          <a mat-list-item href="#">Link 2</a>
-          <a mat-list-item href="#">Link 3</a>
         </mat-nav-list>
       </mat-sidenav>
       <mat-sidenav-content>
@@ -52,7 +47,7 @@ import { RouterModule } from '@angular/router';
   `,
   styles: [`
     .sidenav-container {
-      height: 100%;
+      height: calc(100% - 64px);
     }
 
     .sidenav {
@@ -66,7 +61,7 @@ import { RouterModule } from '@angular/router';
     .mat-toolbar.mat-primary {
       position: sticky;
       top: 0;
-      z-index: 1;
+      z-index: 2;
     }
 
     main {
