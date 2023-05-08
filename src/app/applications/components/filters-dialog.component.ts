@@ -16,7 +16,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     <h2 mat-dialog-title>Filters</h2>
 
     <mat-dialog-content>
-      <p>Build your filter</p>
+      <p>Build your filters</p>
 
       <div class="filters">
         <div class="filter" *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
