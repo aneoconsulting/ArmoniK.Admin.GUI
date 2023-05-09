@@ -78,6 +78,7 @@ export class TableService {
         active: this._tableURLService.getQueryParams<T>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
         direction: this._tableURLService.getQueryParams<SortDirection>('order', false) ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
       },
+      // TODO: Implement filters
     }
 
     return options
@@ -104,6 +105,12 @@ export class TableService {
     this._tableStorageService.save(storageKey, filters);
   }
 
+  resetFilters(tableName: string): void {
+    const storageKey = this._buildKey(tableName, this._filtersKey);
+
+    this._tableStorageService.remove(storageKey);
+  }
+
 
   /**
    * Save columns to the local storage
@@ -120,6 +127,12 @@ export class TableService {
     const key = this._buildKey(tableName, this._columnsKey);
 
     return this._tableStorageService.restore<T>(key) as T;
+  }
+
+  resetColumns(tableName: string): void {
+    const key = this._buildKey(tableName, this._columnsKey);
+
+    this._tableStorageService.remove(key);
   }
 
   /**

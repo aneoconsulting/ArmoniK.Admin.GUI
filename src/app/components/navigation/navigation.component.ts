@@ -32,7 +32,7 @@ import { map, shareReplay } from 'rxjs/operators';
           [opened]="(isHandset$ | async) === false">
         <mat-nav-list>
           <a mat-list-item routerLink="/applications">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="inventory_2"></mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
             <div matListItemTitle> Applications </div>
           </a>
         </mat-nav-list>

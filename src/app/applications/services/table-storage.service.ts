@@ -37,4 +37,8 @@ export class TableStorageService {
 
     return null;
   }
+
+  remove(key: string) {
+    this._storage.removeItem(key);
+  }
 }

@@ -1,7 +1,7 @@
 import { ApplicationsClient, ListApplicationsRequest } from "@aneoconsultingfr/armonik.api.angular";
 import { Injectable } from "@angular/core";
 import { TableService } from "./table.service";
-import { ApplicationColumn, Filter, ListApplicationsOptions } from "../types";
+import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from "../types";
 import { SortDirection } from "@angular/material/sort";
 
 
@@ -12,7 +12,7 @@ import { SortDirection } from "@angular/material/sort";
 // TODO: Create an interface to implement
 export class ApplicationsService {
   private _tableName = 'applications';
-  private _defaultColumn: ApplicationColumn[] = ['name', 'version'];
+  private _defaultColumn: ApplicationColumn[] = ['name', 'version', 'actions'];
   private _defaultIntervalValue = 10;
   private _defaultOptions: ListApplicationsOptions = {
     pageIndex: 0,
@@ -20,11 +20,24 @@ export class ApplicationsService {
     sort: {
       active: 'name',
       direction: 'asc'
+    },
+    filters: {
+      name: null,
+      namespace: null,
+      service: null,
+      version: null
     }
   }
   private _defaultFilters: Filter[] = [];
 
-  public readonly availableColumns: ApplicationColumn[] = ['name', 'namespace', 'service', 'version'];
+    public readonly filtersFields: FilterField[] = [
+    'name',
+    'namespace',
+    'service',
+    'version'
+  ]
+
+  public readonly availableColumns: ApplicationColumn[] = ['name', 'namespace', 'service', 'version', 'actions'];
 
   public readonly sortDirections: Record<SortDirection, ListApplicationsRequest.OrderDirection> = {
     'asc': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
@@ -37,6 +50,7 @@ export class ApplicationsService {
     'namespace': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
     'service': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_SERVICE,
     'version': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_VERSION,
+    'actions': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED
   }
 
   constructor(private _applicationsClient: ApplicationsClient, private _tableService: TableService) {}
@@ -67,7 +81,7 @@ export class ApplicationsService {
   }
 
   restoreOptions(): ListApplicationsOptions {
-    const options = this._tableService.restoreOptions<ApplicationColumn>(this._tableName, this._defaultOptions);
+    const options = this._tableService.restoreOptions<FilterField>(this._tableName, this._defaultOptions);
 
     if (!options) {
       return this._defaultOptions;
@@ -88,11 +102,18 @@ export class ApplicationsService {
     this._tableService.saveColumns(this._tableName, columns);
   }
 
+  resetColumns() {
+    this._tableService.resetColumns(this._tableName);
+
+    return this._defaultColumn;
+  }
+
   /**
    * Filters
    */
 
   restoreFilters() {
+    // TODO: use the URL to restore the filters
     return this._tableService.restoreFilters<Filter[]>(this._tableName) ?? this._defaultFilters;
   }
 
@@ -100,11 +121,17 @@ export class ApplicationsService {
     this._tableService.saveFilters(this._tableName, filters);
   }
 
+  resetFilters() {
+    this._tableService.resetFilters(this._tableName);
+
+    return this._defaultFilters;
+  }
+
   /**
    * gRPC
    */
 
-  listApplications(options: ListApplicationsOptions) {
+  list(options: ListApplicationsOptions) {
     const listApplicationsRequest = new ListApplicationsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
@@ -115,10 +142,10 @@ export class ApplicationsService {
         ]
       },
       filter: {
-        name: '',
-        namespace: '',
-        service: '',
-        version: '',
+        name: options.filters?.name ?? '',
+        namespace: options.filters?.namespace ?? '',
+        service: options.filters?.service ?? '',
+        version: options.filters?.version ?? '',
       }
     });
 

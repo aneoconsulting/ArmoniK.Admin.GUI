@@ -8,7 +8,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatSelectModule } from "@angular/material/select";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { ApplicationColumn, Filter, FiltersDialogData } from "../types";
+import { ApplicationColumn, Filter, FilterField, FiltersDialogData } from "../types";
 
 @Component({
   selector: "app-filters-dialog",
@@ -24,8 +24,8 @@ import { ApplicationColumn, Filter, FiltersDialogData } from "../types";
           <span *ngIf="index > 0">And</span>
           <mat-form-field appearance="outline"  subscriptSizing="dynamic">
             <mat-label>Column</mat-label>
-            <mat-select (valueChange)="onColumnChange(index, $event)" [value]="filter.name">
-              <mat-option *ngFor="let column of availableColumns(); trackBy: trackByColumn" [value]="column" [disabled]="disableColumn(column)">
+            <mat-select (valueChange)="onFieldChange(index, $event)" [value]="filter.field">
+              <mat-option *ngFor="let column of availableFiltersFields(); trackBy: trackByField" [value]="column" [disabled]="disableField(column)">
                 {{ column }}
               </mat-option>
             </mat-select>
@@ -107,26 +107,27 @@ export class FiltersDialogComponent implements OnInit {
       return;
     }
 
-    this.filters = this.data.filters;
+    // Avoid to mutate original data
+    this.filters = this.data.filters.map(filter => ({ ...filter }));
   }
 
   /**
-   * Get the available columns (all the columns that can be added)
-   * Sort the columns alphabetically
+   * Get the available field (all the field that can be added)
+   * Sort the field alphabetically
    */
-  availableColumns(): ApplicationColumn[] {
-    return this.data.availableColumns.sort();
+  availableFiltersFields(): FilterField[] {
+    return this.data.availableFiltersFields.sort();
   }
 
   addFilter(): void {
     this.filters.push({
-      name: null,
+      field: null,
       value: null
     });
   }
 
-  onColumnChange(index: number, name: ApplicationColumn): void {
-    this.filters[index].name = name;
+  onFieldChange(index: number, name: FilterField): void {
+    this.filters[index].field = name;
   }
 
   onValueChange(index: number, event: Event): void {
@@ -138,20 +139,20 @@ export class FiltersDialogComponent implements OnInit {
 
   onClear(filter: Filter): void {
     filter.value = null;
-    filter.name = null;
+    filter.field = null;
   }
 
   onRemove(index: number): void {
     this.filters.splice(index, 1);
   }
 
-  selectedColumn(filterName: ApplicationColumn, column: ApplicationColumn): boolean {
-    return filterName === column;
+  selectedField(filterName: FilterField, field: FilterField): boolean {
+    return filterName === field;
   }
 
-  disableColumn(column: ApplicationColumn): boolean {
-    const usedColumns = this.filters.map(filter => filter.name);
-    return usedColumns.includes(column);
+  disableField(field: FilterField): boolean {
+    const usedFields = this.filters.map(filter => filter.field);
+    return usedFields.includes(field);
   }
 
   onNoClick(): void {
@@ -162,7 +163,7 @@ export class FiltersDialogComponent implements OnInit {
     return index;
   }
 
-  trackByColumn(_: number, column: ApplicationColumn) {
-    return column;
+  trackByField(_: number, field: FilterField) {
+    return field;
   }
 }
