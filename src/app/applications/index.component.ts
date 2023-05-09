@@ -205,7 +205,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
   sharableURL: string
   copied = false;
 
-  intervalValue: number = 0;
+  intervalValue = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

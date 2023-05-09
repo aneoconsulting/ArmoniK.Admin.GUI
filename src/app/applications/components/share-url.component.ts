@@ -26,7 +26,7 @@ import { NgIf } from "@angular/common";
 export class ShareUrlComponent {
   @Input({required: true}) sharableURL: string;
 
-  public copied: boolean = false;
+  public copied = false;
 
   onCopied() {
     this.copied = true;

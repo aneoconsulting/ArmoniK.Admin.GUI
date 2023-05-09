@@ -21,7 +21,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
   ]
 })
 export class RefreshButtonComponent {
-  @Input() tooltip: string = "";
+  @Input() tooltip = "";
 
   @Output() refreshChange: EventEmitter<void> = new EventEmitter<void>();
 
