@@ -13,6 +13,7 @@ import { SortDirection } from "@angular/material/sort";
 export class ApplicationsService {
   private _tableName = 'applications';
   private _defaultColumn: ApplicationColumn[] = ['name', 'version'];
+  private _defaultIntervalValue = 10;
   private _defaultOptions: ListApplicationsOptions = {
     pageIndex: 0,
     pageSize: 10,
@@ -43,6 +44,18 @@ export class ApplicationsService {
   generateSharableURL(options: ListApplicationsOptions) {
     // TODO: Use the URL service
     return "/applications?sort=" + options.sort.active + "&order=" + options.sort.direction + "&pageIndex=" + options.pageIndex + "&pageSize=" + options.pageSize;
+  }
+
+  /**
+   * Interval
+   */
+
+  saveIntervalValue(value: number) {
+    this._tableService.saveIntervalValue(this._tableName, value);
+  }
+
+  restoreIntervalValue() {
+    return this._tableService.restoreIntervalValue(this._tableName) ?? this._defaultIntervalValue;
   }
 
   /**

@@ -18,6 +18,8 @@ export class TableStorageService {
     }
 
     this._storage.setItem(key, JSON.stringify(data));
+
+    // TODO: save every key to a list of keys in order to be able to manage storage
   }
 
 

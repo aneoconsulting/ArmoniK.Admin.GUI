@@ -13,7 +13,7 @@ import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { Subject, catchError, interval, map, merge, of, startWith, switchMap } from "rxjs";
+import { Observable, Subject, catchError, filter, interval, map, merge, of, startWith, switchMap, takeUntil, tap, timer } from "rxjs";
 import { FiltersDialogComponent } from "./components/filters-dialog.component";
 import { ModifyColumnsDialogComponent } from "./components/modify-columns-dialog.component";
 import { ApplicationsService } from "./services/applications.service";
@@ -29,7 +29,7 @@ import { AutoRefreshDialogComponent } from "./components/auto-refresh-dialog.com
   template: `
 <div class="header">
   <h1>Applications</h1>
-  <!-- Create a component -->
+  <!-- TODO: Create a component -->
   <button mat-icon-button aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied">
     <mat-icon aria-hidden="true" fontIcon="share" *ngIf="!copied"></mat-icon>
     <mat-icon aria-hidden="true" fontIcon="check" *ngIf="copied"></mat-icon>
@@ -176,12 +176,31 @@ export class IndexComponent implements OnInit, AfterViewInit {
   sharableURL: string
   copied = false;
 
-  intervalValue: number;
+  intervalValue: number = 0;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   refresh: Subject<void> = new Subject<void>();
-  interval: Subject<void> = new Subject<void>();
+  stopInterval: Subject<void> = new Subject<void>();
+  interval: Subject<number> = new Subject<number>();
+  // TODO: Create a function in a service (dry)
+  interval$: Observable<number> = merge(
+        this.stopInterval,
+        this.interval
+      ).pipe(
+        tap(console.log),
+        filter((interval) => {
+          if (!interval) {
+            return false
+          }
+          // Interval can be 0 but we don't want to start the timer
+          return true
+        }),
+        switchMap((interval) => {
+          return timer(0, (interval as number) * 1000).pipe(takeUntil(this.stopInterval))
+        }),
+        tap(console.log),
+      )
 
   // We need to create a component for the filters
 
@@ -192,7 +211,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     this.options = this._applicationsService.restoreOptions();
     this.filters = this._applicationsService.restoreFilters();
-    // TODO: setup intervalValue
+    this.intervalValue = this._applicationsService.restoreIntervalValue();
 
     this.sharableURL = this._applicationsService.generateSharableURL(this.options);
   }
@@ -201,10 +220,10 @@ export class IndexComponent implements OnInit, AfterViewInit {
     // If the user change the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-    merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval.pipe(switchMap(() => interval(this.intervalValue))))
+    merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval$)
     // Add a way to stop and restart the interval when the value change (check for previous gui)
     .pipe(
-      startWith({}),
+      // startWith({}),
       switchMap(() => {
         this.isLoading = true
 
@@ -233,6 +252,15 @@ export class IndexComponent implements OnInit, AfterViewInit {
     .subscribe(data => {
       this.data = data;
     });
+
+    // We need to start the timer after the first load
+    // TODO: Create a function
+    if (this.intervalValue === 0) {
+        this.refresh.next(); // We need to manually trigger the first load
+        this.stopInterval.next();
+    } else {
+        this.interval.next(this.intervalValue);
+    }
   }
 
   /**
@@ -264,15 +292,24 @@ export class IndexComponent implements OnInit, AfterViewInit {
     // Get value from the storage
     const dialogRef = this._dialog.open(AutoRefreshDialogComponent, {
       data: {
-        value: 0
+        value: this.intervalValue
       }
     })
 
     dialogRef.afterClosed().subscribe(value => {
-      // Handle the 0 case
+      if (value === undefined) {
+        return;
+      }
 
-      console.log(value);
       this.intervalValue = value
+
+      if (value === 0) {
+        this.stopInterval.next();
+      } else {
+        this.interval.next(value);
+      }
+
+      this._applicationsService.saveIntervalValue(this.intervalValue);
     });
   }
 

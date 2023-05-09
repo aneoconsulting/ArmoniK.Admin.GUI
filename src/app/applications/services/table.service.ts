@@ -10,10 +10,36 @@ import { SortDirection } from "@angular/material/sort";
 @Injectable()
 export class TableService {
   private _columnsKey = 'columns';
+  private _intervalKey = 'interval';
   private _optionsKey = 'options';
   private _filtersKey = 'filters';
 
   constructor(private _storage: Storage, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
+
+  saveIntervalValue(tableName: string, value: number): void {
+    const storageKey = this._buildKey(tableName, this._intervalKey);
+
+    this._tableStorageService.save(storageKey, value);
+  }
+
+  restoreIntervalValue(tableName: string): number | null {
+    const storageKey = this._buildKey(tableName, this._intervalKey);
+
+    const value =  this._tableStorageService.restore<string>(storageKey, false);
+
+    if (!value) {
+      return null;
+    }
+
+    const numberValue = Number(value);
+
+    if (Number.isNaN(numberValue)) {
+      return null;
+    }
+
+    return numberValue;
+  }
+
 
   /**
    * Save options to the storage
