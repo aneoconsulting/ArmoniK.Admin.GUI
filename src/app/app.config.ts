@@ -7,6 +7,10 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    {
+      provide: Storage,
+      useValue: localStorage
+    },
     provideRouter(routes),
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(GrpcCoreModule.forRoot()),

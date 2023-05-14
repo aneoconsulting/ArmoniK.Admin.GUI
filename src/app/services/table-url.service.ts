@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * Service to manage the URL for the table.

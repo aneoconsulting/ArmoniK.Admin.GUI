@@ -1,15 +1,15 @@
-import { ApplicationsClient, ListApplicationsRequest } from "@aneoconsultingfr/armonik.api.angular";
-import { Injectable } from "@angular/core";
-import { TableService } from "./table.service";
-import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from "../types";
-import { SortDirection } from "@angular/material/sort";
+import { ApplicationRaw, ApplicationsClient, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable } from '@angular/core';
+import { SortDirection } from '@angular/material/sort';
+import { TableService } from '@services/table.service';
+// Create a "packages" (aliases) for types
+import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from '@app/applications/types';
 
 
 /**
  * Applications service used to manage the applications table.
  */
 @Injectable()
-// TODO: Create an interface to implement
 export class ApplicationsService {
   private _tableName = 'applications';
   private _defaultColumn: ApplicationColumn[] = ['name', 'version', 'actions'];
@@ -27,15 +27,15 @@ export class ApplicationsService {
       service: null,
       version: null
     }
-  }
+  };
   private _defaultFilters: Filter[] = [];
 
-    public readonly filtersFields: FilterField[] = [
+  public readonly filtersFields: FilterField[] = [
     'name',
     'namespace',
     'service',
     'version'
-  ]
+  ];
 
   public readonly availableColumns: ApplicationColumn[] = ['name', 'namespace', 'service', 'version', 'actions'];
 
@@ -43,7 +43,7 @@ export class ApplicationsService {
     'asc': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
     'desc': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
     '': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
-  }
+  };
 
   public readonly sortFields: Record<ApplicationColumn, ListApplicationsRequest.OrderByField> = {
     'name': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
@@ -51,13 +51,13 @@ export class ApplicationsService {
     'service': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_SERVICE,
     'version': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_VERSION,
     'actions': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED
-  }
+  };
 
   constructor(private _applicationsClient: ApplicationsClient, private _tableService: TableService) {}
 
   generateSharableURL(options: ListApplicationsOptions) {
     // TODO: Use the URL service
-    return "/applications?sort=" + options.sort.active + "&order=" + options.sort.direction + "&pageIndex=" + options.pageIndex + "&pageSize=" + options.pageSize;
+    return '/applications?sort=' + options.sort.active + '&order=' + options.sort.direction + '&pageIndex=' + options.pageIndex + '&pageSize=' + options.pageSize;
   }
 
   /**
@@ -81,13 +81,9 @@ export class ApplicationsService {
   }
 
   restoreOptions(): ListApplicationsOptions {
-    const options = this._tableService.restoreOptions<FilterField>(this._tableName, this._defaultOptions);
+    const options = this._tableService.restoreOptions<ApplicationRaw>(this._tableName, this._defaultOptions);
 
-    if (!options) {
-      return this._defaultOptions;
-    }
-
-    return options;
+    return options as any;
   }
 
   /**

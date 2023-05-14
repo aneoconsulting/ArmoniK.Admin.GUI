@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatIconModule } from "@angular/material/icon";
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-refresh-button',
@@ -21,7 +21,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
   ]
 })
 export class RefreshButtonComponent {
-  @Input() tooltip = "";
+  @Input() tooltip = '';
 
   @Output() refreshChange: EventEmitter<void> = new EventEmitter<void>();
 

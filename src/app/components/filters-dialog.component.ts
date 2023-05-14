@@ -1,17 +1,17 @@
-import { NgForOf, NgIf } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatSelectModule } from "@angular/material/select";
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { ApplicationColumn, Filter, FilterField, FiltersDialogData } from "../types";
+import { NgForOf, NgIf } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Filter, FilterField, FiltersDialogData } from '../applications/types';
 
 @Component({
-  selector: "app-filters-dialog",
+  selector: 'app-filters-dialog',
   template: `
     <h2 mat-dialog-title>Filters</h2>
 
@@ -43,14 +43,20 @@ import { ApplicationColumn, Filter, FilterField, FiltersDialogData } from "../ty
           </button>
 
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onClear(filter)">Clear</button>
-            <button mat-menu-item (click)="onRemove(index)" [disabled]="filters.length === 1 && index === 0">Remove</button>
+            <button mat-menu-item (click)="onClear(filter)">
+              <mat-icon aria-hidden="true" fontIcon="clear"></mat-icon>
+              <span>Clear</span>
+            </button>
+            <button mat-menu-item (click)="onRemove(index)" [disabled]="filters.length === 1 && index === 0">
+              <mat-icon aria-hidden="true" fontIcon="delete"></mat-icon>
+              <span>Remove</span>
+            </button>
           </mat-menu>
         </div>
       </div>
 
       <button class="add-filter" mat-button (click)="addFilter()">
-        <mat-icon aria-hidden="true" fontIcon="add" inline></mat-icon>
+        <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
         <span>Add a filter rule</span>
       </button>
     </mat-dialog-content>

@@ -1,8 +1,9 @@
-import { Injectable } from "@angular/core";
-import { TableURLService } from "./table-url.service";
-import { TableStorageService } from "./table-storage.service";
-import { ListOptions } from "../types";
-import { SortDirection } from "@angular/material/sort";
+import { Injectable } from '@angular/core';
+import { SortDirection } from '@angular/material/sort';
+import { FilterField , ListOptions } from '@app/types/data';
+import { TableStorageService } from './table-storage.service';
+import { TableURLService } from './table-url.service';
+
 
 /**
  * Service to save and restore table state using the URL and the storage.
@@ -15,6 +16,14 @@ export class TableService {
   private _filtersKey = 'filters';
 
   constructor(private _storage: Storage, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
+
+  autoRefreshTooltip(interval: number): string {
+    if (interval === 0) {
+      return 'Auto-refresh is disabled';
+    }
+
+    return `Auto-refresh every ${interval} seconds`;
+  }
 
   saveIntervalValue(tableName: string, value: number): void {
     const storageKey = this._buildKey(tableName, this._intervalKey);
@@ -53,7 +62,7 @@ export class TableService {
   /**
    * Restore options from the storage
    */
-  restoreOptions<T extends string>(tableName: string, defaultOptions: ListOptions<T>): ListOptions<T> {
+  restoreOptions<T extends object>(tableName: string, defaultOptions: ListOptions<T>): ListOptions<T> {
     const storageKey = this._buildKey(tableName, this._optionsKey);
     const storageData = this._tableStorageService.restore<T>(storageKey) as ListOptions<T> | null;
 
@@ -75,13 +84,12 @@ export class TableService {
       pageIndex: convertValueToNumber(this._tableURLService.getQueryParams('pageIndex', false)) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
       pageSize: convertValueToNumber(this._tableURLService.getQueryParams('pageSize', false)) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
       sort: {
-        active: this._tableURLService.getQueryParams<T>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
+        active: this._tableURLService.getQueryParams<FilterField<T>>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
         direction: this._tableURLService.getQueryParams<SortDirection>('order', false) ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
       },
-      // TODO: Implement filters
-    }
+    };
 
-    return options
+    return options;
   }
 
   /**

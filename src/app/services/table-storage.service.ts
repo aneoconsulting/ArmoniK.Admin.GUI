@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 /**
  * Service to manage the storage for the table.
@@ -12,7 +12,7 @@ export class TableStorageService {
    * Save data to the storage
    */
   save(key: string, data: unknown) {
-    if (typeof data === "string") {
+    if (typeof data === 'string') {
       this._storage.setItem(key, data);
       return;
     }

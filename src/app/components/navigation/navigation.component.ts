@@ -1,5 +1,4 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { CdkScrollableModule } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,6 +33,17 @@ import { map, shareReplay } from 'rxjs/operators';
           <a mat-list-item routerLink="/applications">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
             <div matListItemTitle> Applications </div>
+          </a>
+          <a mat-list-item routerLink="/partitions">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="donut_small"></mat-icon>
+            <div matListItemTitle> Partitions </div>
+          </a>
+          </mat-nav-list>
+          <mat-divider></mat-divider>
+          <mat-nav-list>
+          <a mat-list-item routerLink="/results">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
+            <div matListItemTitle> Results </div>
           </a>
         </mat-nav-list>
       </mat-sidenav>

@@ -1,13 +1,13 @@
-import { NgFor } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from "@angular/material/autocomplete";
-import { MatButtonModule } from "@angular/material/button";
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { MatInputModule } from "@angular/material/input";
-import { AutoRefreshDialogData } from "../types";
+import { NgFor } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { AutoRefreshDialogData } from '@app/applications/types';
 
 @Component({
-  selector: "app-auto-refresh-dialog",
+  selector: 'app-auto-refresh-dialog',
   template: `
     <h2 mat-dialog-title>Setup Auto Refresh</h2>
 
@@ -41,7 +41,7 @@ import { AutoRefreshDialogData } from "../types";
       <button mat-flat-button [mat-dialog-close]="value" color="primary">Valider</button>
     </mat-dialog-actions>
   `,
-  styles: [``],
+  styles: [''],
   standalone: true,
   imports: [
     NgFor,

@@ -1,5 +1,5 @@
-import { ApplicationRaw } from "@aneoconsultingfr/armonik.api.angular";
-import { SortDirection } from "@angular/material/sort";
+import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection } from '@angular/material/sort';
 
 export type ApplicationColumn = keyof ApplicationRaw.AsObject | 'actions'
 

@@ -1,0 +1,75 @@
+import { NgIf } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { FiltersChipsComponent } from '@components/filters-chips.component';
+import { FiltersDialogComponent } from '@components/filters-dialog.component';
+import { Filter, FilterField } from '@app/types/data';
+
+@Component({
+  selector: 'app-filters-toolbar',
+  template: `
+<div class="filters-toolbar">
+  <app-filters-chips *ngIf="showFilters()" [filters]="filters">
+    </app-filters-chips>
+
+    <button mat-button (click)="openFiltersDialog()">
+      <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+      <span>Manage filters</span>
+    </button>
+</div>
+  `,
+  styles: [`
+.filters-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+app-filters-chips + button {
+  margin-left: 1rem;
+}
+  `],
+  standalone: true,
+  providers: [],
+  imports: [
+    NgIf,
+    FiltersChipsComponent,
+    FiltersDialogComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+  ]
+})
+export class FiltersToolbarComponent<T extends object> {
+  @Input({ required: true }) filters: Filter<T>[] = [];
+  @Input({ required: true }) filtersFields: FilterField<T>[] = [];
+
+  @Output() filtersChange: EventEmitter<Filter<T>[]> = new EventEmitter<Filter<T>[]>();
+
+  constructor(
+    private _dialog: MatDialog
+  ) {}
+
+  showFilters(): boolean {
+    return  this.filters.length > 1 || (this.filters[0]?.value !== null && this.filters.length === 1);
+  }
+
+  openFiltersDialog(): void {
+    const dialogRef = this._dialog.open(FiltersDialogComponent, {
+      data: {
+        filters: this.filters,
+        availableFiltersFields: this.filtersFields
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(!result) {
+        return;
+      }
+
+      this.filtersChange.emit(result);
+    });
+  }
+}

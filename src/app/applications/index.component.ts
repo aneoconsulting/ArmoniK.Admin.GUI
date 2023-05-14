@@ -1,36 +1,36 @@
-import { ApplicationRaw } from "@aneoconsultingfr/armonik.api.angular";
-import { CdkDragDrop, DragDropModule, moveItemInArray } from "@angular/cdk/drag-drop";
-import {ClipboardModule} from "@angular/cdk/clipboard";
-import { AsyncPipe, JsonPipe, NgForOf, NgIf } from "@angular/common";
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
+import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NgForOf, NgIf } from '@angular/common';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { MatIconModule } from "@angular/material/icon";
-import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
-import { MatSort, MatSortModule } from "@angular/material/sort";
-import { MatTableModule } from "@angular/material/table";
-import { MatToolbarModule } from "@angular/material/toolbar";
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { Observable, Subject, catchError, filter, interval, map, merge, of, startWith, switchMap, takeUntil, tap, timer } from "rxjs";
-import { FiltersDialogComponent } from "./components/filters-dialog.component";
-import { ModifyColumnsDialogComponent } from "./components/modify-columns-dialog.component";
-import { ApplicationsService } from "./services/applications.service";
-import { TableStorageService } from "./services/table-storage.service";
-import { TableURLService } from "./services/table-url.service";
-import { TableService } from "./services/table.service";
-import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from "./types";
-import { MatMenuModule } from "@angular/material/menu";
-import { AutoRefreshDialogComponent } from "./components/auto-refresh-dialog.component";
-import { ShareUrlComponent } from "./components/share-url.component";
-import { RefreshButtonComponent } from "./components/refresh-button.component";
-import { FiltersChipsComponent } from "./components/filters-chips.component";
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.component';
+import { ColumnsModifyDialogComponent } from '@components/columns-modify-dialog.component';
+import { FiltersChipsComponent } from '@components/filters-chips.component';
+import { FiltersDialogComponent } from '@components/filters-dialog.component';
+import { RefreshButtonComponent } from '@components/refresh-button.component';
+import { ShareUrlComponent } from '@components/share-url.component';
+import { TableLoadingComponent } from '@components/table-loading.component';
+import { TableStorageService } from '@services/table-storage.service';
+import { TableURLService } from '@services/table-url.service';
+import { TableService } from '@services/table.service';
+import { Observable, Subject, catchError, filter, interval, map, merge, of, startWith, switchMap, takeUntil } from 'rxjs';
+import { ApplicationsService } from './services/applications.service';
+import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from './types';
 
 @Component({
   selector: 'app-applications',
   template: `
-  <!-- TODO: Add more icons -->
 <div class="header">
   <h1>Applications</h1>
   <app-share-url [sharableURL]="sharableURL"></app-share-url>
@@ -71,24 +71,25 @@ import { FiltersChipsComponent } from "./components/filters-chips.component";
 </mat-toolbar>
 
 <div class="container">
-  <!-- TODO: create a component -->
-  <div class="loading-shade" *ngIf="isLoading">
-    <mat-spinner></mat-spinner>
-  </div>
+  <app-table-loading [loading]="isLoading"></app-table-loading>
   <div class="table-container">
     <table mat-table matSort [matSortActive]="options.sort.active" [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
+
       <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-          <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
-          <ng-container *ngIf="column !== 'actions'">
-            <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
-          </ng-container>
-          <ng-container *ngIf="column === 'actions'">
-            <td mat-cell *matCellDef="let element">
-              <a mat-icon-button aria-label="See application" matTooltip="See application">
-                <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-              </a>
-            </td>
-          </ng-container>
+        <!-- Header -->
+        <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
+        <!-- Application Column -->
+        <ng-container *ngIf="column !== 'actions'">
+          <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+        </ng-container>
+        <!-- Action -->
+        <ng-container *ngIf="column === 'actions'">
+          <td mat-cell *matCellDef="let element">
+            <a mat-icon-button aria-label="See application" matTooltip="See application">
+              <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
+            </a>
+          </td>
+        </ng-container>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -139,23 +140,6 @@ import { FiltersChipsComponent } from "./components/filters-chips.component";
     overflow: auto;
   }
 
-  .loading-shade {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 56px;
-    right: 0;
-    background: rgba(0, 0, 0, 0.15);
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .current-filters + button {
-    margin-left: 1rem;
-  }
-
   [mat-header-cell] {
     text-transform: capitalize;
   }
@@ -166,15 +150,12 @@ import { FiltersChipsComponent } from "./components/filters-chips.component";
     TableStorageService,
     TableURLService,
     TableService,
-    {
-      provide: Storage,
-      useValue: localStorage
-    }
   ],
   imports: [
     ShareUrlComponent,
     RefreshButtonComponent,
     FiltersChipsComponent,
+    TableLoadingComponent,
     NgForOf,
     NgIf,
     DragDropModule,
@@ -200,9 +181,9 @@ export class IndexComponent implements OnInit, AfterViewInit {
   isLoading = true;
   data: ApplicationRaw.AsObject[] = [];
   total = 0;
-  options: ListApplicationsOptions
+  options: ListApplicationsOptions;
 
-  sharableURL: string
+  sharableURL: string;
   copied = false;
 
   intervalValue = 0;
@@ -212,29 +193,29 @@ export class IndexComponent implements OnInit, AfterViewInit {
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
-  // TODO: Create a function in a service (dry)
+  // TODO: Create a function in a service (auto-refresh.service.ts) (dry)
   interval$: Observable<number> = merge(
-        this.stopInterval,
-        this.interval
-      ).pipe(
-        filter((interval) => {
-          if (!interval) {
-            return false
-          }
-          // Interval can be 0 but we don't want to start the timer
-          return true
-        }),
-        switchMap((value) => {
-          return interval((value as number) * 1000).pipe(takeUntil(this.stopInterval))
-        }),
-      )
+    this.stopInterval,
+    this.interval
+  ).pipe(
+    filter((interval) => {
+      if (!interval) {
+        return false;
+      }
+      // Interval can be 0 but we don't want to start the timer
+      return true;
+    }),
+    switchMap((value) => {
+      return interval((value as number) * 1000).pipe(takeUntil(this.stopInterval));
+    }),
+  );
 
   // We need to create a component for the filters
 
   constructor(private _dialog: MatDialog, private _applicationsService: ApplicationsService) {}
 
   ngOnInit(): void {
-   this.displayedColumns = this._applicationsService.restoreColumns();
+    this.displayedColumns = this._applicationsService.restoreColumns();
 
     this.options = this._applicationsService.restoreOptions();
     this.filters = this._applicationsService.restoreFilters();
@@ -249,56 +230,56 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
     merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval$)
     // Add a way to stop and restart the interval when the value change (check for previous gui)
-    .pipe(
-      startWith({}),
-      switchMap(() => {
-        this.isLoading = true
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoading = true;
 
-        const findFilter = (name: string) => {
-          return this.filters.find(filter => filter.field === name)?.value ?? ''
-        }
+          const findFilter = (name: string) => {
+            return this.filters.find(filter => filter.field === name)?.value ?? '';
+          };
 
-        const options: ListApplicationsOptions = {
-          pageIndex: this.paginator.pageIndex,
-          pageSize: this.paginator.pageSize,
-          sort: {
-            active: this.sort.active as FilterField,
-            direction: this.sort.direction,
-          },
-          filters: {
-            name: findFilter('name'),
-            namespace: findFilter('namespace'),
-            version: findFilter('version'),
-            service: findFilter('service'),
-          }
-        }
+          const options: ListApplicationsOptions = {
+            pageIndex: this.paginator.pageIndex,
+            pageSize: this.paginator.pageSize,
+            sort: {
+              active: this.sort.active as FilterField,
+              direction: this.sort.direction,
+            },
+            filters: {
+              name: findFilter('name'),
+              namespace: findFilter('namespace'),
+              version: findFilter('version'),
+              service: findFilter('service'),
+            }
+          };
 
-        this.sharableURL = this._applicationsService.generateSharableURL(options);
-        this._applicationsService.saveOptions(options);
+          this.sharableURL = this._applicationsService.generateSharableURL(options);
+          this._applicationsService.saveOptions(options);
 
-        // TODO: Brancher les filtres et les saves ici (et depuis les subscribe, envoyer next sur refresh)
-        return this._applicationsService.list(options).pipe(catchError(() => of(null)))
-      }),
-      map(data => {
-        this.isLoading = false;
-        this.total = data?.total ?? 0;
+          // TODO: Brancher les filtres et les saves ici (et depuis les subscribe, envoyer next sur refresh)
+          return this._applicationsService.list(options).pipe(catchError(() => of(null)));
+        }),
+        map(data => {
+          this.isLoading = false;
+          this.total = data?.total ?? 0;
 
-        const applications = data?.applications ?? [];
+          const applications = data?.applications ?? [];
 
-        return applications
-      })
-    )
-    .subscribe(data => {
-      this.data = data;
-    });
+          return applications;
+        })
+      )
+      .subscribe(data => {
+        this.data = data;
+      });
 
     // We need to start the timer after the first load
     // TODO: Create a function
     if (this.intervalValue === 0) {
-        this.refresh.next(); // We need to manually trigger the first load
-        this.stopInterval.next();
+      this.refresh.next(); // We need to manually trigger the first load
+      this.stopInterval.next();
     } else {
-        this.interval.next(this.intervalValue);
+      this.interval.next(this.intervalValue);
     }
   }
 
@@ -306,7 +287,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
    * Open dialog to allow user to modify the columns
    */
   openModifyColumnsDialog(): void {
-    const dialogRef = this._dialog.open(ModifyColumnsDialogComponent, {
+    const dialogRef = this._dialog.open(ColumnsModifyDialogComponent, {
       data: {
         currentColumns: this.displayedColumns,
         availableColumns: this._applicationsService.availableColumns
@@ -333,14 +314,14 @@ export class IndexComponent implements OnInit, AfterViewInit {
       data: {
         value: this.intervalValue
       }
-    })
+    });
 
     dialogRef.afterClosed().subscribe(value => {
       if (value === undefined) {
         return;
       }
 
-      this.intervalValue = value
+      this.intervalValue = value;
 
       if (value === 0) {
         this.stopInterval.next();
@@ -363,7 +344,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         filters: this.filters,
         availableFiltersFields: this._applicationsService.filtersFields
       }
-    })
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if(!result) {
@@ -380,7 +361,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
 
   resetFilters(): void {
     this.filters = this._applicationsService.resetFilters();
-    this.refresh.next()
+    this.refresh.next();
   }
 
   resetColumns(): void {

@@ -1,10 +1,10 @@
-import { NgFor } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
+import { NgFor } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
-import { MatGridListModule } from "@angular/material/grid-list";
-import { ModifyColumnsDialogData, ApplicationColumn } from "../types";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { ApplicationColumn, ModifyColumnsDialogData } from '../applications/types';
 
 @Component({
   selector: 'app-add-columns-dialog',
@@ -40,10 +40,10 @@ import { ModifyColumnsDialogData, ApplicationColumn } from "../types";
     MatCheckboxModule
   ]
 })
-export class ModifyColumnsDialogComponent implements OnInit {
+export class ColumnsModifyDialogComponent implements OnInit {
   columns: ApplicationColumn[] = [];
 
-  constructor(public dialogRef: MatDialogRef<ModifyColumnsDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: ModifyColumnsDialogData){}
+  constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: ModifyColumnsDialogData){}
 
   ngOnInit(): void {
     // Create a copy in order to not modify the original array
