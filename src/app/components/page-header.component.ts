@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ShareUrlComponent } from './share-url.component';
 
@@ -7,7 +8,7 @@ import { ShareUrlComponent } from './share-url.component';
 <div class="page-header">
   <h1> <ng-content></ng-content> </h1>
 
-  <app-share-url [sharableURL]="sharableURL"> </app-share-url>
+  <app-share-url *ngIf="sharableURL" [sharableURL]="sharableURL"> </app-share-url>
 </div>
   `,
   styles: [`
@@ -26,9 +27,10 @@ import { ShareUrlComponent } from './share-url.component';
   standalone: true,
   providers: [],
   imports: [
+    NgIf,
     ShareUrlComponent
   ]
 })
 export class PageHeaderComponent {
-  @Input({required: true}) sharableURL: string;
+  @Input() sharableURL: string | null = null;
 }

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Filter, KeyField } from '@app/types/data';
+import { FieldKey } from '@app/types/data';
+import { Filter } from '@app/types/filters';
 
 @Injectable()
 export class UtilsService<T extends object> {
-  findFilter(filters: Filter<T>[], field: KeyField<T>): Filter<T> | null {
+  findFilter(filters: Filter<T>[], field: FieldKey<T>): Filter<T> | null {
     const filter = filters.find(f => f.field === field);
 
     if (!filter) {

@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LuxonDateAdapter, MAT_LUXON_DATE_ADAPTER_OPTIONS, MAT_LUXON_DATE_FORMATS  } from '@angular/material-luxon-adapter';
 import { DateTime } from 'luxon';
-import { DateType, FilterEvent, FilterInput } from '@app/types/data';
+import { DateType, FilterEvent, FilterInput } from '@app/types/filters';
 
 
 

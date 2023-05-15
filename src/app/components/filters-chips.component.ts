@@ -2,7 +2,7 @@ import { NgFor } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Filter } from '@app/types/data';
+import { Filter } from '@app/types/filters';
 
 @Component({
   selector: 'app-filters-chips',

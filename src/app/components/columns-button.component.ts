@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { Column } from '@app/types/data';
+import { ColumnKey } from '@app/types/data';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
 
 @Component({
@@ -24,10 +24,10 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   ]
 })
 export class ColumnsButtonComponent<T extends object> {
-  @Input({ required: true }) displayedColumns: Column<T>[] = [];
-  @Input({ required: true }) availableColumns: Column<T>[];
+  @Input({ required: true }) displayedColumns: ColumnKey<T>[] = [];
+  @Input({ required: true }) availableColumns: ColumnKey<T>[];
 
-  @Output() displayedColumnsChange: EventEmitter<Column<T>[]> = new EventEmitter<Column<T>[]>();
+  @Output() displayedColumnsChange: EventEmitter<ColumnKey<T>[]> = new EventEmitter<ColumnKey<T>[]>();
 
   constructor(private _dialog: MatDialog) { }
 

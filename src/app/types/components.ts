@@ -3,13 +3,15 @@ import { AfterViewInit, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Observable, Subject } from 'rxjs';
-import { Column, Filter, FilterField, ListOptions } from './data';
+import { ColumnKey } from './data';
+import { Filter, FilterField } from './filters';
+import { ListOptions } from './options';
 
 export interface AppIndexComponent<T extends object> extends OnInit, AfterViewInit
 {
   // Columns
-  displayedColumns: Column<T>[];
-  availableColumns: Column<T>[];
+  displayedColumns: ColumnKey<T>[];
+  availableColumns: ColumnKey<T>[];
 
   // Data
   isLoading: boolean;
@@ -42,7 +44,7 @@ export interface AppIndexComponent<T extends object> extends OnInit, AfterViewIn
   // Toolbar methods
   onRefresh(): void;
   onIntervalValueChange(value: number): void;
-  onColumnsChange(columns: Column<T>[]): void;
+  onColumnsChange(columns: ColumnKey<T>[]): void;
   onColumnsReset(): void;
   onFiltersChange(filters: Filter<T>[]): void;
   onFiltersReset(): void;
@@ -53,4 +55,8 @@ export interface AppIndexComponent<T extends object> extends OnInit, AfterViewIn
 
   // Miscellaneous methods
   handleAutoRefreshStart(): void;
+}
+
+export interface AppShowComponent<T extends object> {
+  data: T | null;
 }

@@ -7,6 +7,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { AppIndexComponent } from '@app/types/components';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -17,17 +19,15 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
-import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
-import { AppIndexComponent } from '@app/types/components';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
-import { PartitionRawKeyField, ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
+import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawKeyField, ResultRawListOptions } from './types';
 
 @Component({
   selector: 'app-results-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  Partitions
+  Results
 </app-page-header>
 
 <mat-toolbar>
@@ -149,11 +149,10 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
 
     this.availableFiltersFields = this._resultsIndexService.availableFiltersFields;
     this.filters = this._resultsIndexService.restoreFilters();
-    console.log(this.filters);
 
     this.intervalValue = this._resultsIndexService.restoreIntervalValue();
 
-    this.sharableURL = this._resultsIndexService.generateSharableURL(this.options);
+    this.sharableURL = this._resultsIndexService.generateSharableURL(this.options, this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -170,14 +169,14 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as PartitionRawKeyField,
+              active: this.sort.active as ResultRawKeyField,
               direction: this.sort.direction,
             }
           };
           const filters = this.filters;
 
-          this.sharableURL = this._resultsIndexService.generateSharableURL(this.options);
-          this._resultsIndexService.saveOptions(this.options);
+          this.sharableURL = this._resultsIndexService.generateSharableURL(options, filters);
+          this._resultsIndexService.saveOptions(options);
 
           return this._resultsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
         }),
@@ -189,7 +188,10 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
 
           return results;
         })
-      ).subscribe(data => this.data = data);
+      ).subscribe(
+        data => {
+          this.data = data;
+        });
 
     this.handleAutoRefreshStart();
   }
@@ -222,7 +224,6 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
   }
 
   onFiltersChange(value: unknown[]) {
-    console.log(value);
     this.filters = value as ResultRawFilter[];
 
     this._resultsIndexService.saveFilters(value as ResultRawFilter[]);

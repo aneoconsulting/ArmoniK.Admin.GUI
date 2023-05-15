@@ -8,7 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Filter, FilterEvent, FilterField, FilterInput, FilterInputDate, FilterInputText, FilterInputType, FiltersDialogData, KeyField } from '@app/types/data';
+import { FieldKey } from '@app/types/data';
+import { Filter, FilterEvent, FilterField, FilterInput, FilterInputDate, FilterInputText, FilterInputType, FiltersDialogData } from '@app/types/filters';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog',
@@ -138,7 +139,7 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
     });
   }
 
-  onFieldChange(index: number, name: KeyField<T>): void {
+  onFieldChange(index: number, name: FieldKey<T>): void {
     this.filters[index].field = name;
   }
 
@@ -177,7 +178,7 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
     return usedFields.includes(field.field);
   }
 
-  findType(field: KeyField<T> | null): FilterInputType {
+  findType(field: FieldKey<T> | null): FilterInputType {
     if (!field) {
       return 'text';
     }

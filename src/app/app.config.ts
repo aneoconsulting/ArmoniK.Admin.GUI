@@ -8,6 +8,10 @@ import { routes } from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     {
+      provide: Window,
+      useValue: window
+    },
+    {
       provide: Storage,
       useValue: localStorage
     },

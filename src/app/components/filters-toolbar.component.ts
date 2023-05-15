@@ -3,9 +3,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { Filter, FilterField } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters-chips.component';
 import { FiltersDialogComponent } from '@components/filters-dialog.component';
-import { Filter, FilterField } from '@app/types/data';
 
 @Component({
   selector: 'app-filters-toolbar',

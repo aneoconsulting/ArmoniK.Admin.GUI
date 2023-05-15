@@ -3,8 +3,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ColumnKey } from '@app/types/data';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
-import { Column } from '@app/types/data';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
 import { ColumnsButtonComponent } from './columns-button.component';
 
@@ -65,12 +65,12 @@ import { ColumnsButtonComponent } from './columns-button.component';
 export class ActionsToolbarComponent<T extends object> {
   @Input({ required: true }) refreshTooltip = '';
   @Input({ required: true }) intervalValue = 0;
-  @Input({ required: true }) displayedColumns: Column<T>[] = [];
-  @Input({ required: true }) availableColumns: Column<T>[] = [];
+  @Input({ required: true }) displayedColumns: ColumnKey<T>[] = [];
+  @Input({ required: true }) availableColumns: ColumnKey<T>[] = [];
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
-  @Output() displayedColumnsChange: EventEmitter<Column<T>[]> = new EventEmitter<Column<T>[]>();
+  @Output() displayedColumnsChange: EventEmitter<ColumnKey<T>[]> = new EventEmitter<ColumnKey<T>[]>();
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
 
@@ -82,7 +82,7 @@ export class ActionsToolbarComponent<T extends object> {
     this.intervalValueChange.emit(value);
   }
 
-  onDisplayedColumnsChange(value: Column<T>[]): void {
+  onDisplayedColumnsChange(value: ColumnKey<T>[]): void {
     this.displayedColumnsChange.emit(value);
   }
 

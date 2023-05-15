@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { TableService } from '@services/table.service';
-import { Column, Filter, FilterField } from '@app/types/data';
+import { ColumnKey } from '@app/types/data';
+import { Filter } from '@app/types/filters';
 import { AppIndexService } from '@app/types/services';
+import { TableService } from '@services/table.service';
 import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
 
 @Injectable()
@@ -20,7 +21,7 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     },
   };
 
-  readonly defaultFilters: Filter<ResultRaw>[] = [];
+  readonly defaultFilters: ResultRawFilter[] = [];
   readonly availableFiltersFields: ResultRawFilterField[] = [
     {
       field: 'name',
@@ -51,9 +52,8 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     private _tableService: TableService,
   ) {}
 
-  // TODO: Create function in table service
-  generateSharableURL(options: ResultRawListOptions): string {
-    return '/results';
+  generateSharableURL(options: ResultRawListOptions, filters: ResultRawFilter[]): string {
+    return this._tableService.generateSharableURL(options, filters);
   }
 
   /**
@@ -86,11 +86,11 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    * Columns
    */
 
-  saveColumns(columns: Column<ResultRaw>[]): void {
+  saveColumns(columns: ColumnKey<ResultRaw>[]): void {
     this._tableService.saveColumns(this.tableName, columns);
   }
 
-  restoreColumns(): Column<ResultRaw>[] {
+  restoreColumns(): ColumnKey<ResultRaw>[] {
     return this._tableService.restoreColumns<ResultRawColumn[]>(this.tableName) ?? this.defaultColumns;
   }
 

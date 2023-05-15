@@ -7,6 +7,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterLink } from '@angular/router';
+import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { AppIndexComponent } from '@app/types/components';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -17,12 +20,9 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
-import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
-import { PartitionRawKeyField } from '@app/results/types';
-import { AppIndexComponent } from '@app/types/components';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from './types';
+import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilterField, PartitionRawKeyField, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -59,8 +59,16 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions'">
+      <ng-container *ngIf="column !== 'actions' && column !== 'id'">
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+      </ng-container>
+      <!-- ID -->
+      <ng-container *ngIf="column === 'id'">
+        <td mat-cell *matCellDef="let element">
+          <a mat-button [routerLink]="['/partitions', element[column]]">
+            {{ element[column] }}
+          </a>
+        </td>
       </ng-container>
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
@@ -80,9 +88,7 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
     </mat-paginator>
 </app-table-container>
 
-<!-- TODO: Rework types -->
 <!-- TODO: Rework applications -->
-<!-- TODO: Add results (missing data fetching and allow add a type filters to support data) -->
 <!-- TODO: Create pages to view only one item -->
 <!-- TODO: Create folders in components folder -->
 <!-- TODO: Create the settings page -->
@@ -105,6 +111,7 @@ app-actions-toolbar {
   imports: [
     NgIf,
     NgFor,
+    RouterLink,
     DragDropModule,
     PageHeaderComponent,
     ActionsToolbarComponent,
@@ -114,6 +121,7 @@ app-actions-toolbar {
     MatTableModule,
     MatToolbarModule,
     MatPaginatorModule,
+    MatButtonModule,
     MatSortModule,
     MatIconModule,
     MatButtonModule,
@@ -123,6 +131,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
   displayedColumns: PartitionRawColumn[] = [];
   availableColumns: PartitionRawColumn[] = [];
 
+  isLoading = true;
   data: PartitionRaw[] = [];
   total = 0;
 
@@ -132,18 +141,21 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
   availableFiltersFields: PartitionRawFilterField[] = [];
 
   intervalValue = 0;
-
   sharableURL = '';
 
-  isLoading = true;
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
+  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
 
-  constructor(private _tableService: TableService, private _partitionsIndexService: PartitionsIndexService, private _partitionsGrpcService: PartitionsGrpcService, private _autoRefreshService: AutoRefreshService) {}
+  constructor(
+    private _tableService: TableService,
+    private _partitionsIndexService: PartitionsIndexService,
+    private _partitionsGrpcService: PartitionsGrpcService,
+    private _autoRefreshService: AutoRefreshService
+  ) {}
 
   ngOnInit() {
     this.displayedColumns = this._partitionsIndexService.restoreColumns();
@@ -156,8 +168,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
 
     this.intervalValue = this._partitionsIndexService.restoreIntervalValue();
 
-    this.sharableURL = this._partitionsIndexService.generateSharableURL(this.options);
-    console.log(this.filters);
+    this.sharableURL = this._partitionsIndexService.generateSharableURL(this.options, this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -180,7 +191,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
           };
           const filters = this.filters;
 
-          this.sharableURL = this._partitionsIndexService.generateSharableURL(options);
+          this.sharableURL = this._partitionsIndexService.generateSharableURL(options, filters);
           this._partitionsIndexService.saveOptions(options);
 
           return this._partitionsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
@@ -228,14 +239,15 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
     this.displayedColumns = this._partitionsIndexService.resetColumns();
   }
 
-  onFiltersReset() {
-    this.filters = this._partitionsIndexService.resetFilters();
+  onFiltersChange(filters: unknown[]) {
+    this.filters = filters as PartitionRawFilter[];
+
+    this._partitionsIndexService.saveFilters(filters as PartitionRawFilter[]);
     this.refresh.next();
   }
 
-  onFiltersChange(filters: unknown[]) {
-    this.filters = filters as PartitionRawFilter[];
-    this._partitionsIndexService.saveFilters(this.filters);
+  onFiltersReset() {
+    this.filters = this._partitionsIndexService.resetFilters();
     this.refresh.next();
   }
 

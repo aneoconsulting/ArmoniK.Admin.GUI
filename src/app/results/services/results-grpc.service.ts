@@ -1,20 +1,21 @@
 import { ListResultsRequest, ListResultsResponse, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
+import { SortDirection } from '@angular/material/sort';
 import { GrpcMessage } from '@ngx-grpc/common';
-import { UtilsService } from '@services/utils.service';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
-import { PartitionRawKeyField, ResultRaw, ResultRawFilter, ResultRawListOptions } from '../types';
+import { UtilsService } from '@services/utils.service';
+import {  ResultRaw, ResultRawFilter, ResultRawKeyField, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
-  readonly sortDirections: Record<string, ListResultsRequest.OrderDirection> = {
+  readonly sortDirections: Record<SortDirection, ListResultsRequest.OrderDirection> = {
     'asc': ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC,
     'desc': ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
     '': ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
   };
 
-  readonly sortFields: Record<PartitionRawKeyField, ListResultsRequest.OrderByField> = {
+  readonly sortFields: Record<ResultRawKeyField, ListResultsRequest.OrderByField> = {
     'sessionId': ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
     'name': ListResultsRequest.OrderByField.ORDER_BY_FIELD_NAME,
     'status': ListResultsRequest.OrderByField.ORDER_BY_FIELD_STATUS,
@@ -42,7 +43,7 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
       },
       filter: {
         name: convertFilterValue(findFilter(filters, 'name')),
-        // TODO: Find a way to convert the status
+        // TODO: Find a way to convert the status (as sort direction, we can create a corresponding enum)
         status: ResultStatus.RESULT_STATUS_UNSPECIFIED,
         ownerTaskId: convertFilterValue(findFilter(filters, 'ownerTaskId')),
         sessionId: convertFilterValue(findFilter(filters, 'sessionId')),
@@ -52,7 +53,9 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
 
     return this._resultsClient.listResults(listResultRequest);
   }
-  get$(id: string): GrpcMessage {
+
+  get$(id: string): Observable<never> {
+    // TODO: Not available in ArmoniK.Api.Angular
     throw new Error('Method not implemented.');
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { TableService } from '@services/table.service';
-import { Filter, FilterField, ListOptions } from '@app/types/data';
+import { ListOptions } from '@app/types/options';
 import { AppIndexService } from '@app/types/services';
-import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawListOptions } from '../types';
+import { TableService } from '@services/table.service';
+import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
 
 @Injectable()
 export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
@@ -20,16 +20,44 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     },
   };
 
-  readonly defaultFilters: Filter<PartitionRaw>[] = [];
-  readonly availableFiltersFields: FilterField<PartitionRaw>[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage'];
+  readonly defaultFilters: PartitionRawFilter[] = [];
+  readonly availableFiltersFields: PartitionRawFilterField[] = [
+    {
+      field: 'id',
+      type: 'text',
+    },
+    {
+      field: 'priority',
+      type: 'text',
+    },
+    {
+      field: 'parentPartitionIds',
+      type: 'text',
+    },
+    {
+      field: 'podConfiguration',
+      type: 'text',
+    },
+    {
+      field: 'podMax',
+      type: 'text',
+    },
+    {
+      field: 'podReserved',
+      type: 'text',
+    },
+    {
+      field: 'preemptionPercentage',
+      type: 'text',
+    },
+  ];
 
   readonly defaultIntervalValue: number = 10;
 
   constructor(private _tableService: TableService) {}
 
-  // TODO: Create function in table service
-  generateSharableURL(options: PartitionRawListOptions): string {
-    return '/partitions';
+  generateSharableURL(options: PartitionRawListOptions, filters: PartitionRawFilter[]): string {
+    return this._tableService.generateSharableURL(options, filters);
   }
 
   /**
@@ -62,12 +90,12 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    * Columns
    */
 
-  restoreColumns(): PartitionRawColumn[] {
-    return this._tableService.restoreColumns<PartitionRawColumn[]>(this.tableName) ?? this.defaultColumns;
-  }
-
   saveColumns(columns: PartitionRawColumn[]): void {
     this._tableService.saveColumns(this.tableName, columns);
+  }
+
+  restoreColumns(): PartitionRawColumn[] {
+    return this._tableService.restoreColumns<PartitionRawColumn[]>(this.tableName) ?? this.defaultColumns;
   }
 
   resetColumns(): PartitionRawColumn[] {
@@ -93,10 +121,4 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
 
     return this.defaultFilters;
   }
-
-
-  // readonly sortDirections: PartitionRawSortDirection = {
-  //   asc: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-  //   desc: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC
-  // }
 }
