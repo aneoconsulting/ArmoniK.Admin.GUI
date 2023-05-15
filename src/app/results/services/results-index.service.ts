@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TableService } from '@services/table.service';
-import { Column, Filter } from '@app/types/data';
+import { Column, Filter, FilterField } from '@app/types/data';
 import { AppIndexService } from '@app/types/services';
 import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
 
@@ -20,8 +20,29 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     },
   };
 
-  readonly defaultFilters: Filter<ResultRaw>[];
-  readonly availableFiltersFields: ResultRawFilterField[];
+  readonly defaultFilters: Filter<ResultRaw>[] = [];
+  readonly availableFiltersFields: ResultRawFilterField[] = [
+    {
+      field: 'name',
+      type: 'text',
+    },
+    {
+      field: 'status',
+      type: 'select',
+    },
+    {
+      field: 'ownerTaskId',
+      type: 'text',
+    },
+    {
+      field: 'createdAt',
+      type: 'date',
+    },
+    {
+      field: 'sessionId',
+      type: 'text',
+    },
+  ];
 
   readonly defaultIntervalValue: number = 10;
 

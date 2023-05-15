@@ -28,7 +28,13 @@ export class FiltersChipsComponent<T extends object> {
   @Input() filters: Filter<T>[] = [];
 
   toolTip(filter: Filter<T>): string {
-    return filter.value ? (filter.field as string) + '=' + filter.value: 'No value';
+    if (!filter.value)
+      return 'No value';
+
+    if (filter.value instanceof Object)
+      return (filter.field as string) + '=' + 'from ' + filter.value.start + ' to ' + filter.value.end;
+
+    return (filter.field as string) + '=' + filter.value;
   }
 
   trackByFilter(_: number, filter: Filter<T>): string {

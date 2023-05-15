@@ -16,11 +16,12 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
-import { Observable, Subject } from 'rxjs';
+import { UtilsService } from '@services/utils.service';
+import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
-import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
+import { PartitionRawKeyField, ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
 
 @Component({
   selector: 'app-results-index',
@@ -85,6 +86,7 @@ app-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    UtilsService,
     TableStorageService,
     TableURLService,
     TableService,
@@ -147,6 +149,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
 
     this.availableFiltersFields = this._resultsIndexService.availableFiltersFields;
     this.filters = this._resultsIndexService.restoreFilters();
+    console.log(this.filters);
 
     this.intervalValue = this._resultsIndexService.restoreIntervalValue();
 
@@ -157,7 +160,36 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
     // If the user change the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-    // TODO: merge for fetch la data
+    merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval$)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoading = true;
+
+          const options: ResultRawListOptions = {
+            pageIndex: this.paginator.pageIndex,
+            pageSize: this.paginator.pageSize,
+            sort: {
+              active: this.sort.active as PartitionRawKeyField,
+              direction: this.sort.direction,
+            }
+          };
+          const filters = this.filters;
+
+          this.sharableURL = this._resultsIndexService.generateSharableURL(this.options);
+          this._resultsIndexService.saveOptions(this.options);
+
+          return this._resultsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
+        }),
+        map(data => {
+          this.isLoading = false;
+          this.total = data?.total ?? 0;
+
+          const results = data?.results ?? [];
+
+          return results;
+        })
+      ).subscribe(data => this.data = data);
 
     this.handleAutoRefreshStart();
   }
@@ -190,6 +222,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
   }
 
   onFiltersChange(value: unknown[]) {
+    console.log(value);
     this.filters = value as ResultRawFilter[];
 
     this._resultsIndexService.saveFilters(value as ResultRawFilter[]);

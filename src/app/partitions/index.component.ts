@@ -18,6 +18,7 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { PartitionRawKeyField } from '@app/results/types';
 import { AppIndexComponent } from '@app/types/components';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
@@ -156,6 +157,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
     this.intervalValue = this._partitionsIndexService.restoreIntervalValue();
 
     this.sharableURL = this._partitionsIndexService.generateSharableURL(this.options);
+    console.log(this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -172,7 +174,7 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as PartitionRawFilterField,
+              active: this.sort.active as PartitionRawKeyField,
               direction: this.sort.direction,
             },
           };

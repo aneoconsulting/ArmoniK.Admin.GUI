@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Filter, FilterField } from '@app/types/data';
+import { Filter, KeyField } from '@app/types/data';
 
 @Injectable()
 export class UtilsService<T extends object> {
-  findFilter(filters: Filter<T>[], field: FilterField<T>): Filter<T> | null {
+  findFilter(filters: Filter<T>[], field: KeyField<T>): Filter<T> | null {
     const filter = filters.find(f => f.field === field);
 
     if (!filter) {
@@ -22,7 +22,7 @@ export class UtilsService<T extends object> {
       return '';
     }
 
-    return filter.value;
+    return filter.value.toString();
   }
 
   convertFilterValueToNumber(filter: Filter<T> | null): number | null {

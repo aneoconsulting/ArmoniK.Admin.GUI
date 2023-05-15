@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { FilterField , ListOptions } from '@app/types/data';
+import { FilterField , KeyField, ListOptions } from '@app/types/data';
 import { TableStorageService } from './table-storage.service';
 import { TableURLService } from './table-url.service';
 
@@ -84,7 +84,7 @@ export class TableService {
       pageIndex: convertValueToNumber(this._tableURLService.getQueryParams('pageIndex', false)) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
       pageSize: convertValueToNumber(this._tableURLService.getQueryParams('pageSize', false)) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
       sort: {
-        active: this._tableURLService.getQueryParams<FilterField<T>>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
+        active: this._tableURLService.getQueryParams<KeyField<T>>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
         direction: this._tableURLService.getQueryParams<SortDirection>('order', false) ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
       },
     };

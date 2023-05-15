@@ -1,4 +1,4 @@
-import { NgForOf, NgIf } from '@angular/common';
+import { JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -8,8 +8,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Filter, FilterField, FiltersDialogData } from '../applications/types';
-
+import { DateTime } from 'luxon';
+import { Filter, FilterEvent, FilterField, FiltersDialogData, KeyField, TypeField } from '@app/types/data';
+import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog',
   template: `
@@ -25,18 +26,20 @@ import { Filter, FilterField, FiltersDialogData } from '../applications/types';
           <mat-form-field appearance="outline"  subscriptSizing="dynamic">
             <mat-label>Column</mat-label>
             <mat-select (valueChange)="onFieldChange(index, $event)" [value]="filter.field">
-              <mat-option *ngFor="let column of availableFiltersFields(); trackBy: trackByField" [value]="column" [disabled]="disableField(column)">
-                {{ column }}
+              <mat-option *ngFor="let column of availableFiltersFields(); trackBy: trackByField" [value]="column.field" [disabled]="disableField(column)">
+                {{ column.field }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
           <span>is</span>
 
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <app-filters-dialog-input [typeField]="findType(filter.field)" [value]="filter.value" (valueChange)="onInputValueChange(index, $event)"></app-filters-dialog-input>
+          <!-- TODO: create a component to harmonize interface and which is able to select the correct field -->
+          <!-- <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Value</mat-label>
             <input matInput placeholder="Value" [value]="filter.value" (change)="onValueChange(index, $event)">
-          </mat-form-field>
+          </mat-form-field> -->
 
           <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
             <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
@@ -87,11 +90,16 @@ import { Filter, FilterField, FiltersDialogData } from '../applications/types';
   .add-filter {
     margin-top: 1rem;
   }
+
+  app-filters-dialog-input {
+    flex: 1;
+  }
   `],
   standalone: true,
   imports: [
     NgForOf,
     NgIf,
+    FiltersDialogInputComponent,
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -102,10 +110,10 @@ import { Filter, FilterField, FiltersDialogData } from '../applications/types';
     MatMenuModule,
   ],
 })
-export class FiltersDialogComponent implements OnInit {
-  filters: Filter[] = [];
+export class FiltersDialogComponent<T extends object> implements OnInit {
+  filters: Filter<T>[] = [];
 
-  constructor(public dialogRef: MatDialogRef<FiltersDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: FiltersDialogData){}
+  constructor(public dialogRef: MatDialogRef<FiltersDialogComponent<T>>, @Inject(MAT_DIALOG_DATA) public data: FiltersDialogData<T>){}
 
   ngOnInit(): void {
     if (this.data.filters.length === 0) {
@@ -121,19 +129,27 @@ export class FiltersDialogComponent implements OnInit {
    * Get the available field (all the field that can be added)
    * Sort the field alphabetically
    */
-  availableFiltersFields(): FilterField[] {
-    return this.data.availableFiltersFields.sort();
+  availableFiltersFields(): FilterField<T>[] {
+    return this.data.availableFiltersFields.sort((a, b) => (a.field as string).localeCompare(b.field as string));
   }
 
   addFilter(): void {
     this.filters.push({
       field: null,
-      value: null
     });
   }
 
-  onFieldChange(index: number, name: FilterField): void {
+  onFieldChange(index: number, name: KeyField<T>): void {
     this.filters[index].field = name;
+  }
+
+  onInputValueChange(index: number, event: FilterEvent): void {
+    if (event.type === 'text')
+      this.filters[index].value = event.value;
+    else if (event.type === 'date-start')
+      this.filters[index].value = { start: event.value?.toISODate() ?? null, end: (this.filters[index].value as {end: string | null })?.end };
+    else if (event.type === 'date-end')
+      this.filters[index].value = { start: (this.filters[index].value as {start: string | null })?.start, end: event.value?.toISODate() ?? null };
   }
 
   onValueChange(index: number, event: Event): void {
@@ -143,7 +159,7 @@ export class FiltersDialogComponent implements OnInit {
     this.filters[index].value = value;
   }
 
-  onClear(filter: Filter): void {
+  onClear(filter: Filter<T>): void {
     filter.value = null;
     filter.field = null;
   }
@@ -152,24 +168,33 @@ export class FiltersDialogComponent implements OnInit {
     this.filters.splice(index, 1);
   }
 
-  selectedField(filterName: FilterField, field: FilterField): boolean {
+  selectedField(filterName: FilterField<T>, field: FilterField<T>): boolean {
     return filterName === field;
   }
 
-  disableField(field: FilterField): boolean {
+  disableField(field: FilterField<T>): boolean {
     const usedFields = this.filters.map(filter => filter.field);
-    return usedFields.includes(field);
+    return usedFields.includes(field.field);
+  }
+
+  findType(field: KeyField<T> | null): TypeField {
+    if (!field) {
+      return 'text';
+    }
+
+    const filter = this.data.availableFiltersFields.find(filter => filter.field === field);
+    return filter?.type ?? 'text';
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  trackByFilter(index: number, _: Filter) {
+  trackByFilter(index: number, _: Filter<T>) {
     return index;
   }
 
-  trackByField(_: number, field: FilterField) {
+  trackByField(_: number, field: FilterField<T>) {
     return field;
   }
 }
