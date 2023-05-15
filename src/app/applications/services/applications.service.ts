@@ -1,9 +1,9 @@
 import { ApplicationRaw, ApplicationsClient, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
+import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from '@app/applications/types';
 import { TableService } from '@services/table.service';
 // Create a "packages" (aliases) for types
-import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from '@app/applications/types';
 
 
 /**

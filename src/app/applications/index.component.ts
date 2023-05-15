@@ -14,6 +14,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Observable, Subject, catchError, filter, interval, map, merge, of, startWith, switchMap, takeUntil } from 'rxjs';
 import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.component';
 import { ColumnsModifyDialogComponent } from '@components/columns-modify-dialog.component';
 import { FiltersChipsComponent } from '@components/filters-chips.component';
@@ -24,7 +25,6 @@ import { TableLoadingComponent } from '@components/table-loading.component';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
-import { Observable, Subject, catchError, filter, interval, map, merge, of, startWith, switchMap, takeUntil } from 'rxjs';
 import { ApplicationsService } from './services/applications.service';
 import { ApplicationColumn, Filter, FilterField, ListApplicationsOptions } from './types';
 

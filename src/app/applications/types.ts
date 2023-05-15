@@ -1,9 +1,9 @@
 import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
 import { SortDirection } from '@angular/material/sort';
 
-export type ApplicationColumn = keyof ApplicationRaw.AsObject | 'actions'
+export type ApplicationColumn = keyof ApplicationRaw.AsObject | 'actions';
 
-export type FilterField = keyof ApplicationRaw.AsObject
+export type FilterField = keyof ApplicationRaw.AsObject;
 
 export interface ModifyColumnsDialogData {
   currentColumns: ApplicationColumn[]
@@ -34,7 +34,7 @@ export interface ListOptions<T extends string> {
   }
 }
 
-export type ListApplicationsOptions = ListOptions<FilterField>
+export type ListApplicationsOptions = ListOptions<FilterField>;
 
 export interface AutoRefreshDialogData {
   value: number
