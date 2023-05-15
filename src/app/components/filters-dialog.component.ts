@@ -1,4 +1,4 @@
-import { JsonPipe, NgForOf, NgIf } from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -8,8 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DateTime } from 'luxon';
-import { Filter, FilterEvent, FilterField, FiltersDialogData, KeyField, TypeField } from '@app/types/data';
+import { Filter, FilterEvent, FilterField, FilterInput, FilterInputDate, FilterInputText, FilterInputType, FiltersDialogData, KeyField } from '@app/types/data';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog',
@@ -34,7 +33,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
           <span>is</span>
 
-          <app-filters-dialog-input [typeField]="findType(filter.field)" [value]="filter.value" (valueChange)="onInputValueChange(index, $event)"></app-filters-dialog-input>
+          <app-filters-dialog-input [input]="findInput(filter)" (valueChange)="onInputValueChange(index, $event)"></app-filters-dialog-input>
           <!-- TODO: create a component to harmonize interface and which is able to select the correct field -->
           <!-- <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Value</mat-label>
@@ -160,8 +159,9 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
   }
 
   onClear(filter: Filter<T>): void {
-    filter.value = null;
+    console.log(filter);
     filter.field = null;
+    delete filter.value;
   }
 
   onRemove(index: number): void {
@@ -177,13 +177,30 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
     return usedFields.includes(field.field);
   }
 
-  findType(field: KeyField<T> | null): TypeField {
+  findType(field: KeyField<T> | null): FilterInputType {
     if (!field) {
       return 'text';
     }
 
     const filter = this.data.availableFiltersFields.find(filter => filter.field === field);
+
     return filter?.type ?? 'text';
+  }
+
+  findInput(filter: Filter<T>): FilterInput {
+    const type = this.findType(filter.field);
+
+    if (type === 'date') {
+      return {
+        type: 'date',
+        value: filter.value as FilterInputDate['value'] || { start: null, end: null }
+      };
+    }
+
+    return {
+      type: 'text',
+      value: filter.value as FilterInputText['value'] || null,
+    };
   }
 
   onNoClick(): void {

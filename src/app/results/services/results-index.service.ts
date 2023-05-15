@@ -28,7 +28,8 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     },
     {
       field: 'status',
-      type: 'select',
+      // TODO: Create a select filter (maybe with some default options)
+      type: 'text',
     },
     {
       field: 'ownerTaskId',

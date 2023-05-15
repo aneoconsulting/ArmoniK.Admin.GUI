@@ -6,22 +6,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LuxonDateAdapter, MAT_LUXON_DATE_ADAPTER_OPTIONS, MAT_LUXON_DATE_FORMATS  } from '@angular/material-luxon-adapter';
 import { DateTime } from 'luxon';
-import { DateType, FilterEvent, TypeField } from '@app/types/data';
+import { DateType, FilterEvent, FilterInput } from '@app/types/data';
 
 
 
 @Component({
   selector: 'app-filters-dialog-input',
   template: `
-<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="typeField === 'text'">
+<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'text'">
   <mat-label>Value</mat-label>
-  <input matInput [type]="getInputType()" placeholder="Value" [value]="value ?? null" (change)="onTextChange($event)">
+  <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onTextChange($event)">
 </mat-form-field>
-<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="typeField === 'date'">
+<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label>Enter a date range</mat-label>
   <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="Start date" [value]="value.start" (dateChange)="onDateChange('start', $event)">
-    <input matEndDate placeholder="End date" [value]="value.end" (dateChange)="onDateChange('end', $event)">
+    <input matStartDate placeholder="Start date" [value]="input.value.start" (dateChange)="onDateChange('start', $event)">
+    <input matEndDate placeholder="End date" [value]="input.value.end" (dateChange)="onDateChange('end', $event)">
   </mat-date-range-input>
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-date-range-picker #picker></mat-date-range-picker>
@@ -50,9 +50,10 @@ mat-form-field {
   ],
 })
 export class FiltersDialogInputComponent {
-  @Input({ required: true }) typeField: TypeField = 'text';
-  // Type of value is defined by type field. (replace any by the correct type)
-  @Input({ required: true }) value: any = null;
+  @Input({ required: true }) input: FilterInput = {
+    type: 'text',
+    value: null,
+  };
 
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
@@ -73,13 +74,11 @@ export class FiltersDialogInputComponent {
   }
 
   getInputType(): string {
-    switch (this.typeField) {
+    switch (this.input.type) {
     case 'text':
       return 'text';
-    case 'number':
-      return 'number';
-    case 'boolean':
-      return 'checkbox';
+    case 'date':
+      return 'date';
     default:
       return 'text';
     }
