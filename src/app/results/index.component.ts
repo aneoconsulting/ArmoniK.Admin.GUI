@@ -1,13 +1,13 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
@@ -27,7 +27,8 @@ import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, Resu
   selector: 'app-results-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  Results
+  <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
+  <span>Results</span>
 </app-page-header>
 
 <mat-toolbar>
@@ -111,7 +112,7 @@ app-actions-toolbar {
     MatButtonModule,
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<ResultRaw> {
+export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<ResultRaw> {
   displayedColumns: ResultRawColumn[] = [];
   availableColumns: ResultRawColumn[] = [];
 
@@ -133,6 +134,8 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  subscriptions: Subscription = new Subscription();
 
   constructor(
     private _tableService: TableService,
@@ -157,9 +160,9 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
 
   ngAfterViewInit(): void {
     // If the user change the sort order, reset back to the first page.
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+    const sortSubscription = this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-    merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval$)
+    const mergeSubscription = merge(this.sort.sortChange, this.paginator.page, this.refresh, this.interval$)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -194,8 +197,14 @@ export class IndexComponent implements OnInit, AfterViewInit, AppIndexComponent<
         });
 
     this.handleAutoRefreshStart();
+
+    this.subscriptions.add(sortSubscription);
+    this.subscriptions.add(mergeSubscription);
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
   onRefresh() {
     this.refresh.next();
   }

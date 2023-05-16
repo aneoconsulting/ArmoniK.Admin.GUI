@@ -9,6 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { AppIndexComponent } from '@app/types/components';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -19,16 +20,16 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationsGrpcService } from './services/applications-grpc.service';
-import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawKeyField, ApplicationRawListOptions } from './types';
+import { SessionsGrpcService } from './services/sessions-grpc.service';
+import { SessionsIndexService } from './services/sessions-index.service';
+import { SessionRaw, SessionRawColumn, SessionRawFilter, SessionRawFilterField, SessionRawKeyField, SessionRawListOptions } from './types';
 
 @Component({
-  selector: 'app-applications-index',
+  selector: 'app-sessions-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
-  <span matListItemTitle> Applications </span>
+  <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
+  <span>Sessions</span>
 </app-page-header>
 
 <mat-toolbar>
@@ -59,13 +60,21 @@ import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, Application
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions'">
+      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId'">
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+      </ng-container>
+      <!-- ID -->
+      <ng-container *ngIf="column === 'sessionId'">
+        <td mat-cell *matCellDef="let element">
+          <a mat-button [routerLink]="['/sessions', element[column]]">
+            {{ element[column] }}
+          </a>
+        </td>
       </ng-container>
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
-          <a mat-icon-button aria-label="See application" matTooltip="See application">
+          <a mat-icon-button [routerLink]="['/sessions', element.sessionId]" aria-label="See session" matTooltip="See session">
             <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
           </a>
         </td>
@@ -76,9 +85,14 @@ import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, Application
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of applications">
-  </mat-paginator>
+  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of sessions">
+    </mat-paginator>
 </app-table-container>
+
+<!-- TODO: Create pages to view only one item -->
+<!-- TODO: Add icon before page title -->
+<!-- TODO: Create folders in components folder -->
+<!-- TODO: Create the settings page -->
   `,
   styles: [`
 app-actions-toolbar {
@@ -92,8 +106,8 @@ app-actions-toolbar {
     TableService,
     UtilsService,
     AutoRefreshService,
-    ApplicationsIndexService,
-    ApplicationsGrpcService,
+    SessionsIndexService,
+    SessionsGrpcService,
   ],
   imports: [
     NgIf,
@@ -114,24 +128,21 @@ app-actions-toolbar {
     MatButtonModule,
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  displayedColumns: ApplicationRawColumn[] = [];
-  availableColumns: ApplicationRawColumn[] = [];
-
+export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<SessionRaw> {
+  displayedColumns: SessionRawColumn[] = [];
+  availableColumns: SessionRawColumn[] = [];
 
   isLoading = true;
-  data: ApplicationRaw[] = [];
+  data: SessionRaw[] = [];
   total = 0;
 
-  options: ApplicationRawListOptions;
+  options: SessionRawListOptions;
 
-  filters: ApplicationRawFilter[] = [];
-  availableFiltersFields: ApplicationRawFilterField[] = [];
-
+  filters: SessionRawFilter[] = [];
+  availableFiltersFields: SessionRawFilterField[] = [];
 
   intervalValue = 0;
   sharableURL = '';
-
 
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
@@ -144,23 +155,23 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private _tableService: TableService,
-    private _applicationsIndexService: ApplicationsIndexService,
-    private _applicationsGrpcService: ApplicationsGrpcService,
+    private _sessionsIndexService: SessionsIndexService,
+    private _sessionsGrpcService: SessionsGrpcService,
     private _autoRefreshService: AutoRefreshService
   ) {}
 
-  ngOnInit(): void {
-    this.displayedColumns = this._applicationsIndexService.restoreColumns();
-    this.availableColumns = this._applicationsIndexService.availableColumns;
+  ngOnInit() {
+    this.displayedColumns = this._sessionsIndexService.restoreColumns();
+    this.availableColumns = this._sessionsIndexService.availableColumns;
 
-    this.options = this._applicationsIndexService.restoreOptions();
+    this.options = this._sessionsIndexService.restoreOptions();
 
-    this.availableFiltersFields = this._applicationsIndexService.availableFiltersFields;
-    this.filters = this._applicationsIndexService.restoreFilters();
+    this.availableFiltersFields = this._sessionsIndexService.availableFiltersFields;
+    this.filters = this._sessionsIndexService.restoreFilters();
 
-    this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
+    this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
 
-    this.sharableURL = this._applicationsIndexService.generateSharableURL(this.options, this.filters);
+    this.sharableURL = this._sessionsIndexService.generateSharableURL(this.options, this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -173,32 +184,33 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         switchMap(() => {
           this.isLoading = true;
 
-          const options: ApplicationRawListOptions = {
+          const options: SessionRawListOptions = {
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as ApplicationRawKeyField,
+              active: this.sort.active as SessionRawKeyField,
               direction: this.sort.direction,
             },
           };
           const filters = this.filters;
 
-          this.sharableURL = this._applicationsIndexService.generateSharableURL(options, filters);
-          this._applicationsIndexService.saveOptions(options);
+          this.sharableURL = this._sessionsIndexService.generateSharableURL(options, filters);
+          this._sessionsIndexService.saveOptions(options);
 
-          return this._applicationsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
+          return this._sessionsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
         }),
         map(data => {
           this.isLoading = false;
           this.total = data?.total ?? 0;
 
-          const partitions = data?.applications ?? [];
+          const sessions = data?.sessions ?? [];
 
-          return partitions;
+          return sessions;
         })
       )
+      // FIXME: Remove the `as unknown as SessionRaw[]` when SessionRaw is merged
       .subscribe(data => {
-        this.data = data;
+        this.data = data as unknown as SessionRaw[];
       });
 
     this.handleAutoRefreshStart();
@@ -225,28 +237,28 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.refresh.next();
     }
 
-    this._applicationsIndexService.saveIntervalValue(value);
+    this._sessionsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: ApplicationRawColumn[]) {
+  onColumnsChange(value: SessionRawColumn[]) {
     this.displayedColumns = value;
 
-    this._applicationsIndexService.saveColumns(value);
+    this._sessionsIndexService.saveColumns(value);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this._applicationsIndexService.resetColumns();
+    this.displayedColumns = this._sessionsIndexService.resetColumns();
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as ApplicationRawFilter[];
+    this.filters = filters as SessionRawFilter[];
 
-    this._applicationsIndexService.saveFilters(filters as ApplicationRawFilter[]);
+    this._sessionsIndexService.saveFilters(filters as SessionRawFilter[]);
     this.refresh.next();
   }
 
   onFiltersReset() {
-    this.filters = this._applicationsIndexService.resetFilters();
+    this.filters = this._sessionsIndexService.resetFilters();
     this.refresh.next();
   }
 
@@ -257,7 +269,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
-    this._applicationsIndexService.saveColumns(this.displayedColumns);
+    this._sessionsIndexService.saveColumns(this.displayedColumns);
   }
 
   handleAutoRefreshStart() {

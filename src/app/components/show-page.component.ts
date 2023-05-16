@@ -6,7 +6,7 @@ import { ShowCardComponent } from './show-card.component';
   selector: 'app-show-page',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  Partition <span>{{ id }}</span>
+  <ng-content> </ng-content> <span>{{ id }}</span>
 </app-page-header>
 
 <app-show-card [data]="data"></app-show-card>

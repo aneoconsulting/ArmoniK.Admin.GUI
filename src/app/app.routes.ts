@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadChildren: () => import('./partitions/routes').then(mod => mod.PARTITIONS_ROUTES)
   },
   {
+    path: 'sessions',
+    loadChildren: () => import('./sessions/routes').then(mod => mod.SESSIONS_ROUTES)
+  },
+  {
     path: 'results',
     loadChildren: () => import('./results/routes').then(mod => mod.RESULTS_ROUTES)
   },

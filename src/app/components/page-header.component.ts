@@ -22,6 +22,10 @@ import { ShareUrlComponent } from './share-url.component';
 
 .page-header h1 {
   margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 }
   `],
   standalone: true,

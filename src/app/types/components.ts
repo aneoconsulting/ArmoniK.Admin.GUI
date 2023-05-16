@@ -1,13 +1,13 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, OnInit } from '@angular/core';
+import { AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { ColumnKey } from './data';
 import { Filter, FilterField } from './filters';
 import { ListOptions } from './options';
 
-export interface AppIndexComponent<T extends object> extends OnInit, AfterViewInit
+export interface AppIndexComponent<T extends object> extends OnInit, AfterViewInit, OnDestroy
 {
   // Columns
   displayedColumns: ColumnKey<T>[];
@@ -37,9 +37,12 @@ export interface AppIndexComponent<T extends object> extends OnInit, AfterViewIn
   sort: MatSort;
   paginator: MatPaginator;
 
+  subscriptions: Subscription;
+
   // Lifecycle hooks
   ngOnInit(): void;
   ngAfterViewInit(): void;
+  ngOnDestroy(): void;
 
   // Toolbar methods
   onRefresh(): void;

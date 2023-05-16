@@ -30,20 +30,24 @@ import { map, shareReplay } from 'rxjs/operators';
           [mode]="(isHandset$ | async) ? 'over' : 'side'"
           [opened]="(isHandset$ | async) === false">
         <mat-nav-list>
-          <a mat-list-item routerLink="/applications">
+          <a mat-list-item routerLink="/applications" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
-            <div matListItemTitle> Applications </div>
+            <span matListItemTitle> Applications </span>
           </a>
-          <a mat-list-item routerLink="/partitions">
+          <a mat-list-item routerLink="/partitions" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="donut_small"></mat-icon>
-            <div matListItemTitle> Partitions </div>
+            <span matListItemTitle> Partitions </span>
           </a>
-          </mat-nav-list>
-          <mat-divider></mat-divider>
-          <mat-nav-list>
-          <a mat-list-item routerLink="/results">
+        </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/sessions" routerLinkActive="navbar-item-selected">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
+            <span matListItemTitle> Sessions </span>
+          </a>
+          <a mat-list-item routerLink="/results" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
-            <div matListItemTitle> Results </div>
+            <span matListItemTitle> Results </span>
           </a>
         </mat-nav-list>
       </mat-sidenav>
@@ -72,6 +76,10 @@ import { map, shareReplay } from 'rxjs/operators';
       position: sticky;
       top: 0;
       z-index: 2;
+    }
+
+    .navbar-item-selected {
+      background-color: rgba(0, 0, 0, 0.2);
     }
 
     main {
