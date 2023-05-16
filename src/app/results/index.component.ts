@@ -64,7 +64,7 @@ import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, Resu
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
-          <a mat-icon-button aria-label="See application" matTooltip="See application">
+          <a mat-icon-button aria-label="See result" matTooltip="See result">
             <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
           </a>
         </td>
@@ -75,7 +75,7 @@ import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, Resu
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of applications">
+  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of results">
     </mat-paginator>
 </app-table-container>
   `,

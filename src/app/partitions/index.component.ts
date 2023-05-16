@@ -73,7 +73,7 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
-          <a mat-icon-button aria-label="See application" matTooltip="See application">
+          <a mat-icon-button aria-label="See partition" matTooltip="See partition">
             <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
           </a>
         </td>
@@ -84,12 +84,12 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of applications">
+  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of partitions">
     </mat-paginator>
 </app-table-container>
 
-<!-- TODO: Rework applications -->
 <!-- TODO: Create pages to view only one item -->
+<!-- TODO: Add icon before page title -->
 <!-- TODO: Create folders in components folder -->
 <!-- TODO: Create the settings page -->
   `,

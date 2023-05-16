@@ -12,11 +12,6 @@ export type FilterField<T extends object> = {
   type: FilterInputType
   // Maybe, we could add an 'options' field to the IFilterField interfaces
 };
-// Types for the dialog.
-export type FiltersDialogData<T extends object> = {
-  availableFiltersFields: FilterField<T>[],
-  filters: Filter<T>[]
-};
 
 // Types for the value of an input.
 export type FilterInputValueText = string | null;

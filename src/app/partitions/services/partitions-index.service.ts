@@ -11,7 +11,7 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
   readonly defaultColumns: PartitionRawColumn[] = ['id', 'actions'];
   readonly availableColumns: PartitionRawColumn[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
 
-  readonly defaultOptions: ListOptions<PartitionRaw> = {
+  readonly defaultOptions: PartitionRawListOptions = {
     pageIndex: 0,
     pageSize: 10,
     sort: {

@@ -4,7 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ApplicationColumn, ModifyColumnsDialogData } from '../applications/types';
+import { ColumnKey } from '@app/types/data';
+import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
   selector: 'app-add-columns-dialog',
@@ -15,7 +16,7 @@ import { ApplicationColumn, ModifyColumnsDialogData } from '../applications/type
 
     <div class="columns">
       <ng-container *ngFor="let column of availableColumns(); let index = index; trackBy:trackByColumn">
-          <mat-checkbox [value]="column" (change)="updateColumn($event, column)" [checked]="isSelected(column)">{{ column }}</mat-checkbox>
+          <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">{{ column }}</mat-checkbox>
       </ng-container>
     </div>
   </mat-dialog-content>
@@ -40,10 +41,10 @@ import { ApplicationColumn, ModifyColumnsDialogData } from '../applications/type
     MatCheckboxModule
   ]
 })
-export class ColumnsModifyDialogComponent implements OnInit {
-  columns: ApplicationColumn[] = [];
+export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
+  columns: ColumnKey<T>[] = [];
 
-  constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: ModifyColumnsDialogData){}
+  constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T>){}
 
   ngOnInit(): void {
     // Create a copy in order to not modify the original array
@@ -54,14 +55,14 @@ export class ColumnsModifyDialogComponent implements OnInit {
    * Get the available columns (all the columns that can be added)
    * Sort the columns alphabetically
    */
-  availableColumns(): ApplicationColumn[] {
+  availableColumns(): ColumnKey<T>[] {
     return this.data.availableColumns.sort();
   }
 
   /**
    * Update the columns array when a checkbox is checked or unchecked
    */
-  updateColumn({ checked }: MatCheckboxChange, column: ApplicationColumn): void {
+  updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T>): void {
     if (checked) {
       this.columns.push(column);
     } else {
@@ -72,7 +73,7 @@ export class ColumnsModifyDialogComponent implements OnInit {
   /**
    * Check if a column is selected
    */
-  isSelected(column: ApplicationColumn): boolean {
+  isSelected(column: ColumnKey<T>): boolean {
     return this.data.currentColumns.includes(column);
   }
 
@@ -80,7 +81,7 @@ export class ColumnsModifyDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  trackByColumn(_: number, column: ApplicationColumn): string {
-    return column;
+  trackByColumn(_: number, column: ColumnKey<T>): string {
+    return column.toString();
   }
 }

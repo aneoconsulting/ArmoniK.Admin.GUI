@@ -4,7 +4,7 @@ import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/ma
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { AutoRefreshDialogData } from '@app/applications/types';
+import { AutoRefreshDialogData } from '@app/types/dialog';
 
 @Component({
   selector: 'app-auto-refresh-dialog',

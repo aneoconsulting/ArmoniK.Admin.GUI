@@ -1,41 +1,14 @@
-import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
-import { SortDirection } from '@angular/material/sort';
+import { ApplicationRaw as GrpcApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
+import { ColumnKey, FieldKey } from '@app/types/data';
+import { Filter, FilterField } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 
-export type ApplicationColumn = keyof ApplicationRaw.AsObject | 'actions';
-
-export type FilterField = keyof ApplicationRaw.AsObject;
-
-export interface ModifyColumnsDialogData {
-  currentColumns: ApplicationColumn[]
-  availableColumns: ApplicationColumn[]
-}
-
-export interface Filter {
-  field: FilterField | null
-  value: string | null
-}
-
-export interface FiltersDialogData {
-  availableFiltersFields: FilterField[],
-  filters: Filter[]
-}
-
-// TODO: create a generic interface to use for filters
-export interface ListOptions<T extends string> {
-  pageIndex: number
-  pageSize: number
-  sort: {
-    active: T
-    direction: SortDirection
-  },
-  // TODO: remove '?'
-  filters?: {
-    [key in T]: string | null
-  }
-}
-
-export type ListApplicationsOptions = ListOptions<FilterField>;
-
-export interface AutoRefreshDialogData {
-  value: number
-}
+// TODO: rename type in order to have the same order that generics
+export type ApplicationRaw = GrpcApplicationRaw.AsObject;
+export type ApplicationRawColumn = ColumnKey<ApplicationRaw>;
+export type ApplicationRawKeyField = FieldKey<ApplicationRaw>;
+export type ApplicationRawFilterField = FilterField<ApplicationRaw>;
+export type ApplicationRawFilter = Filter<ApplicationRaw>;
+export type ApplicationRawListOptions = ListOptions<ApplicationRaw>;
+// Waiting to externalize the sort direction
+// type ApplicationRawSortDirection = SortDirection<ListApplicationsRequest.OrderDirection>
