@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { StorageService } from './storage.service';
 
 /**
  * Service to manage the storage for the table.
@@ -6,7 +7,7 @@ import { Injectable } from '@angular/core';
  */
 @Injectable()
 export class TableStorageService {
-  constructor(private _storage: Storage) {}
+  constructor(private _storage: StorageService) {}
 
   /**
    * Save data to the storage
@@ -18,8 +19,6 @@ export class TableStorageService {
     }
 
     this._storage.setItem(key, JSON.stringify(data));
-
-    // TODO: save every key to a list of keys in order to be able to manage storage (Create a service for storage management)
   }
 
 

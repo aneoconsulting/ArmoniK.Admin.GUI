@@ -17,7 +17,7 @@ export class TableService {
   private _optionsKey = 'options';
   private _filtersKey = 'filters';
 
-  constructor(private _window: Window, private _storage: Storage, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
+  constructor(private _window: Window, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
 
   autoRefreshTooltip(interval: number): string {
     if (interval === 0) {
@@ -136,7 +136,7 @@ export class TableService {
    */
   saveColumns(tableName: string, columns: string[]): void {
     const key = this._buildKey(tableName, this._columnsKey);
-    this._storage.setItem(key, JSON.stringify(columns));
+    this._tableStorageService.save(key, columns);
   }
 
   /**

@@ -17,4 +17,8 @@ export const routes: Routes = [
     path: 'results',
     loadChildren: () => import('./results/routes').then(mod => mod.RESULTS_ROUTES)
   },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/routes').then(mod => mod.SETTINGS_ROUTES)
+  },
 ];

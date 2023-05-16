@@ -15,6 +15,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
@@ -87,6 +88,7 @@ app-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    StorageService,
     UtilsService,
     TableStorageService,
     TableURLService,

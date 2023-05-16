@@ -50,6 +50,13 @@ import { map, shareReplay } from 'rxjs/operators';
             <span matListItemTitle> Results </span>
           </a>
         </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/settings" routerLinkActive="navbar-item-selected">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
+            <span matListItemTitle> Settings </span>
+          </a>
+        </mat-nav-list>
       </mat-sidenav>
       <mat-sidenav-content>
         <main>
