@@ -33,7 +33,7 @@ import { StorageService } from '@services/storage.service';
 
   <form (submit)="onSubmitStorage($event)">
     <ul *ngIf="keys.size; else noKeys">
-      <li *ngFor="let key of keys">
+      <li *ngFor="let key of keys; trackBy:trackByKey">
         <mat-checkbox [name]="key">
           {{ key }}
         </mat-checkbox>
@@ -143,6 +143,10 @@ export class IndexComponent implements OnInit {
       this.keys.delete(key);
       this._storageService.removeItem(key);
     }
+  }
+
+  trackByKey(index: number, key: string): string {
+    return key;
   }
 
   #sortKeys(keys: Set<string>): Set<string> {
