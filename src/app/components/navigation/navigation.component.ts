@@ -30,6 +30,13 @@ import { map, shareReplay } from 'rxjs/operators';
           [mode]="(isHandset$ | async) ? 'over' : 'side'"
           [opened]="(isHandset$ | async) === false">
         <mat-nav-list>
+          <a mat-list-item routerLink="/profile" routerLinkActive="navbar-item-selected">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="account_circle"></mat-icon>
+            <span matListItemTitle> Profile </span>
+          </a>
+        </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-nav-list>
           <a mat-list-item routerLink="/applications" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
             <span matListItemTitle> Applications </span>
