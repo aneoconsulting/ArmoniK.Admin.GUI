@@ -26,13 +26,8 @@ import { StorageService } from '@services/storage.service';
     Delete data stored in your browser by this application. This will reset behavior and settings to their default values.
   </p>
 
-  <mat-form-field class="search" appearance="outline">
-    <mat-label>Search a key</mat-label>
-    <input matInput placeholder="Search..."(input)="onSearchChange($event)">
-  </mat-form-field>
-
   <form (submit)="onSubmitStorage($event)">
-    <ul *ngIf="keys.size; else noKeys">
+    <ul *ngIf="keys.size">
       <li *ngFor="let key of keys; trackBy:trackByKey">
         <mat-checkbox [name]="key">
           {{ key }}
@@ -46,12 +41,6 @@ import { StorageService } from '@services/storage.service';
     </div>
   </form>
 </section>
-
-<ng-template #noKeys>
-  <p>
-    No keys found.
-  </p>
-</ng-template>
   `,
   styles: [`
 h2 {
@@ -109,16 +98,6 @@ export class IndexComponent implements OnInit {
     this.keys = this.#sortKeys(this._storageService.keys);
   }
 
-  onSearchChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-
-    if (!value) {
-      this.keys = this.#sortKeys(this._storageService.keys);
-    }
-
-    this.keys = this.#filterKeys(this._storageService.keys, value);
-  }
-
   onSubmitStorage(event: SubmitEvent): void {
     event.preventDefault();
 
@@ -154,12 +133,5 @@ export class IndexComponent implements OnInit {
     const sortedKeys = keysArray.sort();
 
     return new Set(sortedKeys);
-  }
-
-  #filterKeys(keys: Set<string>, value: string): Set<string> {
-    const keysArray = Array.from(keys);
-    const filteredKeys = keysArray.filter(key => key.includes(value));
-
-    return this.#sortKeys(new Set(filteredKeys));
   }
 }
