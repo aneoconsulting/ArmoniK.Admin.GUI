@@ -5,6 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { StorageService } from '@services/storage.service';
 
@@ -68,8 +69,10 @@ import { StorageService } from '@services/storage.service';
   </p>
 
   <form (submit)="onSubmitImport($event)">
+    <div class="file">
       <label for="file">File</label>
       <input id="file" type="file" accept="application/json" required>
+    </div>
 
     <div class="actions">
       <button mat-stroked-button type="reset">Reset</button>
@@ -117,7 +120,9 @@ section + section {
 }
 
 .import .file {
-  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 .import .actions {
@@ -140,7 +145,8 @@ section + section {
     MatCheckboxModule,
     MatInputModule,
     MatFormFieldModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSnackBarModule
   ]
 })
 export class IndexComponent implements OnInit {
@@ -148,6 +154,7 @@ export class IndexComponent implements OnInit {
 
   constructor(
     private _storageService: StorageService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -192,6 +199,12 @@ export class IndexComponent implements OnInit {
     anchor.href = url;
     anchor.download = `${date}-${id}-settings.json`;
     anchor.click();
+
+    this._snackBar.open('Settings exported', 'Dismiss', {
+      duration: 3000,
+      horizontalPosition: 'end',
+      panelClass: 'success'
+    });
   }
 
   onSubmitImport(event: SubmitEvent): void {
@@ -212,6 +225,21 @@ export class IndexComponent implements OnInit {
     const file = fileInput.files?.[0];
 
     if (!file) {
+      this._snackBar.open('No file selected', 'Dismiss', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        panelClass: 'error'
+      });
+      return;
+    }
+
+    if( file.type !== 'application/json' ) {
+      this._snackBar.open(`'${file.name}' is not a JSON file`, 'Dismiss', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        panelClass: 'error'
+      });
+      form.reset();
       return;
     }
 
@@ -221,6 +249,13 @@ export class IndexComponent implements OnInit {
       const data = reader.result as string;
       this._storageService.importData(data);
       this.keys = this.#sortKeys(this._storageService.keys);
+
+      this._snackBar.open('Settings imported', 'Dismiss', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        panelClass: 'success'
+      });
+
       form.reset();
     };
 
