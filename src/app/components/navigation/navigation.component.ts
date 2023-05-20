@@ -4,11 +4,13 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import pkg from '../../../../package.json';
 
 @Component({
   selector: 'app-navigation',
@@ -23,6 +25,23 @@ import { map, shareReplay } from 'rxjs/operators';
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>ArmoniK</span>
+      <div class="spacer"></div>
+      <button mat-button class="version" [matMenuTriggerFor]="menu">
+        <mat-icon matListItemIcon aria-hidden="true" fontIcon="arrow_drop_down"></mat-icon>
+        <span>
+          v{{ version }}
+        </span>
+      </button>
+      <mat-menu #menu="matMenu">
+        <a mat-menu-item [href]="'https://github.com/esoubiran-aneo/armonik-admin-gui/releases/v' + version" target="_blank" rel="noopener noreferrer">
+          <mat-icon matListItemIcon aria-hidden="true" fontIcon="update"></mat-icon>
+          <span>Changelog</span>
+        </a>
+        <a mat-menu-item href="https://esoubiran-aneo.github.io/armonik-admin-gui" target="_blank" rel="noopener">
+          <mat-icon matListItemIcon aria-hidden="true" fontIcon="help_outline"></mat-icon>
+          <span>Documentation</span>
+        </a>
+      </mat-menu>
     </mat-toolbar>
     <mat-sidenav-container autosize class="sidenav-container">
       <mat-sidenav #drawer class="sidenav"
@@ -64,6 +83,7 @@ import { map, shareReplay } from 'rxjs/operators';
             <span matListItemTitle> Settings </span>
           </a>
         </mat-nav-list>
+        <mat-divider></mat-divider>
       </mat-sidenav>
       <mat-sidenav-content>
         <main>
@@ -96,6 +116,10 @@ import { map, shareReplay } from 'rxjs/operators';
       background-color: rgba(0, 0, 0, 0.2);
     }
 
+    .spacer {
+      flex: 1 1 auto;
+    }
+
     main {
       padding: 20px 50px;
     }
@@ -109,10 +133,13 @@ import { map, shareReplay } from 'rxjs/operators';
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    MatMenuModule,
   ]
 })
 export class NavigationComponent {
+  version = pkg.version;
+
   private breakpointObserver = inject(BreakpointObserver);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
