@@ -60,6 +60,15 @@ export class StorageService implements Storage {
     return JSON.stringify(data);
   }
 
+  importData(data: string): void {
+    const parsedData = JSON.parse(data) as Record<string, string>;
+
+    for (const key in parsedData) {
+      this.setItem(key, parsedData[key]);
+    }
+  }
+
+
   #restoreKeys() {
     this.#keys = new Set(JSON.parse(this._localStorage.getItem(this.#keysStorageKey)?? '[]'));
   }

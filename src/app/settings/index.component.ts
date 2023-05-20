@@ -45,7 +45,7 @@ import { StorageService } from '@services/storage.service';
 <section class="export">
   <h2>
     <mat-icon matListItemIcon aria-hidden="true" fontIcon="file_download"></mat-icon>
-    Export your data
+    <span>Export your data</span>
   </h2>
 
   <p>
@@ -55,6 +55,27 @@ import { StorageService } from '@services/storage.service';
   <div class="actions">
     <button mat-flat-button color="primary" (click)="exportData()">Export</button>
   </div>
+</section>
+
+<section class="import">
+  <h2>
+    <mat-icon matListItemIcon aria-hidden="true" fontIcon="file_upload"></mat-icon>
+    <span>Import your data</span>
+  </h2>
+
+  <p>
+    Import your settings from a JSON file. This will overwrite your current settings.
+  </p>
+
+  <form (submit)="onSubmitImport($event)">
+      <label for="file">File</label>
+      <input id="file" type="file" accept="application/json" required>
+
+    <div class="actions">
+      <button mat-stroked-button type="reset">Reset</button>
+      <button mat-flat-button color="primary" type="submit">Import</button>
+    </div>
+  </form>
 </section>
   `,
   styles: [`
@@ -93,6 +114,18 @@ section + section {
 
 .export .actions {
   margin-top: 1rem;
+}
+
+.import .file {
+  width: 100%;
+}
+
+.import .actions {
+  margin-top: 1rem;
+
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
   `],
   standalone: true,
@@ -159,6 +192,39 @@ export class IndexComponent implements OnInit {
     anchor.href = url;
     anchor.download = `${date}-${id}-settings.json`;
     anchor.click();
+  }
+
+  onSubmitImport(event: SubmitEvent): void {
+    event.preventDefault();
+
+    const form = event.target as HTMLFormElement;
+
+    if (!form) {
+      return;
+    }
+
+    const fileInput = form.querySelector('input[type="file"]') as HTMLInputElement;
+
+    if (!fileInput) {
+      return;
+    }
+
+    const file = fileInput.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const data = reader.result as string;
+      this._storageService.importData(data);
+      this.keys = this.#sortKeys(this._storageService.keys);
+      form.reset();
+    };
+
+    reader.readAsText(file);
   }
 
   trackByKey(index: number, key: string): string {
