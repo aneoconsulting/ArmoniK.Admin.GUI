@@ -9,7 +9,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "material-angular": {
+    "armonik-admin-gui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -31,7 +31,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/material-angular",
+            "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -82,10 +82,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "material-angular:build:production"
+              "browserTarget": "armonik-admin-gui:build:production"
             },
             "development": {
-              "browserTarget": "material-angular:build:development"
+              "browserTarget": "armonik-admin-gui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -93,7 +93,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "material-angular:build"
+            "browserTarget": "armonik-admin-gui:build"
           }
         },
         "test": {
