@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { UserService } from '@services/user.service';
 import pkg from '../../../../package.json';
 
 @Component({
@@ -24,7 +25,11 @@ import pkg from '../../../../package.json';
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>ArmoniK</span>
+      <div class="title">
+        <span>ArmoniK</span>
+        <span> - </span>
+        <span class="greeting">{{ greeting() }}</span>
+      </div>
       <div class="spacer"></div>
       <button mat-button class="version" [matMenuTriggerFor]="menu">
         <mat-icon matListItemIcon aria-hidden="true" fontIcon="arrow_drop_down"></mat-icon>
@@ -94,35 +99,39 @@ import pkg from '../../../../package.json';
 
   `,
   styles: [`
-    .sidenav-container {
-      height: calc(100% - 64px);
-    }
+.sidenav-container {
+  height: calc(100% - 64px);
+}
 
-    .sidenav {
-      width: 200px;
-    }
+.sidenav {
+  width: 200px;
+}
 
-    .sidenav .mat-toolbar {
-      background: inherit;
-    }
+.sidenav .mat-toolbar {
+  background: inherit;
+}
 
-    .mat-toolbar.mat-primary {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
 
-    .navbar-item-selected {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
+.navbar-item-selected {
+  background-color: rgba(0, 0, 0, 0.2);
+}
 
-    .spacer {
-      flex: 1 1 auto;
-    }
+.spacer {
+  flex: 1 1 auto;
+}
 
-    main {
-      padding: 20px 50px;
-    }
+.greeting {
+  font-weight: normal;
+}
+
+main {
+  padding: 20px 50px;
+}
   `],
   standalone: true,
   imports: [
@@ -141,10 +150,23 @@ export class NavigationComponent {
   version = pkg.version;
 
   private breakpointObserver = inject(BreakpointObserver);
+  private userService = inject(UserService);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
+
+  greeting() {
+    const hour = new Date().getHours();
+    const username = this.userService.user ? this.userService.user.username : '';
+    if (hour < 12) {
+      return 'Good morning' + (username ? ', ' + username : '');
+    } else if (hour < 18) {
+      return 'Good afternoon' + (username ? ', ' + username : '');
+    } else {
+      return 'Good evening' + (username ? ', ' + username : '');
+    }
+  }
 }
