@@ -2,17 +2,19 @@ FROM node:lts-alpine as build
 
 WORKDIR /usr/src/app
 
-RUN npm install -g nx pnpm @antfu/ni
+RUN npm install -g pnpm @antfu/ni
 
 COPY package.json ./
 COPY pnpm-lock.yaml ./
-COPY decorate-angular-cli.js ./
+COPY .npmrc ./
 
 RUN nci
 
-COPY . .
+COPY src ./src
+COPY tsconfig.* ./
+COPY angular.json ./
 
-RUN nr build --baseHref=/admin/
+RUN nr build --base-href=/admin/en/
 
 FROM nginx:stable as production
 
@@ -20,9 +22,10 @@ WORKDIR /usr/share/nginx/html
 
 RUN rm -rf ./*
 
-COPY --from=build /usr/src/app/nginx/nginx.default.conf /etc/nginx/nginx.conf
-COPY --from=build /usr/src/app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /usr/src/app/dist/** .
+COPY nginx/nginx.default.conf /etc/nginx/nginx.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=build /usr/src/app/dist/ .
 
 RUN groupadd --gid 5000 armonik && useradd --home-dir /home/armonik --create-home --uid 5000 --gid 5000 --shell /bin/sh armonik
 USER armonik

@@ -37,6 +37,9 @@ dependencies:
   '@angular/router':
     specifier: ^16.0.1
     version: 16.0.1(@angular/common@16.0.1)(@angular/core@16.0.1)(@angular/platform-browser@16.0.1)(rxjs@7.8.1)
+  '@ngx-grpc/common':
+    specifier: ^3.1.1
+    version: 3.1.1(google-protobuf@3.21.2)(rxjs@7.8.1)
   '@ngx-grpc/core':
     specifier: ^3.1.1
     version: 3.1.1(@angular/core@16.0.1)(@ngx-grpc/common@3.1.1)(rxjs@7.8.1)
