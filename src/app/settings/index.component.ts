@@ -41,6 +41,21 @@ import { StorageService } from '@services/storage.service';
     </div>
   </form>
 </section>
+
+<section class="export">
+  <h2>
+    <mat-icon matListItemIcon aria-hidden="true" fontIcon="file_download"></mat-icon>
+    Export your data
+  </h2>
+
+  <p>
+    Export your settings as a JSON file. This file can be imported later to restore your settings.
+  </p>
+
+  <div class="actions">
+    <button mat-flat-button color="primary" (click)="exportData()">Export</button>
+  </div>
+</section>
   `,
   styles: [`
 h2 {
@@ -56,7 +71,7 @@ h2 {
 
 .storage ul {
   list-style-type: none;
-  padding: 0.5rem;
+  padding: 0;
   margin: 0;
 
   display: grid;
@@ -65,11 +80,19 @@ h2 {
 }
 
 .storage .actions {
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 
   display: flex;
   flex-direction: row;
   gap: 1rem;
+}
+
+section + section {
+  margin-top: 2rem;
+}
+
+.export .actions {
+  margin-top: 1rem;
 }
   `],
   standalone: true,
@@ -122,6 +145,20 @@ export class IndexComponent implements OnInit {
       this.keys.delete(key);
       this._storageService.removeItem(key);
     }
+  }
+
+  exportData(): void {
+    const data = this._storageService.exportData();
+
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const date = new Date().toISOString().slice(0, 10);
+    const id = new Date().getTime();
+
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${date}-${id}-settings.json`;
+    anchor.click();
   }
 
   trackByKey(index: number, key: string): string {

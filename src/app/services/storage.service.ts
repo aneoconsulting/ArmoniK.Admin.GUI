@@ -46,6 +46,20 @@ export class StorageService implements Storage {
     this.#saveKeys();
   }
 
+  exportData(): string {
+    const data = {} as Record<string, string>;
+
+    for (const key of this.#keys) {
+      const item = this._localStorage.getItem(key);
+
+      if (item) {
+        data[key] = item;
+      }
+    }
+
+    return JSON.stringify(data);
+  }
+
   #restoreKeys() {
     this.#keys = new Set(JSON.parse(this._localStorage.getItem(this.#keysStorageKey)?? '[]'));
   }
