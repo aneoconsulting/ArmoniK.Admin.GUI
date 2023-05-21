@@ -1,22 +1,25 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-actions-toolbar',
+  selector: 'app-actions-toolbar-group',
   template: `
-<div class="actions-toolbar">
+<div class="group">
   <ng-content></ng-content>
 </div>
   `,
   styles: [`
-.actions-toolbar {
+.group {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+}
+
+.group > ::ng-deep * + * {
+  margin-left: 1rem;
 }
   `],
   standalone: true,
   providers: [],
   imports: []
 })
-export class ActionsToolbarComponent {}
+export class ActionsToolbarGroupComponent {}

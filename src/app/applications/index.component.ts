@@ -12,6 +12,7 @@ import { Observable, Subject, Subscription, catchError, map, merge, of, startWit
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -34,7 +35,7 @@ import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, Application
 
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-actions-toolbar
+    <app-table-actions-toolbar
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [displayedColumns]="displayedColumns"
@@ -44,7 +45,7 @@ import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, Application
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()">
-    </app-actions-toolbar>
+    </app-table-actions-toolbar>
   </mat-toolbar-row>
 
   <mat-toolbar-row>
@@ -82,7 +83,7 @@ import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, Application
 </app-table-container>
   `,
   styles: [`
-app-actions-toolbar {
+app-table-actions-toolbar {
   flex-grow: 1;
 }
   `],
@@ -103,7 +104,7 @@ app-actions-toolbar {
     RouterLink,
     DragDropModule,
     PageHeaderComponent,
-    ActionsToolbarComponent,
+    TableActionsToolbarComponent,
     FiltersToolbarComponent,
     TableContainerComponent,
     TableLoadingComponent,

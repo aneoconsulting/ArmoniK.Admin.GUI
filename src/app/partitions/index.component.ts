@@ -13,6 +13,7 @@ import { AppIndexComponent } from '@app/types/components';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -35,7 +36,7 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
 
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-actions-toolbar
+    <app-table-actions-toolbar
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [displayedColumns]="displayedColumns"
@@ -45,7 +46,7 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()">
-    </app-actions-toolbar>
+    </app-table-actions-toolbar>
   </mat-toolbar-row>
 
   <mat-toolbar-row>
@@ -96,7 +97,7 @@ import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilte
 <!-- TODO: Create the settings page -->
   `,
   styles: [`
-app-actions-toolbar {
+app-table-actions-toolbar {
   flex-grow: 1;
 }
   `],
@@ -117,7 +118,7 @@ app-actions-toolbar {
     RouterLink,
     DragDropModule,
     PageHeaderComponent,
-    ActionsToolbarComponent,
+    TableActionsToolbarComponent,
     FiltersToolbarComponent,
     TableContainerComponent,
     TableLoadingComponent,

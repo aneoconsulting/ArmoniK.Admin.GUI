@@ -23,6 +23,7 @@ import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawKeyField, ResultRawListOptions } from './types';
+import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 
 @Component({
   selector: 'app-results-index',
@@ -34,7 +35,7 @@ import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, Resu
 
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-actions-toolbar
+    <app-table-actions-toolbar
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [displayedColumns]="displayedColumns"
@@ -44,7 +45,7 @@ import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, Resu
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()">
-    </app-actions-toolbar>
+    </app-table-actions-toolbar>
   </mat-toolbar-row>
 
   <mat-toolbar-row>
@@ -82,7 +83,7 @@ import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, Resu
 </app-table-container>
   `,
   styles: [`
-app-actions-toolbar {
+app-table-actions-toolbar {
   flex-grow: 1;
 }
   `],
@@ -102,7 +103,7 @@ app-actions-toolbar {
     NgFor,
     DragDropModule,
     PageHeaderComponent,
-    ActionsToolbarComponent,
+    TableActionsToolbarComponent,
     FiltersToolbarComponent,
     TableContainerComponent,
     TableLoadingComponent,
