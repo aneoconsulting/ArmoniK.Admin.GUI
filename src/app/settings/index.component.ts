@@ -7,21 +7,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { PageSectionHeaderComponent } from '@components/page-section-header.component';
+import { PageSectionComponent } from '@components/page-section.component';
 import { StorageService } from '@services/storage.service';
 
 @Component({
   selector: 'app-settings-index',
   template: `
+  <!-- TODO: explain that settings are stored locally. -->
 <app-page-header>
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
   <span matListItemTitle> Settings </span>
 </app-page-header>
 
-<section class="storage">
-  <h2>
-    <mat-icon matListItemIcon aria-hidden="true" fontIcon="storage"></mat-icon>
+<app-page-section class="storage">
+  <app-page-section-header icon="storage">
     Storage
-  </h2>
+  </app-page-section-header>
 
   <p>
     Delete data stored in your browser by this application. This will reset behavior and settings to their default values.
@@ -41,13 +43,12 @@ import { StorageService } from '@services/storage.service';
       <button mat-flat-button color="warn" type="submit">Clear</button>
     </div>
   </form>
-</section>
+</app-page-section>
 
-<section class="export">
-  <h2>
-    <mat-icon matListItemIcon aria-hidden="true" fontIcon="file_download"></mat-icon>
-    <span>Export your data</span>
-  </h2>
+<app-page-section class="export">
+  <app-page-section-header icon="file_download">
+    Export your data
+  </app-page-section-header>
 
   <p>
     Export your settings as a JSON file. This file can be imported later to restore your settings.
@@ -56,13 +57,12 @@ import { StorageService } from '@services/storage.service';
   <div class="actions">
     <button mat-flat-button color="primary" (click)="exportData()">Export</button>
   </div>
-</section>
+</app-page-section>
 
-<section class="import">
-  <h2>
-    <mat-icon matListItemIcon aria-hidden="true" fontIcon="file_upload"></mat-icon>
-    <span>Import your data</span>
-  </h2>
+<app-page-section class="import">
+  <app-page-section-header icon="file_upload">
+    Import your data
+  </app-page-section-header>
 
   <p>
     Import your settings from a JSON file. This will overwrite your current settings.
@@ -79,18 +79,12 @@ import { StorageService } from '@services/storage.service';
       <button mat-flat-button color="primary" type="submit">Import</button>
     </div>
   </form>
-</section>
+</app-page-section>
   `,
   styles: [`
-h2 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-}
-
-.storage .search {
-  margin-top: 1rem;
+app-page-section + app-page-section {
+  display: block;
+  margin-top: 2rem;
 }
 
 .storage ul {
@@ -103,29 +97,13 @@ h2 {
   column-gap: 0.5rem;
 }
 
-.storage .actions {
-  margin-top: 1rem;
-
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-}
-
-section + section {
-  margin-top: 2rem;
-}
-
-.export .actions {
-  margin-top: 1rem;
-}
-
 .import .file {
   display: flex;
   flex-direction: row;
   gap: 1rem;
 }
 
-.import .actions {
+.actions {
   margin-top: 1rem;
 
   display: flex;
@@ -141,6 +119,8 @@ section + section {
     NgFor,
     NgIf,
     PageHeaderComponent,
+    PageSectionComponent,
+    PageSectionHeaderComponent,
     MatIconModule,
     MatCheckboxModule,
     MatInputModule,

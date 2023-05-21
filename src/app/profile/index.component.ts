@@ -2,6 +2,8 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { PageSectionHeaderComponent } from '@components/page-section-header.component';
+import { PageSectionComponent } from '@components/page-section.component';
 import { UserService } from '@services/user.service';
 
 @Component({
@@ -19,11 +21,10 @@ import { UserService } from '@services/user.service';
   This is your profile page. You can see your user data below.
 </p>
 
-<section>
-  <h2>
-    <mat-icon matListItemIcon aria-hidden="true" fontIcon="groups"></mat-icon>
-    <span> Roles </span>
-  </h2>
+<app-page-section>
+  <app-page-section-header icon="group">
+    Roles
+  </app-page-section-header>
 
   <ng-container *ngIf="user.roles && user.roles.length; else noRoles">
     <ul>
@@ -34,14 +35,12 @@ import { UserService } from '@services/user.service';
   </ng-container>
 
   <!-- TODO: Add a button to read more about permissions -->
-</section>
+</app-page-section>
 
-<!-- TODO: Create a header section -->
-<section>
-  <h2>
-    <mat-icon matListItemIcon aria-hidden="true" fontIcon="lock"></mat-icon>
-    <span> Permissions </span>
-  </h2>
+<app-page-section>
+  <app-page-section-header icon="lock">
+    Permissions
+  </app-page-section-header>
 
   <ng-container *ngIf="user.permissions && user.permissions.length; else noPermissions">
     <!-- TODO: Create a better organization with related icon in application -->
@@ -53,7 +52,7 @@ import { UserService } from '@services/user.service';
   </ng-container>
 
   <!-- TODO: Add a button to read more about permissions -->
-</section>
+</app-page-section>
 
 <ng-template #noRoles>
   <p>
@@ -68,12 +67,6 @@ import { UserService } from '@services/user.service';
 </ng-template>
   `,
   styles: [`
-h2 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-}
   `],
   standalone: true,
   providers: [],
@@ -81,6 +74,8 @@ h2 {
     NgFor,
     NgIf,
     PageHeaderComponent,
+    PageSectionComponent,
+    PageSectionHeaderComponent,
     MatIconModule,
   ]
 })
