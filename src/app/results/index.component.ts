@@ -12,6 +12,7 @@ import { AppIndexComponent } from '@app/types/components';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -23,7 +24,6 @@ import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawKeyField, ResultRawListOptions } from './types';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 
 @Component({
   selector: 'app-results-index',
