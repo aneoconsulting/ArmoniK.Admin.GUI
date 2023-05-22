@@ -66,8 +66,8 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()">Cancel</button>
-      <button mat-flat-button [mat-dialog-close]="filters" color="primary">Valider</button>
+      <button mat-button (click)="onNoClick()"> Cancel </button>
+      <button mat-flat-button [mat-dialog-close]="filters" color="primary"> Confirm </button>
     </mat-dialog-actions>
     `,
   styles: [`

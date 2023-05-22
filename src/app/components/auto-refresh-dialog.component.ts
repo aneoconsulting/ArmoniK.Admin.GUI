@@ -37,8 +37,8 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()">Cancel</button>
-      <button mat-flat-button [mat-dialog-close]="value" color="primary">Valider</button>
+      <button mat-button (click)="onNoClick()"> Cancel </button>
+      <button mat-flat-button [mat-dialog-close]="value" color="primary"> Confirm </button>
     </mat-dialog-actions>
   `,
   styles: [''],
