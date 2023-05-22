@@ -209,7 +209,7 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
     this.dialogRef.close();
   }
 
-  trackByFilter(index: number, _: Filter<T>) {
+  trackByFilter(index: number) {
     return index;
   }
 

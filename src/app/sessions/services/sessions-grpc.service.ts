@@ -35,7 +35,6 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
   list$(options: SessionRawListOptions, filters: SessionRawFilter[]): Observable<ListSessionsResponse> {
     const findFilter = this._utilsService.findFilter;
     const convertFilterValue = this._utilsService.convertFilterValue;
-    const convertFilterValueToNumber = this._utilsService.convertFilterValueToNumber;
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,

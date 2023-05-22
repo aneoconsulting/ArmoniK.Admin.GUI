@@ -4,7 +4,7 @@ import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationRaw, ApplicationRawFilter, ApplicationRawFieldKey, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
@@ -29,7 +29,6 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
   list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter[]): Observable<ListApplicationsResponse> {
     const findFilter = this._utilsService.findFilter;
     const convertFilterValue = this._utilsService.convertFilterValue;
-    const convertFilterValueToNumber = this._utilsService.convertFilterValueToNumber;
 
     const listPartitionsRequest = new ListApplicationsRequest({
       page: options.pageIndex,
@@ -49,7 +48,7 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
     return this._applicationsClient.listApplications(listPartitionsRequest);
   }
 
-  get$(id: string) :Observable<never> {
+  get$(): Observable<never> {
     // TODO: Need to upstream to ArmoniK API
     throw new Error('Method not implemented.');
     // const getPartitionRequest = new GetPartitionRequest({

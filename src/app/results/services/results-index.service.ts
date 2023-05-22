@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ColumnKey } from '@app/types/data';
-import { Filter } from '@app/types/filters';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
@@ -29,7 +28,7 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     },
     {
       field: 'status',
-      // TODO: Create a select filter (maybe with some default options)
+      // TODO: Create a select filter (with some default options written in code)
       type: 'text',
     },
     {

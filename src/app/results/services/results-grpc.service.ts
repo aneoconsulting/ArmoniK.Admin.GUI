@@ -1,11 +1,10 @@
 import { ListResultsRequest, ListResultsResponse, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { GrpcMessage } from '@ngx-grpc/common';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import {  ResultRaw, ResultRawFilter, ResultRawFieldKey, ResultRawListOptions } from '../types';
+import {  ResultRaw, ResultRawFieldKey, ResultRawFilter, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
@@ -32,7 +31,6 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
   list$(options: ResultRawListOptions, filters: ResultRawFilter[]): Observable<ListResultsResponse> {
     const findFilter = this._utilsService.findFilter;
     const convertFilterValue = this._utilsService.convertFilterValue;
-    const convertFilterValueToNumber = this._utilsService.convertFilterValueToNumber;
 
     const listResultRequest = new ListResultsRequest({
       page: options.pageIndex,
@@ -54,7 +52,7 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
     return this._resultsClient.listResults(listResultRequest);
   }
 
-  get$(id: string): Observable<never> {
+  get$(): Observable<never> {
     // TODO: Not available in ArmoniK.Api.Angular
     throw new Error('Method not implemented.');
   }

@@ -10,7 +10,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -24,7 +23,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawFieldKey, PartitionRawListOptions } from './types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -90,11 +89,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFi
   <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of partitions">
     </mat-paginator>
 </app-table-container>
-
-<!-- TODO: Create pages to view only one item -->
-<!-- TODO: Add icon before page title -->
-<!-- TODO: Create folders in components folder -->
-<!-- TODO: Create the settings page -->
   `,
   styles: [`
 app-table-actions-toolbar {

@@ -4,7 +4,7 @@ import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import { PartitionRaw, PartitionRawFilter, PartitionRawFieldKey, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawFieldKey, PartitionRawFilter, PartitionRawListOptions } from '../types';
 
 @Injectable()
 export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {

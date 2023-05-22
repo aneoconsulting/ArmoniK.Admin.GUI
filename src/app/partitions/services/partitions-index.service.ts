@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ListOptions } from '@app/types/options';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
