@@ -14,11 +14,14 @@ import { StorageService } from '@services/storage.service';
 @Component({
   selector: 'app-settings-index',
   template: `
-  <!-- TODO: explain that settings are stored locally. -->
 <app-page-header>
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
   <span matListItemTitle> Settings </span>
 </app-page-header>
+
+<p>
+  Settings are stored in your browser. They are not synced across devices. But you can export and import them manually. This is useful if you want to use the same settings on multiple devices or browsers. You can also create presets and switch between them.
+</p>
 
 <app-page-section class="storage">
   <app-page-section-header icon="storage">
