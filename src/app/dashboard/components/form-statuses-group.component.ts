@@ -15,7 +15,7 @@ import { StatusLabeled, TasksStatusGroup } from '../types';
 <form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
   <mat-dialog-content>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field subscriptSizing="dynamic" appearance="outline">
       <mat-label for="name"> Name </mat-label>
       <input matInput id="name" type="text" formControlName="name" placeholder="Name of your group" required>
        <mat-error *ngIf="groupForm.get('name')?.hasError('required')">
@@ -28,11 +28,13 @@ import { StatusLabeled, TasksStatusGroup } from '../types';
       <input matInput id="color" type="color" formControlName="color" placeholder="color of your group">
     </mat-form-field>
 
-    <h3> Statuses </h3>
-    <div id="statuses">
-      <mat-checkbox *ngFor="let status of statuses;trackBy:trackByStatus" [value]="status.value" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
-        {{ status.name }}
-      </mat-checkbox>
+    <div class="statuses">
+      <h3> Statuses </h3>
+      <div class="inputs">
+        <mat-checkbox *ngFor="let status of statuses;trackBy:trackByStatus" [value]="status.value" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
+          {{ status.name }}
+        </mat-checkbox>
+      </div>
     </div>
   </mat-dialog-content>
 
@@ -45,19 +47,20 @@ import { StatusLabeled, TasksStatusGroup } from '../types';
   styles: [`
 mat-dialog-content {
   padding-top: 0!important;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 1rem;
-
   overflow: visible!important;
-}
 
-#statuses {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.statuses {
+  grid-column: 1 / span 2;
+}
+
+.statuses .inputs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
   `],

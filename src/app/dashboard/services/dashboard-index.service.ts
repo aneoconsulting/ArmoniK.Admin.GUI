@@ -6,17 +6,17 @@ import { TasksStatusGroup } from '../types';
 @Injectable()
 export class DashboardIndexService {
   readonly statusValuesToLabels: Record<TaskStatus, string> = {
-    [TaskStatus.TASK_STATUS_COMPLETED]: 'Finished',
+    [TaskStatus.TASK_STATUS_UNSPECIFIED]: 'Unspecified',
+    [TaskStatus.TASK_STATUS_DISPATCHED]: 'Dispatched',
+    [TaskStatus.TASK_STATUS_CREATING]: 'Creating',
+    [TaskStatus.TASK_STATUS_SUBMITTED]: 'Submitted',
     [TaskStatus.TASK_STATUS_PROCESSING]: 'Processing',
     [TaskStatus.TASK_STATUS_PROCESSED]: 'Processed',
     [TaskStatus.TASK_STATUS_CANCELLING]: 'Cancelling',
     [TaskStatus.TASK_STATUS_CANCELLED]: 'Cancelled',
-    [TaskStatus.TASK_STATUS_DISPATCHED]: 'Dispatched',
-    [TaskStatus.TASK_STATUS_CREATING]: 'Creating',
-    [TaskStatus.TASK_STATUS_SUBMITTED]: 'Submitted',
+    [TaskStatus.TASK_STATUS_COMPLETED]: 'Finished',
     [TaskStatus.TASK_STATUS_ERROR]: 'Error',
     [TaskStatus.TASK_STATUS_TIMEOUT]: 'Timeout',
-    [TaskStatus.TASK_STATUS_UNSPECIFIED]: 'Unspecified',
   };
 
   readonly defaultStatusGroups: TasksStatusGroup[] = [
@@ -51,9 +51,15 @@ export class DashboardIndexService {
   #dashboardStorageService = inject(DashboardStorageService);
 
   statuses(): { value: string, name: string }[] {
-    const keys = Object.keys(this.statusValuesToLabels);
+    const values = Object.values(this.statusValuesToLabels).sort();
+    const keys = Object.keys(this.statusValuesToLabels).sort();
+    const sortedKeys = values.map((value) => {
+      return keys.find((key) => {
+        return this.statusValuesToLabels[Number(key) as TaskStatus] === value;
+      });
+    });
 
-    return keys.map((key) => {
+    return (sortedKeys.filter(Boolean) as string[]).map((key) => {
       const status = Number(key) as TaskStatus;
       return {
         value: key,
