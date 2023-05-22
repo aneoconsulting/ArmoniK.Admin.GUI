@@ -94,11 +94,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
   <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of sessions">
     </mat-paginator>
 </app-table-container>
-
-<!-- TODO: Create pages to view only one item -->
-<!-- TODO: Add icon before page title -->
-<!-- TODO: Create folders in components folder -->
-<!-- TODO: Create the settings page -->
   `,
   styles: [`
 app-table-actions-toolbar {
