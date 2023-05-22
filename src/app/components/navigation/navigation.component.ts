@@ -61,6 +61,13 @@ import pkg from '../../../../package.json';
         </mat-nav-list>
         <mat-divider></mat-divider>
         <mat-nav-list>
+          <a mat-list-item routerLink="/dashboard" routerLinkActive="navbar-item-selected">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="dashboard"></mat-icon>
+            <span matListItemTitle> Dashboard </span>
+          </a>
+        </mat-nav-list>
+        <mat-divider></mat-divider>
+        <mat-nav-list>
           <a mat-list-item routerLink="/applications" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
             <span matListItemTitle> Applications </span>

@@ -15,7 +15,6 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         throw new Error('No user');
       }
       userService.user = data.user;
-      console.log('initializeAppFactory', userService.user);
     }),
     catchError((err) => {
       throw err;

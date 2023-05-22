@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadChildren: () => import('./profile/routes').then(mod => mod.PROFILE_ROUTES)
   },
   {
+    path: 'dashboard',
+    loadChildren: () => import('./dashboard/routes').then(mod => mod.DASHBOARD_ROUTES)
+  },
+  {
     path: 'applications',
     loadChildren: () => import('./applications/routes').then(mod => mod.APPLICATIONS_ROUTES)
   },

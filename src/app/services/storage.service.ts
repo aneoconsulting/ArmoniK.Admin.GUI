@@ -40,6 +40,7 @@ export class StorageService implements Storage {
   }
 
   setItem(key: string, value: string): void {
+    // TODO: accept object and convert it to string (like in table-storage.service.ts) (and remove the table-storage.service.ts file)
     this._localStorage.setItem(key, value);
 
     this.#keys.add(key);

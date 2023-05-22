@@ -19,6 +19,7 @@ export class TableService {
 
   constructor(private _window: Window, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
 
+  // TODO: Move this function to the autorefresh service
   autoRefreshTooltip(interval: number): string {
     if (interval === 0) {
       return 'Auto-refresh is disabled';
@@ -157,6 +158,7 @@ export class TableService {
   /**
    * Build the key to store data in local storage
    */
+  // TODO: move to a utils service (buildStorageKey)
   private _buildKey(tableName: string, key: string): string {
     return `${tableName}_${key}`;
   }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.component';
 
@@ -18,6 +18,7 @@ import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.comp
   standalone: true,
   imports: [
     AutoRefreshButtonComponent,
+    MatDialogModule,
     MatButtonModule,
     MatIconModule,
   ]
