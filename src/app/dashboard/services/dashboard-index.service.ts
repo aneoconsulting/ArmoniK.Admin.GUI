@@ -1,6 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { StorageService } from '@services/storage.service';
 import { DashboardStorageService } from './dashboard-storage.service';
 import { TasksStatusGroup } from '../types';
 
@@ -20,7 +19,7 @@ export class DashboardIndexService {
     [TaskStatus.TASK_STATUS_UNSPECIFIED]: 'Unspecified',
   };
 
-  readonly defaultCountersGroup: TasksStatusGroup[] = [
+  readonly defaultStatusGroups: TasksStatusGroup[] = [
     {
       name: 'Finished',
       color: '#00ff00',
@@ -51,16 +50,29 @@ export class DashboardIndexService {
 
   #dashboardStorageService = inject(DashboardStorageService);
 
+  statuses(): { value: string, name: string }[] {
+    const keys = Object.keys(this.statusValuesToLabels);
+
+    return keys.map((key) => {
+      const status = Number(key) as TaskStatus;
+      return {
+        value: key,
+        name: this.statusValuesToLabels[status]
+      };
+    });
+  }
+
   getStatusLabel(status: TaskStatus): string {
     return this.statusValuesToLabels[status];
   }
 
-
-  // TODO: Rename method
-  restoreCountersGroup(): TasksStatusGroup[] {
-    return this.defaultCountersGroup;
+  restoreStatusGroups(): TasksStatusGroup[] {
+    return this.#dashboardStorageService.restoreStatusGroups() ?? this.defaultStatusGroups;
   }
-  // TODO: Must create a save method
+
+  saveStatusGroups(groups: TasksStatusGroup[]) {
+    this.#dashboardStorageService.saveStatusGroups(groups);
+  }
 
   restoreIntervalValue(): number {
     const storedValue = this.#dashboardStorageService.restoreInterval();

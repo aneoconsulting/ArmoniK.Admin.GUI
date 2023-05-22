@@ -2,6 +2,7 @@ import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -17,6 +18,7 @@ import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { StorageService } from '@services/storage.service';
+import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
 import { StatusGroupCardComponent } from './components/StatusGroupCard.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
@@ -50,9 +52,7 @@ import { StatusCount, TasksStatusGroup } from './types';
         </button>
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="onToggleGroupsHeader()">Toggle Groups Header</button>
-          <!-- TODO: Reorganize, rename and delete groups and status (in a modal) -->
-          <!-- <button mat-menu-item (click)="onResetColumns()">Reset Columns</button>
-          <button mat-menu-item (click)="onResetFilters()">Reset Filters</button> -->
+          <button mat-menu-item (click)="onManageGroupsDialog()">Manage Groups</button>
         </mat-menu>
       </app-actions-toolbar-group>
     </app-actions-toolbar>
@@ -109,6 +109,7 @@ app-actions-toolbar {
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
     StatusGroupCardComponent,
+    MatDialogModule,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
@@ -135,13 +136,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription = new Subscription();
 
   constructor(
+    private _dialog: MatDialog,
     private _taskGrpcService: TaskGrpcService,
     private _dashboardIndexService: DashboardIndexService,
     private _autoRefreshService: AutoRefreshService
   ) {}
 
   ngOnInit(): void {
-    this.statusGroups = this._dashboardIndexService.restoreCountersGroup();
+    this.statusGroups = this._dashboardIndexService.restoreStatusGroups();
 
     this.intervalValue = this._dashboardIndexService.restoreIntervalValue();
     this.hideGroupHeaders = this._dashboardIndexService.restoreHideGroupsHeader();
@@ -169,7 +171,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
 
 
   autoRefreshTooltip(): string {
@@ -200,7 +201,21 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this._dashboardIndexService.saveHideGroupsHeader(this.hideGroupHeaders);
   }
 
+  onManageGroupsDialog() {
+    const dialogRef = this._dialog.open(ManageGroupsDialogComponent, {
+      data: {
+        groups: this.statusGroups,
+      }
+    });
 
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
 
+      this.statusGroups = result;
+      this._dashboardIndexService.saveStatusGroups(this.statusGroups);
+    });
+  }
 
 }

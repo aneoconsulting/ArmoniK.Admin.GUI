@@ -23,6 +23,7 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 
   <mat-dialog-actions align="end">
     <button mat-button (click)="onNoClick()">Cancel</button>
+    <!-- FIXME: Incorrect language -->
     <button mat-flat-button [mat-dialog-close]="columns" color="primary">Valider</button>
   </mat-dialog-actions>
   `,

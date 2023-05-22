@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { StorageService } from '@services/storage.service';
+import { TasksStatusGroup } from '../types';
 
 @Injectable()
 export class DashboardStorageService {
@@ -32,6 +33,21 @@ export class DashboardStorageService {
 
     if (hide) {
       return hide === 'true';
+    }
+
+    return null;
+  }
+
+  saveStatusGroups(groups: TasksStatusGroup[]) {
+    // TODO: remove the stringify when storage service will support objects
+    this.#storage.setItem(this.#buildKey(this.#key, 'status_groups'), JSON.stringify(groups));
+  }
+
+  restoreStatusGroups(): TasksStatusGroup[] | null {
+    const groups = this.#storage.getItem(this.#buildKey(this.#key, 'status_groups'));
+
+    if (groups) {
+      return JSON.parse(groups);
     }
 
     return null;
