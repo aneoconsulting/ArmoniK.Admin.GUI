@@ -7,7 +7,7 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { StatusLabeled, TasksStatusGroup } from '../types';
+import { StatusLabeled, TasksStatusesGroup } from '../types';
 
 @Component({
   selector: 'app-form-statuses-group',
@@ -79,11 +79,11 @@ mat-dialog-content {
   ]
 })
 export class FormStatusesGroupComponent implements OnInit {
-  @Input() group: TasksStatusGroup | null = null;
+  @Input() group: TasksStatusesGroup | null = null;
   @Input({ required: true }) statuses: { name: string, value: string }[] = [];
 
   @Output() cancelChange = new EventEmitter<void>();
-  @Output() submitChange = new EventEmitter<TasksStatusGroup>();
+  @Output() submitChange = new EventEmitter<TasksStatusesGroup>();
 
   groupForm = new FormGroup({
     name: new FormControl('', [
@@ -105,7 +105,7 @@ export class FormStatusesGroupComponent implements OnInit {
         return;
       }
 
-      for (const status of this.group.status) {
+      for (const status of this.group.statuses) {
         statuses.push(new FormControl(status));
       }
     }
@@ -116,7 +116,7 @@ export class FormStatusesGroupComponent implements OnInit {
       return false;
     }
 
-    return this.group.status.includes(Number(status.value) as TaskStatus);
+    return this.group.statuses.includes(Number(status.value) as TaskStatus);
   }
 
 
@@ -142,10 +142,10 @@ export class FormStatusesGroupComponent implements OnInit {
   }
 
   onSubmit() {
-    const result = {
+    const result: TasksStatusesGroup = {
       name: this.groupForm.value.name ?? '',
       color: this.groupForm.value.color ?? '',
-      status: this.groupForm.value.statuses?.map((status: string) => Number(status) as TaskStatus) ?? []
+      statuses: this.groupForm.value.statuses?.map((status: string) => Number(status) as TaskStatus) ?? []
     };
 
     this.submitChange.emit(result);

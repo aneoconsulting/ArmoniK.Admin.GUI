@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ManageGroupsDialogData, TasksStatusGroup } from '@app/dashboard/types';
+import { ManageGroupsDialogData, TasksStatusesGroup } from '@app/dashboard/types';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { StorageService } from '@services/storage.service';
@@ -48,9 +48,9 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
       </div>
       <ul cdkDropList
           (cdkDropListDropped)="drop($event)"
-          [cdkDropListData]="group.status"
+          [cdkDropListData]="group.statuses"
         >
-        <li *ngFor="let status of group.status" cdkDrag>
+        <li *ngFor="let status of group.statuses" cdkDrag>
           <mat-icon aria-hidden="true" fontIcon="drag_indicator"></mat-icon>
           <span>{{ getStatusLabel(status) }}</span>
         </li>
@@ -162,7 +162,7 @@ ul {
   ]
 })
 export class ManageGroupsDialogComponent implements OnInit {
-  groups: TasksStatusGroup[] = [];
+  groups: TasksStatusesGroup[] = [];
 
   #dialog = inject(MatDialog);
   #dashboardIndexService = inject(DashboardIndexService);
@@ -176,7 +176,7 @@ export class ManageGroupsDialogComponent implements OnInit {
     this.groups = [...this.data.groups.map(group => {
       return {
         ...group,
-        status: [...group.status]
+        status: [...group.statuses]
       };
     })
     ];
@@ -200,7 +200,7 @@ export class ManageGroupsDialogComponent implements OnInit {
   }
 
   openAddStatusGroupModal(): void {
-    const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusGroup> = this.#dialog.open(AddStatusesGroupDialogComponent, {
+    const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup> = this.#dialog.open(AddStatusesGroupDialogComponent, {
       data: {
         statuses: this.#dashboardIndexService.statuses(),
       }
@@ -213,8 +213,8 @@ export class ManageGroupsDialogComponent implements OnInit {
     });
   }
 
-  openEditStatusGroupModal(group: TasksStatusGroup): void {
-    const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusGroup> = this.#dialog.open(EditStatusesGroupDialogComponent, {
+  openEditStatusGroupModal(group: TasksStatusesGroup): void {
+    const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup> = this.#dialog.open(EditStatusesGroupDialogComponent, {
       data: {
         group,
         statuses: this.#dashboardIndexService.statuses(),
@@ -231,7 +231,7 @@ export class ManageGroupsDialogComponent implements OnInit {
     });
   }
 
-  onDelete(group: TasksStatusGroup): void {
+  onDelete(group: TasksStatusesGroup): void {
     const index = this.groups.indexOf(group);
     if (index > -1) {
       this.groups.splice(index, 1);

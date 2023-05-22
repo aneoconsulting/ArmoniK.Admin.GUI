@@ -4,15 +4,14 @@ import { StatusCount as GrpcStatusCount } from '@aneoconsultingfr/armonik.api.an
 
 export type StatusCount = GrpcStatusCount.AsObject;
 
-export type TasksStatusGroup = {
+export type TasksStatusesGroup = {
   name: string;
   color?: string;
-  // FIXME: statuses
-  status: TaskStatus[];
+  statuses: TaskStatus[];
 };
 
 export type ManageGroupsDialogData = {
-  groups: TasksStatusGroup[];
+  groups: TasksStatusesGroup[];
 };
 
 export type StatusLabeled = { name: string, value: string };
@@ -22,6 +21,6 @@ export type AddStatusGroupDialogData = {
 };
 
 export type EditStatusGroupDialogData = {
-  group: TasksStatusGroup;
+  group: TasksStatusesGroup;
   statuses: StatusLabeled[];
 };

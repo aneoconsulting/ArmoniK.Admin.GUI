@@ -1,7 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { DashboardStorageService } from './dashboard-storage.service';
-import { TasksStatusGroup } from '../types';
+import { TasksStatusesGroup } from '../types';
 
 @Injectable()
 export class DashboardIndexService {
@@ -19,11 +19,11 @@ export class DashboardIndexService {
     [TaskStatus.TASK_STATUS_TIMEOUT]: 'Timeout',
   };
 
-  readonly defaultStatusGroups: TasksStatusGroup[] = [
+  readonly defaultStatusGroups: TasksStatusesGroup[] = [
     {
       name: 'Finished',
       color: '#00ff00',
-      status: [
+      statuses: [
         TaskStatus.TASK_STATUS_COMPLETED,
         TaskStatus.TASK_STATUS_CANCELLED,
       ]
@@ -31,14 +31,14 @@ export class DashboardIndexService {
     {
       name: 'Running',
       color: '#ffa500',
-      status: [
+      statuses: [
         TaskStatus.TASK_STATUS_PROCESSING,
       ]
     },
     {
       name: 'Error',
       color: '#ff0000',
-      status: [
+      statuses: [
         TaskStatus.TASK_STATUS_ERROR,
         TaskStatus.TASK_STATUS_TIMEOUT,
       ]
@@ -72,11 +72,11 @@ export class DashboardIndexService {
     return this.statusValuesToLabels[status];
   }
 
-  restoreStatusGroups(): TasksStatusGroup[] {
+  restoreStatusGroups(): TasksStatusesGroup[] {
     return this.#dashboardStorageService.restoreStatusGroups() ?? this.defaultStatusGroups;
   }
 
-  saveStatusGroups(groups: TasksStatusGroup[]) {
+  saveStatusGroups(groups: TasksStatusesGroup[]) {
     this.#dashboardStorageService.saveStatusGroups(groups);
   }
 

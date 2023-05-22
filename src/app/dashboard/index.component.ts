@@ -19,10 +19,10 @@ import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { StorageService } from '@services/storage.service';
 import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
-import { StatusGroupCardComponent } from './components/StatusGroupCard.component';
+import { StatusesGroupCardComponent } from './components/StatusesGroupCard.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
-import { StatusCount, TasksStatusGroup } from './types';
+import { StatusCount, TasksStatusesGroup } from './types';
 
 @Component({
   selector: 'app-dashboard-index',
@@ -59,12 +59,12 @@ import { StatusCount, TasksStatusGroup } from './types';
   </mat-toolbar>
 
   <div class="groups">
-    <app-status-group-card
+    <app-statuses-group-card
       *ngFor="let group of statusGroups"
       [group]="group"
       [data]="data"
       [hideGroupHeaders]="hideGroupHeaders"
-    ></app-status-group-card>
+    ></app-statuses-group-card>
   </div>
 </app-page-section>
   `,
@@ -103,7 +103,7 @@ app-actions-toolbar {
     ActionsToolbarGroupComponent,
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
-    StatusGroupCardComponent,
+    StatusesGroupCardComponent,
     MatDialogModule,
     MatIconModule,
     MatToolbarModule,
@@ -115,7 +115,7 @@ app-actions-toolbar {
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   hideGroupHeaders: boolean;
-  statusGroups: TasksStatusGroup[] = [];
+  statusGroups: TasksStatusesGroup[] = [];
   data: StatusCount[] = [];
   total: number;
 

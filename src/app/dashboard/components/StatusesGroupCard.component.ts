@@ -3,10 +3,10 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { DashboardIndexService } from '../services/dashboard-index.service';
-import { StatusCount, TasksStatusGroup } from '../types';
+import { StatusCount, TasksStatusesGroup } from '../types';
 
 @Component({
-  selector: 'app-status-group-card',
+  selector: 'app-statuses-group-card',
   template: `
 <mat-card>
   <mat-card-header *ngIf="!hideGroupHeaders">
@@ -15,13 +15,13 @@ import { StatusCount, TasksStatusGroup } from '../types';
         {{ group.name }}
       </span>
       <span>
-        {{ sumStatusCount(group.status) }}
+        {{ sumStatusCount(group.statuses) }}
       </span>
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <ul>
-      <li *ngFor="let status of group.status">
+      <li *ngFor="let status of group.statuses">
         <span>
           {{ getStatusLabel(status) }}
         </span>
@@ -66,8 +66,8 @@ ul li {
     MatCardModule,
   ]
 })
-export class StatusGroupCardComponent {
-  @Input({ required: true }) group: TasksStatusGroup;
+export class StatusesGroupCardComponent {
+  @Input({ required: true }) group: TasksStatusesGroup;
   @Input({ required: true }) hideGroupHeaders: boolean;
   @Input({ required: true }) data: StatusCount[] = [];
 

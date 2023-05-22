@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormStatusesGroupComponent } from './form-statuses-group.component';
-import { AddStatusGroupDialogData, StatusLabeled, TasksStatusGroup } from '../types';
+import { AddStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../types';
 
 @Component({
   selector: 'app-add-statuses-group-dialog',
@@ -29,7 +29,7 @@ export class AddStatusesGroupDialogComponent implements OnInit {
   statuses: StatusLabeled[] = [];
 
   constructor(
-    public _dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusGroup>,
+    public _dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup>,
     @Inject(MAT_DIALOG_DATA) public data: AddStatusGroupDialogData,
   ) {}
 
@@ -37,7 +37,7 @@ export class AddStatusesGroupDialogComponent implements OnInit {
     this.statuses = this.data.statuses;
   }
 
-  onSubmit(result: TasksStatusGroup) {
+  onSubmit(result: TasksStatusesGroup) {
     this._dialogRef.close(result);
   }
 
