@@ -10,7 +10,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -76,6 +75,9 @@ import { SessionRaw, SessionRawColumn, SessionRawFilter, SessionRawFilterField, 
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="Cancel session" matTooltip="Cancel session" (click)="onCancel(element.sessionId)">
+            <mat-icon aria-hidden="true" fontIcon="cancel"></mat-icon>
+          </button>
           <a mat-icon-button [routerLink]="['/sessions', element.sessionId]" aria-label="See session" matTooltip="See session">
             <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
           </a>
@@ -273,6 +275,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
     this._sessionsIndexService.saveColumns(this.displayedColumns);
+  }
+
+  onCancel(sessionId: string) {
+    this._sessionsGrpcService.cancel$(sessionId).subscribe(
+      () => this.refresh.next(),
+    );
   }
 
   handleAutoRefreshStart() {

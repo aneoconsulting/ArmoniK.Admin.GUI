@@ -1,4 +1,4 @@
-import { GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -55,11 +55,19 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
     return this._sessionsClient.listSessions(listSessionsRequest);
   }
 
-  get$(sessionId: string) :Observable<GetSessionResponse> {
+  get$(sessionId: string): Observable<GetSessionResponse> {
     const getSessionRequest = new GetSessionRequest({
       sessionId
     });
 
     return this._sessionsClient.getSession(getSessionRequest);
+  }
+
+  cancel$(sessionId: string): Observable<CancelSessionResponse> {
+    const cancelSessionRequest = new CancelSessionRequest({
+      sessionId
+    });
+
+    return this._sessionsClient.cancelSession(cancelSessionRequest);
   }
 }
