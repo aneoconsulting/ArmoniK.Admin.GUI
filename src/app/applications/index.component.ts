@@ -22,7 +22,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawKeyField, ApplicationRawListOptions } from './types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -117,8 +117,8 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  displayedColumns: ApplicationRawColumn[] = [];
-  availableColumns: ApplicationRawColumn[] = [];
+  displayedColumns: ApplicationRawColumnKey[] = [];
+  availableColumns: ApplicationRawColumnKey[] = [];
 
 
   isLoading = true;
@@ -179,7 +179,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as ApplicationRawKeyField,
+              active: this.sort.active as ApplicationRawFieldKey,
               direction: this.sort.direction,
             },
           };
@@ -230,7 +230,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this._applicationsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: ApplicationRawColumn[]) {
+  onColumnsChange(value: ApplicationRawColumnKey[]) {
     this.displayedColumns = value;
 
     this._applicationsIndexService.saveColumns(value);

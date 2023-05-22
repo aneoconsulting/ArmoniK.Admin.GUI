@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
-import { SessionRaw, SessionRawColumn, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsIndexService implements AppIndexService<SessionRaw> {
   readonly tableName: string = 'sessions';
 
-  readonly defaultColumns: SessionRawColumn[] = ['sessionId', 'actions'];
+  readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions'];
   // TODO: Add columns (when SessionRaw is merged)
-  readonly availableColumns: SessionRawColumn[] = ['sessionId', 'status', 'applicationName', 'applicationVersion', 'canceledAt', 'createdAt', 'options', 'actions'];
+  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'applicationName', 'applicationVersion', 'canceledAt', 'createdAt', 'options', 'actions'];
 
   readonly defaultOptions: SessionRawListOptions = {
     pageIndex: 0,
@@ -67,15 +67,15 @@ export class SessionsIndexService implements AppIndexService<SessionRaw> {
    * Columns
    */
 
-  saveColumns(columns: SessionRawColumn[]): void {
+  saveColumns(columns: SessionRawColumnKey[]): void {
     this._tableService.saveColumns(this.tableName, columns);
   }
 
-  restoreColumns(): SessionRawColumn[] {
-    return this._tableService.restoreColumns<SessionRawColumn[]>(this.tableName) ?? this.defaultColumns;
+  restoreColumns(): SessionRawColumnKey[] {
+    return this._tableService.restoreColumns<SessionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
-  resetColumns(): SessionRawColumn[] {
+  resetColumns(): SessionRawColumnKey[] {
     this._tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;

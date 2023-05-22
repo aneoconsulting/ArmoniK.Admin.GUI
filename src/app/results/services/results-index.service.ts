@@ -3,14 +3,14 @@ import { ColumnKey } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
-import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsIndexService implements AppIndexService<ResultRaw> {
   readonly tableName: string = 'results';
 
-  readonly defaultColumns: ResultRawColumn[] = ['name', 'actions'];
-  readonly availableColumns: ResultRawColumn[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
+  readonly defaultColumns: ResultRawColumnKey[] = ['name', 'actions'];
+  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
 
   readonly defaultOptions: ResultRawListOptions = {
     pageIndex: 0,
@@ -91,10 +91,10 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   }
 
   restoreColumns(): ColumnKey<ResultRaw>[] {
-    return this._tableService.restoreColumns<ResultRawColumn[]>(this.tableName) ?? this.defaultColumns;
+    return this._tableService.restoreColumns<ResultRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
-  resetColumns(): ResultRawColumn[] {
+  resetColumns(): ResultRawColumnKey[] {
     this._tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;

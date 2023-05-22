@@ -24,7 +24,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilterField, PartitionRawKeyField, PartitionRawListOptions } from './types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawFieldKey, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -132,8 +132,8 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<PartitionRaw> {
-  displayedColumns: PartitionRawColumn[] = [];
-  availableColumns: PartitionRawColumn[] = [];
+  displayedColumns: PartitionRawColumnKey[] = [];
+  availableColumns: PartitionRawColumnKey[] = [];
 
   isLoading = true;
   data: PartitionRaw[] = [];
@@ -191,7 +191,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as PartitionRawKeyField,
+              active: this.sort.active as PartitionRawFieldKey,
               direction: this.sort.direction,
             },
           };
@@ -242,7 +242,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     this._partitionsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: PartitionRawColumn[]) {
+  onColumnsChange(value: PartitionRawColumnKey[]) {
     this.displayedColumns = value;
 
     this._partitionsIndexService.saveColumns(value);

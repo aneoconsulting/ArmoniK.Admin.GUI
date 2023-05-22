@@ -4,7 +4,7 @@ import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationRaw, ApplicationRawFilter, ApplicationRawKeyField, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawFilter, ApplicationRawFieldKey, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
@@ -14,7 +14,7 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
     '': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
   };
 
-  readonly sortFields: Record<ApplicationRawKeyField, ListApplicationsRequest.OrderByField> = {
+  readonly sortFields: Record<ApplicationRawFieldKey, ListApplicationsRequest.OrderByField> = {
     'name': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
     'namespace': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
     'service': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_SERVICE,

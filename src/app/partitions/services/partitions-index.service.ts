@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { ListOptions } from '@app/types/options';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
-import { PartitionRaw, PartitionRawColumn, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
 
 @Injectable()
 export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
   readonly tableName: string = 'partitions';
 
-  readonly defaultColumns: PartitionRawColumn[] = ['id', 'actions'];
-  readonly availableColumns: PartitionRawColumn[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
+  readonly defaultColumns: PartitionRawColumnKey[] = ['id', 'actions'];
+  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
 
   readonly defaultOptions: PartitionRawListOptions = {
     pageIndex: 0,
@@ -90,15 +90,15 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    * Columns
    */
 
-  saveColumns(columns: PartitionRawColumn[]): void {
+  saveColumns(columns: PartitionRawColumnKey[]): void {
     this._tableService.saveColumns(this.tableName, columns);
   }
 
-  restoreColumns(): PartitionRawColumn[] {
-    return this._tableService.restoreColumns<PartitionRawColumn[]>(this.tableName) ?? this.defaultColumns;
+  restoreColumns(): PartitionRawColumnKey[] {
+    return this._tableService.restoreColumns<PartitionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
-  resetColumns(): PartitionRawColumn[] {
+  resetColumns(): PartitionRawColumnKey[] {
     this._tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;

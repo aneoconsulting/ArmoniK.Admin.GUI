@@ -23,7 +23,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
-import { SessionRaw, SessionRawColumn, SessionRawFilter, SessionRawFilterField, SessionRawKeyField, SessionRawListOptions } from './types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from './types';
 
 @Component({
   selector: 'app-sessions-index',
@@ -64,6 +64,7 @@ import { SessionRaw, SessionRawColumn, SessionRawFilter, SessionRawFilterField, 
       <ng-container *ngIf="column !== 'actions' && column !== 'sessionId'">
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
       </ng-container>
+      <!-- TODO: for the status, show it name (like in dashboard) -->
       <!-- ID -->
       <ng-container *ngIf="column === 'sessionId'">
         <td mat-cell *matCellDef="let element">
@@ -134,8 +135,8 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<SessionRaw> {
-  displayedColumns: SessionRawColumn[] = [];
-  availableColumns: SessionRawColumn[] = [];
+  displayedColumns: SessionRawColumnKey[] = [];
+  availableColumns: SessionRawColumnKey[] = [];
 
   isLoading = true;
   data: SessionRaw[] = [];
@@ -193,7 +194,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as SessionRawKeyField,
+              active: this.sort.active as SessionRawFieldKey,
               direction: this.sort.direction,
             },
           };
@@ -245,7 +246,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     this._sessionsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: SessionRawColumn[]) {
+  onColumnsChange(value: SessionRawColumnKey[]) {
     this.displayedColumns = value;
 
     this._sessionsIndexService.saveColumns(value);

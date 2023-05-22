@@ -2,7 +2,6 @@ import { ColumnKey, FieldKey } from '@app/types/data';
 import { Filter, FilterField } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
-// TODO: rename type in order to have the same order that generics
 // FIXME: use the correct SessionRaw
 export type SessionRaw =  {
   sessionId: string;
@@ -15,9 +14,9 @@ export type SessionRaw =  {
   applicationName: string;
   applicationVersion: string;
 };
-export type SessionRawColumn = ColumnKey<SessionRaw>;
+export type SessionRawColumnKey = ColumnKey<SessionRaw>;
 // We need to find a way to use filter field for _after and for _before
-export type SessionRawKeyField = FieldKey<SessionRaw>;
+export type SessionRawFieldKey = FieldKey<SessionRaw>;
 export type SessionRawFilterField = FilterField<SessionRaw>;
 export type SessionRawFilter = Filter<SessionRaw>;
 export type SessionRawListOptions = ListOptions<SessionRaw>;

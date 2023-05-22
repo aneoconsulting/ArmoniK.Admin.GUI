@@ -23,7 +23,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
-import { ResultRaw, ResultRawColumn, ResultRawFilter, ResultRawFilterField, ResultRawKeyField, ResultRawListOptions } from './types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
 
 @Component({
   selector: 'app-results-index',
@@ -116,8 +116,8 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<ResultRaw> {
-  displayedColumns: ResultRawColumn[] = [];
-  availableColumns: ResultRawColumn[] = [];
+  displayedColumns: ResultRawColumnKey[] = [];
+  availableColumns: ResultRawColumnKey[] = [];
 
   isLoading = true;
   data: ResultRaw[] = [];
@@ -175,7 +175,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
             pageIndex: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
             sort: {
-              active: this.sort.active as ResultRawKeyField,
+              active: this.sort.active as ResultRawFieldKey,
               direction: this.sort.direction,
             }
           };
@@ -225,7 +225,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     this._resultsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: ResultRawColumn[]) {
+  onColumnsChange(value: ResultRawColumnKey[]) {
     this.displayedColumns = value;
 
     this._resultsIndexService.saveColumns(value);

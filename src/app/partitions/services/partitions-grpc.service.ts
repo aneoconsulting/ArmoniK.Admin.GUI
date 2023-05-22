@@ -4,7 +4,7 @@ import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import { PartitionRaw, PartitionRawFilter, PartitionRawKeyField, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawFilter, PartitionRawFieldKey, PartitionRawListOptions } from '../types';
 
 @Injectable()
 export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
@@ -14,7 +14,7 @@ export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
     '': ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC
   };
 
-  readonly sortFields: Record<PartitionRawKeyField, ListPartitionsRequest.OrderByField> = {
+  readonly sortFields: Record<PartitionRawFieldKey, ListPartitionsRequest.OrderByField> = {
     'id': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
     'parentPartitionIds': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_PARENT_PARTITION_IDS,
     // TODO: Need to add the missing fields on Armonik.Api

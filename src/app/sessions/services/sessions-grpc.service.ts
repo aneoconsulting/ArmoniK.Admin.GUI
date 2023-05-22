@@ -4,7 +4,7 @@ import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import { SessionRaw, SessionRawFilter, SessionRawKeyField, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawFieldKey, SessionRawFilter, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
@@ -15,7 +15,7 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
   };
 
   // FIXME: Missing some fields to be sorted (every unspecified field)
-  readonly sortFields: Record<SessionRawKeyField, ListSessionsRequest.OrderByField> = {
+  readonly sortFields: Record<SessionRawFieldKey, ListSessionsRequest.OrderByField> = {
     'sessionId': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
     'applicationName': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
     'applicationVersion': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,

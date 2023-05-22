@@ -5,7 +5,7 @@ import { GrpcMessage } from '@ngx-grpc/common';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
 import { UtilsService } from '@services/utils.service';
-import {  ResultRaw, ResultRawFilter, ResultRawKeyField, ResultRawListOptions } from '../types';
+import {  ResultRaw, ResultRawFilter, ResultRawFieldKey, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
@@ -15,7 +15,7 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
     '': ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
   };
 
-  readonly sortFields: Record<ResultRawKeyField, ListResultsRequest.OrderByField> = {
+  readonly sortFields: Record<ResultRawFieldKey, ListResultsRequest.OrderByField> = {
     'sessionId': ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
     'name': ListResultsRequest.OrderByField.ORDER_BY_FIELD_NAME,
     'status': ListResultsRequest.OrderByField.ORDER_BY_FIELD_STATUS,

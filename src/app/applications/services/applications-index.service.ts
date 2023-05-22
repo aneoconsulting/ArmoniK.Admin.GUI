@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
-import { ApplicationRaw, ApplicationRawColumn, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
   readonly tableName: string = 'applications';
 
-  readonly defaultColumns: ApplicationRawColumn[] = ['name', 'version', 'actions'];
-  readonly availableColumns: ApplicationRawColumn[] = ['name', 'namespace', 'service', 'version', 'actions'];
+  readonly defaultColumns: ApplicationRawColumnKey[] = ['name', 'version', 'actions'];
+  readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions'];
 
   readonly defaultOptions: ApplicationRawListOptions = {
     pageIndex: 0,
@@ -77,15 +77,15 @@ export class ApplicationsIndexService implements AppIndexService<ApplicationRaw>
    * Columns
    */
 
-  saveColumns(columns: ApplicationRawColumn[]): void {
+  saveColumns(columns: ApplicationRawColumnKey[]): void {
     this._tableService.saveColumns(this.tableName, columns);
   }
 
-  restoreColumns(): ApplicationRawColumn[] {
-    return this._tableService.restoreColumns<ApplicationRawColumn[]>(this.tableName) ?? this.defaultColumns;
+  restoreColumns(): ApplicationRawColumnKey[] {
+    return this._tableService.restoreColumns<ApplicationRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
-  resetColumns(): ApplicationRawColumn[] {
+  resetColumns(): ApplicationRawColumnKey[] {
     this._tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;
