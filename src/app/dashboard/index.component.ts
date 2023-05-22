@@ -59,11 +59,6 @@ import { StatusCount, TasksStatusGroup } from './types';
   </mat-toolbar>
 
   <div class="groups">
-    <!-- TODO: Save all to the storage (using the storage servie) -->
-    <!-- TODO: Allow drag and drop between group -->
-    <!-- TODO: Allow to rename group -->
-    <!-- TODO: Allow to delete a groupo -->
-    <!-- TODO: Allow to delete a counter -->
     <app-status-group-card
       *ngFor="let group of statusGroups"
       [group]="group"

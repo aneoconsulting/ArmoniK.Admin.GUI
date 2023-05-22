@@ -23,7 +23,6 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
   <mat-toolbar>
     <app-actions-toolbar>
       <app-actions-toolbar-group>
-        <!-- TODO: open a new modal in order to add the name and the color and can add status -->
         <button mat-stroked-button (click)="openAddStatusGroupModal()">
           <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
           <span>Add a group</span>

@@ -7,6 +7,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
@@ -125,6 +126,7 @@ app-table-actions-toolbar {
     FiltersToolbarComponent,
     TableContainerComponent,
     TableLoadingComponent,
+    MatTooltipModule,
     MatTableModule,
     MatToolbarModule,
     MatPaginatorModule,
