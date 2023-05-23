@@ -24,8 +24,16 @@ export class StorageService implements Storage {
     this._localStorage.clear();
   }
 
-  getItem(key: string): string | null {
-    return this._localStorage.getItem(key);
+  getItem<T>(key: string, parse = false) {
+    const data = this._localStorage.getItem(key);
+
+    if (data && parse) {
+      return JSON.parse(data) as T;
+    } else if (data) {
+      return data;
+    }
+
+    return null;
   }
 
   key(index: number): string | null {
@@ -39,9 +47,13 @@ export class StorageService implements Storage {
     this.#saveKeys();
   }
 
-  setItem(key: string, value: string): void {
-    // TODO: accept object and convert it to string (like in table-storage.service.ts) (and remove the table-storage.service.ts file)
-    this._localStorage.setItem(key, value);
+  setItem(key: string, data: unknown): void {
+    if (typeof data === 'string') {
+      this._localStorage.setItem(key, data);
+      return;
+    }
+
+    this._localStorage.setItem(key, JSON.stringify(data));
 
     this.#keys.add(key);
     this.#saveKeys();

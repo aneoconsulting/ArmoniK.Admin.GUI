@@ -15,7 +15,7 @@ export class DashboardStorageService {
   }
 
   restoreInterval(): number | null {
-    const interval = this.#storage.getItem(this.#buildKey(this.#key, this.#intervalKey));
+    const interval = this.#storage.getItem<string>(this.#buildKey(this.#key, this.#intervalKey));
 
     if (interval) {
       return parseInt(interval, 10);
@@ -40,14 +40,14 @@ export class DashboardStorageService {
 
   saveStatusGroups(groups: TasksStatusesGroup[]) {
     // TODO: remove the stringify when storage service will support objects
-    this.#storage.setItem(this.#buildKey(this.#key, 'status_groups'), JSON.stringify(groups));
+    this.#storage.setItem(this.#buildKey(this.#key, 'status_groups'), groups);
   }
 
   restoreStatusGroups(): TasksStatusesGroup[] | null {
-    const groups = this.#storage.getItem(this.#buildKey(this.#key, 'status_groups'));
+    const groups = this.#storage.getItem<TasksStatusesGroup[]>(this.#buildKey(this.#key, 'status_groups'), true);
 
     if (groups) {
-      return JSON.parse(groups);
+      return groups as TasksStatusesGroup[];
     }
 
     return null;

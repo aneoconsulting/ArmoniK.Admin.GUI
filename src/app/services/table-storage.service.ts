@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { StorageService } from './storage.service';
 
 /**
@@ -7,37 +7,26 @@ import { StorageService } from './storage.service';
  */
 @Injectable()
 export class TableStorageService {
-  constructor(private _storage: StorageService) {}
+  #storage = inject(StorageService);
 
   /**
    * Save data to the storage
    */
   save(key: string, data: unknown) {
-    if (typeof data === 'string') {
-      this._storage.setItem(key, data);
-      return;
-    }
-
-    this._storage.setItem(key, JSON.stringify(data));
+    this.#storage.setItem(key, data);
   }
-
 
   /**
    * Restore data from the storage
    */
   restore<T>(key: string, parse = true) {
-    const data = this._storage.getItem(key);
-
-    if (data && parse) {
-      return JSON.parse(data) as T;
-    } else if (data) {
-      return data as string;
-    }
-
-    return null;
+    return this.#storage.getItem<T>(key, parse);
   }
 
+  /**
+   * Remove data from the storage
+   */
   remove(key: string) {
-    this._storage.removeItem(key);
+    this.#storage.removeItem(key);
   }
 }
