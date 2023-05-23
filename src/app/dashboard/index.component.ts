@@ -169,8 +169,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   autoRefreshTooltip(): string {
-    // TODO: see table.service.ts:22 and resuse the function
-    return 'Auto refresh';
+    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
   }
 
   onRefresh() {

@@ -266,7 +266,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   }
 
   autoRefreshTooltip() {
-    return this._tableService.autoRefreshTooltip(this.intervalValue);
+    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
   }
 
   onDrop(event: CdkDragDrop<string[]>) {

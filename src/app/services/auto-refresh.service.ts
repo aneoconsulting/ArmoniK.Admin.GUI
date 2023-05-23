@@ -18,4 +18,12 @@ export class AutoRefreshService {
       })
     );
   }
+
+  autoRefreshTooltip(interval: number): string {
+    if (interval === 0) {
+      return 'Auto-refresh is disabled';
+    }
+
+    return `Auto-refresh every ${interval} seconds`;
+  }
 }

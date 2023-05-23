@@ -19,15 +19,6 @@ export class TableService {
 
   constructor(private _window: Window, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
 
-  // TODO: Move this function to the autorefresh service
-  autoRefreshTooltip(interval: number): string {
-    if (interval === 0) {
-      return 'Auto-refresh is disabled';
-    }
-
-    return `Auto-refresh every ${interval} seconds`;
-  }
-
   // TODO: move to an external service in order to be able to use it in show page
   generateSharableURL<T extends object>(options: ListOptions<T>, filters: Filter<T>[]): string {
     const origin = this._window.location.origin;
