@@ -19,7 +19,7 @@ import { StatusLabeled, TasksStatusesGroup } from '../types';
       <mat-label for="name"> Name </mat-label>
       <input matInput id="name" type="text" formControlName="name" placeholder="Name of your group" required>
        <mat-error *ngIf="groupForm.get('name')?.hasError('required')">
-      Email is <strong>required</strong>
+      Name is <strong>required</strong>
       </mat-error>
     </mat-form-field>
 
