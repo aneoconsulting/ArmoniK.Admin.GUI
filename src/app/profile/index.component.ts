@@ -1,11 +1,14 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { Page } from '@app/types/pages';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UserService } from '@services/user.service';
+import { PermissionGroup } from './types';
 
 @Component({
   selector: 'app-profile-index',
@@ -29,6 +32,7 @@ import { UserService } from '@services/user.service';
 
   <ng-container *ngIf="user.roles && user.roles.length; else noRoles">
     <ul>
+      <!-- TODO: Add in issue the needed of adding custom roles to the user -->
       <li *ngFor="let role of user.roles">
         {{ role }}
       </li>
@@ -44,12 +48,22 @@ import { UserService } from '@services/user.service';
   </app-page-section-header>
 
   <ng-container *ngIf="user.permissions && user.permissions.length; else noPermissions">
-    <!-- TODO: Create a better organization with related icon in application -->
-    <ul>
-      <li *ngFor="let permission of user.permissions">
-        {{ permission }}
-      </li>
-    </ul>
+    <div class="permissions">
+      <ng-container *ngFor="let group of groupedPermissions()">
+        <div class="permission">
+          <h3>
+            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(group.name)"></mat-icon>
+            {{ group.name }}
+          </h3>
+          <ul>
+            <!-- TODO: Create a page in documentation (ArmoniK) in order to explain what's does that mean -->
+            <li *ngFor="let permission of group.permissions">
+              {{ permission }}
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </div>
   </ng-container>
 
   <!-- TODO: Add a button to read more about permissions -->
@@ -57,17 +71,47 @@ import { UserService } from '@services/user.service';
 
 <ng-template #noRoles>
   <p>
-    You do not have any roles.
+    <em>
+      You do not have any roles.
+    </em>
   </p>
 </ng-template>
 
 <ng-template #noPermissions>
   <p>
-    You do not have any permissions.
+    <em>
+      You do not have any permissions.
+    </em>
   </p>
 </ng-template>
   `,
   styles: [`
+.permissions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+
+.permission h3 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  text-transform: capitalize;
+
+  margin-bottom: 0.5rem;
+}
+
+.permission h3 mat-icon {
+  height: 1.25rem;
+  width: 1.25rem;
+  font-size: 1.25rem;
+}
+
+.permission ul {
+  margin: 0;
+}
   `],
   standalone: true,
   providers: [
@@ -87,6 +131,7 @@ export class IndexComponent implements OnInit {
 
   #userService = inject(UserService);
   #shareUrlService = inject(ShareUrlService);
+  #iconsService = inject(IconsService);
 
   ngOnInit(): void {
     this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
@@ -94,5 +139,35 @@ export class IndexComponent implements OnInit {
 
   get user() {
     return this.#userService.user;
+  }
+
+  getIcon(name: string) {
+    return this.#iconsService.getIcon(name) ?? this.#iconsService.getPageIcon(name as Page);
+  }
+
+  groupedPermissions(): PermissionGroup[] {
+    const permissions = this.#userService.user.permissions;
+
+    const groups: PermissionGroup[] = [];
+
+    for (const permission of permissions) {
+      const [group, name] = permission.split(':');
+
+      const groupIndex = groups.findIndex(g => g.name === group.toLocaleLowerCase());
+
+      if (groupIndex === -1) {
+        groups.push({
+          name: group.toLowerCase() as Page,
+          permissions: [name],
+        });
+      } else {
+        groups[groupIndex].permissions.push(name);
+      }
+    }
+
+    // Sort groups by name
+    groups.sort((a, b) => a.name.localeCompare(b.name));
+
+    return groups;
   }
 }
