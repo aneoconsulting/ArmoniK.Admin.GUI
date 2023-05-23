@@ -80,12 +80,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button aria-label="Cancel session" matTooltip="Cancel session" (click)="onCancel(element.sessionId)">
-            <mat-icon aria-hidden="true" fontIcon="cancel"></mat-icon>
-          </button>
           <a mat-icon-button [routerLink]="['/sessions', element.sessionId]" aria-label="See session" matTooltip="See session">
             <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
           </a>
+          <button mat-icon-button color="warn" aria-label="Cancel session" matTooltip="Cancel session" (click)="onCancel(element.sessionId)">
+            <mat-icon aria-hidden="true" fontIcon="cancel"></mat-icon>
+          </button>
         </td>
       </ng-container>
     </ng-container>
