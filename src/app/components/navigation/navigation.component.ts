@@ -10,6 +10,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { Page } from '@app/types/pages';
+import { IconsService } from '@services/icons.service';
 import { UserService } from '@services/user.service';
 import pkg from '../../../../package.json';
 
@@ -69,22 +71,22 @@ import pkg from '../../../../package.json';
         <mat-divider></mat-divider>
         <mat-nav-list>
           <a mat-list-item routerLink="/applications" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="apps"></mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('applications')"></mat-icon>
             <span matListItemTitle> Applications </span>
           </a>
           <a mat-list-item routerLink="/partitions" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="donut_small"></mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
             <span matListItemTitle> Partitions </span>
           </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <mat-nav-list>
           <a mat-list-item routerLink="/sessions" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
             <span matListItemTitle> Sessions </span>
           </a>
           <a mat-list-item routerLink="/results" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
             <span matListItemTitle> Results </span>
           </a>
         </mat-nav-list>
@@ -141,6 +143,9 @@ main {
 }
   `],
   standalone: true,
+  providers: [
+    IconsService,
+  ],
   imports: [
     NgIf,
     AsyncPipe,
@@ -156,18 +161,23 @@ main {
 export class NavigationComponent {
   version = pkg.version;
 
-  private breakpointObserver = inject(BreakpointObserver);
-  private userService = inject(UserService);
+  #breakpointObserver = inject(BreakpointObserver);
+  #userService = inject(UserService);
+  #iconsService = inject(IconsService);
 
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+  isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
+  getIcon(name: Page) {
+    return this.#iconsService.getPageIcon(name);
+  }
+
   greeting() {
     const hour = new Date().getHours();
-    const username = this.userService.user ? this.userService.user.username : '';
+    const username = this.#userService.user ? this.#userService.user.username : '';
     if (hour < 12) {
       return 'Good morning' + (username ? ', ' + username : '');
     } else if (hour < 18) {

@@ -24,12 +24,14 @@ import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
+import { IconsService } from '@services/icons.service';
+import { Page } from '@app/types/pages';
 
 @Component({
   selector: 'app-results-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
   <span>Results</span>
 </app-page-header>
 
@@ -89,6 +91,7 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    IconsService,
     ShareUrlService,
     StorageService,
     UtilsService,
@@ -142,6 +145,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   subscriptions: Subscription = new Subscription();
 
   constructor(
+    private _iconsService: IconsService,
     private _shareURLService: ShareUrlService,
     private _resultsIndexService: ResultsIndexService,
     private _resultsGrpcService: ResultsGrpcService,
@@ -209,6 +213,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  getIcon(name: Page): string {
+    return this._iconsService.getPageIcon(name);
+  }
+
   onRefresh() {
     this.refresh.next();
   }

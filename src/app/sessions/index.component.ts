@@ -11,12 +11,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
+import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -31,7 +33,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
   selector: 'app-sessions-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
   <span>Sessions</span>
 </app-page-header>
 
@@ -103,6 +105,7 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    IconsService,
     ShareUrlService,
     StorageService,
     TableURLService,
@@ -159,6 +162,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   subscriptions: Subscription = new Subscription();
 
   constructor(
+    private _iconsService: IconsService,
     private _shareURLService: ShareUrlService,
     private _sessionsIndexService: SessionsIndexService,
     private _sessionsGrpcService: SessionsGrpcService,
@@ -226,6 +230,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  getIcon(name: Page): string {
+    return this._iconsService.getPageIcon(name);
   }
 
   onRefresh() {
