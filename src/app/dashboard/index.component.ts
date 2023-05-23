@@ -17,6 +17,7 @@ import { PageSectionHeaderComponent } from '@components/page-section-header.comp
 import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
 import { StatusesGroupCardComponent } from './components/StatusesGroupCard.component';
@@ -86,6 +87,7 @@ app-actions-toolbar {
   ],
   standalone: true,
   providers: [
+    ShareUrlService,
     TaskGrpcService,
     StorageService,
     DashboardStorageService,
@@ -120,7 +122,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   total: number;
 
   intervalValue = 0;
-  sharableURL = '/dashboard';
+  sharableURL = '';
 
   loadTasksStatus = true;
   refresh: Subject<void> = new Subject<void>();
@@ -132,6 +134,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private _dialog: MatDialog,
+    private _shareURLService: ShareUrlService,
     private _taskGrpcService: TaskGrpcService,
     private _dashboardIndexService: DashboardIndexService,
     private _autoRefreshService: AutoRefreshService
@@ -142,6 +145,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.intervalValue = this._dashboardIndexService.restoreIntervalValue();
     this.hideGroupHeaders = this._dashboardIndexService.restoreHideGroupsHeader();
+    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
   }
 
   ngAfterViewInit() {
@@ -166,7 +170,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
-
 
   autoRefreshTooltip(): string {
     return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);

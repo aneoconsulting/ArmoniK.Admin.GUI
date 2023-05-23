@@ -15,6 +15,7 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
@@ -88,6 +89,7 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    ShareUrlService,
     StorageService,
     TableURLService,
     TableStorageService,
@@ -145,7 +147,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription = new Subscription();
 
   constructor(
-    private _tableService: TableService,
+    private _shareURLService: ShareUrlService,
     private _applicationsIndexService: ApplicationsIndexService,
     private _applicationsGrpcService: ApplicationsGrpcService,
     private _autoRefreshService: AutoRefreshService
@@ -162,7 +164,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
 
-    this.sharableURL = this._applicationsIndexService.generateSharableURL(this.options, this.filters);
+    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -185,7 +187,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           };
           const filters = this.filters;
 
-          this.sharableURL = this._applicationsIndexService.generateSharableURL(options, filters);
+          this.sharableURL = this._shareURLService.generateSharableURL(options, filters);
           this._applicationsIndexService.saveOptions(options);
 
           return this._applicationsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));

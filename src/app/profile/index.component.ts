@@ -1,15 +1,16 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { ShareUrlService } from '@services/share-url.service';
 import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'app-profile-index',
   template: `
-<app-page-header>
+<app-page-header [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="account_circle"></mat-icon>
   <span>
     <span> Profile from </span>
@@ -69,7 +70,9 @@ import { UserService } from '@services/user.service';
   styles: [`
   `],
   standalone: true,
-  providers: [],
+  providers: [
+    ShareUrlService,
+  ],
   imports: [
     NgFor,
     NgIf,
@@ -79,12 +82,17 @@ import { UserService } from '@services/user.service';
     MatIconModule,
   ]
 })
-export class IndexComponent {
-  constructor(
-    private _userService: UserService
-  ) { }
+export class IndexComponent implements OnInit {
+  sharableURL = '';
+
+  #userService = inject(UserService);
+  #shareUrlService = inject(ShareUrlService);
+
+  ngOnInit(): void {
+    this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
+  }
 
   get user() {
-    return this._userService.user;
+    return this.#userService.user;
   }
 }

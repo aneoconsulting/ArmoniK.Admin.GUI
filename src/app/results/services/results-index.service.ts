@@ -51,10 +51,6 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     private _tableService: TableService,
   ) {}
 
-  generateSharableURL(options: ResultRawListOptions, filters: ResultRawFilter[]): string {
-    return this._tableService.generateSharableURL(options, filters);
-  }
-
   /**
    * Interval
    */

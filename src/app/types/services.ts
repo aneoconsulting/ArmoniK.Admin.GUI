@@ -28,8 +28,6 @@ export interface AppIndexService<T extends object> {
   // readonly sortDirections: SortDirection
   // readonly sortFields: Record<Column<T>, number>
 
-  // Miscellaneous
-  generateSharableURL(options: ListOptions<T>, filters: Filter<T>[]): string
   // Interval
   saveIntervalValue(value: number): void
   restoreIntervalValue(): number

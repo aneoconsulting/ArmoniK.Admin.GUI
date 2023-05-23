@@ -33,10 +33,6 @@ export class SessionsIndexService implements AppIndexService<SessionRaw> {
 
   constructor(private _tableService: TableService) {}
 
-  generateSharableURL(options: SessionRawListOptions, filters: SessionRawFilter[]): string {
-    return this._tableService.generateSharableURL(options, filters);
-  }
-
   /**
    * Interval
    */

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { FieldKey } from '@app/types/data';
-import { Filter } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { TableStorageService } from './table-storage.service';
 import { TableURLService } from './table-url.service';
@@ -17,16 +16,10 @@ export class TableService {
   private _optionsKey = 'options';
   private _filtersKey = 'filters';
 
-  constructor(private _window: Window, private _tableURLService: TableURLService, private _tableStorageService: TableStorageService) {}
-
-  // TODO: move to an external service in order to be able to use it in show page
-  generateSharableURL<T extends object>(options: ListOptions<T>, filters: Filter<T>[]): string {
-    const origin = this._window.location.origin;
-    // TODO: generate query params using options and filters
-    const query = '?';
-
-    return `${origin}${query}`;
-  }
+  constructor(
+    private _tableURLService: TableURLService,
+    private _tableStorageService: TableStorageService
+  ) {}
 
   saveIntervalValue(tableName: string, value: number): void {
     const storageKey = this._buildKey(tableName, this._intervalKey);

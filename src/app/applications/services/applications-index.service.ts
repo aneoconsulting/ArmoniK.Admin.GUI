@@ -43,10 +43,6 @@ export class ApplicationsIndexService implements AppIndexService<ApplicationRaw>
 
   constructor(private _tableService: TableService) {}
 
-  generateSharableURL(options: ApplicationRawListOptions, filters: ApplicationRawFilter[]): string {
-    return this._tableService.generateSharableURL(options, filters);
-  }
-
   /**
    * Interval
    */

@@ -55,10 +55,6 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
 
   constructor(private _tableService: TableService) {}
 
-  generateSharableURL(options: PartitionRawListOptions, filters: PartitionRawFilter[]): string {
-    return this._tableService.generateSharableURL(options, filters);
-  }
-
   /**
    * Interval
    */

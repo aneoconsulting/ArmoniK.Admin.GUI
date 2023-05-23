@@ -15,6 +15,7 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
@@ -88,6 +89,7 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    ShareUrlService,
     StorageService,
     UtilsService,
     TableStorageService,
@@ -140,7 +142,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   subscriptions: Subscription = new Subscription();
 
   constructor(
-    private _tableService: TableService,
+    private _shareURLService: ShareUrlService,
     private _resultsIndexService: ResultsIndexService,
     private _resultsGrpcService: ResultsGrpcService,
     private _autoRefreshService: AutoRefreshService,
@@ -157,7 +159,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
     this.intervalValue = this._resultsIndexService.restoreIntervalValue();
 
-    this.sharableURL = this._resultsIndexService.generateSharableURL(this.options, this.filters);
+    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
   }
 
   ngAfterViewInit(): void {
@@ -180,7 +182,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
           };
           const filters = this.filters;
 
-          this.sharableURL = this._resultsIndexService.generateSharableURL(options, filters);
+          this.sharableURL = this._shareURLService.generateSharableURL(options, filters);
           this._resultsIndexService.saveOptions(options);
 
           return this._resultsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));

@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,12 +9,13 @@ import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 
 @Component({
   selector: 'app-settings-index',
   template: `
-<app-page-header>
+<app-page-header [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
   <span matListItemTitle> Settings </span>
 </app-page-header>
@@ -116,7 +117,8 @@ app-page-section + app-page-section {
   `],
   standalone: true,
   providers: [
-    StorageService
+    StorageService,
+    ShareUrlService,
   ],
   imports: [
     NgFor,
@@ -133,7 +135,10 @@ app-page-section + app-page-section {
   ]
 })
 export class IndexComponent implements OnInit {
+  sharableURL = '';
   keys: Set<string>;
+
+  #shareURLService = inject(ShareUrlService);
 
   constructor(
     private _storageService: StorageService,
@@ -141,6 +146,7 @@ export class IndexComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
     this.keys = this.#sortKeys(this._storageService.keys);
   }
 

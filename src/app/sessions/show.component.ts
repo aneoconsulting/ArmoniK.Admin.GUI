@@ -1,9 +1,10 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { ShowPageComponent } from '@components/show-page.component';
+import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionRaw } from './types';
@@ -11,8 +12,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   template: `
-<!-- TODO: Create a function to generate sharable URL -->
-<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="'hello'">
+<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
   <span>Session</span>
 </app-show-page>
@@ -22,6 +22,7 @@ import { SessionRaw } from './types';
   standalone: true,
   providers: [
     UtilsService,
+    ShareUrlService,
     SessionsGrpcService
   ],
   imports: [
@@ -29,13 +30,20 @@ import { SessionRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent implements AppShowComponent<SessionRaw>, AfterViewInit {
+export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, AfterViewInit {
+  sharableURL = '';
   data: SessionRaw | null = null;
+
+  #shareURLService = inject(ShareUrlService);
 
   constructor(
     private _route: ActivatedRoute,
     private _sessionsGrpcService: SessionsGrpcService,
   ) {}
+
+  ngOnInit(): void {
+    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
+  }
 
   ngAfterViewInit(): void {
     this._route.params.pipe(

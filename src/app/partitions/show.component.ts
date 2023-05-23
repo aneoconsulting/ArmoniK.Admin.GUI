@@ -1,9 +1,10 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { ShowPageComponent } from '@components/show-page.component';
+import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionRaw } from './types';
@@ -11,8 +12,7 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   template: `
-<!-- TODO: Create a function to generate sharable URL -->
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="'hello'">
+<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="donut_small"></mat-icon>
   <span>Partition</span>
 </app-show-page>
@@ -22,6 +22,7 @@ import { PartitionRaw } from './types';
   standalone: true,
   providers: [
     UtilsService,
+    ShareUrlService,
     PartitionsGrpcService
   ],
   imports: [
@@ -29,13 +30,20 @@ import { PartitionRaw } from './types';
     MatIconModule
   ]
 })
-export class ShowComponent implements AppShowComponent<PartitionRaw>, AfterViewInit {
+export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, AfterViewInit {
+  sharableURL = '';
   data: PartitionRaw | null = null;
+
+  #shareUrlService = inject(ShareUrlService);
 
   constructor(
     private _route: ActivatedRoute,
     private _partitionsGrpcService: PartitionsGrpcService,
   ) {}
+
+  ngOnInit(): void {
+    this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
+  }
 
   ngAfterViewInit(): void {
     this._route.params.pipe(
