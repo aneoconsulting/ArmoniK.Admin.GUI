@@ -49,7 +49,8 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
   }
 
   get$(): Observable<never> {
-    // TODO: Need to upstream to ArmoniK API
+    // TODO: Waiting for ArmoniK.Api.Angular
+    // @see https://github.com/aneoconsulting/ArmoniK.Api/pull/256/files
     throw new Error('Method not implemented.');
     // const getPartitionRequest = new GetPartitionRequest({
     //   id

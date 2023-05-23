@@ -53,7 +53,8 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
   }
 
   get$(): Observable<never> {
-    // TODO: Not available in ArmoniK.Api.Angular
+    // TODO: Waiting for ArmoniK.Api.Angular
+    // @see https://github.com/aneoconsulting/ArmoniK.Api/pull/260
     throw new Error('Method not implemented.');
   }
 }
