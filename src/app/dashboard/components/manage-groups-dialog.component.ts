@@ -176,7 +176,7 @@ export class ManageGroupsDialogComponent implements OnInit {
     this.groups = [...this.data.groups.map(group => {
       return {
         ...group,
-        status: [...group.statuses]
+        statuses: [...group.statuses]
       };
     })
     ];

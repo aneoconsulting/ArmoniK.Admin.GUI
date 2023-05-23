@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { FieldKey } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
+import { StorageService } from './storage.service';
 import { TableStorageService } from './table-storage.service';
 import { TableURLService } from './table-url.service';
 
@@ -17,18 +18,19 @@ export class TableService {
   private _filtersKey = 'filters';
 
   constructor(
+    private _storageService: StorageService,
     private _tableURLService: TableURLService,
     private _tableStorageService: TableStorageService
   ) {}
 
   saveIntervalValue(tableName: string, value: number): void {
-    const storageKey = this._buildKey(tableName, this._intervalKey);
+    const storageKey = this._storageService.buildKey(tableName, this._intervalKey);
 
     this._tableStorageService.save(storageKey, value);
   }
 
   restoreIntervalValue(tableName: string): number | null {
-    const storageKey = this._buildKey(tableName, this._intervalKey);
+    const storageKey = this._storageService.buildKey(tableName, this._intervalKey);
 
     const value =  this._tableStorageService.restore<string>(storageKey, false);
 
@@ -50,7 +52,7 @@ export class TableService {
    * Save options to the storage
    */
   saveOptions<T>(tableName: string, options: T): void {
-    const storageKey = this._buildKey(tableName, this._optionsKey);
+    const storageKey = this._storageService.buildKey(tableName, this._optionsKey);
 
     this._tableStorageService.save(storageKey, options);
   }
@@ -59,7 +61,7 @@ export class TableService {
    * Restore options from the storage
    */
   restoreOptions<T extends object>(tableName: string, defaultOptions: ListOptions<T>): ListOptions<T> {
-    const storageKey = this._buildKey(tableName, this._optionsKey);
+    const storageKey = this._storageService.buildKey(tableName, this._optionsKey);
     const storageData = this._tableStorageService.restore<T>(storageKey) as ListOptions<T> | null;
 
     function convertValueToNumber(value: string | null): number | null {
@@ -92,7 +94,7 @@ export class TableService {
    * Restore filters from the URL and then from the storage
    */
   restoreFilters<T>(tableName:string): T | null {
-    const storageKey = this._buildKey(tableName, this._filtersKey);
+    const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
 
     const queryParams = this._tableURLService.getQueryParams<T>(this._filtersKey) as T;
     const storageData = this._tableStorageService.restore<T>(storageKey) as T;
@@ -104,13 +106,13 @@ export class TableService {
    * Restore filters from the URL and then from the storage
    */
   saveFilters(tableName: string, filters: unknown) {
-    const storageKey = this._buildKey(tableName, this._filtersKey);
+    const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
 
     this._tableStorageService.save(storageKey, filters);
   }
 
   resetFilters(tableName: string): void {
-    const storageKey = this._buildKey(tableName, this._filtersKey);
+    const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
 
     this._tableStorageService.remove(storageKey);
   }
@@ -120,7 +122,7 @@ export class TableService {
    * Save columns to the local storage
    */
   saveColumns(tableName: string, columns: string[]): void {
-    const key = this._buildKey(tableName, this._columnsKey);
+    const key = this._storageService.buildKey(tableName, this._columnsKey);
     this._tableStorageService.save(key, columns);
   }
 
@@ -128,22 +130,14 @@ export class TableService {
    * Restore columns from the local storage
    */
   restoreColumns<T>(tableName: string): T | null {
-    const key = this._buildKey(tableName, this._columnsKey);
+    const key = this._storageService.buildKey(tableName, this._columnsKey);
 
     return this._tableStorageService.restore<T>(key) as T;
   }
 
   resetColumns(tableName: string): void {
-    const key = this._buildKey(tableName, this._columnsKey);
+    const key = this._storageService.buildKey(tableName, this._columnsKey);
 
     this._tableStorageService.remove(key);
-  }
-
-  /**
-   * Build the key to store data in local storage
-   */
-  // TODO: move to a utils service (buildStorageKey)
-  private _buildKey(tableName: string, key: string): string {
-    return `${tableName}_${key}`;
   }
 }

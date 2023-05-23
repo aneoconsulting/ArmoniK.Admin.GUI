@@ -57,7 +57,6 @@ export class FiltersToolbarComponent<T extends object> {
   }
 
   openFiltersDialog(): void {
-    console.log('openFiltersDialog', this.filters, this.filtersFields);
     const dialogRef = this._dialog.open(FiltersDialogComponent, {
       data: {
         filters: Array.from(this.filters),

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class StorageService implements Storage {
-
   #keysStorageKey = 'keys-storage';
   #keys: Set<string> = new Set();
 
@@ -59,6 +58,13 @@ export class StorageService implements Storage {
     this.#saveKeys();
   }
 
+  /**
+   * Build the key to store data in local storage
+   */
+  buildKey(tableName: string, key: string): string {
+    return `${tableName}_${key}`;
+  }
+
   exportData(): string {
     const data = {} as Record<string, string>;
 
@@ -89,5 +95,4 @@ export class StorageService implements Storage {
   #saveKeys() {
     this._localStorage.setItem(this.#keysStorageKey, JSON.stringify(Array.from(this.#keys)));
   }
-
 }

@@ -161,7 +161,6 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
   }
 
   onClear(filter: Filter<T>): void {
-    console.log(filter);
     filter.field = null;
     delete filter.value;
   }
