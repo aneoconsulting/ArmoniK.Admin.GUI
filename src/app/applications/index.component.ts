@@ -23,6 +23,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { CountByStatusComponent } from './components/count-by-status.component';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from './types';
@@ -61,10 +62,17 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ column }} </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions'">
-        <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+      <ng-container *ngIf="column !== 'actions' && column !== 'count'">
+        <td mat-cell *matCellDef="let element"> {{ element[column] }}
+      </td>
+      </ng-container>
+      <!-- Application's Tasks Count by Status -->
+      <ng-container *ngIf="column === 'count'">
+        <td mat-cell *matCellDef="let element">
+         <app-count-by-status [name]="element.name" [version]="element.version"></app-count-by-status>
+        </td>
       </ng-container>
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
@@ -107,6 +115,7 @@ app-table-actions-toolbar {
     NgFor,
     RouterLink,
     DragDropModule,
+    CountByStatusComponent,
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
@@ -194,7 +203,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.sharableURL = this._shareURLService.generateSharableURL(options, filters);
           this._applicationsIndexService.saveOptions(options);
 
-          return this._applicationsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
+          return this._applicationsGrpcService.list$(options, filters).pipe(catchError((error) => {
+            // TODO: Error management need to be improved (we can create a snackbar for example)
+            return of(null);
+          }));
         }),
         map(data => {
           this.isLoading = false;

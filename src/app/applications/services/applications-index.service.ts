@@ -4,11 +4,12 @@ import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
+// export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
+export class ApplicationsIndexService{
   readonly tableName: string = 'applications';
 
   readonly defaultColumns: ApplicationRawColumnKey[] = ['name', 'version', 'actions'];
-  readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions'];
+  readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
 
   readonly defaultOptions: ApplicationRawListOptions = {
     pageIndex: 0,

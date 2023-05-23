@@ -1,4 +1,4 @@
-import { ApplicationsClient, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationsClient, CountTasksByStatusApplicationRequest, CountTasksByStatusApplicationResponse, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -30,12 +30,12 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
     const findFilter = this._utilsService.findFilter;
     const convertFilterValue = this._utilsService.convertFilterValue;
 
-    const listPartitionsRequest = new ListApplicationsRequest({
+    const request = new ListApplicationsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
         direction: this.sortDirections[options.sort.direction],
-        fields: [this.sortFields[options.sort.active], ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME, ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_VERSION]
+        fields: [this.sortFields[options.sort.active]]
       },
       filter: {
         name: convertFilterValue(findFilter(filters, 'name')),
@@ -45,7 +45,7 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
       }
     });
 
-    return this._applicationsClient.listApplications(listPartitionsRequest);
+    return this._applicationsClient.listApplications(request);
   }
 
   get$(): Observable<never> {
@@ -57,5 +57,14 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
     // });
 
     // return this._applicationsClient.(getPartitionRequest);
+  }
+
+  countByStatus$(name: string, version: string): Observable<CountTasksByStatusApplicationResponse> {
+    const request = new CountTasksByStatusApplicationRequest({
+      name,
+      version
+    });
+
+    return this._applicationsClient.countTasksByStatus(request);
   }
 }

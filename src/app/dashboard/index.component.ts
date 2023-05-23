@@ -68,6 +68,8 @@ import { StatusCount, TasksStatusesGroup } from './types';
     ></app-statuses-group-card>
   </div>
 </app-page-section>
+
+<!-- TODO: Add applications with status count -->
   `,
   styles: [
     `
