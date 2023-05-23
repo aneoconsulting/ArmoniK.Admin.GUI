@@ -9,12 +9,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
+import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -24,8 +26,6 @@ import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
-import { IconsService } from '@services/icons.service';
-import { Page } from '@app/types/pages';
 
 @Component({
   selector: 'app-results-index',
