@@ -129,7 +129,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:37</note>
+        <note category="location">src/app/applications/index.component.ts:36</note>
         <note category="location">src/app/components/navigation/navigation.component.ts:101</note>
         <note category="description">Page title</note>
       </notes>
@@ -737,7 +737,7 @@
     </unit>
     <unit id="6961867803915534374">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:81</note>
+        <note category="location">src/app/applications/index.component.ts:80</note>
       </notes>
       <segment>
         <source> No actions available </source>
@@ -829,6 +829,54 @@
       </notes>
       <segment>
         <source>Processing</source>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
+      </notes>
+      <segment>
+        <source>Service</source>
+      </segment>
+    </unit>
+    <unit id="2724055831234181057">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Version</source>
+      </segment>
+    </unit>
+    <unit id="3193976279273491157">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:20</note>
+      </notes>
+      <segment>
+        <source>Actions</source>
+      </segment>
+    </unit>
+    <unit id="3294686077659093992">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
+      </notes>
+      <segment>
+        <source>Namespace</source>
+      </segment>
+    </unit>
+    <unit id="8570442593550462519">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
+      </notes>
+      <segment>
+        <source>Tasks by Status</source>
+      </segment>
+    </unit>
+    <unit id="8953033926734869941">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:15</note>
+      </notes>
+      <segment>
+        <source>Name</source>
       </segment>
     </unit>
   </file>

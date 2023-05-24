@@ -1,15 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
-export class ApplicationsIndexService{
+export class ApplicationsIndexService {
   readonly tableName: string = 'applications';
 
   readonly defaultColumns: ApplicationRawColumnKey[] = ['name', 'version', 'count'];
   readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
+
+  // TODO: Add it to AppIndexService and to every index service
+  readonly columnsLabels: Record<ApplicationRawColumnKey, string> = {
+    name: $localize`Name`,
+    namespace: $localize`Namespace`,
+    service: $localize`Service`,
+    version: $localize`Version`,
+    count: $localize`Tasks by Status`,
+    actions: $localize`Actions`,
+  };
 
   readonly defaultOptions: ApplicationRawListOptions = {
     pageIndex: 0,
@@ -42,18 +52,22 @@ export class ApplicationsIndexService{
 
   readonly defaultIntervalValue = 10;
 
-  constructor(private _tableService: TableService) {}
+  #tableSErvice = inject(TableService);
+
+  columnToLabel(column: ApplicationRawColumnKey): string {
+    return this.columnsLabels[column];
+  }
 
   /**
    * Interval
    */
 
   saveIntervalValue(value: number): void {
-    this._tableService.saveIntervalValue(this.tableName, value);
+    this.#tableSErvice.saveIntervalValue(this.tableName, value);
   }
 
   restoreIntervalValue(): number {
-    return this._tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableSErvice.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
   }
 
   /**
@@ -61,11 +75,11 @@ export class ApplicationsIndexService{
    */
 
   saveOptions(options: ApplicationRawListOptions): void {
-    this._tableService.saveOptions(this.tableName, options);
+    this.#tableSErvice.saveOptions(this.tableName, options);
   }
 
   restoreOptions(): ApplicationRawListOptions {
-    const options = this._tableService.restoreOptions<ApplicationRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableSErvice.restoreOptions<ApplicationRaw>(this.tableName, this.defaultOptions);
 
     return options;
   }
@@ -75,15 +89,15 @@ export class ApplicationsIndexService{
    */
 
   saveColumns(columns: ApplicationRawColumnKey[]): void {
-    this._tableService.saveColumns(this.tableName, columns);
+    this.#tableSErvice.saveColumns(this.tableName, columns);
   }
 
   restoreColumns(): ApplicationRawColumnKey[] {
-    return this._tableService.restoreColumns<ApplicationRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    return this.#tableSErvice.restoreColumns<ApplicationRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
   resetColumns(): ApplicationRawColumnKey[] {
-    this._tableService.resetColumns(this.tableName);
+    this.#tableSErvice.resetColumns(this.tableName);
 
     return this.defaultColumns;
   }
@@ -93,15 +107,15 @@ export class ApplicationsIndexService{
    */
 
   saveFilters(filters: ApplicationRawFilter[]): void {
-    this._tableService.saveFilters(this.tableName, filters);
+    this.#tableSErvice.saveFilters(this.tableName, filters);
   }
 
   restoreFilters(): ApplicationRawFilter[] {
-    return this._tableService.restoreFilters<ApplicationRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    return this.#tableSErvice.restoreFilters<ApplicationRawFilter[]>(this.tableName) ?? this.defaultFilters;
   }
 
   resetFilters(): ApplicationRawFilter[] {
-    this._tableService.resetFilters(this.tableName);
+    this.#tableSErvice.resetFilters(this.tableName);
 
     return this.defaultFilters;
   }

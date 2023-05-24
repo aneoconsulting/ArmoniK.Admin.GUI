@@ -9,7 +9,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
-import { TaskStatusService } from '@app/tasks/services/task-status.service';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -63,7 +62,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ column }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Application Column -->
       <ng-container *ngIf="column !== 'actions' && column !== 'count'">
         <td mat-cell *matCellDef="let element"> {{ element[column] }}
@@ -228,6 +227,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  columnToLabel(column: ApplicationRawColumnKey): string {
+    return this._applicationsIndexService.columnToLabel(column);
   }
 
   getIcon(name: Page): string {
