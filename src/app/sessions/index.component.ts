@@ -1,3 +1,4 @@
+import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -27,6 +28,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
+import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from './types';
 
 @Component({
@@ -65,16 +67,23 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId'">
-        <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status'">
+        <td mat-cell *matCellDef="let element">
+          <span> {{ element[column] }} </span>
+        </td>
       </ng-container>
-      <!-- TODO: for the status, show it name (like in dashboard) -->
       <!-- ID -->
       <ng-container *ngIf="column === 'sessionId'">
         <td mat-cell *matCellDef="let element">
           <a mat-button [routerLink]="['/sessions', element[column]]">
             {{ element[column] }}
           </a>
+        </td>
+      </ng-container>
+      <!-- Status -->
+      <ng-container *ngIf="column === 'status'">
+        <td mat-cell *matCellDef="let element">
+          <span> {{ statusToLabel(element[column]) }} </span>
         </td>
       </ng-container>
       <!-- Action -->
@@ -105,6 +114,7 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    SessionsStatusesService,
     IconsService,
     ShareUrlService,
     StorageService,
@@ -162,6 +172,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   subscriptions: Subscription = new Subscription();
 
   constructor(
+    private _sessionsStatusesService: SessionsStatusesService,
     private _iconsService: IconsService,
     private _shareURLService: ShareUrlService,
     private _sessionsIndexService: SessionsIndexService,
@@ -230,6 +241,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  statusToLabel(status: SessionStatus): string {
+    return this._sessionsStatusesService.statusToLabel(status);
   }
 
   getIcon(name: Page): string {
