@@ -72,9 +72,9 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
     const statusLabel = this.#taskStatusService.statusToLabel(status.status);
 
     if (status.count === 1) {
-      return `Task with status '${statusLabel}'`;
+      return $localize`Task with status '${statusLabel}'`;
     }
 
-    return `Tasks with status '${statusLabel}'`;
+    return $localize`Tasks with status '${statusLabel}'`;
   }
 }

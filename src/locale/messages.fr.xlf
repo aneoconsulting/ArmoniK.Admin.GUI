@@ -13,7 +13,7 @@
     <unit id="9090022123064190435">
       <segment state="initial">
         <source> This is your profile page. You can see your user data below. </source>
-        <target> Il s'agit de votre page profil. Vous pouvez y voir vos données utilisateur. </target>
+        <target> Il s&apos;agit de votre page profil. Vous pouvez y voir vos données utilisateur. </target>
       </segment>
       <notes>
         <note category="location">src/app/profile/index.component.ts:24,26</note>
@@ -22,7 +22,7 @@
     </unit>
     <unit id="8614260097416227361">
       <notes>
-        <note category="location">src/app/applications/components/count-by-status.component.ts:31</note>
+        <note category="location">src/app/applications/components/count-by-status.component.ts:29</note>
       </notes>
       <segment state="initial">
         <source>No tasks</source>
@@ -31,7 +31,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:36</note>
+        <note category="location">src/app/applications/index.component.ts:37</note>
         <note category="location">src/app/components/navigation/navigation.component.ts:101</note>
         <note category="description">Page title</note>
       </notes>
@@ -40,23 +40,14 @@
         <target> Applications </target>
       </segment>
     </unit>
-    <unit id="4478236184409141936">
+    <unit id="8189765531826618980">
       <notes>
         <note category="location">src/app/components/auto-refresh-button.component.ts:12</note>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:12</note>
         <note category="description">Open a dialog on click</note>
       </notes>
       <segment state="initial">
-        <source>Set-up Auto Refresh</source>
-        <target>Paramétrer le rafraîchissement automatique</target>
-      </segment>
-    </unit>
-    <unit id="5343488801195865845">
-      <notes>
-        <note category="location">src/app/components/auto-refresh-dialog.component.ts:12</note>
-        <note category="description">Dialog title</note>
-      </notes>
-      <segment state="initial">
-        <source>Setup Auto Refresh</source>
+        <source>Set up Auto Refresh</source>
         <target>Paramétrer le rafraîchissement automatique</target>
       </segment>
     </unit>
@@ -80,7 +71,7 @@
         <target>Interval</target>
       </segment>
     </unit>
-    <unit id="88740123q90997067175">
+    <unit id="8874012390997067175">
       <notes>
         <note category="location">src/app/components/auto-refresh-dialog.component.ts:23</note>
         <note category="description">Placeholder Input</note>
@@ -338,7 +329,7 @@
       </notes>
       <segment state="initial">
         <source> URL is <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">required</pc></source>
-        <target> L'URL est <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">requises</pc></target>
+        <target> L&apos;URL est <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">requises</pc></target>
       </segment>
     </unit>
     <unit id="4288089139881196777">
@@ -656,7 +647,7 @@
       </notes>
       <segment state="initial">
         <source> You do not have any roles. </source>
-        <target> Vous n'avez pas de rôles. </target>
+        <target> Vous n&apos;avez pas de rôles. </target>
       </segment>
     </unit>
     <unit id="419255520381103046">
@@ -665,7 +656,7 @@
       </notes>
       <segment state="initial">
         <source> You do not have any permissions. </source>
-        <target> Vous n'avez pas de permissions. </target>
+        <target> Vous n&apos;avez pas de permissions. </target>
       </segment>
     </unit>
     <unit id="8076376022845865451">
@@ -723,7 +714,7 @@
       </notes>
       <segment state="initial">
         <source> Delete data stored in your browser by this application. This will reset behavior and settings to their default values. </source>
-        <target> Supprime les données stockées dans votre navigateur par cette application. Cela va réinitialiser le comportement de l'application et mettre les paramètres à leurs valeurs par defaut. </target>
+        <target> Supprime les données stockées dans votre navigateur par cette application. Cela va réinitialiser le comportement de l&apos;application et mettre les paramètres à leurs valeurs par defaut. </target>
       </segment>
     </unit>
     <unit id="7808756054397155068">
@@ -804,6 +795,132 @@
       <segment state="initial">
         <source>Import</source>
         <target>Importer</target>
+      </segment>
+    </unit>
+    <unit id="5799868808252005599">
+      <notes>
+        <note category="location">src/app/applications/components/count-by-status.component.ts:75</note>
+      </notes>
+      <segment state="initial">
+        <source>Task with status &apos;<ph id="0" equiv="PH" disp="statusLabel"/>&apos;</source>
+        <target>Tâche avec le statut &apos;<ph id="0" equiv="PH" disp="statusLabel"/>&apos;</target>
+      </segment>
+    </unit>
+    <unit id="3603469830532179337">
+      <notes>
+        <note category="location">src/app/applications/components/count-by-status.component.ts:78</note>
+      </notes>
+      <segment state="initial">
+        <source>Tasks with status &apos;<ph id="0" equiv="PH" disp="statusLabel"/>&apos;</source>
+        <target>Tâche avec le statut &apos;<ph id="0" equiv="PH" disp="statusLabel"/>&apos;</target>
+      </segment>
+    </unit>
+    <unit id="6961867803915534374">
+      <notes>
+        <note category="location">src/app/applications/index.component.ts:81</note>
+      </notes>
+      <segment state="initial">
+        <source> No actions available </source>
+        <target> Acune action disponible </target>
+      </segment>
+    </unit>
+    <unit id="7726080656019750876">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:7</note>
+      </notes>
+      <segment state="initial">
+        <source>Unspecified</source>
+        <target>Non spécifié</target>
+      </segment>
+    </unit>
+    <unit id="5033937537861966242">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:8</note>
+      </notes>
+      <segment state="initial">
+        <source>Dispatched</source>
+        <target>Envoyée</target>
+      </segment>
+    </unit>
+    <unit id="8667665916832796867">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:9</note>
+      </notes>
+      <segment state="initial">
+        <source>Creating</source>
+        <target>Création</target>
+      </segment>
+    </unit>
+    <unit id="1612722476211621614">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:10</note>
+      </notes>
+      <segment state="initial">
+        <source>Submitted</source>
+        <target>Soumise</target>
+      </segment>
+    </unit>
+    <unit id="9155387182259025015">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:11</note>
+      </notes>
+      <segment state="initial">
+        <source>Processing</source>
+        <target>Traitement</target>
+      </segment>
+    </unit>
+    <unit id="4749295647449765550">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:12</note>
+      </notes>
+      <segment state="initial">
+        <source>Processed</source>
+        <target>Traitée</target>
+      </segment>
+    </unit>
+    <unit id="8990977482609744250">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:13</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancelling</source>
+        <target>Annulation</target>
+      </segment>
+    </unit>
+    <unit id="4043049091728011235">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:14</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancelled</source>
+        <target>Annulée</target>
+      </segment>
+    </unit>
+    <unit id="340430316261570792">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:15</note>
+      </notes>
+      <segment state="initial">
+        <source>Finished</source>
+        <target>Terminée</target>
+      </segment>
+    </unit>
+    <unit id="1519954996184640001">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:16</note>
+      </notes>
+      <segment state="initial">
+        <source>Error</source>
+        <target>Erreur</target>
+      </segment>
+    </unit>
+    <unit id="5956316725115867558">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:17</note>
+      </notes>
+      <segment state="initial">
+        <source>Timeout</source>
+        <target>Expirée</target>
       </segment>
     </unit>
   </file>
