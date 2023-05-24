@@ -156,7 +156,6 @@ export class ManageExternalServicesDialogComponent implements OnInit {
     const dialogRef = this.#dialog.open(AddExternalServiceDialogComponent, {});
 
     dialogRef.afterClosed().subscribe((externalService: ExternalService) => {
-      console.log(externalService);
       if (externalService) {
         this.externalServices.push(externalService);
       }
