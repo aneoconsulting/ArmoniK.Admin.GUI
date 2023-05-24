@@ -8,7 +8,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, Applicat
 export class ApplicationsIndexService{
   readonly tableName: string = 'applications';
 
-  readonly defaultColumns: ApplicationRawColumnKey[] = ['name', 'version', 'actions'];
+  readonly defaultColumns: ApplicationRawColumnKey[] = ['name', 'version', 'count'];
   readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
 
   readonly defaultOptions: ApplicationRawListOptions = {

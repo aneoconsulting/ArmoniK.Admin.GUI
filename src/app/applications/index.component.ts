@@ -77,9 +77,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
-          <a mat-icon-button aria-label="See application" matTooltip="See application">
-            <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-          </a>
+         <em i18n> No actions available </em>
         </td>
       </ng-container>
     </ng-container>
