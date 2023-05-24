@@ -1,9 +1,9 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subscription } from 'rxjs';
+import { TaskStatusService } from '@app/tasks/services/task-status.service';
+import { SpinnerComponent } from '@components/spinner.component';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { StatusCount } from '../types';
 
@@ -12,8 +12,7 @@ import { StatusCount } from '../types';
   template: `
 <ng-container *ngIf="statusCount; else noStatus">
   <ng-container *ngFor="let status of statusCount; let index = index">
-    <!-- TODO: Convert status to string (could create a service in order to have access from outside (see dashboard-index.service) -->
-    <span [matTooltip]="countTooltip(status.status)">
+    <span [matTooltip]="countTooltip(status)">
       <span>
         {{ status.count }}
       </span>
@@ -23,8 +22,7 @@ import { StatusCount } from '../types';
 </ng-container>
 
 <ng-container *ngIf="loading">
-  <!-- TODO: Create a component for small loader -->
-  <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+  <app-spinner></app-spinner>
 </ng-container>
 
 <ng-template #noStatus>
@@ -35,12 +33,13 @@ import { StatusCount } from '../types';
   `],
   standalone: true,
   providers: [
+    TaskStatusService
   ],
   imports: [
     NgIf,
     NgFor,
+    SpinnerComponent,
     MatTooltipModule,
-    MatProgressSpinnerModule
   ]
 })
 export class CountByStatusComponent implements AfterViewInit, OnDestroy {
@@ -51,6 +50,7 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
   loading = true;
 
   #applicationsGrpcService = inject(ApplicationsGrpcService);
+  #taskStatusService = inject(TaskStatusService);
 
   subscriptions = new Subscription();
 
@@ -68,8 +68,13 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  countTooltip(status: TaskStatus): string {
-    // TODO: localize with params
-    return `Task(s) with status '${status}'`;
+  countTooltip(status: StatusCount): string {
+    const statusLabel = this.#taskStatusService.statusToLabel(status.status);
+
+    if (status.count === 1) {
+      return `Task with status '${statusLabel}'`;
+    }
+
+    return `Tasks with status '${statusLabel}'`;
   }
 }
