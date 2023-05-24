@@ -44,6 +44,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
     <app-table-actions-toolbar
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels()"
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
       (refresh)="onRefresh()"
@@ -65,7 +66,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Application Column -->
       <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status'">
         <td mat-cell *matCellDef="let element">
@@ -241,6 +242,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  columnsLabels(): Record<SessionRawColumnKey, string> {
+    return this._sessionsIndexService.columnsLabels;
+  }
+
+  columnToLabel(column: SessionRawColumnKey): string {
+    return this._sessionsIndexService.columnToLabel(column);
   }
 
   statusToLabel(status: SessionStatus): string {

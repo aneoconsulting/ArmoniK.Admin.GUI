@@ -41,6 +41,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
     <app-table-actions-toolbar
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels()"
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
       (refresh)="onRefresh()"
@@ -227,6 +228,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  columnsLabels(): Record<ApplicationRawColumnKey, string> {
+    return this._applicationsIndexService.columnsLabels;
   }
 
   columnToLabel(column: ApplicationRawColumnKey): string {

@@ -40,6 +40,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
     <app-table-actions-toolbar
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels()"
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
       (refresh)="onRefresh()"
@@ -61,7 +62,9 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ column }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag>
+        {{ columnToLabel(column) }}
+      </th>
       <!-- Application Column -->
       <ng-container *ngIf="column !== 'actions'">
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
@@ -212,6 +215,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  columnsLabels(): Record<ResultRawColumnKey, string> {
+    return this._resultsIndexService.columnsLabels;
+  }
+
+  columnToLabel(column: ResultRawColumnKey): string {
+    return this._resultsIndexService.columnToLabel(column);
   }
 
   getIcon(name: Page): string {

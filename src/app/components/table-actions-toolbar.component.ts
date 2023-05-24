@@ -21,7 +21,13 @@ import { ColumnsButtonComponent } from './columns-button.component';
   <app-actions-toolbar-group>
     <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"> </app-auto-refresh-button>
 
-    <app-columns-button [displayedColumns]="displayedColumns" [availableColumns]="availableColumns" (displayedColumnsChange)="onDisplayedColumnsChange($event)"> </app-columns-button>
+    <app-columns-button
+      [columnsLabels]="columnsLabels"
+      [displayedColumns]="displayedColumns"
+      [availableColumns]="availableColumns"
+      (displayedColumnsChange)="onDisplayedColumnsChange($event)"
+    >
+    </app-columns-button>
 
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options">
       <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
@@ -53,6 +59,7 @@ import { ColumnsButtonComponent } from './columns-button.component';
 export class TableActionsToolbarComponent<T extends object> {
   @Input({ required: true }) refreshTooltip = '';
   @Input({ required: true }) intervalValue = 0;
+  @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T>[] = [];
   @Input({ required: true }) availableColumns: ColumnKey<T>[] = [];
 

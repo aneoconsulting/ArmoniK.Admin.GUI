@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
@@ -9,6 +9,17 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
 
   readonly defaultColumns: PartitionRawColumnKey[] = ['id', 'actions'];
   readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
+
+  readonly columnsLabels: Record<PartitionRawColumnKey, string> = {
+    id: $localize`ID`,
+    priority: $localize`Priority`,
+    parentPartitionIds: $localize`Parent Partition Ids`,
+    podConfiguration: $localize`Pod Configuration`,
+    podMax: $localize`Pod Max`,
+    podReserved: $localize`Pod Reserved`,
+    preemptionPercentage: $localize`Preemption Percentage`,
+    actions: $localize`Actions`,
+  };
 
   readonly defaultOptions: PartitionRawListOptions = {
     pageIndex: 0,
@@ -53,18 +64,22 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
 
   readonly defaultIntervalValue: number = 10;
 
-  constructor(private _tableService: TableService) {}
+  #tableService = inject(TableService);
+
+  columnToLabel(column: PartitionRawColumnKey): string {
+    return this.columnsLabels[column];
+  }
 
   /**
    * Interval
    */
 
   saveIntervalValue(value: number): void {
-    this._tableService.saveIntervalValue(this.tableName, value);
+    this.#tableService.saveIntervalValue(this.tableName, value);
   }
 
   restoreIntervalValue(): number {
-    return this._tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
   }
 
   /**
@@ -72,11 +87,11 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveOptions(options: PartitionRawListOptions): void {
-    this._tableService.saveOptions(this.tableName, options);
+    this.#tableService.saveOptions(this.tableName, options);
   }
 
   restoreOptions(): PartitionRawListOptions {
-    const options = this._tableService.restoreOptions<PartitionRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableService.restoreOptions<PartitionRaw>(this.tableName, this.defaultOptions);
 
     return options;
   }
@@ -86,15 +101,15 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveColumns(columns: PartitionRawColumnKey[]): void {
-    this._tableService.saveColumns(this.tableName, columns);
+    this.#tableService.saveColumns(this.tableName, columns);
   }
 
   restoreColumns(): PartitionRawColumnKey[] {
-    return this._tableService.restoreColumns<PartitionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    return this.#tableService.restoreColumns<PartitionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
   resetColumns(): PartitionRawColumnKey[] {
-    this._tableService.resetColumns(this.tableName);
+    this.#tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;
   }
@@ -104,15 +119,15 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveFilters(filters: PartitionRawFilter[]): void {
-    this._tableService.saveFilters(this.tableName, filters);
+    this.#tableService.saveFilters(this.tableName, filters);
   }
 
   restoreFilters(): PartitionRawFilter[] {
-    return this._tableService.restoreFilters<PartitionRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<PartitionRawFilter[]>(this.tableName) ?? this.defaultFilters;
   }
 
   resetFilters(): PartitionRawFilter[] {
-    this._tableService.resetFilters(this.tableName);
+    this.#tableService.resetFilters(this.tableName);
 
     return this.defaultFilters;
   }

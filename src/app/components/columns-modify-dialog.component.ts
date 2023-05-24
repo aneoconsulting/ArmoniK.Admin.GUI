@@ -17,7 +17,9 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 
   <div class="columns">
     <ng-container *ngFor="let column of availableColumns(); let index = index; trackBy:trackByColumn">
-        <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">{{ column }}</mat-checkbox>
+        <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ columnToLabel(column) }}
+        </mat-checkbox>
     </ng-container>
   </div>
 </mat-dialog-content>
@@ -44,12 +46,18 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 })
 export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
   columns: ColumnKey<T>[] = [];
+  columnsLabels: Record<ColumnKey<T>, string>;
 
   constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T>){}
 
   ngOnInit(): void {
     // Create a copy in order to not modify the original array
     this.columns = Array.from(this.data.currentColumns);
+    this.columnsLabels = this.data.columnsLabels;
+  }
+
+  columnToLabel(column: ColumnKey<T>): string {
+    return this.columnsLabels[column];
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ColumnKey } from '@app/types/data';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
@@ -10,6 +10,15 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
 
   readonly defaultColumns: ResultRawColumnKey[] = ['name', 'actions'];
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
+
+  readonly columnsLabels: Record<ResultRawColumnKey, string> = {
+    name: $localize`Name`,
+    status: $localize`Status`,
+    ownerTaskId: $localize`Owner Task ID`,
+    createdAt: $localize`Created at`,
+    sessionId: $localize`Session ID`,
+    actions: $localize`Actions`,
+  };
 
   readonly defaultOptions: ResultRawListOptions = {
     pageIndex: 0,
@@ -47,20 +56,22 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
 
   readonly defaultIntervalValue: number = 10;
 
-  constructor(
-    private _tableService: TableService,
-  ) {}
+  #tableService = inject(TableService);
+
+  columnToLabel(column: ResultRawColumnKey): string {
+    return this.columnsLabels[column];
+  }
 
   /**
    * Interval
    */
 
   saveIntervalValue(value: number): void {
-    this._tableService.saveIntervalValue(this.tableName, value);
+    this.#tableService.saveIntervalValue(this.tableName, value);
   }
 
   restoreIntervalValue(): number {
-    return this._tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
   }
 
   /**
@@ -68,11 +79,11 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveOptions(options: ResultRawListOptions): void {
-    this._tableService.saveOptions(this.tableName, options);
+    this.#tableService.saveOptions(this.tableName, options);
   }
 
   restoreOptions(): ResultRawListOptions {
-    const options = this._tableService.restoreOptions<ResultRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableService.restoreOptions<ResultRaw>(this.tableName, this.defaultOptions);
 
     return options;
   }
@@ -82,15 +93,15 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveColumns(columns: ColumnKey<ResultRaw>[]): void {
-    this._tableService.saveColumns(this.tableName, columns);
+    this.#tableService.saveColumns(this.tableName, columns);
   }
 
   restoreColumns(): ColumnKey<ResultRaw>[] {
-    return this._tableService.restoreColumns<ResultRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    return this.#tableService.restoreColumns<ResultRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
   resetColumns(): ResultRawColumnKey[] {
-    this._tableService.resetColumns(this.tableName);
+    this.#tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;
   }
@@ -100,15 +111,15 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveFilters(filtersFields: ResultRawFilter[]): void {
-    this._tableService.saveFilters(this.tableName, filtersFields);
+    this.#tableService.saveFilters(this.tableName, filtersFields);
   }
 
   restoreFilters(): ResultRawFilter[] {
-    return this._tableService.restoreFilters<ResultRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<ResultRawFilter[]>(this.tableName) ?? this.defaultFilters;
   }
 
   resetFilters(): ResultRawFilter[] {
-    this._tableService.resetFilters(this.tableName);
+    this.#tableService.resetFilters(this.tableName);
 
     return this.defaultFilters;
   }

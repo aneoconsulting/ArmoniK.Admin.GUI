@@ -24,6 +24,7 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   ]
 })
 export class ColumnsButtonComponent<T extends object> {
+  @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T>[] = [];
   @Input({ required: true }) availableColumns: ColumnKey<T>[];
 
@@ -34,6 +35,7 @@ export class ColumnsButtonComponent<T extends object> {
   openModifyColumnsDialog(): void {
     const dialogRef = this._dialog.open(ColumnsModifyDialogComponent, {
       data: {
+        columnsLabels: this.columnsLabels,
         currentColumns: this.displayedColumns,
         availableColumns: this.availableColumns
       }
