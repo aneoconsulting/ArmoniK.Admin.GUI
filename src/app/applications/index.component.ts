@@ -33,7 +33,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
   template: `
 <app-page-header [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('applications')"></mat-icon>
-  <span matListItemTitle> Applications </span>
+  <span matListItemTitle i18n="Page title"> Applications </span>
 </app-page-header>
 
 <mat-toolbar>

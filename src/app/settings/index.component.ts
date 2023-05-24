@@ -16,20 +16,20 @@ import { StorageService } from '@services/storage.service';
   selector: 'app-settings-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
-  <span matListItemTitle> Settings </span>
+  <mat-icon aria-hidden="true" fontIcon="settings"></mat-icon>
+  <span i18n="Page title"> Settings </span>
 </app-page-header>
 
-<p>
+<p i18n="Page description">
   Settings are stored in your browser. They are not synced across devices. But you can export and import them manually. This is useful if you want to use the same settings on multiple devices or browsers. You can also create presets and switch between them.
 </p>
 
 <app-page-section class="storage">
   <app-page-section-header icon="storage">
-    Storage
+    <span i18n="Section title"> Storage </span>
   </app-page-section-header>
 
-  <p>
+  <p i18n="Section description">
     Delete data stored in your browser by this application. This will reset behavior and settings to their default values.
   </p>
 
@@ -43,44 +43,44 @@ import { StorageService } from '@services/storage.service';
     </ul>
 
     <div class="actions">
-      <button mat-stroked-button type="reset">Reset</button>
-      <button mat-flat-button color="warn" type="submit">Clear</button>
+      <button mat-stroked-button type="reset" i18n="Form">Reset</button>
+      <button mat-flat-button color="warn" type="submit" i18n="Form">Clear</button>
     </div>
   </form>
 </app-page-section>
 
 <app-page-section class="export">
   <app-page-section-header icon="file_download">
-    Export your data
+    <span i18n="Section title"> Export your data </span>
   </app-page-section-header>
 
-  <p>
+  <p i18n="Section description">
     Export your settings as a JSON file. This file can be imported later to restore your settings.
   </p>
 
   <div class="actions">
-    <button mat-flat-button color="primary" (click)="exportData()">Export</button>
+    <button mat-flat-button color="primary" (click)="exportData()" i18n>Export</button>
   </div>
 </app-page-section>
 
 <app-page-section class="import">
   <app-page-section-header icon="file_upload">
-    Import your data
+    <span i18n="Section title"> Import your data </span>
   </app-page-section-header>
 
-  <p>
+  <p i18n="Section description">
     Import your settings from a JSON file. This will overwrite your current settings.
   </p>
 
   <form (submit)="onSubmitImport($event)">
     <div class="file">
-      <label for="file">File</label>
+      <label for="file" i18n="Label input">File</label>
       <input id="file" type="file" accept="application/json" required>
     </div>
 
     <div class="actions">
-      <button mat-stroked-button type="reset">Reset</button>
-      <button mat-flat-button color="primary" type="submit">Import</button>
+      <button mat-stroked-button type="reset" i18n="Form">Reset</button>
+      <button mat-flat-button color="primary" type="submit" i18n="Form">Import</button>
     </div>
   </form>
 </app-page-section>

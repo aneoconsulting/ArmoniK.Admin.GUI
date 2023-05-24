@@ -28,7 +28,7 @@ import { StatusCount } from '../types';
 </ng-container>
 
 <ng-template #noStatus>
-  <em *ngIf="!loading">No tasks</em>
+  <em *ngIf="!loading" i18n>No tasks</em>
 </ng-template>
   `,
   styles: [`
@@ -69,6 +69,7 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
   }
 
   countTooltip(status: TaskStatus): string {
+    // TODO: localize with params
     return `Task(s) with status '${status}'`;
   }
 }

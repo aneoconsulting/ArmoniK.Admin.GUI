@@ -62,7 +62,7 @@ dependencies:
 devDependencies:
   '@angular-devkit/build-angular':
     specifier: ^16.0.1
-    version: 16.0.1(@angular/compiler-cli@16.0.1)(@types/node@20.1.0)(karma@6.4.2)(ts-node@10.9.1)(typescript@5.0.4)
+    version: 16.0.1(@angular/compiler-cli@16.0.1)(@angular/localize@16.0.1)(@types/node@20.1.0)(karma@6.4.2)(ts-node@10.9.1)(typescript@5.0.4)
   '@angular-eslint/builder':
     specifier: 16.0.2
     version: 16.0.2(eslint@8.40.0)(typescript@5.0.4)
@@ -84,6 +84,9 @@ devDependencies:
   '@angular/compiler-cli':
     specifier: ^16.0.1
     version: 16.0.1(@angular/compiler@16.0.1)(typescript@5.0.4)
+  '@angular/localize':
+    specifier: 16.0.1
+    version: 16.0.1(@angular/compiler-cli@16.0.1)(@angular/compiler@16.0.1)
   '@types/google-protobuf':
     specifier: ^3.15.6
     version: 3.15.6
@@ -129,6 +132,9 @@ devDependencies:
   karma-jasmine-html-reporter:
     specifier: ~2.0.0
     version: 2.0.0(jasmine-core@4.6.0)(karma-jasmine@5.1.0)(karma@6.4.2)
+  ng-extract-i18n-merge:
+    specifier: 2.7.0
+    version: 2.7.0(@angular-devkit/build-angular@16.0.1)
   typescript:
     specifier: ~5.0.4
     version: 5.0.4
@@ -174,7 +180,7 @@ packages:
       - chokidar
     dev: true
 
-  /@angular-devkit/build-angular@16.0.1(@angular/compiler-cli@16.0.1)(@types/node@20.1.0)(karma@6.4.2)(ts-node@10.9.1)(typescript@5.0.4):
+  /@angular-devkit/build-angular@16.0.1(@angular/compiler-cli@16.0.1)(@angular/localize@16.0.1)(@types/node@20.1.0)(karma@6.4.2)(ts-node@10.9.1)(typescript@5.0.4):
     resolution: {integrity: sha512-VFhUViBfONOf6Ji4Lfkxlk+GN5l8Owm4Z0McqUIegrXsq3aSSStBBFdaDESpzhS6GIGqEBjjHMUQK8IlWT+EIQ==}
     engines: {node: ^16.14.0 || >=18.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -214,6 +220,7 @@ packages:
       '@angular-devkit/build-webpack': 0.1600.1(chokidar@3.5.3)(webpack-dev-server@4.13.2)(webpack@5.80.0)
       '@angular-devkit/core': 16.0.1(chokidar@3.5.3)
       '@angular/compiler-cli': 16.0.1(@angular/compiler@16.0.1)(typescript@5.0.4)
+      '@angular/localize': 16.0.1(@angular/compiler-cli@16.0.1)(@angular/compiler@16.0.1)
       '@babel/core': 7.21.4
       '@babel/generator': 7.21.4
       '@babel/helper-annotate-as-pure': 7.18.6
@@ -568,6 +575,23 @@ packages:
       rxjs: 7.8.1
       tslib: 2.5.0
     dev: false
+
+  /@angular/localize@16.0.1(@angular/compiler-cli@16.0.1)(@angular/compiler@16.0.1):
+    resolution: {integrity: sha512-2zC7KE/JUA/JCHP+kEDSF8iZ9cyvd6OAPFE74yH8FjixQsaq9WhXiPtGkHC0bg9hWH858bRcCmA9BZr+zjntvA==}
+    engines: {node: ^16.14.0 || >=18.10.0}
+    hasBin: true
+    peerDependencies:
+      '@angular/compiler': 16.0.1
+      '@angular/compiler-cli': 16.0.1
+    dependencies:
+      '@angular/compiler': 16.0.1(@angular/core@16.0.1)
+      '@angular/compiler-cli': 16.0.1(@angular/compiler@16.0.1)(typescript@5.0.4)
+      '@babel/core': 7.19.3
+      glob: 8.1.0
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@angular/material-luxon-adapter@16.0.1(@angular/core@16.0.1)(@angular/material@16.0.1)(luxon@3.3.0):
     resolution: {integrity: sha512-cOocsNiaaqTnp3jfahRuuM8R2auavBeHWJWFTkGAGk9qfj5rO3cgKCUT/33WIFR2VTnBBExy39eIz73c4ePdfg==}
@@ -4643,6 +4667,16 @@ packages:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
     dev: true
 
+  /commander@7.1.0:
+    resolution: {integrity: sha512-pRxBna3MJe6HKnBGsDyMv8ETbptw3axEdYHoqNh7gu5oDcew8fs0xnivZGm06Ogk8zGAJ9VX+OPEr2GXEQK4dg==}
+    engines: {node: '>= 10'}
+    dev: true
+
+  /commander@8.3.0:
+    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
+    engines: {node: '>= 12'}
+    dev: true
+
   /commondir@1.0.1:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
     dev: true
@@ -6791,6 +6825,11 @@ packages:
     hasBin: true
     dev: true
 
+  /js-levenshtein@1.1.6:
+    resolution: {integrity: sha512-X2BB11YZtrRqY4EnQcLX5Rh373zbK4alC1FW7D7MBhL2gtcC17cTnr6DmfHZeS0s2rTHjUTMMHfG7gO8SSdw+g==}
+    engines: {node: '>=0.10.0'}
+    dev: true
+
   /js-sdsl@4.4.0:
     resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==}
     dev: true
@@ -7505,6 +7544,23 @@ packages:
 
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+    dev: true
+
+  /ng-extract-i18n-merge@2.7.0(@angular-devkit/build-angular@16.0.1):
+    resolution: {integrity: sha512-HG0Gjg4J8GqkROQSdHeCS1jtqz3ExzswH2zA8nbJNZU5ctA25O8dpfSXVl63PWxNhYtJOnP4rEPXNiyvlHaHwA==}
+    peerDependencies:
+      '@angular-devkit/build-angular': ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@angular-devkit/architect': 0.1600.1(chokidar@3.5.3)
+      '@angular-devkit/build-angular': 16.0.1(@angular/compiler-cli@16.0.1)(@angular/localize@16.0.1)(@types/node@20.1.0)(karma@6.4.2)(ts-node@10.9.1)(typescript@5.0.4)
+      '@angular-devkit/core': 16.0.1(chokidar@3.5.3)
+      '@angular-devkit/schematics': 16.0.1
+      '@schematics/angular': 16.0.1
+      xliff-simple-merge: 1.0.2
+      xml_normalize: 1.0.0
+      xmldoc: 1.1.4
+    transitivePeerDependencies:
+      - chokidar
     dev: true
 
   /nice-napi@1.0.2:
@@ -8588,7 +8644,6 @@ packages:
   /sax@1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
     dev: true
-    optional: true
 
   /schema-utils@3.1.2:
     resolution: {integrity: sha512-pvjEHOgWc9OWA/f/DE3ohBWTD6EleVLf7iFUkoSwAxttdBhB9QUebQgxER2kWueOvRJXPHNnyrvvh9eZINB8Eg==}
@@ -9860,6 +9915,29 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: true
+
+  /xliff-simple-merge@1.0.2:
+    resolution: {integrity: sha512-9Dtw/l91o0DeLkNFJrlh5nxJSS8OD+IHeq5rjA6hkVtv6SWf7rJyr4YNSQc/6opDssRI8JgAWcQlj2ZfcvW11Q==}
+    hasBin: true
+    dependencies:
+      commander: 8.3.0
+      js-levenshtein: 1.1.6
+      xmldoc: 1.1.4
+    dev: true
+
+  /xml_normalize@1.0.0:
+    resolution: {integrity: sha512-VzDbw9DW849WoLor6CP1eIPiVWwbq8CV3dlSrfVfsMqBqvp3VVkmLxA8J55WyLf6CnAf2sV29TQO77BKM/cxBw==}
+    hasBin: true
+    dependencies:
+      commander: 7.1.0
+      xmldoc: 1.1.4
+    dev: true
+
+  /xmldoc@1.1.4:
+    resolution: {integrity: sha512-rQshsBGR5s7pUNENTEncpI2LTCuzicri0DyE4SCV5XmS0q81JS8j1iPijP0Q5c4WLGbKh3W92hlOwY6N9ssW1w==}
+    dependencies:
+      sax: 1.2.4
     dev: true
 
   /y18n@5.0.8:

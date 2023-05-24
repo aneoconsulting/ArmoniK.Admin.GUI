@@ -9,7 +9,7 @@ import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.comp
   template: `
 <button mat-stroked-button (click)="openAutoRefreshDialog()">
   <mat-icon aria-hidden="true" fontIcon="autorenew"></mat-icon>
-  <span>Set-up Auto Refresh</span>
+  <span i18n="Open a dialog on click">Set up Auto Refresh</span>
 </button>
   `,
   styles: [`

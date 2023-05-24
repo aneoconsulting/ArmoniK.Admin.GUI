@@ -15,17 +15,17 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog',
   template: `
-    <h2 mat-dialog-title>Filters</h2>
+    <h2 mat-dialog-title i18n="Dialog title">Filters</h2>
 
     <mat-dialog-content>
-      <p>Build your filters</p>
+      <p i18n="Dialog description">Build your filters</p>
 
       <div class="filters">
         <div class="filter" *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
-          <span *ngIf="index === 0">Where</span>
-          <span *ngIf="index > 0">And</span>
+          <span *ngIf="index === 0" i18n="Filter condition">Where</span>
+          <span *ngIf="index > 0" i18n="Filter condition">And</span>
           <mat-form-field appearance="outline"  subscriptSizing="dynamic">
-            <mat-label>Column</mat-label>
+            <mat-label i18n="Label input">Column</mat-label>
             <mat-select (valueChange)="onFieldChange(index, $event)" [value]="filter.field">
               <mat-option *ngFor="let column of availableFiltersFields(); trackBy: trackByField" [value]="column.field" [disabled]="disableField(column)">
                 {{ column.field }}
@@ -33,7 +33,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
             </mat-select>
           </mat-form-field>
 
-          <span>is</span>
+          <span i18n>is</span>
 
           <app-filters-dialog-input [input]="findInput(filter)" (valueChange)="onInputValueChange(index, $event)"></app-filters-dialog-input>
           <!-- TODO: create a component to harmonize interface and which is able to select the correct field -->
@@ -49,11 +49,11 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onClear(filter)">
               <mat-icon aria-hidden="true" fontIcon="clear"></mat-icon>
-              <span>Clear</span>
+              <span i18n>Clear</span>
             </button>
             <button mat-menu-item (click)="onRemove(index)" [disabled]="filters.length === 1 && index === 0">
               <mat-icon aria-hidden="true" fontIcon="delete"></mat-icon>
-              <span>Remove</span>
+              <span i18n>Remove</span>
             </button>
           </mat-menu>
         </div>
@@ -61,13 +61,13 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
       <button class="add-filter" mat-button (click)="addFilter()">
         <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
-        <span>Add a filter rule</span>
+        <span i18n>Add a filter rule</span>
       </button>
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()"> Cancel </button>
-      <button mat-flat-button [mat-dialog-close]="filters" color="primary"> Confirm </button>
+      <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+      <button mat-flat-button [mat-dialog-close]="filters" color="primary" i18n="Dialog action"> Confirm </button>
     </mat-dialog-actions>
     `,
   styles: [`

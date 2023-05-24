@@ -33,7 +33,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
   template: `
 <app-page-header [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
-  <span>Partitions</span>
+  <span i18n="Page title">Partitions</span>
 </app-page-header>
 
 <mat-toolbar>
@@ -89,7 +89,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of partitions">
+  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of partitions" i18n-aria-label>
     </mat-paginator>
 </app-table-container>
   `,

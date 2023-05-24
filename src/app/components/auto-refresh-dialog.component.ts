@@ -9,16 +9,17 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
 @Component({
   selector: 'app-auto-refresh-dialog',
   template: `
-    <h2 mat-dialog-title>Setup Auto Refresh</h2>
+    <h2 mat-dialog-title i18n="Dialog title">Set up Auto Refresh</h2>
 
     <mat-dialog-content>
-      <p>
+      <p i18n="Dialog description">
         Enter the number of seconds between each refresh. Use 0 to disable.
       </p>
 
       <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Interval</mat-label>
+        <mat-label i18n="Label Input">Interval</mat-label>
         <input type="number"
+        i18n-placeholder="Placeholder Input"
         placeholder="Seconds"
         aria-label="Number"
         matInput
@@ -37,8 +38,8 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()"> Cancel </button>
-      <button mat-flat-button [mat-dialog-close]="value" color="primary"> Confirm </button>
+      <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+      <button mat-flat-button [mat-dialog-close]="value" color="primary" i18n="Dialog action"> Confirm </button>
     </mat-dialog-actions>
   `,
   styles: [''],

@@ -6,7 +6,7 @@ import { AddStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../
 @Component({
   selector: 'app-add-statuses-group-dialog',
   template: `
-<h2 mat-dialog-title>Add a group</h2>
+<h2 mat-dialog-title i18n="Dialog title">Add a group</h2>
 
 <app-form-statuses-group
   [group]="null"

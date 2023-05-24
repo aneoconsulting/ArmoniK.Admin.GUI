@@ -14,7 +14,7 @@ COPY src ./src
 COPY tsconfig.* ./
 COPY angular.json ./
 
-RUN nr build --base-href=/admin/en/
+RUN nr build --base-href=/admin/
 
 FROM nginx:stable as production
 

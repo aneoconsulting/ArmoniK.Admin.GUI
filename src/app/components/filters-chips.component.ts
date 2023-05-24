@@ -10,6 +10,7 @@ import { Filter } from '@app/types/filters';
   <mat-chip-listbox>
     <ng-container *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
       <mat-chip [matTooltip]="toolTip(filter)">
+        <!-- TODO: localize -->
         <span> {{ filter.field ?? 'No value' }} </span>
       </mat-chip>
     </ng-container>
@@ -29,11 +30,14 @@ export class FiltersChipsComponent<T extends object> {
 
   toolTip(filter: Filter<T>): string {
     if (!filter.value)
+    // TODO: localize
       return 'No value';
 
     if (filter.value instanceof Object)
+    // TODO: localize with param
       return (filter.field as string) + '=' + 'from ' + filter.value.start + ' to ' + filter.value.end;
 
+    // TODO: localize with param
     return (filter.field as string) + '=' + filter.value;
   }
 

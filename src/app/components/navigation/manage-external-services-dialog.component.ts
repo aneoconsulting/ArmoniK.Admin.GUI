@@ -15,7 +15,7 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
 @Component({
   selector: 'app-manage-external-services',
   template: `
-<h2 mat-dialog-title> Manage External Services </h2>
+<h2 mat-dialog-title i18n="Dialog title"> Manage External Services </h2>
 
 <mat-dialog-content>
   <mat-toolbar>
@@ -23,7 +23,7 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
       <app-actions-toolbar-group>
         <button mat-stroked-button (click)="addExternalService()">
           <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
-          <span>Add a service</span>
+          <span i18n="Add an external service">Add a service</span>
         </button>
       </app-actions-toolbar-group>
     </app-actions-toolbar>
@@ -49,8 +49,8 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="externalServices" color="primary"> Confirm </button>
+  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button [mat-dialog-close]="externalServices" color="primary" i18n="Dialog action"> Confirm </button>
 </mat-dialog-actions>
   `,
   styles: [`

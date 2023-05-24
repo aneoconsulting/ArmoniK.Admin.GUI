@@ -16,7 +16,7 @@ import { FiltersDialogComponent } from '@components/filters-dialog.component';
 
     <button mat-button (click)="openFiltersDialog()">
       <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
-      <span>Manage filters</span>
+      <span i18n="User will be able the create or delete filters">Manage filters</span>
     </button>
 </div>
   `,

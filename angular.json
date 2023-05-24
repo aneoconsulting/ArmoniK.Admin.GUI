@@ -10,6 +10,12 @@
   "newProjectRoot": "projects",
   "projects": {
     "armonik-admin-gui": {
+      "i18n": {
+        "sourceLocale": "en",
+        "locales": {
+          "fr": "src/locale/messages.fr.xlf"
+        }
+      },
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -31,7 +37,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/admin/en",
+            "localize": true,
+            "outputPath": "dist/admin",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -49,6 +56,16 @@
             "scripts": []
           },
           "configurations": {
+            "en": {
+              "localize": [
+                "en"
+              ]
+            },
+            "fr": {
+              "localize": [
+                "fr"
+              ]
+            },
             "production": {
               "budgets": [
                 {
@@ -85,15 +102,24 @@
               "browserTarget": "armonik-admin-gui:build:production"
             },
             "development": {
-              "browserTarget": "armonik-admin-gui:build:development"
+              "browserTarget": "armonik-admin-gui:build:development,en"
+            },
+            "fr": {
+              "browserTarget": "armonik-admin-gui:build:development,fr"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "ng-extract-i18n-merge:ng-extract-i18n-merge",
           "options": {
-            "browserTarget": "armonik-admin-gui:build"
+            "browserTarget": "armonik-admin-gui:build",
+            "format": "xlf2",
+            "includeContext": true,
+            "outputPath": "src/locale",
+            "targetFiles": [
+              "messages.fr.xlf"
+            ]
           }
         },
         "test": {

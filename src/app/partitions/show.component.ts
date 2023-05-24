@@ -14,7 +14,7 @@ import { PartitionRaw } from './types';
   template: `
 <app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="donut_small"></mat-icon>
-  <span>Partition</span>
+  <span i18n="Page title">Partition</span>
 </app-show-page>
   `,
   styles: [`

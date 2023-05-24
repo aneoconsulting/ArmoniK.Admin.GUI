@@ -30,12 +30,12 @@ import { StatusCount, TasksStatusesGroup } from './types';
   template: `
 <app-page-header [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="dashboard"></mat-icon>
-  <span>Dashboard</span>
+  <span i18n="Page title"> Dashboard </span>
 </app-page-header>
 
 <app-page-section>
   <app-page-section-header icon="adjust">
-    Tasks by status
+    <span i18n="Section title"> Tasks by status </span>
   </app-page-section-header>
 
   <mat-toolbar>
@@ -52,8 +52,8 @@ import { StatusCount, TasksStatusesGroup } from './types';
           <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onToggleGroupsHeader()">Toggle Groups Header</button>
-          <button mat-menu-item (click)="onManageGroupsDialog()">Manage Groups</button>
+          <button mat-menu-item (click)="onToggleGroupsHeader()" i18n>Toggle Groups Header</button>
+          <button mat-menu-item (click)="onManageGroupsDialog()" i18n>Manage Groups</button>
         </mat-menu>
       </app-actions-toolbar-group>
     </app-actions-toolbar>
@@ -68,8 +68,6 @@ import { StatusCount, TasksStatusesGroup } from './types';
     ></app-statuses-group-card>
   </div>
 </app-page-section>
-
-<!-- TODO: Add applications with status count -->
   `,
   styles: [
     `

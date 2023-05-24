@@ -17,7 +17,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
 
 @Component({
   template: `
-<h2 mat-dialog-title>Manage Groups</h2>
+<h2 mat-dialog-title i18n="Dialog title">Manage Groups</h2>
 
 <mat-dialog-content>
   <mat-toolbar>
@@ -25,7 +25,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
       <app-actions-toolbar-group>
         <button mat-stroked-button (click)="openAddStatusGroupModal()">
           <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
-          <span>Add a group</span>
+          <span i18n="Open a modal on click">Add a group</span>
         </button>
       </app-actions-toolbar-group>
     </app-actions-toolbar>
@@ -38,9 +38,11 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
           {{ group.name }}
         </h3>
         <div class="group-header-actions">
+          <!-- TODO: localize label with param -->
           <button mat-icon-button (click)="openEditStatusGroupModal(group)" [attr.aria-label]="'Edit the group ' + group.name">
             <mat-icon  fontIcon="edit"></mat-icon>
           </button>
+          <!-- TODO: localize label with param -->
           <button mat-icon-button (click)="onDelete(group)" [attr.aria-label]="'Delete the group ' + group.name">
             <mat-icon fontIcon="delete"></mat-icon>
           </button>
@@ -60,8 +62,8 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="groups" color="primary"> Confirm </button>
+  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button [mat-dialog-close]="groups" color="primary" i18n="Dialog action"> Confirm </button>
 </mat-dialog-actions>
   `,
   styles: [`

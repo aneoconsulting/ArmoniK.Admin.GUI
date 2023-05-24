@@ -27,8 +27,8 @@ import { ColumnsButtonComponent } from './columns-button.component';
       <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onResetColumns()">Reset Columns</button>
-      <button mat-menu-item (click)="onResetFilters()">Reset Filters</button>
+      <button mat-menu-item (click)="onResetColumns()" i18n>Reset Columns</button>
+      <button mat-menu-item (click)="onResetFilters()" i18n>Reset Filters</button>
       <!-- Currently, it's impossible to reset sort programmatically. -->
     </mat-menu>
   </app-actions-toolbar-group>

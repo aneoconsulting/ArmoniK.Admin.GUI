@@ -9,9 +9,9 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   selector: 'app-columns-button',
   template: `
 <button mat-stroked-button (click)="openModifyColumnsDialog()">
-    <mat-icon aria-hidden="true" fontIcon="view_column"></mat-icon>
-    <span>Modify Columns</span>
-  </button>
+  <mat-icon aria-hidden="true" fontIcon="view_column"></mat-icon>
+  <span i18n="Open a dialog on click">Modify Columns</span>
+</button>
   `,
   styles: [`
   `],

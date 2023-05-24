@@ -16,12 +16,12 @@ import { PermissionGroup } from './types';
 <app-page-header [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="account_circle"></mat-icon>
   <span>
-    <span> Profile from </span>
+    <span i18n="Page title"> Profile from </span>
     <span> {{ user.username }} </span>
   </span>
 </app-page-header>
 
-<p>
+<p i18n="Description of the page">
   This is your profile page. You can see your user data below.
 </p>
 
@@ -44,7 +44,7 @@ import { PermissionGroup } from './types';
 
 <app-page-section>
   <app-page-section-header icon="lock">
-    Permissions
+    <span i18n="Section title"> Permissions </span>
   </app-page-section-header>
 
   <ng-container *ngIf="user.permissions && user.permissions.length; else noPermissions">
@@ -71,7 +71,7 @@ import { PermissionGroup } from './types';
 
 <ng-template #noRoles>
   <p>
-    <em>
+    <em i18n>
       You do not have any roles.
     </em>
   </p>
@@ -79,7 +79,7 @@ import { PermissionGroup } from './types';
 
 <ng-template #noPermissions>
   <p>
-    <em>
+    <em i18n>
       You do not have any permissions.
     </em>
   </p>

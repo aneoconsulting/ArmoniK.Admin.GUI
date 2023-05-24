@@ -9,22 +9,23 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
   selector: 'app-add-columns-dialog',
-  template: `<h2 mat-dialog-title>Modify Columns</h2>
+  template: `
+<h2 mat-dialog-title i18n="Dialog title">Modify Columns</h2>
 
-  <mat-dialog-content>
-    <p>Check box to add or remove a column</p>
+<mat-dialog-content>
+  <p i18n="Dialog description">Check box to add or remove a column</p>
 
-    <div class="columns">
-      <ng-container *ngFor="let column of availableColumns(); let index = index; trackBy:trackByColumn">
-          <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">{{ column }}</mat-checkbox>
-      </ng-container>
-    </div>
-  </mat-dialog-content>
+  <div class="columns">
+    <ng-container *ngFor="let column of availableColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">{{ column }}</mat-checkbox>
+    </ng-container>
+  </div>
+</mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()"> Cancel </button>
-    <button mat-flat-button [mat-dialog-close]="columns" color="primary"> Confirm </button>
-  </mat-dialog-actions>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button [mat-dialog-close]="columns" color="primary" i18n="Dialog action"> Confirm </button>
+</mat-dialog-actions>
   `,
   styles: [`
   .columns {

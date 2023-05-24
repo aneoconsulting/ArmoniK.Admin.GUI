@@ -6,10 +6,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-refresh-button',
   template: `
-    <button mat-flat-button color="primary" (click)="onClick()" [matTooltip]="tooltip">
-      <mat-icon aria-hidden="true" fontIcon="refresh"></mat-icon>
-      <span>Refresh</span>
-    </button>
+<button mat-flat-button color="primary" (click)="onClick()" [matTooltip]="tooltip">
+  <mat-icon aria-hidden="true" fontIcon="refresh"></mat-icon>
+  <span i18n>Refresh</span>
+</button>
   `,
   styles: [`
   `],

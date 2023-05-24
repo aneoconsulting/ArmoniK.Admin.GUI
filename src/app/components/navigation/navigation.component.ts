@@ -42,7 +42,7 @@ import pkg from '../../../../package.json';
       <div class="spacer"></div>
        <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
         <mat-icon matListItemIcon aria-hidden="true" fontIcon="arrow_drop_down"></mat-icon>
-        <span>
+        <span i18n="Button to view external services">
           External Services
         </span>
       </button>
@@ -56,7 +56,7 @@ import pkg from '../../../../package.json';
         <mat-divider *ngIf="externalServices.length"></mat-divider>
         <button mat-menu-item (click)="manageExternalServices()">
           <mat-icon matListItemIcon aria-hidden="true" fontIcon="tune"></mat-icon>
-          <span>Manage service</span>
+          <span i18n="Button">Manage service</span>
         </button>
       </mat-menu>
       <button mat-button class="version" [matMenuTriggerFor]="versionMenu">
@@ -68,11 +68,11 @@ import pkg from '../../../../package.json';
       <mat-menu #versionMenu="matMenu">
         <a mat-menu-item [href]="'https://github.com/esoubiran-aneo/armonik-admin-gui/releases/v' + version" target="_blank" rel="noopener noreferrer">
           <mat-icon matListItemIcon aria-hidden="true" fontIcon="update"></mat-icon>
-          <span>Changelog</span>
+          <span i18n="Button">Changelog</span>
         </a>
         <a mat-menu-item href="https://esoubiran-aneo.github.io/armonik-admin-gui" target="_blank" rel="noopener">
           <mat-icon matListItemIcon aria-hidden="true" fontIcon="help_outline"></mat-icon>
-          <span>Documentation</span>
+          <span i18n="Button">Documentation</span>
         </a>
       </mat-menu>
     </mat-toolbar>
@@ -84,43 +84,43 @@ import pkg from '../../../../package.json';
         <mat-nav-list>
           <a mat-list-item routerLink="/profile" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="account_circle"></mat-icon>
-            <span matListItemTitle> Profile </span>
+            <span matListItemTitle i18n="Navigation link"> Profile </span>
           </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <mat-nav-list>
           <a mat-list-item routerLink="/dashboard" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="dashboard"></mat-icon>
-            <span matListItemTitle> Dashboard </span>
+            <span matListItemTitle i18n="Navigation link"> Dashboard </span>
           </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <mat-nav-list>
           <a mat-list-item routerLink="/applications" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('applications')"></mat-icon>
-            <span matListItemTitle> Applications </span>
+            <span matListItemTitle i18n="Navigation link"> Applications </span>
           </a>
           <a mat-list-item routerLink="/partitions" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
-            <span matListItemTitle> Partitions </span>
+            <span matListItemTitle i18n="Navigation link"> Partitions </span>
           </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <mat-nav-list>
           <a mat-list-item routerLink="/sessions" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
-            <span matListItemTitle> Sessions </span>
+            <span matListItemTitle i18n="Navigation link"> Sessions </span>
           </a>
           <a mat-list-item routerLink="/results" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
-            <span matListItemTitle> Results </span>
+            <span matListItemTitle i18n="Navigation link"> Results </span>
           </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
         <mat-nav-list>
           <a mat-list-item routerLink="/settings" routerLinkActive="navbar-item-selected">
             <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
-            <span matListItemTitle> Settings </span>
+            <span matListItemTitle i18n="Navigation link"> Settings </span>
           </a>
         </mat-nav-list>
         <mat-divider></mat-divider>
@@ -231,6 +231,7 @@ export class NavigationComponent implements OnInit{
   greeting() {
     const hour = new Date().getHours();
     const username = this.#userService.user ? this.#userService.user.username : '';
+    // TODO: localize with params
     if (hour < 12) {
       return 'Good morning' + (username ? ', ' + username : '');
     } else if (hour < 18) {

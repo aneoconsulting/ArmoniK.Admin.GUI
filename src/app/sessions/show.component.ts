@@ -14,7 +14,7 @@ import { SessionRaw } from './types';
   template: `
 <app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
-  <span>Session</span>
+  <span i18n="Page title"> Session </span>
 </app-show-page>
   `,
   styles: [`

@@ -14,11 +14,11 @@ import { DateType, FilterEvent, FilterInput } from '@app/types/filters';
   selector: 'app-filters-dialog-input',
   template: `
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'text'">
-  <mat-label>Value</mat-label>
+  <mat-label i18n="Input label">Value</mat-label>
   <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onTextChange($event)">
 </mat-form-field>
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
-  <mat-label>Enter a date range</mat-label>
+  <mat-label i18n="Input label">Enter a date range</mat-label>
   <mat-date-range-input [rangePicker]="picker">
     <input matStartDate placeholder="Start date" [value]="input.value.start" (dateChange)="onDateChange('start', $event)">
     <input matEndDate placeholder="End date" [value]="input.value.end" (dateChange)="onDateChange('end', $event)">
