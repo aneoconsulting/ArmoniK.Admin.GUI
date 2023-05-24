@@ -1,3 +1,4 @@
+import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -25,6 +26,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
+import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
 
 @Component({
@@ -65,9 +67,15 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag>
         {{ columnToLabel(column) }}
       </th>
-      <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions'">
+      <!-- Columns -->
+      <ng-container *ngIf="column !== 'actions' && column !== 'status'">
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+      </ng-container>
+      <!-- Status -->
+      <ng-container *ngIf="column === 'status'">
+        <td mat-cell *matCellDef="let element">
+          <span> {{ statusToLabel(element[column]) }} </span>
+        </td>
       </ng-container>
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
@@ -94,6 +102,7 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
+    ResultsStatusesService,
     IconsService,
     ShareUrlService,
     StorageService,
@@ -148,6 +157,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
   subscriptions: Subscription = new Subscription();
 
   constructor(
+    private _resultsStatusesService: ResultsStatusesService,
     private _iconsService: IconsService,
     private _shareURLService: ShareUrlService,
     private _resultsIndexService: ResultsIndexService,
@@ -223,6 +233,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   columnToLabel(column: ResultRawColumnKey): string {
     return this._resultsIndexService.columnToLabel(column);
+  }
+
+  statusToLabel(status: ResultStatus): string {
+    return this._resultsStatusesService.statusToLabel(status);
   }
 
   getIcon(name: Page): string {
