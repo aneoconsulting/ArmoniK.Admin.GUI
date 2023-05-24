@@ -39,7 +39,7 @@ import { StatusLabeled, TasksStatusesGroup } from '../types';
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" i18n="Dialog action"> Cancel </button>
+    <button mat-button (click)="onCancel()" type="button" i18n="Dialog action"> Cancel </button>
     <button mat-flat-button type="submit" color="primary" [disabled]="!groupForm.valid" i18n="Dialog action"> Confirm </button>
   </mat-dialog-actions>
 </form>
