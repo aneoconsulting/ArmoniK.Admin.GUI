@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
 import { TaskGrpcService } from '@app/tasks/services/task-grpc.service';
+import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
@@ -20,7 +21,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
-import { StatusesGroupCardComponent } from './components/StatusesGroupCard.component';
+import { StatusesGroupCardComponent } from './components/statuses-group-card.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
 import { StatusCount, TasksStatusesGroup } from './types';
@@ -87,6 +88,7 @@ app-actions-toolbar {
   ],
   standalone: true,
   providers: [
+    TasksStatusesService,
     ShareUrlService,
     TaskGrpcService,
     StorageService,

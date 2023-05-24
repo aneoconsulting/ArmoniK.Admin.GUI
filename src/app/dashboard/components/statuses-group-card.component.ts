@@ -2,7 +2,7 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { DashboardIndexService } from '../services/dashboard-index.service';
+import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { StatusCount, TasksStatusesGroup } from '../types';
 
 @Component({
@@ -23,7 +23,7 @@ import { StatusCount, TasksStatusesGroup } from '../types';
     <ul>
       <li *ngFor="let status of group.statuses">
         <span>
-          {{ getStatusLabel(status) }}
+          {{ statusToLabel(status) }}
         </span>
         <span>
           {{ updateCounter(status) }}
@@ -59,7 +59,9 @@ ul li {
 }
   `],
   standalone: true,
-  providers: [],
+  providers: [
+    TasksStatusesService,
+  ],
   imports: [
     NgFor,
     NgIf,
@@ -71,10 +73,10 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) hideGroupHeaders: boolean;
   @Input({ required: true }) data: StatusCount[] = [];
 
-  #dashboardIndexService = inject(DashboardIndexService);
+  #tasksStatusesService = inject(TasksStatusesService);
 
-  getStatusLabel(status: TaskStatus): string {
-    return this.#dashboardIndexService.getStatusLabel(status);
+  statusToLabel(status: TaskStatus): string {
+    return this.#tasksStatusesService.statusToLabel(status);
   }
 
   updateCounter(status: TaskStatus): number {

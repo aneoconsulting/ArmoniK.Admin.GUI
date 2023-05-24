@@ -3,6 +3,16 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
+}
+
 .mat-mdc-snack-bar-container.success {
   --mdc-snackbar-container-color: #4caf50;
   --mat-mdc-snack-bar-button-color: #000;

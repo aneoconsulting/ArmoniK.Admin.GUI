@@ -1,24 +1,11 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
+import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { DashboardStorageService } from './dashboard-storage.service';
 import { TasksStatusesGroup } from '../types';
 
 @Injectable()
 export class DashboardIndexService {
-  readonly statusValuesToLabels: Record<TaskStatus, string> = {
-    [TaskStatus.TASK_STATUS_UNSPECIFIED]: 'Unspecified',
-    [TaskStatus.TASK_STATUS_DISPATCHED]: 'Dispatched',
-    [TaskStatus.TASK_STATUS_CREATING]: 'Creating',
-    [TaskStatus.TASK_STATUS_SUBMITTED]: 'Submitted',
-    [TaskStatus.TASK_STATUS_PROCESSING]: 'Processing',
-    [TaskStatus.TASK_STATUS_PROCESSED]: 'Processed',
-    [TaskStatus.TASK_STATUS_CANCELLING]: 'Cancelling',
-    [TaskStatus.TASK_STATUS_CANCELLED]: 'Cancelled',
-    [TaskStatus.TASK_STATUS_COMPLETED]: 'Finished',
-    [TaskStatus.TASK_STATUS_ERROR]: 'Error',
-    [TaskStatus.TASK_STATUS_TIMEOUT]: 'Timeout',
-  };
-
   readonly defaultStatusGroups: TasksStatusesGroup[] = [
     {
       name: 'Finished',
@@ -49,13 +36,15 @@ export class DashboardIndexService {
   readonly defaultIntervalValue = 5;
 
   #dashboardStorageService = inject(DashboardStorageService);
+  #tasksStatusesService = inject(TasksStatusesService);
 
+  // TODO: move to TasksStatusesService
   statuses(): { value: string, name: string }[] {
-    const values = Object.values(this.statusValuesToLabels).sort();
-    const keys = Object.keys(this.statusValuesToLabels).sort();
+    const values = Object.values(this.#tasksStatusesService.statuses).sort();
+    const keys = Object.keys(this.#tasksStatusesService.statuses).sort();
     const sortedKeys = values.map((value) => {
       return keys.find((key) => {
-        return this.statusValuesToLabels[Number(key) as TaskStatus] === value;
+        return this.#tasksStatusesService.statuses[Number(key) as TaskStatus] === value;
       });
     });
 
@@ -63,13 +52,9 @@ export class DashboardIndexService {
       const status = Number(key) as TaskStatus;
       return {
         value: key,
-        name: this.statusValuesToLabels[status]
+        name: this.#tasksStatusesService.statusToLabel(status)
       };
     });
-  }
-
-  getStatusLabel(status: TaskStatus): string {
-    return this.statusValuesToLabels[status];
   }
 
   restoreStatusGroups(): TasksStatusesGroup[] {

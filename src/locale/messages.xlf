@@ -48,7 +48,7 @@
     <unit id="1137318306951557633">
       <notes>
         <note category="location">src/app/components/navigation/navigation.component.ts:94</note>
-        <note category="location">src/app/dashboard/index.component.ts:33</note>
+        <note category="location">src/app/dashboard/index.component.ts:34</note>
         <note category="description">Navigation link</note>
       </notes>
       <segment>
@@ -101,8 +101,8 @@
     </unit>
     <unit id="1779801045860441380">
       <notes>
-        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:20</note>
-        <note category="location">src/app/dashboard/index.component.ts:56</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:21</note>
+        <note category="location">src/app/dashboard/index.component.ts:57</note>
         <note category="description">Dialog title</note>
       </notes>
       <segment>
@@ -153,7 +153,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:52</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:42</note>
-        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:65</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:66</note>
         <note category="description">Dialog action</note>
       </notes>
       <segment>
@@ -375,7 +375,7 @@
     </unit>
     <unit id="5099695399490601420">
       <notes>
-        <note category="location">src/app/dashboard/index.component.ts:38</note>
+        <note category="location">src/app/dashboard/index.component.ts:39</note>
         <note category="description">Section title</note>
       </notes>
       <segment>
@@ -463,7 +463,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:43</note>
-        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:66</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:67</note>
         <note category="description">Dialog action</note>
       </notes>
       <segment>
@@ -614,7 +614,7 @@
     </unit>
     <unit id="8140788824047533083">
       <notes>
-        <note category="location">src/app/dashboard/index.component.ts:55</note>
+        <note category="location">src/app/dashboard/index.component.ts:56</note>
       </notes>
       <segment>
         <source>Toggle Groups Header</source>
@@ -712,7 +712,7 @@
     <unit id="9113798195303194683">
       <notes>
         <note category="location">src/app/dashboard/components/add-statuses-group-dialog.component.ts:9</note>
-        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:28</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:29</note>
         <note category="description">Dialog title</note>
       </notes>
       <segment>
@@ -833,7 +833,7 @@
     </unit>
     <unit id="2218082343053095278">
       <notes>
-        <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
+        <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
       </notes>
       <segment>
         <source>Service</source>
@@ -841,7 +841,7 @@
     </unit>
     <unit id="2724055831234181057">
       <notes>
-        <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
+        <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
       </notes>
       <segment>
         <source>Version</source>
@@ -849,7 +849,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/services/applications-index.service.ts:20</note>
+        <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
       </notes>
       <segment>
         <source>Actions</source>
@@ -857,7 +857,7 @@
     </unit>
     <unit id="3294686077659093992">
       <notes>
-        <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
+        <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
       </notes>
       <segment>
         <source>Namespace</source>
@@ -865,7 +865,7 @@
     </unit>
     <unit id="8570442593550462519">
       <notes>
-        <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
+        <note category="location">src/app/applications/services/applications-index.service.ts:20</note>
       </notes>
       <segment>
         <source>Tasks by Status</source>
@@ -873,10 +873,28 @@
     </unit>
     <unit id="8953033926734869941">
       <notes>
-        <note category="location">src/app/applications/services/applications-index.service.ts:15</note>
+        <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
       </notes>
       <segment>
         <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="3862497674553063473">
+      <notes>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:44</note>
+        <note category="description">Edit the group</note>
+      </notes>
+      <segment>
+        <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ group.name }}"/></source>
+      </segment>
+    </unit>
+    <unit id="4168485708389700387">
+      <notes>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:48</note>
+        <note category="description">Delete the group</note>
+      </notes>
+      <segment>
+        <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ group.name }}"/></source>
       </segment>
     </unit>
   </file>

@@ -7,6 +7,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angu
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ManageGroupsDialogData, TasksStatusesGroup } from '@app/dashboard/types';
+import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { StorageService } from '@services/storage.service';
@@ -38,13 +39,13 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
           {{ group.name }}
         </h3>
         <div class="group-header-actions">
-          <!-- TODO: localize label with param -->
-          <button mat-icon-button (click)="openEditStatusGroupModal(group)" [attr.aria-label]="'Edit the group ' + group.name">
+          <button mat-icon-button (click)="openEditStatusGroupModal(group)">
             <mat-icon  fontIcon="edit"></mat-icon>
+            <span class="sr-only" i18n="Edit the group">Edit {{ group.name }}</span>
           </button>
-          <!-- TODO: localize label with param -->
-          <button mat-icon-button (click)="onDelete(group)" [attr.aria-label]="'Delete the group ' + group.name">
+          <button mat-icon-button (click)="onDelete(group)">
             <mat-icon fontIcon="delete"></mat-icon>
+            <span class="sr-only" i18n="Delete the group">Delete {{ group.name }}</span>
           </button>
         </div>
       </div>
@@ -54,7 +55,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
         >
         <li *ngFor="let status of group.statuses" cdkDrag>
           <mat-icon aria-hidden="true" fontIcon="drag_indicator"></mat-icon>
-          <span>{{ getStatusLabel(status) }}</span>
+          <span>{{ statusToLabel(status) }}</span>
         </li>
       </ul>
     </li>
@@ -148,6 +149,7 @@ ul {
   `],
   standalone: true,
   providers: [
+    TasksStatusesService,
     StorageService,
     DashboardStorageService,
     DashboardIndexService
@@ -168,6 +170,7 @@ export class ManageGroupsDialogComponent implements OnInit {
 
   #dialog = inject(MatDialog);
   #dashboardIndexService = inject(DashboardIndexService);
+  #tasksStatusesService = inject(TasksStatusesService);
 
   constructor(
     public _dialogRef: MatDialogRef<ManageGroupsDialogComponent>,
@@ -184,8 +187,8 @@ export class ManageGroupsDialogComponent implements OnInit {
     ];
   }
 
-  getStatusLabel(status: TaskStatus): string {
-    return this.#dashboardIndexService.getStatusLabel(status);
+  statusToLabel(status: TaskStatus): string {
+    return this.#tasksStatusesService.statusToLabel(status);
   }
 
   drop(event: CdkDragDrop<TaskStatus[]>) {

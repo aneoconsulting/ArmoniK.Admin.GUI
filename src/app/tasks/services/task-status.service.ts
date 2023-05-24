@@ -2,7 +2,7 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class TaskStatusService {
+export class TasksStatusesService {
   readonly statuses: Record<TaskStatus, string> = {
     [TaskStatus.TASK_STATUS_UNSPECIFIED]: $localize`Unspecified`,
     [TaskStatus.TASK_STATUS_DISPATCHED]: $localize`Dispatched`,

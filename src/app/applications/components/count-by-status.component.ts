@@ -2,7 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subscription } from 'rxjs';
-import { TaskStatusService } from '@app/tasks/services/task-status.service';
+import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { SpinnerComponent } from '@components/spinner.component';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { StatusCount } from '../types';
@@ -33,7 +33,7 @@ import { StatusCount } from '../types';
   `],
   standalone: true,
   providers: [
-    TaskStatusService
+    TasksStatusesService,
   ],
   imports: [
     NgIf,
@@ -50,7 +50,7 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
   loading = true;
 
   #applicationsGrpcService = inject(ApplicationsGrpcService);
-  #taskStatusService = inject(TaskStatusService);
+  #tasksStatusesService = inject(TasksStatusesService);
 
   subscriptions = new Subscription();
 
@@ -69,7 +69,7 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
   }
 
   countTooltip(status: StatusCount): string {
-    const statusLabel = this.#taskStatusService.statusToLabel(status.status);
+    const statusLabel = this.#tasksStatusesService.statusToLabel(status.status);
 
     if (status.count === 1) {
       return $localize`Task with status '${statusLabel}'`;
