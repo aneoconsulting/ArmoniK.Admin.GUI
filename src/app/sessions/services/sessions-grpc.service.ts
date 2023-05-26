@@ -22,7 +22,7 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
     'status': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_STATUS,
     'createdAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
     'startedAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'canceledAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
+    'cancelledAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
     'options': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
     'partitionsIds': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
   };

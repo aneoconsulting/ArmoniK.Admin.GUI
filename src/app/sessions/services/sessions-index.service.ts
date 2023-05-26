@@ -9,14 +9,16 @@ export class SessionsIndexService implements AppIndexService<SessionRaw> {
 
   readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions'];
   // TODO: Add columns (when SessionRaw is merged)
-  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'applicationName', 'applicationVersion', 'canceledAt', 'createdAt', 'options', 'actions'];
+  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'applicationName', 'applicationVersion', 'startedAt', 'cancelledAt', 'createdAt', 'options', 'actions'];
+
+  readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt', 'startedAt'];
 
   readonly columnsLabels: Record<SessionRawColumnKey, string> = {
     sessionId: $localize`Session ID`,
     status: $localize`Status`,
     applicationName: $localize`Application Name`,
     applicationVersion: $localize`Application Version`,
-    canceledAt: $localize`Canceled at`,
+    cancelledAt: $localize`Cancelled at`,
     createdAt: $localize`Created at`,
     options: $localize`Options`,
     partitionsIds: $localize`Partitions IDs`,

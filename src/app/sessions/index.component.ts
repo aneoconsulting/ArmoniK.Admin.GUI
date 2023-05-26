@@ -1,6 +1,6 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
@@ -68,7 +69,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status'">
+      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <span> {{ element[column] }} </span>
         </td>
@@ -79,6 +80,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
           <a mat-button [routerLink]="['/sessions', element[column]]">
             {{ element[column] }}
           </a>
+        </td>
+      </ng-container>
+      <!-- Date -->
+      <ng-container *ngIf="dateColumns().includes(column)">
+        <td mat-cell *matCellDef="let element">
+          {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
         </td>
       </ng-container>
       <!-- Status -->
@@ -130,6 +137,7 @@ app-table-actions-toolbar {
   imports: [
     NgIf,
     NgFor,
+    DatePipe,
     RouterLink,
     DragDropModule,
     PageHeaderComponent,
@@ -225,7 +233,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
           this.total = data?.total ?? 0;
 
           const sessions = data?.sessions ?? [];
-
           return sessions;
         })
       )
@@ -250,6 +257,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   columnToLabel(column: SessionRawColumnKey): string {
     return this._sessionsIndexService.columnToLabel(column);
+  }
+
+  columnToDate(element: Timestamp | undefined): Date | null {
+    if (!element) {
+      return null;
+    }
+
+    return element.toDate();
+  }
+
+  dateColumns(): SessionRawColumnKey[] {
+    return this._sessionsIndexService.dateColumns;
   }
 
   statusToLabel(status: SessionStatus): string {

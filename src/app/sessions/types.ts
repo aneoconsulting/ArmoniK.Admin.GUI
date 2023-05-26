@@ -9,7 +9,7 @@ export type SessionRaw =  {
   partitionsIds: string[];
   options: Record<string, string>;
   createdAt: string;
-  canceledAt: string;
+  cancelledAt: string;
   startedAt: string;
   applicationName: string;
   applicationVersion: string;
