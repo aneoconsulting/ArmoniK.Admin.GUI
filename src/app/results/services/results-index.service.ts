@@ -11,6 +11,8 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   readonly defaultColumns: ResultRawColumnKey[] = ['name', 'actions'];
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
 
+  readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
+
   readonly columnsLabels: Record<ResultRawColumnKey, string> = {
     name: $localize`Name`,
     status: $localize`Status`,

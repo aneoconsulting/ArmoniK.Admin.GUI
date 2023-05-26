@@ -68,7 +68,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
-      <!-- Application Column -->
+      <!-- Columns -->
       <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <span> {{ element[column] }} </span>

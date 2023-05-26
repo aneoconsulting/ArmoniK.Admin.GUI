@@ -1,6 +1,6 @@
 import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { AppIndexComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
@@ -28,6 +29,7 @@ import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from './types';
+
 
 @Component({
   selector: 'app-results-index',
@@ -68,8 +70,14 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
         {{ columnToLabel(column) }}
       </th>
       <!-- Columns -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'status'">
+      <ng-container *ngIf="column !== 'actions' && column !== 'status' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+      </ng-container>
+      <!-- Date -->
+      <ng-container *ngIf="dateColumns().includes(column)">
+        <td mat-cell *matCellDef="let element">
+          {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
+        </td>
       </ng-container>
       <!-- Status -->
       <ng-container *ngIf="column === 'status'">
@@ -117,6 +125,7 @@ app-table-actions-toolbar {
   imports: [
     NgIf,
     NgFor,
+    DatePipe,
     DragDropModule,
     PageHeaderComponent,
     TableActionsToolbarComponent,
@@ -233,6 +242,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   columnToLabel(column: ResultRawColumnKey): string {
     return this._resultsIndexService.columnToLabel(column);
+  }
+
+  columnToDate(element: Timestamp | undefined): Date | null {
+    if (!element) {
+      return null;
+    }
+
+    return element.toDate();
+  }
+
+  dateColumns(): ResultRawColumnKey[] {
+    return this._resultsIndexService.dateColumns;
   }
 
   statusToLabel(status: ResultStatus): string {
