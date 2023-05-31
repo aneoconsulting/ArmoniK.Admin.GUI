@@ -1,9 +1,13 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
-    specifier: ^3.8.1
-    version: 3.8.1(@angular/common@16.0.2)(@angular/core@16.0.2)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1)
+    specifier: 3.9.0-edge.93.5e7eee0
+    version: 3.9.0-edge.93.5e7eee0(@angular/common@16.0.2)(@angular/core@16.0.2)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1)
   '@angular/animations':
     specifier: ^16.0.2
     version: 16.0.2(@angular/core@16.0.2)
@@ -149,16 +153,16 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
-  /@aneoconsultingfr/armonik.api.angular@3.8.1(@angular/common@16.0.2)(@angular/core@16.0.2)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1):
-    resolution: {integrity: sha512-pQbonS92JysGclvWQtMK1saH34t72zpTm0x/yrHZDS7DOWUPYpxq+Z3YjbpofhyxoNNqaqcCPPeHcUMA+s7yCw==}
+  /@aneoconsultingfr/armonik.api.angular@3.9.0-edge.93.5e7eee0(@angular/common@16.0.2)(@angular/core@16.0.2)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1):
+    resolution: {integrity: sha512-BFkNBJ910P94E0c8cj9jBaWPFhoEZgiKpR9hSZsmFQ9odMvKrR5cp3MhP36UBPEYePR/5pW7x6OKCnM9g4g4nA==}
     peerDependencies:
-      '@angular/common': ^15.1.0
-      '@angular/core': ^15.1.0
+      '@angular/common': ^16.0.1
+      '@angular/core': ^16.0.1
       '@ngx-grpc/common': ^3.1.1
       '@ngx-grpc/core': ^3.1.1
       '@ngx-grpc/well-known-types': ^3.1.1
       google-protobuf: ^3.21.2
-      rxjs: ~7.8.0
+      rxjs: ~7.8.1
     dependencies:
       '@angular/common': 16.0.2(@angular/core@16.0.2)(rxjs@7.8.1)
       '@angular/core': 16.0.2(rxjs@7.8.1)(zone.js@0.13.0)

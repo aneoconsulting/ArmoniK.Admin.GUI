@@ -203,6 +203,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this._applicationsIndexService.saveOptions(options);
 
           return this._applicationsGrpcService.list$(options, filters).pipe(catchError((error) => {
+            console.error(error);
             // TODO: Error management need to be improved (we can create a snackbar for example)
             return of(null);
           }));

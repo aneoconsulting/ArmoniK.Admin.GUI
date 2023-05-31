@@ -1,4 +1,4 @@
-import { GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionRawField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -8,21 +8,20 @@ import { PartitionRaw, PartitionRawFieldKey, PartitionRawFilter, PartitionRawLis
 
 @Injectable()
 export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
-  readonly sortDirections: Record<SortDirection, ListPartitionsRequest.OrderDirection> = {
-    'asc': ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-    'desc': ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-    '': ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC
+  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
+    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
+    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
+    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
   };
 
-  readonly sortFields: Record<PartitionRawFieldKey, ListPartitionsRequest.OrderByField> = {
-    'id': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-    'parentPartitionIds': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_PARENT_PARTITION_IDS,
-    // TODO: Need to add the missing fields on Armonik.Api
-    'podConfiguration': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'podMax': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
-    'podReserved': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_RESERVED,
-    'preemptionPercentage': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_PREEMPTION_PERCENTAGE,
-    'priority': ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_PRIORITY,
+  readonly sortFields: Record<PartitionRawFieldKey, PartitionRawField> = {
+    'id': PartitionRawField.PARTITION_RAW_FIELD_ID,
+    'parentPartitionIds': PartitionRawField.PARTITION_RAW_FIELD_PARENT_PARTITION_IDS,
+    'podConfiguration': PartitionRawField.PARTITION_RAW_FIELD_UNSPECIFIED,
+    'podMax': PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+    'podReserved': PartitionRawField.PARTITION_RAW_FIELD_POD_RESERVED,
+    'preemptionPercentage': PartitionRawField.PARTITION_RAW_FIELD_PREEMPTION_PERCENTAGE,
+    'priority': PartitionRawField.PARTITION_RAW_FIELD_PRIORITY,
   };
 
   constructor(
@@ -40,7 +39,9 @@ export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
       pageSize: options.pageSize,
       sort: {
         direction: this.sortDirections[options.sort.direction],
-        field: this.sortFields[options.sort.active] ?? ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID
+        field: {
+          partitionRawField: this.sortFields[options.sort.active] ?? PartitionRawField.PARTITION_RAW_FIELD_ID
+        }
       },
       filter: {
         id: convertFilterValue(findFilter(filters, 'id')),

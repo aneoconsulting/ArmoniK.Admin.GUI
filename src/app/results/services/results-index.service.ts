@@ -20,6 +20,8 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     createdAt: $localize`Created at`,
     sessionId: $localize`Session ID`,
     actions: $localize`Actions`,
+    completedAt: $localize`Completed at`,
+    resultId: $localize`Result ID`,
   };
 
   readonly defaultOptions: ResultRawListOptions = {

@@ -1,7 +1,4 @@
-import { ApplicationRaw as GrpcApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
-// FIXME: Must be exported from @aneoconsultingfr/armonik-api-angular
-// @see https://github.com/aneoconsulting/ArmoniK.Api/pull/259
-import { StatusCount as GrpcStatusCount } from '@aneoconsultingfr/armonik.api.angular/lib/generated/objects.pb';
+import { ApplicationRaw as GrpcApplicationRaw, StatusCount as GrpcStatusCount  } from '@aneoconsultingfr/armonik.api.angular';
 import { ColumnKey, FieldKey } from '@app/types/data';
 import { Filter, FilterField } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';

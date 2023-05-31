@@ -1,4 +1,4 @@
-import { ApplicationsClient, CountTasksByStatusApplicationRequest, CountTasksByStatusApplicationResponse, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawField, ApplicationsClient, SortDirection as ArmoniKSortDirection, CountTasksByStatusApplicationRequest, CountTasksByStatusApplicationResponse, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -8,17 +8,17 @@ import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilter, Applicati
 
 @Injectable()
 export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
-  readonly sortDirections: Record<SortDirection, ListApplicationsRequest.OrderDirection> = {
-    'asc': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-    'desc': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-    '': ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
+  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
+    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
+    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
+    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
   };
 
-  readonly sortFields: Record<ApplicationRawFieldKey, ListApplicationsRequest.OrderByField> = {
-    'name': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
-    'namespace': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
-    'service': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_SERVICE,
-    'version': ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_VERSION,
+  readonly sortFields: Record<ApplicationRawFieldKey, ApplicationRawField> = {
+    'name': ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
+    'namespace': ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
+    'service': ApplicationRawField.APPLICATION_RAW_FIELD_SERVICE,
+    'version': ApplicationRawField.APPLICATION_RAW_FIELD_VERSION,
   };
 
   constructor(
@@ -35,7 +35,9 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
       pageSize: options.pageSize,
       sort: {
         direction: this.sortDirections[options.sort.direction],
-        fields: [this.sortFields[options.sort.active]]
+        fields: [{
+          applicationField: this.sortFields[options.sort.active],
+        }]
       },
       filter: {
         name: convertFilterValue(findFilter(filters, 'name')),
@@ -49,14 +51,7 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
   }
 
   get$(): Observable<never> {
-    // TODO: Waiting for ArmoniK.Api.Angular
-    // @see https://github.com/aneoconsulting/ArmoniK.Api/pull/256/files
-    throw new Error('Method not implemented.');
-    // const getPartitionRequest = new GetPartitionRequest({
-    //   id
-    // });
-
-    // return this._applicationsClient.(getPartitionRequest);
+    throw new Error('This method must never be called.');
   }
 
   countByStatus$(name: string, version: string): Observable<CountTasksByStatusApplicationResponse> {

@@ -1,4 +1,4 @@
-import { CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus, SessionsClient, SessionRawField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -8,23 +8,20 @@ import { SessionRaw, SessionRawFieldKey, SessionRawFilter, SessionRawListOptions
 
 @Injectable()
 export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
-  readonly sortDirections: Record<SortDirection, ListSessionsRequest.OrderDirection> = {
-    'asc': ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-    'desc': ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-    '': ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
+  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
+    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
+    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
+    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
   };
 
-  // FIXME: Missing some fields to be sorted (every unspecified field)
-  readonly sortFields: Record<SessionRawFieldKey, ListSessionsRequest.OrderByField> = {
-    'sessionId': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
-    'applicationName': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'applicationVersion': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'status': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_STATUS,
-    'createdAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-    'startedAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'cancelledAt': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'options': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
-    'partitionsIds': ListSessionsRequest.OrderByField.ORDER_BY_FIELD_UNSPECIFIED,
+  readonly sortFields: Record<SessionRawFieldKey, SessionRawField> = {
+    'sessionId': SessionRawField.SESSION_RAW_FIELD_SESSION_ID,
+    'status': SessionRawField.SESSION_RAW_FIELD_STATUS,
+    'createdAt': SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
+    'cancelledAt': SessionRawField.SESSION_RAW_FIELD_CANCELLED_AT,
+    'options': SessionRawField.SESSION_RAW_FIELD_OPTIONS,
+    'partitionIds': SessionRawField.SESSION_RAW_FIELD_PARTITION_IDS,
+    'duration': SessionRawField.SESSION_RAW_FIELD_DURATION,
   };
 
   constructor(
@@ -41,12 +38,17 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
       pageSize: options.pageSize,
       sort: {
         direction: this.sortDirections[options.sort.direction],
-        field: this.sortFields[options.sort.active] ?? ListSessionsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID
+        field: {
+          sessionRawField: this.sortFields[options.sort.active] ?? SessionRawField.SESSION_RAW_FIELD_SESSION_ID
+        }
       },
       filter: {
         sessionId: convertFilterValue(findFilter(filters, 'sessionId')),
-        applicationName: convertFilterValue(findFilter(filters, 'applicationName')),
-        applicationVersion: convertFilterValue(findFilter(filters, 'applicationVersion')),
+        // TODO: waiting for the new filter
+        // applicationName: convertFilterValue(findFilter(filters, '')),
+        // applicationVersion: convertFilterValue(findFilter(filters, 'applicationVersion')),
+        applicationName: '',
+        applicationVersion: '',
         status: SessionStatus.SESSION_STATUS_UNSPECIFIED,
       }
     });

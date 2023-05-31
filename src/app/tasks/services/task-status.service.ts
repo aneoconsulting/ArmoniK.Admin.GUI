@@ -15,6 +15,7 @@ export class TasksStatusesService {
     [TaskStatus.TASK_STATUS_COMPLETED]: $localize`Finished`,
     [TaskStatus.TASK_STATUS_ERROR]: $localize`Error`,
     [TaskStatus.TASK_STATUS_TIMEOUT]: $localize`Timeout`,
+    [TaskStatus.TASK_STATUS_RETRIED]: $localize`Retried`,
   };
 
   statusToLabel(status: TaskStatus): string {

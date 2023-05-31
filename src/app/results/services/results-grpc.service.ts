@@ -1,4 +1,4 @@
-import { ListResultsRequest, ListResultsResponse, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, ListResultsRequest, ListResultsResponse, ResultStatus, ResultsClient, ResultRawField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -8,18 +8,20 @@ import {  ResultRaw, ResultRawFieldKey, ResultRawFilter, ResultRawListOptions } 
 
 @Injectable()
 export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
-  readonly sortDirections: Record<SortDirection, ListResultsRequest.OrderDirection> = {
-    'asc': ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC,
-    'desc': ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
-    '': ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
+  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
+    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
+    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
+    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
   };
 
-  readonly sortFields: Record<ResultRawFieldKey, ListResultsRequest.OrderByField> = {
-    'sessionId': ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
-    'name': ListResultsRequest.OrderByField.ORDER_BY_FIELD_NAME,
-    'status': ListResultsRequest.OrderByField.ORDER_BY_FIELD_STATUS,
-    'createdAt': ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-    'ownerTaskId': ListResultsRequest.OrderByField.ORDER_BY_FIELD_OWNER_TASK_ID,
+  readonly sortFields: Record<ResultRawFieldKey, ResultRawField> = {
+    'sessionId': ResultRawField.RESULT_RAW_FIELD_SESSION_ID,
+    'name': ResultRawField.RESULT_RAW_FIELD_NAME,
+    'status': ResultRawField.RESULT_RAW_FIELD_STATUS,
+    'createdAt': ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+    'ownerTaskId': ResultRawField.RESULT_RAW_FIELD_OWNER_TASK_ID,
+    'resultId': ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
+    'completedAt': ResultRawField.RESULT_RAW_FIELD_COMPLETED_AT,
   };
 
 
@@ -37,7 +39,9 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
       pageSize: options.pageSize,
       sort: {
         direction: this.sortDirections[options.sort.direction],
-        field: this.sortFields[options.sort.active] ?? ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID
+        field: {
+          resultRawField: this.sortFields[options.sort.active] ?? ResultRawField.RESULT_RAW_FIELD_SESSION_ID
+        }
       },
       filter: {
         name: convertFilterValue(findFilter(filters, 'name')),
@@ -45,6 +49,7 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
         status: ResultStatus.RESULT_STATUS_UNSPECIFIED,
         ownerTaskId: convertFilterValue(findFilter(filters, 'ownerTaskId')),
         sessionId: convertFilterValue(findFilter(filters, 'sessionId')),
+        resultId: convertFilterValue(findFilter(filters, 'resultId')),
         // TODO: Find a way to get the created after and the created before (for now, they are optional)
       }
     });

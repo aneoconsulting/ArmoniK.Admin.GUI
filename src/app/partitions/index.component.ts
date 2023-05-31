@@ -203,7 +203,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
           this.sharableURL = this._shareURLService.generateSharableURL(options, filters);
           this._partitionsIndexService.saveOptions(options);
 
-          return this._partitionsGrpcService.list$(options, filters).pipe(catchError(() => of(null)));
+          return this._partitionsGrpcService.list$(options, filters).pipe(catchError((error) => {
+            console.error(error);
+            // TODO: Error management need to be improved (we can create a snackbar for example)
+            return of(null);
+          }));
         }),
         map(data => {
           this.isLoading = false;
