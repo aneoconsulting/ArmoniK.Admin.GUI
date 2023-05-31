@@ -38,7 +38,7 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     },
     {
       field: 'priority',
-      type: 'text',
+      type: 'number',
     },
     {
       field: 'parentPartitionIds',
@@ -50,15 +50,15 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     },
     {
       field: 'podMax',
-      type: 'text',
+      type: 'number',
     },
     {
       field: 'podReserved',
-      type: 'text',
+      type: 'number',
     },
     {
       field: 'preemptionPercentage',
-      type: 'text',
+      type: 'number',
     },
   ];
 

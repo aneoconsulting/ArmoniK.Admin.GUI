@@ -36,11 +36,6 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
           <span i18n>is</span>
 
           <app-filters-dialog-input [input]="findInput(filter)" (valueChange)="onInputValueChange(index, $event)"></app-filters-dialog-input>
-          <!-- TODO: create a component to harmonize interface and which is able to select the correct field -->
-          <!-- <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label>Value</mat-label>
-            <input matInput placeholder="Value" [value]="filter.value" (change)="onValueChange(index, $event)">
-          </mat-form-field> -->
 
           <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
             <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
@@ -147,6 +142,8 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
   onInputValueChange(index: number, event: FilterEvent): void {
     if (event.type === 'text')
       this.filters[index].value = event.value;
+    else if (event.type === 'number')
+      this.filters[index].value = event.value;
     else if (event.type === 'date-start')
       this.filters[index].value = { start: event.value?.toISODate() ?? null, end: (this.filters[index].value as {end: string | null })?.end };
     else if (event.type === 'date-end')
@@ -190,6 +187,13 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
 
   findInput(filter: Filter<T>): FilterInput {
     const type = this.findType(filter.field);
+
+    if (type === 'number') {
+      return {
+        type: 'number',
+        value: Number(filter.value) || null,
+      };
+    }
 
     if (type === 'date') {
       return {

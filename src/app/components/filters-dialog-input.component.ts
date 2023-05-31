@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LuxonDateAdapter, MAT_LUXON_DATE_ADAPTER_OPTIONS, MAT_LUXON_DATE_FORMATS  } from '@angular/material-luxon-adapter';
 import { DateTime } from 'luxon';
-import { DateType, FilterEvent, FilterInput } from '@app/types/filters';
+import { DateType, FilterEvent, FilterInput, FilterInputType } from '@app/types/filters';
 
 
 
@@ -17,6 +17,12 @@ import { DateType, FilterEvent, FilterInput } from '@app/types/filters';
   <mat-label i18n="Input label">Value</mat-label>
   <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onTextChange($event)">
 </mat-form-field>
+
+<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'number'">
+  <mat-label i18n="Input label">Value</mat-label>
+  <input matInput type="number" placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
+</mat-form-field>
+
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Enter a date range</mat-label>
   <mat-date-range-input [rangePicker]="picker">
@@ -66,6 +72,13 @@ export class FiltersDialogInputComponent {
     });
   }
 
+  onNumberChange(event: Event): void {
+    this.valueChange.emit({
+      type: 'number',
+      value: Number((event.target as HTMLInputElement).value),
+    });
+  }
+
   onDateChange(dateType: DateType, event: MatDatepickerInputEvent<DateTime>): void {
     this.valueChange.emit({
       type: `date-${dateType}`,
@@ -73,10 +86,12 @@ export class FiltersDialogInputComponent {
     });
   }
 
-  getInputType(): string {
+  getInputType(): FilterInputType  {
     switch (this.input.type) {
     case 'text':
       return 'text';
+    case 'number':
+      return 'number';
     case 'date':
       return 'date';
     default:
