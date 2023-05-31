@@ -7,7 +7,7 @@ export type ExternalService = {
 export type ManageExternalServicesDialogData = {
   externalServices: ExternalService[];
 };
-export type AddExternalServiceDialogData = {};
+export type AddExternalServiceDialogData = Record<string, never>;
 export type EditExternalServiceDialogData = {
   externalService: ExternalService;
 };

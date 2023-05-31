@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, ListResultsRequest, ListResultsResponse, ResultStatus, ResultsClient, ResultRawField } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, ListResultsRequest, ListResultsResponse, ResultRawField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';

@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionStatus, SessionsClient, SessionRawField } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionRawField, SessionStatus, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
