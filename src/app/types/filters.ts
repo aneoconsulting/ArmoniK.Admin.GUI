@@ -6,12 +6,21 @@ export type Filter<T extends object> = {
   field: FieldKey<T> | null
   value?: FilterInputValue
 };
-// Filters used to create the query builder.
-export type FilterField<T extends object> = {
+
+export type FilterFieldText<T extends object> = {
   field: FieldKey<T>
-  type: FilterInputType
-  // Maybe, we could add an 'options' field to the IFilterField interfaces
+  type: 'text'
 };
+export type FilterFieldNumber<T extends object> = {
+  field: FieldKey<T>
+  type: 'number'
+};
+export type FilterFieldDate<T extends object> = {
+  field: FieldKey<T>
+  type: 'date'
+};
+// Filters used to create the query builder.
+export type FilterField<T extends object> = FilterFieldText<T> | FilterFieldNumber<T> | FilterFieldDate<T>;
 
 // Types for the value of an input.
 export type FilterInputValueText = string | null;
