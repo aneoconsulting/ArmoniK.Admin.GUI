@@ -66,7 +66,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:92</note>
+        <note category="location">src/app/partitions/index.component.ts:95</note>
       </notes>
       <segment>
         <source>Select page of partitions</source>
@@ -148,7 +148,7 @@
     <unit id="2330577642930707695">
       <notes>
         <note category="location">src/app/components/auto-refresh-dialog.component.ts:41</note>
-        <note category="location">src/app/components/columns-modify-dialog.component.ts:26</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:28</note>
         <note category="location">src/app/components/filters-dialog.component.ts:69</note>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:52</note>
@@ -171,7 +171,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:97</note>
+        <note category="location">src/app/sessions/index.component.ts:114</note>
       </notes>
       <segment>
         <source>Select page of sessions</source>
@@ -198,7 +198,7 @@
     <unit id="2914520322361316995">
       <notes>
         <note category="location">src/app/components/navigation/navigation.component.ts:112</note>
-        <note category="location">src/app/sessions/index.component.ts:37</note>
+        <note category="location">src/app/sessions/index.component.ts:40</note>
         <note category="description">Navigation link</note>
       </notes>
       <segment>
@@ -286,7 +286,7 @@
     </unit>
     <unit id="4312517319627808728">
       <notes>
-        <note category="location">src/app/components/table-actions-toolbar.component.ts:31</note>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:37</note>
       </notes>
       <segment>
         <source>Reset Filters</source>
@@ -439,7 +439,7 @@
     <unit id="6036308268629413664">
       <notes>
         <note category="location">src/app/components/navigation/navigation.component.ts:116</note>
-        <note category="location">src/app/results/index.component.ts:35</note>
+        <note category="location">src/app/results/index.component.ts:39</note>
         <note category="description">Navigation link</note>
       </notes>
       <segment>
@@ -458,7 +458,7 @@
     <unit id="6249484391846924804">
       <notes>
         <note category="location">src/app/components/auto-refresh-dialog.component.ts:42</note>
-        <note category="location">src/app/components/columns-modify-dialog.component.ts:27</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:29</note>
         <note category="location">src/app/components/filters-dialog.component.ts:70</note>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
@@ -597,7 +597,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:83</note>
+        <note category="location">src/app/results/index.component.ts:102</note>
       </notes>
       <segment>
         <source>Select page of results</source>
@@ -685,7 +685,7 @@
     </unit>
     <unit id="8813319038780713083">
       <notes>
-        <note category="location">src/app/components/table-actions-toolbar.component.ts:30</note>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:36</note>
       </notes>
       <segment>
         <source>Reset Columns</source>
@@ -737,7 +737,7 @@
     </unit>
     <unit id="6961867803915534374">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:80</note>
+        <note category="location">src/app/applications/index.component.ts:81</note>
       </notes>
       <segment>
         <source> No actions available </source>
@@ -769,6 +769,7 @@
     </unit>
     <unit id="4043049091728011235">
       <notes>
+        <note category="location">src/app/sessions/services/sessions-statuses.service.ts:9</note>
         <note category="location">src/app/tasks/services/task-status.service.ts:14</note>
       </notes>
       <segment>
@@ -801,6 +802,8 @@
     </unit>
     <unit id="7726080656019750876">
       <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:7</note>
+        <note category="location">src/app/sessions/services/sessions-statuses.service.ts:7</note>
         <note category="location">src/app/tasks/services/task-status.service.ts:7</note>
       </notes>
       <segment>
@@ -850,6 +853,9 @@
     <unit id="3193976279273491157">
       <notes>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:21</note>
+        <note category="location">src/app/results/services/results-index.service.ts:22</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:22</note>
       </notes>
       <segment>
         <source>Actions</source>
@@ -874,6 +880,7 @@
     <unit id="8953033926734869941">
       <notes>
         <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
+        <note category="location">src/app/results/services/results-index.service.ts:17</note>
       </notes>
       <segment>
         <source>Name</source>
@@ -895,6 +902,193 @@
       </notes>
       <segment>
         <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ group.name }}"/></source>
+      </segment>
+    </unit>
+    <unit id="1159794349848493024">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:17</note>
+      </notes>
+      <segment>
+        <source>Pod Configuration</source>
+      </segment>
+    </unit>
+    <unit id="1161299114153631702">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:9</note>
+      </notes>
+      <segment>
+        <source>Completed</source>
+      </segment>
+    </unit>
+    <unit id="1520049505561836231">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:20</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:20</note>
+      </notes>
+      <segment>
+        <source>Created at</source>
+      </segment>
+    </unit>
+    <unit id="1536246961640783567">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Pod Max</source>
+      </segment>
+    </unit>
+    <unit id="2262493601998522390">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:19</note>
+      </notes>
+      <segment>
+        <source>Cancelled at</source>
+      </segment>
+    </unit>
+    <unit id="2532274051867006228">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:24</note>
+      </notes>
+      <segment>
+        <source>Partition IDs</source>
+      </segment>
+    </unit>
+    <unit id="2649059232343656024">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Retried</source>
+      </segment>
+    </unit>
+    <unit id="2734022681675842051">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:15</note>
+      </notes>
+      <segment>
+        <source>Priority</source>
+      </segment>
+    </unit>
+    <unit id="275046745253005384">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:19</note>
+      </notes>
+      <segment>
+        <source>Owner Task ID</source>
+      </segment>
+    </unit>
+    <unit id="2829243786450918109">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:23</note>
+      </notes>
+      <segment>
+        <source>Completed at</source>
+      </segment>
+    </unit>
+    <unit id="2956098160626271284">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statuses.service.ts:8</note>
+      </notes>
+      <segment>
+        <source>Running</source>
+      </segment>
+    </unit>
+    <unit id="4207916966377787111">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:10</note>
+      </notes>
+      <segment>
+        <source>Created</source>
+      </segment>
+    </unit>
+    <unit id="5611592591303869712">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:18</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="6185028784920723553">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:19</note>
+      </notes>
+      <segment>
+        <source>Pod Reserved</source>
+      </segment>
+    </unit>
+    <unit id="6595008830732269870">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:11</note>
+      </notes>
+      <segment>
+        <source>Not found</source>
+      </segment>
+    </unit>
+    <unit id="7410432243549869948">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:23</note>
+      </notes>
+      <segment>
+        <source>Duration</source>
+      </segment>
+    </unit>
+    <unit id="8040881171107393560">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:14</note>
+      </notes>
+      <segment>
+        <source>ID</source>
+      </segment>
+    </unit>
+    <unit id="8339581786626550712">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:21</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:17</note>
+      </notes>
+      <segment>
+        <source>Session ID</source>
+      </segment>
+    </unit>
+    <unit id="8432562579042371182">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:21</note>
+      </notes>
+      <segment>
+        <source>Options</source>
+      </segment>
+    </unit>
+    <unit id="8541569923897487029">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:16</note>
+      </notes>
+      <segment>
+        <source>Parent Partition Ids</source>
+      </segment>
+    </unit>
+    <unit id="8610204803767997267">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:20</note>
+      </notes>
+      <segment>
+        <source>Preemption Percentage</source>
+      </segment>
+    </unit>
+    <unit id="8754753518138536255">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:24</note>
+      </notes>
+      <segment>
+        <source>Result ID</source>
+      </segment>
+    </unit>
+    <unit id="9135780517563211822">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:8</note>
+      </notes>
+      <segment>
+        <source>Aborted</source>
       </segment>
     </unit>
   </file>
