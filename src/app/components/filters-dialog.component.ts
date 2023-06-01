@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FieldKey } from '@app/types/data';
+import { ColumnKey, FieldKey } from '@app/types/data';
 import { FiltersDialogData } from '@app/types/dialog';
 import { Filter, FilterEvent, FilterField, FilterInput, FilterInputDate, FilterInputText, FilterInputType } from '@app/types/filters';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
@@ -28,7 +28,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
             <mat-label i18n="Label input">Column</mat-label>
             <mat-select (valueChange)="onFieldChange(index, $event)" [value]="filter.field">
               <mat-option *ngFor="let column of availableFiltersFields(); trackBy: trackByField" [value]="column.field" [disabled]="disableField(column)">
-                {{ column.field }}
+                {{ columnToLabel(column) }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -108,17 +108,19 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 })
 export class FiltersDialogComponent<T extends object> implements OnInit {
   filters: Filter<T>[] = [];
+  columnsLabels: Record<ColumnKey<T>, string> | null = null;
 
   constructor(public dialogRef: MatDialogRef<FiltersDialogComponent<T>>, @Inject(MAT_DIALOG_DATA) public data: FiltersDialogData<T>){}
 
   ngOnInit(): void {
+    this.columnsLabels = this.data.columnsLabels;
+
     if (this.data.filters.length === 0) {
       this.addFilter();
-      return;
+    } else {
+      // Avoid to mutate original data
+      this.filters = this.data.filters.map(filter => ({ ...filter }));
     }
-
-    // Avoid to mutate original data
-    this.filters = this.data.filters.map(filter => ({ ...filter }));
   }
 
   /**
@@ -127,6 +129,13 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
    */
   availableFiltersFields(): FilterField<T>[] {
     return this.data.availableFiltersFields.sort((a, b) => (a.field as string).localeCompare(b.field as string));
+  }
+
+  columnToLabel(column: FilterField<T>): string {
+    if (this.columnsLabels === null)
+      return column.field.toString();
+    else
+      return this.columnsLabels[column.field];
   }
 
   addFilter(): void {
@@ -217,6 +226,6 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
   }
 
   trackByField(_: number, field: FilterField<T>) {
-    return field;
+    return field.field;
   }
 }

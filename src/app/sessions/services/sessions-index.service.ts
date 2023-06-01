@@ -35,11 +35,22 @@ export class SessionsIndexService implements AppIndexService<SessionRaw> {
 
   readonly defaultFilters: SessionRawFilter[] = [];
   readonly availableFiltersFields: SessionRawFilterField[] = [
-    // TODO: Add filters (when SessionRaw is merged)
     {
       field: 'sessionId',
       type: 'text',
-    }
+    },
+    {
+      field: 'partitionIds',
+      type: 'text',
+    },
+    {
+      field: 'createdAt',
+      type: 'date',
+    },
+    {
+      field: 'cancelledAt',
+      type: 'date',
+    },
   ];
 
   readonly defaultIntervalValue: number = 10;

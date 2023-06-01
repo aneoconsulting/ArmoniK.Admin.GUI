@@ -10,6 +10,7 @@ export interface ColumnsModifyDialogData<T extends object> {
 export interface FiltersDialogData<T extends object> {
   filters: Filter<T>[]
   availableFiltersFields: FilterField<T>[]
+  columnsLabels: Record<ColumnKey<T>, string>
 }
 
 export interface AutoRefreshDialogData {

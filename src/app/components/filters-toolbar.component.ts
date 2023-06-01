@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { ColumnKey } from '@app/types/data';
 import { Filter, FilterField } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters-chips.component';
 import { FiltersDialogComponent } from '@components/filters-dialog.component';
@@ -45,6 +46,7 @@ app-filters-chips + button {
 export class FiltersToolbarComponent<T extends object> {
   @Input({ required: true }) filters: Filter<T>[] = [];
   @Input({ required: true }) filtersFields: FilterField<T>[] = [];
+  @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string> | null = null;
 
   @Output() filtersChange: EventEmitter<Filter<T>[]> = new EventEmitter<Filter<T>[]>();
 
@@ -60,7 +62,8 @@ export class FiltersToolbarComponent<T extends object> {
     const dialogRef = this._dialog.open(FiltersDialogComponent, {
       data: {
         filters: Array.from(this.filters),
-        availableFiltersFields: Array.from(this.filtersFields)
+        availableFiltersFields: Array.from(this.filtersFields),
+        columnsLabels: this.columnsLabels,
       }
     });
 

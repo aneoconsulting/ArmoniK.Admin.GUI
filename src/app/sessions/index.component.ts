@@ -57,7 +57,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
   </mat-toolbar-row>
 
   <mat-toolbar-row>
-    <app-filters-toolbar [filters]="filters" [filtersFields]="availableFiltersFields" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+    <app-filters-toolbar [filters]="filters" [filtersFields]="availableFiltersFields" [columnsLabels]="columnsLabels()" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -71,6 +71,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Columns -->
       <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
+          <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
           <span> {{ element[column] }} </span>
         </td>
       </ng-container>
@@ -240,9 +241,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
           return sessions;
         })
       )
-      // FIXME: Remove the `as unknown as SessionRaw[]` when SessionRaw is merged
       .subscribe(data => {
-        this.data = data as unknown as SessionRaw[];
+        this.data = data;
       });
 
     this.handleAutoRefreshStart();

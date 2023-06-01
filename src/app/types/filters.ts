@@ -19,6 +19,7 @@ export type FilterFieldDate<T extends object> = {
   field: FieldKey<T>
   type: 'date'
 };
+// Add a select filter type.
 // Filters used to create the query builder.
 export type FilterField<T extends object> = FilterFieldText<T> | FilterFieldNumber<T> | FilterFieldDate<T>;
 
