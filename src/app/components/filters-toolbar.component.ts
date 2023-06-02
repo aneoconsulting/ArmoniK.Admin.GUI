@@ -12,7 +12,7 @@ import { FiltersDialogComponent } from '@components/filters-dialog.component';
   selector: 'app-filters-toolbar',
   template: `
 <div class="filters-toolbar">
-  <app-filters-chips *ngIf="showFilters()" [filters]="filters">
+  <app-filters-chips *ngIf="showFilters()" [filters]="filters" [columnsLabels]="columnsLabels">
     </app-filters-chips>
 
     <button mat-button (click)="openFiltersDialog()">
