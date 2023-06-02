@@ -72,7 +72,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
-          <span> {{ element[column] }} </span>
+          <span> {{ element[column] || '-' }} </span>
         </td>
       </ng-container>
       <!-- ID -->
@@ -86,8 +86,10 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Date -->
       <ng-container *ngIf="dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
+        <ng-template *ngIf="element[column]; else noDate">
           {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
-        </td>
+        </ng-template>
+      </td>
       </ng-container>
       <!-- Status -->
       <ng-container *ngIf="column === 'status'">
@@ -115,6 +117,10 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
   <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" aria-label="Select page of sessions" i18n-aria-label>
     </mat-paginator>
 </app-table-container>
+
+<ng-template #noDate>
+  <span> - </span>
+</ng-template>
   `,
   styles: [`
 app-table-actions-toolbar {

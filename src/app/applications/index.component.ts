@@ -66,7 +66,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Application Column -->
       <ng-container *ngIf="column !== 'actions' && column !== 'count'">
-        <td mat-cell *matCellDef="let element"> {{ element[column] }}
+        <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }}
       </td>
       </ng-container>
       <!-- Application's Tasks Count by Status -->

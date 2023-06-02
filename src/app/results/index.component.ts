@@ -71,7 +71,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
       </th>
       <!-- Columns -->
       <ng-container *ngIf="column !== 'actions' && column !== 'status' && !dateColumns().includes(column)">
-        <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+        <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
       </ng-container>
       <!-- Date -->
       <ng-container *ngIf="dateColumns().includes(column)">

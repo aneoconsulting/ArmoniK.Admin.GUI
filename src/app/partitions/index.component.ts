@@ -68,7 +68,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       </th>
       <!-- Application Column -->
       <ng-container *ngIf="column !== 'actions' && column !== 'id'">
-        <td mat-cell *matCellDef="let element"> {{ element[column] }} </td>
+        <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
       </ng-container>
       <!-- ID -->
       <ng-container *ngIf="column === 'id'">
