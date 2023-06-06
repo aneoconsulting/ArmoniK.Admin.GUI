@@ -18,11 +18,13 @@ import { DateType, FilterEvent, FilterInput, FilterInputType } from '@app/types/
   <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onTextChange($event)">
 </mat-form-field>
 
+<!-- TODO: allow user to use <, >, =, != -->
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'number'">
   <mat-label i18n="Input label">Value</mat-label>
   <input matInput type="number" placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
 </mat-form-field>
 
+<!-- TODO: allow user to use <, >, =, != -->
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Enter a date range</mat-label>
   <mat-date-range-input [rangePicker]="picker">

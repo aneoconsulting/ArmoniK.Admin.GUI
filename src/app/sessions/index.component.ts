@@ -86,10 +86,10 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Date -->
       <ng-container *ngIf="dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
-        <ng-template *ngIf="element[column]; else noDate">
-          {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
-        </ng-template>
-      </td>
+          <ng-container *ngIf="element[column]; else noDate">
+            {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
+          </ng-container>
+        </td>
       </ng-container>
       <!-- Status -->
       <ng-container *ngIf="column === 'status'">

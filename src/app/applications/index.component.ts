@@ -174,6 +174,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.availableFiltersFields = this._applicationsIndexService.availableFiltersFields;
     this.filters = this._applicationsIndexService.restoreFilters();
 
+    console.log(this.filters);
+
     this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
 
     this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);

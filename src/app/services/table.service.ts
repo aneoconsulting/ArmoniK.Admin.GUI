@@ -97,9 +97,15 @@ export class TableService {
     const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
 
     const queryParams = this._tableURLService.getQueryParams<T>(this._filtersKey) as T;
+
+    if (queryParams) {
+      this.saveFilters(tableName, queryParams);
+      return queryParams;
+    }
+
     const storageData = this._tableStorageService.restore<T>(storageKey) as T;
 
-    return queryParams || storageData;
+    return storageData;
   }
 
   /**
