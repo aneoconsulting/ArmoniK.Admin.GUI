@@ -31,7 +31,6 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
 
   list$(options: SessionRawListOptions, filters: SessionRawFilter[]): Observable<ListSessionsResponse> {
     const findFilter = this._utilsService.findFilter;
-    const convertFilterValue = this._utilsService.convertFilterValue;
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,
@@ -43,13 +42,13 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
         }
       },
       filter: {
-        sessionId: convertFilterValue(findFilter(filters, 'sessionId')),
+        sessionId: this._utilsService.convertFilterValue(findFilter(filters, 'sessionId')),
         // TODO: waiting for the new filter
         // applicationName: convertFilterValue(findFilter(filters, '')),
         // applicationVersion: convertFilterValue(findFilter(filters, 'applicationVersion')),
         applicationName: '',
         applicationVersion: '',
-        status: SessionStatus.SESSION_STATUS_UNSPECIFIED,
+        status: this._utilsService.convertFilterValueToStatus<SessionStatus>(findFilter(filters, 'status')) ?? SessionStatus.SESSION_STATUS_UNSPECIFIED,
       }
     });
 

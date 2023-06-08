@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColumnKey, FieldKey } from '@app/types/data';
 import { FiltersDialogData } from '@app/types/dialog';
-import { Filter, FilterEvent, FilterField, FilterInput, FilterInputDate, FilterInputText, FilterInputType } from '@app/types/filters';
+import { Filter, FilterEvent, FilterField, FilterFieldSelect, FilterInput, FilterInputDate, FilterInputSelect, FilterInputText, FilterInputType } from '@app/types/filters';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog',
@@ -208,6 +208,15 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
       return {
         type: 'date',
         value: filter.value as FilterInputDate['value'] || { start: null, end: null }
+      };
+    }
+
+    if (type === 'select') {
+      const options = (this.data.availableFiltersFields.find(f => f.field === filter.field) as FilterFieldSelect<T>).options;
+      return {
+        type: 'select',
+        value: filter.value as FilterInputSelect['value'] || null,
+        options,
       };
     }
 

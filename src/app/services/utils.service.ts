@@ -43,4 +43,14 @@ export class UtilsService<T extends object> {
 
     return numberValue;
   }
+
+  convertFilterValueToStatus<S>(filter: Filter<T> | null): S | null {
+    const status = this.convertFilterValueToNumber(filter);
+
+    if (status === null) {
+      return null;
+    }
+
+    return status as S;
+  }
 }

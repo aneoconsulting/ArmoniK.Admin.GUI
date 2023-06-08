@@ -1,11 +1,15 @@
+import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { ColumnKey } from '@app/types/data';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
+import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsIndexService implements AppIndexService<ResultRaw> {
+  #resultsStatusesService = inject(ResultsStatusesService);
+
   readonly tableName: string = 'results';
 
   readonly defaultColumns: ResultRawColumnKey[] = ['name', 'actions'];
@@ -41,8 +45,13 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     },
     {
       field: 'status',
-      // TODO: Create a select filter (with some default options written in code)
-      type: 'text',
+      type: 'select',
+      options: Object.keys(this.#resultsStatusesService.statuses).map(status => {
+        return {
+          value: status,
+          label: this.#resultsStatusesService.statuses[Number(status) as ResultStatus],
+        };
+      }),
     },
     {
       field: 'ownerTaskId',

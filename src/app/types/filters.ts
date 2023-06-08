@@ -19,9 +19,13 @@ export type FilterFieldDate<T extends object> = {
   field: FieldKey<T>
   type: 'date'
 };
-// Add a select filter type.
+export type FilterFieldSelect<T extends object> = {
+  field: FieldKey<T>
+  type: 'select',
+  options: { value: string, label: string }[];
+};
 // Filters used to create the query builder.
-export type FilterField<T extends object> = FilterFieldText<T> | FilterFieldNumber<T> | FilterFieldDate<T>;
+export type FilterField<T extends object> = FilterFieldText<T> | FilterFieldNumber<T> | FilterFieldDate<T> | FilterFieldSelect<T>;
 
 // Types for the value of an input.
 export type FilterInputValueText = string | null;
@@ -41,7 +45,12 @@ export interface FilterInputDate  {
   type: 'date';
   value: FilterInputValueDate;
 }
-export type FilterInput = FilterInputText | FilterInputNumber | FilterInputDate;
+export interface FilterInputSelect {
+  type: 'select';
+  value: string | null;
+  options: { value: string, label: string }[];
+}
+export type FilterInput = FilterInputText | FilterInputNumber | FilterInputDate | FilterInputSelect;
 
 export type FilterInputValue = FilterInput['value'];
 export type FilterInputType = FilterInput['type'];

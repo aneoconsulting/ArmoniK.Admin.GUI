@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColumnKey, FieldKey } from '@app/types/data';
-import { Filter } from '@app/types/filters';
+import { Filter, FilterField, FilterFieldSelect } from '@app/types/filters';
 
 @Component({
   selector: 'app-filters-chips',
@@ -32,6 +32,7 @@ import { Filter } from '@app/types/filters';
 })
 export class FiltersChipsComponent<T extends object> {
   @Input({ required: true }) filters: Filter<T>[] = [];
+  @Input({ required: true }) filtersFields: FilterField<T>[] = [];
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string> | null = null;
 
   toolTip(filter: Filter<T>): string {
@@ -40,6 +41,14 @@ export class FiltersChipsComponent<T extends object> {
 
     if (filter.value instanceof Object)
       return this.columnToLabel(filter.field) + '=' + $localize`from ` + filter.value.start + $localize` to ` + filter.value.end;
+
+    if (this.#isSelectFilter(filter)) {
+      const options = (this.filtersFields.find(field => field.field === filter.field) as FilterFieldSelect<T>).options;
+
+      const option = options.find(option => option.value === filter.value);
+      return this.columnToLabel(filter.field) + '=' + option?.label ?? filter.value;
+    }
+
 
     return this.columnToLabel(filter.field) + '=' + filter.value;
   }
@@ -56,5 +65,9 @@ export class FiltersChipsComponent<T extends object> {
 
   trackByFilter(_: number, filter: Filter<T>): string {
     return (filter.field as string) ?? '';
+  }
+
+  #isSelectFilter(filter: Filter<T>): boolean {
+    return this.filtersFields.find(field => field.field === filter.field)?.type === 'select';
   }
 }

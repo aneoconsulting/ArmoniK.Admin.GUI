@@ -1,10 +1,15 @@
+import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
+import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsIndexService implements AppIndexService<SessionRaw> {
+  #sessionsStatusesService = inject(SessionsStatusesService);
+  #tableService = inject(TableService);
+
   readonly tableName: string = 'sessions';
 
   readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions'];
@@ -51,11 +56,19 @@ export class SessionsIndexService implements AppIndexService<SessionRaw> {
       field: 'cancelledAt',
       type: 'date',
     },
+    {
+      field: 'status',
+      type: 'select',
+      options: Object.keys(this.#sessionsStatusesService.statuses).map(status => {
+        return {
+          value: status,
+          label: this.#sessionsStatusesService.statuses[Number(status) as SessionStatus],
+        };
+      }),
+    }
   ];
 
   readonly defaultIntervalValue: number = 10;
-
-  #tableService = inject(TableService);
 
   columnToLabel(column: SessionRawColumnKey): string {
     return this.columnsLabels[column];
