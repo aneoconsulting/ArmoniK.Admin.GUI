@@ -9,6 +9,7 @@ import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 
@@ -119,6 +120,7 @@ app-page-section + app-page-section {
   providers: [
     StorageService,
     ShareUrlService,
+    NotificationService,
   ],
   imports: [
     NgFor,
@@ -139,10 +141,10 @@ export class IndexComponent implements OnInit {
   keys: Set<string>;
 
   #shareURLService = inject(ShareUrlService);
+  #notificationService = inject(NotificationService);
 
   constructor(
     private _storageService: StorageService,
-    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -189,11 +191,7 @@ export class IndexComponent implements OnInit {
     anchor.download = `${date}-${id}-settings.json`;
     anchor.click();
 
-    this._snackBar.open('Settings exported', 'Dismiss', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      panelClass: 'success'
-    });
+    this.#notificationService.success('Settings exported');
   }
 
   onSubmitImport(event: SubmitEvent): void {
@@ -214,20 +212,12 @@ export class IndexComponent implements OnInit {
     const file = fileInput.files?.[0];
 
     if (!file) {
-      this._snackBar.open('No file selected', 'Dismiss', {
-        duration: 3000,
-        horizontalPosition: 'end',
-        panelClass: 'error'
-      });
+      this.#notificationService.error('No file selected');
       return;
     }
 
     if( file.type !== 'application/json' ) {
-      this._snackBar.open(`'${file.name}' is not a JSON file`, 'Dismiss', {
-        duration: 3000,
-        horizontalPosition: 'end',
-        panelClass: 'error'
-      });
+      this.#notificationService.error(`'${file.name}' is not a JSON file`);
       form.reset();
       return;
     }
@@ -239,11 +229,7 @@ export class IndexComponent implements OnInit {
       this._storageService.importData(data);
       this.keys = this.#sortKeys(this._storageService.keys);
 
-      this._snackBar.open('Settings imported', 'Dismiss', {
-        duration: 3000,
-        horizontalPosition: 'end',
-        panelClass: 'success'
-      });
+      this.#notificationService.success('Settings imported');
 
       form.reset();
     };

@@ -1,9 +1,10 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -17,6 +18,7 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -108,6 +110,7 @@ app-table-actions-toolbar {
     AutoRefreshService,
     ApplicationsIndexService,
     ApplicationsGrpcService,
+    NotificationService,
   ],
   imports: [
     NgIf,
@@ -127,9 +130,12 @@ app-table-actions-toolbar {
     MatSortModule,
     MatIconModule,
     MatButtonModule,
+    MatSnackBarModule,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+  #notificationService = inject(NotificationService);
+
   displayedColumns: ApplicationRawColumnKey[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
 
@@ -206,7 +212,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
           return this._applicationsGrpcService.list$(options, filters).pipe(catchError((error) => {
             console.error(error);
-            // TODO: Error management need to be improved (we can create a snackbar for example)
+            this.#notificationService.error('Unable to fetch applications');
             return of(null);
           }));
         }),

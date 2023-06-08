@@ -25,6 +25,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --mdc-snackbar-supporting-text-color: #000;
 }
 
+.mat-mdc-snack-bar-container.warning {
+  --mdc-snackbar-container-color: #ff9800;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
+.mat-mdc-snack-bar-container.info {
+  --mdc-snackbar-container-color: #2196f3;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
 .mat-mdc-card-header-text {
   width: 100%;
 }
