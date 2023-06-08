@@ -4,6 +4,7 @@ import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -90,9 +91,15 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
       <!-- Action -->
       <ng-container *ngIf="column === 'actions'">
         <td mat-cell *matCellDef="let element">
-          <a mat-icon-button aria-label="See result" matTooltip="See result">
-            <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-          </a>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <a mat-menu-item>
+              <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
+              <span i18n> See results </span>
+            </a>
+          </mat-menu>
         </td>
       </ng-container>
     </ng-container>
@@ -142,6 +149,7 @@ app-table-actions-toolbar {
     MatIconModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatMenuModule,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<ResultRaw> {
