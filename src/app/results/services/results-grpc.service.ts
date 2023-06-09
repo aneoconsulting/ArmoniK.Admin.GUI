@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, ListResultsRequest, ListResultsResponse, ResultRawField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultRawField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -57,9 +57,11 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
     return this._resultsClient.listResults(listResultRequest);
   }
 
-  get$(): Observable<never> {
-    // TODO: Waiting for ArmoniK.Api.Angular
-    // @see https://github.com/aneoconsulting/ArmoniK.Api/pull/260
-    throw new Error('Method not implemented.');
+  get$(resultId: string): Observable<GetResultResponse> {
+    const getResultRequest = new GetResultRequest({
+      resultId
+    });
+
+    return this._resultsClient.getResult(getResultRequest);
   }
 }
