@@ -6,15 +6,15 @@ import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsIndexService implements AppIndexService<SessionRaw> {
+export class SessionsIndexService {
   #sessionsStatusesService = inject(SessionsStatusesService);
   #tableService = inject(TableService);
 
   readonly tableName: string = 'sessions';
 
-  readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions'];
+  readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions', 'count'];
   // TODO: Add columns (when SessionRaw is merged)
-  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds'];
+  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
 
@@ -27,6 +27,7 @@ export class SessionsIndexService implements AppIndexService<SessionRaw> {
     actions: $localize`Actions`,
     duration: $localize`Duration`,
     partitionIds: $localize`Partition IDs`,
+    count: $localize`Tasks by Status`,
   };
 
   readonly defaultOptions: SessionRawListOptions = {

@@ -75,7 +75,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       <!-- Application's Tasks Count by Status -->
       <ng-container *ngIf="column === 'count'">
         <td mat-cell *matCellDef="let element">
-         <app-count-by-status [name]="element.name" [version]="element.version"></app-count-by-status>
+         <app-applications-count-by-status [name]="element.name" [version]="element.version"></app-applications-count-by-status>
         </td>
       </ng-container>
       <!-- Action -->

@@ -31,6 +31,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { CountByStatusComponent } from './components/count-by-status.component';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -71,9 +72,9 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Columns -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && !dateColumns().includes(column)">
+      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
           <span> {{ element[column] || '-' }} </span>
@@ -104,6 +105,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <ng-container *ngIf="column === 'status'">
         <td mat-cell *matCellDef="let element">
           <span> {{ statusToLabel(element[column]) }} </span>
+        </td>
+      </ng-container>
+      <!-- Session's Tasks Count by Status -->
+      <ng-container *ngIf="column === 'count'">
+        <td mat-cell *matCellDef="let element">
+         <app-sessions-count-by-status [sessionId]="element.sessionId"></app-sessions-count-by-status>
         </td>
       </ng-container>
       <!-- Action -->
@@ -168,6 +175,7 @@ app-table-actions-toolbar {
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
+    CountByStatusComponent,
     TableContainerComponent,
     MatTooltipModule,
     MatTableModule,
@@ -181,7 +189,7 @@ app-table-actions-toolbar {
     MatMenuModule,
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<SessionRaw> {
+export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   #notificationService = inject(NotificationService);
 
   displayedColumns: SessionRawColumnKey[] = [];

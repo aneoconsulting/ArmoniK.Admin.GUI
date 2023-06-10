@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionRawField, SessionStatus, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, CountTasksByStatusSessionRequest, CountTasksByStatusSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionRawField, SessionStatus, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -69,5 +69,13 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
     });
 
     return this._sessionsClient.cancelSession(cancelSessionRequest);
+  }
+
+  countTasksByStatus$(sessionId: string): Observable<CountTasksByStatusSessionResponse> {
+    const request = new CountTasksByStatusSessionRequest({
+      sessionId
+    });
+
+    return this._sessionsClient.countTasksByStatus(request);
   }
 }

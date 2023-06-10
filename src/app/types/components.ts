@@ -7,6 +7,7 @@ import { ColumnKey } from './data';
 import { Filter, FilterField } from './filters';
 import { ListOptions } from './options';
 
+// Create a way to add 'count'
 export interface AppIndexComponent<T extends object> extends OnInit, AfterViewInit, OnDestroy
 {
   // Columns

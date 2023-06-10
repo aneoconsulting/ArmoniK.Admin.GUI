@@ -4,11 +4,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subscription } from 'rxjs';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { SpinnerComponent } from '@components/spinner.component';
-import { ApplicationsGrpcService } from '../services/applications-grpc.service';
+import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { StatusCount } from '../types';
 
+// TODO:Create a generic component for this (with applications-count-tasks-by-status.component.ts) (and remowork in order to have links, colors and value for empty response)
 @Component({
-  selector: 'app-applications-count-by-status',
+  selector: 'app-sessions-count-by-status',
   template: `
 <ng-container *ngIf="statusCount; else noStatus">
   <ng-container *ngFor="let status of statusCount; let index = index">
@@ -43,19 +44,18 @@ import { StatusCount } from '../types';
   ]
 })
 export class CountByStatusComponent implements AfterViewInit, OnDestroy {
-  @Input({ required: true }) name: string;
-  @Input({ required: true }) version: string;
+  @Input({ required: true }) sessionId: string;
 
   statusCount: StatusCount[] | null = null;
   loading = true;
 
-  #applicationsGrpcService = inject(ApplicationsGrpcService);
+  #sessionGrpcService = inject(SessionsGrpcService);
   #tasksStatusesService = inject(TasksStatusesService);
 
   subscriptions = new Subscription();
 
   ngAfterViewInit(): void {
-    const subscription = this.#applicationsGrpcService.countByStatus$(this.name, this.version)
+    const subscription = this.#sessionGrpcService.countTasksByStatus$(this.sessionId)
       .subscribe((response) => {
         this.loading = false;
         this.statusCount = response.status ?? null;

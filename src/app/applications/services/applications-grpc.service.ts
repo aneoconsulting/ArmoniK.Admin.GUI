@@ -54,6 +54,7 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
     throw new Error('This method must never be called.');
   }
 
+  // TODO: rename to countTasksByStatus$
   countByStatus$(name: string, version: string): Observable<CountTasksByStatusApplicationResponse> {
     const request = new CountTasksByStatusApplicationRequest({
       name,
