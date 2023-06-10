@@ -19,6 +19,7 @@ import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { ManageExternalServicesDialogComponent } from './manage-external-services-dialog.component';
+import { ThemeSelectorComponent } from './theme-selector.component';
 import pkg from '../../../../package.json';
 
 @Component({
@@ -75,6 +76,7 @@ import pkg from '../../../../package.json';
           <span i18n="Button">Documentation</span>
         </a>
       </mat-menu>
+      <app-theme-selector></app-theme-selector>
     </mat-toolbar>
     <mat-sidenav-container autosize class="sidenav-container">
       <mat-sidenav #drawer class="sidenav"
@@ -179,6 +181,7 @@ main {
     NgFor,
     AsyncPipe,
     RouterModule,
+    ThemeSelectorComponent,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
