@@ -3,12 +3,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { StorageService } from '@services/storage.service';
 
 @Component({
   selector: 'app-theme-selector',
   template: `
-<button mat-button class="theme" [matMenuTriggerFor]="themeMenu" i18n-aria-label aria-label="Choose a theme">
+<button mat-button class="theme" [matMenuTriggerFor]="themeMenu" i18n-aria-label aria-label="Choose a theme" matTooltip="Select a theme">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="format_color_fill"></mat-icon>
 </button>
 <mat-menu #themeMenu="matMenu">
@@ -40,7 +41,8 @@ import { StorageService } from '@services/storage.service';
     NgIf,
     MatButtonModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule,
   ],
 })
 export class ThemeSelectorComponent implements OnInit {
