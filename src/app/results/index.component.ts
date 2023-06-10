@@ -46,6 +46,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
 <mat-toolbar>
   <mat-toolbar-row>
     <app-table-actions-toolbar
+      [loading]="isLoading"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels()"
@@ -65,7 +66,6 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
 </mat-toolbar>
 
 <app-table-container>
-  <app-table-loading [loading]="isLoading"></app-table-loading>
   <table mat-table matSort [matSortActive]="options.sort.active" [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
@@ -143,7 +143,6 @@ app-table-actions-toolbar {
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
     TableContainerComponent,
-    TableLoadingComponent,
     MatTableModule,
     MatToolbarModule,
     MatPaginatorModule,

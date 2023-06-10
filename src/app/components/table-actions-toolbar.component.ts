@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +10,7 @@ import { ActionsToolbarGroupComponent } from './actions-toolbar-group.component'
 import { ActionsToolbarComponent } from './actions-toolbar.component';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
 import { ColumnsButtonComponent } from './columns-button.component';
+import { SpinnerComponent } from './spinner.component';
 
 @Component({
   selector: 'app-table-actions-toolbar',
@@ -16,6 +18,7 @@ import { ColumnsButtonComponent } from './columns-button.component';
 <app-actions-toolbar>
   <app-actions-toolbar-group>
     <app-refresh-button [tooltip]="refreshTooltip" (refreshChange)="onRefresh()"> </app-refresh-button>
+    <app-spinner *ngIf="loading"> </app-spinner>
   </app-actions-toolbar-group>
 
   <app-actions-toolbar-group>
@@ -45,11 +48,13 @@ import { ColumnsButtonComponent } from './columns-button.component';
   standalone: true,
   providers: [],
   imports: [
+    NgIf,
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
     ColumnsButtonComponent,
     ActionsToolbarComponent,
     ActionsToolbarGroupComponent,
+    SpinnerComponent,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
@@ -57,6 +62,7 @@ import { ColumnsButtonComponent } from './columns-button.component';
   ]
 })
 export class TableActionsToolbarComponent<T extends object> {
+  @Input({ required: true }) loading = false;
   @Input({ required: true }) refreshTooltip = '';
   @Input({ required: true }) intervalValue = 0;
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string>;

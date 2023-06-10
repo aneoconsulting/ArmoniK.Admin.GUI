@@ -17,6 +17,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
+import { SpinnerComponent } from '@components/spinner.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -44,7 +45,7 @@ import { StatusCount, TasksStatusesGroup } from './types';
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-        <mat-spinner diameter="30" strokeWidth="4" *ngIf="loadTasksStatus"></mat-spinner>
+        <app-spinner *ngIf="loadTasksStatus"></app-spinner>
       </app-actions-toolbar-group>
 
       <app-actions-toolbar-group>
@@ -104,6 +105,7 @@ app-actions-toolbar {
     JsonPipe,
     PageHeaderComponent,
     PageSectionComponent,
+    SpinnerComponent,
     PageSectionHeaderComponent,
     ActionsToolbarComponent,
     ActionsToolbarGroupComponent,

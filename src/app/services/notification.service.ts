@@ -20,7 +20,7 @@ export class NotificationService {
 
   #openSnackBar(message: string, action: string, status: NotificationStatus): void {
     this.#snackBar.open(message, action, {
-      duration: 3000,
+      duration: 300000,
       horizontalPosition: 'end',
       panelClass: status
     });
