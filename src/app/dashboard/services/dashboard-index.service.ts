@@ -23,7 +23,7 @@ export class DashboardIndexService {
       ]
     },
     {
-      name: 'Error',
+      name: 'Errors',
       color: '#ff0000',
       statuses: [
         TaskStatus.TASK_STATUS_ERROR,
