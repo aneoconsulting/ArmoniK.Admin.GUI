@@ -62,6 +62,7 @@ export class ThemeSelectorComponent implements OnInit {
     const theme = this.#storageService.getItem<string>(this.#themeStorageKey);
 
     if (theme) {
+      this.currentTheme = theme;
       this.#addTheme(theme);
     }
   }
