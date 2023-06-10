@@ -24,6 +24,7 @@ import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -81,7 +82,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- ID -->
       <ng-container *ngIf="column === 'sessionId'">
         <td mat-cell *matCellDef="let element">
-          <a mat-button [routerLink]="['/sessions', element[column]]">
+          <a mat-button
+            [routerLink]="['/tasks']"
+            [queryParams]="{
+              sessionId: element[column],
+            }"
+          >
             {{ element[column] }}
           </a>
         </td>
@@ -142,6 +148,7 @@ app-table-actions-toolbar {
     SessionsStatusesService,
     IconsService,
     ShareUrlService,
+    QueryParamsService,
     StorageService,
     TableURLService,
     TableStorageService,

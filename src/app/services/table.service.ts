@@ -12,10 +12,10 @@ import { TableURLService } from './table-url.service';
  */
 @Injectable()
 export class TableService {
-  private _columnsKey = 'columns';
-  private _intervalKey = 'interval';
-  private _optionsKey = 'options';
-  private _filtersKey = 'filters';
+  private readonly _columnsKey = 'columns';
+  private readonly _intervalKey = 'interval';
+  private readonly _optionsKey = 'options';
+  private readonly _filtersKey = 'filters';
 
   constructor(
     private _storageService: StorageService,
@@ -79,11 +79,11 @@ export class TableService {
     }
 
     const options: ListOptions<T> = {
-      pageIndex: convertValueToNumber(this._tableURLService.getQueryParams('pageIndex', false)) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
-      pageSize: convertValueToNumber(this._tableURLService.getQueryParams('pageSize', false)) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
+      pageIndex: convertValueToNumber(this._tableURLService.getQueryParamsOptions('pageIndex')) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
+      pageSize: convertValueToNumber(this._tableURLService.getQueryParamsOptions('pageSize')) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
       sort: {
-        active: this._tableURLService.getQueryParams<FieldKey<T>>('sort', false) ?? storageData?.sort.active ?? defaultOptions?.sort.active,
-        direction: this._tableURLService.getQueryParams<SortDirection>('order', false) ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
+        active: this._tableURLService.getQueryParamsOptions<FieldKey<T>>('sortField') ?? storageData?.sort.active ?? defaultOptions?.sort.active,
+        direction: this._tableURLService.getQueryParamsOptions<SortDirection>('sortDirection') ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
       },
     };
 

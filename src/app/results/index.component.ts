@@ -22,6 +22,7 @@ import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -122,6 +123,7 @@ app-table-actions-toolbar {
     ResultsStatusesService,
     IconsService,
     ShareUrlService,
+    QueryParamsService,
     StorageService,
     UtilsService,
     TableStorageService,

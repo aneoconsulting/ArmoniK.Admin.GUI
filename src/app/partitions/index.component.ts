@@ -21,6 +21,7 @@ import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -76,9 +77,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       <!-- ID -->
       <ng-container *ngIf="column === 'id'">
         <td mat-cell *matCellDef="let element">
-          <a mat-button [routerLink]="['/partitions', element[column]]">
-            {{ element[column] }}
-          </a>
+          {{ element[column] }}
         </td>
       </ng-container>
       <!-- Action -->
@@ -114,6 +113,7 @@ app-table-actions-toolbar {
   providers: [
     IconsService,
     ShareUrlService,
+    QueryParamsService,
     StorageService,
     TableURLService,
     TableStorageService,

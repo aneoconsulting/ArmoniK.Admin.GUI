@@ -18,6 +18,7 @@ import { PageSectionHeaderComponent } from '@components/page-section-header.comp
 import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
@@ -90,6 +91,7 @@ app-actions-toolbar {
   providers: [
     TasksStatusesService,
     ShareUrlService,
+    QueryParamsService,
     TaskGrpcService,
     StorageService,
     DashboardStorageService,

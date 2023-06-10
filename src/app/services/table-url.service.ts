@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { QueryParamsFilterKey, QueryParamsOptionsKey } from '@app/types/query-params';
 
 /**
  * Service to manage the URL for the table.
@@ -7,7 +8,15 @@ import { ActivatedRoute, Router } from '@angular/router';
  */
 @Injectable()
 export class TableURLService {
-  constructor(private _route: ActivatedRoute, private _router: Router) {}
+  constructor(private _route: ActivatedRoute) {}
+
+  getQueryParamsOptions<T>(key: QueryParamsOptionsKey) {
+    return this.getQueryParams<T>(key, false);
+  }
+
+  getQueryParamsFilters<T, U extends object>(key: QueryParamsFilterKey<U>) {
+    return this.getQueryParams<T>(key.toString(), false);
+  }
 
   getQueryParams<T>(key: string, parse = true) {
     const data = this._route.snapshot.queryParamMap.get(key);

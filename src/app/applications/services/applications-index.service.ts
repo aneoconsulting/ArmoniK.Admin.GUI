@@ -52,7 +52,7 @@ export class ApplicationsIndexService {
 
   readonly defaultIntervalValue = 10;
 
-  #tableSErvice = inject(TableService);
+  #tableService = inject(TableService);
 
   columnToLabel(column: ApplicationRawColumnKey): string {
     return this.columnsLabels[column];
@@ -63,11 +63,11 @@ export class ApplicationsIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableSErvice.saveIntervalValue(this.tableName, value);
+    this.#tableService.saveIntervalValue(this.tableName, value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableSErvice.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
   }
 
   /**
@@ -75,11 +75,11 @@ export class ApplicationsIndexService {
    */
 
   saveOptions(options: ApplicationRawListOptions): void {
-    this.#tableSErvice.saveOptions(this.tableName, options);
+    this.#tableService.saveOptions(this.tableName, options);
   }
 
   restoreOptions(): ApplicationRawListOptions {
-    const options = this.#tableSErvice.restoreOptions<ApplicationRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableService.restoreOptions<ApplicationRaw>(this.tableName, this.defaultOptions);
 
     return options;
   }
@@ -89,15 +89,15 @@ export class ApplicationsIndexService {
    */
 
   saveColumns(columns: ApplicationRawColumnKey[]): void {
-    this.#tableSErvice.saveColumns(this.tableName, columns);
+    this.#tableService.saveColumns(this.tableName, columns);
   }
 
   restoreColumns(): ApplicationRawColumnKey[] {
-    return this.#tableSErvice.restoreColumns<ApplicationRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    return this.#tableService.restoreColumns<ApplicationRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 
   resetColumns(): ApplicationRawColumnKey[] {
-    this.#tableSErvice.resetColumns(this.tableName);
+    this.#tableService.resetColumns(this.tableName);
 
     return this.defaultColumns;
   }
@@ -107,15 +107,16 @@ export class ApplicationsIndexService {
    */
 
   saveFilters(filters: ApplicationRawFilter[]): void {
-    this.#tableSErvice.saveFilters(this.tableName, filters);
+    this.#tableService.saveFilters(this.tableName, filters);
   }
 
   restoreFilters(): ApplicationRawFilter[] {
-    return this.#tableSErvice.restoreFilters<ApplicationRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    // TODO: rework filters
+    return this.#tableService.restoreFilters<ApplicationRawFilter[]>(this.tableName) ?? this.defaultFilters;
   }
 
   resetFilters(): ApplicationRawFilter[] {
-    this.#tableSErvice.resetFilters(this.tableName);
+    this.#tableService.resetFilters(this.tableName);
 
     return this.defaultFilters;
   }

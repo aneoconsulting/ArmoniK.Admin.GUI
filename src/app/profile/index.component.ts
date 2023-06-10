@@ -6,6 +6,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { IconsService } from '@services/icons.service';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UserService } from '@services/user.service';
 import { PermissionGroup } from './types';
@@ -116,6 +117,7 @@ import { PermissionGroup } from './types';
   standalone: true,
   providers: [
     ShareUrlService,
+    QueryParamsService,
   ],
   imports: [
     NgFor,

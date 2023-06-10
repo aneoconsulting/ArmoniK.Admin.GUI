@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { ShowPageComponent } from '@components/show-page.component';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
@@ -23,6 +24,7 @@ import { SessionRaw } from './types';
   providers: [
     UtilsService,
     ShareUrlService,
+    QueryParamsService,
     SessionsGrpcService
   ],
   imports: [

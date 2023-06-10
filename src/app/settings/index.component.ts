@@ -10,6 +10,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { NotificationService } from '@services/notification.service';
+import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 
@@ -120,6 +121,7 @@ app-page-section + app-page-section {
   providers: [
     StorageService,
     ShareUrlService,
+    QueryParamsService,
     NotificationService,
   ],
   imports: [
