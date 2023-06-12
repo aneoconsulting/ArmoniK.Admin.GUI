@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
 import { TaskGrpcService } from '@app/tasks/services/task-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { StatusCount } from '@app/tasks/types';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
@@ -26,7 +27,7 @@ import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.c
 import { StatusesGroupCardComponent } from './components/statuses-group-card.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
-import { StatusCount, TasksStatusesGroup } from './types';
+import { TasksStatusesGroup } from './types';
 
 @Component({
   selector: 'app-dashboard-index',

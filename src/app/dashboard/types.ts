@@ -1,6 +1,6 @@
-import { StatusCount as GrpcStatusCount, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import {TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 
-export type StatusCount = GrpcStatusCount.AsObject;
+
 
 export type TasksStatusesGroup = {
   name: string;

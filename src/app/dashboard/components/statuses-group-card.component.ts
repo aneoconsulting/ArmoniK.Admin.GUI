@@ -3,7 +3,8 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
-import { StatusCount, TasksStatusesGroup } from '../types';
+import { StatusCount } from '@app/tasks/types';
+import { TasksStatusesGroup } from '../types';
 
 @Component({
   selector: 'app-statuses-group-card',
