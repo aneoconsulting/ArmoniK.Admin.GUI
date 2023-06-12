@@ -3,6 +3,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -14,13 +15,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
-import { AppIndexComponent } from '@app/types/components';
+import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { TableLoadingComponent } from '@components/table-loading.component';
+import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -30,6 +31,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { CountByStatusComponent } from './components/count-by-status.component';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
@@ -58,7 +60,11 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()">
+      (resetFilters)="onFiltersReset()"
+    >
+      <ng-container extra-menu-items>
+        <button mat-menu-item (click)="personalizeTasksByStatus()" i18n>Personalize Tasks By Status</button>
+      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -110,7 +116,10 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Session's Tasks Count by Status -->
       <ng-container *ngIf="column === 'count'">
         <td mat-cell *matCellDef="let element">
-         <app-sessions-count-by-status [sessionId]="element.sessionId"></app-sessions-count-by-status>
+          <app-sessions-count-by-status
+            [statuses]="tasksStatusesColored"
+            [sessionId]="element.sessionId"
+          ></app-sessions-count-by-status>
         </td>
       </ng-container>
       <!-- Action -->
@@ -153,6 +162,7 @@ app-table-actions-toolbar {
   standalone: true,
   providers: [
     SessionsStatusesService,
+    TasksByStatusService,
     IconsService,
     ShareUrlService,
     QueryParamsService,
@@ -187,10 +197,13 @@ app-table-actions-toolbar {
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatDialogModule,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+  #tasksByStatusService = inject(TasksByStatusService);
   #notificationService = inject(NotificationService);
+  #dialog = inject(MatDialog);
 
   displayedColumns: SessionRawColumnKey[] = [];
   availableColumns: SessionRawColumnKey[] = [];
@@ -213,6 +226,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
 
@@ -237,6 +252,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
 
     this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
+
+    this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses('sessions');
   }
 
   ngAfterViewInit(): void {
@@ -379,5 +396,22 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+
+  personalizeTasksByStatus() {
+    const dialogRef = this.#dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
+      data: {
+        statusesCounts: this.tasksStatusesColored,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      this.tasksStatusesColored = result;
+      this.#tasksByStatusService.saveStatuses('sessions', result);
+    });
   }
 }

@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { StatusCount } from '../types';
@@ -9,8 +10,9 @@ import { StatusCount } from '../types';
   selector: 'app-sessions-count-by-status',
   template: `
 <app-view-tasks-by-status
+  [statuses]="statuses"
   [loading]="loading"
-  [statusesCounts]="statusCount"
+  [statusesCounts]="statusesCounts"
   [defaultQueryParams]="{
     sessionId: sessionId,
   }"
@@ -28,9 +30,10 @@ import { StatusCount } from '../types';
   ]
 })
 export class CountByStatusComponent implements AfterViewInit, OnDestroy {
+  @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) sessionId: string;
 
-  statusCount: StatusCount[] | null = null;
+  statusesCounts: StatusCount[] | null = null;
 
   loading = true;
 
@@ -42,7 +45,7 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
     const subscription = this.#sessionGrpcService.countTasksByStatus$(this.sessionId)
       .subscribe((response) => {
         this.loading = false;
-        this.statusCount = response.status ?? null;
+        this.statusesCounts = response.status ?? null;
       });
 
     this.subscriptions.add(subscription);

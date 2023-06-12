@@ -47,6 +47,7 @@ import { StorageService } from '@services/storage.service';
     <div class="actions">
       <button mat-stroked-button type="reset" i18n="Form">Reset</button>
       <button mat-flat-button color="warn" type="submit" i18n="Form">Clear</button>
+      <!-- TODO: Add a button to clear all keys -->
     </div>
   </form>
 </app-page-section>
@@ -101,6 +102,11 @@ app-page-section + app-page-section {
   display: grid;
   grid-template-columns: min-content min-content min-content;
   column-gap: 0.5rem;
+}
+
+.storage li {
+  /* do not wrap word */
+  white-space: nowrap;
 }
 
 .import .file {

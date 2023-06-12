@@ -38,7 +38,7 @@ import { SpinnerComponent } from './spinner.component';
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onResetColumns()" i18n>Reset Columns</button>
       <button mat-menu-item (click)="onResetFilters()" i18n>Reset Filters</button>
-      <!-- Currently, it's impossible to reset sort programmatically. -->
+      <ng-content select="[extra-menu-items]"></ng-content>
     </mat-menu>
   </app-actions-toolbar-group>
 </app-actions-toolbar>
@@ -88,6 +88,7 @@ export class TableActionsToolbarComponent<T extends object> {
   }
 
   onResetColumns(): void {
+    console.log('onResetColumns');
     this.resetColumns.emit();
   }
 

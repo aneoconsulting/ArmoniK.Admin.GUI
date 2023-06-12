@@ -7,12 +7,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { StatusCount } from '@app/tasks/types';
+import { TaskStatusColored } from '@app/types/dialog';
 import { SpinnerComponent } from './spinner.component';
-
-type TaskStatusColored = {
-  status: TaskStatus;
-  color: string;
-};
 
 @Component({
   selector: 'app-view-tasks-by-status',
@@ -49,38 +45,14 @@ type TaskStatusColored = {
     MatButtonModule,
   ],
 })
-export class ViewTasksByStatusComponent implements OnInit {
+export class ViewTasksByStatusComponent {
   @Input({ required: true }) loading = true;
   @Input({ required: true }) statusesCounts: StatusCount[] | null = null;
+  @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input() defaultQueryParams: Record<string, string> = {};
 
+
   #tasksStatusesService = inject(TasksStatusesService);
-
-  statuses: TaskStatusColored[] = [];
-
-  readonly defaultStatuses: TaskStatusColored[] = [
-    {
-      status: TaskStatus.TASK_STATUS_COMPLETED,
-      color: '#4caf50',
-    },
-    {
-      status: TaskStatus.TASK_STATUS_ERROR,
-      color: '#ff0000',
-    },
-    {
-      status: TaskStatus.TASK_STATUS_TIMEOUT,
-      color: '#ff6944',
-    },
-    {
-      status: TaskStatus.TASK_STATUS_RETRIED,
-      color: '#ff9800',
-    },
-  ];
-
-  ngOnInit(): void {
-    this.statuses = this.defaultStatuses;
-    // TODO: load data from localStorage (using a input key)
-  }
 
   findStatusCount(status: TaskStatus): StatusCount | undefined {
     return this.statusesCounts?.find((statusCount) => statusCount.status === status);

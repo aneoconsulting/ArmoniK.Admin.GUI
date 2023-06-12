@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
+import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { StatusCount } from '../types';
 
@@ -9,8 +11,9 @@ import { StatusCount } from '../types';
   selector: 'app-applications-count-by-status',
   template: `
 <app-view-tasks-by-status
+  [statuses]="statuses"
   [loading]="loading"
-  [statusesCounts]="statusCount"
+  [statusesCounts]="statusesCounts"
   [defaultQueryParams]="{
     applicationName: name,
     applicationVersion: version,
@@ -22,6 +25,7 @@ import { StatusCount } from '../types';
   `],
   standalone: true,
   providers: [
+    TasksByStatusService,
     TasksStatusesService,
   ],
   imports: [
@@ -29,10 +33,12 @@ import { StatusCount } from '../types';
   ]
 })
 export class CountByStatusComponent implements AfterViewInit, OnDestroy {
+  @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) name: string;
   @Input({ required: true }) version: string;
 
-  statusCount: StatusCount[] | null = null;
+  statusesCounts: StatusCount[] | null = null;
+
   loading = true;
 
   #applicationsGrpcService = inject(ApplicationsGrpcService);
@@ -43,7 +49,7 @@ export class CountByStatusComponent implements AfterViewInit, OnDestroy {
     const subscription = this.#applicationsGrpcService.countByStatus$(this.name, this.version)
       .subscribe((response) => {
         this.loading = false;
-        this.statusCount = response.status ?? null;
+        this.statusesCounts = response.status ?? null;
       });
 
     this.subscriptions.add(subscription);
