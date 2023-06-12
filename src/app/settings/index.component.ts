@@ -5,7 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBarModule} from '@angular/material/snack-bar';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
@@ -36,7 +36,8 @@ import { StorageService } from '@services/storage.service';
   </p>
 
   <form (submit)="onSubmitStorage($event)">
-    <ul *ngIf="keys.size">
+
+    <ul *ngIf="keys.size; else noKey">
       <li *ngFor="let key of keys; trackBy:trackByKey">
         <mat-checkbox [name]="key">
           {{ key }}
@@ -45,9 +46,9 @@ import { StorageService } from '@services/storage.service';
     </ul>
 
     <div class="actions">
-      <button mat-stroked-button type="reset" i18n="Form">Reset</button>
-      <button mat-flat-button color="warn" type="submit" i18n="Form">Clear</button>
-      <!-- TODO: Add a button to clear all keys -->
+      <button mat-stroked-button type="reset" i18n="Form" [disabled]="keys.size === 0">Reset</button>
+      <button mat-stroked-button type="button" (click)="clearAll()" [disabled]="keys.size === 0">Clear All</button>
+      <button mat-flat-button color="warn" type="submit" i18n="Form" [disabled]="keys.size === 0">Clear</button>
     </div>
   </form>
 </app-page-section>
@@ -87,6 +88,14 @@ import { StorageService } from '@services/storage.service';
     </div>
   </form>
 </app-page-section>
+
+<ng-template #noKey>
+  <p>
+    <em i18n="No key">
+      No data stored in your browser.
+    </em>
+  </p>
+</ng-template>
   `,
   styles: [`
 app-page-section + app-page-section {
@@ -184,6 +193,17 @@ export class IndexComponent implements OnInit {
       this.keys.delete(key);
       this._storageService.removeItem(key);
     }
+
+    this.#notificationService.success('Data cleared');
+  }
+
+  clearAll(): void {
+    for (const key of this.keys) {
+      this.keys.delete(key);
+      this._storageService.removeItem(key);
+    }
+
+    this.#notificationService.success('All data cleared');
   }
 
   exportData(): void {
