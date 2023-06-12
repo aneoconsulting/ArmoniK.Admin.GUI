@@ -116,7 +116,7 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   resetColumns(): ResultRawColumnKey[] {
     this.#tableService.resetColumns(this.tableName);
 
-    return this.defaultColumns;
+    return Array.from(this.defaultColumns);
   }
 
   /**

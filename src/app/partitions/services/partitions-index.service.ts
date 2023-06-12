@@ -111,7 +111,7 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
   resetColumns(): PartitionRawColumnKey[] {
     this.#tableService.resetColumns(this.tableName);
 
-    return this.defaultColumns;
+    return Array.from(this.defaultColumns);
   }
 
   /**

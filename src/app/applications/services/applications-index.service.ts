@@ -99,7 +99,7 @@ export class ApplicationsIndexService {
   resetColumns(): ApplicationRawColumnKey[] {
     this.#tableService.resetColumns(this.tableName);
 
-    return this.defaultColumns;
+    return Array.from(this.defaultColumns);
   }
 
   /**
