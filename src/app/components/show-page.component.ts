@@ -9,7 +9,7 @@ import { ShowCardComponent } from './show-card.component';
   <ng-content> </ng-content> <span>{{ id }}</span>
 </app-page-header>
 
-<app-show-card [data]="data"></app-show-card>
+<app-show-card [data]="data" [statuses]="statuses"></app-show-card>
   `,
   styles: [`
 span {
@@ -24,8 +24,9 @@ span {
     ShowCardComponent,
   ]
 })
-export class ShowPageComponent<T> {
+export class ShowPageComponent<T extends object> {
   @Input({ required: true }) id: string | null = null;
   @Input({ required: true }) data: T | null = null;
+  @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
 }

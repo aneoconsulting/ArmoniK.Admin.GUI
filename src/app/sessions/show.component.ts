@@ -8,12 +8,13 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
+import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { SessionRaw } from './types';
 
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL">
+<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -25,7 +26,8 @@ import { SessionRaw } from './types';
     UtilsService,
     ShareUrlService,
     QueryParamsService,
-    SessionsGrpcService
+    SessionsGrpcService,
+    SessionsStatusesService,
   ],
   imports: [
     ShowPageComponent,
@@ -37,6 +39,7 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
   data: SessionRaw | null = null;
 
   #shareURLService = inject(ShareUrlService);
+  #sessionsStatusesService = inject(SessionsStatusesService);
 
   constructor(
     private _route: ActivatedRoute,
@@ -57,7 +60,10 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
         return data.session ?? null;
       })
     )
-    // FIXME: Remove the `as unknown as SessionRaw` cast
-      .subscribe((data) => this.data = data as unknown as SessionRaw);
+      .subscribe((data) => this.data = data);
+  }
+
+  get statuses() {
+    return this.#sessionsStatusesService.statuses;
   }
 }

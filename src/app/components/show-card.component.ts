@@ -1,7 +1,8 @@
-import { JsonPipe, NgIf } from '@angular/common';
+import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ShowCardContentComponent } from './show-card-content.component';
 
 @Component({
   selector: 'app-show-card',
@@ -9,10 +10,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 <mat-card>
   <mat-card-content>
     <mat-spinner *ngIf="!data" strokeWidth="4" diameter="40"></mat-spinner>
-    <pre *ngIf="data">{{ data | json }}</pre>
+    <ng-container *ngIf="data">
+      <app-show-card-content [data]="data" [statuses]="statuses"></app-show-card-content>
+    </ng-container>
   </mat-card-content>
-  <!-- TODO: Update to show field prettier (using beautiful date, list for array and using label name for the other thing -->
-  <!-- Create an object for label and translation -->
 </mat-card>
   `,
   styles: [`
@@ -25,11 +26,14 @@ pre {
   ],
   imports: [
     NgIf,
+    NgFor,
     JsonPipe,
+    ShowCardContentComponent,
     MatCardModule,
     MatProgressSpinnerModule
   ]
 })
-export class ShowCardComponent<T> {
+export class ShowCardComponent<T extends object> {
   @Input({ required: true }) data: T | null = null;
+  @Input() statuses: Record<number, string> = [];
 }

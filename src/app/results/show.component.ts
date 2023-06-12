@@ -8,12 +8,13 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
+import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw } from './types';
 
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL">
+<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses">
   <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
@@ -26,6 +27,7 @@ import { ResultRaw } from './types';
     ShareUrlService,
     QueryParamsService,
     ResultsGrpcService,
+    ResultsStatusesService,
   ],
   imports: [
     ShowPageComponent,
@@ -37,6 +39,7 @@ export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, After
   data: ResultRaw | null = null;
 
   #shareURLService = inject(ShareUrlService);
+  #resultsStatusesService = inject(ResultsStatusesService);
 
   constructor(
     private _route: ActivatedRoute,
@@ -58,5 +61,9 @@ export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, After
       })
     )
       .subscribe((data) => this.data = data);
+  }
+
+  get statuses() {
+    return this.#resultsStatusesService.statuses;
   }
 }
