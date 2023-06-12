@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColumnKey, FieldKey } from '@app/types/data';
 import { Filter, FilterField, FilterFieldSelect } from '@app/types/filters';
 
@@ -10,8 +9,8 @@ import { Filter, FilterField, FilterFieldSelect } from '@app/types/filters';
   template: `
 <mat-chip-listbox>
   <ng-container *ngFor="let filter of filters; let index = index; trackBy:trackByFilter">
-    <mat-chip [matTooltip]="toolTip(filter)">
-      <span *ngIf="filter.field;else noField"> {{ columnToLabel(filter.field) }} </span>
+    <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected">
+      <span *ngIf="filter.field;else noField"> {{ content(filter) }} </span>
     </mat-chip>
   </ng-container>
 </mat-chip-listbox>
@@ -27,7 +26,6 @@ import { Filter, FilterField, FilterFieldSelect } from '@app/types/filters';
     NgFor,
     NgIf,
     MatChipsModule,
-    MatTooltipModule
   ]
 })
 export class FiltersChipsComponent<T extends object> {
@@ -35,7 +33,7 @@ export class FiltersChipsComponent<T extends object> {
   @Input({ required: true }) filtersFields: FilterField<T>[] = [];
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string> | null = null;
 
-  toolTip(filter: Filter<T>): string {
+  content(filter: Filter<T>): string {
     if (!filter.value)
       return $localize`No value`;
 
