@@ -3,23 +3,34 @@
   "extends": [
     "config:base",
     "group:allNonMajor",
-    ":semanticCommits"
+    ":semanticCommitTypeAll(chore)",
+    "helpers:pinGitHubActionDigests"
   ],
+  "rangeStrategy": "bump",
   "packageRules": [
     {
-      "matchPackagePrefixes": [
-        "ArmoniK"
-      ],
-      "groupName": "release packages Armonik"
+      "groupName": "npm packages",
+      "groupSlug": "npm",
+      "matchDatasources": [
+        "npm"
+      ]
     },
     {
-      "matchPackagePatterns": [
-        "*"
+      "groupName": "docs npm packages",
+      "groupSlug": "docs-npm",
+      "matchPaths": [
+        ".docs/**"
       ],
-      "excludePackagePrefixes": [
-        "ArmoniK"
-      ],
-      "groupName": "other dependencies"
+      "matchDatasources": [
+        "npm"
+      ]
+    },
+    {
+      "groupName": "github actions",
+      "groupSlug": "github-actions",
+      "matchDatasources": [
+        "github-tags"
+      ]
     }
   ]
 }
