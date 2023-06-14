@@ -5,7 +5,7 @@ import { StorageService } from './storage.service';
 @Injectable()
 export class NavigationService {
   #key = 'navigation';
-  #externalServicesKey = 'external_services';
+  #externalServicesKey = 'external-services';
 
   #storageService = inject(StorageService);
 

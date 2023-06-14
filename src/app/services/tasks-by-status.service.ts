@@ -7,7 +7,6 @@ type TableTasksByStatus = 'applications' | 'sessions';
 
 @Injectable()
 export class TasksByStatusService {
-  // TODO: harmonize key using dash or underscore
   #key = 'tasks-by-status';
 
   #storageService = inject(StorageService);

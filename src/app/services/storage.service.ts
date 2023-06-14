@@ -62,7 +62,7 @@ export class StorageService implements Storage {
    * Build the key to store data in local storage
    */
   buildKey(tableName: string, key: string): string {
-    return `${tableName}_${key}`;
+    return `${tableName}-${key}`;
   }
 
   exportData(): Record<string, unknown> {
