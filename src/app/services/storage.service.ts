@@ -65,18 +65,18 @@ export class StorageService implements Storage {
     return `${tableName}_${key}`;
   }
 
-  exportData(): string {
-    const data = {} as Record<string, string>;
+  exportData(): Record<string, unknown> {
+    const data = {} as Record<string, unknown>;
 
     for (const key of this.#keys) {
-      const item = this._localStorage.getItem(key);
+      const item = this.getItem(key, true);
 
       if (item) {
         data[key] = item;
       }
     }
 
-    return JSON.stringify(data);
+    return data;
   }
 
   importData(data: string): void {

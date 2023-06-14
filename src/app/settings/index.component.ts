@@ -207,7 +207,7 @@ export class IndexComponent implements OnInit {
   }
 
   exportData(): void {
-    const data = this._storageService.exportData();
+    const data = JSON.stringify(this._storageService.exportData());
 
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
