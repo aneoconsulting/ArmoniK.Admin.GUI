@@ -4,6 +4,8 @@ import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { catchError, tap } from 'rxjs';
+import { NavigationService } from '@services/navigation.service';
+import { StorageService } from '@services/storage.service';
 import { UserGrpcService } from '@services/user-grpc.service';
 import { UserService } from '@services/user.service';
 import { routes } from './app.routes';
@@ -26,6 +28,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     UserService,
     UserGrpcService,
+    StorageService,
+    NavigationService,
     {
       provide: Window,
       useValue: window

@@ -1,3 +1,4 @@
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -5,10 +6,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
+import { Sidebar, SidebarItem, SidebarLinkName } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -25,6 +30,57 @@ import { StorageService } from '@services/storage.service';
 <p i18n="Page description">
   Settings are stored in your browser. They are not synced across devices. But you can export and import them manually. This is useful if you want to use the same settings on multiple devices or browsers. You can also create presets and switch between them.
 </p>
+
+<app-page-section class="sidebar">
+  <!-- TODO: update the navigation icon -->
+  <!-- TODO: use in a dialog -->
+  <app-page-section-header icon="navigation">
+    <span i18n="Section title"> Sidebar </span>
+  </app-page-section-header>
+
+  <p i18n="Section description">
+    Add, remove and reorder the items from the sidebar.
+  </p>
+
+  <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
+    <li cdkDrag *ngFor="let item of sidebar; let index = index; trackBy:trackBySidebarItem">
+      <div class="sidebar-item-drag">
+        <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="findSidebarItem(item).icon ?? 'horizontal_rule'"></mat-icon>
+      </div>
+
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
+        <mat-select [value]="item" (valueChange)="onSidebarItemChange(index, $event)">
+          <mat-option *ngFor="let sidebarItem of getSidebarItems(); trackBy:trackByItem" [value]="sidebarItem.value">
+            {{ sidebarItem.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
+        <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onRemoveSidebarItem(index)">
+          <mat-icon aria-hidden="true" fontIcon="delete"></mat-icon>
+          <span i18n>Remove</span>
+        </button>
+      </mat-menu>
+    </li>
+  </ul>
+
+  <button class="add-sidebar-item" mat-button (click)="onAddSidebarItem()">
+    <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+    <span i18n> Add a status </span>
+  </button>
+
+  <div class="actions">
+    <button mat-stroked-button (click)="onResetToDefaultSidebar()" type="button" i18n="Form">Reset to default</button>
+    <button mat-stroked-button (click)="onResetSidebar()" type="button" i18n="Form">Reset</button>
+    <button mat-flat-button (click)="onSaveSidebar()" color="primary" type="button" i18n="Form">Save</button>
+  </div>
+</app-page-section>
 
 <app-page-section class="storage">
   <app-page-section-header icon="storage">
@@ -103,6 +159,27 @@ app-page-section + app-page-section {
   margin-top: 2rem;
 }
 
+.sidebar-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-items li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.add-sidebar-item {
+  margin-top: 1rem;
+}
+
 .storage ul {
   list-style-type: none;
   padding: 0;
@@ -131,6 +208,27 @@ app-page-section + app-page-section {
   flex-direction: row;
   gap: 1rem;
 }
+
+.cdk-drag-preview {
+  list-style: none;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging li:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
   `],
   standalone: true,
   providers: [
@@ -149,16 +247,22 @@ app-page-section + app-page-section {
     MatCheckboxModule,
     MatInputModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatMenuModule,
+    DragDropModule,
   ]
 })
 export class IndexComponent implements OnInit {
   sharableURL = '';
   keys: Set<string>;
 
+  sidebar: Sidebar[] = [];
+
   #shareURLService = inject(ShareUrlService);
   #notificationService = inject(NotificationService);
+  #navigationService = inject(NavigationService);
 
   constructor(
     private _storageService: StorageService,
@@ -167,7 +271,51 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
     this.keys = this.#sortKeys(this._storageService.keys);
+
+    this.sidebar = this.#navigationService.restoreSidebar();
   }
+
+  onResetSidebar(): void {
+    this.sidebar = this.#navigationService.restoreSidebar();
+  }
+
+  onResetToDefaultSidebar(): void {
+    this.sidebar = this.#navigationService.defaultSidebar;
+  }
+
+  onSaveSidebar(): void {
+    this.#navigationService.saveSidebar(this.sidebar);
+  }
+
+  onRemoveSidebarItem(index: number): void {
+    this.sidebar.splice(index, 1);
+  }
+
+  onAddSidebarItem(): void {
+    this.sidebar.push('dashboard');
+  }
+
+  getSidebarItems(): { name: string, value: Sidebar }[] {
+    return this.#navigationService.sidebarItems.map(item => ({
+      name: item.display,
+      value: item.id as Sidebar,
+    }));
+  }
+
+  findSidebarItem(id: Sidebar): SidebarItem {
+    const item = this.#navigationService.sidebarItems.find(item => item.id === id);
+
+    if (!item) {
+      throw new Error(`Sidebar item with id "${id}" not found`);
+    }
+
+    return item;
+  }
+
+  onSidebarItemChange(index: number, value: Sidebar): void {
+    this.sidebar[index] = value;
+  }
+
 
   onSubmitStorage(event: SubmitEvent): void {
     event.preventDefault();
@@ -265,8 +413,24 @@ export class IndexComponent implements OnInit {
     reader.readAsText(file);
   }
 
-  trackByKey(index: number, key: string): string {
+  trackByKey(_: number, key: string): string {
     return key;
+  }
+
+  trackBySidebarItem(index: number, item: Sidebar): string {
+    if (item === 'divider') return 'divider' + index;
+
+    return item;
+  }
+
+  trackByItem(index: number, item: { name: string, value: Sidebar }): string {
+    if (item.value === 'divider') return 'divider' + index;
+
+    return item.value;
+  }
+
+  drop(event: CdkDragDrop<SidebarItem[]>) {
+    moveItemInArray(this.sidebar, event.previousIndex, event.currentIndex);
   }
 
   #sortKeys(keys: Set<string>): Set<string> {

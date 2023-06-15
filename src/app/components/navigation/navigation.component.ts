@@ -80,52 +80,22 @@ import pkg from '../../../../package.json';
     </mat-toolbar>
     <mat-sidenav-container autosize class="sidenav-container">
       <mat-sidenav #drawer class="sidenav"
-          [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-          [mode]="(isHandset$ | async) ? 'over' : 'side'"
-          [opened]="(isHandset$ | async) === false">
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
         <mat-nav-list>
-          <a mat-list-item routerLink="/profile" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="account_circle"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Profile </span>
-          </a>
+          <ng-container *ngFor="let item of getSidebar()">
+            <ng-container *ngIf="item.type === 'divider'">
+              <mat-divider></mat-divider>
+            </ng-container>
+            <ng-container *ngIf="item.type !== 'divider'">
+              <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected">
+              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="item.icon"></mat-icon>
+              <span matListItemTitle> {{ item.display }} </span>
+            </a>
+            </ng-container>
+          </ng-container>
         </mat-nav-list>
-        <mat-divider></mat-divider>
-        <mat-nav-list>
-          <a mat-list-item routerLink="/dashboard" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="dashboard"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Dashboard </span>
-          </a>
-        </mat-nav-list>
-        <mat-divider></mat-divider>
-        <mat-nav-list>
-          <a mat-list-item routerLink="/applications" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('applications')"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Applications </span>
-          </a>
-          <a mat-list-item routerLink="/partitions" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Partitions </span>
-          </a>
-        </mat-nav-list>
-        <mat-divider></mat-divider>
-        <mat-nav-list>
-          <a mat-list-item routerLink="/sessions" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Sessions </span>
-          </a>
-          <a mat-list-item routerLink="/results" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Results </span>
-          </a>
-        </mat-nav-list>
-        <mat-divider></mat-divider>
-        <mat-nav-list>
-          <a mat-list-item routerLink="/settings" routerLinkActive="navbar-item-selected">
-            <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
-            <span matListItemTitle i18n="Navigation link"> Settings </span>
-          </a>
-        </mat-nav-list>
-        <mat-divider></mat-divider>
       </mat-sidenav>
       <mat-sidenav-content>
         <main>
@@ -172,7 +142,6 @@ main {
   `],
   standalone: true,
   providers: [
-    NavigationService,
     StorageService,
     IconsService,
   ],
@@ -229,6 +198,10 @@ export class NavigationComponent implements OnInit{
 
   getIcon(name: Page) {
     return this.#iconsService.getPageIcon(name);
+  }
+
+  getSidebar() {
+    return this.#navigationService.currentSidebar;
   }
 
   greeting() {
