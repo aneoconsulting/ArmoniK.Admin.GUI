@@ -100,6 +100,10 @@ export class NavigationService {
     this.#storageService.setItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), sidebar);
   }
 
+  updateSidebar(sidebar: Sidebar[]) {
+    this.currentSidebar = this.#formatSidebar(sidebar);
+  }
+
   #formatSidebar(sidebarItems: Sidebar[]): SidebarItem[] {
     const sidebar = sidebarItems.reduce((acc, item) => {
       const sidebarItem = this.sidebarItems.find(sidebarItem => sidebarItem.id === item);
@@ -120,5 +124,9 @@ export class NavigationService {
 
   saveExternalServices(externalServices: ExternalService[]) {
     this.#storageService.setItem(this.#storageService.buildKey(this.#key, this.#externalServicesKey), externalServices);
+  }
+
+  get sidebarKey() {
+    return this.#storageService.buildKey(this.#key, this.#sidebarKey);
   }
 }

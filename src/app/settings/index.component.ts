@@ -405,6 +405,15 @@ export class IndexComponent implements OnInit {
       this._storageService.importData(data);
       this.keys = this.#sortKeys(this._storageService.keys);
 
+      const hasSidebarKey = this.keys.has(this.#navigationService.sidebarKey);
+
+      // Update sidebar
+      if (hasSidebarKey) {
+        this.sidebar = this.#navigationService.restoreSidebar();
+        this.#navigationService.updateSidebar(this.sidebar);
+      }
+
+
       this.#notificationService.success('Settings imported');
 
       form.reset();
