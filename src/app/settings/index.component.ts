@@ -34,12 +34,12 @@ import { StorageService } from '@services/storage.service';
 <app-page-section class="sidebar">
   <!-- TODO: update the navigation icon -->
   <!-- TODO: use in a dialog -->
-  <app-page-section-header icon="navigation">
+  <app-page-section-header icon="format_list_bulleted">
     <span i18n="Section title"> Sidebar </span>
   </app-page-section-header>
 
   <p i18n="Section description">
-    Add, remove and reorder the items from the sidebar.
+    Add, remove and reorder, using drap and drop, the items from the sidebar.
   </p>
 
   <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
