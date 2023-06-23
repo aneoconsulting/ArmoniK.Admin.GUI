@@ -77,19 +77,15 @@ import pkg from '../../../../package.json';
           <span i18n="Button">Documentation</span>
         </a>
         <!-- Api does not prefix tag with a v -->
-        <!-- <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/' + apiVersion"> -->
-          <!-- TODO: Currently, returned version has 4 numbers but we follow semver with 3 numbers. -->
-        <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/'">
+        <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/' + apiVersion">
           <mat-icon matListItemIcon aria-hidden="true" fontIcon="api"></mat-icon>
           <span>
             <span i18n="Button">API</span> - v{{ apiVersion }}
           </span>
         </a>
         <!-- Core does not prefix tag with a v -->
-        <!-- <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/' + coreVersion"> -->
-        <!-- TODO: Currently, returned version has 4 numbers but we follow semver with 3 numbers. -->
-        <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/'">
-          <mat-icon matSuffix aria-hidden="true" fontIcon="hub"></mat-icon>
+        <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/' + coreVersion">
+            <mat-icon matSuffix aria-hidden="true" fontIcon="hub"></mat-icon>
           <span>
             <span i18n="Button">Core</span> - v{{ coreVersion }}
           </span>

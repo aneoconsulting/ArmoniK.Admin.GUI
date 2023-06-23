@@ -16,8 +16,8 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
       tap((data) => {
-        versionsService.core = data.core;
-        versionsService.api = data.api;
+        versionsService.setCoreVersion(data.core);
+        versionsService.setAPIVersion(data.api);
       }),
       catchError((err) => {
         throw err;
