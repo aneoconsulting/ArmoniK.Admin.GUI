@@ -1,4 +1,5 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -129,6 +130,10 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
+            <button mat-menu-item [cdkCopyToClipboard]="element.sessionId" (cdkCopyToClipboardCopied)="onCopiedSessionId()">
+              <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
+              <span i18n>Copy Session ID</span>
+            </button>
             <a mat-menu-item [routerLink]="['/sessions', element.sessionId]">
               <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
               <span i18n>See session</span>
@@ -182,6 +187,7 @@ app-table-actions-toolbar {
     DatePipe,
     RouterLink,
     DragDropModule,
+    ClipboardModule,
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
@@ -382,6 +388,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
     this._sessionsIndexService.saveColumns(this.displayedColumns);
+  }
+
+  onCopiedSessionId() {
+    this.#notificationService.success('Session ID copied to clipboard');
   }
 
   onCancel(sessionId: string) {
