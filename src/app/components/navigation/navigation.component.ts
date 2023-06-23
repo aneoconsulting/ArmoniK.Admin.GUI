@@ -18,6 +18,7 @@ import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
+import { VersionsService } from '@services/versions.service';
 import { ManageExternalServicesDialogComponent } from './manage-external-services-dialog.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import pkg from '../../../../package.json';
@@ -74,6 +75,24 @@ import pkg from '../../../../package.json';
         <a mat-menu-item href="https://esoubiran-aneo.github.io/armonik-admin-gui" target="_blank" rel="noopener">
           <mat-icon matListItemIcon aria-hidden="true" fontIcon="help_outline"></mat-icon>
           <span i18n="Button">Documentation</span>
+        </a>
+        <!-- Api does not prefix tag with a v -->
+        <!-- <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/' + apiVersion"> -->
+          <!-- TODO: Currently, returned version has 4 numbers but we follow semver with 3 numbers. -->
+        <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/'">
+          <mat-icon matListItemIcon aria-hidden="true" fontIcon="api"></mat-icon>
+          <span>
+            <span i18n="Button">API</span> - v{{ apiVersion }}
+          </span>
+        </a>
+        <!-- Core does not prefix tag with a v -->
+        <!-- <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/' + coreVersion"> -->
+        <!-- TODO: Currently, returned version has 4 numbers but we follow semver with 3 numbers. -->
+        <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/'">
+          <mat-icon matSuffix aria-hidden="true" fontIcon="hub"></mat-icon>
+          <span>
+            <span i18n="Button">Core</span> - v{{ coreVersion }}
+          </span>
         </a>
       </mat-menu>
       <app-theme-selector></app-theme-selector>
@@ -170,6 +189,10 @@ export class NavigationComponent implements OnInit{
   #navigationService = inject(NavigationService);
   #userService = inject(UserService);
   #iconsService = inject(IconsService);
+  #versionsService = inject(VersionsService);
+
+  apiVersion = this.#versionsService.api;
+  coreVersion = this.#versionsService.core;
 
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(

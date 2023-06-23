@@ -3,31 +3,45 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-import { catchError, tap } from 'rxjs';
+import { catchError, merge, tap } from 'rxjs';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserGrpcService } from '@services/user-grpc.service';
 import { UserService } from '@services/user.service';
+import { VersionsGrpcService } from '@services/versions-grpc.service';
+import { VersionsService } from '@services/versions.service';
 import { routes } from './app.routes';
 
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService) {
-  return () => userGrpcService.me$().pipe(
-    tap((data) => {
-      if (!data.user) {
-        throw new Error('No user');
-      }
-      userService.user = data.user;
-    }),
-    catchError((err) => {
-      throw err;
-    })
-  );
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService) {
+  return () => merge(
+    versionsGrpcService.listVersions$().pipe(
+      tap((data) => {
+        versionsService.core = data.core;
+        versionsService.api = data.api;
+      }),
+      catchError((err) => {
+        throw err;
+      })
+    ),
+    userGrpcService.me$().pipe(
+      tap((data) => {
+        if (!data.user) {
+          throw new Error('No user');
+        }
+        userService.user = data.user;
+      }),
+      catchError((err) => {
+        throw err;
+      })
+    ));
 }
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    UserService,
     UserGrpcService,
+    UserService,
+    VersionsGrpcService,
+    VersionsService,
     StorageService,
     NavigationService,
     {
@@ -41,7 +55,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
-      deps: [UserGrpcService, UserService],
+      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService],
       multi: true
     },
     provideRouter(routes),
