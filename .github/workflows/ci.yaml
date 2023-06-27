@@ -14,14 +14,14 @@ jobs:
     name: Validate Code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           fetch-depth: 0
 
       - run: npm install -g pnpm @antfu/ni
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '18'
           cache: 'pnpm'
@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: nci
 
-      - uses: nrwl/nx-set-shas@v2
+      - uses: nrwl/nx-set-shas@177b48373c6dc583ce0d9257ffb484bdd232fedf # v3
         with:
           main-branch-name: main
 
@@ -43,14 +43,14 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           fetch-depth: 0
 
       - run: npm install -g pnpm @antfu/ni
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '18'
           cache: 'pnpm'
@@ -58,7 +58,7 @@ jobs:
       - name: Install dependencies
         run: nci
 
-      - uses: nrwl/nx-set-shas@v2
+      - uses: nrwl/nx-set-shas@177b48373c6dc583ce0d9257ffb484bdd232fedf # v3
         with:
           main-branch-name: main
 
@@ -68,7 +68,7 @@ jobs:
       - name: Coverage Report (App)
         # Can't publish on push on main
         if: ${{ github.event_name == 'pull_request' }}
-        uses: romeovs/lcov-reporter-action@v0.3.1
+        uses: romeovs/lcov-reporter-action@dda1c9b1fa1622b225e9acd87a248751dbcc6ada # v0.3.1
         with:
           title: App - Coverage
           delete-old-comments: true
@@ -78,7 +78,7 @@ jobs:
       - name: Upload Artifact (App)
         # Store report created on main
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         with:
           name: coverage-apps-app
           path: ./coverage/apps/app/
@@ -147,14 +147,14 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
         with:
           fetch-depth: 0
 
       - run: npm install -g pnpm @antfu/ni
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: '18'
           cache: 'pnpm'
@@ -162,7 +162,7 @@ jobs:
       - name: Install dependencies
         run: nci
 
-      - uses: nrwl/nx-set-shas@v2
+      - uses: nrwl/nx-set-shas@177b48373c6dc583ce0d9257ffb484bdd232fedf # v3
         with:
           main-branch-name: main
 
