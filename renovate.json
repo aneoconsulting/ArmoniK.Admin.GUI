@@ -16,6 +16,37 @@
       ]
     },
     {
+      "groupName": "npm angular packages",
+      "groupSlug": "npm",
+      "matchPackagePatterns": [
+        "^@angular/"
+      ],
+      "matchDatasources": [
+        "npm"
+      ]
+    },
+    {
+      "groupName": "npm clarity packages",
+      "groupSlug": "npm",
+      "matchPackagePatterns": [
+        "^@clr/",
+        "^@cds/"
+      ],
+      "matchDatasources": [
+        "npm"
+      ]
+    },
+    {
+      "groupName": "npm aneoconsultingfr packages",
+      "groupSlug": "npm",
+      "matchPackagePatterns": [
+        "^@aneoconsultingfr/"
+      ],
+      "matchDatasources": [
+        "npm"
+      ]
+    },
+    {
       "groupName": "docs npm packages",
       "groupSlug": "docs-npm",
       "matchPaths": [
