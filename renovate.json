@@ -15,19 +15,19 @@
     },
     {
       "groupName": "npm angular packages",
-      "groupSlug": "npm",
+      "groupSlug": "npm-angular",
       "matchPackagePatterns": ["^@angular/"],
       "matchDatasources": ["npm"]
     },
     {
       "groupName": "npm clarity packages",
-      "groupSlug": "npm",
+      "groupSlug": "npm-clarity",
       "matchPackagePatterns": ["^@clr/", "^@cds/"],
       "matchDatasources": ["npm"]
     },
     {
       "groupName": "npm aneoconsultingfr packages",
-      "groupSlug": "npm",
+      "groupSlug": "npm-aneoconsultingfr",
       "matchPackagePatterns": ["^@aneoconsultingfr/"],
       "matchDatasources": ["npm"]
     },
