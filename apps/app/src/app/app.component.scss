@@ -37,6 +37,11 @@ app-pages-the-languages-selector {
   & .version {
     margin-top: 1rem;
     text-align: center;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
   }
 }
 
