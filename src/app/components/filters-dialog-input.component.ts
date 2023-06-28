@@ -106,7 +106,6 @@ export class FiltersDialogInputComponent {
   }
 
   getInputType(): FilterInputType  {
-    console.log(this.input);
     switch (this.input.type) {
     case 'text':
       return 'text';

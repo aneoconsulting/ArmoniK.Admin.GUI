@@ -16,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { TaskOptions } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
@@ -84,7 +85,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
-          <span> {{ element[column] || '-' }} </span>
+          <span> {{ show(element, column) || '-' }} </span>
         </td>
       </ng-container>
       <!-- ID -->
@@ -313,6 +314,21 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  show(session: SessionRaw, column: SessionRawColumnKey) {
+    if (column.startsWith('options.')) {
+      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
+      const options = session['options'] as TaskOptions | undefined;
+
+      if (!options) {
+        return null;
+      }
+
+      return options[optionColumn];
+    }
+
+    return session[column as keyof SessionRaw];
+  }
+
   columnsLabels(): Record<SessionRawColumnKey, string> {
     return this._sessionsIndexService.columnsLabels;
   }
@@ -358,10 +374,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this._sessionsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: SessionRawColumnKey[]) {
-    this.displayedColumns = value;
+  onColumnsChange(data: SessionRawColumnKey[]) {
+    this.displayedColumns = [...data];
 
-    this._sessionsIndexService.saveColumns(value);
+    this._sessionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {

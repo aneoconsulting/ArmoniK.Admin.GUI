@@ -61,17 +61,17 @@ import { SpinnerComponent } from './spinner.component';
     MatTooltipModule,
   ]
 })
-export class TableActionsToolbarComponent<T extends object> {
+export class TableActionsToolbarComponent<T extends object, O extends object> {
   @Input({ required: true }) loading = false;
   @Input({ required: true }) refreshTooltip = '';
   @Input({ required: true }) intervalValue = 0;
-  @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string>;
-  @Input({ required: true }) displayedColumns: ColumnKey<T>[] = [];
-  @Input({ required: true }) availableColumns: ColumnKey<T>[] = [];
+  @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
+  @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
+  @Input({ required: true }) availableColumns: ColumnKey<T, O>[] = [];
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
-  @Output() displayedColumnsChange: EventEmitter<ColumnKey<T>[]> = new EventEmitter<ColumnKey<T>[]>();
+  @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
 
@@ -83,12 +83,11 @@ export class TableActionsToolbarComponent<T extends object> {
     this.intervalValueChange.emit(value);
   }
 
-  onDisplayedColumnsChange(value: ColumnKey<T>[]): void {
-    this.displayedColumnsChange.emit(value);
+  onDisplayedColumnsChange(data: ColumnKey<T, O>[]): void {
+    this.displayedColumnsChange.emit(data);
   }
 
   onResetColumns(): void {
-    console.log('onResetColumns');
     this.resetColumns.emit();
   }
 

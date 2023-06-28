@@ -16,7 +16,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api.angular": "3.9.0-edge.123.856109a",
+    "@aneoconsultingfr/armonik.api.angular": "3.9.0-edge.128.8e8057a",
     "@angular/animations": "^16.1.2",
     "@angular/cdk": "16.1.1",
     "@angular/common": "^16.1.2",

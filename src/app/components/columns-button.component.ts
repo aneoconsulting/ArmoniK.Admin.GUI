@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ColumnKey } from '@app/types/data';
+import { ColumnsModifyDialogData, ColumnsModifyDialogResult } from '@app/types/dialog';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
 
 @Component({
@@ -23,21 +24,21 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
     MatIconModule
   ]
 })
-export class ColumnsButtonComponent<T extends object> {
-  @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string>;
-  @Input({ required: true }) displayedColumns: ColumnKey<T>[] = [];
-  @Input({ required: true }) availableColumns: ColumnKey<T>[];
+export class ColumnsButtonComponent<T extends object, O extends object> {
+  @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
+  @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
+  @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
 
-  @Output() displayedColumnsChange: EventEmitter<ColumnKey<T>[]> = new EventEmitter<ColumnKey<T>[]>();
+  @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
 
   constructor(private _dialog: MatDialog) { }
 
   openModifyColumnsDialog(): void {
-    const dialogRef = this._dialog.open(ColumnsModifyDialogComponent, {
+    const dialogRef = this._dialog.open<ColumnsModifyDialogComponent<T, O>, ColumnsModifyDialogData<T, O>, ColumnsModifyDialogResult<T, O>>(ColumnsModifyDialogComponent, {
       data: {
         columnsLabels: this.columnsLabels,
         currentColumns: this.displayedColumns,
-        availableColumns: this.availableColumns
+        availableColumns: this.availableColumns,
       }
     });
 

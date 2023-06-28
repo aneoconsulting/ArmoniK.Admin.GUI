@@ -13,8 +13,7 @@ export class SessionsIndexService {
   readonly tableName: string = 'sessions';
 
   readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions', 'count'];
-  // TODO: Add columns (when SessionRaw is merged)
-  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count'];
+  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
 
@@ -28,6 +27,16 @@ export class SessionsIndexService {
     duration: $localize`Duration`,
     partitionIds: $localize`Partition IDs`,
     count: $localize`Tasks by Status`,
+    'options.options': $localize`Options`,
+    'options.applicationName': $localize`Application Name`,
+    'options.applicationNamespace': $localize`Application Namespace`,
+    'options.applicationService': $localize`Application Service`,
+    'options.applicationVersion': $localize`Application Version`,
+    'options.engineType': $localize`Engine Type`,
+    'options.maxDuration': $localize`Max Duration`,
+    'options.maxRetries': $localize`Max Retries`,
+    'options.partitionId': $localize`Partition ID`,
+    'options.priority': $localize`Priority`,
   };
 
   readonly defaultOptions: SessionRawListOptions = {
@@ -110,7 +119,9 @@ export class SessionsIndexService {
   }
 
   restoreColumns(): SessionRawColumnKey[] {
-    return this.#tableService.restoreColumns<SessionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    const columns = this.#tableService.restoreColumns<SessionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+
+    return [...columns];
   }
 
   resetColumns(): SessionRawColumnKey[] {

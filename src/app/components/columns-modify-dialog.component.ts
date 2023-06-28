@@ -1,10 +1,10 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ColumnKey } from '@app/types/data';
+import { ColumnKey, PrefixedOptions } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
@@ -22,6 +22,18 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
         </mat-checkbox>
     </ng-container>
   </div>
+
+  <h2 i18n *ngIf="availableOptionsColumns().length">
+    Options
+  </h2>
+
+  <div class="columns" *ngIf="availableOptionsColumns().length">
+    <ng-container *ngFor="let column of availableOptionsColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="optionsColumnValue(column)" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ columnToLabel(column) }}
+        </mat-checkbox>
+    </ng-container>
+  </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
@@ -34,9 +46,14 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
+
+  h2 {
+    margin-top: 1rem;
+  }
   `],
   standalone: true,
   imports: [
+    NgIf,
     NgFor,
     MatGridListModule,
     MatDialogModule,
@@ -44,11 +61,11 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
     MatCheckboxModule
   ]
 })
-export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
-  columns: ColumnKey<T>[] = [];
-  columnsLabels: Record<ColumnKey<T>, string>;
+export class ColumnsModifyDialogComponent<T extends object,O extends object> implements OnInit {
+  columns: ColumnKey<T, O>[] = [];
+  columnsLabels: Record<ColumnKey<T, O>, string>;
 
-  constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T>){}
+  constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T, O>){}
 
   ngOnInit(): void {
     // Create a copy in order to not modify the original array
@@ -56,7 +73,11 @@ export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
     this.columnsLabels = this.data.columnsLabels;
   }
 
-  columnToLabel(column: ColumnKey<T>): string {
+  optionsColumnValue(column: string): string {
+    return `options.${column}`;
+  }
+
+  columnToLabel(column: ColumnKey<T, O>): string {
     return this.columnsLabels[column];
   }
 
@@ -64,14 +85,22 @@ export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
    * Get the available columns (all the columns that can be added)
    * Sort the columns alphabetically
    */
-  availableColumns(): ColumnKey<T>[] {
-    return this.data.availableColumns.sort();
+  availableColumns(): (keyof T | 'actions')[] {
+    const columns = this.data.availableColumns.filter(column => !column.toString().startsWith('options.')).sort() as (keyof T | 'actions')[];
+
+    return columns;
+  }
+
+  availableOptionsColumns(): PrefixedOptions<O>[] {
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort() as PrefixedOptions<O>[];
+
+    return columns;
   }
 
   /**
    * Update the columns array when a checkbox is checked or unchecked
    */
-  updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T>): void {
+  updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T, O>): void {
     if (checked) {
       this.columns.push(column);
     } else {
@@ -82,7 +111,7 @@ export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
   /**
    * Check if a column is selected
    */
-  isSelected(column: ColumnKey<T>): boolean {
+  isSelected(column: ColumnKey<T, O>): boolean {
     return this.data.currentColumns.includes(column);
   }
 
@@ -90,7 +119,7 @@ export class ColumnsModifyDialogComponent<T extends object> implements OnInit {
     this.dialogRef.close();
   }
 
-  trackByColumn(_: number, column: ColumnKey<T>): string {
+  trackByColumn(_: number, column: ColumnKey<T, O>): string {
     return column.toString();
   }
 }

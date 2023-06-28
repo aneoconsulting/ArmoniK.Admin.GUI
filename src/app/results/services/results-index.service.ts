@@ -1,6 +1,5 @@
 import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { ColumnKey } from '@app/types/data';
 import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
@@ -105,11 +104,11 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    * Columns
    */
 
-  saveColumns(columns: ColumnKey<ResultRaw>[]): void {
+  saveColumns(columns: ResultRawColumnKey[]): void {
     this.#tableService.saveColumns(this.tableName, columns);
   }
 
-  restoreColumns(): ColumnKey<ResultRaw>[] {
+  restoreColumns(): ResultRawColumnKey[] {
     return this.#tableService.restoreColumns<ResultRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
   }
 

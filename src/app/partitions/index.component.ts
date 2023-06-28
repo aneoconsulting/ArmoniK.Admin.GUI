@@ -17,7 +17,6 @@ import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -274,10 +273,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     this._partitionsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: PartitionRawColumnKey[]) {
-    this.displayedColumns = value;
+  onColumnsChange(data: PartitionRawColumnKey[]) {
+    this.displayedColumns = [...data];
 
-    this._partitionsIndexService.saveColumns(value);
+    this._partitionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {

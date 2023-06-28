@@ -8,7 +8,7 @@ import { Filter, FilterField } from './filters';
 import { ListOptions } from './options';
 
 // Create a way to add 'count'
-export interface AppIndexComponent<T extends object> extends OnInit, AfterViewInit, OnDestroy
+export interface AppIndexComponent<T extends object, O extends object = Record<string, never>> extends OnInit, AfterViewInit, OnDestroy
 {
   // Columns
   displayedColumns: ColumnKey<T>[];
@@ -48,7 +48,7 @@ export interface AppIndexComponent<T extends object> extends OnInit, AfterViewIn
   // Toolbar methods
   onRefresh(): void;
   onIntervalValueChange(value: number): void;
-  onColumnsChange(columns: ColumnKey<T>[]): void;
+  onColumnsChange(data: ColumnKey<T, O>[]): void;
   onColumnsReset(): void;
   onFiltersChange(filters: Filter<T>[]): void;
   onFiltersReset(): void;

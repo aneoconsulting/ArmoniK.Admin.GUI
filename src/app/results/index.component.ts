@@ -300,10 +300,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     this._resultsIndexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(value: ResultRawColumnKey[]) {
-    this.displayedColumns = value;
+  onColumnsChange(data: ResultRawColumnKey[]) {
+    this.displayedColumns = [...data];
 
-    this._resultsIndexService.saveColumns(value);
+    this._resultsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
