@@ -18,11 +18,13 @@ import { Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TaskOptions } from '@app/tasks/types';
 import { TaskStatusColored, ViewArrayDialogData, ViewArrayDialogResult, ViewObjectDialogData, ViewObjectDialogResult, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
@@ -38,8 +40,6 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { CountByStatusComponent } from './components/count-by-status.component';
-import { ViewArrayDialogComponent } from './components/view-array-dialog.component';
-import { ViewObjectDialogComponent } from './components/view-object-dialog.component';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -84,16 +84,18 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th class="no-wrap" mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
+        {{ columnToLabel(column) }}
+      </th>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <span> {{ show(element, column) | emptyCell }} </span>
         </td>
       </ng-container>
       <!-- ID -->
       <ng-container *ngIf="isSessionIdColumn(column)">
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
             [routerLink]="['/tasks']"
             [queryParams]="{
@@ -106,23 +108,13 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       </ng-container>
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
-       <td class="no-wrap" mat-cell *matCellDef="let element">
-          <button mat-icon-button (click)="viewObject(element[column])">
-            <mat-icon matTooltip="View Object" fontIcon="visibility"></mat-icon>
-          </button>
-        </td>
-      </ng-container>
-      <!-- Array -->
-      <ng-container *ngIf="isArrayColumn(column)">
-       <td class="no-wrap" mat-cell *matCellDef="let element">
-          <button mat-icon-button (click)="viewArray(element[column])">
-            <mat-icon matTooltip="View Array" fontIcon="visibility"></mat-icon>
-          </button>
+       <td mat-cell *matCellDef="let element" appNoWrap>
+          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Date -->
       <ng-container *ngIf="isDateColumn(column)">
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <ng-container *ngIf="element[column]; else noDate">
             {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
           </ng-container>
@@ -130,20 +122,20 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       </ng-container>
       <!-- Duration -->
       <ng-container *ngIf="isDurationColumn(column)">
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <!-- TODO: move this function to a service in order to reuse extraction logic -->
           {{ extractData(element, column) | duration | emptyCell }}
         </td>
       </ng-container>
       <!-- Status -->
       <ng-container *ngIf="isStatusColumn(column)">
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <span> {{ statusToLabel(element[column]) }} </span>
         </td>
       </ng-container>
       <!-- Session's Tasks Count by Status -->
       <ng-container *ngIf="isCountColumn(column)">
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element">
           <app-sessions-count-by-status
             [statuses]="tasksStatusesColored"
             [sessionId]="element.sessionId"
@@ -153,7 +145,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Actions -->
       <ng-container *ngIf="isActionsColumn(column)">
         <!-- TODO: create a directive to add no-wrap -->
-        <td class="no-wrap" mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element">
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -212,6 +204,8 @@ app-table-actions-toolbar {
   imports: [
     DurationPipe,
     EmptyCellPipe,
+    NoWrapDirective,
+    TableInspectObjectComponent,
     NgIf,
     NgFor,
     DatePipe,
@@ -382,10 +376,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._sessionsIndexService.isObjectColumn(column);
   }
 
-  isArrayColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isArrayColumn(column);
-  }
-
   isDateColumn(column: SessionRawColumnKey): boolean {
     return this._sessionsIndexService.isDateColumn(column);
   }
@@ -429,25 +419,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return element.toDate();
   }
-
-  viewObject(element: TaskOptions) {
-    this.#dialog.open<ViewObjectDialogComponent, ViewObjectDialogData, ViewObjectDialogResult>(ViewObjectDialogComponent, {
-      data: {
-        title: $localize`View Options`,
-        object: element,
-      }
-    });
-  }
-
-  viewArray(element: string[]) {
-    this.#dialog.open<ViewArrayDialogComponent, ViewArrayDialogData, ViewArrayDialogResult>(ViewArrayDialogComponent, {
-      data: {
-        title: $localize`View Partitions`,
-        array: element,
-      }
-    });
-  }
-
 
   statusToLabel(status: SessionStatus): string {
     return this._sessionsStatusesService.statusToLabel(status);

@@ -16,8 +16,7 @@ export class SessionsIndexService {
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
   readonly durationColumns: SessionRawColumnKey[] = ['duration', 'options.maxDuration'];
-  readonly objectColumns: SessionRawColumnKey[] = ['options', 'options.options'];
-  readonly arrayColumns: SessionRawColumnKey[] = ['partitionIds'];
+  readonly objectColumns: SessionRawColumnKey[] = ['options', 'options.options', 'partitionIds'];
 
   readonly columnsLabels: Record<SessionRawColumnKey, string> = {
     sessionId: $localize`Session ID`,
@@ -29,16 +28,16 @@ export class SessionsIndexService {
     duration: $localize`Duration`,
     partitionIds: $localize`Partition IDs`,
     count: $localize`Tasks by Status`,
-    'options.options': $localize`Options`,
-    'options.applicationName': $localize`Application Name`,
-    'options.applicationNamespace': $localize`Application Namespace`,
-    'options.applicationService': $localize`Application Service`,
-    'options.applicationVersion': $localize`Application Version`,
-    'options.engineType': $localize`Engine Type`,
-    'options.maxDuration': $localize`Max Duration`,
-    'options.maxRetries': $localize`Max Retries`,
-    'options.partitionId': $localize`Partition ID`,
-    'options.priority': $localize`Priority`,
+    'options.options': $localize`Options Options`,
+    'options.applicationName': $localize`Options Application Name`,
+    'options.applicationNamespace': $localize`Options Application Namespace`,
+    'options.applicationService': $localize`Options Application Service`,
+    'options.applicationVersion': $localize`Options Application Version`,
+    'options.engineType': $localize`Options Engine Type`,
+    'options.maxDuration': $localize`Options Max Duration`,
+    'options.maxRetries': $localize`Options Max Retries`,
+    'options.partitionId': $localize`Options Partition ID`,
+    'options.priority': $localize`Options Priority`,
   };
 
   readonly defaultOptions: SessionRawListOptions = {
@@ -113,20 +112,16 @@ export class SessionsIndexService {
     return this.durationColumns.includes(column);
   }
 
-  isArrayColumn(column: SessionRawColumnKey): boolean {
-    return this.arrayColumns.includes(column);
-  }
-
   isObjectColumn(column: SessionRawColumnKey): boolean {
     return this.objectColumns.includes(column);
   }
 
   isSimpleColumn(column: SessionRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isSessionIdColumn(column) && !this.isStatusColumn(column) && !this.isCountColumn(column) && !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isArrayColumn(column) && !this.isObjectColumn(column);
+    return !this.isActionsColumn(column) && !this.isSessionIdColumn(column) && !this.isStatusColumn(column) && !this.isCountColumn(column) && !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column);
   }
 
   isNotSortableColumn(column: SessionRawColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column) || this.isArrayColumn(column);
+    return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column);
   }
 
   /**
