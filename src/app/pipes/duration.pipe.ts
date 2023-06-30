@@ -4,7 +4,6 @@ import { Duration } from '@ngx-grpc/well-known-types';
 @Pipe({ name: 'duration', standalone: true })
 export class DurationPipe  implements PipeTransform {
   transform(value: Duration, ...args: any[]) {
-    console.log(value);
     if (!value) {
       return null;
     }
