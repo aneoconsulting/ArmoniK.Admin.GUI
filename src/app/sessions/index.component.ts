@@ -315,7 +315,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.total = data?.total ?? 0;
 
           const sessions = data?.sessions ?? [];
-          console.log(sessions);
           return sessions;
         })
       )
