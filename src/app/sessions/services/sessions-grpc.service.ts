@@ -38,6 +38,8 @@ export class SessionsGrpcService implements AppGrpcService<SessionRaw> {
       sort: {
         direction: this.sortDirections[options.sort.direction],
         field: {
+          // TODO: waiting for new sort field
+          // @see https://github.com/aneoconsulting/ArmoniK.Api/pull/307
           sessionRawField: this.sortFields[options.sort.active] ?? SessionRawField.SESSION_RAW_FIELD_SESSION_ID
         }
       },
