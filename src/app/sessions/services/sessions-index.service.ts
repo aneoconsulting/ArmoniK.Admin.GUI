@@ -15,7 +15,8 @@ export class SessionsIndexService {
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
-  readonly objectColumns: SessionRawColumnKey[] = ['options'];
+  readonly objectColumns: SessionRawColumnKey[] = ['options', 'options.options'];
+  readonly arrayColumns: SessionRawColumnKey[] = ['partitionIds'];
 
   readonly columnsLabels: Record<SessionRawColumnKey, string> = {
     sessionId: $localize`Session ID`,

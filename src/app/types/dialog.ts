@@ -37,3 +37,10 @@ export interface ViewObjectDialogData {
 }
 
 export type ViewObjectDialogResult = Record<string, never>;
+
+export interface ViewArrayDialogData {
+  title: string;
+  array: string[];
+}
+
+export type ViewArrayDialogResult = Record<string, never>;

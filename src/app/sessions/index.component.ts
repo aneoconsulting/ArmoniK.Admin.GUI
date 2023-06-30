@@ -14,10 +14,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Duration , Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { TaskOptions } from '@app/tasks/types';
-import { TaskStatusColored, ViewObjectDialogData, ViewObjectDialogResult, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { TaskStatusColored, ViewArrayDialogData, ViewArrayDialogResult, ViewObjectDialogData, ViewObjectDialogResult, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -36,6 +36,7 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { CountByStatusComponent } from './components/count-by-status.component';
+import { ViewArrayDialogComponent } from './components/view-array-dialog.component';
 import { ViewObjectDialogComponent } from './components/view-object-dialog.component';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
@@ -81,9 +82,9 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count' || objectColumns().includes(column)" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count' || objectColumns().includes(column) || arrayColumns().includes(column)" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Columns -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column) && !objectColumns().includes(column)">
+      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column) && !objectColumns().includes(column) && !arrayColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
           <span> {{ show(element, column) || '-' }} </span>
@@ -107,6 +108,14 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
        <td mat-cell *matCellDef="let element">
           <button mat-button (click)="viewObject(element[column])">
             <mat-icon matTooltip="View Object" fontIcon="visibility"></mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <!-- Array -->
+      <ng-container *ngIf="arrayColumns().includes(column)">
+       <td mat-cell *matCellDef="let element">
+          <button mat-button (click)="viewArray(element[column])">
+            <mat-icon matTooltip="View Array" fontIcon="visibility"></mat-icon>
           </button>
         </td>
       </ng-container>
@@ -306,6 +315,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.total = data?.total ?? 0;
 
           const sessions = data?.sessions ?? [];
+          console.log(sessions);
           return sessions;
         })
       )
@@ -362,6 +372,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._sessionsIndexService.objectColumns;
   }
 
+  arrayColumns(): SessionRawColumnKey[] {
+    return this._sessionsIndexService.arrayColumns;
+  }
+
   viewObject(element: TaskOptions) {
     this.#dialog.open<ViewObjectDialogComponent, ViewObjectDialogData, ViewObjectDialogResult>(ViewObjectDialogComponent, {
       data: {
@@ -370,6 +384,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
+
+  viewArray(element: string[]) {
+    this.#dialog.open<ViewArrayDialogComponent, ViewArrayDialogData, ViewArrayDialogResult>(ViewArrayDialogComponent, {
+      data: {
+        title: $localize`View Partitions`,
+        array: element,
+      }
+    });
+  }
+
 
   statusToLabel(status: SessionStatus): string {
     return this._sessionsStatusesService.statusToLabel(status);
