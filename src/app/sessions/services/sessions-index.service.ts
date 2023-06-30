@@ -1,6 +1,5 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
@@ -16,6 +15,7 @@ export class SessionsIndexService {
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
+  readonly objectColumns: SessionRawColumnKey[] = ['options'];
 
   readonly columnsLabels: Record<SessionRawColumnKey, string> = {
     sessionId: $localize`Session ID`,

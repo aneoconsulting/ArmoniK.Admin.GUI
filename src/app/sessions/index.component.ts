@@ -17,7 +17,7 @@ import { RouterLink } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { TaskOptions } from '@app/tasks/types';
-import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { TaskStatusColored, ViewObjectDialogData, ViewObjectDialogResult, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -36,6 +36,7 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { CountByStatusComponent } from './components/count-by-status.component';
+import { ViewObjectDialogComponent } from './components/view-object-dialog.component';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -80,9 +81,9 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count' || objectColumns().includes(column)" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Columns -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column)">
+      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column) && !objectColumns().includes(column)">
         <td mat-cell *matCellDef="let element">
           <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
           <span> {{ show(element, column) || '-' }} </span>
@@ -99,6 +100,14 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
           >
             {{ element[column] }}
           </a>
+        </td>
+      </ng-container>
+      <!-- Object -->
+      <ng-container *ngIf="objectColumns().includes(column)">
+       <td mat-cell *matCellDef="let element">
+          <button mat-button (click)="viewObject(element[column])">
+            <mat-icon matTooltip="View Object" fontIcon="visibility"></mat-icon>
+          </button>
         </td>
       </ng-container>
       <!-- Date -->
@@ -347,6 +356,19 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dateColumns(): SessionRawColumnKey[] {
     return this._sessionsIndexService.dateColumns;
+  }
+
+  objectColumns(): SessionRawColumnKey[] {
+    return this._sessionsIndexService.objectColumns;
+  }
+
+  viewObject(element: TaskOptions) {
+    this.#dialog.open<ViewObjectDialogComponent, ViewObjectDialogData, ViewObjectDialogResult>(ViewObjectDialogComponent, {
+      data: {
+        title: $localize`View Options`,
+        object: element,
+      }
+    });
   }
 
   statusToLabel(status: SessionStatus): string {
