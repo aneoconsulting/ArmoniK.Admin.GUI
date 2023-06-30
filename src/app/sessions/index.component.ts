@@ -14,7 +14,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Duration , Timestamp } from '@ngx-grpc/well-known-types';
+import { Timestamp } from '@ngx-grpc/well-known-types';
+import { DurationPipe } from '@pipes/duration.pipe';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { TaskOptions } from '@app/tasks/types';
 import { TaskStatusColored, ViewArrayDialogData, ViewArrayDialogResult, ViewObjectDialogData, ViewObjectDialogResult, ViewTasksByStatusDialogData } from '@app/types/dialog';
@@ -82,17 +84,16 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count' || objectColumns().includes(column) || arrayColumns().includes(column)" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
+      <th class="no-wrap" mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
       <!-- Columns -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'sessionId' && column !== 'status' && column !== 'count' && !dateColumns().includes(column) && !objectColumns().includes(column) && !arrayColumns().includes(column)">
-        <td mat-cell *matCellDef="let element">
-          <!-- TODO: if it's an array, show the beginning and add a button to view more (using a modal) -->
-          <span> {{ show(element, column) || '-' }} </span>
+      <ng-container *ngIf="isSimpleColumn(column)">
+        <td class="no-wrap" mat-cell *matCellDef="let element">
+          <span> {{ show(element, column) | emptyCell }} </span>
         </td>
       </ng-container>
       <!-- ID -->
-      <ng-container *ngIf="column === 'sessionId'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isSessionIdColumn(column)">
+        <td class="no-wrap" mat-cell *matCellDef="let element">
           <a mat-button
             [routerLink]="['/tasks']"
             [queryParams]="{
@@ -104,47 +105,55 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
         </td>
       </ng-container>
       <!-- Object -->
-      <ng-container *ngIf="objectColumns().includes(column)">
-       <td mat-cell *matCellDef="let element">
-          <button mat-button (click)="viewObject(element[column])">
+      <ng-container *ngIf="isObjectColumn(column)">
+       <td class="no-wrap" mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="viewObject(element[column])">
             <mat-icon matTooltip="View Object" fontIcon="visibility"></mat-icon>
           </button>
         </td>
       </ng-container>
       <!-- Array -->
-      <ng-container *ngIf="arrayColumns().includes(column)">
-       <td mat-cell *matCellDef="let element">
-          <button mat-button (click)="viewArray(element[column])">
+      <ng-container *ngIf="isArrayColumn(column)">
+       <td class="no-wrap" mat-cell *matCellDef="let element">
+          <button mat-icon-button (click)="viewArray(element[column])">
             <mat-icon matTooltip="View Array" fontIcon="visibility"></mat-icon>
           </button>
         </td>
       </ng-container>
       <!-- Date -->
-      <ng-container *ngIf="dateColumns().includes(column)">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isDateColumn(column)">
+        <td class="no-wrap" mat-cell *matCellDef="let element">
           <ng-container *ngIf="element[column]; else noDate">
             {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
           </ng-container>
         </td>
       </ng-container>
+      <!-- Duration -->
+      <ng-container *ngIf="isDurationColumn(column)">
+        <td class="no-wrap" mat-cell *matCellDef="let element">
+          <!-- TODO: move this function to a service in order to reuse extraction logic -->
+          {{ extractData(element, column) | duration | emptyCell }}
+        </td>
+      </ng-container>
       <!-- Status -->
-      <ng-container *ngIf="column === 'status'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isStatusColumn(column)">
+        <td class="no-wrap" mat-cell *matCellDef="let element">
           <span> {{ statusToLabel(element[column]) }} </span>
         </td>
       </ng-container>
       <!-- Session's Tasks Count by Status -->
-      <ng-container *ngIf="column === 'count'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isCountColumn(column)">
+        <td class="no-wrap" mat-cell *matCellDef="let element">
           <app-sessions-count-by-status
             [statuses]="tasksStatusesColored"
             [sessionId]="element.sessionId"
           ></app-sessions-count-by-status>
         </td>
       </ng-container>
-      <!-- Action -->
-      <ng-container *ngIf="column === 'actions'">
-        <td mat-cell *matCellDef="let element">
+      <!-- Actions -->
+      <ng-container *ngIf="isActionsColumn(column)">
+        <!-- TODO: create a directive to add no-wrap -->
+        <td class="no-wrap" mat-cell *matCellDef="let element">
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -201,6 +210,8 @@ app-table-actions-toolbar {
     NotificationService,
   ],
   imports: [
+    DurationPipe,
+    EmptyCellPipe,
     NgIf,
     NgFor,
     DatePipe,
@@ -355,24 +366,68 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._sessionsIndexService.columnToLabel(column);
   }
 
+  isNotSortableColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isNotSortableColumn(column);
+  }
+
+  isSimpleColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isSimpleColumn(column);
+  }
+
+  isSessionIdColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isSessionIdColumn(column);
+  }
+
+  isObjectColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isObjectColumn(column);
+  }
+
+  isArrayColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isArrayColumn(column);
+  }
+
+  isDateColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isDateColumn(column);
+  }
+
+  isDurationColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isDurationColumn(column);
+  }
+
+  isStatusColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isStatusColumn(column);
+  }
+
+  isCountColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isCountColumn(column);
+  }
+
+  isActionsColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isActionsColumn(column);
+  }
+
+  extractData(element: SessionRaw, column: SessionRawColumnKey): any {
+    if (column.startsWith('options.')) {
+      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
+      const options = element['options'] as TaskOptions | undefined;
+
+      if (!options) {
+        return null;
+      }
+
+      return options[optionColumn];
+    }
+
+    return element[column as keyof SessionRaw];
+  }
+
+  // TODO: move to a service for date and time
   columnToDate(element: Timestamp | undefined): Date | null {
     if (!element) {
       return null;
     }
 
     return element.toDate();
-  }
-
-  dateColumns(): SessionRawColumnKey[] {
-    return this._sessionsIndexService.dateColumns;
-  }
-
-  objectColumns(): SessionRawColumnKey[] {
-    return this._sessionsIndexService.objectColumns;
-  }
-
-  arrayColumns(): SessionRawColumnKey[] {
-    return this._sessionsIndexService.arrayColumns;
   }
 
   viewObject(element: TaskOptions) {

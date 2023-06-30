@@ -15,6 +15,7 @@ export class SessionsIndexService {
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
+  readonly durationColumns: SessionRawColumnKey[] = ['duration', 'options.maxDuration'];
   readonly objectColumns: SessionRawColumnKey[] = ['options', 'options.options'];
   readonly arrayColumns: SessionRawColumnKey[] = ['partitionIds'];
 
@@ -83,6 +84,49 @@ export class SessionsIndexService {
 
   columnToLabel(column: SessionRawColumnKey): string {
     return this.columnsLabels[column];
+  }
+
+  /**
+   * Table
+   */
+  isActionsColumn(column: SessionRawColumnKey): boolean {
+    return column === 'actions';
+  }
+
+  isSessionIdColumn(column: SessionRawColumnKey): boolean {
+    return column === 'sessionId';
+  }
+
+  isStatusColumn(column: SessionRawColumnKey): boolean {
+    return column === 'status';
+  }
+
+  isCountColumn(column: SessionRawColumnKey): boolean {
+    return column === 'count';
+  }
+
+  isDateColumn(column: SessionRawColumnKey): boolean {
+    return this.dateColumns.includes(column);
+  }
+
+  isDurationColumn(column: SessionRawColumnKey): boolean {
+    return this.durationColumns.includes(column);
+  }
+
+  isArrayColumn(column: SessionRawColumnKey): boolean {
+    return this.arrayColumns.includes(column);
+  }
+
+  isObjectColumn(column: SessionRawColumnKey): boolean {
+    return this.objectColumns.includes(column);
+  }
+
+  isSimpleColumn(column: SessionRawColumnKey): boolean {
+    return !this.isActionsColumn(column) && !this.isSessionIdColumn(column) && !this.isStatusColumn(column) && !this.isCountColumn(column) && !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isArrayColumn(column) && !this.isObjectColumn(column);
+  }
+
+  isNotSortableColumn(column: SessionRawColumnKey): boolean {
+    return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column) || this.isArrayColumn(column);
   }
 
   /**
