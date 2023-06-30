@@ -10,11 +10,14 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { AppIndexComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -66,22 +69,30 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag>
+      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
       </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'id'">
-        <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
+      <ng-container *ngIf="isSimpleColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          {{ element[column] | emptyCell }}
+        </td>
       </ng-container>
       <!-- ID -->
-      <ng-container *ngIf="column === 'id'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isPartitionIdColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           {{ element[column] }}
         </td>
       </ng-container>
+      <!-- Object -->
+      <ng-container *ngIf="isObjectColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+        </td>
+      </ng-container>
       <!-- Action -->
-      <ng-container *ngIf="column === 'actions'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isActionsColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -124,12 +135,15 @@ app-table-actions-toolbar {
     NotificationService,
   ],
   imports: [
+    EmptyCellPipe,
+    NoWrapDirective,
     NgIf,
     NgFor,
     RouterLink,
     DragDropModule,
     PageHeaderComponent,
     TableActionsToolbarComponent,
+    TableInspectObjectComponent,
     FiltersToolbarComponent,
     TableContainerComponent,
     MatTableModule,
@@ -250,6 +264,26 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   columnToLabel(column: PartitionRawColumnKey): string {
     return this._partitionsIndexService.columnToLabel(column);
+  }
+
+  isPartitionIdColumn(column: PartitionRawColumnKey): boolean {
+    return this._partitionsIndexService.isPartitionIdColumn(column);
+  }
+
+  isActionsColumn(column: PartitionRawColumnKey): boolean {
+    return this._partitionsIndexService.isActionsColumn(column);
+  }
+
+  isObjectColumn(column: PartitionRawColumnKey): boolean {
+    return this._partitionsIndexService.isObjectColumn(column);
+  }
+
+  isNotSortableColumn(column: PartitionRawColumnKey): boolean {
+    return this._partitionsIndexService.isNotSortableColumn(column);
+  }
+
+  isSimpleColumn(column: PartitionRawColumnKey): boolean {
+    return this._partitionsIndexService.isSimpleColumn(column);
   }
 
   getIcon(name: Page): string {

@@ -10,6 +10,8 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
   readonly defaultColumns: PartitionRawColumnKey[] = ['id', 'actions'];
   readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
 
+  readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
+
   readonly columnsLabels: Record<PartitionRawColumnKey, string> = {
     id: $localize`ID`,
     priority: $localize`Priority`,
@@ -68,6 +70,29 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
 
   columnToLabel(column: PartitionRawColumnKey): string {
     return this.columnsLabels[column];
+  }
+
+  /**
+   * Table
+   */
+  isPartitionIdColumn(column: PartitionRawColumnKey): boolean {
+    return column === 'id';
+  }
+
+  isActionsColumn(column: PartitionRawColumnKey): boolean {
+    return column === 'actions';
+  }
+
+  isNotSortableColumn(column: PartitionRawColumnKey): boolean {
+    return this.isActionsColumn(column) || this.isObjectColumn(column);
+  }
+
+  isObjectColumn(column: PartitionRawColumnKey): boolean {
+    return this.objectColumns.includes(column);
+  }
+
+  isSimpleColumn(column: PartitionRawColumnKey): boolean {
+    return !this.isActionsColumn(column) && !this.isPartitionIdColumn(column) && !this.isObjectColumn(column);
   }
 
   /**

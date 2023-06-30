@@ -9,8 +9,8 @@ type Data = {
 @Component({
   selector: 'app-show-card-content',
   template: `
-<ng-container *ngIf="keys.length > 0; else noKeys">
-  <div *ngFor="let key of keys">
+<ng-container *ngIf="!isArray(data) && keys.length > 0">
+  <div *ngFor="let key of keys; trackBy:trackByKey">
 
     <p>
       <!-- Key -->
@@ -39,7 +39,7 @@ type Data = {
 
     <!-- Array -->
     <ul *ngIf="isArray(findValue(key))">
-      <li *ngFor="let item of findArray(key)">{{ item }}</li>
+      <li *ngFor="let item of findArray(key); trackBy:trackByItem">{{ item }}</li>
     </ul>
 
     <!-- Object -->
@@ -47,12 +47,17 @@ type Data = {
 
   </div>
 </ng-container>
+<ng-container *ngIf="data && isArray(data) && hasLength(data)">
+  <ul class="array-list">
+    <li *ngFor="let item of toArray(data); trackBy:trackByItem">{{ item }}</li>
+  </ul>
+</ng-container>
 
-<ng-template #noKeys>
+<ng-container *ngIf="(!isArray(data) && keys.length === 0) || (isArray(data) && !hasLength(data))">
   <p>
     <em>No data</em>
   </p>
-</ng-template>
+</ng-container>
   `,
   styles: [`
 app-show-card-content {
@@ -61,6 +66,10 @@ app-show-card-content {
 
   border-left: 1px solid #eee;
   padding-left: 1rem;
+}
+
+.array-list {
+  margin: 0;
 }
   `],
   standalone: true,
@@ -71,7 +80,7 @@ app-show-card-content {
   ]
 })
 export class ShowCardContentComponent<T extends object> implements OnChanges {
-  @Input({ required: true }) data: T | null = null;
+  @Input({ required: true }) data: T | T[] | null = null;
   @Input({ required: true }) statuses: Record<number, string> = [];
 
   keys: string[] = [];
@@ -100,6 +109,14 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
   isArray(value: unknown): boolean {
     return Array.isArray(value);
+  }
+
+  hasLength(value: unknown): boolean {
+    return (value as unknown as unknown[]).length > 0;
+  }
+
+  toArray(value: unknown): unknown[] {
+    return value as unknown as unknown[];
   }
 
   isObject(value: unknown): boolean {
@@ -192,5 +209,13 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     const status = (this.data as unknown as Data)[key] as unknown as number;
 
     return this.statuses[status];
+  }
+
+  trackByKey(index: number, key: string): string {
+    return key;
+  }
+
+  trackByItem(index: number, item: unknown): string {
+    return String(item);
   }
 }
