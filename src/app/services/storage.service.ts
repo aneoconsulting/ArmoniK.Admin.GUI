@@ -27,7 +27,11 @@ export class StorageService implements Storage {
     const data = this._localStorage.getItem(key);
 
     if (data && parse) {
-      return JSON.parse(data) as T;
+      try {
+        return JSON.parse(data) as T;
+      } catch (e) {
+        return data;
+      }
     } else if (data) {
       return data;
     }

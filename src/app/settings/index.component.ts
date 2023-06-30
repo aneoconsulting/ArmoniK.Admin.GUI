@@ -32,7 +32,6 @@ import { StorageService } from '@services/storage.service';
 </p>
 
 <app-page-section class="sidebar">
-  <!-- TODO: update the navigation icon -->
   <!-- TODO: use in a dialog -->
   <app-page-section-header icon="format_list_bulleted">
     <span i18n="Section title"> Sidebar </span>
