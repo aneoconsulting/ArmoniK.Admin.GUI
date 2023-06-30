@@ -12,7 +12,7 @@ export class SessionsIndexService {
 
   readonly tableName: string = 'sessions';
 
-  readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions', 'count'];
+  readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'count', 'actions'];
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
