@@ -31,7 +31,6 @@ export class TableInspectObjectComponent
   #dialog = inject(MatDialog);
 
   onViewObject(): void {
-    console.log('onViewObject', this.object);
     this.#dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
       data: {
         label: this.label,
