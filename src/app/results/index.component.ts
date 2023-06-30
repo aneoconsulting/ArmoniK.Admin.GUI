@@ -10,15 +10,17 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterLink } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { AppIndexComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { TableLoadingComponent } from '@components/table-loading.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -70,33 +72,35 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions'" *matHeaderCellDef cdkDrag>
+      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
       </th>
       <!-- Columns -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'status' && !dateColumns().includes(column)">
-        <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }} </td>
+      <ng-container *ngIf="isSimpleColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          {{ element[column] | emptyCell }}
+        </td>
       </ng-container>
       <!-- Date -->
-      <ng-container *ngIf="dateColumns().includes(column)">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isDateColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
         </td>
       </ng-container>
       <!-- Status -->
-      <ng-container *ngIf="column === 'status'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isStatusColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <span> {{ statusToLabel(element[column]) }} </span>
         </td>
       </ng-container>
       <!-- Action -->
-      <ng-container *ngIf="column === 'actions'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isActionsColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <a mat-menu-item>
+            <a mat-menu-item [routerLink]="['/results', element.resultId]">
               <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
               <span i18n> See results </span>
             </a>
@@ -135,9 +139,12 @@ app-table-actions-toolbar {
     NotificationService,
   ],
   imports: [
+    NoWrapDirective,
+    EmptyCellPipe,
     NgIf,
     NgFor,
     DatePipe,
+    RouterLink,
     DragDropModule,
     PageHeaderComponent,
     TableActionsToolbarComponent,
@@ -281,6 +288,26 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   getIcon(name: Page): string {
     return this._iconsService.getPageIcon(name);
+  }
+
+  isActionsColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isActionsColumn(column);
+  }
+
+  isDateColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isDateColumn(column);
+  }
+
+  isStatusColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isStatusColumn(column);
+  }
+
+  isNotSortableColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isNotSortableColumn(column);
+  }
+
+  isSimpleColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isSimpleColumn(column);
   }
 
   onRefresh() {

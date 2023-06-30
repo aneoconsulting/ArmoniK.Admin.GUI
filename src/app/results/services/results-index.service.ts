@@ -75,6 +75,30 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   }
 
   /**
+   * Table
+   */
+
+  isActionsColumn(column: ResultRawColumnKey): boolean {
+    return column === 'actions';
+  }
+
+  isStatusColumn(column: ResultRawColumnKey): boolean {
+    return column === 'status';
+  }
+
+  isDateColumn(column: ResultRawColumnKey): boolean {
+    return this.dateColumns.includes(column);
+  }
+
+  isNotSortableColumn(column: ResultRawColumnKey): boolean {
+    return this.isActionsColumn(column);
+  }
+
+  isSimpleColumn(column: ResultRawColumnKey): boolean {
+    return !this.isActionsColumn(column) && !this.isStatusColumn(column) && !this.isDateColumn(column);
+  }
+
+  /**
    * Interval
    */
 
