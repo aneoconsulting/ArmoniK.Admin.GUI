@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { AppIndexService } from '@app/types/services';
 import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
 
@@ -56,6 +55,25 @@ export class ApplicationsIndexService {
 
   columnToLabel(column: ApplicationRawColumnKey): string {
     return this.columnsLabels[column];
+  }
+
+  /**
+   * Table
+   */
+  isActionsColumn(column: ApplicationRawColumnKey): boolean {
+    return column === 'actions';
+  }
+
+  isCountColumn(column: ApplicationRawColumnKey): boolean {
+    return column === 'count';
+  }
+
+  isSimpleColumn(column: ApplicationRawColumnKey): boolean {
+    return !this.isActionsColumn(column) && !this.isCountColumn(column);
+  }
+
+  isNotSortableColumn(column: ApplicationRawColumnKey): boolean {
+    return this.isActionsColumn(column) || this.isCountColumn(column);
   }
 
   /**

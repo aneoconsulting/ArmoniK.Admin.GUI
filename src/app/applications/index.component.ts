@@ -11,7 +11,9 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
@@ -74,15 +76,18 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="column === 'actions' || column === 'count'" *matHeaderCellDef cdkDrag> {{ columnToLabel(column) }} </th>
+      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
+        {{ columnToLabel(column) }}
+      </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column !== 'actions' && column !== 'count'">
-        <td mat-cell *matCellDef="let element"> {{ element[column] || '-' }}
-      </td>
+      <ng-container *ngIf="isSimpleColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          {{ element[column] | emptyCell }}
+        </td>
       </ng-container>
       <!-- Application's Tasks Count by Status -->
-      <ng-container *ngIf="column === 'count'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isCountColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
          <app-applications-count-by-status
           [name]="element.name"
           [version]="element.version"
@@ -91,8 +96,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
         </td>
       </ng-container>
       <!-- Action -->
-      <ng-container *ngIf="column === 'actions'">
-        <td mat-cell *matCellDef="let element">
+      <ng-container *ngIf="isActionsColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
          <em i18n> No actions available </em>
         </td>
       </ng-container>
@@ -128,6 +133,8 @@ app-table-actions-toolbar {
     TasksByStatusService,
   ],
   imports: [
+    NoWrapDirective,
+    EmptyCellPipe,
     NgIf,
     NgFor,
     RouterLink,
@@ -264,6 +271,22 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   columnToLabel(column: ApplicationRawColumnKey): string {
     return this._applicationsIndexService.columnToLabel(column);
+  }
+
+  isActionsColumn(column: ApplicationRawColumnKey): boolean {
+    return this._applicationsIndexService.isActionsColumn(column);
+  }
+
+  isCountColumn(column: ApplicationRawColumnKey): boolean {
+    return this._applicationsIndexService.isCountColumn(column);
+  }
+
+  isSimpleColumn(column: ApplicationRawColumnKey): boolean {
+    return this._applicationsIndexService.isSimpleColumn(column);
+  }
+
+  isNotSortableColumn(column: ApplicationRawColumnKey): boolean {
+    return this._applicationsIndexService.isNotSortableColumn(column);
   }
 
   getIcon(name: Page): string {
