@@ -26,7 +26,7 @@ import {
   SortDirection,
   TaskStatus,
   TaskSummary,
-  TaskSummaryField
+  TaskSummaryField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import {
   ComboBoxFilterComponent,
@@ -266,9 +266,7 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(
-    field: TaskSummaryField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: TaskSummaryField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

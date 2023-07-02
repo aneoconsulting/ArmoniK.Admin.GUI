@@ -43,9 +43,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy: [
-        orderBy ?? ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
-      ],
+      orderBy: [orderBy ?? ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
       order,
       filter,
     };
@@ -59,15 +57,10 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
-      orderBy: !orderBy.includes(
-        ApplicationRawField.APPLICATION_RAW_FIELD_NAME
-      )
+      orderBy: !orderBy.includes(ApplicationRawField.APPLICATION_RAW_FIELD_NAME)
         ? orderBy
         : undefined,
-      order:
-        order !== SortDirection.SORT_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       ...filter,
     };
   }
@@ -83,7 +76,11 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        fields: [...orderBy.map((field) => { return { applicationField: field } })],
+        fields: [
+          ...orderBy.map((field) => {
+            return { applicationField: field };
+          }),
+        ],
         direction: order,
       },
       filter,

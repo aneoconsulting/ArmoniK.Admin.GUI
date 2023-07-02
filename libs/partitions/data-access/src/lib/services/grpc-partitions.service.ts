@@ -31,7 +31,7 @@ export class GrpcPartitionsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-     PartitionRawField,
+      PartitionRawField,
       SortDirection
     >(state);
 
@@ -58,13 +58,10 @@ export class GrpcPartitionsService extends BaseGrpcService {
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
-        orderBy !==PartitionRawField.PARTITION_RAW_FIELD_ID
+        orderBy !== PartitionRawField.PARTITION_RAW_FIELD_ID
           ? orderBy
           : undefined,
-      order:
-        order !== SortDirection.SORT_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       ...filter,
     };
   }

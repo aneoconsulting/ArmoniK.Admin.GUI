@@ -41,8 +41,7 @@ export class GrpcResultsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        orderBy ?? ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+      orderBy: orderBy ?? ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -60,10 +59,7 @@ export class GrpcResultsService extends BaseGrpcService {
         orderBy !== ResultRawField.RESULT_RAW_FIELD_CREATED_AT
           ? orderBy
           : undefined,
-      order:
-        order !== SortDirection.SORT_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       name: filter?.name,
       ownerTaskId: filter?.ownerTaskId,
       sessionId: filter?.sessionId,

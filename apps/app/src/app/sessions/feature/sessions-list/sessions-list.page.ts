@@ -207,9 +207,7 @@ export class SessionsListComponent {
   }
 
   // TODO: Move to a service (once https://github.com/aneoconsulting/ArmoniK.Api/issues/87 is resolved)
-  public defaultSortOrder(
-    field: SessionRawField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: SessionRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

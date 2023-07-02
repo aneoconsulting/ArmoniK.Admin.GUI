@@ -142,9 +142,7 @@ export class ApplicationsListComponent {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(
-    field: ApplicationRawField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: ApplicationRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

@@ -43,8 +43,7 @@ export class GrpcSessionsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        orderBy ?? SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
+      orderBy: orderBy ?? SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -62,10 +61,7 @@ export class GrpcSessionsService extends BaseGrpcService {
         orderBy !== SessionRawField.SESSION_RAW_FIELD_CREATED_AT
           ? orderBy
           : undefined,
-      order:
-        order !== SortDirection.SORT_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       sessionId: filter?.sessionId,
       status: filter?.status,
       createdBefore: this._grpcParamsService.getTimeStampSeconds(

@@ -1,4 +1,11 @@
-import { ApplicationRawField, ListApplicationsRequest, PartitionRawField, ResultRawField, SessionRawField, SortDirection } from '@aneoconsultingfr/armonik.api.angular';
+import {
+  ApplicationRawField,
+  ListApplicationsRequest,
+  PartitionRawField,
+  ResultRawField,
+  SessionRawField,
+  SortDirection,
+} from '@aneoconsultingfr/armonik.api.angular';
 import { ListPartitionsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { ListResultsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { ListSessionsRequest } from '@aneoconsultingfr/armonik.api.angular';

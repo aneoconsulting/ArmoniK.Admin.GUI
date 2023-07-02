@@ -9,7 +9,7 @@ import {
   CountTasksByStatusResponse,
   TasksClient,
   SortDirection,
-  TaskSummaryField
+  TaskSummaryField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -47,8 +47,7 @@ export class GrpcTasksService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        orderBy ?? TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+      orderBy: orderBy ?? TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -58,7 +57,7 @@ export class GrpcTasksService extends BaseGrpcService {
     { page, pageSize, orderBy, order, filter }: GrpcListTasksParams,
     refreshInterval: number
   ) {
-    console.log('createListRequestQueryParams', orderBy)
+    console.log('createListRequestQueryParams', orderBy);
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
@@ -67,10 +66,7 @@ export class GrpcTasksService extends BaseGrpcService {
         orderBy !== TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT
           ? orderBy
           : undefined,
-      order:
-        order !== SortDirection.SORT_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       sessionId: filter?.sessionId,
       status: filter?.status,
       createdBefore: this._grpcParamsService.getTimeStampSeconds(
@@ -101,7 +97,7 @@ export class GrpcTasksService extends BaseGrpcService {
     order,
     filter,
   }: GrpcListTasksParams): ListTasksRequest {
-    const options =  new ListTasksRequest({
+    const options = new ListTasksRequest({
       page,
       pageSize,
       sort: {
@@ -123,7 +119,7 @@ export class GrpcTasksService extends BaseGrpcService {
       filter,
     });
 
-    return options
+    return options;
   }
 
   public list$(options: ListTasksRequest): Observable<ListTasksResponse> {

@@ -192,9 +192,7 @@ export class ResultsListComponent implements OnInit {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(
-    field: ResultRawField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: ResultRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

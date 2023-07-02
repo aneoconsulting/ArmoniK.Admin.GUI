@@ -226,9 +226,7 @@ export class PartitionsListComponent {
     return partition.id ?? '';
   }
 
-  public defaultSortOrder(
-    field: PartitionRawField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: PartitionRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );
