@@ -8,8 +8,10 @@ import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcApplicationsService } from './grpc-applications.service';
 import {
+  ApplicationRawField,
   ApplicationsClient,
   ListApplicationsRequest,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcApplicationsService', () => {
@@ -44,7 +46,7 @@ describe('GrpcApplicationsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
+      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
       order: 1,
       filter: {} as ListApplicationsRequest.Filter,
     });
@@ -57,8 +59,7 @@ describe('GrpcApplicationsService', () => {
         size: 50,
       },
       sort: {
-        by: ListApplicationsRequest.OrderByField
-          .ORDER_BY_FIELD_NAMESPACE as unknown as ClrDatagridComparatorInterface<number>,
+        by: ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -72,7 +73,7 @@ describe('GrpcApplicationsService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE],
+      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE],
       order: 2,
       filter: {
         name: 'Some test name',
@@ -85,8 +86,8 @@ describe('GrpcApplicationsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
-        order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
+        order: SortDirection.SORT_DIRECTION_ASC,
         filter: {} as ListApplicationsRequest.Filter,
       },
       10000
@@ -106,9 +107,9 @@ describe('GrpcApplicationsService', () => {
         page: 2,
         pageSize: 50,
         orderBy: [
-          ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
+          ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
         ],
-        order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           name: 'Some test name',
         } as ListApplicationsRequest.Filter,
@@ -129,8 +130,8 @@ describe('GrpcApplicationsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
-      order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
+      order: SortDirection.SORT_DIRECTION_ASC,
       filter: {} as ListApplicationsRequest.Filter,
     });
     expect(result).toEqual(
@@ -138,8 +139,10 @@ describe('GrpcApplicationsService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-          fields: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME],
-          direction: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+          fields: [{
+            applicationField: ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
+          }],
+          direction: SortDirection.SORT_DIRECTION_ASC,
         },
         filter: {
           name: '',
@@ -155,8 +158,8 @@ describe('GrpcApplicationsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: [ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE],
-      order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE],
+      order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         name: 'Some test name',
       } as ListApplicationsRequest.Filter,
@@ -166,11 +169,11 @@ describe('GrpcApplicationsService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          fields: [
-            ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAMESPACE,
-          ],
+          fields: [{
+            applicationField: ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
+          }],
           direction:
-            ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+            SortDirection.SORT_DIRECTION_DESC,
         },
         filter: {
           name: 'Some test name',
