@@ -1,9 +1,11 @@
 import {
+  ApplicationRawField,
   ApplicationsClient,
   CountTasksByStatusApplicationRequest,
   CountTasksByStatusApplicationResponse,
   ListApplicationsRequest,
   ListApplicationsResponse,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -29,8 +31,8 @@ export class GrpcApplicationsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      ListApplicationsRequest.OrderByField,
-      ListApplicationsRequest.OrderDirection
+      ApplicationRawField,
+      SortDirection
     >(state);
 
     const filter =
@@ -42,7 +44,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page,
       pageSize,
       orderBy: [
-        orderBy ?? ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
+        orderBy ?? ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
       ],
       order,
       filter,
@@ -58,12 +60,12 @@ export class GrpcApplicationsService extends BaseGrpcService {
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy: !orderBy.includes(
-        ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME
+        ApplicationRawField.APPLICATION_RAW_FIELD_NAME
       )
         ? orderBy
         : undefined,
       order:
-        order !== ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC
+        order !== SortDirection.SORT_DIRECTION_ASC
           ? order
           : undefined,
       ...filter,
@@ -81,7 +83,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        fields: [...orderBy],
+        fields: [...orderBy.map((field) => { return { applicationField: field } })],
         direction: order,
       },
       filter,

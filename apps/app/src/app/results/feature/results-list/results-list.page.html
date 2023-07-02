@@ -19,8 +19,8 @@
     </clr-dg-action-bar>
 
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_NAME.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_NAME)"
+      [clrDgField]="OrderByField.RESULT_RAW_FIELD_NAME.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.RESULT_RAW_FIELD_NAME)"
     >
       <span i18n> Name </span>
       <clr-dg-filter [clrDgFilter]="nameFilterComponent">
@@ -33,9 +33,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_OWNER_TASK_ID.toString()"
+      [clrDgField]="OrderByField.RESULT_RAW_FIELD_OWNER_TASK_ID.toString()"
       [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_OWNER_TASK_ID)
+        defaultSortOrder(OrderByField.RESULT_RAW_FIELD_OWNER_TASK_ID)
       "
     >
       <span i18n> Task ID </span>
@@ -49,9 +49,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
+      [clrDgField]="OrderByField.RESULT_RAW_FIELD_SESSION_ID.toString()"
       [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
+        defaultSortOrder(OrderByField.RESULT_RAW_FIELD_SESSION_ID)
       "
     >
       <span i18n> Session ID </span>
@@ -65,8 +65,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+      [clrDgField]="OrderByField.RESULT_RAW_FIELD_STATUS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.RESULT_RAW_FIELD_STATUS)"
     >
       <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilterComponent">
@@ -80,9 +80,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
+      [clrDgField]="OrderByField.RESULT_RAW_FIELD_CREATED_AT.toString()"
       [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
+        defaultSortOrder(OrderByField.RESULT_RAW_FIELD_CREATED_AT)
       "
     >
       <span i18n> Created at </span>

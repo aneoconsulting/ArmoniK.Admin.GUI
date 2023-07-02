@@ -1,7 +1,9 @@
 import {
   ApplicationRaw,
+  ApplicationRawField,
   ListApplicationsRequest,
   ListApplicationsResponse,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -121,7 +123,7 @@ export class ApplicationsListComponent {
   }
 
   public get OrderByField() {
-    return ListApplicationsRequest.OrderByField;
+    return ApplicationRawField;
   }
 
   public get intervals() {
@@ -141,7 +143,7 @@ export class ApplicationsListComponent {
   }
 
   public defaultSortOrder(
-    field: ListApplicationsRequest.OrderByField
+    field: ApplicationRawField
   ): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
@@ -151,9 +153,9 @@ export class ApplicationsListComponent {
 
     const order =
       Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
-      ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC;
+      SortDirection.SORT_DIRECTION_ASC;
 
-    if (order === ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_DESC)
+    if (order === SortDirection.SORT_DIRECTION_DESC)
       return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;

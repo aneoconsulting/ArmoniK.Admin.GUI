@@ -1,36 +1,37 @@
-import { ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawField, ListApplicationsRequest, PartitionRawField, ResultRawField, SessionRawField, SortDirection } from '@aneoconsultingfr/armonik.api.angular';
 import { ListPartitionsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { ListResultsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { ListSessionsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { ListTasksRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskSummaryField } from '@aneoconsultingfr/armonik.api.angular/lib/generated/tasks-common.pb';
 
 export type GrpcListApplicationsParams = GrpcListParams<
-  ListApplicationsRequest.OrderByField[],
-  ListApplicationsRequest.OrderDirection,
+  ApplicationRawField[],
+  SortDirection,
   ListApplicationsRequest.Filter.AsObject
 >;
 
 export type GrpcListSessionsParams = GrpcListParams<
-  ListSessionsRequest.OrderByField,
-  ListSessionsRequest.OrderDirection,
+  SessionRawField,
+  SortDirection,
   ListSessionsRequest.Filter.AsObject
 >;
 
 export type GrpcListTasksParams = GrpcListParams<
-  ListTasksRequest.OrderByField,
-  ListTasksRequest.OrderDirection,
+  TaskSummaryField,
+  SortDirection,
   ListTasksRequest.Filter.AsObject
 >;
 
 export type GrpcListResultsParams = GrpcListParams<
-  ListResultsRequest.OrderByField,
-  ListResultsRequest.OrderDirection,
+  ResultRawField,
+  SortDirection,
   ListResultsRequest.Filter.AsObject
 >;
 
 export type GrpcListPartitionsParams = GrpcListParams<
-  ListPartitionsRequest.OrderByField,
-  ListPartitionsRequest.OrderDirection,
+  PartitionRawField,
+  SortDirection,
   ListPartitionsRequest.Filter.AsObject
 >;
 
