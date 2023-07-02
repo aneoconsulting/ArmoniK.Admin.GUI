@@ -96,7 +96,7 @@ dependencies:
 devDependencies:
   '@angular-devkit/build-angular':
     specifier: 14.2.10
-    version: 14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.0)(typescript@4.6.2)
+    version: 14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.12)(typescript@4.6.2)
   '@angular-eslint/eslint-plugin':
     specifier: 13.1.0
     version: 13.1.0(eslint@8.29.0)(typescript@4.6.2)
@@ -161,8 +161,8 @@ devDependencies:
     specifier: 5.0.0
     version: 5.0.0
   karma:
-    specifier: 6.3.0
-    version: 6.3.0
+    specifier: 6.3.12
+    version: 6.3.12
   karma-chrome-launcher:
     specifier: 3.1.0
     version: 3.1.0
@@ -171,10 +171,10 @@ devDependencies:
     version: 2.2.0
   karma-jasmine:
     specifier: 4.0.0
-    version: 4.0.0(karma@6.3.0)
+    version: 4.0.0(karma@6.3.12)
   karma-jasmine-html-reporter:
     specifier: 1.7.0
-    version: 1.7.0(jasmine-core@3.10.0)(karma-jasmine@4.0.0)(karma@6.3.0)
+    version: 1.7.0(jasmine-core@3.10.0)(karma-jasmine@4.0.0)(karma@6.3.12)
   nx:
     specifier: 16.4.2
     version: 16.4.2
@@ -237,7 +237,7 @@ packages:
     transitivePeerDependencies:
       - chokidar
 
-  /@angular-devkit/build-angular@14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.0)(typescript@4.6.2):
+  /@angular-devkit/build-angular@14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.12)(typescript@4.6.2):
     resolution: {integrity: sha512-VCeZAyq4uPCJukKInaSiD4i/GgxgcU4jFlLFQtoYNmaBS4xbPOymL19forRIihiV0dwNEa2L694vRTAPMBxIfw==}
     engines: {node: ^14.15.0 || >=16.10.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
     peerDependencies:
@@ -293,7 +293,7 @@ packages:
       https-proxy-agent: 5.0.1
       inquirer: 8.2.4
       jsonc-parser: 3.1.0
-      karma: 6.3.0
+      karma: 6.3.12
       karma-source-map-support: 1.4.0
       less: 4.1.3
       less-loader: 11.0.0(less@4.1.3)(webpack@5.74.0)
@@ -4605,7 +4605,7 @@ packages:
       '@nguniversal/builders':
         optional: true
     dependencies:
-      '@angular-devkit/build-angular': 14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.0)(typescript@4.6.2)
+      '@angular-devkit/build-angular': 14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.12)(typescript@4.6.2)
       '@angular-devkit/core': 15.2.1
       '@angular-devkit/schematics': 15.2.1
       '@nrwl/angular': 16.4.2(@angular-devkit/build-angular@14.2.10)(@angular-devkit/core@15.2.1)(@angular-devkit/schematics@15.2.1)(@schematics/angular@15.2.1)(@types/node@16.11.7)(cypress@11.2.0)(eslint@8.29.0)(nx@16.4.2)(rxjs@7.6.0)(typescript@4.6.2)
@@ -5121,6 +5121,9 @@ packages:
     dependencies:
       '@sinonjs/commons': 3.0.0
 
+  /@socket.io/component-emitter@3.1.0:
+    resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
+
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
@@ -5178,9 +5181,6 @@ packages:
     resolution: {integrity: sha512-p7ienRMiS41Nu2/igbJxxLDWrSZ0WxM8UQgCeO9KhoVF7cOVFkrKsiDr1EsJIla8vV3oEEjGcz11jc5yimhzZw==}
     dependencies:
       '@types/node': 16.11.7
-
-  /@types/component-emitter@1.2.11:
-    resolution: {integrity: sha512-SRXjM+tfsSlA9VuG8hGO2nft2p8zjXCK1VcC6N4NXbBbYbSia9kzCChYQajIjzIqOOOuh5Ock6MmV2oux4jDZQ==}
 
   /@types/connect-history-api-fallback@1.3.5:
     resolution: {integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw==}
@@ -6358,10 +6358,6 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  /base64-arraybuffer@0.1.4:
-    resolution: {integrity: sha512-a1eIFi4R9ySrbiMuyTGx5e92uRH5tQY6kArNcFaKBUleIoLjdjBg7Zxm3Mqm3Kmkf27HLR/1fnxX9q8GQ7Iavg==}
-    engines: {node: '>= 0.6.0'}
-
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
@@ -6792,9 +6788,6 @@ packages:
 
   /commondir@1.0.1:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
-
-  /component-emitter@1.3.0:
-    resolution: {integrity: sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==}
 
   /compressible@2.0.18:
     resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
@@ -7492,23 +7485,24 @@ packages:
     dependencies:
       once: 1.4.0
 
-  /engine.io-parser@4.0.3:
-    resolution: {integrity: sha512-xEAAY0msNnESNPc00e19y5heTPX4y/TJ36gr8t1voOaNmTojP9b3oK3BbJLFufW2XFPQaaijpFewm2g2Um3uqA==}
-    engines: {node: '>=8.0.0'}
-    dependencies:
-      base64-arraybuffer: 0.1.4
+  /engine.io-parser@5.1.0:
+    resolution: {integrity: sha512-enySgNiK5tyZFynt3z7iqBR+Bto9EVVVvDFuTT0ioHCGbzirZVGDGiQjZzEp8hWl6hd5FSVytJGuScX1C1C35w==}
+    engines: {node: '>=10.0.0'}
 
-  /engine.io@4.1.2:
-    resolution: {integrity: sha512-t5z6zjXuVLhXDMiFJPYsPOWEER8B0tIsD3ETgw19S1yg9zryvUfY3Vhtk3Gf4sihw/bQGIqQ//gjvVlu+Ca0bQ==}
+  /engine.io@6.5.1:
+    resolution: {integrity: sha512-mGqhI+D7YxS9KJMppR6Iuo37Ed3abhU8NdfgSvJSDUafQutrN+sPTncJYTyM9+tkhSmWodKtVYGPPHyXJEwEQA==}
     engines: {node: '>=10.0.0'}
     dependencies:
+      '@types/cookie': 0.4.1
+      '@types/cors': 2.8.13
+      '@types/node': 16.11.7
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.4.2
       cors: 2.8.5
       debug: 4.3.4(supports-color@8.1.1)
-      engine.io-parser: 4.0.3
-      ws: 7.4.6
+      engine.io-parser: 5.1.0
+      ws: 8.11.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -9421,7 +9415,7 @@ packages:
       - supports-color
     dev: true
 
-  /karma-jasmine-html-reporter@1.7.0(jasmine-core@3.10.0)(karma-jasmine@4.0.0)(karma@6.3.0):
+  /karma-jasmine-html-reporter@1.7.0(jasmine-core@3.10.0)(karma-jasmine@4.0.0)(karma@6.3.12):
     resolution: {integrity: sha512-pzum1TL7j90DTE86eFt48/s12hqwQuiD+e5aXx2Dc9wDEn2LfGq6RoAxEZZjFiN0RDSCOnosEKRZWxbQ+iMpQQ==}
     peerDependencies:
       jasmine-core: '>=3.8'
@@ -9429,18 +9423,18 @@ packages:
       karma-jasmine: '>=1.1'
     dependencies:
       jasmine-core: 3.10.0
-      karma: 6.3.0
-      karma-jasmine: 4.0.0(karma@6.3.0)
+      karma: 6.3.12
+      karma-jasmine: 4.0.0(karma@6.3.12)
     dev: true
 
-  /karma-jasmine@4.0.0(karma@6.3.0):
+  /karma-jasmine@4.0.0(karma@6.3.12):
     resolution: {integrity: sha512-6hFwluoj6i/ItzG1D3MEfBHrAgKqyS+KsAqaFqeIsJth1B+pCIh6AItT94w7Z5FZlOA7Qcs9qoibUMocM9yBPw==}
     engines: {node: '>= 10'}
     peerDependencies:
       karma: '*'
     dependencies:
       jasmine-core: 3.10.0
-      karma: 6.3.0
+      karma: 6.3.12
     dev: true
 
   /karma-source-map-support@1.4.0:
@@ -9448,8 +9442,8 @@ packages:
     dependencies:
       source-map-support: 0.5.21
 
-  /karma@6.3.0:
-    resolution: {integrity: sha512-Or+x8T4/TWe7ChBaAkdQARjETSbvxsipp5Y+0UMSu4z0YYzy06OA2UdHAmMIx5gLs4a76X916pY1bzGgYuN7BQ==}
+  /karma@6.3.12:
+    resolution: {integrity: sha512-qwIG+oB2YmHx4hjvYSRMNzL3YWAJ9baHaLAxiP7biFNkfpwYTUTtPck0joFpucalNLzMr+7z/FX1uY/kl8DV9A==}
     engines: {node: '>= 10'}
     hasBin: true
     dependencies:
@@ -9471,7 +9465,7 @@ packages:
       qjobs: 1.2.0
       range-parser: 1.2.1
       rimraf: 3.0.2
-      socket.io: 3.1.2
+      socket.io: 4.7.1
       source-map: 0.6.1
       tmp: 0.2.1
       ua-parser-js: 0.7.34
@@ -10043,7 +10037,7 @@ packages:
       '@angular-devkit/build-angular': ^13.0.0 || ^14.0.0 || ^15.0.0
     dependencies:
       '@angular-devkit/architect': 0.1301.4
-      '@angular-devkit/build-angular': 14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.0)(typescript@4.6.2)
+      '@angular-devkit/build-angular': 14.2.10(@angular/compiler-cli@14.2.10)(@angular/localize@15.0.4)(karma@6.3.12)(typescript@4.6.2)
       '@angular-devkit/core': 15.2.1
       '@angular-devkit/schematics': 15.2.1
       '@schematics/angular': 15.2.1
@@ -11934,32 +11928,34 @@ packages:
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
     dev: true
 
-  /socket.io-adapter@2.1.0:
-    resolution: {integrity: sha512-+vDov/aTsLjViYTwS9fPy5pEtTkrbEKsw2M+oVSoFGw6OD1IpvlV1VPhUzNbofCQ8oyMbdYJqDtGdmHQK6TdPg==}
+  /socket.io-adapter@2.5.2:
+    resolution: {integrity: sha512-87C3LO/NOMc+eMcpcxUBebGjkpMDkNBS9tf7KJqcDsmL936EChtVva71Dw2q4tQcuVC+hAUy4an2NO/sYXmwRA==}
+    dependencies:
+      ws: 8.11.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
 
-  /socket.io-parser@4.0.5:
-    resolution: {integrity: sha512-sNjbT9dX63nqUFIOv95tTVm6elyIU4RvB1m8dOeZt+IgWwcWklFDOdmGcfo3zSiRsnR/3pJkjY5lfoGqEe4Eig==}
+  /socket.io-parser@4.2.4:
+    resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      '@types/component-emitter': 1.2.11
-      component-emitter: 1.3.0
+      '@socket.io/component-emitter': 3.1.0
       debug: 4.3.4(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  /socket.io@3.1.2:
-    resolution: {integrity: sha512-JubKZnTQ4Z8G4IZWtaAZSiRP3I/inpy8c/Bsx2jrwGrTbKeVU5xd6qkKMHpChYeM3dWZSO0QACiGK+obhBNwYw==}
+  /socket.io@4.7.1:
+    resolution: {integrity: sha512-W+utHys2w//dhFjy7iQQu9sGd3eokCjGbl2r59tyLqNiJJBdIebn3GAKEXBr3osqHTObJi2die/25bCx2zsaaw==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      '@types/cookie': 0.4.1
-      '@types/cors': 2.8.13
-      '@types/node': 16.11.7
       accepts: 1.3.8
       base64id: 2.0.0
+      cors: 2.8.5
       debug: 4.3.4(supports-color@8.1.1)
-      engine.io: 4.1.2
-      socket.io-adapter: 2.1.0
-      socket.io-parser: 4.0.5
+      engine.io: 6.5.1
+      socket.io-adapter: 2.5.2
+      socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -13086,9 +13082,9 @@ packages:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
 
-  /ws@7.4.6:
-    resolution: {integrity: sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==}
-    engines: {node: '>=8.3.0'}
+  /ws@8.11.0:
+    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
+    engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
