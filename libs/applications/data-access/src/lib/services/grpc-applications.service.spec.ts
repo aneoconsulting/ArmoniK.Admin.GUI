@@ -106,9 +106,7 @@ describe('GrpcApplicationsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: [
-          ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
-        ],
+        orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE],
         order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           name: 'Some test name',
@@ -139,9 +137,11 @@ describe('GrpcApplicationsService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-          fields: [{
-            applicationField: ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
-          }],
+          fields: [
+            {
+              applicationField: ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
+            },
+          ],
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
         filter: {
@@ -169,11 +169,13 @@ describe('GrpcApplicationsService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          fields: [{
-            applicationField: ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
-          }],
-          direction:
-            SortDirection.SORT_DIRECTION_DESC,
+          fields: [
+            {
+              applicationField:
+                ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
+            },
+          ],
+          direction: SortDirection.SORT_DIRECTION_DESC,
         },
         filter: {
           name: 'Some test name',

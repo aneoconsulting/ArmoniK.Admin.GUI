@@ -55,8 +55,7 @@ describe('GrpcResultsService', () => {
         size: 50,
       },
       sort: {
-        by: ResultRawField
-          .RESULT_RAW_FIELD_RESULT_ID as unknown as ClrDatagridComparatorInterface<number>,
+        by: ResultRawField.RESULT_RAW_FIELD_RESULT_ID as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [

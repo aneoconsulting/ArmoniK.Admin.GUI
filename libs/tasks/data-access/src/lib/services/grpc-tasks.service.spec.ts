@@ -55,8 +55,7 @@ describe('GrpcTasksService', () => {
         size: 50,
       },
       sort: {
-        by: TaskSummaryField
-          .TASK_SUMMARY_FIELD_STARTED_AT as unknown as ClrDatagridComparatorInterface<number>,
+        by: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -149,7 +148,7 @@ describe('GrpcTasksService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-         field: {
+          field: {
             taskOptionField: null as any,
             taskSummaryField: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
           },

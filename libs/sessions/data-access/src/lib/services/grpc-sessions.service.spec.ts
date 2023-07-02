@@ -55,8 +55,7 @@ describe('GrpcSessionsService', () => {
         size: 50,
       },
       sort: {
-        by: SessionRawField
-          .SESSION_RAW_FIELD_SESSION_ID as unknown as ClrDatagridComparatorInterface<number>,
+        by: SessionRawField.SESSION_RAW_FIELD_SESSION_ID as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [

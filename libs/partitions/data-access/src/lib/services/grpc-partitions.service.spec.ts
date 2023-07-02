@@ -55,8 +55,7 @@ describe('GrpcPartitionsService', () => {
         size: 50,
       },
       sort: {
-        by: PartitionRawField
-          .PARTITION_RAW_FIELD_POD_MAX as unknown as ClrDatagridComparatorInterface<number>,
+        by: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -135,7 +134,7 @@ describe('GrpcPartitionsService', () => {
         pageSize: 10,
         sort: {
           field: {
-            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_ID
+            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_ID,
           },
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
@@ -166,8 +165,8 @@ describe('GrpcPartitionsService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-         field: {
-            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX
+          field: {
+            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
           },
           direction: SortDirection.SORT_DIRECTION_DESC,
         },
