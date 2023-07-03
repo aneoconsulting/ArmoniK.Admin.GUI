@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-share-url',
   template: `
-<button mat-icon-button aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" [matTooltip]="sharableURL">
+<button mat-icon-button i18n-aria-label aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" matTooltip="Copy Page URL" i18n-matTooltip>
   <mat-icon aria-hidden="true" fontIcon="share" *ngIf="!copied"></mat-icon>
   <mat-icon aria-hidden="true" fontIcon="done" *ngIf="copied"></mat-icon>
 </button>

@@ -32,7 +32,7 @@ import { SpinnerComponent } from './spinner.component';
     >
     </app-columns-button>
 
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options">
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
       <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">

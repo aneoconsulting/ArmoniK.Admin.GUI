@@ -61,7 +61,7 @@ import pkg from '../../../../package.json';
           <span i18n="Button">Manage service</span>
         </button>
       </mat-menu>
-      <button mat-button class="version" [matMenuTriggerFor]="versionMenu">
+      <button mat-button class="version" [matMenuTriggerFor]="versionMenu" matTooltip="More Infos" i18n-matTooltip>
         <mat-icon matListItemIcon aria-hidden="true" fontIcon="arrow_drop_down"></mat-icon>
         <span>
           v{{ version }}

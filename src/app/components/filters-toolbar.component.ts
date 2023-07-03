@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColumnKey } from '@app/types/data';
 import { Filter, FilterField } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters-chips.component';
@@ -15,7 +16,7 @@ import { FiltersDialogComponent } from '@components/filters-dialog.component';
   <app-filters-chips *ngIf="showFilters()" [filters]="filters" [filtersFields]="filtersFields" [columnsLabels]="columnsLabels">
     </app-filters-chips>
 
-    <button mat-button (click)="openFiltersDialog()">
+    <button mat-button (click)="openFiltersDialog()" matTooltip="Add or Remove Filters" i18n-matTooltip>
       <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
       <span i18n="User will be able the create or delete filters">Manage filters</span>
     </button>
@@ -41,6 +42,7 @@ app-filters-chips + button {
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatTooltipModule,
   ]
 })
 export class FiltersToolbarComponent<T extends object> {
