@@ -7,8 +7,9 @@ import { ApplicationCardComponent } from '../../ui/application-card/application-
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import {
   ApplicationRaw,
-  ListApplicationsRequest,
+  ApplicationRawField,
   ListApplicationsResponse,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 @Component({
@@ -70,10 +71,10 @@ export class ApplicationsListComponent {
       page: this._currentPage,
       pageSize: this._pageSize,
       orderBy: [
-        ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_NAME,
-        ListApplicationsRequest.OrderByField.ORDER_BY_FIELD_VERSION,
+        ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
+        ApplicationRawField.APPLICATION_RAW_FIELD_VERSION,
       ],
-      order: ListApplicationsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+      order: SortDirection.SORT_DIRECTION_ASC,
       filter: {
         name: '',
         version: '',

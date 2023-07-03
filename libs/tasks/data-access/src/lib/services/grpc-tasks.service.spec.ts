@@ -9,6 +9,8 @@ import {
 } from '@clr/angular';
 import {
   ListTasksRequest,
+  SortDirection,
+  TaskSummaryField,
   TasksClient,
 } from '@aneoconsultingfr/armonik.api.angular';
 
@@ -40,7 +42,7 @@ describe('GrpcTasksService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
       order: 1,
       filter: {} as ListTasksRequest.Filter,
     });
@@ -53,8 +55,7 @@ describe('GrpcTasksService', () => {
         size: 50,
       },
       sort: {
-        by: ListTasksRequest.OrderByField
-          .ORDER_BY_FIELD_STARTED_AT as unknown as ClrDatagridComparatorInterface<number>,
+        by: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -68,7 +69,7 @@ describe('GrpcTasksService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
+      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
       order: 2,
       filter: {
         sessionId: 'Some test sessionId',
@@ -81,8 +82,8 @@ describe('GrpcTasksService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+        order: SortDirection.SORT_DIRECTION_ASC,
         filter: {} as ListTasksRequest.Filter,
       },
       10000
@@ -109,8 +110,8 @@ describe('GrpcTasksService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
-        order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+        order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           sessionId: 'Some test sessionId',
         } as ListTasksRequest.Filter,
@@ -121,7 +122,7 @@ describe('GrpcTasksService', () => {
       page: 2,
       pageSize: 50,
       interval: 30000,
-      orderBy: 5,
+      orderBy: 4,
       order: 2,
       sessionId: 'Some test sessionId',
       createdAfter: undefined,
@@ -138,8 +139,8 @@ describe('GrpcTasksService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-      order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
+      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+      order: SortDirection.SORT_DIRECTION_ASC,
       filter: {} as ListTasksRequest.Filter,
     });
     expect(result).toEqual(
@@ -147,8 +148,11 @@ describe('GrpcTasksService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-          field: ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-          direction: ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC,
+          field: {
+            taskOptionField: null as any,
+            taskSummaryField: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+          },
+          direction: SortDirection.SORT_DIRECTION_ASC,
         },
         filter: {
           sessionId: '',
@@ -162,8 +166,8 @@ describe('GrpcTasksService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
-      order: ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
+      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+      order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         sessionId: 'Some test sessionId',
       } as ListTasksRequest.Filter,
@@ -173,8 +177,11 @@ describe('GrpcTasksService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          field: ListTasksRequest.OrderByField.ORDER_BY_FIELD_STARTED_AT,
-          direction: ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          field: {
+            taskOptionField: null as any,
+            taskSummaryField: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+          },
+          direction: SortDirection.SORT_DIRECTION_DESC,
         },
         filter: {
           sessionId: 'Some test sessionId',

@@ -5,7 +5,9 @@ import {
   GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
+  SessionRawField,
   SessionsClient,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -29,8 +31,8 @@ export class GrpcSessionsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      ListSessionsRequest.OrderByField,
-      ListSessionsRequest.OrderDirection
+      SessionRawField,
+      SortDirection
     >(state);
 
     const filter =
@@ -41,8 +43,7 @@ export class GrpcSessionsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        orderBy ?? ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      orderBy: orderBy ?? SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -57,13 +58,10 @@ export class GrpcSessionsService extends BaseGrpcService {
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
-        orderBy !== ListSessionsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+        orderBy !== SessionRawField.SESSION_RAW_FIELD_CREATED_AT
           ? orderBy
           : undefined,
-      order:
-        order !== ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       sessionId: filter?.sessionId,
       status: filter?.status,
       createdBefore: this._grpcParamsService.getTimeStampSeconds(
@@ -92,7 +90,9 @@ export class GrpcSessionsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        field: orderBy,
+        field: {
+          sessionRawField: orderBy,
+        },
         direction: order,
       },
       filter,

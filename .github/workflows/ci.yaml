@@ -63,25 +63,26 @@ jobs:
           main-branch-name: main
 
       - name: Run Unit Tests
-        run: nr ng affected --target=test --parallel=3 --code-coverage
+        # run: nr ng affected --target=test --parallel=3 --code-coverage
+        run: nr ng affected --target=test --parallel=3
 
-      - name: Coverage Report (App)
-        # Can't publish on push on main
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: romeovs/lcov-reporter-action@dda1c9b1fa1622b225e9acd87a248751dbcc6ada # v0.3.1
-        with:
-          title: App - Coverage
-          delete-old-comments: true
-          lcov-file: ./coverage/apps/app/lcov.info
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Coverage Report (App)
+      #   # Can't publish on push on main
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   uses: romeovs/lcov-reporter-action@dda1c9b1fa1622b225e9acd87a248751dbcc6ada # v0.3.1
+      #   with:
+      #     title: App - Coverage
+      #     delete-old-comments: true
+      #     lcov-file: ./coverage/apps/app/lcov.info
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Artifact (App)
-        # Store report created on main
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
-        with:
-          name: coverage-apps-app
-          path: ./coverage/apps/app/
+      # - name: Upload Artifact (App)
+      #   # Store report created on main
+      #   if: ${{ github.event_name != 'pull_request' }}
+      #   uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+      #   with:
+      #     name: coverage-apps-app
+      #     path: ./coverage/apps/app/
 
   # e2e-tests:
   #   needs: validate-code

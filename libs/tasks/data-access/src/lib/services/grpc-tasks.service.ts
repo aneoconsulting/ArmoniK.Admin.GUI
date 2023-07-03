@@ -8,6 +8,8 @@ import {
   CountTasksByStatusRequest,
   CountTasksByStatusResponse,
   TasksClient,
+  SortDirection,
+  TaskSummaryField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -33,8 +35,8 @@ export class GrpcTasksService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      ListTasksRequest.OrderByField,
-      ListTasksRequest.OrderDirection
+      TaskSummaryField,
+      SortDirection
     >(state);
 
     const filter =
@@ -45,8 +47,7 @@ export class GrpcTasksService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        orderBy ?? ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      orderBy: orderBy ?? TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -56,18 +57,16 @@ export class GrpcTasksService extends BaseGrpcService {
     { page, pageSize, orderBy, order, filter }: GrpcListTasksParams,
     refreshInterval: number
   ) {
+    console.log('createListRequestQueryParams', orderBy);
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
-        orderBy !== ListTasksRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+        orderBy !== TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT
           ? orderBy
           : undefined,
-      order:
-        order !== ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       sessionId: filter?.sessionId,
       status: filter?.status,
       createdBefore: this._grpcParamsService.getTimeStampSeconds(
@@ -98,15 +97,29 @@ export class GrpcTasksService extends BaseGrpcService {
     order,
     filter,
   }: GrpcListTasksParams): ListTasksRequest {
-    return new ListTasksRequest({
+    const options = new ListTasksRequest({
       page,
       pageSize,
       sort: {
-        field: orderBy,
+        field: {
+          /*
+           * The any cast is required because the generated code does not
+           * correctly handle the union type of TaskOptionField and
+           * TaskSummaryField. Given the generated code, we must provide
+           * a value for the TaskOptionField which will override the
+           * TaskSummaryField value.
+           *
+           * This is a bug in the generated code.
+           */
+          taskOptionField: null as any,
+          taskSummaryField: orderBy,
+        },
         direction: order,
       },
       filter,
     });
+
+    return options;
   }
 
   public list$(options: ListTasksRequest): Observable<ListTasksResponse> {

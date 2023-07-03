@@ -9,10 +9,12 @@ import {
 } from '@clr/angular';
 import {
   ListPartitionsRequest,
+  PartitionRawField,
   PartitionsClient,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 
-describe('GrpcTasksService', () => {
+describe('GrpcPartitionsService', () => {
   let service: GrpcPartitionsService;
 
   beforeEach(() => {
@@ -40,7 +42,7 @@ describe('GrpcTasksService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
+      orderBy: PartitionRawField.PARTITION_RAW_FIELD_ID,
       order: 1,
       filter: {} as ListPartitionsRequest.Filter,
     });
@@ -53,8 +55,7 @@ describe('GrpcTasksService', () => {
         size: 50,
       },
       sort: {
-        by: ListPartitionsRequest.OrderByField
-          .ORDER_BY_FIELD_POD_MAX as unknown as ClrDatagridComparatorInterface<number>,
+        by: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -68,7 +69,7 @@ describe('GrpcTasksService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
+      orderBy: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
       order: 2,
       filter: {
         id: 'Some test id',
@@ -81,8 +82,8 @@ describe('GrpcTasksService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-        order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        orderBy: PartitionRawField.PARTITION_RAW_FIELD_ID,
+        order: SortDirection.SORT_DIRECTION_ASC,
         filter: {} as ListPartitionsRequest.Filter,
       },
       10000
@@ -101,8 +102,8 @@ describe('GrpcTasksService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
-        order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        orderBy: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+        order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           id: 'Some test id',
         } as ListPartitionsRequest.Filter,
@@ -123,8 +124,8 @@ describe('GrpcTasksService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-      order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+      orderBy: PartitionRawField.PARTITION_RAW_FIELD_ID,
+      order: SortDirection.SORT_DIRECTION_ASC,
       filter: {} as ListPartitionsRequest.Filter,
     });
     expect(result).toEqual(
@@ -132,8 +133,10 @@ describe('GrpcTasksService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-          field: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
-          direction: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+          field: {
+            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_ID,
+          },
+          direction: SortDirection.SORT_DIRECTION_ASC,
         },
         filter: {
           id: '',
@@ -151,8 +154,8 @@ describe('GrpcTasksService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
-      order: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+      orderBy: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+      order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         id: 'Some test id',
       } as ListPartitionsRequest.Filter,
@@ -162,8 +165,10 @@ describe('GrpcTasksService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          field: ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_POD_MAX,
-          direction: ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          field: {
+            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+          },
+          direction: SortDirection.SORT_DIRECTION_DESC,
         },
         filter: {
           id: 'Some test id',

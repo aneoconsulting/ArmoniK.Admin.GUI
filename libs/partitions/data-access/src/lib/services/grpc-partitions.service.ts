@@ -3,7 +3,9 @@ import {
   GetPartitionResponse,
   ListPartitionsRequest,
   ListPartitionsResponse,
+  PartitionRawField,
   PartitionsClient,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -29,8 +31,8 @@ export class GrpcPartitionsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      ListPartitionsRequest.OrderByField,
-      ListPartitionsRequest.OrderDirection
+      PartitionRawField,
+      SortDirection
     >(state);
 
     const filter =
@@ -42,7 +44,7 @@ export class GrpcPartitionsService extends BaseGrpcService {
       page,
       pageSize,
       order,
-      orderBy: orderBy ?? ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID,
+      orderBy: orderBy ?? PartitionRawField.PARTITION_RAW_FIELD_ID,
       filter,
     };
   }
@@ -56,13 +58,10 @@ export class GrpcPartitionsService extends BaseGrpcService {
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
-        orderBy !== ListPartitionsRequest.OrderByField.ORDER_BY_FIELD_ID
+        orderBy !== PartitionRawField.PARTITION_RAW_FIELD_ID
           ? orderBy
           : undefined,
-      order:
-        order !== ListPartitionsRequest.OrderDirection.ORDER_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       ...filter,
     };
   }
@@ -78,7 +77,9 @@ export class GrpcPartitionsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        field: orderBy,
+        field: {
+          partitionRawField: orderBy,
+        },
         direction: order,
       },
       filter,

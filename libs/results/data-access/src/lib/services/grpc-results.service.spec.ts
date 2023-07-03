@@ -9,7 +9,9 @@ import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcResultsService } from './grpc-results.service';
 import {
   ListResultsRequest,
+  ResultRawField,
   ResultsClient,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcResultsService', () => {
@@ -40,7 +42,7 @@ describe('GrpcResultsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      orderBy: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
       order: 1,
       filter: {} as ListResultsRequest.Filter,
     });
@@ -53,8 +55,7 @@ describe('GrpcResultsService', () => {
         size: 50,
       },
       sort: {
-        by: ListResultsRequest.OrderByField
-          .ORDER_BY_FIELD_SESSION_ID as unknown as ClrDatagridComparatorInterface<number>,
+        by: ResultRawField.RESULT_RAW_FIELD_RESULT_ID as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -68,7 +69,7 @@ describe('GrpcResultsService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
+      orderBy: ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
       order: 2,
       filter: {
         sessionId: 'Some test sessionId',
@@ -81,8 +82,8 @@ describe('GrpcResultsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-        order: ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+        orderBy: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+        order: SortDirection.SORT_DIRECTION_ASC,
         filter: {} as ListResultsRequest.Filter,
       },
       10000
@@ -107,8 +108,8 @@ describe('GrpcResultsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
-        order: ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+        orderBy: ResultRawField.RESULT_RAW_FIELD_SESSION_ID,
+        order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           sessionId: 'Some test sessionId',
         } as ListResultsRequest.Filter,
@@ -134,8 +135,8 @@ describe('GrpcResultsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-      order: ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+      orderBy: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+      order: SortDirection.SORT_DIRECTION_ASC,
       filter: {} as ListResultsRequest.Filter,
     });
     expect(result).toEqual(
@@ -143,14 +144,17 @@ describe('GrpcResultsService', () => {
         page: 0,
         pageSize: 10,
         sort: {
-          field: ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
-          direction: ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC,
+          field: {
+            resultRawField: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+          },
+          direction: SortDirection.SORT_DIRECTION_ASC,
         },
         filter: {
           name: '',
           ownerTaskId: '',
           sessionId: '',
           status: 0,
+          resultId: '',
         },
       })
     );
@@ -160,8 +164,8 @@ describe('GrpcResultsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
-      order: ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+      orderBy: ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
+      order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         sessionId: 'Some test sessionId',
       } as ListResultsRequest.Filter,
@@ -171,14 +175,17 @@ describe('GrpcResultsService', () => {
         page: 2,
         pageSize: 50,
         sort: {
-          field: ListResultsRequest.OrderByField.ORDER_BY_FIELD_SESSION_ID,
-          direction: ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC,
+          field: {
+            resultRawField: ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
+          },
+          direction: SortDirection.SORT_DIRECTION_DESC,
         },
         filter: {
           name: '',
           ownerTaskId: '',
           sessionId: 'Some test sessionId',
           status: 0,
+          resultId: '',
         },
       })
     );

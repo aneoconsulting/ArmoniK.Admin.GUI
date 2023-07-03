@@ -31,16 +31,16 @@
     </clr-dg-action-bar>
 
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_TASK_ID.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_TASK_ID)"
+      [clrDgField]="OrderByField.TASK_SUMMARY_FIELD_TASK_ID.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.TASK_SUMMARY_FIELD_TASK_ID)"
     >
       <span i18n> Task ID </span>
       <clr-dg-filter [hidden]="true"> </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_SESSION_ID.toString()"
+      [clrDgField]="OrderByField.TASK_SUMMARY_FIELD_SESSION_ID.toString()"
       [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_SESSION_ID)
+        defaultSortOrder(OrderByField.TASK_SUMMARY_FIELD_SESSION_ID)
       "
     >
       <span i18n> Session ID </span>
@@ -54,8 +54,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_STATUS.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_STATUS)"
+      [clrDgField]="OrderByField.TASK_SUMMARY_FIELD_STATUS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.TASK_SUMMARY_FIELD_STATUS)"
     >
       <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilter">
@@ -69,9 +69,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_CREATED_AT.toString()"
+      [clrDgField]="OrderByField.TASK_SUMMARY_FIELD_CREATED_AT.toString()"
       [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_CREATED_AT)
+        defaultSortOrder(OrderByField.TASK_SUMMARY_FIELD_CREATED_AT)
       "
     >
       <span i18n> Created at </span>
@@ -86,9 +86,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_STARTED_AT.toString()"
+      [clrDgField]="OrderByField.TASK_SUMMARY_FIELD_STARTED_AT.toString()"
       [clrDgSortOrder]="
-        defaultSortOrder(OrderByField.ORDER_BY_FIELD_STARTED_AT)
+        defaultSortOrder(OrderByField.TASK_SUMMARY_FIELD_STARTED_AT)
       "
     >
       <span i18n> Started at </span>
@@ -103,8 +103,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.ORDER_BY_FIELD_ENDED_AT.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.ORDER_BY_FIELD_ENDED_AT)"
+      [clrDgField]="OrderByField.TASK_SUMMARY_FIELD_ENDED_AT.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.TASK_SUMMARY_FIELD_ENDED_AT)"
     >
       <span i18n> Ended at </span>
       <clr-dg-filter [clrDgFilter]="endedDateFilter">
