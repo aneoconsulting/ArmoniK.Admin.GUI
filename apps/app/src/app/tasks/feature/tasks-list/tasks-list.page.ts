@@ -22,10 +22,11 @@ import { AuthorizationService } from '../../../shared/data-access';
 import {
   CancelTasksResponse,
   GetTaskResponse,
-  ListTasksRequest,
   ListTasksResponse,
+  SortDirection,
   TaskStatus,
   TaskSummary,
+  TaskSummaryField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import {
   ComboBoxFilterComponent,
@@ -194,8 +195,8 @@ export class TasksListComponent implements OnInit {
     );
   }
 
-  public get OrderByField(): typeof ListTasksRequest.OrderByField {
-    return ListTasksRequest.OrderByField;
+  public get OrderByField(): typeof TaskSummaryField {
+    return TaskSummaryField;
   }
 
   public get TaskStatusEnum(): typeof TaskStatus {
@@ -265,9 +266,7 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(
-    field: ListTasksRequest.OrderByField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: TaskSummaryField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );
@@ -276,9 +275,9 @@ export class TasksListComponent implements OnInit {
 
     const order =
       Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
-      ListTasksRequest.OrderDirection.ORDER_DIRECTION_ASC;
+      SortDirection.SORT_DIRECTION_ASC;
 
-    if (order === ListTasksRequest.OrderDirection.ORDER_DIRECTION_DESC)
+    if (order === SortDirection.SORT_DIRECTION_DESC)
       return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;

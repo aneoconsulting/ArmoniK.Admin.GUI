@@ -2,7 +2,9 @@ import {
   GetSessionResponse,
   ListSessionsRequest,
   ListSessionsResponse,
+  SessionRawField,
   SessionStatus,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -172,7 +174,7 @@ export class SessionsListComponent {
   }
 
   public get OrderByField() {
-    return ListSessionsRequest.OrderByField;
+    return SessionRawField;
   }
 
   public get SessionStatusEnum() {
@@ -205,9 +207,7 @@ export class SessionsListComponent {
   }
 
   // TODO: Move to a service (once https://github.com/aneoconsulting/ArmoniK.Api/issues/87 is resolved)
-  public defaultSortOrder(
-    field: ListSessionsRequest.OrderByField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: SessionRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );
@@ -216,9 +216,9 @@ export class SessionsListComponent {
 
     const order =
       Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
-      ListSessionsRequest.OrderDirection.ORDER_DIRECTION_ASC;
+      SortDirection.SORT_DIRECTION_ASC;
 
-    if (order === ListSessionsRequest.OrderDirection.ORDER_DIRECTION_DESC)
+    if (order === SortDirection.SORT_DIRECTION_DESC)
       return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;

@@ -3,6 +3,7 @@ import {
   ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
+  PartitionRawField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -156,7 +157,7 @@ export class PartitionsListComponent {
   }
 
   public get OrderByField() {
-    return ListPartitionsRequest.OrderByField;
+    return PartitionRawField;
   }
 
   public get intervals(): number[] {
@@ -225,9 +226,7 @@ export class PartitionsListComponent {
     return partition.id ?? '';
   }
 
-  public defaultSortOrder(
-    field: ListPartitionsRequest.OrderByField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: PartitionRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

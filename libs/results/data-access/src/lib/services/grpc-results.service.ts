@@ -1,7 +1,9 @@
 import {
   ListResultsRequest,
   ListResultsResponse,
+  ResultRawField,
   ResultsClient,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -27,8 +29,8 @@ export class GrpcResultsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      ListResultsRequest.OrderByField,
-      ListResultsRequest.OrderDirection
+      ResultRawField,
+      SortDirection
     >(state);
 
     const filter =
@@ -39,8 +41,7 @@ export class GrpcResultsService extends BaseGrpcService {
     return {
       page,
       pageSize,
-      orderBy:
-        orderBy ?? ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT,
+      orderBy: orderBy ?? ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -55,13 +56,10 @@ export class GrpcResultsService extends BaseGrpcService {
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
-        orderBy !== ListResultsRequest.OrderByField.ORDER_BY_FIELD_CREATED_AT
+        orderBy !== ResultRawField.RESULT_RAW_FIELD_CREATED_AT
           ? orderBy
           : undefined,
-      order:
-        order !== ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC
-          ? order
-          : undefined,
+      order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
       name: filter?.name,
       ownerTaskId: filter?.ownerTaskId,
       sessionId: filter?.sessionId,
@@ -86,7 +84,9 @@ export class GrpcResultsService extends BaseGrpcService {
       page,
       pageSize,
       sort: {
-        field: orderBy,
+        field: {
+          resultRawField: orderBy,
+        },
         direction: order,
       },
       filter,

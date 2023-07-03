@@ -1,8 +1,9 @@
 import {
-  ListResultsRequest,
   ListResultsResponse,
   ResultRaw,
+  ResultRawField,
   ResultStatus,
+  SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -151,7 +152,7 @@ export class ResultsListComponent implements OnInit {
   }
 
   public get OrderByField() {
-    return ListResultsRequest.OrderByField;
+    return ResultRawField;
   }
 
   public get ResultsStatusEnum() {
@@ -191,9 +192,7 @@ export class ResultsListComponent implements OnInit {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(
-    field: ListResultsRequest.OrderByField
-  ): ClrDatagridSortOrder {
+  public defaultSortOrder(field: ResultRawField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );
@@ -202,9 +201,9 @@ export class ResultsListComponent implements OnInit {
 
     const order =
       Number(this._activatedRoute.snapshot.queryParamMap.get('order')) ||
-      ListResultsRequest.OrderDirection.ORDER_DIRECTION_ASC;
+      SortDirection.SORT_DIRECTION_ASC;
 
-    if (order === ListResultsRequest.OrderDirection.ORDER_DIRECTION_DESC)
+    if (order === SortDirection.SORT_DIRECTION_DESC)
       return ClrDatagridSortOrder.DESC;
 
     return ClrDatagridSortOrder.ASC;
