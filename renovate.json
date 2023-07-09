@@ -26,6 +26,16 @@
       ]
     },
     {
+      "groupName": "npm angular packages",
+      "groupSlug": "npm-angular",
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackagePatterns": [
+        "@angular/*"
+      ]
+    },
+    {
       "groupName": "docker images",
       "groupSlug": "docker",
       "matchDatasources": [
