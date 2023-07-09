@@ -16,6 +16,16 @@
       ]
     },
     {
+      "groupName": "npm aneoconsultingfr packages",
+      "groupSlug": "npm-aneoconsultingfr",
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackagePatterns": [
+        "@aneoconsultingfr/*"
+      ]
+    },
+    {
       "groupName": "docker images",
       "groupSlug": "docker",
       "matchDatasources": [
