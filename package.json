@@ -1,7 +1,7 @@
 {
   "name": "armonik-admin-gui",
   "version": "0.17.0",
-  "packageManager": "pnpm@8.6.5",
+  "packageManager": "pnpm@8.6.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -49,10 +49,10 @@
     "@types/google-protobuf": "^3.15.6",
     "@types/jasmine": "~4.3.5",
     "@types/luxon": "^3.3.0",
-    "@typescript-eslint/eslint-plugin": "5.60.0",
-    "@typescript-eslint/parser": "5.60.0",
+    "@typescript-eslint/eslint-plugin": "5.61.0",
+    "@typescript-eslint/parser": "5.61.0",
     "bumpp": "^9.1.1",
-    "eslint": "^8.43.0",
+    "eslint": "^8.44.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "jasmine-core": "~4.6.0",
