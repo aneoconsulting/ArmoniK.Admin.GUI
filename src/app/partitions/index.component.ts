@@ -38,7 +38,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
   selector: 'app-partitions-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partitions</span>
 </app-page-header>
 
@@ -94,11 +94,11 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       <ng-container *ngIf="isActionsColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon>more_vert</mat-icon>
+            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <a mat-menu-item [routerLink]="['/partitions', element.id]">
-              <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
               <span i18n>See partition</span>
             </a>
           </mat-menu>
@@ -159,6 +159,7 @@ app-table-actions-toolbar {
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<PartitionRaw> {
   #notificationService = inject(NotificationService);
+  #iconsService = inject(IconsService);
 
   displayedColumns: PartitionRawColumnKey[] = [];
   availableColumns: PartitionRawColumnKey[] = [];
@@ -286,8 +287,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     return this._partitionsIndexService.isSimpleColumn(column);
   }
 
-  getIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
+  getIcon(name: string): string {
+    return this._iconsService.getIcon(name);
+  }
+
+  getPageIcon(page: Page): string {
+    return this._iconsService.getPageIcon(page);
   }
 
   onRefresh() {

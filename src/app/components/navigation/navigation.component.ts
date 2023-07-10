@@ -43,7 +43,7 @@ import pkg from '../../../../package.json';
       </div>
       <div class="spacer"></div>
        <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
-        <mat-icon matListItemIcon aria-hidden="true" fontIcon="arrow_drop_down"></mat-icon>
+        <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
         <span i18n="Button to view external services">
           External Services
         </span>
@@ -57,35 +57,35 @@ import pkg from '../../../../package.json';
         </ng-container>
         <mat-divider *ngIf="externalServices.length"></mat-divider>
         <button mat-menu-item (click)="manageExternalServices()">
-          <mat-icon matListItemIcon aria-hidden="true" fontIcon="tune"></mat-icon>
+          <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
           <span i18n="Button">Manage service</span>
         </button>
       </mat-menu>
       <button mat-button class="version" [matMenuTriggerFor]="versionMenu" matTooltip="More Infos" i18n-matTooltip>
-        <mat-icon matListItemIcon aria-hidden="true" fontIcon="arrow_drop_down"></mat-icon>
+        <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
         <span>
           v{{ version }}
         </span>
       </button>
       <mat-menu #versionMenu="matMenu">
         <a mat-menu-item [href]="'https://github.com/esoubiran-aneo/armonik-admin-gui/releases/v' + version" target="_blank" rel="noopener noreferrer">
-          <mat-icon matListItemIcon aria-hidden="true" fontIcon="update"></mat-icon>
+          <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('update')"></mat-icon>
           <span i18n="Button">Changelog</span>
         </a>
         <a mat-menu-item href="https://esoubiran-aneo.github.io/armonik-admin-gui" target="_blank" rel="noopener">
-          <mat-icon matListItemIcon aria-hidden="true" fontIcon="help_outline"></mat-icon>
+          <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('help')"></mat-icon>
           <span i18n="Button">Documentation</span>
         </a>
         <!-- Api does not prefix tag with a v -->
         <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Api/releases/' + apiVersion">
-          <mat-icon matListItemIcon aria-hidden="true" fontIcon="api"></mat-icon>
+          <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('api')"></mat-icon>
           <span>
             <span i18n="Button">API</span> - v{{ apiVersion }}
           </span>
         </a>
         <!-- Core does not prefix tag with a v -->
         <a mat-menu-item target="_blank" [href]="'https://github.com/aneoconsulting/ArmoniK.Core/releases/' + coreVersion">
-            <mat-icon matSuffix aria-hidden="true" fontIcon="hub"></mat-icon>
+            <mat-icon matSuffix aria-hidden="true" [fontIcon]="getIcon('hub')"></mat-icon>
           <span>
             <span i18n="Button">Core</span> - v{{ coreVersion }}
           </span>
@@ -215,8 +215,8 @@ export class NavigationComponent implements OnInit{
     });
   }
 
-  getIcon(name: Page) {
-    return this.#iconsService.getPageIcon(name);
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   getSidebar() {

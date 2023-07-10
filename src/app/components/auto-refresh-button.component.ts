@@ -1,14 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.component';
+import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-auto-refresh-button',
   template: `
 <button mat-stroked-button (click)="openAutoRefreshDialog()">
-  <mat-icon aria-hidden="true" fontIcon="autorenew"></mat-icon>
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon('auto-refresh')"></mat-icon>
   <span i18n="Open a dialog on click">Set up Auto Refresh</span>
 </button>
   `,
@@ -24,11 +25,17 @@ import { AutoRefreshDialogComponent } from '@components/auto-refresh-dialog.comp
   ]
 })
 export class AutoRefreshButtonComponent {
+  #iconsService = inject(IconsService);
+
   @Input({ required: true }) intervalValue: number;
 
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private _dialog: MatDialog) { }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
+  }
 
   openAutoRefreshDialog(): void {
     // Get value from the storage

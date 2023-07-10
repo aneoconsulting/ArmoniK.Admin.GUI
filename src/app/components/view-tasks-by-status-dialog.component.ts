@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-view-tasks-by-status-dialog',
@@ -24,7 +25,7 @@ import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialo
   <div cdkDropList (cdkDropListDropped)="drop($event)" class="statuses">
     <div cdkDrag class="status" *ngFor="let count of statusesCounts; let index = index">
       <div class="status-drag">
-        <mat-icon cdkDragHandle aria-hidden="true" i18n-aria-label aria-label="Drag status" fontIcon="drag_handle"></mat-icon>
+        <mat-icon cdkDragHandle aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
       </div>
 
       <mat-form-field appearance="outline"  subscriptSizing="dynamic">
@@ -42,16 +43,16 @@ import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialo
       </mat-form-field>
 
       <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-        <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onClear(count)">
-          <mat-icon aria-hidden="true" fontIcon="clear"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('clear')"></mat-icon>
           <span i18n>Clear</span>
         </button>
         <button mat-menu-item (click)="onRemove(index)" [disabled]="statusesCounts?.length === 1 && index === 0">
-          <mat-icon aria-hidden="true" fontIcon="delete"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('remove')"></mat-icon>
           <span i18n>Remove</span>
         </button>
       </mat-menu>
@@ -59,7 +60,7 @@ import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialo
   </div>
 
   <button class="add-status" mat-button (click)="onAdd()">
-    <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
     <span i18n> Add a status </span>
   </button>
 </mat-dialog-content>
@@ -127,6 +128,8 @@ import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialo
   ],
 })
 export class ViewTasksByStatusDialogComponent implements OnInit {
+  readonly #iconsService = inject(IconsService);
+
   readonly #defaultStatus = TaskStatus.TASK_STATUS_UNSPECIFIED;
   readonly #defaultColor = '#000000';
 
@@ -141,6 +144,10 @@ export class ViewTasksByStatusDialogComponent implements OnInit {
     this.statusesCounts = [
       ...this.data.statusesCounts.map(({ status, color }) => ({ status, color })),
     ];
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   tasksStatuses(): TaskStatus[] {

@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExternalService, ManageExternalServicesDialogData } from '@app/types/external-service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
+import { IconsService } from '@services/icons.service';
 import { AddExternalServiceDialogComponent } from './add-external-service-dialog.component';
 import { EditExternalServiceDialogComponent } from './edit-external-service-dialog.component';
 
@@ -22,7 +23,7 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <button mat-stroked-button (click)="addExternalService()">
-          <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
           <span i18n="Add an external service">Add a service</span>
         </button>
       </app-actions-toolbar-group>
@@ -31,17 +32,17 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
 
   <ul class="external-services" cdkDropList (cdkDropListDropped)="drop($event)">
     <li *ngFor="let externalService of externalServices; trackBy:trackByService" cdkDrag>
-      <mat-icon aria-hidden="true" fontIcon="drag_indicator" cdkDragHandle></mat-icon>
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')" cdkDragHandle></mat-icon>
       <a mat-flat-button [href]="externalService.url" target="_blank" rel="noopener noreferrer" [matTooltip]="externalService.url" class="name">
           <mat-icon *ngIf="externalService.icon" aria-hidden="true" [fontIcon]="externalService.icon"></mat-icon>
           <span>{{ externalService.name }}</span>
       </a>
       <div class="actions">
         <button mat-icon-button (click)="editExternalService(externalService)" [attr.aria-label]="'Edit the external service ' + externalService.name" [matTooltip]="'Edit ' + externalService.name">
-          <mat-icon fontIcon="edit"></mat-icon>
+          <mat-icon [fontIcon]="getIcon('edit')"></mat-icon>
         </button>
         <button mat-icon-button color="warn" (click)="deleteExternalService(externalService)" [attr.aria-label]="'Delete the external service ' + externalService.name" [matTooltip]="'Delete ' + externalService.name">
-          <mat-icon fontIcon="delete"></mat-icon>
+          <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
         </button>
       </div>
     </li>
@@ -140,6 +141,7 @@ export class ManageExternalServicesDialogComponent implements OnInit {
   externalServices: ExternalService[] = [];
 
   #dialog = inject(MatDialog);
+  #iconsService = inject(IconsService);
 
   constructor(
     public dialogRef: MatDialogRef<ManageExternalServicesDialogComponent>,
@@ -150,6 +152,10 @@ export class ManageExternalServicesDialogComponent implements OnInit {
     this.externalServices = [
       ...this.data.externalServices.map((externalService) => ({ ...externalService })),
     ];
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   addExternalService(): void {

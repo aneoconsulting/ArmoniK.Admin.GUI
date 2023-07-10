@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { ColumnKey } from '@app/types/data';
 import { Filter, FilterField } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters-chips.component';
 import { FiltersDialogComponent } from '@components/filters-dialog.component';
+import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-filters-toolbar',
@@ -17,7 +18,7 @@ import { FiltersDialogComponent } from '@components/filters-dialog.component';
     </app-filters-chips>
 
     <button mat-button (click)="openFiltersDialog()" matTooltip="Add or Remove Filters" i18n-matTooltip>
-      <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
       <span i18n="User will be able the create or delete filters">Manage filters</span>
     </button>
 </div>
@@ -46,6 +47,8 @@ app-filters-chips + button {
   ]
 })
 export class FiltersToolbarComponent<T extends object> {
+  #iconsService = inject(IconsService);
+
   @Input({ required: true }) filters: Filter<T>[] = [];
   @Input({ required: true }) filtersFields: FilterField<T>[] = [];
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T>, string> | null = null;
@@ -55,6 +58,10 @@ export class FiltersToolbarComponent<T extends object> {
   constructor(
     private _dialog: MatDialog
   ) {}
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
+  }
 
   showFilters(): boolean {
     return  this.filters.length > 1 || (this.filters[0]?.value !== null && this.filters.length === 1);

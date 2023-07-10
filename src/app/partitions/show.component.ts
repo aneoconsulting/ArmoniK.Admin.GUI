@@ -3,7 +3,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
+import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
+import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
@@ -14,7 +16,7 @@ import { PartitionRaw } from './types';
   selector: 'app-partitions-show',
   template: `
 <app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="donut_small"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>
   `,
@@ -36,6 +38,7 @@ export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, Af
   sharableURL = '';
   data: PartitionRaw | null = null;
 
+  #iconsService = inject(IconsService);
   #shareUrlService = inject(ShareUrlService);
 
   constructor(
@@ -58,5 +61,9 @@ export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, Af
       })
     )
       .subscribe((data) => this.data = data);
+  }
+
+  getPageIcon(name: Page): string {
+    return this.#iconsService.getPageIcon(name);
   }
 }

@@ -15,7 +15,7 @@ import { PermissionGroup } from './types';
   selector: 'app-profile-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="account_circle"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('profile')"></mat-icon>
   <span>
     <span i18n="Page title"> Profile from </span>
     <span> {{ user.username }} </span>
@@ -53,7 +53,7 @@ import { PermissionGroup } from './types';
       <ng-container *ngFor="let group of groupedPermissions()">
         <div class="permission">
           <h3>
-            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(group.name)"></mat-icon>
+            <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon(group.name)"></mat-icon>
             {{ group.name }}
           </h3>
           <ul>
@@ -144,7 +144,11 @@ export class IndexComponent implements OnInit {
   }
 
   getIcon(name: string) {
-    return this.#iconsService.getIcon(name) ?? this.#iconsService.getPageIcon(name as Page);
+    return this.#iconsService.getIcon(name);
+  }
+
+  getPageIcon(name: Page) {
+    return this.#iconsService.getPageIcon(name);
   }
 
   groupedPermissions(): PermissionGroup[] {

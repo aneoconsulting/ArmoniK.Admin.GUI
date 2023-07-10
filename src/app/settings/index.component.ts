@@ -9,10 +9,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
-import { Sidebar, SidebarItem, SidebarLinkName } from '@app/types/navigation';
+import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -23,7 +24,7 @@ import { StorageService } from '@services/storage.service';
   selector: 'app-settings-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon aria-hidden="true" fontIcon="settings"></mat-icon>
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon('settings')"></mat-icon>
   <span i18n="Page title"> Settings </span>
 </app-page-header>
 
@@ -57,12 +58,12 @@ import { StorageService } from '@services/storage.service';
       </mat-form-field>
 
       <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-        <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="onRemoveSidebarItem(index)">
-          <mat-icon aria-hidden="true" fontIcon="delete"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
           <span i18n>Remove</span>
         </button>
       </mat-menu>
@@ -70,7 +71,7 @@ import { StorageService } from '@services/storage.service';
   </ul>
 
   <button class="add-sidebar-item" mat-button (click)="onAddSidebarItem()">
-    <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
     <span i18n> Add a status </span>
   </button>
 
@@ -82,7 +83,7 @@ import { StorageService } from '@services/storage.service';
 </app-page-section>
 
 <app-page-section class="storage">
-  <app-page-section-header icon="storage">
+  <app-page-section-header [icon]="getIcon('storage')">
     <span i18n="Section title"> Storage </span>
   </app-page-section-header>
 
@@ -109,7 +110,7 @@ import { StorageService } from '@services/storage.service';
 </app-page-section>
 
 <app-page-section class="export">
-  <app-page-section-header icon="file_download">
+  <app-page-section-header [icon]="getIcon('download')">
     <span i18n="Section title"> Export your data </span>
   </app-page-section-header>
 
@@ -123,7 +124,7 @@ import { StorageService } from '@services/storage.service';
 </app-page-section>
 
 <app-page-section class="import">
-  <app-page-section-header icon="file_upload">
+  <app-page-section-header [icon]="getIcon('upload')">
     <span i18n="Section title"> Import your data </span>
   </app-page-section-header>
 
@@ -259,6 +260,7 @@ export class IndexComponent implements OnInit {
 
   sidebar: Sidebar[] = [];
 
+  #iconsService = inject(IconsService);
   #shareURLService = inject(ShareUrlService);
   #notificationService = inject(NotificationService);
   #navigationService = inject(NavigationService);
@@ -272,6 +274,10 @@ export class IndexComponent implements OnInit {
     this.keys = this.#sortKeys(this._storageService.keys);
 
     this.sidebar = this.#navigationService.restoreSidebar();
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   onResetSidebar(): void {

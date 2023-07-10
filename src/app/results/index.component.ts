@@ -41,7 +41,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
   selector: 'app-results-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
   <span i18n="Page title"> Results </span>
 </app-page-header>
 
@@ -97,11 +97,11 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFilter, Resu
       <ng-container *ngIf="isActionsColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon>more_vert</mat-icon>
+            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <a mat-menu-item [routerLink]="['/results', element.resultId]">
-              <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
               <span i18n> See results </span>
             </a>
           </mat-menu>
@@ -162,6 +162,7 @@ app-table-actions-toolbar {
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<ResultRaw> {
   #notificationService = inject(NotificationService);
+  #iconsService = inject(IconsService);
 
   displayedColumns: ResultRawColumnKey[] = [];
   availableColumns: ResultRawColumnKey[] = [];
@@ -189,7 +190,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
 
   constructor(
     private _resultsStatusesService: ResultsStatusesService,
-    private _iconsService: IconsService,
     private _shareURLService: ShareUrlService,
     private _resultsIndexService: ResultsIndexService,
     private _resultsGrpcService: ResultsGrpcService,
@@ -286,8 +286,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     return this._resultsStatusesService.statusToLabel(status);
   }
 
-  getIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
+  getPageIcon(name: Page): string {
+    return this.#iconsService.getPageIcon(name);
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   isActionsColumn(column: ResultRawColumnKey): boolean {

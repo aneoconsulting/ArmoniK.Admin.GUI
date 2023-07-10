@@ -3,7 +3,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
+import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
+import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UtilsService } from '@services/utils.service';
@@ -15,7 +17,7 @@ import { ResultRaw } from './types';
   selector: 'app-result-show',
   template: `
 <app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses">
-  <mat-icon matListItemIcon aria-hidden="true" fontIcon="workspaces"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
   `,
@@ -38,6 +40,7 @@ export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, After
   sharableURL = '';
   data: ResultRaw | null = null;
 
+  #iconsService = inject(IconsService);
   #shareURLService = inject(ShareUrlService);
   #resultsStatusesService = inject(ResultsStatusesService);
 
@@ -65,5 +68,9 @@ export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, After
 
   get statuses() {
     return this.#resultsStatusesService.statuses;
+  }
+
+  getPageIcon(page: Page): string {
+    return this.#iconsService.getPageIcon(page);
   }
 }

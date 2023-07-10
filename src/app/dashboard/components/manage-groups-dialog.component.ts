@@ -10,6 +10,7 @@ import { ManageGroupsDialogData, TasksStatusesGroup } from '@app/dashboard/types
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
+import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
 import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
@@ -25,7 +26,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <button mat-stroked-button (click)="openAddStatusGroupModal()">
-          <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
           <span i18n="Open a modal on click">Add a group</span>
         </button>
       </app-actions-toolbar-group>
@@ -40,11 +41,11 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
         </h3>
         <div class="group-header-actions">
           <button mat-icon-button (click)="openEditStatusGroupModal(group)">
-            <mat-icon  fontIcon="edit"></mat-icon>
+            <mat-icon  [fontIcon]="getIcon('edit')"></mat-icon>
             <span class="sr-only" i18n="Edit the group">Edit {{ group.name }}</span>
           </button>
           <button mat-icon-button (click)="onDelete(group)">
-            <mat-icon fontIcon="delete"></mat-icon>
+            <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
             <span class="sr-only" i18n="Delete the group">Delete {{ group.name }}</span>
           </button>
         </div>
@@ -54,7 +55,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
           [cdkDropListData]="group.statuses"
         >
         <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
-          <mat-icon aria-hidden="true" fontIcon="drag_indicator"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"></mat-icon>
           <span>{{ statusToLabel(status) }}</span>
         </li>
       </ul>
@@ -169,6 +170,7 @@ export class ManageGroupsDialogComponent implements OnInit {
   groups: TasksStatusesGroup[] = [];
 
   #dialog = inject(MatDialog);
+  #iconsServices = inject(IconsService);
   #dashboardIndexService = inject(DashboardIndexService);
   #tasksStatusesService = inject(TasksStatusesService);
 
@@ -185,6 +187,10 @@ export class ManageGroupsDialogComponent implements OnInit {
       };
     })
     ];
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsServices.getIcon(name);
   }
 
   statusToLabel(status: TaskStatus): string {

@@ -1,11 +1,12 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColumnKey } from '@app/types/data';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
+import { IconsService } from '@services/icons.service';
 import { ActionsToolbarGroupComponent } from './actions-toolbar-group.component';
 import { ActionsToolbarComponent } from './actions-toolbar.component';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
@@ -33,7 +34,7 @@ import { SpinnerComponent } from './spinner.component';
     </app-columns-button>
 
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
-      <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="onResetColumns()" i18n>Reset Columns</button>
@@ -62,6 +63,8 @@ import { SpinnerComponent } from './spinner.component';
   ]
 })
 export class TableActionsToolbarComponent<T extends object, O extends object> {
+  #iconsService = inject(IconsService);
+
   @Input({ required: true }) loading = false;
   @Input({ required: true }) refreshTooltip = '';
   @Input({ required: true }) intervalValue = 0;
@@ -74,6 +77,10 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
+  }
 
   onRefresh(): void {
     this.refresh.emit();

@@ -1,5 +1,5 @@
 import { NgForOf, NgIf } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ColumnKey, FieldKey } from '@app/types/data';
 import { FiltersDialogData } from '@app/types/dialog';
 import { Filter, FilterEvent, FilterField, FilterFieldSelect, FilterInput, FilterInputDate, FilterInputSelect, FilterInputText, FilterInputType } from '@app/types/filters';
+import { IconsService } from '@services/icons.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 @Component({
   selector: 'app-filters-dialog',
@@ -38,16 +39,16 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
           <app-filters-dialog-input [input]="findInput(filter)" (valueChange)="onInputValueChange(index, $event)"></app-filters-dialog-input>
 
           <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-            <mat-icon aria-hidden="true" fontIcon="more_vert"></mat-icon>
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
           </button>
 
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="onClear(filter)">
-              <mat-icon aria-hidden="true" fontIcon="clear"></mat-icon>
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('clear')"></mat-icon>
               <span i18n>Clear</span>
             </button>
             <button mat-menu-item (click)="onRemove(index)" [disabled]="filters.length === 1 && index === 0">
-              <mat-icon aria-hidden="true" fontIcon="delete"></mat-icon>
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
               <span i18n>Remove</span>
             </button>
           </mat-menu>
@@ -55,7 +56,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
       </div>
 
       <button class="add-filter" mat-button (click)="addFilter()">
-        <mat-icon aria-hidden="true" fontIcon="add"></mat-icon>
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
         <span i18n>Add a filter rule</span>
       </button>
     </mat-dialog-content>
@@ -107,6 +108,8 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   ],
 })
 export class FiltersDialogComponent<T extends object> implements OnInit {
+  #iconsService = inject(IconsService);
+
   filters: Filter<T>[] = [];
   columnsLabels: Record<ColumnKey<T>, string> | null = null;
 
@@ -121,6 +124,10 @@ export class FiltersDialogComponent<T extends object> implements OnInit {
       // Avoid to mutate original data
       this.filters = this.data.filters.map(filter => ({ ...filter }));
     }
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   /**

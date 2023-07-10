@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { catchError, merge, tap } from 'rxjs';
+import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserGrpcService } from '@services/user-grpc.service';
@@ -38,6 +39,7 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    IconsService,
     UserGrpcService,
     UserService,
     VersionsGrpcService,
