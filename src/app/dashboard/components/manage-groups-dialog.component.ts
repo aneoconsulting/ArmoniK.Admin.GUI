@@ -53,7 +53,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
           (cdkDropListDropped)="drop($event)"
           [cdkDropListData]="group.statuses"
         >
-        <li *ngFor="let status of group.statuses" cdkDrag>
+        <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
           <mat-icon aria-hidden="true" fontIcon="drag_indicator"></mat-icon>
           <span>{{ statusToLabel(status) }}</span>
         </li>
@@ -132,7 +132,7 @@ ul {
 
   gap: 0.5rem;
 
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .cdk-drag-placeholder {

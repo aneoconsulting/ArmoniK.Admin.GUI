@@ -33,3 +33,13 @@
 .mat-icon.purple-green svg .docs-theme-icon-toolbar {
   fill: #9c27b0
 }
+
+.purple-green .status.cdk-drag-preview,
+.pink-bluegrey .status.cdk-drag-preview, {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.purple-gree .task-status.cdk-drag-preview,
+.pink-bluegrey .task-status.cdk-drag-preview {
+  color: rgba(255, 255, 255, 0.6);
+}

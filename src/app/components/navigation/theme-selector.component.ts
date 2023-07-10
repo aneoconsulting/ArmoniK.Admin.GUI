@@ -98,6 +98,9 @@ export class ThemeSelectorComponent implements OnInit {
     }
 
     themeElement.remove();
+
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.remove(theme.name);
   }
 
   #addTheme(themeName: string) {
@@ -115,5 +118,8 @@ export class ThemeSelectorComponent implements OnInit {
     themeElement.href = `${theme.name}.css`;
 
     head.appendChild(themeElement);
+
+    const body = document.getElementsByTagName('body')[0];
+    body.classList.add(theme.name);
   }
 }
