@@ -69,7 +69,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       (resetFilters)="onFiltersReset()"
     >
       <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()" i18n>Personalize Tasks By Status</button>
+        <button mat-menu-item (click)="personalizeTasksByStatus()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+          <span i18n appNoWrap>
+            Personalize Tasks Status
+          </span>
+      </button>
       </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
@@ -135,7 +140,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       </ng-container>
       <!-- Session's Tasks Count by Status -->
       <ng-container *ngIf="isCountColumn(column)">
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" appNoWrap>
           <app-sessions-count-by-status
             [statuses]="tasksStatusesColored"
             [sessionId]="element.sessionId"

@@ -30,6 +30,7 @@ export class IconsService {
     'drag': 'drag_indicator',
     'edit': 'edit',
     'view': 'visibility',
+    'view-off': 'visibility_off',
     'format-color-fill': 'format_color_fill',
     'settings': 'settings',
     'storage': 'storage',
@@ -43,6 +44,9 @@ export class IconsService {
     'update': 'update',
     'tune': 'tune',
     'arrow-down': 'arrow_drop_down',
+    'layers-clear': 'layers_clear',
+    'format-clear': 'format_color_reset',
+    'highlight': 'highlight',
   };
 
   getIcon(name: string): string {

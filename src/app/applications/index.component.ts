@@ -41,7 +41,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
   selector: 'app-applications-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('applications')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('applications')"></mat-icon>
   <span matListItemTitle i18n="Page title"> Applications </span>
 </app-page-header>
 
@@ -61,7 +61,12 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       (resetFilters)="onFiltersReset()"
     >
       <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()" i18n>Personalize Tasks By Status</button>
+        <button mat-menu-item (click)="personalizeTasksByStatus()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+          <span i18n appNoWrap>
+            Personalize Tasks Status
+          </span>
+        </button>
       </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
@@ -160,6 +165,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   #tasksByStatusService = inject(TasksByStatusService);
   #notificationService = inject(NotificationService);
   #dialog = inject(MatDialog);
+  #iconsService = inject(IconsService);
 
   displayedColumns: ApplicationRawColumnKey[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
@@ -190,7 +196,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription = new Subscription();
 
   constructor(
-    private _iconsService: IconsService,
     private _shareURLService: ShareUrlService,
     private _applicationsIndexService: ApplicationsIndexService,
     private _applicationsGrpcService: ApplicationsGrpcService,
@@ -289,8 +294,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._applicationsIndexService.isNotSortableColumn(column);
   }
 
-  getIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
+  getPageIcon(name: Page): string {
+    return this.#iconsService.getPageIcon(name);
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   onRefresh() {

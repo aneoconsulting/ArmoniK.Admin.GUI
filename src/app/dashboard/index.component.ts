@@ -58,8 +58,18 @@ import { TasksStatusesGroup } from './types';
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onToggleGroupsHeader()" i18n>Toggle Groups Header</button>
-          <button mat-menu-item (click)="onManageGroupsDialog()" i18n>Manage Groups</button>
+          <button mat-menu-item (click)="onToggleGroupsHeader()">
+            <mat-icon aria-hidden="true" [fontIcon]="hideGroupHeaders ? getIcon('view') : getIcon('view-off')"></mat-icon>
+            <span i18n>
+              Toggle Groups Header
+            </span>
+          </button>
+          <button mat-menu-item (click)="onManageGroupsDialog()">
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+            <span i18n>
+              Manage Groups
+            </span>
+          </button>
         </mat-menu>
       </app-actions-toolbar-group>
     </app-actions-toolbar>

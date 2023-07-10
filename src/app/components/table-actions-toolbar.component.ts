@@ -37,8 +37,18 @@ import { SpinnerComponent } from './spinner.component';
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onResetColumns()" i18n>Reset Columns</button>
-      <button mat-menu-item (click)="onResetFilters()" i18n>Reset Filters</button>
+      <button mat-menu-item (click)="onResetColumns()">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('format-clear')"></mat-icon>
+        <span i18n>
+          Reset Columns
+        </span>
+      </button>
+      <button mat-menu-item (click)="onResetFilters()">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('layers-clear')"></mat-icon>
+        <span i18n>
+          Reset Filters
+        </span>
+      </button>
       <ng-content select="[extra-menu-items]"></ng-content>
     </mat-menu>
   </app-actions-toolbar-group>
