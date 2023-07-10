@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
-    specifier: 3.9.0-edge.128.8e8057a
-    version: 3.9.0-edge.128.8e8057a(@angular/common@16.1.4)(@angular/core@16.1.4)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1)
+    specifier: 3.10.0
+    version: 3.10.0(@angular/common@16.1.4)(@angular/core@16.1.4)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1)
   '@angular/animations':
     specifier: ^16.1.4
     version: 16.1.4(@angular/core@16.1.4)
@@ -153,11 +153,11 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
-  /@aneoconsultingfr/armonik.api.angular@3.9.0-edge.128.8e8057a(@angular/common@16.1.4)(@angular/core@16.1.4)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1):
-    resolution: {integrity: sha512-rgtjhy7SBouW9MjprbAAZzztLTLGZUJulUrd9mHt7vYeo00v1zPc3EXZ0eI2+g70yYzQMU+D/iTNeDOBHUFjtg==}
+  /@aneoconsultingfr/armonik.api.angular@3.10.0(@angular/common@16.1.4)(@angular/core@16.1.4)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1):
+    resolution: {integrity: sha512-CDYUQYQm/XnVR9e++zCBpZFyksMqrX62oHMXvMCwBKUP1UTtvdOIAnZjes9YfT+IWkZO593fBmOqdvQleBUOkw==}
     peerDependencies:
-      '@angular/common': ^16.0.1
-      '@angular/core': ^16.0.1
+      '@angular/common': ^16.1.3
+      '@angular/core': ^16.1.3
       '@ngx-grpc/common': ^3.1.1
       '@ngx-grpc/core': ^3.1.1
       '@ngx-grpc/well-known-types': ^3.1.1
