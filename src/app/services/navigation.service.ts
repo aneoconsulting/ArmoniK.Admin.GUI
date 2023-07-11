@@ -90,7 +90,7 @@ export class NavigationService {
   currentSidebar: SidebarItem[] = this.#formatSidebar(this.restoreSidebar());
 
   restoreSidebar(): Sidebar[] {
-    const sidebar = this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), true) as Sidebar[] || this.defaultSidebar;
+    const sidebar = this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), true) as Sidebar[] || Array.from(this.defaultSidebar);
 
     return sidebar;
   }

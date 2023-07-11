@@ -91,6 +91,10 @@ export class StorageService implements Storage {
     }
   }
 
+  restoreKeys(): Set<string> {
+    this.#restoreKeys();
+    return this.#keys;
+  }
 
   #restoreKeys() {
     this.#keys = new Set(JSON.parse(this._localStorage.getItem(this.#keysStorageKey)?? '[]'));
