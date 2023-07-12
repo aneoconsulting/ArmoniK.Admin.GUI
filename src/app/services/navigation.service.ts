@@ -9,10 +9,6 @@ export class NavigationService {
   #defaultConfigService = inject(DefaultConfigService);
   #storageService = inject(StorageService);
 
-  #key = 'navigation';
-  #externalServicesKey = 'external-services';
-  #sidebarKey = 'sidebar';
-
   sidebarItems: SidebarItems = [
     {
       type: 'link',
@@ -79,14 +75,14 @@ export class NavigationService {
   currentSidebar: SidebarItem[] = this.#formatSidebar(this.restoreSidebar());
 
   restoreSidebar(): Sidebar[] {
-    const sidebar = this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), true) as Sidebar[] || this.#defaultConfigService.defaultSidebar;
+    const sidebar = this.#storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.#defaultConfigService.defaultSidebar;
 
     return sidebar;
   }
 
   saveSidebar(sidebar: Sidebar[]) {
     this.currentSidebar = this.#formatSidebar(sidebar);
-    this.#storageService.setItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), sidebar);
+    this.#storageService.setItem('navigation-sidebar', sidebar);
   }
 
   updateSidebar(sidebar: Sidebar[]) {
@@ -108,14 +104,10 @@ export class NavigationService {
   }
 
   restoreExternalServices(): ExternalService[] {
-    return this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#externalServicesKey), true) as ExternalService[] || [];
+    return this.#storageService.getItem('navigation-external-services', true) as ExternalService[] || [];
   }
 
   saveExternalServices(externalServices: ExternalService[]) {
-    this.#storageService.setItem(this.#storageService.buildKey(this.#key, this.#externalServicesKey), externalServices);
-  }
-
-  get sidebarKey() {
-    return this.#storageService.buildKey(this.#key, this.#sidebarKey);
+    this.#storageService.setItem('navigation-external-services', externalServices);
   }
 }

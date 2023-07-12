@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule} from '@angular/material/snack-bar';
+import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
@@ -255,7 +256,7 @@ app-page-section + app-page-section {
 })
 export class IndexComponent implements OnInit {
   sharableURL = '';
-  keys: Set<string> = new Set();
+  keys: Set<Key> = new Set();
 
   sidebar: Sidebar[] = [];
 
@@ -331,11 +332,11 @@ export class IndexComponent implements OnInit {
     const checkboxes = form.querySelectorAll('input[type="checkbox"]');
 
     const checkboxesArray = Array.from(checkboxes) as HTMLInputElement[];
-    const keys = [];
+    const keys: Key[] = [];
 
     for (const checkbox of checkboxesArray) {
       if (checkbox.checked) {
-        keys.push(checkbox.name);
+        keys.push(checkbox.name as Key);
       }
     }
 
@@ -405,9 +406,9 @@ export class IndexComponent implements OnInit {
     reader.onload = () => {
       const data = reader.result as string;
       this.#storageService.importData(data);
-      this.keys = this.#sortKeys(this.#storageService.keys);
+      this.keys = this.#sortKeys(this.#storageService.restoreKeys());
 
-      const hasSidebarKey = this.keys.has(this.#navigationService.sidebarKey);
+      const hasSidebarKey = this.keys.has('navigation-sidebar');
 
       // Update sidebar
       if (hasSidebarKey) {
@@ -444,7 +445,7 @@ export class IndexComponent implements OnInit {
     moveItemInArray(this.sidebar, event.previousIndex, event.currentIndex);
   }
 
-  #sortKeys(keys: Set<string>): Set<string> {
+  #sortKeys(keys: Set<Key>): Set<Key> {
     return new Set([...keys].sort());
   }
 }

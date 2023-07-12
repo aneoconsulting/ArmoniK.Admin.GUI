@@ -96,11 +96,11 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue(this.tableName, value);
+    this.#tableService.saveIntervalValue('partitions-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableService.restoreIntervalValue('partitions-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -108,11 +108,11 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveOptions(options: PartitionRawListOptions): void {
-    this.#tableService.saveOptions(this.tableName, options);
+    this.#tableService.saveOptions('partitions-options', options);
   }
 
   restoreOptions(): PartitionRawListOptions {
-    const options = this.#tableService.restoreOptions<PartitionRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableService.restoreOptions<PartitionRaw>('partitions-options', this.defaultOptions);
 
     return options;
   }
@@ -122,15 +122,15 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveColumns(columns: PartitionRawColumnKey[]): void {
-    this.#tableService.saveColumns(this.tableName, columns);
+    this.#tableService.saveColumns('partitions-columns', columns);
   }
 
   restoreColumns(): PartitionRawColumnKey[] {
-    return this.#tableService.restoreColumns<PartitionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    return this.#tableService.restoreColumns<PartitionRawColumnKey[]>('partitions-columns') ?? this.defaultColumns;
   }
 
   resetColumns(): PartitionRawColumnKey[] {
-    this.#tableService.resetColumns(this.tableName);
+    this.#tableService.resetColumns('partitions-columns');
 
     return Array.from(this.defaultColumns);
   }
@@ -140,15 +140,15 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
    */
 
   saveFilters(filters: PartitionRawFilter[]): void {
-    this.#tableService.saveFilters(this.tableName, filters);
+    this.#tableService.saveFilters('partitions-filters', filters);
   }
 
   restoreFilters(): PartitionRawFilter[] {
-    return this.#tableService.restoreFilters<PartitionRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<PartitionRawFilter[]>('partitions-filters') ?? this.defaultFilters;
   }
 
   resetFilters(): PartitionRawFilter[] {
-    this.#tableService.resetFilters(this.tableName);
+    this.#tableService.resetFilters('partitions-filters');
 
     return this.defaultFilters;
   }

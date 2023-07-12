@@ -4,18 +4,15 @@ import { TasksStatusesGroup } from '../types';
 
 @Injectable()
 export class DashboardStorageService {
-  #key = 'dashboard';
-  #intervalKey = 'interval';
-  #hideGroupsHeaderKey = 'hide_group_headers';
 
   #storageService = inject(StorageService);
 
   saveInterval(interval: number) {
-    this.#storageService.setItem(this.#storageService.buildKey(this.#key, this.#intervalKey), interval.toString());
+    this.#storageService.setItem('dashboard-interval', interval.toString());
   }
 
   restoreInterval(): number | null {
-    const interval = this.#storageService.getItem<string>(this.#storageService.buildKey(this.#key, this.#intervalKey));
+    const interval = this.#storageService.getItem<string>('dashboard-interval');
 
     if (interval) {
       return parseInt(interval, 10);
@@ -25,11 +22,11 @@ export class DashboardStorageService {
   }
 
   saveHideGroupsHeader(hide: boolean) {
-    this.#storageService.setItem(this.#storageService.buildKey(this.#key, this.#hideGroupsHeaderKey), hide.toString());
+    this.#storageService.setItem('dashboard-hide-groups-headers', hide.toString());
   }
 
   restoreHideGroupsHeader(): boolean | null {
-    const hide = this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#hideGroupsHeaderKey));
+    const hide = this.#storageService.getItem('dashboard-hide-groups-headers');
 
     if (hide) {
       return hide === 'true';
@@ -39,11 +36,11 @@ export class DashboardStorageService {
   }
 
   saveStatusGroups(groups: TasksStatusesGroup[]) {
-    this.#storageService.setItem(this.#storageService.buildKey(this.#key, 'status_groups'), groups);
+    this.#storageService.setItem('dashboard-status-groups', groups);
   }
 
   restoreStatusGroups(): TasksStatusesGroup[] | null {
-    const groups = this.#storageService.getItem<TasksStatusesGroup[]>(this.#storageService.buildKey(this.#key, 'status_groups'), true);
+    const groups = this.#storageService.getItem<TasksStatusesGroup[]>('dashboard-status-groups', true);
 
     if (groups) {
       return groups as TasksStatusesGroup[];

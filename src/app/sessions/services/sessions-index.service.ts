@@ -124,11 +124,11 @@ export class SessionsIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue(this.tableName, value);
+    this.#tableService.saveIntervalValue('sessions-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableService.restoreIntervalValue('sessions-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -136,11 +136,11 @@ export class SessionsIndexService {
    */
 
   saveOptions(options: SessionRawListOptions): void {
-    this.#tableService.saveOptions(this.tableName, options);
+    this.#tableService.saveOptions('sessions-options', options);
   }
 
   restoreOptions(): SessionRawListOptions {
-    const options = this.#tableService.restoreOptions<SessionRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableService.restoreOptions<SessionRaw>('sessions-options', this.defaultOptions);
 
     return options;
   }
@@ -150,17 +150,17 @@ export class SessionsIndexService {
    */
 
   saveColumns(columns: SessionRawColumnKey[]): void {
-    this.#tableService.saveColumns(this.tableName, columns);
+    this.#tableService.saveColumns('sessions-columns', columns);
   }
 
   restoreColumns(): SessionRawColumnKey[] {
-    const columns = this.#tableService.restoreColumns<SessionRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    const columns = this.#tableService.restoreColumns<SessionRawColumnKey[]>('sessions-columns') ?? this.defaultColumns;
 
     return [...columns];
   }
 
   resetColumns(): SessionRawColumnKey[] {
-    this.#tableService.resetColumns(this.tableName);
+    this.#tableService.resetColumns('sessions-columns');
 
     return Array.from(this.defaultColumns);
   }
@@ -170,15 +170,15 @@ export class SessionsIndexService {
    */
 
   saveFilters(filters: SessionRawFilter[]): void {
-    this.#tableService.saveFilters(this.tableName, filters);
+    this.#tableService.saveFilters('sessions-filters', filters);
   }
 
   restoreFilters(): SessionRawFilter[] {
-    return this.#tableService.restoreFilters<SessionRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<SessionRawFilter[]>('sessions-filters') ?? this.defaultFilters;
   }
 
   resetFilters(): SessionRawFilter[] {
-    this.#tableService.resetFilters(this.tableName);
+    this.#tableService.resetFilters('sessions-filters');
 
     return this.defaultFilters;
   }

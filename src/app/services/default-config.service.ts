@@ -5,17 +5,12 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { PartitionRawColumnKey, PartitionRawFilter, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRawColumnKey, ResultRawFilter, ResultRawListOptions } from '@app/results/types';
 import { SessionRawColumnKey, SessionRawFilter, SessionRawListOptions } from '@app/sessions/types';
+import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { TaskStatusColored } from '@app/types/dialog';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
 import { Theme } from '@app/types/themes';
 
-type DefaultConfig<C, O, F> = {
-  interval: number;
-  columns: C[];
-  options: O;
-  filters: F[];
-};
 
 @Injectable()
 export class DefaultConfigService {
@@ -65,7 +60,7 @@ export class DefaultConfigService {
     'divider'
   ];
 
-  readonly #defaultApplications: DefaultConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter> = {
+  readonly #defaultApplications: ScopeConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter> = {
     interval: 10,
     columns: [
       'name',
@@ -102,7 +97,7 @@ export class DefaultConfigService {
     },
   ];
 
-  readonly #defaultPartitions: DefaultConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilter> = {
+  readonly #defaultPartitions: ScopeConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilter> = {
     interval: 10,
     columns: [
       'id',
@@ -119,7 +114,7 @@ export class DefaultConfigService {
     filters: [],
   };
 
-  readonly #defaultSessions: DefaultConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilter> = {
+  readonly #defaultSessions: ScopeConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilter> = {
     interval: 10,
     columns: [
       'sessionId',
@@ -137,7 +132,7 @@ export class DefaultConfigService {
     filters: [],
   };
 
-  readonly #defaultResults: DefaultConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilter> = {
+  readonly #defaultResults: ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilter> = {
     interval: 10,
     columns: [
       'name',
@@ -180,7 +175,7 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultSidebar);
   }
 
-  get defaultApplications(): DefaultConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter> {
+  get defaultApplications(): ScopeConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter> {
     return structuredClone(this.#defaultApplications);
   }
 
@@ -188,15 +183,46 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultTasksByStatus);
   }
 
-  get defaultPartitions(): DefaultConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilter> {
+  get defaultPartitions(): ScopeConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilter> {
     return structuredClone(this.#defaultPartitions);
   }
 
-  get defaultSessions(): DefaultConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilter> {
+  get defaultSessions(): ScopeConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilter> {
     return structuredClone(this.#defaultSessions);
   }
 
-  get defaultResults(): DefaultConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilter> {
+  get defaultResults(): ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilter> {
     return structuredClone(this.#defaultResults);
+  }
+
+  readonly #exportedDefaultConfig: ExportedDefaultConfig = {
+    'navigation-sidebar': this.#defaultSidebar,
+    'navigation-theme': this.#defaultTheme,
+    'navigation-external-services': this.#defaultExternalServices,
+    'dashboard-status-groups': this.#defaultDashboardStatusGroups,
+    'dashboard-interval': this.#defaultDashboardInterval,
+    'dashboard-hide-groups-headers': this.#defaultDashboardHideGroupsHeader,
+    'applications-tasks-by-status': this.#defaultTasksByStatus,
+    'sessions-tasks-by-status': this.#defaultTasksByStatus,
+    'applications-columns': this.#defaultApplications.columns,
+    'applications-options': this.#defaultApplications.options,
+    'applications-filters': this.#defaultApplications.filters,
+    'applications-interval': this.#defaultApplications.interval,
+    'partitions-columns': this.#defaultPartitions.columns,
+    'partitions-options': this.#defaultPartitions.options,
+    'partitions-filters': this.#defaultPartitions.filters,
+    'partitions-interval': this.#defaultPartitions.interval,
+    'sessions-columns': this.#defaultSessions.columns,
+    'sessions-options': this.#defaultSessions.options,
+    'sessions-filters': this.#defaultSessions.filters,
+    'sessions-interval': this.#defaultSessions.interval,
+    'results-columns': this.#defaultResults.columns,
+    'results-options': this.#defaultResults.options,
+    'results-filters': this.#defaultResults.filters,
+    'results-interval': this.#defaultResults.interval,
+  };
+
+  get exportedDefaultConfig(): ExportedDefaultConfig {
+    return structuredClone(this.#exportedDefaultConfig);
   }
 }

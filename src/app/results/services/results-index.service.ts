@@ -98,11 +98,11 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue(this.tableName, value);
+    this.#tableService.saveIntervalValue('results-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue(this.tableName) ?? this.defaultIntervalValue;
+    return this.#tableService.restoreIntervalValue('results-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -110,11 +110,11 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveOptions(options: ResultRawListOptions): void {
-    this.#tableService.saveOptions(this.tableName, options);
+    this.#tableService.saveOptions('results-options', options);
   }
 
   restoreOptions(): ResultRawListOptions {
-    const options = this.#tableService.restoreOptions<ResultRaw>(this.tableName, this.defaultOptions);
+    const options = this.#tableService.restoreOptions<ResultRaw>('results-options', this.defaultOptions);
 
     return options;
   }
@@ -124,15 +124,15 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveColumns(columns: ResultRawColumnKey[]): void {
-    this.#tableService.saveColumns(this.tableName, columns);
+    this.#tableService.saveColumns('results-columns', columns);
   }
 
   restoreColumns(): ResultRawColumnKey[] {
-    return this.#tableService.restoreColumns<ResultRawColumnKey[]>(this.tableName) ?? this.defaultColumns;
+    return this.#tableService.restoreColumns<ResultRawColumnKey[]>('results-columns') ?? this.defaultColumns;
   }
 
   resetColumns(): ResultRawColumnKey[] {
-    this.#tableService.resetColumns(this.tableName);
+    this.#tableService.resetColumns('results-columns');
 
     return Array.from(this.defaultColumns);
   }
@@ -142,15 +142,15 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    */
 
   saveFilters(filtersFields: ResultRawFilter[]): void {
-    this.#tableService.saveFilters(this.tableName, filtersFields);
+    this.#tableService.saveFilters('results-filters', filtersFields);
   }
 
   restoreFilters(): ResultRawFilter[] {
-    return this.#tableService.restoreFilters<ResultRawFilter[]>(this.tableName) ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<ResultRawFilter[]>('results-filters') ?? this.defaultFilters;
   }
 
   resetFilters(): ResultRawFilter[] {
-    this.#tableService.resetFilters(this.tableName);
+    this.#tableService.resetFilters('results-filters');
 
     return this.defaultFilters;
   }

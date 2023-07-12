@@ -1,30 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { createDefu, defu } from 'defu';
+import { Key } from '@app/types/config';
+import { DefaultConfigService } from './default-config.service';
 
 @Injectable()
 export class StorageService implements Storage {
-  #keysStorageKey = 'keys-storage';
-  #keys: Set<string> = new Set();
-
-  constructor(
-    private _localStorage: Storage,
-  ) {
-    this.#restoreKeys();
-  }
-
-  get keys(): Set<string> {
-    return this.#keys;
-  }
+  #defaultConfigService = inject(DefaultConfigService);
+  #localStorage = inject(Storage);
 
   get length(): number {
-    return this._localStorage.length;
+    return this.#localStorage.length;
   }
 
   clear(): void {
-    this._localStorage.clear();
+    this.#localStorage.clear();
   }
 
-  getItem<T>(key: string, parse = false) {
-    const data = this._localStorage.getItem(key);
+  getItem<T>(key: Key, parse = false) {
+    const data = this.#localStorage.getItem(key);
 
     if (data && parse) {
       try {
@@ -40,39 +33,25 @@ export class StorageService implements Storage {
   }
 
   key(index: number): string | null {
-    return this._localStorage.key(index);
+    return this.#localStorage.key(index);
   }
 
-  removeItem(key: string): void {
-    this._localStorage.removeItem(key);
-
-    this.#keys.delete(key);
-    this.#saveKeys();
+  removeItem(key: Key): void {
+    this.#localStorage.removeItem(key);
   }
 
-  setItem(key: string, data: unknown): void {
+  setItem(key: Key, data: unknown): void {
     if (typeof data === 'string') {
-      this._localStorage.setItem(key, data);
-      return;
+      this.#localStorage.setItem(key, data);
+    } else {
+      this.#localStorage.setItem(key, JSON.stringify(data));
     }
-
-    this._localStorage.setItem(key, JSON.stringify(data));
-
-    this.#keys.add(key);
-    this.#saveKeys();
-  }
-
-  /**
-   * Build the key to store data in local storage
-   */
-  buildKey(tableName: string, key: string): string {
-    return `${tableName}-${key}`;
   }
 
   exportData(): Record<string, unknown> {
     const data = {} as Record<string, unknown>;
 
-    for (const key of this.#keys) {
+    for (const key of this.keys) {
       const item = this.getItem(key, true);
 
       if (item) {
@@ -80,27 +59,44 @@ export class StorageService implements Storage {
       }
     }
 
-    return data;
+    return this.#defu()(data, this.#defaultConfigService.exportedDefaultConfig);
   }
 
   importData(data: string): void {
     const parsedData = JSON.parse(data) as Record<string, string>;
 
-    for (const key in parsedData) {
-      this.setItem(key, parsedData[key]);
+    const keys = Object.keys(parsedData);
+    const defaultKeys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
+
+    for (const key in keys) {
+      // We only import keys that are supported.
+      if (defaultKeys.includes(key as Key)) {
+        this.setItem(key as Key, parsedData[key]);
+      } else {
+        console.warn(`Key "${key}" is not supported`);
+      }
     }
   }
 
-  restoreKeys(): Set<string> {
-    this.#restoreKeys();
-    return this.#keys;
+  get keys(): Key[] {
+    const defaultKeys = Object.keys(this.#defaultConfigService.exportedDefaultConfig);
+    const dirtyKeys = Object.keys(this.#localStorage);
+
+    return dirtyKeys.filter((key) => defaultKeys.includes(key)) as Key[];
   }
 
-  #restoreKeys() {
-    this.#keys = new Set(JSON.parse(this._localStorage.getItem(this.#keysStorageKey)?? '[]'));
+  restoreKeys(): Set<Key> {
+    return new Set(this.keys);
   }
 
-  #saveKeys() {
-    this._localStorage.setItem(this.#keysStorageKey, JSON.stringify(Array.from(this.#keys)));
+  #defu() {
+    // If array, we return the storage array instead of merging it with default config.
+    return createDefu((obj, key, value) => {
+      if (Array.isArray(obj[key]) && Array.isArray(value)) {
+        obj[key] = value;
+        return true;
+      }
+      return;
+    });
   }
 }

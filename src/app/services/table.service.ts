@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
+import { Scope } from '@app/types/config';
 import { FieldKey } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
-import { StorageService } from './storage.service';
 import { TableStorageService } from './table-storage.service';
 import { TableURLService } from './table-url.service';
 
@@ -12,27 +12,18 @@ import { TableURLService } from './table-url.service';
  */
 @Injectable()
 export class TableService {
-  private readonly _columnsKey = 'columns';
-  private readonly _intervalKey = 'interval';
-  private readonly _optionsKey = 'options';
-  private readonly _filtersKey = 'filters';
 
   constructor(
-    private _storageService: StorageService,
     private _tableURLService: TableURLService,
     private _tableStorageService: TableStorageService
   ) {}
 
-  saveIntervalValue(tableName: string, value: number): void {
-    const storageKey = this._storageService.buildKey(tableName, this._intervalKey);
-
-    this._tableStorageService.save(storageKey, value);
+  saveIntervalValue(key: `${Scope}-interval`, value: number): void {
+    this._tableStorageService.save(key, value);
   }
 
-  restoreIntervalValue(tableName: string): number | null {
-    const storageKey = this._storageService.buildKey(tableName, this._intervalKey);
-
-    const value =  this._tableStorageService.restore<string>(storageKey, false);
+  restoreIntervalValue(key: `${Scope}-interval`): number | null {
+    const value =  this._tableStorageService.restore<string>(key, false);
 
     if (!value) {
       return null;
@@ -47,22 +38,18 @@ export class TableService {
     return numberValue;
   }
 
-
   /**
    * Save options to the storage
    */
-  saveOptions<T>(tableName: string, options: T): void {
-    const storageKey = this._storageService.buildKey(tableName, this._optionsKey);
-
-    this._tableStorageService.save(storageKey, options);
+  saveOptions<T>(key: `${Scope}-options`, options: T): void {
+    this._tableStorageService.save(key, options);
   }
 
   /**
    * Restore options from the storage
    */
-  restoreOptions<T extends object>(tableName: string, defaultOptions: ListOptions<T>): ListOptions<T> {
-    const storageKey = this._storageService.buildKey(tableName, this._optionsKey);
-    const storageData = this._tableStorageService.restore<T>(storageKey) as ListOptions<T> | null;
+  restoreOptions<T extends object>(key: `${Scope}-options`, defaultOptions: ListOptions<T>): ListOptions<T> {
+    const storageData = this._tableStorageService.restore<T>(key) as ListOptions<T> | null;
 
     function convertValueToNumber(value: string | null): number | null {
       if (!value) {
@@ -93,17 +80,15 @@ export class TableService {
   /**
    * Restore filters from the URL and then from the storage
    */
-  restoreFilters<T>(tableName:string): T | null {
-    const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
+  restoreFilters<T>(key: `${Scope}-filters`): T | null {
+    // const queryParams = this._tableURLService.getQueryParams<T>(this._filtersKey) as T;
 
-    const queryParams = this._tableURLService.getQueryParams<T>(this._filtersKey) as T;
+    // if (queryParams) {
+    //   this.saveFilters(key, queryParams);
+    //   return queryParams;
+    // }
 
-    if (queryParams) {
-      this.saveFilters(tableName, queryParams);
-      return queryParams;
-    }
-
-    const storageData = this._tableStorageService.restore<T>(storageKey) as T;
+    const storageData = this._tableStorageService.restore<T>(key) as T;
 
     return storageData;
   }
@@ -111,39 +96,29 @@ export class TableService {
   /**
    * Restore filters from the URL and then from the storage
    */
-  saveFilters(tableName: string, filters: unknown) {
-    const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
-
-    this._tableStorageService.save(storageKey, filters);
+  saveFilters(key: `${Scope}-filters`, filters: unknown) {
+    this._tableStorageService.save(key, filters);
   }
 
-  resetFilters(tableName: string): void {
-    const storageKey = this._storageService.buildKey(tableName, this._filtersKey);
-
-    this._tableStorageService.remove(storageKey);
+  resetFilters(key: `${Scope}-filters`): void {
+    this._tableStorageService.remove(key);
   }
-
 
   /**
    * Save columns to the local storage
    */
-  saveColumns(tableName: string, columns: string[]): void {
-    const key = this._storageService.buildKey(tableName, this._columnsKey);
+  saveColumns(key: `${Scope}-columns`, columns: string[]): void {
     this._tableStorageService.save(key, columns);
   }
 
   /**
    * Restore columns from the local storage
    */
-  restoreColumns<T>(tableName: string): T | null {
-    const key = this._storageService.buildKey(tableName, this._columnsKey);
-
+  restoreColumns<T>(key: `${Scope}-columns`): T | null {
     return this._tableStorageService.restore<T>(key) as T;
   }
 
-  resetColumns(tableName: string): void {
-    const key = this._storageService.buildKey(tableName, this._columnsKey);
-
+  resetColumns(key: `${Scope}-columns`): void {
     this._tableStorageService.remove(key);
   }
 }

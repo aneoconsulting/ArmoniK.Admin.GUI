@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { Key } from '@app/types/config';
 import { StorageService } from './storage.service';
 
 /**
@@ -12,21 +13,21 @@ export class TableStorageService {
   /**
    * Save data to the storage
    */
-  save(key: string, data: unknown) {
+  save(key: Key, data: unknown) {
     this.#storage.setItem(key, data);
   }
 
   /**
    * Restore data from the storage
    */
-  restore<T>(key: string, parse = true) {
+  restore<T>(key: Key, parse = true) {
     return this.#storage.getItem<T>(key, parse);
   }
 
   /**
    * Remove data from the storage
    */
-  remove(key: string) {
+  remove(key: Key) {
     this.#storage.removeItem(key);
   }
 }
