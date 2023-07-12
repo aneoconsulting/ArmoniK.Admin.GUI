@@ -1,5 +1,6 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
+import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
@@ -7,11 +8,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterFiel
 @Injectable()
 export class SessionsIndexService {
   #sessionsStatusesService = inject(SessionsStatusesService);
+  #defaultConfigService = inject(DefaultConfigService);
   #tableService = inject(TableService);
 
   readonly tableName: string = 'sessions';
 
-  readonly defaultColumns: SessionRawColumnKey[] = ['sessionId', 'count', 'actions'];
+  readonly defaultColumns: SessionRawColumnKey[] = this.#defaultConfigService.defaultSessions.columns;
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
@@ -40,16 +42,9 @@ export class SessionsIndexService {
     'options.priority': $localize`Options Priority`,
   };
 
-  readonly defaultOptions: SessionRawListOptions = {
-    pageIndex: 0,
-    pageSize: 10,
-    sort: {
-      active: 'sessionId',
-      direction: 'asc'
-    },
-  };
+  readonly defaultOptions: SessionRawListOptions = this.#defaultConfigService.defaultSessions.options;
 
-  readonly defaultFilters: SessionRawFilter[] = [];
+  readonly defaultFilters: SessionRawFilter[] = this.#defaultConfigService.defaultSessions.filters;
   readonly availableFiltersFields: SessionRawFilterField[] = [
     {
       field: 'sessionId',
@@ -79,7 +74,7 @@ export class SessionsIndexService {
     }
   ];
 
-  readonly defaultIntervalValue: number = 10;
+  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultSessions.interval;
 
   columnToLabel(column: SessionRawColumnKey): string {
     return this.columnsLabels[column];

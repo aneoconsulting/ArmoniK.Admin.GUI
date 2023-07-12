@@ -1,13 +1,16 @@
 import { Injectable, inject } from '@angular/core';
+import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
 export class ApplicationsIndexService {
+  #defaultConfigService = inject(DefaultConfigService);
+
   readonly tableName: string = 'applications';
 
-  readonly defaultColumns: ApplicationRawColumnKey[] = ['name', 'version', 'count'];
+  readonly defaultColumns: ApplicationRawColumnKey[] = this.#defaultConfigService.defaultApplications.columns;
   readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
 
   // TODO: Add it to AppIndexService and to every index service
@@ -20,16 +23,9 @@ export class ApplicationsIndexService {
     actions: $localize`Actions`,
   };
 
-  readonly defaultOptions: ApplicationRawListOptions = {
-    pageIndex: 0,
-    pageSize: 10,
-    sort: {
-      active: 'name',
-      direction: 'asc'
-    },
-  };
+  readonly defaultOptions: ApplicationRawListOptions = this.#defaultConfigService.defaultApplications.options;
 
-  readonly defaultFilters: ApplicationRawFilter[] = [];
+  readonly defaultFilters: ApplicationRawFilter[] = this.#defaultConfigService.defaultApplications.filters;
   readonly availableFiltersFields: ApplicationRawFilterField[] = [
     {
       field: 'name',
@@ -49,7 +45,7 @@ export class ApplicationsIndexService {
     }
   ];
 
-  readonly defaultIntervalValue = 10;
+  readonly defaultIntervalValue = this.#defaultConfigService.defaultApplications.interval;
 
   #tableService = inject(TableService);
 

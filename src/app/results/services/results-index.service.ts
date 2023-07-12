@@ -1,17 +1,19 @@
 import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
+import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsIndexService implements AppIndexService<ResultRaw> {
+  #defaultConfigService = inject(DefaultConfigService);
   #resultsStatusesService = inject(ResultsStatusesService);
 
   readonly tableName: string = 'results';
 
-  readonly defaultColumns: ResultRawColumnKey[] = ['name', 'actions'];
+  readonly defaultColumns: ResultRawColumnKey[] = this.#defaultConfigService.defaultResults.columns;
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
 
   readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
@@ -27,16 +29,9 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     resultId: $localize`Result ID`,
   };
 
-  readonly defaultOptions: ResultRawListOptions = {
-    pageIndex: 0,
-    pageSize: 10,
-    sort: {
-      active: 'name',
-      direction: 'asc'
-    },
-  };
+  readonly defaultOptions: ResultRawListOptions = this.#defaultConfigService.defaultResults.options;
 
-  readonly defaultFilters: ResultRawFilter[] = [];
+  readonly defaultFilters: ResultRawFilter[] = this.#defaultConfigService.defaultResults.filters;
   readonly availableFiltersFields: ResultRawFilterField[] = [
     {
       field: 'name',
@@ -66,7 +61,7 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     },
   ];
 
-  readonly defaultIntervalValue: number = 10;
+  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultResults.interval;
 
   #tableService = inject(TableService);
 

@@ -1,42 +1,20 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { DashboardStorageService } from './dashboard-storage.service';
 import { TasksStatusesGroup } from '../types';
 
 @Injectable()
 export class DashboardIndexService {
-  readonly defaultStatusGroups: TasksStatusesGroup[] = [
-    {
-      name: 'Finished',
-      color: '#00ff00',
-      statuses: [
-        TaskStatus.TASK_STATUS_COMPLETED,
-        TaskStatus.TASK_STATUS_CANCELLED,
-      ]
-    },
-    {
-      name: 'Running',
-      color: '#ffa500',
-      statuses: [
-        TaskStatus.TASK_STATUS_PROCESSING,
-      ]
-    },
-    {
-      name: 'Errors',
-      color: '#ff0000',
-      statuses: [
-        TaskStatus.TASK_STATUS_ERROR,
-        TaskStatus.TASK_STATUS_TIMEOUT,
-      ]
-    },
-  ];
-
-  readonly defaultHideGroupsHeader = false;
-  readonly defaultIntervalValue = 5;
-
+  #defaultConfigService = inject(DefaultConfigService);
   #dashboardStorageService = inject(DashboardStorageService);
   #tasksStatusesService = inject(TasksStatusesService);
+
+  readonly defaultStatusGroups: TasksStatusesGroup[] = this.#defaultConfigService.defaultDashboardStatusGroups;
+  readonly defaultHideGroupsHeader = this.#defaultConfigService.defaultDashboardHideGroupsHeader;
+  readonly defaultInterval = this.#defaultConfigService.defaultDashboardInterval;
+
 
   // TODO: move to TasksStatusesService
   statuses(): { value: string, name: string }[] {
@@ -69,7 +47,7 @@ export class DashboardIndexService {
     const storedValue = this.#dashboardStorageService.restoreInterval();
 
     if(storedValue === null) {
-      return this.defaultIntervalValue;
+      return this.defaultInterval;
     }
 
     return storedValue;

@@ -1,10 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar, SidebarItem, SidebarItems } from '@app/types/navigation';
+import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
 @Injectable()
 export class NavigationService {
+  #defaultConfigService = inject(DefaultConfigService);
   #storageService = inject(StorageService);
 
   #key = 'navigation';
@@ -71,26 +73,13 @@ export class NavigationService {
     },
   ];
 
-  defaultSidebar: Sidebar[] = [
-    'profile',
-    'divider',
-    'dashboard',
-    'divider',
-    'applications',
-    'partitions',
-    'divider',
-    'sessions',
-    'results',
-    'divider',
-    'settings',
-    'divider'
-  ];
+  defaultSidebar: Sidebar[] = this.#defaultConfigService.defaultSidebar;
 
   // Used to display the sidebar on the navigation component.
   currentSidebar: SidebarItem[] = this.#formatSidebar(this.restoreSidebar());
 
   restoreSidebar(): Sidebar[] {
-    const sidebar = this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), true) as Sidebar[] || Array.from(this.defaultSidebar);
+    const sidebar = this.#storageService.getItem(this.#storageService.buildKey(this.#key, this.#sidebarKey), true) as Sidebar[] || this.#defaultConfigService.defaultSidebar;
 
     return sidebar;
   }

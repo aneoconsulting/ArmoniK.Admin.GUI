@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Theme } from '@app/types/themes';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { StorageService } from '@services/storage.service';
 
@@ -47,13 +49,14 @@ import { StorageService } from '@services/storage.service';
   ],
 })
 export class ThemeSelectorComponent implements OnInit {
+  #defaultConfigService = inject(DefaultConfigService);
   #storageService = inject(StorageService);
   #iconsService = inject(IconsService);
 
   #themeStorageKey = 'theme';
 
-  currentTheme: string | null;
-  availableThemes = [
+  currentTheme: string | null = this.#defaultConfigService.defaultTheme;
+  availableThemes: { name: Theme, displayName: string }[] = [
     { name: 'deeppurple-amber', displayName: 'Deep Purple & Amber' },
     { name: 'indigo-pink', displayName: 'Indigo & Pink' },
     { name: 'pink-bluegrey', displayName: 'Pink & Blue-grey' },

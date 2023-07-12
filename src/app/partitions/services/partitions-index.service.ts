@@ -1,13 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { AppIndexService } from '@app/types/services';
+import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
 
 @Injectable()
 export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
+  #defaultConfigService = inject(DefaultConfigService);
+
   readonly tableName: string = 'partitions';
 
-  readonly defaultColumns: PartitionRawColumnKey[] = ['id', 'actions'];
+  readonly defaultColumns: PartitionRawColumnKey[] = this.#defaultConfigService.defaultPartitions.columns;
   readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
 
   readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
@@ -23,16 +26,9 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     actions: $localize`Actions`,
   };
 
-  readonly defaultOptions: PartitionRawListOptions = {
-    pageIndex: 0,
-    pageSize: 10,
-    sort: {
-      active: 'id',
-      direction: 'asc'
-    },
-  };
+  readonly defaultOptions: PartitionRawListOptions = this.#defaultConfigService.defaultPartitions.options;
 
-  readonly defaultFilters: PartitionRawFilter[] = [];
+  readonly defaultFilters: PartitionRawFilter[] = this.#defaultConfigService.defaultPartitions.filters;
   readonly availableFiltersFields: PartitionRawFilterField[] = [
     {
       field: 'id',
@@ -64,7 +60,7 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     },
   ];
 
-  readonly defaultIntervalValue: number = 10;
+  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultPartitions.interval;
 
   #tableService = inject(TableService);
 
