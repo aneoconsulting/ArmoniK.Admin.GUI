@@ -16,7 +16,7 @@ COPY . .
 
 RUN nx build app --prod --baseHref=/admin/
 
-FROM nginx:stable as production
+FROM nginx:1.25.1-alpine3.17 as production
 
 WORKDIR /usr/share/nginx/html
 
@@ -27,8 +27,8 @@ COPY --from=build /usr/src/app/nginx.default.conf /etc/nginx/nginx.conf
 COPY --from=build /usr/src/app/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /usr/src/app/dist/apps/app ./admin
 
-RUN groupadd --gid 5000 armonik && useradd --home-dir /home/armonik --create-home --uid 5000 --gid 5000 --shell /bin/sh armonik
-USER armonik
+RUN addgroup -g 5000 -S armonikuser && adduser -D -h /home/armonikuser  -u 5000 -G armonikuser --shell /bin/sh armonikuser
+USER armonikuser
 
 RUN mkdir -p /tmp/log/nginx && mkdir -p /tmp/run && mkdir -p /tmp/nginx/{client_body_temp,fastcgi_temp,proxy_temp,uwsgi_temp,scgi_temp}
 
