@@ -159,7 +159,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
               <span i18n>Copy Session ID</span>
             </button>
-            <!-- TODO: use icons service -->
             <a mat-menu-item [routerLink]="['/sessions', element.sessionId]">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
               <span i18n>See session</span>

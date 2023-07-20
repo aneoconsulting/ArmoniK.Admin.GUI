@@ -104,7 +104,16 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       <!-- Action -->
       <ng-container *ngIf="isActionsColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-         <em i18n> No actions available </em>
+         <button mat-icon-button [matMenuTriggerFor]="menu"
+          aria-label="Actions" i18n-aria-label>
+            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
+         </button>
+         <mat-menu #menu="matMenu">
+            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="{ 'options.applicationName': element.name, 'options.applicationVersion': element.version }">
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
+              <span i18n>See session</span>
+            </a>
+         </mat-menu>
         </td>
       </ng-container>
     </ng-container>
