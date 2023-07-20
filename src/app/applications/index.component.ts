@@ -333,11 +333,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filters = filters as ApplicationRawFilter[];
 
     this._applicationsIndexService.saveFilters(filters as ApplicationRawFilter[]);
+    this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 
   onFiltersReset() {
     this.filters = this._applicationsIndexService.resetFilters();
+    this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 

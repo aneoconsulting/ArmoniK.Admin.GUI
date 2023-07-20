@@ -5,7 +5,7 @@ export type ScopeConfig<C, O, F> = {
   filters: F[];
 };
 
-export type Scope = 'applications' | 'partitions' | 'sessions' | 'results';
+export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
 export type Element = 'columns' | 'options' | 'filters' | 'interval';
 
 export type Key =

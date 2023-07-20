@@ -326,11 +326,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppInde
     this.filters = filters as PartitionRawFilter[];
 
     this._partitionsIndexService.saveFilters(filters as PartitionRawFilter[]);
+    this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 
   onFiltersReset() {
     this.filters = this._partitionsIndexService.resetFilters();
+    this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 

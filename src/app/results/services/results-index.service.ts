@@ -11,8 +11,6 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   #defaultConfigService = inject(DefaultConfigService);
   #resultsStatusesService = inject(ResultsStatusesService);
 
-  readonly tableName: string = 'results';
-
   readonly defaultColumns: ResultRawColumnKey[] = this.#defaultConfigService.defaultResults.columns;
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
 
@@ -73,6 +71,10 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
    * Table
    */
 
+  isSessionIdColumn(column: ResultRawColumnKey): boolean {
+    return column === 'sessionId';
+  }
+
   isActionsColumn(column: ResultRawColumnKey): boolean {
     return column === 'actions';
   }
@@ -90,7 +92,7 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   }
 
   isSimpleColumn(column: ResultRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isStatusColumn(column) && !this.isDateColumn(column);
+    return !this.isActionsColumn(column) && !this.isStatusColumn(column) && !this.isDateColumn(column) && !this.isSessionIdColumn(column);
   }
 
   /**
@@ -146,7 +148,7 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   }
 
   restoreFilters(): ResultRawFilter[] {
-    return this.#tableService.restoreFilters<ResultRawFilter[]>('results-filters') ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<ResultRaw>('results-filters', this.availableFiltersFields) ?? this.defaultFilters;
   }
 
   resetFilters(): ResultRawFilter[] {

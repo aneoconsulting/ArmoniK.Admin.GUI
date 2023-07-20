@@ -8,8 +8,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
-import { TaskGrpcService } from '@app/tasks/services/task-grpc.service';
-import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { StatusCount } from '@app/tasks/types';
 import { Page } from '@app/types/pages';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
@@ -25,6 +25,7 @@ import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
+import { UtilsService } from '@services/utils.service';
 import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
 import { StatusesGroupCardComponent } from './components/statuses-group-card.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
@@ -106,11 +107,12 @@ app-actions-toolbar {
     TasksStatusesService,
     ShareUrlService,
     QueryParamsService,
-    TaskGrpcService,
+    TasksGrpcService,
     StorageService,
     DashboardStorageService,
     DashboardIndexService,
     AutoRefreshService,
+    UtilsService,
   ],
   imports: [
     NgFor,
@@ -156,7 +158,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private _dialog: MatDialog,
     private _shareURLService: ShareUrlService,
-    private _taskGrpcService: TaskGrpcService,
+    private _taskGrpcService: TasksGrpcService,
     private _dashboardIndexService: DashboardIndexService,
     private _autoRefreshService: AutoRefreshService
   ) {}

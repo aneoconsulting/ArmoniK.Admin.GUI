@@ -1,5 +1,5 @@
 import { SortDirection as ArmoniKSortDirection, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultRawField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { AppGrpcService } from '@app/types/services';
@@ -8,6 +8,9 @@ import {  ResultRaw, ResultRawFieldKey, ResultRawFilter, ResultRawListOptions } 
 
 @Injectable()
 export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
+  #utilsService = inject(UtilsService<ResultRaw>);
+  #resultsClient = inject(ResultsClient);
+
   readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
     'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
     'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
@@ -25,14 +28,9 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
   };
 
 
-  constructor(
-    private _resultsClient: ResultsClient,
-    private _utilsService: UtilsService<ResultRaw>
-  ) { }
-
   list$(options: ResultRawListOptions, filters: ResultRawFilter[]): Observable<ListResultsResponse> {
-    const findFilter = this._utilsService.findFilter;
-    const convertFilterValue = this._utilsService.convertFilterValue;
+    const findFilter = this.#utilsService.findFilter;
+    const convertFilterValue = this.#utilsService.convertFilterValue;
 
     const listResultRequest = new ListResultsRequest({
       page: options.pageIndex,
@@ -46,7 +44,7 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
       filter: {
         name: convertFilterValue(findFilter(filters, 'name')),
         // TODO: Find a way to convert the status (as sort direction, we can create a corresponding enum)
-        status: ResultStatus.RESULT_STATUS_UNSPECIFIED,
+        status: this.#utilsService.convertFilterValueToStatus<ResultStatus>(findFilter(filters, 'status')) ?? ResultStatus.RESULT_STATUS_UNSPECIFIED,
         ownerTaskId: convertFilterValue(findFilter(filters, 'ownerTaskId')),
         sessionId: convertFilterValue(findFilter(filters, 'sessionId')),
         resultId: convertFilterValue(findFilter(filters, 'resultId')),
@@ -54,7 +52,7 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
       }
     });
 
-    return this._resultsClient.listResults(listResultRequest);
+    return this.#resultsClient.listResults(listResultRequest);
   }
 
   get$(resultId: string): Observable<GetResultResponse> {
@@ -62,6 +60,6 @@ export class ResultsGrpcService implements AppGrpcService<ResultRaw> {
       resultId
     });
 
-    return this._resultsClient.getResult(getResultRequest);
+    return this.#resultsClient.getResult(getResultRequest);
   }
 }

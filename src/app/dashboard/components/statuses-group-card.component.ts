@@ -2,7 +2,8 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { RouterModule } from '@angular/router';
+import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { StatusCount } from '@app/tasks/types';
 import { TasksStatusesGroup } from '../types';
 
@@ -23,12 +24,14 @@ import { TasksStatusesGroup } from '../types';
   <mat-card-content>
     <ul>
       <li *ngFor="let status of group.statuses">
-        <span>
-          {{ statusToLabel(status) }}
-        </span>
-        <span>
-          {{ updateCounter(status) }}
-        </span>
+        <a routerLink="/tasks" [queryParams]="{ status: status }">
+          <span>
+            {{ statusToLabel(status) }}
+          </span>
+          <span>
+            {{ updateCounter(status) }}
+          </span>
+        </a>
       </li>
     </ul>
   </mat-card-content>
@@ -52,11 +55,14 @@ ul {
   list-style: none;
 }
 
-ul li {
+ul li a {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+
+  color: inherit;
+  text-decoration: none;
 }
   `],
   standalone: true,
@@ -66,6 +72,7 @@ ul li {
   imports: [
     NgFor,
     NgIf,
+    RouterModule,
     MatCardModule,
   ]
 })

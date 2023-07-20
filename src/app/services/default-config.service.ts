@@ -5,6 +5,7 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { PartitionRawColumnKey, PartitionRawFilter, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRawColumnKey, ResultRawFilter, ResultRawListOptions } from '@app/results/types';
 import { SessionRawColumnKey, SessionRawFilter, SessionRawListOptions } from '@app/sessions/types';
+import { TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryListOptions } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { TaskStatusColored } from '@app/types/dialog';
 import { ExternalService } from '@app/types/external-service';
@@ -55,6 +56,7 @@ export class DefaultConfigService {
     'divider',
     'sessions',
     'results',
+    'tasks',
     'divider',
     'settings',
     'divider'
@@ -149,6 +151,25 @@ export class DefaultConfigService {
     filters: [],
   };
 
+  readonly #defaultTasks: ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilter> = {
+    interval: 10,
+    columns: [
+      'id',
+      'status',
+      'submittedAt',
+      'actions'
+    ],
+    options: {
+      pageIndex: 0,
+      pageSize: 10,
+      sort: {
+        active: 'id',
+        direction: 'asc'
+      },
+    },
+    filters: [],
+  };
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
@@ -195,6 +216,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultResults);
   }
 
+  get defaultTasks(): ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilter> {
+    return structuredClone(this.#defaultTasks);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'navigation-sidebar': this.#defaultSidebar,
     'navigation-theme': this.#defaultTheme,
@@ -220,6 +245,10 @@ export class DefaultConfigService {
     'results-options': this.#defaultResults.options,
     'results-filters': this.#defaultResults.filters,
     'results-interval': this.#defaultResults.interval,
+    'tasks-columns': this.#defaultTasks.columns,
+    'tasks-options': this.#defaultTasks.options,
+    'tasks-filters': this.#defaultTasks.filters,
+    'tasks-interval': this.#defaultTasks.interval,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

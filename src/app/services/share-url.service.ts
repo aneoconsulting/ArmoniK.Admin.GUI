@@ -17,12 +17,9 @@ export class ShareUrlService {
     }
 
     const queryParamsOptions = options ? this.#queryParamsService.createOptions(options) : null;
-    const filtersQuery = filters ? `filters=${encodeURIComponent(JSON.stringify(filters))}` : '';
-    // TODO: flatten filters
-    // const QueryParamsFilters = filters ? this.#queryParamsService.createFilters(filters) : null;
+    const queryParamsFilters = filters ? this.#queryParamsService.createFilters(filters) : null;
 
-
-    const queryParams = [this.#stringify(queryParamsOptions), filtersQuery].join('&');
+    const queryParams = [this.#stringify(queryParamsOptions), this.#stringify(queryParamsFilters)].join('&');
 
     return `${origin}${pathname}?${queryParams}`;
   }

@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy,  inject } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { TasksStatusesService } from '@app/tasks/services/task-status.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
 import { TasksByStatusService } from '@services/tasks-by-status.service';

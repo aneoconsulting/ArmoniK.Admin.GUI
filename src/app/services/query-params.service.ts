@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Filter } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsOptions } from '@app/types/query-params';
 
@@ -13,5 +14,22 @@ export class QueryParamsService<T extends object> {
     };
 
     return queryParamsOptions;
+  }
+
+  createFilters(filters: Filter<T>[]): Record<string, string> {
+    const flattenFilters: Record<string, string> = {};
+
+    for (const filter of filters) {
+      const filterKey = filter.field;
+      const filterValue = filter.value;
+
+      if (!filterKey || !filterValue) {
+        continue;
+      }
+
+      flattenFilters[filterKey.toString()] = filterValue.toString();
+    }
+
+    return flattenFilters;
   }
 }

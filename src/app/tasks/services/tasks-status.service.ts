@@ -1,6 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 
+// TODO: rename this file with a S at task
 @Injectable()
 export class TasksStatusesService {
   readonly statuses: Record<TaskStatus, string> = {
@@ -20,5 +21,9 @@ export class TasksStatusesService {
 
   statusToLabel(status: TaskStatus): string {
     return this.statuses[status];
+  }
+
+  isRetried(status: TaskStatus): boolean {
+    return status === TaskStatus.TASK_STATUS_RETRIED;
   }
 }

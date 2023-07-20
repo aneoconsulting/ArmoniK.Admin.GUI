@@ -5,7 +5,7 @@
  */
 
 
-export type SidebarLinkName = 'profile' | 'dashboard' | 'applications' | 'sessions' | 'partitions' | 'results' | 'settings' ;
+export type SidebarLinkName = 'profile' | 'dashboard' | 'applications' | 'sessions' | 'partitions' | 'results' | 'settings' | 'tasks' ;
 export type SidebarDivider = 'divider';
 
 export type Sidebar = SidebarLinkName | SidebarDivider;

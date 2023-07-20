@@ -23,6 +23,8 @@ import { SpinnerComponent } from './spinner.component';
   </app-actions-toolbar-group>
 
   <app-actions-toolbar-group>
+    <ng-content select="[extra-buttons-right]"></ng-content>
+
     <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"> </app-auto-refresh-button>
 
     <app-columns-button

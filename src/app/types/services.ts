@@ -14,8 +14,6 @@ export interface AppGrpcService<T extends object> {
 }
 
 export interface AppIndexService<T extends object> {
-  readonly tableName: string
-
   readonly defaultColumns: ColumnKey<T>[]
   readonly availableColumns: ColumnKey<T>[]
 

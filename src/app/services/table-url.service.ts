@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { QueryParamsFilterKey, QueryParamsOptionsKey } from '@app/types/query-params';
+import { Filter, FilterField } from '@app/types/filters';
+import { QueryParamsOptionsKey } from '@app/types/query-params';
 
 /**
  * Service to manage the URL for the table.
@@ -14,8 +15,37 @@ export class TableURLService {
     return this.getQueryParams<T>(key, false);
   }
 
-  getQueryParamsFilters<T, U extends object>(key: QueryParamsFilterKey<U>) {
-    return this.getQueryParams<T>(key.toString(), false);
+  getQueryParamsFilters<T extends object>(availableFiltersFields: FilterField<T>[]): Filter<T>[] {
+    const params: Filter<T>[] = [];
+
+    for (const filter of availableFiltersFields) {
+      const key = filter.field;
+      const value = this.getQueryParams<string>(key.toString(), false);
+
+      if (value) {
+        switch (filter.type) {
+        case 'text':
+          params.push({ field: key, value });
+          break;
+        case 'number':
+          params.push({ field: key, value: Number(value) });
+          break;
+        case 'date':
+          throw new Error('Not implemented');
+        case 'select': {
+          const isFound = filter.options.some(option => option.value === value);
+          if (isFound) {
+            params.push({ field: key, value });
+          }
+          break;
+        }
+        default:
+          this.#unreachable(filter);
+        }
+      }
+    }
+
+    return params;
   }
 
   getQueryParams<T>(key: string, parse = true) {
@@ -28,5 +58,9 @@ export class TableURLService {
     }
 
     return null;
+  }
+
+  #unreachable(x: never): never {
+    throw new Error('Unreachable ' + x);
   }
 }

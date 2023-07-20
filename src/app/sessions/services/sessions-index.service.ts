@@ -11,8 +11,6 @@ export class SessionsIndexService {
   #defaultConfigService = inject(DefaultConfigService);
   #tableService = inject(TableService);
 
-  readonly tableName: string = 'sessions';
-
   readonly defaultColumns: SessionRawColumnKey[] = this.#defaultConfigService.defaultSessions.columns;
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
@@ -46,14 +44,15 @@ export class SessionsIndexService {
 
   readonly defaultFilters: SessionRawFilter[] = this.#defaultConfigService.defaultSessions.filters;
   readonly availableFiltersFields: SessionRawFilterField[] = [
+    // Do not filter object or array fields
     {
       field: 'sessionId',
       type: 'text',
     },
-    {
-      field: 'partitionIds',
-      type: 'text',
-    },
+    // {
+    //   field: 'partitionIds',
+    //   type: 'text',
+    // },
     {
       field: 'createdAt',
       type: 'date',
@@ -71,7 +70,12 @@ export class SessionsIndexService {
           label: this.#sessionsStatusesService.statuses[Number(status) as SessionStatus],
         };
       }),
-    }
+    },
+    // FIXME: Not implemented yet in Core
+    // {
+    //   field: 'duration',
+    //   type: 'number'
+    // }
   ];
 
   readonly defaultIntervalValue: number = this.#defaultConfigService.defaultSessions.interval;
@@ -116,7 +120,8 @@ export class SessionsIndexService {
   }
 
   isNotSortableColumn(column: SessionRawColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column);
+    // FIXME: Not implemented yet in Core (for duration, once implemented, it will be sortable)
+    return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column) || this.isDurationColumn(column);
   }
 
   /**
@@ -174,7 +179,7 @@ export class SessionsIndexService {
   }
 
   restoreFilters(): SessionRawFilter[] {
-    return this.#tableService.restoreFilters<SessionRawFilter[]>('sessions-filters') ?? this.defaultFilters;
+    return this.#tableService.restoreFilters<SessionRaw>('sessions-filters', this.availableFiltersFields) ?? this.defaultFilters;
   }
 
   resetFilters(): SessionRawFilter[] {

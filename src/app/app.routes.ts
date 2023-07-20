@@ -27,6 +27,10 @@ export const routes: Routes = [
     loadChildren: () => import('./sessions/routes').then(mod => mod.SESSIONS_ROUTES)
   },
   {
+    path: 'tasks',
+    loadChildren: () => import('./tasks/routes').then(mod => mod.TASKS_ROUTES)
+  },
+  {
     path: 'results',
     loadChildren: () => import('./results/routes').then(mod => mod.RESULTS_ROUTES)
   },
