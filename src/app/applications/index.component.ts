@@ -17,6 +17,7 @@ import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialo
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
@@ -108,6 +109,13 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       </ng-container>
     </ng-container>
 
+    <!-- Empty -->
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns.length">
+        <app-table-empty-data></app-table-empty-data>
+      </td>
+    </tr>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
@@ -159,6 +167,7 @@ app-table-actions-toolbar {
     MatSnackBarModule,
     MatMenuModule,
     MatDialogModule,
+    TableEmptyDataComponent,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {

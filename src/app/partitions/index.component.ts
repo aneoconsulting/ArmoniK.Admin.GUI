@@ -33,6 +33,7 @@ import { UtilsService } from '@services/utils.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from './types';
+import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 
 @Component({
   selector: 'app-partitions-index',
@@ -106,6 +107,13 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       </ng-container>
     </ng-container>
 
+    <!-- Empty -->
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns.length">
+        <app-table-empty-data></app-table-empty-data>
+      </td>
+    </tr>
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
@@ -155,6 +163,7 @@ app-table-actions-toolbar {
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
+    TableEmptyDataComponent,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy, AppIndexComponent<PartitionRaw> {
