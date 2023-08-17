@@ -946,5 +946,17 @@
         <target>d </target>
       </segment>
     </unit>
+    <unit id="3667554695995834523">
+      <segment state="initial">
+        <source> This version is deprecated and will be removed soon. Please use the latest version. </source>
+        <target> This version is deprecated and will be removed soon. Please use the latest version. </target>
+      </segment>
+    </unit>
+    <unit id="2926649585041178986">
+      <segment state="initial">
+        <source> Latest version </source>
+        <target> Latest version </target>
+      </segment>
+    </unit>
   </file>
 </xliff>

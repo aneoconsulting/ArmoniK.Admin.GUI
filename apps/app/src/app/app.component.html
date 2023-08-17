@@ -1,4 +1,24 @@
 <clr-main-container>
+  <clr-alert
+    [clrAlertType]="'danger'"
+    [clrAlertAppLevel]="true"
+    [clrAlertClosable]="false"
+  >
+    <clr-alert-item>
+      <span class="alert-text" i18n>
+        This version is deprecated and will be removed soon. Please use the latest version.
+      </span>
+      <div class="alert-actions">
+        <a
+          href="https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases/latest"
+          class="btn alert-action"
+          i18n
+        >
+          Latest version
+        </a>
+      </div>
+    </clr-alert-item>
+  </clr-alert>
   <clr-header>
     <div class="header-nav">
       <div class="branding">

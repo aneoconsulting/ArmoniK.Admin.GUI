@@ -784,5 +784,15 @@
         <source>d </source>
       </segment>
     </unit>
+    <unit id="2926649585041178986">
+      <segment>
+        <source> Latest version </source>
+      </segment>
+    </unit>
+    <unit id="3667554695995834523">
+      <segment>
+        <source> This version is deprecated and will be removed soon. Please use the latest version. </source>
+      </segment>
+    </unit>
   </file>
 </xliff>
