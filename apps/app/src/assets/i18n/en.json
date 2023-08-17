@@ -1,7 +1,7 @@
 {
   "alert": {
     "content": "This version is deprecated and will be removed soon. Please use the latest version.",
-    "action": "Latest Version"
+    "action": "Latest version"
   },
   "global": {
     "loading": "Loading...",

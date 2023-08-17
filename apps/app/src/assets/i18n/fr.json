@@ -1,7 +1,7 @@
 {
   "alert": {
     "content": "Cette version est dépréciée et va être supprimée prochainement. Veuillez utiliser la dernière version",
-    "action": "Dernière Version"
+    "action": "Dernière version"
   },
   "global": {
     "loading": "Chargement...",
