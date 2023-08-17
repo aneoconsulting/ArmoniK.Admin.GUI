@@ -92,7 +92,7 @@
       </a>
     </clr-dg-cell>
     <clr-dg-cell>
-      {{ error.errorAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+      {{ error.errorAt | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
     </clr-dg-cell>
     <clr-dg-cell [title]="error.error.message">
       <span>
@@ -120,7 +120,7 @@
         (totalApplications > 1
           ? 'pages.dashboard.table.applications'
           : 'pages.dashboard.table.application'
-        ) | translate: { value: totalApplications }
+        ) | translate : { value: totalApplications }
       }}
     </clr-dg-pagination>
   </clr-dg-footer>

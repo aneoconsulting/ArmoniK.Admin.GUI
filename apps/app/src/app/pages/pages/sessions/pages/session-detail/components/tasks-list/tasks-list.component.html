@@ -107,12 +107,12 @@
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ (task.startedAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
+        {{ (task.startedAt | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
       <span>
-        {{ (task.endedAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
+        {{ (task.endedAt | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS') ?? '-' }}
       </span>
     </clr-dg-cell>
     <clr-dg-cell>
@@ -196,7 +196,7 @@
         (totalTasks > 1
           ? 'pages.sessions.session-detail.table.tasks'
           : 'pages.sessions.session-detail.table.task'
-        ) | translate: { value: totalTasks }
+        ) | translate : { value: totalTasks }
       }}
     </clr-dg-pagination>
   </clr-dg-footer>
@@ -206,7 +206,7 @@
   <h3 class="modal-title">
     {{
       'pages.sessions.session-detail.modal.title'
-        | translate: { id: activeTask?._id }
+        | translate : { id: activeTask?._id }
     }}
   </h3>
   <pre class="modal-body">{{ activeTask?.output?.error }}</pre>

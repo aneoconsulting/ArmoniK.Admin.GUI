@@ -186,16 +186,16 @@
       </clr-dg-cell>
       <clr-dg-cell>
         <span>
-          {{ session.createdAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+          {{ session.createdAt | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
         <span *ngIf="isCancelled(session)">
-          {{ session.cancelledAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+          {{ session.cancelledAt | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
         </span>
       </clr-dg-cell>
       <clr-dg-cell>
-        {{ session.lastActivityAt | date: 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
+        {{ session.lastActivityAt | date : 'yyyy-MM-dd &nbsp; HH:mm:ss.SSS' }}
       </clr-dg-cell>
       <clr-dg-cell>
         <button
@@ -226,7 +226,7 @@
           (totalSessions > 1
             ? 'pages.sessions.sessions'
             : 'pages.sessions.session'
-          ) | translate: { value: totalSessions }
+          ) | translate : { value: totalSessions }
         }}
       </clr-dg-pagination>
     </clr-dg-footer>
@@ -239,7 +239,7 @@
     <p>
       {{
         'pages.sessions.cancel.text'
-          | translate: { id: sessionToCancel?._id ?? '' }
+          | translate : { id: sessionToCancel?._id ?? '' }
       }}
     </p>
   </div>
