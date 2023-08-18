@@ -13,7 +13,7 @@ RUN npm ci
 
 COPY . .
 
-RUN nx build app --prod --baseHref=/old-admin/
+RUN nx build app --prod --baseHref=/admin-0.8/
 
 FROM nginx:stable as production
 
