@@ -45,14 +45,13 @@ export class GrpcTasksService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<TaskFilters>(
-        state
-      );
+      this._grpcParamsService.createFilterParams<TaskFilters>(state);
 
     return {
       page,
       pageSize,
-      orderBy: orderBy ?? TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
+      orderBy:
+        orderBy ?? TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
       order,
       filter,
     };
@@ -102,9 +101,11 @@ export class GrpcTasksService extends BaseGrpcService {
     filter,
   }: GrpcListTasksParams): ListTasksRequest {
     const filters: TaskFilters.AsObject = {
-            or: [{
-        and: []
-      }]
+      or: [
+        {
+          and: [],
+        },
+      ],
     };
 
     const keys = Object.keys(filter ?? {});
@@ -157,55 +158,57 @@ export class GrpcTasksService extends BaseGrpcService {
               field: {
                 taskSummaryField: {
                   field: fieldId,
-                }
+                },
               },
               filterStatus: {
                 operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
-                value: status
-              }
-            })
+                value: status,
+              },
+            });
           } else {
-          filters.or?.push({
-            and: [{
-              field: {
-                taskSummaryField: {
-                  field: fieldId,
-                }
-              },
-              filterStatus: {
-                operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
-                value: status
-              }
-           }]
-          })
+            filters.or?.push({
+              and: [
+                {
+                  field: {
+                    taskSummaryField: {
+                      field: fieldId,
+                    },
+                  },
+                  filterStatus: {
+                    operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+                    value: status,
+                  },
+                },
+              ],
+            });
+          }
         }
-      }
       } else if (dateKeys.includes(key)) {
         filters.or?.[0].and?.push({
           field: {
             taskSummaryField: {
               field: fieldId,
-            }
+            },
           },
           filterDate: {
             operator: key.endsWith('Before')
               ? FilterDateOperator.FILTER_DATE_OPERATOR_BEFORE_OR_EQUAL
               : FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       } else {
         filters.or?.[0].and?.push({
           field: {
             taskSummaryField: {
               field: fieldId,
-            }
+            },
           },
           filterString: {
             operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       }
     }
 
@@ -216,11 +219,11 @@ export class GrpcTasksService extends BaseGrpcService {
         field: {
           taskSummaryField: {
             field: orderBy,
-          }
+          },
         },
         direction: order,
       },
-      filters
+      filters,
     });
 
     return options;

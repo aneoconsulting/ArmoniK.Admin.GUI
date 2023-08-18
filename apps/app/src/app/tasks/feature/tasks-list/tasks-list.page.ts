@@ -120,7 +120,6 @@ export class TasksListComponent implements OnInit {
 
   taskStatusList: { value: number; label: string }[];
 
-
   /**
    * Filters observables.
    * We are not using the queryParam functions because they are called in a infinite loop with the async pipe.
@@ -164,7 +163,6 @@ export class TasksListComponent implements OnInit {
     this._activatedRoute.snapshot.queryParams,
     'endedAfter'
   );
-
 
   ngOnInit(): void {
     this.taskStatusList = [

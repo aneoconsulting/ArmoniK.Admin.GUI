@@ -11,7 +11,8 @@ import { ShowTasksByStatusComponent } from '../show-tasks-by-status/show-tasks-b
 import { DashboardDefaultGroupService } from '../../data-access/dashboard-default-group.service';
 import { Group } from '../../types/group.type';
 import {
-  ApplicationRaw, CountTasksByStatusResponse,
+  ApplicationRaw,
+  CountTasksByStatusResponse,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 @Component({

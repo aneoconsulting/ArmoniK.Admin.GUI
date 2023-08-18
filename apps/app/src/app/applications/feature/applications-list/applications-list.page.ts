@@ -141,7 +141,9 @@ export class ApplicationsListComponent {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(field: ApplicationRawEnumField): ClrDatagridSortOrder {
+  public defaultSortOrder(
+    field: ApplicationRawEnumField
+  ): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

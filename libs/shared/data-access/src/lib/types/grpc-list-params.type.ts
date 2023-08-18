@@ -9,7 +9,7 @@ import {
   SessionRawEnumField,
   SortDirection,
   TaskFilters,
-  TaskSummaryEnumField
+  TaskSummaryEnumField,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 export type GrpcListApplicationsParams = GrpcListParams<

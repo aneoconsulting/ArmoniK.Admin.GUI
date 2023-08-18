@@ -40,9 +40,7 @@ export class GrpcSessionsService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<SessionFilters>(
-        state
-      );
+      this._grpcParamsService.createFilterParams<SessionFilters>(state);
 
     return {
       page,
@@ -91,9 +89,11 @@ export class GrpcSessionsService extends BaseGrpcService {
     filter,
   }: GrpcListSessionsParams): ListSessionsRequest {
     const filters: SessionFilters.AsObject = {
-      or: [{
-        and: []
-      }]
+      or: [
+        {
+          and: [],
+        },
+      ],
     };
 
     const keys = Object.keys(filter ?? {});
@@ -102,29 +102,29 @@ export class GrpcSessionsService extends BaseGrpcService {
       'createdBefore',
       'createdAfter',
       'cancelledBefore',
-      'cancelledAfter'
-    ]
+      'cancelledAfter',
+    ];
     for (const key of keys) {
       let fieldId: SessionRawEnumField = 0;
       switch (key) {
         case 'sessionId':
           fieldId = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID;
-        break;
+          break;
         case 'status':
           fieldId = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS;
-        break;
+          break;
         case 'createdBefore':
           fieldId = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT;
-        break;
+          break;
         case 'createdAfter':
           fieldId = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT;
-        break;
+          break;
         case 'cancelledBefore':
           fieldId = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT;
-        break;
+          break;
         case 'cancelledAfter':
           fieldId = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT;
-        break;
+          break;
       }
 
       if (key === statusKey) {
@@ -132,39 +132,39 @@ export class GrpcSessionsService extends BaseGrpcService {
           field: {
             sessionRawField: {
               field: fieldId,
-            }
+            },
           },
           filterStatus: {
             operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       } else if (dateKeys.includes(key)) {
         filters.or?.[0].and?.push({
           field: {
             sessionRawField: {
               field: fieldId,
-            }
+            },
           },
           filterDate: {
             operator: key.endsWith('Before')
               ? FilterDateOperator.FILTER_DATE_OPERATOR_BEFORE_OR_EQUAL
               : FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       } else {
         filters.or?.[0].and?.push({
           field: {
             sessionRawField: {
               field: fieldId,
-            }
+            },
           },
           filterString: {
             operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       }
     }
 
@@ -175,7 +175,7 @@ export class GrpcSessionsService extends BaseGrpcService {
         field: {
           sessionRawField: {
             field: orderBy,
-          }
+          },
         },
         direction: order,
       },

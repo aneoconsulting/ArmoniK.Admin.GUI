@@ -41,14 +41,14 @@ export class GrpcApplicationsService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<ApplicationFilters>(
-        state
-      );
+      this._grpcParamsService.createFilterParams<ApplicationFilters>(state);
 
     return {
       page,
       pageSize,
-      orderBy: [orderBy ?? ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME],
+      orderBy: [
+        orderBy ?? ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+      ],
       order,
       filter,
     };
@@ -62,7 +62,9 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
-      orderBy: !orderBy.includes(ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME)
+      orderBy: !orderBy.includes(
+        ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+      )
         ? orderBy
         : undefined,
       order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
@@ -78,10 +80,12 @@ export class GrpcApplicationsService extends BaseGrpcService {
     filter,
   }: GrpcListApplicationsParams): ListApplicationsRequest {
     const filters: ApplicationFilters.AsObject = {
-      or: [{
-        and: []
-      }]
-    }
+      or: [
+        {
+          and: [],
+        },
+      ],
+    };
 
     const keys = Object.keys(filter ?? {});
     for (const key of keys) {
@@ -94,24 +98,25 @@ export class GrpcApplicationsService extends BaseGrpcService {
           fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION;
           break;
         case 'namespace':
-          fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE;
+          fieldId =
+            ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE;
           break;
         case 'service':
           fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE;
           break;
-        }
+      }
 
-        filters.or?.[0].and?.push({
-          field: {
-            applicationField: {
-              field: fieldId
-            }
+      filters.or?.[0].and?.push({
+        field: {
+          applicationField: {
+            field: fieldId,
           },
-          filterString: {
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+        },
+        filterString: {
+          operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+          value: filter?.[key],
+        },
+      });
     }
 
     return new ListApplicationsRequest({
@@ -145,36 +150,38 @@ export class GrpcApplicationsService extends BaseGrpcService {
     version: string;
   }): Observable<CountTasksByStatusResponse> {
     const options = new CountTasksByStatusRequest({
-     filters: {
-      or: [
-        {
-          and: [
-            {
-              field: {
-                taskOptionField: {
-                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME
-                }
+      filters: {
+        or: [
+          {
+            and: [
+              {
+                field: {
+                  taskOptionField: {
+                    field:
+                      TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+                  },
+                },
+                filterString: {
+                  operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                  value: name,
+                },
               },
-              filterString: {
-                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-                value: name
-              }
-            },
-            {
-              field: {
-                taskOptionField: {
-                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION
-                }
+              {
+                field: {
+                  taskOptionField: {
+                    field:
+                      TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
+                  },
+                },
+                filterString: {
+                  operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                  value: version,
+                },
               },
-              filterString: {
-                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-                value: version
-              }
-            }
-          ]
-        }
-      ]
-     }
+            ],
+          },
+        ],
+      },
     });
 
     return this._tasksClient

@@ -38,9 +38,7 @@ export class GrpcResultsService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<ResultFilters>(
-        state
-      );
+      this._grpcParamsService.createFilterParams<ResultFilters>(state);
 
     return {
       page,
@@ -85,17 +83,16 @@ export class GrpcResultsService extends BaseGrpcService {
     filter,
   }: GrpcListResultsParams): ListResultsRequest {
     const filters: ResultFilters.AsObject = {
-      or: [{
-        and: []
-      }],
+      or: [
+        {
+          and: [],
+        },
+      ],
     };
 
     const keys = Object.keys(filter ?? {});
-    const statusKey = 'status'
-    const dateKeys = [
-      'createdBefore',
-      'createdAfter'
-    ]
+    const statusKey = 'status';
+    const dateKeys = ['createdBefore', 'createdAfter'];
     for (const key of keys) {
       let fieldId: ResultRawEnumField = 0;
       switch (key) {
@@ -119,44 +116,44 @@ export class GrpcResultsService extends BaseGrpcService {
           break;
       }
 
-       if (key === statusKey) {
+      if (key === statusKey) {
         filters.or?.[0].and?.push({
           field: {
             resultRawField: {
               field: fieldId,
-            }
+            },
           },
           filterStatus: {
             operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       } else if (dateKeys.includes(key)) {
         filters.or?.[0].and?.push({
           field: {
             resultRawField: {
               field: fieldId,
-            }
+            },
           },
           filterDate: {
             operator: key.endsWith('Before')
               ? FilterDateOperator.FILTER_DATE_OPERATOR_BEFORE_OR_EQUAL
               : FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       } else {
         filters.or?.[0].and?.push({
           field: {
             resultRawField: {
               field: fieldId,
-            }
+            },
           },
           filterString: {
             operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: filter?.[key]
-          }
-        })
+            value: filter?.[key],
+          },
+        });
       }
     }
 
