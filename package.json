@@ -17,7 +17,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api.angular": "3.9.2",
+    "@aneoconsultingfr/armonik.api.angular": "3.11.0",
     "@angular/animations": "14.2.7",
     "@angular/cdk": "15.2.1",
     "@angular/common": "14.2.12",
@@ -79,5 +79,5 @@
     "prettier": "2.8.0",
     "typescript": "4.6.2"
   },
-  "packageManager": "pnpm@8.4.0"
+  "packageManager": "pnpm@8.6.12"
 }

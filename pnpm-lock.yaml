@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
-    specifier: 3.9.2
-    version: 3.9.2(@angular/common@14.2.12)(@angular/core@14.2.12)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0)
+    specifier: 3.11.0
+    version: 3.11.0(@angular/common@14.2.12)(@angular/core@14.2.12)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0)
   '@angular/animations':
     specifier: 14.2.7
     version: 14.2.7(@angular/core@14.2.12)
@@ -197,11 +197,11 @@ packages:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.18
 
-  /@aneoconsultingfr/armonik.api.angular@3.9.2(@angular/common@14.2.12)(@angular/core@14.2.12)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0):
-    resolution: {integrity: sha512-mDA1w5xclwZIoZZXIzzZyPyWlaK5omBOWOulu56OWsn0RyIcQ6lk6WzHc9Q0EnG23Gh8Ef0eX8gL7y/xezgvKw==}
+  /@aneoconsultingfr/armonik.api.angular@3.11.0(@angular/common@14.2.12)(@angular/core@14.2.12)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0):
+    resolution: {integrity: sha512-zdpfFZzFxXQOAEr8MGfH6F1nr55OKB5jt1aJVV/C7XDU3FwTZ5gQTzkazKdXoKL1+twDQ/vTWpy0bmMK6TuYEg==}
     peerDependencies:
-      '@angular/common': ^16.0.1
-      '@angular/core': ^16.0.1
+      '@angular/common': ^16.1.6
+      '@angular/core': ^16.1.6
       '@ngx-grpc/common': ^3.1.1
       '@ngx-grpc/core': ^3.1.1
       '@ngx-grpc/well-known-types': ^3.1.1
@@ -215,7 +215,7 @@ packages:
       '@ngx-grpc/well-known-types': 3.1.1(@ngx-grpc/common@3.1.1)(google-protobuf@3.21.2)
       google-protobuf: 3.21.2
       rxjs: 7.6.0
-      tslib: 2.4.1
+      tslib: 2.6.1
     dev: false
 
   /@angular-devkit/architect@0.1301.4:
@@ -10543,6 +10543,7 @@ packages:
   /pify@4.0.1:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
+    requiresBuild: true
     optional: true
 
   /pirates@4.0.5:
@@ -11381,6 +11382,7 @@ packages:
 
   /prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
+    requiresBuild: true
     optional: true
 
   /psl@1.9.0:
@@ -11786,6 +11788,7 @@ packages:
   /semver@5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
     hasBin: true
+    requiresBuild: true
     optional: true
 
   /semver@6.3.0:
@@ -12544,6 +12547,10 @@ packages:
 
   /tslib@2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+
+  /tslib@2.6.1:
+    resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
+    dev: false
 
   /tsutils@3.21.0(typescript@4.6.2):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
