@@ -62,9 +62,9 @@
     </clr-dg-action-bar>
 
     <clr-dg-column
-      [clrDgField]="OrderByField.SESSION_RAW_FIELD_SESSION_ID.toString()"
+      [clrDgField]="OrderByField.SESSION_RAW_ENUM_FIELD_SESSION_ID.toString()"
       [clrDgSortOrder]="
-      defaultSortOrder(OrderByField.SESSION_RAW_FIELD_SESSION_ID)
+      defaultSortOrder(OrderByField.SESSION_RAW_ENUM_FIELD_SESSION_ID)
     "
     >
       <span i18n> Session ID </span>
@@ -78,8 +78,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.SESSION_RAW_FIELD_STATUS.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.SESSION_RAW_FIELD_STATUS)"
+      [clrDgField]="OrderByField.SESSION_RAW_ENUM_FIELD_STATUS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.SESSION_RAW_ENUM_FIELD_STATUS)"
     >
       <span i18n> Status </span>
       <clr-dg-filter [clrDgFilter]="statusFilterComponent">
@@ -93,9 +93,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.SESSION_RAW_FIELD_CREATED_AT.toString()"
+      [clrDgField]="OrderByField.SESSION_RAW_ENUM_FIELD_CREATED_AT.toString()"
       [clrDgSortOrder]="
-      defaultSortOrder(OrderByField.SESSION_RAW_FIELD_CREATED_AT)
+      defaultSortOrder(OrderByField.SESSION_RAW_ENUM_FIELD_CREATED_AT)
     "
     >
       <span i18n> Created at </span>
@@ -110,9 +110,9 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.SESSION_RAW_FIELD_CANCELLED_AT.toString()"
+      [clrDgField]="OrderByField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT.toString()"
       [clrDgSortOrder]="
-      defaultSortOrder(OrderByField.SESSION_RAW_FIELD_CANCELLED_AT)
+      defaultSortOrder(OrderByField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT)
     "
     >
       <span i18n> Closed at </span>

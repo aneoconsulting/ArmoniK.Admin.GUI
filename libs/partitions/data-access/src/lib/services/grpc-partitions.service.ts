@@ -1,9 +1,12 @@
 import {
+  FilterNumberOperator,
+  FilterStringOperator,
   GetPartitionRequest,
   GetPartitionResponse,
   ListPartitionsRequest,
   ListPartitionsResponse,
-  PartitionRawField,
+  PartitionFilters,
+  PartitionRawEnumField,
   PartitionsClient,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -31,12 +34,12 @@ export class GrpcPartitionsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      PartitionRawField,
+      PartitionRawEnumField,
       SortDirection
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<ListPartitionsRequest.Filter.AsObject>(
+      this._grpcParamsService.createFilterParams<PartitionFilters>(
         state
       );
 
@@ -44,7 +47,7 @@ export class GrpcPartitionsService extends BaseGrpcService {
       page,
       pageSize,
       order,
-      orderBy: orderBy ?? PartitionRawField.PARTITION_RAW_FIELD_ID,
+      orderBy: orderBy ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
       filter,
     };
   }
@@ -58,7 +61,7 @@ export class GrpcPartitionsService extends BaseGrpcService {
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
       orderBy:
-        orderBy !== PartitionRawField.PARTITION_RAW_FIELD_ID
+        orderBy !== PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
           ? orderBy
           : undefined,
       order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
@@ -73,16 +76,81 @@ export class GrpcPartitionsService extends BaseGrpcService {
     order,
     filter,
   }: GrpcListPartitionsParams): ListPartitionsRequest {
+    const filters: PartitionFilters.AsObject = {
+      or: [{
+        and: []
+      }]
+    };
+
+    const keys = Object.keys(filter ?? {});
+    const numberKeys = [
+      'podReserved',
+      'podMax',
+      'preemptionPercentage',
+      'priority',
+    ]
+    for (const key of keys) {
+      let fieldId: PartitionRawEnumField = 0;
+      switch (key) {
+        case 'id':
+          fieldId = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID;
+        break;
+        case 'parentId':
+          fieldId = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS;
+        break;
+        case 'podReserved':
+          fieldId = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED;
+        break;
+        case 'podMax':
+          fieldId = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX;
+        break;
+        case 'preemptionPercentage':
+          fieldId = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PREEMPTION_PERCENTAGE;
+        break;
+        case 'priority':
+          fieldId = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY;
+        break;
+      }
+
+      if (numberKeys.includes(key)) {
+        filters.or?.[0].and?.push({
+          field: {
+            partitionRawField: {
+              field: fieldId,
+            }
+          },
+          filterNumber: {
+            operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL,
+            value: filter?.[key].toString()
+          }
+        })
+      } else {
+        filters.or?.[0].and?.push({
+          field: {
+            partitionRawField: {
+              field: fieldId,
+            }
+          },
+          filterString: {
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: filter?.[key]
+          }
+        })
+      }
+    }
+
     return new ListPartitionsRequest({
       page,
       pageSize,
       sort: {
         field: {
-          partitionRawField: orderBy,
+          partitionRawField: {
+            field: orderBy,
+          },
         },
         direction: order,
       },
-      filter,
+      filters,
     });
   }
 

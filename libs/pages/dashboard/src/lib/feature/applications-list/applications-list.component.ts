@@ -7,6 +7,7 @@ import { ApplicationCardComponent } from '../../ui/application-card/application-
 import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
 import {
   ApplicationRaw,
+  ApplicationRawEnumField,
   ApplicationRawField,
   ListApplicationsResponse,
   SortDirection,
@@ -71,16 +72,10 @@ export class ApplicationsListComponent {
       page: this._currentPage,
       pageSize: this._pageSize,
       orderBy: [
-        ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
-        ApplicationRawField.APPLICATION_RAW_FIELD_VERSION,
+        ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+        ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
       ],
       order: SortDirection.SORT_DIRECTION_ASC,
-      filter: {
-        name: '',
-        version: '',
-        service: '',
-        namespace: '',
-      },
     });
 
     return this._grpcApplicationsService.list$(options);

@@ -1,11 +1,15 @@
 import {
-  ApplicationRawField,
+  ApplicationFilters,
+  ApplicationRawEnumField,
   ApplicationsClient,
-  CountTasksByStatusApplicationRequest,
-  CountTasksByStatusApplicationResponse,
+  CountTasksByStatusRequest,
+  CountTasksByStatusResponse,
+  FilterStringOperator,
   ListApplicationsRequest,
   ListApplicationsResponse,
   SortDirection,
+  TaskOptionEnumField,
+  TasksClient,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import {
@@ -20,6 +24,7 @@ import { Observable, takeUntil } from 'rxjs';
 export class GrpcApplicationsService extends BaseGrpcService {
   constructor(
     private _applicationsClient: ApplicationsClient,
+    private _tasksClient: TasksClient,
     private _grpcParamsService: GrpcParamsService
   ) {
     super();
@@ -31,19 +36,19 @@ export class GrpcApplicationsService extends BaseGrpcService {
     const { page, pageSize } = this._grpcParamsService.createPagerParams(state);
 
     const { orderBy, order } = this._grpcParamsService.createSortParams<
-      ApplicationRawField,
+      ApplicationRawEnumField,
       SortDirection
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<ListApplicationsRequest.Filter.AsObject>(
+      this._grpcParamsService.createFilterParams<ApplicationFilters>(
         state
       );
 
     return {
       page,
       pageSize,
-      orderBy: [orderBy ?? ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
+      orderBy: [orderBy ?? ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME],
       order,
       filter,
     };
@@ -57,7 +62,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
       interval: refreshInterval !== 10000 ? refreshInterval : undefined,
-      orderBy: !orderBy.includes(ApplicationRawField.APPLICATION_RAW_FIELD_NAME)
+      orderBy: !orderBy.includes(ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME)
         ? orderBy
         : undefined,
       order: order !== SortDirection.SORT_DIRECTION_ASC ? order : undefined,
@@ -72,18 +77,55 @@ export class GrpcApplicationsService extends BaseGrpcService {
     order,
     filter,
   }: GrpcListApplicationsParams): ListApplicationsRequest {
+    const filters: ApplicationFilters.AsObject = {
+      or: [{
+        and: []
+      }]
+    }
+
+    const keys = Object.keys(filter ?? {});
+    for (const key of keys) {
+      let fieldId: ApplicationRawEnumField = 0;
+      switch (key) {
+        case 'name':
+          fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME;
+          break;
+        case 'version':
+          fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION;
+          break;
+        case 'namespace':
+          fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE;
+          break;
+        case 'service':
+          fieldId = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE;
+          break;
+        }
+
+        filters.or?.[0].and?.push({
+          field: {
+            applicationField: {
+              field: fieldId
+            }
+          },
+          filterString: {
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: filter?.[key]
+          }
+        })
+    }
+
     return new ListApplicationsRequest({
       page,
       pageSize,
       sort: {
         fields: [
           ...orderBy.map((field) => {
-            return { applicationField: field };
+            return { applicationField: { field } };
           }),
         ],
         direction: order,
       },
-      filter,
+      filters,
     });
   }
 
@@ -101,13 +143,41 @@ export class GrpcApplicationsService extends BaseGrpcService {
   }: {
     name: string;
     version: string;
-  }): Observable<CountTasksByStatusApplicationResponse> {
-    const options = new CountTasksByStatusApplicationRequest({
-      name,
-      version,
+  }): Observable<CountTasksByStatusResponse> {
+    const options = new CountTasksByStatusRequest({
+     filters: {
+      or: [
+        {
+          and: [
+            {
+              field: {
+                taskOptionField: {
+                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME
+                }
+              },
+              filterString: {
+                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                value: name
+              }
+            },
+            {
+              field: {
+                taskOptionField: {
+                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION
+                }
+              },
+              filterString: {
+                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                value: version
+              }
+            }
+          ]
+        }
+      ]
+     }
     });
 
-    return this._applicationsClient
+    return this._tasksClient
       .countTasksByStatus(options)
       .pipe(takeUntil(this._timeout$));
   }

@@ -1,45 +1,45 @@
 import {
-  ApplicationRawField,
-  ListApplicationsRequest,
-  PartitionRawField,
-  ResultRawField,
-  SessionRawField,
+  ApplicationFilters,
+  ApplicationRawEnumField,
+  PartitionFilters,
+  PartitionRawEnumField,
+  ResultFilters,
+  ResultRawEnumField,
+  SessionFilters,
+  SessionRawEnumField,
   SortDirection,
+  TaskFilters,
+  TaskSummaryEnumField
 } from '@aneoconsultingfr/armonik.api.angular';
-import { ListPartitionsRequest } from '@aneoconsultingfr/armonik.api.angular';
-import { ListResultsRequest } from '@aneoconsultingfr/armonik.api.angular';
-import { ListSessionsRequest } from '@aneoconsultingfr/armonik.api.angular';
-import { ListTasksRequest } from '@aneoconsultingfr/armonik.api.angular';
-import { TaskSummaryField } from '@aneoconsultingfr/armonik.api.angular/lib/generated/tasks-common.pb';
 
 export type GrpcListApplicationsParams = GrpcListParams<
-  ApplicationRawField[],
+  ApplicationRawEnumField[],
   SortDirection,
-  ListApplicationsRequest.Filter.AsObject
+  ApplicationFilters
 >;
 
 export type GrpcListSessionsParams = GrpcListParams<
-  SessionRawField,
+  SessionRawEnumField,
   SortDirection,
-  ListSessionsRequest.Filter.AsObject
+  SessionFilters
 >;
 
 export type GrpcListTasksParams = GrpcListParams<
-  TaskSummaryField,
+  TaskSummaryEnumField,
   SortDirection,
-  ListTasksRequest.Filter.AsObject
+  TaskFilters
 >;
 
 export type GrpcListResultsParams = GrpcListParams<
-  ResultRawField,
+  ResultRawEnumField,
   SortDirection,
-  ListResultsRequest.Filter.AsObject
+  ResultFilters
 >;
 
 export type GrpcListPartitionsParams = GrpcListParams<
-  PartitionRawField,
+  PartitionRawEnumField,
   SortDirection,
-  ListPartitionsRequest.Filter.AsObject
+  PartitionFilters
 >;
 
 type GrpcListParams<
@@ -51,5 +51,5 @@ type GrpcListParams<
   pageSize: number;
   orderBy: T;
   order: K;
-  filter?: J;
+  filter?: J & { [key: string]: any };
 };

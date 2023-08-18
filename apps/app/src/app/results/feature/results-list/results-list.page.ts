@@ -1,6 +1,7 @@
 import {
   ListResultsResponse,
   ResultRaw,
+  ResultRawEnumField,
   ResultRawField,
   ResultStatus,
   SortDirection,
@@ -36,6 +37,13 @@ import { SettingsService } from '../../../shared/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultsListComponent implements OnInit {
+  constructor(
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
+    private _settingsService: SettingsService,
+    private _grpcResultsService: GrpcResultsService
+  ) {}
+
   private _state: ClrDatagridStateInterface = {};
   private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
@@ -113,13 +121,6 @@ export class ResultsListComponent implements OnInit {
     'createdAfter'
   );
 
-  constructor(
-    private _router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private _settingsService: SettingsService,
-    private _grpcResultsService: GrpcResultsService
-  ) {}
-
   ngOnInit(): void {
     this.statusList = [
       ...Object.keys(ResultStatus)
@@ -152,7 +153,7 @@ export class ResultsListComponent implements OnInit {
   }
 
   public get OrderByField() {
-    return ResultRawField;
+    return ResultRawEnumField;
   }
 
   public get ResultsStatusEnum() {
@@ -192,7 +193,7 @@ export class ResultsListComponent implements OnInit {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(field: ResultRawField): ClrDatagridSortOrder {
+  public defaultSortOrder(field: ResultRawEnumField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );
