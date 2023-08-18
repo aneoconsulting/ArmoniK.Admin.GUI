@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
     specifier: 3.9.2
@@ -45,14 +41,14 @@ dependencies:
     specifier: 6.2.2
     version: 6.2.2
   '@clr/angular':
-    specifier: 13.10.1
-    version: 13.10.1(@angular/common@14.2.12)(@angular/core@14.2.12)(@cds/core@6.2.2)
+    specifier: 15.10.0
+    version: 15.10.0(@angular/cdk@15.2.1)(@angular/common@14.2.12)(@angular/core@14.2.12)(@cds/core@6.2.2)(@clr/ui@15.10.0)
   '@clr/icons':
     specifier: 13.0.2
     version: 13.0.2(@webcomponents/custom-elements@1.6.0)
   '@clr/ui':
-    specifier: 13.8.2
-    version: 13.8.2(@clr/angular@13.10.1)
+    specifier: 15.10.0
+    version: 15.10.0
   '@ngx-grpc/common':
     specifier: 3.1.1
     version: 3.1.1(google-protobuf@3.21.2)(rxjs@7.6.0)
@@ -3072,16 +3068,20 @@ packages:
       modern-normalize: 1.1.0
     dev: false
 
-  /@clr/angular@13.10.1(@angular/common@14.2.12)(@angular/core@14.2.12)(@cds/core@6.2.2):
-    resolution: {integrity: sha512-M2+ljw2BlGdsTlSDdNAAww/1CYsy0XL3uiywg33zb1RR2suIC1SY1U63BJZ/ZBj1W/QAyLDKamPgmUw+0QJ7Qg==}
+  /@clr/angular@15.10.0(@angular/cdk@15.2.1)(@angular/common@14.2.12)(@angular/core@14.2.12)(@cds/core@6.2.2)(@clr/ui@15.10.0):
+    resolution: {integrity: sha512-n+vnelfw3w5uVYm3/R1eWMRgH0y+E2iS87lVcVfDSMrAZkm3y5JcmZC82lZ+dUB84neveUaNA0G2M2KN9/XRXQ==}
     peerDependencies:
-      '@angular/common': 13 || 14
-      '@angular/core': 13 || 14
+      '@angular/cdk': 15 || 16
+      '@angular/common': 15 || 16
+      '@angular/core': 15 || 16
       '@cds/core': ^5.6.0 || ^6.0.0
+      '@clr/ui': 15.10.0
     dependencies:
+      '@angular/cdk': 15.2.1(@angular/common@14.2.12)(@angular/core@14.2.12)(rxjs@7.6.0)
       '@angular/common': 14.2.12(@angular/core@14.2.12)(rxjs@7.6.0)
       '@angular/core': 14.2.12(rxjs@7.6.0)(zone.js@0.11.4)
       '@cds/core': 6.2.2
+      '@clr/ui': 15.10.0
       tslib: 2.4.1
     dev: false
 
@@ -3093,12 +3093,8 @@ packages:
       '@webcomponents/custom-elements': 1.6.0
     dev: false
 
-  /@clr/ui@13.8.2(@clr/angular@13.10.1):
-    resolution: {integrity: sha512-ODEviNWG6Ar2YpAIqJ7WoxlQb7pRJLHiMUXug5dBTzandy7+WwWThudB5uYzR7IDgGXhFxI9yOzdBxfsj5WRZw==}
-    peerDependencies:
-      '@clr/angular': 13.8.2
-    dependencies:
-      '@clr/angular': 13.10.1(@angular/common@14.2.12)(@angular/core@14.2.12)(@cds/core@6.2.2)
+  /@clr/ui@15.10.0:
+    resolution: {integrity: sha512-7m5oxr9m0QXpdN2i1XVI3H26so6hsAWB72nIS/c7yJv3grzMJ8Y4eX8Irxr5TVsKjfsuNw0jszrDCyMxr5suJQ==}
     dev: false
 
   /@colors/colors@1.5.0:
@@ -4473,25 +4469,6 @@ packages:
       - ts-node
       - typescript
       - verdaccio
-    dev: false
-
-  /@nrwl/jest@16.4.2(@types/node@16.11.7)(nx@16.4.2)(typescript@4.6.2):
-    resolution: {integrity: sha512-660C9GaXT+yBwdmN3/UogxUZaECxZpX5QpfvFO25q3wT99E5BmM90mbELQXlnHoSframI5wPlM/xaDHeK0qJrg==}
-    dependencies:
-      '@nx/jest': 16.4.2(@types/node@16.11.7)(nx@16.4.2)(typescript@4.6.2)
-    transitivePeerDependencies:
-      - '@babel/traverse'
-      - '@swc-node/register'
-      - '@swc/core'
-      - '@types/node'
-      - debug
-      - node-notifier
-      - nx
-      - supports-color
-      - ts-node
-      - typescript
-      - verdaccio
-    dev: true
 
   /@nrwl/js@16.4.2(nx@16.4.2)(typescript@4.6.2):
     resolution: {integrity: sha512-sOB+2MBLkYsX3Sk4g1IZSc9bK8kM4ZuZ6zjmQVv9M4DYlph5aPHorZOcN4vR/s+ZMWzK0aZLjSq5JAEU0VJYKw==}
@@ -4766,38 +4743,6 @@ packages:
       - ts-node
       - typescript
       - verdaccio
-    dev: false
-
-  /@nx/jest@16.4.2(@types/node@16.11.7)(nx@16.4.2)(typescript@4.6.2):
-    resolution: {integrity: sha512-P4Pw8v/a+SRzP9fpbyLGcUoBt5pbcUJTQsUDTUulMHBpVCYGaH4Z7BKld9ygHD9DUcdHX1aMWQc6NMOJZBFbRQ==}
-    dependencies:
-      '@jest/reporters': 29.5.0
-      '@jest/test-result': 29.5.0
-      '@nrwl/jest': 16.4.2(@types/node@16.11.7)(nx@16.4.2)(typescript@4.6.2)
-      '@nx/devkit': 16.4.2(nx@16.4.2)
-      '@nx/js': 16.4.2(nx@16.4.2)(typescript@4.6.2)
-      '@phenomnomnominal/tsquery': 5.0.1(typescript@4.6.2)
-      chalk: 4.1.2
-      dotenv: 10.0.0
-      identity-obj-proxy: 3.0.0
-      jest-config: 29.5.0(@types/node@16.11.7)(ts-node@10.9.1)
-      jest-resolve: 29.5.0
-      jest-util: 29.5.0
-      resolve.exports: 1.1.0
-      tslib: 2.4.1
-    transitivePeerDependencies:
-      - '@babel/traverse'
-      - '@swc-node/register'
-      - '@swc/core'
-      - '@types/node'
-      - debug
-      - node-notifier
-      - nx
-      - supports-color
-      - ts-node
-      - typescript
-      - verdaccio
-    dev: true
 
   /@nx/js@16.4.2(nx@16.4.2)(typescript@4.6.2):
     resolution: {integrity: sha512-l8D88fIOfIttyDOQpNqxUWzBAwX5pEHAP1QJAl6FRToQq+iDcwgun2IMaKnt48M6GG2SGNqdhFLRyFY2NME13A==}
@@ -4870,7 +4815,7 @@ packages:
     dependencies:
       '@nrwl/node': 16.4.2(@types/node@16.11.7)(eslint@8.29.0)(nx@16.4.2)(typescript@4.6.2)
       '@nx/devkit': 16.4.2(nx@16.4.2)
-      '@nx/jest': 16.4.2(@types/node@16.11.7)(nx@16.4.2)(typescript@4.6.2)
+      '@nx/jest': 16.4.2(@types/node@16.11.7)(nx@16.4.2)(ts-node@10.9.1)(typescript@4.6.2)
       '@nx/js': 16.4.2(nx@16.4.2)(typescript@4.6.2)
       '@nx/linter': 16.4.2(eslint@8.29.0)(nx@16.4.2)(typescript@4.6.2)
       '@nx/workspace': 16.4.2
@@ -12371,29 +12316,6 @@ packages:
       terser: 5.18.2
       webpack: 5.74.0(esbuild@0.15.5)
 
-  /terser-webpack-plugin@5.3.9(webpack@5.88.1):
-    resolution: {integrity: sha512-ZuXsqE07EcggTWQjXUj+Aot/OMcD0bMKGgF63f7UxYcu5/AJF53aIpK1YoP5xR9l6s/Hy2b+t1AM0bLNPRuhwA==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      '@swc/core': '*'
-      esbuild: '*'
-      uglify-js: '*'
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-    dependencies:
-      '@jridgewell/trace-mapping': 0.3.18
-      jest-worker: 27.5.1
-      schema-utils: 3.3.0
-      serialize-javascript: 6.0.1
-      terser: 5.18.2
-      webpack: 5.88.1
-
   /terser@5.14.2:
     resolution: {integrity: sha512-oL0rGeM/WFQCUd0y2QrWxYnq7tfSuKBiqTjRPWrRgB46WD/kiwHwF8T23z78H6Q6kGCuuHcPB+KULHRdxvVGQA==}
     engines: {node: '>=10'}
@@ -13002,7 +12924,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.9(webpack@5.88.1)
+      terser-webpack-plugin: 5.3.9(esbuild@0.15.5)(webpack@5.74.0)
       watchpack: 2.4.0
       webpack-sources: 3.2.3
     transitivePeerDependencies:
@@ -13206,3 +13128,7 @@ packages:
     resolution: {integrity: sha512-DDh2Ab+A/B+9mJyajPjHFPWfYU1H+pdun4wnnk0OcQTNjem1XQSZ2CDW+rfZEUDjv5M19SBqAkjZi0x5wuB5Qw==}
     dependencies:
       tslib: 2.4.1
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
