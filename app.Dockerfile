@@ -16,7 +16,7 @@ COPY . .
 
 RUN nx build app --prod --baseHref=/admin/
 
-FROM nginx:1.25.1-alpine3.17 as production
+FROM nginx:1.25.2-alpine3.18-slim as production
 
 WORKDIR /usr/share/nginx/html
 
