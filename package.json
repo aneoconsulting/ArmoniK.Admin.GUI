@@ -1,6 +1,6 @@
 {
   "name": "armonik.admin.gui",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
