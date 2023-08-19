@@ -1,13 +1,20 @@
 <clr-main-container>
-  <clr-alert [clrAlertType]="'danger'" [clrAlertAppLevel]="true" [clrAlertClosable]="false">
+  <clr-alert
+    [clrAlertType]="'danger'"
+    [clrAlertAppLevel]="true"
+    [clrAlertClosable]="false"
+  >
     <clr-alert-item>
       <span class="alert-text">
         {{ 'alert.content' | translate }}
       </span>
       <div class="alert-actions">
-          <a href="https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases/latest" class="btn alert-action">
-            {{ 'alert.action' | translate }}
-          </a>
+        <a
+          href="https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases/latest"
+          class="btn alert-action"
+        >
+          {{ 'alert.action' | translate }}
+        </a>
       </div>
     </clr-alert-item>
   </clr-alert>
