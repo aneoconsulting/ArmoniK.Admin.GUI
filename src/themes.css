@@ -39,8 +39,13 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.purple-gree .task-status.cdk-drag-preview,
+.purple-green .task-status.cdk-drag-preview,
 .pink-bluegrey .task-status.cdk-drag-preview {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.purple-green .line.cdk-drag-preview,
+.pink-bluegrey .line.cdk-drag-preview {
   color: rgba(255, 255, 255, 0.6);
 }
 

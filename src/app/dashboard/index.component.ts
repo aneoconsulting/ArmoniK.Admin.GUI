@@ -12,7 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { AddLineDialogData, AddLineDialogResult } from '@app/types/dialog';
+import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
@@ -36,6 +36,7 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { LineComponent } from './components/line.component';
+import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
 import { Line } from './types';
@@ -49,9 +50,23 @@ import { Line } from './types';
   <span i18n="Page title"> Dashboard </span>
 </app-page-header>
 
-<button class="add-line" mat-fab color="primary" aria-label="Add a line" aria-hidden="true" (click)="onAddLineDialog()" matTooltip="Add a line">
-  <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
-</button>
+<div class="fab">
+  <button class="fab-activator" mat-fab color="primary" (click)="openFab()" matTooltip="Customize Dashboard">
+    <mat-icon [fontIcon]="getIcon('settings')"></mat-icon>
+  </button>
+  <!-- TODO: add an animtation, https://angular.io/guide/animations -->
+  <div class="fab-actions" *ngIf="showFabActions">
+    <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
+      <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
+    </button>
+    <button mat-mini-fab matTooltip="Reorganize Lines" i18n-matTooltip (click)="onReorganizeLinesDialog()">
+      <mat-icon [fontIcon]="getIcon('list')"></mat-icon>
+    </button>
+    <button mat-mini-fab matTooltip="Split Lines" i18n-matTooltip (click)="onSplitLinesDialog()">
+      <mat-icon [fontIcon]="getIcon('vertical-split')"></mat-icon>
+    </button>
+  </div>
+</div>
 
 <div *ngIf="lines.length === 0" class="no-line">
     <em i18n>
@@ -61,22 +76,34 @@ import { Line } from './types';
     <button mat-raised-button color="primary" (click)="onAddLineDialog()">Add a line</button>
 </div>
 
-<div class="lines">
+<main class="lines">
   <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
     <app-page-section-header icon="adjust">
       <span i18n="Section title">{{ line.name }}</span>
     </app-page-section-header>
-      <app-dashboard-line [line]="line"  (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+    <app-dashboard-line [line]="line"  (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
   </app-page-section>
-</div>
+</main>
   `,
   styles: [`
-.add-line {
+.fab {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
 
   z-index: 50;
+
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+}
+
+.fab-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .no-line {
@@ -153,6 +180,7 @@ export class IndexComponent implements OnInit {
   readonly #dashboardIndexService = inject(DashboardIndexService);
 
   lines: Line[];
+  showFabActions = false;
 
   sharableURL = '';
 
@@ -167,6 +195,10 @@ export class IndexComponent implements OnInit {
 
   getPageIcon(name: Page): string {
     return this.#iconsService.getPageIcon(name);
+  }
+
+  openFab() {
+    this.showFabActions = !this.showFabActions;
   }
 
   onAddLineDialog() {
@@ -210,6 +242,27 @@ export class IndexComponent implements OnInit {
         this.onSaveChange();
       }
     });
+  }
+
+  onReorganizeLinesDialog() {
+    const dialogRef = this.#dialog.open<ReorganizeLinesDialogComponent, ReorganizeLinesDialogData, ReorganizeLinesDialogResult>(ReorganizeLinesDialogComponent, {
+      data: {
+        lines: structuredClone(this.lines),
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result || !result.lines) return;
+
+      if (result) {
+        this.lines = result.lines;
+        this.onSaveChange();
+      }
+    });
+  }
+
+  onSplitLinesDialog() {
+    console.log('onSplitLinesDialog');
   }
 
   onDeleteLine( value: Line) {

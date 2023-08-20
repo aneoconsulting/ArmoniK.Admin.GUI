@@ -1,4 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Line } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey } from './data';
 import { FiltersOr } from './filters';
@@ -58,4 +59,12 @@ export type EditNameLineData = {
 
 export type EditNameLineResult = {
   name: string;
+};
+
+export type ReorganizeLinesDialogData = {
+  lines: Line[];
+};
+
+export type ReorganizeLinesDialogResult = {
+  lines: Line[];
 };

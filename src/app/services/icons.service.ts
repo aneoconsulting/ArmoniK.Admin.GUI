@@ -47,6 +47,8 @@ export class IconsService {
     'layers-clear': 'layers_clear',
     'format-clear': 'format_color_reset',
     'highlight': 'highlight',
+    'list': 'view_list',
+    'vertical-split': 'vertical_split',
   };
 
   getIcon(name: string): string {
