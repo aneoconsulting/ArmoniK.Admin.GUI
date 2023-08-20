@@ -8,8 +8,12 @@ import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { TableStorageService } from '@services/table-storage.service';
+import { TableURLService } from '@services/table-url.service';
+import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
+import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw } from './types';
 
@@ -30,6 +34,10 @@ import { ResultRaw } from './types';
     QueryParamsService,
     ResultsGrpcService,
     ResultsStatusesService,
+    ResultsIndexService,
+    TableService,
+    TableStorageService,
+    TableURLService,
   ],
   imports: [
     ShowPageComponent,

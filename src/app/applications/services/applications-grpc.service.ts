@@ -1,34 +1,34 @@
-import { ApplicationRawField, ApplicationsClient, SortDirection as ArmoniKSortDirection, CountTasksByStatusApplicationRequest, CountTasksByStatusApplicationResponse, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable } from '@angular/core';
+import { ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, SortDirection as ArmoniKSortDirection, FilterStringOperator, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { AppGrpcService } from '@app/types/services';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
+import { ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
+export class ApplicationsGrpcService {
+  readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #applicationsClient = inject(ApplicationsClient);
+  readonly #utilsService = inject(UtilsService<ApplicationRawEnumField>);
+
   readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
     'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
     'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
     '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
   };
 
-  readonly sortFields: Record<ApplicationRawFieldKey, ApplicationRawField> = {
-    'name': ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
-    'namespace': ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
-    'service': ApplicationRawField.APPLICATION_RAW_FIELD_SERVICE,
-    'version': ApplicationRawField.APPLICATION_RAW_FIELD_VERSION,
+  readonly sortFields: Record<ApplicationRawFieldKey, ApplicationRawEnumField> = {
+    'name': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+    'namespace': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE,
+    'service': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE,
+    'version': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
   };
 
-  constructor(
-    private _applicationsClient: ApplicationsClient,
-    private _utilsService: UtilsService<ApplicationRaw>
-  ) {}
+  list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter): Observable<ListApplicationsResponse> {
 
-  list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter[]): Observable<ListApplicationsResponse> {
-    const findFilter = this._utilsService.findFilter;
-    const convertFilterValue = this._utilsService.convertFilterValue;
+    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
 
     const request = new ListApplicationsRequest({
       page: options.pageIndex,
@@ -36,31 +36,43 @@ export class ApplicationsGrpcService implements AppGrpcService<ApplicationRaw> {
       sort: {
         direction: this.sortDirections[options.sort.direction],
         fields: [{
-          applicationField: this.sortFields[options.sort.active],
+          applicationField: {
+            field: this.sortFields[options.sort.active]
+          }
         }]
       },
-      filter: {
-        name: convertFilterValue(findFilter(filters, 'name')),
-        namespace: convertFilterValue(findFilter(filters, 'namespace')),
-        service: convertFilterValue(findFilter(filters, 'service')),
-        version: convertFilterValue(findFilter(filters, 'version'))
-      }
+      filters: requestFilters
     });
 
-    return this._applicationsClient.listApplications(request);
+    return this.#applicationsClient.listApplications(request);
   }
 
   get$(): Observable<never> {
     throw new Error('This method must never be called.');
   }
 
-  // TODO: rename to countTasksByStatus$
-  countByStatus$(name: string, version: string): Observable<CountTasksByStatusApplicationResponse> {
-    const request = new CountTasksByStatusApplicationRequest({
-      name,
-      version
-    });
+  #buildFilterField(filter: Filter<ApplicationRawEnumField>) {
+    return (type: FilterType, field: ApplicationRawEnumField) => {
 
-    return this._applicationsClient.countTasksByStatus(request);
+      const filterField = {
+        applicationField: {
+          field: field as ApplicationRawEnumField
+        }
+      } satisfies ApplicationFilterField.AsObject['field'];
+
+      switch (type) {
+      case 'string':
+        return {
+          field: filterField,
+          filterString: {
+            value: filter.value?.toString() ?? '',
+            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
+          }
+        } satisfies ApplicationFilterField.AsObject;
+      default: {
+        throw new Error(`Type ${type} not supported`);
+      }
+      }
+    };
   }
 }

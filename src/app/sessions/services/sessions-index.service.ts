@@ -1,13 +1,10 @@
-import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsIndexService {
-  #sessionsStatusesService = inject(SessionsStatusesService);
   #defaultConfigService = inject(DefaultConfigService);
   #tableService = inject(TableService);
 
@@ -41,42 +38,6 @@ export class SessionsIndexService {
   };
 
   readonly defaultOptions: SessionRawListOptions = this.#defaultConfigService.defaultSessions.options;
-
-  readonly defaultFilters: SessionRawFilter[] = this.#defaultConfigService.defaultSessions.filters;
-  readonly availableFiltersFields: SessionRawFilterField[] = [
-    // Do not filter object or array fields
-    {
-      field: 'sessionId',
-      type: 'text',
-    },
-    // {
-    //   field: 'partitionIds',
-    //   type: 'text',
-    // },
-    {
-      field: 'createdAt',
-      type: 'date',
-    },
-    {
-      field: 'cancelledAt',
-      type: 'date',
-    },
-    {
-      field: 'status',
-      type: 'select',
-      options: Object.keys(this.#sessionsStatusesService.statuses).map(status => {
-        return {
-          value: status,
-          label: this.#sessionsStatusesService.statuses[Number(status) as SessionStatus],
-        };
-      }),
-    },
-    // FIXME: Not implemented yet in Core
-    // {
-    //   field: 'duration',
-    //   type: 'number'
-    // }
-  ];
 
   readonly defaultIntervalValue: number = this.#defaultConfigService.defaultSessions.interval;
 
@@ -168,23 +129,5 @@ export class SessionsIndexService {
     this.#tableService.resetColumns('sessions-columns');
 
     return Array.from(this.defaultColumns);
-  }
-
-  /**
-   * Filters
-   */
-
-  saveFilters(filters: SessionRawFilter[]): void {
-    this.#tableService.saveFilters('sessions-filters', filters);
-  }
-
-  restoreFilters(): SessionRawFilter[] {
-    return this.#tableService.restoreFilters<SessionRaw>('sessions-filters', this.availableFiltersFields) ?? this.defaultFilters;
-  }
-
-  resetFilters(): SessionRawFilter[] {
-    this.#tableService.resetFilters('sessions-filters');
-
-    return this.defaultFilters;
   }
 }

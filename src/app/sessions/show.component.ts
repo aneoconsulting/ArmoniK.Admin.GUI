@@ -8,8 +8,12 @@ import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { TableStorageService } from '@services/table-storage.service';
+import { TableURLService } from '@services/table-url.service';
+import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
+import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { SessionRaw } from './types';
 
@@ -30,6 +34,10 @@ import { SessionRaw } from './types';
     QueryParamsService,
     SessionsGrpcService,
     SessionsStatusesService,
+    SessionsIndexService,
+    TableService,
+    TableURLService,
+    TableStorageService,
   ],
   imports: [
     ShowPageComponent,

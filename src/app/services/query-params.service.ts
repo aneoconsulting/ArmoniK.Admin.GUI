@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Filter } from '@app/types/filters';
+import { FilterInputValueDate, FiltersOr, MaybeNull } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsOptions } from '@app/types/query-params';
 
 @Injectable()
-export class QueryParamsService<T extends object> {
-  createOptions(options: ListOptions<T>): QueryParamsOptions {
+export class QueryParamsService {
+  createOptions<T extends object>(options: ListOptions<T>): QueryParamsOptions {
     const queryParamsOptions: QueryParamsOptions = {
       pageIndex: options.pageIndex.toString(),
       pageSize: options.pageSize.toString(),
@@ -16,20 +16,19 @@ export class QueryParamsService<T extends object> {
     return queryParamsOptions;
   }
 
-  createFilters(filters: Filter<T>[]): Record<string, string> {
-    const flattenFilters: Record<string, string> = {};
+  createFilters<T extends number, U extends number | null = null>(filtersOr: FiltersOr<T, U>): Record<string, MaybeNull<string | number | FilterInputValueDate | null>> | null {
+    const queryParamsFilters: Record<string, MaybeNull<string | number | FilterInputValueDate | null>> = {};
 
-    for (const filter of filters) {
-      const filterKey = filter.field;
-      const filterValue = filter.value;
-
-      if (!filterKey || !filterValue) {
-        continue;
+    let i = 0;
+    for (const filtesrsAnd of filtersOr) {
+      for (const filter of filtesrsAnd) {
+        const key = `${i}-${filter.for}-${filter.field}-${filter.operator}`; // or-for-field-operator
+        const value = filter.value;
+        queryParamsFilters[key] = value;
       }
-
-      flattenFilters[filterKey.toString()] = filterValue.toString();
+      i++;
     }
 
-    return flattenFilters;
+    return queryParamsFilters;
   }
 }

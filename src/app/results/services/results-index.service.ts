@@ -1,13 +1,11 @@
-import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { AppIndexService } from '@app/types/services';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilter, ResultRawFilterField, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsIndexService implements AppIndexService<ResultRaw> {
+export class ResultsIndexService {
   #defaultConfigService = inject(DefaultConfigService);
   #resultsStatusesService = inject(ResultsStatusesService);
 
@@ -28,36 +26,6 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
   };
 
   readonly defaultOptions: ResultRawListOptions = this.#defaultConfigService.defaultResults.options;
-
-  readonly defaultFilters: ResultRawFilter[] = this.#defaultConfigService.defaultResults.filters;
-  readonly availableFiltersFields: ResultRawFilterField[] = [
-    {
-      field: 'name',
-      type: 'text',
-    },
-    {
-      field: 'status',
-      type: 'select',
-      options: Object.keys(this.#resultsStatusesService.statuses).map(status => {
-        return {
-          value: status,
-          label: this.#resultsStatusesService.statuses[Number(status) as ResultStatus],
-        };
-      }),
-    },
-    {
-      field: 'ownerTaskId',
-      type: 'text',
-    },
-    {
-      field: 'createdAt',
-      type: 'date',
-    },
-    {
-      field: 'sessionId',
-      type: 'text',
-    },
-  ];
 
   readonly defaultIntervalValue: number = this.#defaultConfigService.defaultResults.interval;
 
@@ -137,23 +105,5 @@ export class ResultsIndexService implements AppIndexService<ResultRaw> {
     this.#tableService.resetColumns('results-columns');
 
     return Array.from(this.defaultColumns);
-  }
-
-  /**
-   * Filters
-   */
-
-  saveFilters(filtersFields: ResultRawFilter[]): void {
-    this.#tableService.saveFilters('results-filters', filtersFields);
-  }
-
-  restoreFilters(): ResultRawFilter[] {
-    return this.#tableService.restoreFilters<ResultRaw>('results-filters', this.availableFiltersFields) ?? this.defaultFilters;
-  }
-
-  resetFilters(): ResultRawFilter[] {
-    this.#tableService.resetFilters('results-filters');
-
-    return this.defaultFilters;
   }
 }

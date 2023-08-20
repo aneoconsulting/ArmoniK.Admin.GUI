@@ -1,38 +1,37 @@
-import { SortDirection as ArmoniKSortDirection, GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionRawField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable } from '@angular/core';
+import { SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterNumberOperator, FilterStringOperator, GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionFilterField, PartitionRawEnumField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { AppGrpcService } from '@app/types/services';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
-import { PartitionRaw, PartitionRawFieldKey, PartitionRawFilter, PartitionRawListOptions } from '../types';
+import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
+
 
 @Injectable()
-export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
+export class PartitionsGrpcService {
+  #partitionsFiltersService = inject(DATA_FILTERS_SERVICE);
+  #partitionsClient = inject(PartitionsClient);
+  #utilsService = inject(UtilsService<PartitionRawEnumField>);
+
   readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
     'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
     'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
     '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
   };
 
-  readonly sortFields: Record<PartitionRawFieldKey, PartitionRawField> = {
-    'id': PartitionRawField.PARTITION_RAW_FIELD_ID,
-    'parentPartitionIds': PartitionRawField.PARTITION_RAW_FIELD_PARENT_PARTITION_IDS,
-    'podConfiguration': PartitionRawField.PARTITION_RAW_FIELD_UNSPECIFIED,
-    'podMax': PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
-    'podReserved': PartitionRawField.PARTITION_RAW_FIELD_POD_RESERVED,
-    'preemptionPercentage': PartitionRawField.PARTITION_RAW_FIELD_PREEMPTION_PERCENTAGE,
-    'priority': PartitionRawField.PARTITION_RAW_FIELD_PRIORITY,
+  readonly sortFields: Record<PartitionRawFieldKey, PartitionRawEnumField> = {
+    'id': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+    'parentPartitionIds': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS,
+    'podConfiguration': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_UNSPECIFIED,
+    'podMax': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX,
+    'podReserved': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED,
+    'preemptionPercentage': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PREEMPTION_PERCENTAGE,
+    'priority': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY,
   };
 
-  constructor(
-    private _partitionsClient: PartitionsClient,
-    private _utilsService: UtilsService<PartitionRaw>
-  ) {}
-
-  list$(options: PartitionRawListOptions, filters: PartitionRawFilter[]): Observable<ListPartitionsResponse> {
-    const findFilter = this._utilsService.findFilter;
-    const convertFilterValue = this._utilsService.convertFilterValue;
-    const convertFilterValueToNumber = this._utilsService.convertFilterValueToNumber;
+  list$(options: PartitionRawListOptions, filters: PartitionRawFiltersOr): Observable<ListPartitionsResponse> {
+    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
 
     const listPartitionsRequest = new ListPartitionsRequest({
       page: options.pageIndex,
@@ -40,21 +39,15 @@ export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
       sort: {
         direction: this.sortDirections[options.sort.direction],
         field: {
-          partitionRawField: this.sortFields[options.sort.active] ?? PartitionRawField.PARTITION_RAW_FIELD_ID
+          partitionRawField: {
+            field: this.sortFields[options.sort.active] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
+          }
         }
       },
-      filter: {
-        id: convertFilterValue(findFilter(filters, 'id')),
-        parentPartitionId: convertFilterValue(findFilter(filters, 'parentPartitionIds')),
-        podReserved:
-          convertFilterValueToNumber(findFilter(filters, 'podReserved')) as number,
-        podMax: convertFilterValueToNumber(findFilter(filters, 'podMax')) as number,
-        preemptionPercentage: convertFilterValueToNumber(findFilter(filters, 'preemptionPercentage')) as number,
-        priority: convertFilterValueToNumber(findFilter(filters, 'priority')) as number
-      }
+      filters: requestFilters
     });
 
-    return this._partitionsClient.listPartitions(listPartitionsRequest);
+    return this.#partitionsClient.listPartitions(listPartitionsRequest);
   }
 
   get$(id: string) :Observable<GetPartitionResponse> {
@@ -62,6 +55,47 @@ export class PartitionsGrpcService implements AppGrpcService<PartitionRaw> {
       id
     });
 
-    return this._partitionsClient.getPartition(getPartitionRequest);
+    return this.#partitionsClient.getPartition(getPartitionRequest);
+  }
+
+  #buildFilterField(filter: PartitionRawFilter) {
+    return (type: FilterType, field: PartitionRawEnumField) => {
+
+      const filterField = {
+        partitionRawField: {
+          field
+        }
+      } satisfies PartitionFilterField.AsObject['field'];
+
+      switch (type) {
+      case 'string':
+        return {
+          field: filterField,
+          filterString: {
+            value: filter.value?.toString() || '',
+            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
+          }
+        } satisfies PartitionFilterField.AsObject;
+      case 'number':
+        return {
+          field: filterField,
+          filterNumber: {
+            value: filter.value?.toString() || '',
+            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
+          }
+        } satisfies PartitionFilterField.AsObject;
+      case 'array':
+        return {
+          field: filterField,
+          filterArray: {
+            value: filter.value?.toString() || '',
+            operator: filter.operator ?? FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS
+          }
+        } satisfies PartitionFilterField.AsObject;
+      default: {
+        throw new Error(`Type ${type} not supported`);
+      }
+      }
+    };
   }
 }

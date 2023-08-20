@@ -1,3 +1,4 @@
+import { FilterStringOperator, TaskFilters, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -13,9 +14,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
+import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TaskSummaryColumnKey } from '@app/tasks/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
-import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
+import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
+import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -23,6 +29,7 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -33,10 +40,10 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
-import { CountByStatusComponent } from './components/count-by-status.component';
+import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from './types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -72,8 +79,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
-  <mat-toolbar-row>
-    <app-filters-toolbar [filters]="filters" [filtersFields]="availableFiltersFields" [columnsLabels]="columnsLabels()" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -94,11 +101,11 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       <!-- Application's Tasks Count by Status -->
       <ng-container *ngIf="isCountColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-         <app-applications-count-by-status
-          [name]="element.name"
-          [version]="element.version"
+        <app-count-tasks-by-status
           [statuses]="tasksStatusesColored"
-        ></app-applications-count-by-status>
+          [queryParams]="createTasksByStatusQueryParams(element.name, element.version)"
+          [filters]="countTasksByStatusFilters(element.name, element.version)"
+        ></app-count-tasks-by-status>
         </td>
       </ng-container>
       <!-- Action -->
@@ -137,6 +144,13 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
 app-table-actions-toolbar {
   flex-grow: 1;
 }
+
+.filters {
+  height: auto;
+  min-height: 64px;
+
+  padding: 1rem;
+}
   `],
   standalone: true,
   providers: [
@@ -153,6 +167,13 @@ app-table-actions-toolbar {
     ApplicationsGrpcService,
     NotificationService,
     TasksByStatusService,
+    TasksIndexService,
+    TasksStatusesService,
+    FiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useClass: ApplicationsFiltersService
+    }
   ],
   imports: [
     NoWrapDirective,
@@ -161,7 +182,7 @@ app-table-actions-toolbar {
     NgFor,
     RouterLink,
     DragDropModule,
-    CountByStatusComponent,
+    CountTasksByStatusComponent,
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
@@ -180,14 +201,15 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  #tasksByStatusService = inject(TasksByStatusService);
-  #notificationService = inject(NotificationService);
-  #dialog = inject(MatDialog);
-  #iconsService = inject(IconsService);
+  readonly #tasksByStatusService = inject(TasksByStatusService);
+  readonly #notificationService = inject(NotificationService);
+  readonly #dialog = inject(MatDialog);
+  readonly #iconsService = inject(IconsService);
+  readonly #filtersService = inject(FiltersService);
+  readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: ApplicationRawColumnKey[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
-
 
   isLoading = true;
   data: ApplicationRaw[] = [];
@@ -195,9 +217,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: ApplicationRawListOptions;
 
-  filters: ApplicationRawFilter[] = [];
-  availableFiltersFields: ApplicationRawFilterField[] = [];
-
+  filters: ApplicationRawFilter = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -226,8 +246,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.options = this._applicationsIndexService.restoreOptions();
 
-    this.availableFiltersFields = this._applicationsIndexService.availableFiltersFields;
-    this.filters = this._applicationsIndexService.restoreFilters();
+    this.filters = this.#applicationsFiltersService.restoreFilters();
 
     this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
 
@@ -348,15 +367,15 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as ApplicationRawFilter[];
+    this.filters = filters as ApplicationRawFilter;
 
-    this._applicationsIndexService.saveFilters(filters as ApplicationRawFilter[]);
+    this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilter);
     this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 
   onFiltersReset() {
-    this.filters = this._applicationsIndexService.resetFilters();
+    this.filters = this.#applicationsFiltersService.resetFilters();
     this.paginator.pageIndex = 0;
     this.refresh.next();
   }
@@ -377,6 +396,48 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+
+  countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskFilters.AsObject {
+    return {
+      or: [
+        {
+          and: [
+            {
+              field: {
+                taskOptionField: {
+                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME
+                }
+              },
+              filterString: {
+                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                value: applicationName,
+              }
+            },
+            {
+              field: {
+                taskOptionField: {
+                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION
+                },
+              },
+              filterString: {
+                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                value: applicationVersion,
+              }
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  createTasksByStatusQueryParams(name: string, version: string) {
+    const keyName = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'options.applicationName');
+    const keyVersion = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'options.applicationVersion');
+    return {
+      [keyName]: name,
+      [keyVersion]: version,
+    };
   }
 
   personalizeTasksByStatus() {

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawFilterField, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
@@ -22,26 +22,6 @@ export class ApplicationsIndexService {
   };
 
   readonly defaultOptions: ApplicationRawListOptions = this.#defaultConfigService.defaultApplications.options;
-
-  readonly defaultFilters: ApplicationRawFilter[] = this.#defaultConfigService.defaultApplications.filters;
-  readonly availableFiltersFields: ApplicationRawFilterField[] = [
-    {
-      field: 'name',
-      type: 'text',
-    },
-    {
-      field: 'namespace',
-      type: 'text',
-    },
-    {
-      field: 'service',
-      type: 'text',
-    },
-    {
-      field: 'version',
-      type: 'text',
-    }
-  ];
 
   readonly defaultIntervalValue = this.#defaultConfigService.defaultApplications.interval;
 
@@ -112,23 +92,5 @@ export class ApplicationsIndexService {
     this.#tableService.resetColumns('applications-columns');
 
     return Array.from(this.defaultColumns);
-  }
-
-  /**
-   * Filters
-   */
-
-  saveFilters(filters: ApplicationRawFilter[]): void {
-    this.#tableService.saveFilters('applications-filters', filters);
-  }
-
-  restoreFilters(): ApplicationRawFilter[] {
-    return this.#tableService.restoreFilters<ApplicationRaw>('applications-filters', this.availableFiltersFields) ?? this.defaultFilters;
-  }
-
-  resetFilters(): ApplicationRawFilter[] {
-    this.#tableService.resetFilters('applications-filters');
-
-    return this.defaultFilters;
   }
 }

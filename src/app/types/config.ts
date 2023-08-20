@@ -2,7 +2,7 @@ export type ScopeConfig<C, O, F> = {
   interval: number;
   columns: C[];
   options: O;
-  filters: F[];
+  filters: F;
 };
 
 export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
@@ -17,6 +17,7 @@ export type Key =
   'dashboard-hide-groups-headers' |
   'applications-tasks-by-status' |
   'sessions-tasks-by-status' |
+  'partitions-tasks-by-status' |
   `${Scope}-${Element}`;
 
 export type ExportedDefaultConfig = {

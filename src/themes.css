@@ -35,11 +35,17 @@
 }
 
 .purple-green .status.cdk-drag-preview,
-.pink-bluegrey .status.cdk-drag-preview, {
+.pink-bluegrey .status.cdk-drag-preview {
   color: rgba(255, 255, 255, 0.6);
 }
 
 .purple-gree .task-status.cdk-drag-preview,
 .pink-bluegrey .task-status.cdk-drag-preview {
   color: rgba(255, 255, 255, 0.6);
+}
+
+.pink-bluegrey app-filters-dialog-or .filters,
+.purple-green app-filters-dialog-or .filters {
+  background-color: #303030;
+  border-color: #424242;
 }

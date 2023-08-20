@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Filter, FilterField } from '@app/types/filters';
+import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
+import { Filter, FiltersOr } from '@app/types/filters';
 import { QueryParamsOptionsKey } from '@app/types/query-params';
 
 /**
@@ -12,43 +13,59 @@ export class TableURLService {
   constructor(private _route: ActivatedRoute) {}
 
   getQueryParamsOptions<T>(key: QueryParamsOptionsKey) {
-    return this.getQueryParams<T>(key, false);
+    return this.getQueryParam<T>(key, false);
   }
 
-  getQueryParamsFilters<T extends object>(availableFiltersFields: FilterField<T>[]): Filter<T>[] {
-    const params: Filter<T>[] = [];
+  // TODO: update this function to support for
+  getQueryParamsFilters<T extends number, U extends number | null>(filtersDefinitions: FilterDefinition<T, U>[]): FiltersOr<T, U> {
+    const params: Map<string, Filter<T, U>[]>  = new Map();
+    const filters: FiltersOr<T, U> = [];
 
-    for (const filter of availableFiltersFields) {
-      const key = filter.field;
-      const value = this.getQueryParams<string>(key.toString(), false);
+    const extractValues = /(?<order>\d)-(?<for>.*)-(?<field>.*)-(?<operator>\d)/;
+    const keys = this.getQueryParamKeys();
 
-      if (value) {
-        switch (filter.type) {
-        case 'text':
-          params.push({ field: key, value });
-          break;
-        case 'number':
-          params.push({ field: key, value: Number(value) });
-          break;
-        case 'date':
-          throw new Error('Not implemented');
-        case 'select': {
-          const isFound = filter.options.some(option => option.value === value);
-          if (isFound) {
-            params.push({ field: key, value });
-          }
-          break;
-        }
-        default:
-          this.#unreachable(filter);
-        }
+    for (const key of keys) {
+      const match = key.match(extractValues);
+      const order = match?.groups?.['order'];
+      const for_ = match?.groups?.['for'] as FilterFor<T, U> | undefined;
+      const field = Number(match?.groups?.['field']) as T | U | undefined;
+      const operator = match?.groups?.['operator'];
+
+      if (!order || !field || !operator) {
+        continue;
       }
+
+      const isInDefinition = filtersDefinitions.some(definition => definition.field === field && definition.for === for_);
+
+      if (!isInDefinition) {
+        console.log('Unknown filter', field);
+        continue;
+      }
+
+      const currentParams = params.get(order) ?? [] as Filter<T, U>[];
+
+      currentParams.push({
+        field: field as T | U,
+        operator: Number(operator),
+        value: this.getQueryParam(key, false),
+        for: for_ ?? null
+      });
+
+      params.set(order, currentParams);
     }
 
-    return params;
+    for (const [, value] of params) {
+      filters.push(value);
+    }
+
+    return filters;
   }
 
-  getQueryParams<T>(key: string, parse = true) {
+  getQueryParamKeys(): string[] {
+    return this._route.snapshot.queryParamMap.keys;
+  }
+
+  getQueryParam<T>(key: string, parse = true) {
     const data = this._route.snapshot.queryParamMap.get(key);
 
     if(data && parse) {

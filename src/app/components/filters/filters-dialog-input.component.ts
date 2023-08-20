@@ -7,25 +7,23 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { LuxonDateAdapter, MAT_LUXON_DATE_ADAPTER_OPTIONS, MAT_LUXON_DATE_FORMATS  } from '@angular/material-luxon-adapter';
 import { DateTime } from 'luxon';
-import { DateType, FilterEvent, FilterInput, FilterInputType } from '@app/types/filters';
+import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
 
 
 
 @Component({
   selector: 'app-filters-dialog-input',
   template: `
-<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'text'">
+<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'string'">
   <mat-label i18n="Input label">Value</mat-label>
-  <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onTextChange($event)">
+  <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
 </mat-form-field>
 
-<!-- TODO: allow user to use <, >, =, != -->
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'number'">
   <mat-label i18n="Input label">Value</mat-label>
   <input matInput type="number" placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
 </mat-form-field>
 
-<!-- TODO: allow user to use <, >, =, != -->
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Enter a date range</mat-label>
   <mat-date-range-input [rangePicker]="picker">
@@ -36,10 +34,10 @@ import { DateType, FilterEvent, FilterInput, FilterInputType } from '@app/types/
   <mat-date-range-picker #picker></mat-date-range-picker>
 </mat-form-field>
 
-<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'select'">
+<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'status'">
   <mat-label i18n="Input label">Value</mat-label>
-  <mat-select [value]="input.value" (valueChange)="onSelectChange($event)">
-    <mat-option *ngFor="let option of input.options; trackBy: trackBySelect" [value]="option.value">{{ option.label }}</mat-option>
+  <mat-select [value]="input.value?.toString()" (valueChange)="onStatusChange($event)">
+    <mat-option *ngFor="let option of input.statuses; trackBy: trackBySelect" [value]="option.key">{{ option.value }}</mat-option>
   </mat-select>
 </mat-form-field>
   `,
@@ -68,18 +66,15 @@ mat-form-field {
   ],
 })
 export class FiltersDialogInputComponent {
-  @Input({ required: true }) input: FilterInput = {
-    type: 'text',
-    value: null,
-  };
+  @Input({ required: true }) input: FilterInput;
 
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
-  @Output() valueChange: EventEmitter<FilterEvent> = new EventEmitter<FilterEvent>();
+  @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
 
-  onTextChange(event: Event): void {
+  onStringChange(event: Event): void {
     this.valueChange.emit({
-      type: 'text',
+      type: 'string',
       value: (event.target as HTMLInputElement).value,
     });
   }
@@ -91,32 +86,34 @@ export class FiltersDialogInputComponent {
     });
   }
 
-  onDateChange(dateType: DateType, event: MatDatepickerInputEvent<DateTime>): void {
+  onDateChange(dateType: 'end' | 'start', event: MatDatepickerInputEvent<DateTime>): void {
     this.valueChange.emit({
       type: `date-${dateType}`,
       value: event.value,
     });
   }
 
-  onSelectChange(event: string): void {
+  onStatusChange(event: string): void {
     this.valueChange.emit({
-      type: 'text',
+      type: 'string',
       value: event,
     });
   }
 
   getInputType(): FilterInputType  {
     switch (this.input.type) {
-    case 'text':
-      return 'text';
+    case 'string':
+      return 'string';
     case 'number':
       return 'number';
     case 'date':
       return 'date';
-    case 'select':
-      return 'select';
+    case 'array':
+      return 'string';
+    case 'status':
+      return 'status';
     default:
-      return 'text';
+      return 'string';
     }
   }
 

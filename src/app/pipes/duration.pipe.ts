@@ -3,7 +3,7 @@ import { Duration } from '@ngx-grpc/well-known-types';
 
 @Pipe({ name: 'duration', standalone: true })
 export class DurationPipe  implements PipeTransform {
-  transform(value: Duration, ...args: any[]) {
+  transform(value: Duration | null) {
     if (!value) {
       return null;
     }

@@ -1,13 +1,14 @@
 
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { StatusCount } from '@app/tasks/types';
+import { StatusCount, TaskSummaryColumnKey } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
+import { FiltersService } from '@services/filters.service';
 import { SpinnerComponent } from './spinner.component';
 
 @Component({
@@ -35,7 +36,9 @@ import { SpinnerComponent } from './spinner.component';
 }
     `],
   standalone: true,
-  providers: [],
+  providers: [
+    FiltersService,
+  ],
   imports: [
     NgIf,
     NgFor,
@@ -51,17 +54,18 @@ export class ViewTasksByStatusComponent {
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input() defaultQueryParams: Record<string, string> = {};
 
-
-  #tasksStatusesService = inject(TasksStatusesService);
+  readonly #filtersService = inject(FiltersService);
+  readonly #tasksStatusesService = inject(TasksStatusesService);
 
   findStatusCount(status: TaskStatus): StatusCount | undefined {
     return this.statusesCounts?.find((statusCount) => statusCount.status === status);
   }
 
   createQueryParams(status: TaskStatus): Record<string, string> {
+    const statusKey = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'status');
     return {
       ...this.defaultQueryParams,
-      status: status.toString(),
+      [statusKey]: status.toString(),
     };
   }
 

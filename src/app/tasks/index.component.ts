@@ -1,4 +1,4 @@
-import { TaskOptions, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -14,11 +14,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
+import { ResultRawColumnKey } from '@app/results/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Page } from '@app/types/pages';
-import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
+import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
@@ -27,6 +29,7 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -35,10 +38,11 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-status.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilter, TaskSummaryFilterField, TaskSummaryListOptions} from './types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilter, TaskSummaryFiltersOr, TaskSummaryListOptions } from './types';
 
 @Component({
   selector: 'app-tasks-index',
@@ -71,8 +75,8 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
-  <mat-toolbar-row>
-    <app-filters-toolbar [filters]="filters" [filtersFields]="availableFiltersFields" [columnsLabels]="columnsLabels()" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -118,9 +122,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
             [routerLink]="['/results']"
-            [queryParams]="{
-              ownerTaskId: element[column],
-            }"
+            [queryParams]="createTaskIdQueryParams(element[column])"
           >
             {{ element[column] }}
           </a>
@@ -205,6 +207,13 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
 app-table-actions-toolbar {
   flex-grow: 1;
 }
+
+.filters {
+  height: auto;
+  min-height: 64px;
+
+  padding: 1rem;
+}
   `],
   standalone: true,
   imports: [
@@ -247,16 +256,23 @@ app-table-actions-toolbar {
     ShareUrlService,
     QueryParamsService,
     UtilsService,
+    FiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useClass: TasksFiltersService,
+    }
   ],
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  #iconsService = inject(IconsService);
-  #shareURLService = inject(ShareUrlService);
-  #autoRefreshService = inject(AutoRefreshService);
-  #tasksStatusesService = inject(TasksStatusesService);
-  #tasksIndexService = inject(TasksIndexService);
-  #tasksGrpcService = inject(TasksGrpcService);
-  #notificationService = inject(NotificationService);
+  readonly #iconsService = inject(IconsService);
+  readonly #shareURLService = inject(ShareUrlService);
+  readonly #autoRefreshService = inject(AutoRefreshService);
+  readonly #tasksStatusesService = inject(TasksStatusesService);
+  readonly #tasksIndexService = inject(TasksIndexService);
+  readonly #tasksGrpcService = inject(TasksGrpcService);
+  readonly #notificationService = inject(NotificationService);
+  readonly #filtersService = inject(FiltersService);
+  readonly #tasksFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: TaskSummaryColumnKey[] = [];
   availableColumns: TaskSummaryColumnKey[] = [];
@@ -269,8 +285,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: TaskSummaryListOptions;
 
-  filters: TaskSummaryFilter[] = [];
-  availableFiltersFields: TaskSummaryFilterField[] = [];
+  filters: TaskSummaryFiltersOr = [];
 
   sharableURL = '';
 
@@ -290,8 +305,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.options = this.#tasksIndexService.restoreOptions();
 
-    this.availableFiltersFields = this.#tasksIndexService.availableFiltersFields;
-    this.filters = this.#tasksIndexService.restoreFilters();
+    this.filters = this.#tasksFiltersService.restoreFilters();
 
     this.intervalValue = this.#tasksIndexService.restoreIntervalValue();
 
@@ -367,7 +381,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return session[column as keyof TaskSummary];
   }
 
-  extractData(element: TaskSummary, column: TaskSummaryColumnKey): any {
+  extractData(element: TaskSummary, column: TaskSummaryColumnKey): Duration | null {
     if (column.startsWith('options.')) {
       const optionColumn = column.replace('options.', '') as keyof TaskOptions;
       const options = element['options'] as TaskOptions | undefined;
@@ -376,10 +390,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         return null;
       }
 
-      return options[optionColumn];
+      return options[optionColumn] as unknown as Duration;
     }
 
-    return element[column as keyof TaskSummary];
+    return element[column as keyof TaskSummary] as unknown as Duration;
   }
 
   isActionsColumn(column: TaskSummaryColumnKey): boolean {
@@ -424,8 +438,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onRetries(task: TaskSummary): void {
     const filter: TaskSummaryFilter = {
-      field: 'initialTaskId',
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID,
       value: task.id,
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
     };
 
     this.onFiltersChange([filter]);
@@ -459,15 +475,15 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(value: unknown[]) {
-    this.filters = value as TaskSummaryFilter[];
+    this.filters = value as TaskSummaryFiltersOr;
 
-    this.#tasksIndexService.saveFilters(this.filters);
+    this.#tasksFiltersService.saveFilters(this.filters);
     this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 
   onFiltersReset(): void{
-    this.filters = this.#tasksIndexService.resetFilters();
+    this.filters = this.#tasksFiltersService.resetFilters();
     this.paginator.pageIndex = 0;
     this.refresh.next();
   }
@@ -563,6 +579,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     return $localize`Select Task ${row.id}`;
+  }
+
+  createTaskIdQueryParams(taskId: string) {
+    const keyTask = this.#filtersService.createQueryParamsKey<ResultRawColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'ownerTaskId');
+
+    return {
+      [keyTask]: taskId
+    };
   }
 
   trackByColumn(index: number, item: TaskSummaryColumnKey): string {

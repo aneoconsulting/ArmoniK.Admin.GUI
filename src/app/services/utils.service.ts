@@ -1,56 +1,111 @@
 import { Injectable } from '@angular/core';
-import { FieldKey } from '@app/types/data';
-import { Filter } from '@app/types/filters';
+import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
+import { Filter, FilterType, FilterValueOptions, FiltersAnd, FiltersOr } from '@app/types/filters';
 
 @Injectable()
-export class UtilsService<T extends object> {
-  findFilter(filters: Filter<T>[], field: FieldKey<T>): Filter<T> | null {
-    const filter = filters.find(f => f.field === field);
+// Need to generalize SessionRawEnumField
+export class UtilsService<T extends number, U extends number | null = null> {
 
-    if (!filter) {
-      return null;
-    }
+  createFilters<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null) => F) {
+    const or = this.#createFiltersOr<F>(filters, filtersDefinitions, cb);
 
-    return filter;
+    return or;
   }
 
-  convertFilterValue(filter: Filter<T> | null): string {
-    if (!filter) {
-      return '';
+  /**
+   * Used to create a group of lines (OR).
+   */
+  #createFiltersOr<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null) => F) {
+    const filtersOr = [];
+
+    for (const filter of filters) {
+      const filtersAnd = this.#createFiltersAnd<F>(filter, filtersDefinitions, cb);
+
+      if (filtersAnd.and && filtersAnd.and.length > 0) {
+        filtersOr.push(filtersAnd);
+      }
     }
 
-    if (!filter.value) {
-      return '';
-    }
-
-    return filter.value.toString();
+    return {
+      or: filtersOr
+    };
   }
 
-  convertFilterValueToNumber(filter: Filter<T> | null): number | null {
-    if (!filter) {
-      return null;
+  /**
+   * Used to create a line of filters (AND).
+   */
+  #createFiltersAnd<F>(filters: FiltersAnd<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null) => F) {
+    const filtersAnd = [];
+
+    for (const filter of filters) {
+      const filterField = this.#createFilterField<F>(filter, filtersDefinitions, cb(filter));
+
+      if (filterField) {
+        filtersAnd.push(filterField);
+      }
     }
 
-    if (!filter.value) {
-      return null;
-    }
-
-    const numberValue = Number(filter.value);
-
-    if (Number.isNaN(numberValue)) {
-      return null;
-    }
-
-    return numberValue;
+    return {
+      and: filtersAnd
+    };
   }
 
-  convertFilterValueToStatus<S>(filter: Filter<T> | null): S | null {
-    const status = this.convertFilterValueToNumber(filter);
-
-    if (status === null) {
+  /**
+   * Used to define a filter field.
+   */
+  #createFilterField<F>(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (type: FilterType, field: T | U | null) => F): F | null {
+    if (filter.field === null || filter.value === null || filter.operator === null) {
       return null;
     }
 
-    return status as S;
+    const type = this.recoverType(filter, filtersDefinitions);
+    const field = this.#recoverField(filter, filtersDefinitions);
+
+    return cb(type, field);
+  }
+
+  /**
+   * Recover the type of a filter definition using the filter.
+   */
+  recoverType(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): FilterType  {
+    const filterDefinition = this.#recoverFilterDefinition(filter, filtersDefinitions);
+
+    return filterDefinition.type;
+  }
+
+  /**
+   * Recover statuses of a filter definition using the filter.
+   */
+  recoverStatuses(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): FilterValueOptions {
+    const filterDefinition = this.#recoverFilterDefinition(filter, filtersDefinitions);
+
+    if (filterDefinition.type !== 'status') {
+      throw new Error('Filter definition is not a status');
+    }
+
+    return filterDefinition.statuses;
+  }
+
+  /**
+   * Recover the field of a filter definition using the filter.
+   */
+  #recoverField(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): T | U {
+    const filterDefinition = this.#recoverFilterDefinition(filter, filtersDefinitions);
+
+    return filterDefinition.field;
+  }
+
+
+  /**
+   * Recover the filter definition using the filter field.
+   */
+  #recoverFilterDefinition(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): FilterDefinition<T, U> {
+    const filterDefinition = filtersDefinitions.find(filterDefinition => filterDefinition.for === filter.for && filterDefinition.field === filter.field);
+
+    if (!filterDefinition) {
+      throw new Error(`Filter definition not found for field ${filter.field?.toString()}`);
+    }
+
+    return filterDefinition;
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Filter } from '@app/types/filters';
+import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsService } from './query-params.service';
 
@@ -8,7 +8,7 @@ export class ShareUrlService {
   #window = inject(Window);
   #queryParamsService = inject(QueryParamsService);
 
-  generateSharableURL<T extends object>(options: ListOptions<T> | null, filters: Filter<T>[] | null): string {
+  generateSharableURL<T extends object, U extends number, K extends number | null = null>(options: ListOptions<T> | null, filters: FiltersOr<U, K> | null): string {
     const origin = this.#window.location.origin;
     const pathname = this.#window.location.pathname;
 
@@ -16,8 +16,8 @@ export class ShareUrlService {
       return `${origin}${pathname}`;
     }
 
-    const queryParamsOptions = options ? this.#queryParamsService.createOptions(options) : null;
-    const queryParamsFilters = filters ? this.#queryParamsService.createFilters(filters) : null;
+    const queryParamsOptions = options ? this.#queryParamsService.createOptions<T>(options) : null;
+    const queryParamsFilters = filters ? this.#queryParamsService.createFilters<U, K>(filters) : null;
 
     const queryParams = [this.#stringify(queryParamsOptions), this.#stringify(queryParamsFilters)].join('&');
 

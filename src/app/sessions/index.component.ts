@@ -1,4 +1,4 @@
-import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, SessionStatus, TaskFilters, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -14,13 +14,17 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
-import { TaskOptions } from '@app/tasks/types';
-import { TaskStatusColored, ViewArrayDialogData, ViewArrayDialogResult, ViewObjectDialogData, ViewObjectDialogResult, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TaskOptions, TaskSummaryColumnKey } from '@app/tasks/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
-import { FiltersToolbarComponent } from '@components/filters-toolbar.component';
+import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
+import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
@@ -30,6 +34,7 @@ import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-stat
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -40,11 +45,11 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
-import { CountByStatusComponent } from './components/count-by-status.component';
+import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, SessionRawFilterField, SessionRawListOptions } from './types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from './types';
 
 @Component({
   selector: 'app-sessions-index',
@@ -75,13 +80,13 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
           <span i18n appNoWrap>
             Personalize Tasks Status
           </span>
-      </button>
+        </button>
       </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
-  <mat-toolbar-row>
-    <app-filters-toolbar [filters]="filters" [filtersFields]="availableFiltersFields" [columnsLabels]="columnsLabels()" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -104,9 +109,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
             [routerLink]="['/tasks']"
-            [queryParams]="{
-              sessionId: element[column],
-            }"
+            [queryParams]="createSessionIdQueryParams(element[column])"
           >
             {{ element[column] }}
           </a>
@@ -142,10 +145,12 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
       <!-- Session's Tasks Count by Status -->
       <ng-container *ngIf="isCountColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-sessions-count-by-status
+          <app-count-tasks-by-status
             [statuses]="tasksStatusesColored"
-            [sessionId]="element.sessionId"
-          ></app-sessions-count-by-status>
+            [queryParams]="createTasksByStatusQueryParams(element.sessionId)"
+            [filters]="countTasksByStatusFilters(element.sessionId)"
+          >
+          </app-count-tasks-by-status>
         </td>
       </ng-container>
       <!-- Actions -->
@@ -203,6 +208,13 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilter, 
 app-table-actions-toolbar {
   flex-grow: 1;
 }
+
+.filters {
+  height: auto;
+  min-height: 64px;
+
+  padding: 1rem;
+}
   `],
   standalone: true,
   providers: [
@@ -220,11 +232,20 @@ app-table-actions-toolbar {
     SessionsIndexService,
     SessionsGrpcService,
     NotificationService,
+    TasksByStatusService,
+    TasksStatusesService,
+    TasksIndexService,
+    FiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useClass: SessionsFiltersService
+    }
   ],
   imports: [
     DurationPipe,
     EmptyCellPipe,
     NoWrapDirective,
+    CountTasksByStatusComponent,
     TableInspectObjectComponent,
     NgIf,
     NgFor,
@@ -235,7 +256,6 @@ app-table-actions-toolbar {
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
-    CountByStatusComponent,
     TableContainerComponent,
     MatTooltipModule,
     MatTableModule,
@@ -252,9 +272,11 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  #tasksByStatusService = inject(TasksByStatusService);
-  #notificationService = inject(NotificationService);
-  #dialog = inject(MatDialog);
+  readonly #tasksByStatusService = inject(TasksByStatusService);
+  readonly #notificationService = inject(NotificationService);
+  readonly #dialog = inject(MatDialog);
+  readonly #filtersService = inject(FiltersService);
+  readonly #sessionsFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: SessionRawColumnKey[] = [];
   availableColumns: SessionRawColumnKey[] = [];
@@ -265,8 +287,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: SessionRawListOptions;
 
-  filters: SessionRawFilter[] = [];
-  availableFiltersFields: SessionRawFilterField[] = [];
+  filters: SessionRawFiltersOr = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -297,8 +318,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.options = this._sessionsIndexService.restoreOptions();
 
-    this.availableFiltersFields = this._sessionsIndexService.availableFiltersFields;
-    this.filters = this._sessionsIndexService.restoreFilters();
+    this.filters = this.#sessionsFiltersService.restoreFilters();
 
     this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
 
@@ -417,7 +437,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._sessionsIndexService.isActionsColumn(column);
   }
 
-  extractData(element: SessionRaw, column: SessionRawColumnKey): any {
+  extractData(element: SessionRaw, column: SessionRawColumnKey): Duration | null {
     if (column.startsWith('options.')) {
       const optionColumn = column.replace('options.', '') as keyof TaskOptions;
       const options = element['options'] as TaskOptions | undefined;
@@ -426,10 +446,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         return null;
       }
 
-      return options[optionColumn];
+      return options[optionColumn] as unknown as Duration;
     }
 
-    return element[column as keyof SessionRaw];
+    return element[column as keyof SessionRaw] as unknown as Duration;
   }
 
   // TODO: move to a service for date and time
@@ -481,15 +501,15 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as SessionRawFilter[];
+    this.filters = filters as SessionRawFiltersOr;
 
-    this._sessionsIndexService.saveFilters(filters as SessionRawFilter[]);
+    this.#sessionsFiltersService.saveFilters(filters as SessionRawFiltersOr);
     this.paginator.pageIndex = 0;
     this.refresh.next();
   }
 
   onFiltersReset() {
-    this.filters = this._sessionsIndexService.resetFilters();
+    this.filters = this.#sessionsFiltersService.resetFilters();
     this.paginator.pageIndex = 0;
     this.refresh.next();
   }
@@ -520,6 +540,44 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+
+  createSessionIdQueryParams(sessionId: string) {
+    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'sessionId');
+
+    return {
+      [keySession]: sessionId,
+    };
+  }
+
+  countTasksByStatusFilters(sessionId: string): TaskFilters.AsObject {
+    return {
+      or: [
+        {
+          and: [
+            {
+              field: {
+                taskSummaryField: {
+                  field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID
+                }
+              },
+              filterString:  {
+                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                value: sessionId
+              }
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  createTasksByStatusQueryParams(sessionId: string) {
+    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'sessionId');
+
+    return {
+      [keySession]: sessionId,
+    };
   }
 
   personalizeTasksByStatus() {

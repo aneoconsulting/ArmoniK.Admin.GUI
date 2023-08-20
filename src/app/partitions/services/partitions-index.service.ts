@@ -1,18 +1,19 @@
 import { Injectable, inject } from '@angular/core';
-import { AppIndexService } from '@app/types/services';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilter, PartitionRawFilterField, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '../types';
 
 @Injectable()
-export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
+// TODO: re-add app-index-service
+export class PartitionsIndexService {
   #defaultConfigService = inject(DefaultConfigService);
 
   readonly tableName: string = 'partitions';
 
   readonly defaultColumns: PartitionRawColumnKey[] = this.#defaultConfigService.defaultPartitions.columns;
-  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions'];
+  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions', 'count'];
 
+  // TODO: We could use a custom type to know which columns are objects
   readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
 
   readonly columnsLabels: Record<PartitionRawColumnKey, string> = {
@@ -24,34 +25,10 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     podReserved: $localize`Pod Reserved`,
     preemptionPercentage: $localize`Preemption Percentage`,
     actions: $localize`Actions`,
+    count: $localize`Tasks by Status`,
   };
 
   readonly defaultOptions: PartitionRawListOptions = this.#defaultConfigService.defaultPartitions.options;
-
-  readonly defaultFilters: PartitionRawFilter[] = this.#defaultConfigService.defaultPartitions.filters;
-  readonly availableFiltersFields: PartitionRawFilterField[] = [
-    // Do not add filter on array or object fields
-    {
-      field: 'id',
-      type: 'text',
-    },
-    {
-      field: 'priority',
-      type: 'number',
-    },
-    {
-      field: 'podMax',
-      type: 'number',
-    },
-    {
-      field: 'podReserved',
-      type: 'number',
-    },
-    {
-      field: 'preemptionPercentage',
-      type: 'number',
-    },
-  ];
 
   readonly defaultIntervalValue: number = this.#defaultConfigService.defaultPartitions.interval;
 
@@ -73,15 +50,19 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
   }
 
   isNotSortableColumn(column: PartitionRawColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isObjectColumn(column);
+    return this.isActionsColumn(column) || this.isObjectColumn(column) || this.isCountColumn(column);
   }
 
   isObjectColumn(column: PartitionRawColumnKey): boolean {
     return this.objectColumns.includes(column);
   }
 
+  isCountColumn(column: PartitionRawColumnKey): boolean {
+    return column === 'count';
+  }
+
   isSimpleColumn(column: PartitionRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isPartitionIdColumn(column) && !this.isObjectColumn(column);
+    return !this.isActionsColumn(column) && !this.isPartitionIdColumn(column) && !this.isObjectColumn(column) && !this.isCountColumn(column);
   }
 
   /**
@@ -126,23 +107,5 @@ export class PartitionsIndexService implements AppIndexService<PartitionRaw> {
     this.#tableService.resetColumns('partitions-columns');
 
     return Array.from(this.defaultColumns);
-  }
-
-  /**
-   * Filters
-   */
-
-  saveFilters(filters: PartitionRawFilter[]): void {
-    this.#tableService.saveFilters('partitions-filters', filters);
-  }
-
-  restoreFilters(): PartitionRawFilter[] {
-    return this.#tableService.restoreFilters<PartitionRaw>('partitions-filters', this.availableFiltersFields) ?? this.defaultFilters;
-  }
-
-  resetFilters(): PartitionRawFilter[] {
-    this.#tableService.resetFilters('partitions-filters');
-
-    return this.defaultFilters;
   }
 }

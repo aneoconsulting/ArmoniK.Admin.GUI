@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { createDefu, defu } from 'defu';
+import { createDefu } from 'defu';
 import { Key } from '@app/types/config';
 import { DefaultConfigService } from './default-config.service';
 

@@ -8,8 +8,12 @@ import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { TableStorageService } from '@services/table-storage.service';
+import { TableURLService } from '@services/table-url.service';
+import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
+import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw } from './types';
 
 @Component({
@@ -27,7 +31,11 @@ import { PartitionRaw } from './types';
     UtilsService,
     ShareUrlService,
     QueryParamsService,
-    PartitionsGrpcService
+    PartitionsGrpcService,
+    PartitionsIndexService,
+    TableService,
+    TableURLService,
+    TableStorageService,
   ],
   imports: [
     ShowPageComponent,

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
+import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
 import { Scope } from '@app/types/config';
 import { FieldKey } from '@app/types/data';
-import { Filter, FilterField } from '@app/types/filters';
+import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { TableStorageService } from './table-storage.service';
 import { TableURLService } from './table-url.service';
@@ -81,9 +82,9 @@ export class TableService {
   /**
    * Restore filters from the URL and then from the storage
    */
-  restoreFilters<T extends object>(key: `${Scope}-filters`, availableFiltersFields: FilterField<T>[]): Filter<T>[] | null {
+  restoreFilters<T extends number, U extends number | null>(key: `${Scope}-filters`, filtersDefinitions: FilterDefinition<T, U>[]): FiltersOr<T, U> | null {
 
-    const queryParams = this._tableURLService.getQueryParamsFilters<T>(availableFiltersFields);
+    const queryParams = this._tableURLService.getQueryParamsFilters<T, U>(filtersDefinitions);
 
     if (queryParams.length) {
       this.saveFilters(key, queryParams);
@@ -91,7 +92,7 @@ export class TableService {
     }
 
 
-    const storageData = this._tableStorageService.restore<Filter<T>>(key) as Filter<T>[] | null;
+    const storageData = this._tableStorageService.restore<FiltersOr<T, U>>(key) as FiltersOr<T, U> | null;
 
     return storageData;
   }

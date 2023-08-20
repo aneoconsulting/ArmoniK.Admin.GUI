@@ -7,8 +7,12 @@ import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { TableStorageService } from '@services/table-storage.service';
+import { TableURLService } from '@services/table-url.service';
+import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
+import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-status.service';
 import { TaskRaw } from './types';
 
@@ -30,6 +34,10 @@ import { TaskRaw } from './types';
     QueryParamsService,
     TasksGrpcService,
     TasksStatusesService,
+    TasksIndexService,
+    TableService,
+    TableStorageService,
+    TableURLService,
   ],
   imports: [
     ShowPageComponent,
