@@ -50,6 +50,7 @@ export class DefaultConfigService {
       ],
     }
   ];
+  readonly #defaultDashboardSplitLines: number = 1;
 
 
 
@@ -191,6 +192,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultDashboardLines);
   }
 
+  get defaultDashboardSplitLines(): number {
+    return structuredClone(this.#defaultDashboardSplitLines);
+  }
+
   get defaultSidebar(): Sidebar[] {
     return structuredClone(this.#defaultSidebar);
   }
@@ -226,6 +231,7 @@ export class DefaultConfigService {
     'applications-tasks-by-status': this.#defaultTasksByStatus,
     'sessions-tasks-by-status': this.#defaultTasksByStatus,
     'dashboard-lines': this.#defaultDashboardLines,
+    'dashboard-split-lines': this.#defaultDashboardSplitLines,
     'partitions-tasks-by-status': this.#defaultTasksByStatus,
     'applications-columns': this.#defaultApplications.columns,
     'applications-options': this.#defaultApplications.options,

@@ -12,6 +12,7 @@ export class DashboardIndexService {
   #tasksStatusesService = inject(TasksStatusesService);
 
   readonly defaultLines: Line[] = this.#defaultConfigService.defaultDashboardLines;
+  readonly defaultSplitLines: number = this.#defaultConfigService.defaultDashboardSplitLines;
 
   // TODO: move to TasksStatusesService
   statuses(): { value: string, name: string }[] {
@@ -38,5 +39,13 @@ export class DashboardIndexService {
 
   saveLines(lines: Line[]): void {
     this.#dashboardStorageService.saveLines(lines);
+  }
+
+  restoreSplitLines(): number {
+    return this.#dashboardStorageService.restoreSplitLines() ?? this.defaultSplitLines;
+  }
+
+  saveSplitLines(columns: number): void {
+    this.#dashboardStorageService.saveSplitLines(columns);
   }
 }

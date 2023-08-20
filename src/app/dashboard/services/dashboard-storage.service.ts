@@ -19,4 +19,17 @@ export class DashboardStorageService {
     }
     return null;
   }
+
+  saveSplitLines(columns: number): void {
+    this.#storageService.setItem('dashboard-split-lines', columns);
+  }
+
+  restoreSplitLines(): number | null {
+    const storedColumns = this.#storageService.getItem<number>('dashboard-split-lines', true) as number | null;
+
+    if (storedColumns) {
+      return storedColumns;
+    }
+    return null;
+  }
 }

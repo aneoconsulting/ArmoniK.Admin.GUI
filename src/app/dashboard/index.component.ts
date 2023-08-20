@@ -12,7 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
+import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
@@ -37,6 +37,7 @@ import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { LineComponent } from './components/line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
+import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
 import { Line } from './types';
@@ -76,7 +77,7 @@ import { Line } from './types';
     <button mat-raised-button color="primary" (click)="onAddLineDialog()">Add a line</button>
 </div>
 
-<main class="lines">
+<main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
   <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
     <app-page-section-header icon="adjust">
       <span i18n="Section title">{{ line.name }}</span>
@@ -118,9 +119,7 @@ import { Line } from './types';
 }
 
 .lines {
-  display: flex;
-  flex-direction: column;
-
+  display: grid;
   gap: 4rem;
 
   /* Allow user to view tasks even with the add button */
@@ -181,12 +180,14 @@ export class IndexComponent implements OnInit {
 
   lines: Line[];
   showFabActions = false;
+  columns = 1;
 
   sharableURL = '';
 
   ngOnInit(): void {
     this.lines = this.#dashboardIndexService.restoreLines();
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
+    this.columns = this.#dashboardIndexService.restoreSplitLines();
   }
 
   getIcon(name: string): string {
@@ -262,7 +263,21 @@ export class IndexComponent implements OnInit {
   }
 
   onSplitLinesDialog() {
-    console.log('onSplitLinesDialog');
+    const dialogRef = this.#dialog.open<SplitLinesDialogComponent, SplitLinesDialogData, SplitLinesDialogData>(SplitLinesDialogComponent, {
+      data: {
+        columns: this.columns,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result || !result.columns) return;
+
+      if (result) {
+        this.columns = result.columns;
+        this.#dashboardIndexService.saveSplitLines(this.columns);
+      }
+    });
+
   }
 
   onDeleteLine( value: Line) {

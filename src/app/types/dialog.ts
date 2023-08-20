@@ -68,3 +68,11 @@ export type ReorganizeLinesDialogData = {
 export type ReorganizeLinesDialogResult = {
   lines: Line[];
 };
+
+export type SplitLinesDialogData = {
+  columns: number;
+};
+
+export type SplitLinesDialogResult = {
+  columns: number;
+};
