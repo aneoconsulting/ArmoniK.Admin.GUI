@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   docker:
+    if: github.repository == 'esoubiran-aneo/armonik-admin-gui'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
