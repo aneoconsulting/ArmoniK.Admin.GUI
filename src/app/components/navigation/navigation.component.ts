@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ExternalService } from '@app/types/external-service';
 import { Page } from '@app/types/pages';
+import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
@@ -40,6 +41,10 @@ import pkg from '../../../../package.json';
         <span>ArmoniK</span>
         <span> - </span>
         <span class="greeting">{{ greeting() }}</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
+        {{ environment.name }} {{ environment.version }}
       </div>
       <div class="spacer"></div>
        <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
@@ -151,6 +156,12 @@ import pkg from '../../../../package.json';
   font-weight: normal;
 }
 
+.environment {
+  background: white;
+  padding: 0 1rem;
+  border-radius: 0.25rem;
+}
+
 main {
   padding: 20px 50px;
 }
@@ -186,6 +197,9 @@ export class NavigationComponent implements OnInit{
   #userService = inject(UserService);
   #iconsService = inject(IconsService);
   #versionsService = inject(VersionsService);
+  #environmentService = inject(EnvironmentService);
+
+  environment = this.#environmentService.getEnvironment();
 
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
