@@ -1,9 +1,8 @@
-import { TaskFilters } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { StatusCount } from '@app/tasks/types';
+import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
 
@@ -32,7 +31,7 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
 export class CountTasksByStatusComponent implements AfterViewInit, OnDestroy {
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) queryParams: Record<string, string> = {};
-  @Input() filters?: TaskFilters.AsObject;
+  @Input() filters: TaskSummaryFiltersOr;
 
   statusesCounts: StatusCount[] | null = null;
 

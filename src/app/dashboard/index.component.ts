@@ -1,5 +1,6 @@
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { JsonPipe, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -7,15 +8,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { StatusCount } from '@app/tasks/types';
+import { AddLineDialogData, AddLineDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
+import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
@@ -32,11 +34,12 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
-import { ManageGroupsDialogComponent } from './components/manage-groups-dialog.component';
-import { StatusesGroupCardComponent } from './components/statuses-group-card.component';
+import { AddLineDialogComponent } from './components/add-line-dialog.component';
+import { LineComponent } from './components/line.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
-import { TasksStatusesGroup } from './types';
+import { Line } from './types';
+
 
 @Component({
   selector: 'app-dashboard-index',
@@ -46,68 +49,57 @@ import { TasksStatusesGroup } from './types';
   <span i18n="Page title"> Dashboard </span>
 </app-page-header>
 
-<app-page-section>
-  <app-page-section-header icon="adjust">
-    <span i18n="Section title"> Tasks by status </span>
-  </app-page-section-header>
+<button class="add-line" mat-fab color="primary" aria-label="Add a line" aria-hidden="true" (click)="onAddLineDialog()" matTooltip="Add a line">
+  <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
+</button>
 
-  <mat-toolbar>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-        <app-spinner *ngIf="loadTasksStatus"></app-spinner>
-      </app-actions-toolbar-group>
+<div *ngIf="lines.length === 0" class="no-line">
+    <em i18n>
+      Your dashboard is empty, add a line to start monitoring your tasks.
+    </em>
 
-      <app-actions-toolbar-group>
-        <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"></app-auto-refresh-button>
+    <button mat-raised-button color="primary" (click)="onAddLineDialog()">Add a line</button>
+</div>
 
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onToggleGroupsHeader()">
-            <mat-icon aria-hidden="true" [fontIcon]="hideGroupHeaders ? getIcon('view') : getIcon('view-off')"></mat-icon>
-            <span i18n>
-              Toggle Groups Header
-            </span>
-          </button>
-          <button mat-menu-item (click)="onManageGroupsDialog()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-            <span i18n>
-              Manage Groups
-            </span>
-          </button>
-        </mat-menu>
-      </app-actions-toolbar-group>
-    </app-actions-toolbar>
-  </mat-toolbar>
-
-  <div class="groups">
-    <app-statuses-group-card
-      *ngFor="let group of statusGroups"
-      [group]="group"
-      [data]="data"
-      [hideGroupHeaders]="hideGroupHeaders"
-    ></app-statuses-group-card>
-  </div>
-</app-page-section>
+<div class="lines">
+  <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
+    <app-page-section-header icon="adjust">
+      <span i18n="Section title">{{ line.name }}</span>
+    </app-page-section-header>
+      <app-dashboard-line [line]="line"  (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+  </app-page-section>
+</div>
   `,
-  styles: [
-    `
-app-actions-toolbar {
-  display: block;
-  width: 100%;
+  styles: [`
+.add-line {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+
+  z-index: 50;
 }
 
-.groups {
-  margin-top: 1rem;
+.no-line {
+  margin-top: 2rem;
 
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 2rem;
 }
-    `
-  ],
+
+.lines {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4rem;
+
+  /* Allow user to view tasks even with the add button */
+  margin-bottom: 2rem
+}
+  `],
   standalone: true,
   providers: [
     TasksStatusesService,
@@ -124,6 +116,10 @@ app-actions-toolbar {
     TableStorageService,
     TasksByStatusService,
     UtilsService,
+    TableService,
+    TableURLService,
+    TableStorageService,
+    IconsService,
     FiltersService,
   ],
   imports: [
@@ -138,72 +134,31 @@ app-actions-toolbar {
     ActionsToolbarGroupComponent,
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
-    StatusesGroupCardComponent,
-    MatDialogModule,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
+    MatDialogModule,
     MatMenuModule,
     MatCardModule,
+    MatTooltipModule,
     MatProgressSpinnerModule,
-  ],
+    FiltersToolbarComponent,
+    LineComponent
+  ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  #iconsService = inject(IconsService);
+export class IndexComponent implements OnInit {
+  readonly #iconsService = inject(IconsService);
+  readonly #dialog = inject(MatDialog);
+  readonly #shareURLService = inject(ShareUrlService);
+  readonly #dashboardIndexService = inject(DashboardIndexService);
 
-  hideGroupHeaders: boolean;
-  statusGroups: TasksStatusesGroup[] = [];
-  data: StatusCount[] = [];
-  total: number;
+  lines: Line[];
 
-  intervalValue = 0;
   sharableURL = '';
 
-  loadTasksStatus = true;
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _dialog: MatDialog,
-    private _shareURLService: ShareUrlService,
-    private _taskGrpcService: TasksGrpcService,
-    private _dashboardIndexService: DashboardIndexService,
-    private _autoRefreshService: AutoRefreshService
-  ) {}
-
   ngOnInit(): void {
-    this.statusGroups = this._dashboardIndexService.restoreStatusGroups();
-
-    this.intervalValue = this._dashboardIndexService.restoreIntervalValue();
-    this.hideGroupHeaders = this._dashboardIndexService.restoreHideGroupsHeader();
-    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
-  }
-
-  ngAfterViewInit() {
-    const mergeSubscription = merge(this.refresh, this.interval$).pipe(
-      startWith(0),
-      tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this._taskGrpcService.countByStatu$()),
-    ).subscribe((data) => {
-      if (!data.status) {
-        return;
-      }
-
-      this.data = data.status;
-      this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-
-      this.loadTasksStatus = false;
-    });
-
-    this.subscriptions.add(mergeSubscription);
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    this.lines = this.#dashboardIndexService.restoreLines();
+    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
   }
 
   getIcon(name: string): string {
@@ -214,47 +169,62 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.#iconsService.getPageIcon(name);
   }
 
-  autoRefreshTooltip(): string {
-    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this._dashboardIndexService.saveIntervalValue(value);
-  }
-
-  onToggleGroupsHeader() {
-    this.hideGroupHeaders = !this.hideGroupHeaders;
-
-    this._dashboardIndexService.saveHideGroupsHeader(this.hideGroupHeaders);
-  }
-
-  onManageGroupsDialog() {
-    const dialogRef = this._dialog.open(ManageGroupsDialogComponent, {
-      data: {
-        groups: this.statusGroups,
-      }
-    });
+  onAddLineDialog() {
+    const dialogRef = this.#dialog.open<AddLineDialogComponent, AddLineDialogData, AddLineDialogResult>(AddLineDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
+      if (!result) return;
 
-      this.statusGroups = result;
-      this._dashboardIndexService.saveStatusGroups(this.statusGroups);
+      if (result) {
+        this.lines.push({
+          name: result.name,
+          interval: 5,
+          hideGroupsHeader: false,
+          filters: [],
+          taskStatusesGroups: [
+            {
+              name: 'Finished',
+              color: '#00ff00',
+              statuses: [
+                TaskStatus.TASK_STATUS_COMPLETED,
+                TaskStatus.TASK_STATUS_CANCELLED,
+              ],
+            },
+            {
+              name: 'Running',
+              color: '#ffa500',
+              statuses: [
+                TaskStatus.TASK_STATUS_PROCESSING,
+              ]
+            },
+            {
+              name: 'Errors',
+              color: '#ff0000',
+              statuses: [
+                TaskStatus.TASK_STATUS_ERROR,
+                TaskStatus.TASK_STATUS_TIMEOUT,
+              ]
+            },
+          ],
+        });
+        this.onSaveChange();
+      }
     });
+  }
+
+  onDeleteLine( value: Line) {
+    const index = this.lines.indexOf(value);
+    if (index > -1) {
+      this.lines.splice(index, 1);
+    }
+    this.onSaveChange();
+  }
+
+  onSaveChange() {
+    this.#dashboardIndexService.saveLines(this.lines);
+  }
+
+  trackByLine(index: number, _: Line) {
+    return index;
   }
 }

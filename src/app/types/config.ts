@@ -5,16 +5,14 @@ export type ScopeConfig<C, O, F> = {
   filters: F;
 };
 
-export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
+export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks'; 
 export type Element = 'columns' | 'options' | 'filters' | 'interval';
 
 export type Key =
   'navigation-sidebar' |
   'navigation-theme' |
   'navigation-external-services' |
-  'dashboard-status-groups' |
-  'dashboard-interval' |
-  'dashboard-hide-groups-headers' |
+  'dashboard-lines'|
   'applications-tasks-by-status' |
   'sessions-tasks-by-status' |
   'partitions-tasks-by-status' |

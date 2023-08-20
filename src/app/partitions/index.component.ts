@@ -1,4 +1,4 @@
-import { FilterStringOperator, TaskFilters, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -16,7 +16,7 @@ import { Observable, Subject, Subscription, catchError, map, merge, of, startWit
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskSummaryColumnKey } from '@app/tasks/types';
+import { TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -417,26 +417,17 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  countTasksByStatusFilters(partition: string): TaskFilters.AsObject {
-    return {
-      or: [
+  countTasksByStatusFilters(partitionId: string): TaskSummaryFiltersOr {
+    return [
+      [
         {
-          and: [
-            {
-              field: {
-                taskOptionField: {
-                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID
-                }
-              },
-              filterString:  {
-                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-                value: partition
-              }
-            }
-          ]
+          for: 'options',
+          field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
+          value: partitionId,
+          operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
         }
       ]
-    };
+    ];
   }
 
   createTasksByStatusQueryParams(partition: string) {

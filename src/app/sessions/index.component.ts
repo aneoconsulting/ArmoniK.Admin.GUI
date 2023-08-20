@@ -19,7 +19,7 @@ import { Observable, Subject, Subscription, catchError, map, merge, of, startWit
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskOptions, TaskSummaryColumnKey } from '@app/tasks/types';
+import { TaskOptions, TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -550,26 +550,17 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     };
   }
 
-  countTasksByStatusFilters(sessionId: string): TaskFilters.AsObject {
-    return {
-      or: [
+  countTasksByStatusFilters(sessionId: string): TaskSummaryFiltersOr {
+    return [
+      [
         {
-          and: [
-            {
-              field: {
-                taskSummaryField: {
-                  field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID
-                }
-              },
-              filterString:  {
-                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-                value: sessionId
-              }
-            }
-          ]
+          for: 'root',
+          field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
+          value: sessionId,
+          operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
         }
       ]
-    };
+    ];
   }
 
   createTasksByStatusQueryParams(sessionId: string) {

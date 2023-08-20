@@ -1,6 +1,13 @@
 import {TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskSummaryFiltersOr } from '@app/tasks/types';
 
-
+export type Line = {
+  name: string,
+  interval: number,
+  hideGroupsHeader: boolean,
+  filters: TaskSummaryFiltersOr,
+  taskStatusesGroups: TasksStatusesGroup[],
+};
 
 export type TasksStatusesGroup = {
   name: string;
@@ -9,6 +16,10 @@ export type TasksStatusesGroup = {
 };
 
 export type ManageGroupsDialogData = {
+  groups: TasksStatusesGroup[];
+};
+
+export type ManageGroupsDialogResult = {
   groups: TasksStatusesGroup[];
 };
 

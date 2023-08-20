@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ManageGroupsDialogData, TasksStatusesGroup } from '@app/dashboard/types';
+import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
@@ -65,7 +65,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="groups" color="primary" i18n="Dialog action"> Confirm </button>
+  <button mat-flat-button [mat-dialog-close]="{ groups }" color="primary" i18n="Dialog action"> Confirm </button>
 </mat-dialog-actions>
   `,
   styles: [`
@@ -175,7 +175,7 @@ export class ManageGroupsDialogComponent implements OnInit {
   #tasksStatusesService = inject(TasksStatusesService);
 
   constructor(
-    public _dialogRef: MatDialogRef<ManageGroupsDialogComponent>,
+    public _dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data: ManageGroupsDialogData,
   ) {}
 

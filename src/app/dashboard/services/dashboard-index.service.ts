@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { DashboardStorageService } from './dashboard-storage.service';
-import { TasksStatusesGroup } from '../types';
+import { Line } from '../types';
 
 @Injectable()
 export class DashboardIndexService {
@@ -11,10 +11,7 @@ export class DashboardIndexService {
   #dashboardStorageService = inject(DashboardStorageService);
   #tasksStatusesService = inject(TasksStatusesService);
 
-  readonly defaultStatusGroups: TasksStatusesGroup[] = this.#defaultConfigService.defaultDashboardStatusGroups;
-  readonly defaultHideGroupsHeader = this.#defaultConfigService.defaultDashboardHideGroupsHeader;
-  readonly defaultInterval = this.#defaultConfigService.defaultDashboardInterval;
-
+  readonly defaultLines: Line[] = this.#defaultConfigService.defaultDashboardLines;
 
   // TODO: move to TasksStatusesService
   statuses(): { value: string, name: string }[] {
@@ -35,39 +32,11 @@ export class DashboardIndexService {
     });
   }
 
-  restoreStatusGroups(): TasksStatusesGroup[] {
-    return this.#dashboardStorageService.restoreStatusGroups() ?? this.defaultStatusGroups;
+  restoreLines(): Line[] {
+    return this.#dashboardStorageService.restoreLines() ?? this.defaultLines;
   }
 
-  saveStatusGroups(groups: TasksStatusesGroup[]) {
-    this.#dashboardStorageService.saveStatusGroups(groups);
-  }
-
-  restoreIntervalValue(): number {
-    const storedValue = this.#dashboardStorageService.restoreInterval();
-
-    if(storedValue === null) {
-      return this.defaultInterval;
-    }
-
-    return storedValue;
-  }
-
-  saveIntervalValue(interval: number) {
-    this.#dashboardStorageService.saveInterval(interval);
-  }
-
-  restoreHideGroupsHeader(): boolean {
-    const storedValue = this.#dashboardStorageService.restoreHideGroupsHeader();
-
-    if(storedValue === null) {
-      return this.defaultHideGroupsHeader;
-    }
-
-    return storedValue;
-  }
-
-  saveHideGroupsHeader(hide: boolean) {
-    this.#dashboardStorageService.saveHideGroupsHeader(hide);
+  saveLines(lines: Line[]): void {
+    this.#dashboardStorageService.saveLines(lines);
   }
 }

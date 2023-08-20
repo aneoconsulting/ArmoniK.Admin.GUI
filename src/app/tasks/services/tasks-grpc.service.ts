@@ -82,10 +82,12 @@ export class TasksGrpcService {
     return this.#tasksClient.cancelTasks(request);
   }
 
-  countByStatu$(filters?: TaskFilters.AsObject): Observable<CountTasksByStatusResponse> {
+  countByStatu$(filters: TaskSummaryFiltersOr): Observable<CountTasksByStatusResponse> {
+
+    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
 
     const request = new CountTasksByStatusRequest({
-      filters: filters
+      filters: requestFilters
     });
 
     return this.#tasksClient.countTasksByStatus(request);

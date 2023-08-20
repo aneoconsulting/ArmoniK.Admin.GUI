@@ -1,4 +1,4 @@
-import { FilterStringOperator, TaskFilters, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -16,7 +16,7 @@ import { Observable, Subject, Subscription, catchError, map, merge, of, startWit
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskSummaryColumnKey } from '@app/tasks/types';
+import { TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -398,37 +398,23 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskFilters.AsObject {
-    return {
-      or: [
+  countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskSummaryFiltersOr {
+    return [
+      [
         {
-          and: [
-            {
-              field: {
-                taskOptionField: {
-                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME
-                }
-              },
-              filterString: {
-                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-                value: applicationName,
-              }
-            },
-            {
-              field: {
-                taskOptionField: {
-                  field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION
-                },
-              },
-              filterString: {
-                operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-                value: applicationVersion,
-              }
-            }
-          ]
+          for: 'options',
+          field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+          value: applicationName,
+          operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
+        },
+        {
+          for: 'options',
+          field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
+          value: applicationVersion,
+          operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
         }
       ]
-    };
+    ];
   }
 
   createTasksByStatusQueryParams(name: string, version: string) {
