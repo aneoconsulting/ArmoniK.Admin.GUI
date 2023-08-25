@@ -14,18 +14,18 @@ RUN nci
 
 COPY . .
 
-RUN nx build app --prod --baseHref=/admin/
+RUN nx build app --prod --baseHref=/admin-0.9/
 
-FROM nginx:1.25.1-alpine3.17 as production
+FROM nginx:1.25.2-alpine3.18-slim as production
 
 WORKDIR /usr/share/nginx/html
 
 RUN rm -rf ./*
-RUN mkdir ./admin/
+RUN mkdir ./admin-0.9/
 
 COPY --from=build /usr/src/app/nginx.default.conf /etc/nginx/nginx.conf
 COPY --from=build /usr/src/app/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /usr/src/app/dist/apps/app ./admin
+COPY --from=build /usr/src/app/dist/apps/app ./admin-0.9
 
 RUN addgroup -g 5000 -S armonikuser && adduser -D -h /home/armonikuser  -u 5000 -G armonikuser --shell /bin/sh armonikuser
 USER armonikuser

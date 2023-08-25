@@ -680,10 +680,10 @@
         <target>Priorité</target>
       </segment>
     </unit>
-    <unit id="2589810979983981192">
+    <unit id="7128279086497006714">
       <segment state="initial">
-        <source>/admin/en/</source>
-        <target>/admin/fr/</target>
+        <source>/admin-0.9/en/</source>
+        <target>/admin-0.9/fr/</target>
       </segment>
     </unit>
     <unit id="8574063679938854809">
