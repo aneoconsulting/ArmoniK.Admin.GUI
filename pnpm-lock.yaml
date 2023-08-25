@@ -2,8 +2,8 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
-    specifier: 3.9.2
-    version: 3.9.2(@angular/common@14.3.0)(@angular/core@14.3.0)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0)
+    specifier: 3.11.0
+    version: 3.11.0(@angular/common@14.3.0)(@angular/core@14.3.0)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0)
   '@angular/animations':
     specifier: 14.3.0
     version: 14.3.0(@angular/core@14.3.0)
@@ -193,11 +193,11 @@ packages:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.18
 
-  /@aneoconsultingfr/armonik.api.angular@3.9.2(@angular/common@14.3.0)(@angular/core@14.3.0)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0):
-    resolution: {integrity: sha512-mDA1w5xclwZIoZZXIzzZyPyWlaK5omBOWOulu56OWsn0RyIcQ6lk6WzHc9Q0EnG23Gh8Ef0eX8gL7y/xezgvKw==}
+  /@aneoconsultingfr/armonik.api.angular@3.11.0(@angular/common@14.3.0)(@angular/core@14.3.0)(@ngx-grpc/common@3.1.1)(@ngx-grpc/core@3.1.1)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.6.0):
+    resolution: {integrity: sha512-zdpfFZzFxXQOAEr8MGfH6F1nr55OKB5jt1aJVV/C7XDU3FwTZ5gQTzkazKdXoKL1+twDQ/vTWpy0bmMK6TuYEg==}
     peerDependencies:
-      '@angular/common': ^16.0.1
-      '@angular/core': ^16.0.1
+      '@angular/common': ^16.1.6
+      '@angular/core': ^16.1.6
       '@ngx-grpc/common': ^3.1.1
       '@ngx-grpc/core': ^3.1.1
       '@ngx-grpc/well-known-types': ^3.1.1
@@ -211,7 +211,7 @@ packages:
       '@ngx-grpc/well-known-types': 3.1.1(@ngx-grpc/common@3.1.1)(google-protobuf@3.21.2)
       google-protobuf: 3.21.2
       rxjs: 7.6.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /@angular-devkit/architect@0.1301.4:
@@ -12373,6 +12373,10 @@ packages:
 
   /tslib@2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
 
   /tsutils@3.21.0(typescript@4.6.2):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
