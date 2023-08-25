@@ -28,6 +28,7 @@ import {
   trashIcon,
 } from '@cds/core/icon';
 import {
+  ClrAlertModule,
   ClrIconModule,
   ClrLayoutModule,
   ClrVerticalNavModule,
@@ -52,6 +53,7 @@ import { CoreModule } from './shared/util';
     ClrLayoutModule,
     ClrVerticalNavModule,
     ClrIconModule,
+    ClrAlertModule,
     CoreModule,
     AppRoutingModule,
     BrowserModule,
