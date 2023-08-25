@@ -1,40 +1,40 @@
-// import { TestBed } from '@angular/core/testing';
-// import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
-// import {
-//   ClrDatagridComparatorInterface,
-//   ClrDatagridStateInterface,
-// } from '@clr/angular';
-// import { GrpcCoreModule } from '@ngx-grpc/core';
-// import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-// import { GrpcResultsService } from './grpc-results.service';
-// import {
-//   ListResultsRequest,
-//   ResultRawField,
-//   ResultsClient,
-//   SortDirection,
-// } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
+import {
+  ClrDatagridComparatorInterface,
+  ClrDatagridStateInterface,
+} from '@clr/angular';
+import { GrpcCoreModule } from '@ngx-grpc/core';
+import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
+import { GrpcResultsService } from './grpc-results.service';
+import {
+  ListResultsRequest,
+  ResultRawField,
+  ResultsClient,
+  SortDirection,
+} from '@aneoconsultingfr/armonik.api.angular';
 
-// describe('GrpcResultsService', () => {
-//   let service: GrpcResultsService;
+describe('GrpcResultsService', () => {
+  let service: GrpcResultsService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({
-//       imports: [
-//         GrpcCoreModule.forRoot(),
-//         GrpcWebClientModule.forRoot({
-//           settings: {
-//             host: '',
-//           },
-//         }),
-//       ],
-//       providers: [GrpcResultsService, ResultsClient, GrpcParamsService],
-//     });
-//     service = TestBed.inject(GrpcResultsService);
-//   });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        GrpcCoreModule.forRoot(),
+        GrpcWebClientModule.forRoot({
+          settings: {
+            host: '',
+          },
+        }),
+      ],
+      providers: [GrpcResultsService, ResultsClient, GrpcParamsService],
+    });
+    service = TestBed.inject(GrpcResultsService);
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
 //   it('should create a default list of request params', () => {
 //     const state: ClrDatagridStateInterface = {};
@@ -190,4 +190,4 @@
 //       })
 //     );
 //   });
-// });
+});

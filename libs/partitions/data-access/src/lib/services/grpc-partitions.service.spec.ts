@@ -1,40 +1,40 @@
-// import { TestBed } from '@angular/core/testing';
-// import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
-// import { GrpcCoreModule } from '@ngx-grpc/core';
-// import { GrpcPartitionsService } from './grpc-partitions.service';
-// import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-// import {
-//   ClrDatagridComparatorInterface,
-//   ClrDatagridStateInterface,
-// } from '@clr/angular';
-// import {
-//   ListPartitionsRequest,
-//   PartitionRawField,
-//   PartitionsClient,
-//   SortDirection,
-// } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
+import { GrpcParamsService } from '@armonik.admin.gui/shared/data-access';
+import { GrpcCoreModule } from '@ngx-grpc/core';
+import { GrpcPartitionsService } from './grpc-partitions.service';
+import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
+import {
+  ClrDatagridComparatorInterface,
+  ClrDatagridStateInterface,
+} from '@clr/angular';
+import {
+  ListPartitionsRequest,
+  PartitionRawField,
+  PartitionsClient,
+  SortDirection,
+} from '@aneoconsultingfr/armonik.api.angular';
 
-// describe('GrpcPartitionsService', () => {
-//   let service: GrpcPartitionsService;
+describe('GrpcPartitionsService', () => {
+  let service: GrpcPartitionsService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({
-//       imports: [
-//         GrpcCoreModule.forRoot(),
-//         GrpcWebClientModule.forRoot({
-//           settings: {
-//             host: '',
-//           },
-//         }),
-//       ],
-//       providers: [GrpcPartitionsService, PartitionsClient, GrpcParamsService],
-//     });
-//     service = TestBed.inject(GrpcPartitionsService);
-//   });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        GrpcCoreModule.forRoot(),
+        GrpcWebClientModule.forRoot({
+          settings: {
+            host: '',
+          },
+        }),
+      ],
+      providers: [GrpcPartitionsService, PartitionsClient, GrpcParamsService],
+    });
+    service = TestBed.inject(GrpcPartitionsService);
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
 //   it('should create a default list of request params', () => {
 //     const state: ClrDatagridStateInterface = {};
@@ -181,4 +181,4 @@
 //       })
 //     );
 //   });
-// });
+});

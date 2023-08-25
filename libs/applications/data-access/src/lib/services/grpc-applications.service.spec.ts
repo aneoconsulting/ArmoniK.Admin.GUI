@@ -14,31 +14,31 @@ import {
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
 
-// describe('GrpcApplicationsService', () => {
-//   let service: GrpcApplicationsService;
+describe('GrpcApplicationsService', () => {
+  let service: GrpcApplicationsService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({
-//       imports: [
-//         GrpcCoreModule.forRoot(),
-//         GrpcWebClientModule.forRoot({
-//           settings: {
-//             host: '',
-//           },
-//         }),
-//       ],
-//       providers: [
-//         GrpcApplicationsService,
-//         ApplicationsClient,
-//         GrpcParamsService,
-//       ],
-//     });
-//     service = TestBed.inject(GrpcApplicationsService);
-//   });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        GrpcCoreModule.forRoot(),
+        GrpcWebClientModule.forRoot({
+          settings: {
+            host: '',
+          },
+        }),
+      ],
+      providers: [
+        GrpcApplicationsService,
+        ApplicationsClient,
+        GrpcParamsService,
+      ],
+    });
+    service = TestBed.inject(GrpcApplicationsService);
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
 //   it('should create a default list of request params', () => {
 //     const state: ClrDatagridStateInterface = {};
@@ -186,4 +186,4 @@ import {
 //       })
 //     );
 //   });
-// });
+});

@@ -14,27 +14,27 @@ import {
   TasksClient,
 } from '@aneoconsultingfr/armonik.api.angular';
 
-// describe('GrpcTasksService', () => {
-//   let service: GrpcTasksService;
+describe('GrpcTasksService', () => {
+  let service: GrpcTasksService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({
-//       imports: [
-//         GrpcCoreModule.forRoot(),
-//         GrpcWebClientModule.forRoot({
-//           settings: {
-//             host: '',
-//           },
-//         }),
-//       ],
-//       providers: [GrpcTasksService, TasksClient, GrpcParamsService],
-//     });
-//     service = TestBed.inject(GrpcTasksService);
-//   });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        GrpcCoreModule.forRoot(),
+        GrpcWebClientModule.forRoot({
+          settings: {
+            host: '',
+          },
+        }),
+      ],
+      providers: [GrpcTasksService, TasksClient, GrpcParamsService],
+    });
+    service = TestBed.inject(GrpcTasksService);
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 
 //   it('should create a default list of request params', () => {
 //     const state: ClrDatagridStateInterface = {};
@@ -190,4 +190,4 @@ import {
 //       })
 //     );
 //   });
-// });
+});
