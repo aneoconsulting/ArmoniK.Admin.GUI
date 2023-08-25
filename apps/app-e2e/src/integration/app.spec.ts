@@ -2,7 +2,7 @@ describe('app', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display the dashboard page', () => {
-    // check if url is /admin/dashboard
+    // check if url is /admin-0.9/dashboard
     cy.url().should('include', '/dashboard');
   });
 
