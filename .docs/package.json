@@ -8,9 +8,9 @@
     "generate": "nuxi generate",
     "preview": "nuxi preview"
   },
-  "packageManager": "pnpm@8.6.12",
+  "packageManager": "pnpm@8.7.0",
   "devDependencies": {
-    "nuxt": "^3.6.5",
+    "nuxt": "^3.7.0",
     "@aneoconsultingfr/armonik-docs-theme": "^0.6.13"
   }
 }
