@@ -15,7 +15,7 @@ import {
 export type GrpcListApplicationsParams = GrpcListParams<
   ApplicationRawEnumField[],
   SortDirection,
-  ApplicationFilters
+  Record<string, unknown>
 >;
 
 export type GrpcListSessionsParams = GrpcListParams<

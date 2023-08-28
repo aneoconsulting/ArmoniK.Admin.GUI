@@ -41,7 +41,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<ApplicationFilters>(state);
+      this._grpcParamsService.createFilterParams<Record<string, unknown>>(state);
 
     return {
       page,
@@ -57,7 +57,7 @@ export class GrpcApplicationsService extends BaseGrpcService {
   public createListRequestQueryParams(
     { page, pageSize, orderBy, order, filter }: GrpcListApplicationsParams,
     refreshInterval: number
-  ) {
+  ): Record<string, unknown> {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
