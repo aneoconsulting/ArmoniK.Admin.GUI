@@ -72,11 +72,11 @@ import pkg from '../../../../package.json';
         </span>
       </button>
       <mat-menu #versionMenu="matMenu">
-        <a mat-menu-item [href]="'https://github.com/esoubiran-aneo/armonik-admin-gui/releases/v' + version" target="_blank" rel="noopener noreferrer">
+        <a mat-menu-item [href]="'https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases/v' + version" target="_blank" rel="noopener noreferrer">
           <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('update')"></mat-icon>
           <span i18n="Button">Changelog</span>
         </a>
-        <a mat-menu-item href="https://esoubiran-aneo.github.io/armonik-admin-gui" target="_blank" rel="noopener">
+        <a mat-menu-item href="https://aneoconsulting.github.io/ArmoniK.Admin.GUI" target="_blank" rel="noopener">
           <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('help')"></mat-icon>
           <span i18n="Button">Documentation</span>
         </a>

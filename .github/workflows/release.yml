@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   docker:
-    if: github.repository == 'esoubiran-aneo/armonik-admin-gui'
+    if: github.repository == 'aneoconsulting/ArmoniK.Admin.GUI'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            esoubirananeo/armonik-admin-gui
+            dockerhubaneo/armonik_admin_app
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=pr
