@@ -32,7 +32,7 @@ export class ResultsGrpcService {
 
   list$(options: ResultRawListOptions, filters: ResultRawFiltersOr): Observable<ListResultsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ResultFilterField.AsObject>(filters, this.#resultsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<ResultFilterField.AsObject>(filters, this.#resultsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listResultRequest = new ListResultsRequest({
       page: options.pageIndex,

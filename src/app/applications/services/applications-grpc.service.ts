@@ -28,7 +28,7 @@ export class ApplicationsGrpcService {
 
   list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter): Observable<ListApplicationsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const request = new ListApplicationsRequest({
       page: options.pageIndex,

@@ -108,11 +108,11 @@ export class TasksFiltersService {
     return this.#defaultFilters;
   }
 
-  retriveFiltersDefinitions() {
+  retrieveFiltersDefinitions() {
     return this.#filtersDefinitions;
   }
 
-  retriveLabel(filterFor: TaskFilterFor, filterField:  TaskFilterField): string {
+  retrieveLabel(filterFor: TaskFilterFor, filterField:  TaskFilterField): string {
     switch (filterFor) {
     case 'root':
       return this.#rootField[filterField as TaskSummaryEnumField];

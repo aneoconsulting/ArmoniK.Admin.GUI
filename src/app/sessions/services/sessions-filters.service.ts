@@ -72,8 +72,8 @@ export type FilterDefinition<T extends number, U extends number | null = null> =
 export type FilterFor<T extends number, U extends number | null = null> = FilterDefinition<T, U>['for'];
 
 export abstract class FiltersService {
-  abstract retriveFiltersDefinitions<T extends number, U extends number | null = null>(): FilterDefinition<T, U>[];
-  abstract retriveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U): string;
+  abstract retrieveFiltersDefinitions<T extends number, U extends number | null = null>(): FilterDefinition<T, U>[];
+  abstract retrieveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U): string;
   abstract saveFilters<T extends number, U extends number | null = null>(filters: FiltersAnd<T, U>[]): void;
   abstract restoreFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
   abstract resetFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
@@ -153,11 +153,11 @@ export class SessionsFiltersService {
     return this.#defaultFilters;
   }
 
-  retriveFiltersDefinitions() {
+  retrieveFiltersDefinitions() {
     return this.#filtersDefinitions;
   }
 
-  retriveLabel(filterFor: SessionFilterFor, filterField:  SessionFilterField): string {
+  retrieveLabel(filterFor: SessionFilterFor, filterField:  SessionFilterField): string {
     switch (filterFor) {
     case 'root':
       return this.#rootField[filterField as SessionRawEnumField];

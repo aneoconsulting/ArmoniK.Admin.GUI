@@ -38,6 +38,7 @@ import { SpinnerComponent } from './spinner.component';
   standalone: true,
   providers: [
     FiltersService,
+    TasksStatusesService
   ],
   imports: [
     NgIf,

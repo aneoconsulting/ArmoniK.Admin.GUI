@@ -31,7 +31,7 @@ export class PartitionsGrpcService {
   };
 
   list$(options: PartitionRawListOptions, filters: PartitionRawFiltersOr): Observable<ListPartitionsResponse> {
-    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listPartitionsRequest = new ListPartitionsRequest({
       page: options.pageIndex,

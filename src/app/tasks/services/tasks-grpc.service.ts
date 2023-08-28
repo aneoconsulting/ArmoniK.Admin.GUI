@@ -1,15 +1,15 @@
-import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskFilters, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
+import { TasksFiltersService } from './tasks-filters.service';
 import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
 
 @Injectable()
 export class TasksGrpcService {
-  readonly #tasksFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #tasksFiltersService = inject(TasksFiltersService);
   readonly #utilsService = inject(UtilsService<TaskSummaryEnumField, TaskOptionEnumField>);
   readonly #tasksClient = inject(TasksClient);
 
@@ -46,7 +46,7 @@ export class TasksGrpcService {
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFiltersOr): Observable<ListTasksResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listTasksRequest = new ListTasksRequest({
       page: options.pageIndex,
@@ -84,7 +84,7 @@ export class TasksGrpcService {
 
   countByStatu$(filters: TaskSummaryFiltersOr): Observable<CountTasksByStatusResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const request = new CountTasksByStatusRequest({
       filters: requestFilters

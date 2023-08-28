@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
@@ -21,8 +21,8 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
   `],
   standalone: true,
   providers: [
-    TasksStatusesService,
     TasksGrpcService,
+    TasksFiltersService
   ],
   imports: [
     ViewTasksByStatusComponent,

@@ -1,12 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { TasksStatusesService } from './tasks-status.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
 export class TasksIndexService {
-  #tasksStatusesService = inject(TasksStatusesService);
   #defaultConfigService = inject(DefaultConfigService);
   #tableService = inject(TableService);
 
