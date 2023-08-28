@@ -1,0 +1,1495 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en">
+  <file id="ngi18n" original="ng.template">
+    <unit id="6974545727326457207">
+      <notes>
+        <note category="location">src/app/profile/index.component.ts:20</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Profile from </source>
+      </segment>
+    </unit>
+    <unit id="9090022123064190435">
+      <notes>
+        <note category="location">src/app/profile/index.component.ts:25,27</note>
+        <note category="description">Description of the page</note>
+      </notes>
+      <segment>
+        <source> This is your profile page. You can see your user data below. </source>
+      </segment>
+    </unit>
+    <unit id="1000869949974250547">
+      <notes>
+        <note category="location">src/app/dashboard/components/edit-status-group-dialog.component.ts:9</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>Edit a Group</source>
+      </segment>
+    </unit>
+    <unit id="1071721880474488785">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:142</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment>
+        <source>Import</source>
+      </segment>
+    </unit>
+    <unit id="1102717806459547726">
+      <notes>
+        <note category="location">src/app/components/refresh-button.component.ts:11</note>
+      </notes>
+      <segment>
+        <source>Refresh</source>
+      </segment>
+    </unit>
+    <unit id="1137318306951557633">
+      <notes>
+        <note category="location">src/app/dashboard/index.component.ts:37</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Dashboard </source>
+      </segment>
+    </unit>
+    <unit id="118284616495039929">
+      <notes>
+        <note category="location">src/app/partitions/index.component.ts:42</note>
+        <note category="location">src/app/services/navigation.service.ts:40</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source>Partitions</source>
+      </segment>
+    </unit>
+    <unit id="1192194672397336872">
+      <notes>
+        <note category="location">src/app/partitions/index.component.ts:113</note>
+      </notes>
+      <segment>
+        <source>Select page of partitions</source>
+      </segment>
+    </unit>
+    <unit id="1229698316191457206">
+      <notes>
+        <note category="location">src/app/partitions/show.component.ts:18</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source>Partition</source>
+      </segment>
+    </unit>
+    <unit id="1342025864533609999">
+      <notes>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:16</note>
+        <note category="description">Dialog description</note>
+      </notes>
+      <segment>
+        <source>Check box to add or remove a column</source>
+      </segment>
+    </unit>
+    <unit id="1492876999504712556">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:15,17</note>
+        <note category="description">Dialog description</note>
+      </notes>
+      <segment>
+        <source> Enter the number of seconds between each refresh. Use 0 to disable. </source>
+      </segment>
+    </unit>
+    <unit id="1779801045860441380">
+      <notes>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:21</note>
+        <note category="location">src/app/dashboard/index.component.ts:60</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>Manage Groups</source>
+      </segment>
+    </unit>
+    <unit id="188313477943387511">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:26</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment>
+        <source>And</source>
+      </segment>
+    </unit>
+    <unit id="193735854885505934">
+      <notes>
+        <note category="location">src/app/components/filters-dialog-input.component.ts:30</note>
+        <note category="description">Input label</note>
+      </notes>
+      <segment>
+        <source>Enter a date range</source>
+      </segment>
+    </unit>
+    <unit id="2172333518062868885">
+      <notes>
+        <note category="location">src/app/applications/index.component.ts:45</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Applications </source>
+      </segment>
+    </unit>
+    <unit id="2215266228133243915">
+      <notes>
+        <note category="location">src/app/profile/index.component.ts:75,77</note>
+      </notes>
+      <segment>
+        <source> You do not have any roles. </source>
+      </segment>
+    </unit>
+    <unit id="2330577642930707695">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:41</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:40</note>
+        <note category="location">src/app/components/filters-dialog.component.ts:64</note>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
+        <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:52</note>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:68</note>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:42</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:66</note>
+        <note category="description">Dialog action</note>
+      </notes>
+      <segment>
+        <source> Cancel </source>
+      </segment>
+    </unit>
+    <unit id="2536985795479932233">
+      <notes>
+        <note category="location">src/app/components/navigation/add-external-service-dialog.component.ts:9</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source> Add an external service </source>
+      </segment>
+    </unit>
+    <unit id="2595047188938413705">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:174</note>
+      </notes>
+      <segment>
+        <source>Select page of sessions</source>
+      </segment>
+    </unit>
+    <unit id="2619783548714950261">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:26</note>
+        <note category="description">Placeholder</note>
+      </notes>
+      <segment>
+        <source>URL of the service</source>
+      </segment>
+    </unit>
+    <unit id="2810764898810965349">
+      <notes>
+        <note category="location">src/app/components/navigation/edit-external-service-dialog.component.ts:9</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source> Edit an external service </source>
+      </segment>
+    </unit>
+    <unit id="2914520322361316995">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:53</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Sessions </source>
+      </segment>
+    </unit>
+    <unit id="3309177967835549878">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:40</note>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:27</note>
+        <note category="description">Color of the statuses group</note>
+      </notes>
+      <segment>
+        <source> Color </source>
+      </segment>
+    </unit>
+    <unit id="3350676806684249188">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:20</note>
+        <note category="description">Label Input</note>
+      </notes>
+      <segment>
+        <source>Interval</source>
+      </segment>
+    </unit>
+    <unit id="349093322085927405">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:89,91</note>
+        <note category="description">Section description</note>
+      </notes>
+      <segment>
+        <source> Delete data stored in your browser by this application. This will reset behavior and settings to their default values. </source>
+      </segment>
+    </unit>
+    <unit id="3676095562960762035">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:36</note>
+      </notes>
+      <segment>
+        <source>is</source>
+      </segment>
+    </unit>
+    <unit id="3809296122060449520">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:61</note>
+        <note category="description">Button</note>
+      </notes>
+      <segment>
+        <source>Manage service</source>
+      </segment>
+    </unit>
+    <unit id="4163272119298020373">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:18</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>Filters</source>
+      </segment>
+    </unit>
+    <unit id="4192548578052567748">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:19,20</note>
+        <note category="description">Input error</note>
+      </notes>
+      <segment>
+        <source> Name is <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">required</pc></source>
+      </segment>
+    </unit>
+    <unit id="419255520381103046">
+      <notes>
+        <note category="location">src/app/profile/index.component.ts:83,85</note>
+      </notes>
+      <segment>
+        <source> You do not have any permissions. </source>
+      </segment>
+    </unit>
+    <unit id="4288089139881196777">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:33</note>
+        <note category="description">Icon of the external service</note>
+      </notes>
+      <segment>
+        <source> Icon </source>
+      </segment>
+    </unit>
+    <unit id="4312517319627808728">
+      <notes>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:40</note>
+      </notes>
+      <segment>
+        <source>Reset Filters</source>
+      </segment>
+    </unit>
+    <unit id="442332459324576103">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:86</note>
+        <note category="description">Section title</note>
+      </notes>
+      <segment>
+        <source> Storage </source>
+      </segment>
+    </unit>
+    <unit id="4426319772533875265">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:27</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Settings </source>
+      </segment>
+    </unit>
+    <unit id="8189765531826618980">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:12</note>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:12</note>
+        <note category="description">Open a dialog on click</note>
+      </notes>
+      <segment>
+        <source>Set up Auto Refresh</source>
+      </segment>
+    </unit>
+    <unit id="4492871004050155394">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:25</note>
+        <note category="description">URL of the external service</note>
+      </notes>
+      <segment>
+        <source> URL </source>
+      </segment>
+    </unit>
+    <unit id="461988732763685587">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:47,49</note>
+        <note category="description">Button to view external services</note>
+      </notes>
+      <segment>
+        <source> External Services </source>
+      </segment>
+    </unit>
+    <unit id="4700692663777678345">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:18</note>
+        <note category="description">Placeholder</note>
+      </notes>
+      <segment>
+        <source>Name of the service</source>
+      </segment>
+    </unit>
+    <unit id="4720257215670644464">
+      <notes>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:32</note>
+      </notes>
+      <segment>
+        <source> Statuses </source>
+      </segment>
+    </unit>
+    <unit id="4814285799071780083">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:51</note>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:55</note>
+        <note category="location">src/app/settings/index.component.ts:66</note>
+      </notes>
+      <segment>
+        <source>Remove</source>
+      </segment>
+    </unit>
+    <unit id="4895326106573044490">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:77</note>
+        <note category="description">Button</note>
+      </notes>
+      <segment>
+        <source>Documentation</source>
+      </segment>
+    </unit>
+    <unit id="5099695399490601420">
+      <notes>
+        <note category="location">src/app/dashboard/index.component.ts:42</note>
+        <note category="description">Section title</note>
+      </notes>
+      <segment>
+        <source> Tasks by status </source>
+      </segment>
+    </unit>
+    <unit id="5259094143665293961">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:130,132</note>
+        <note category="description">Section description</note>
+      </notes>
+      <segment>
+        <source> Import your settings from a JSON file. This will overwrite your current settings. </source>
+      </segment>
+    </unit>
+    <unit id="5265020118967515341">
+      <notes>
+        <note category="location">src/app/profile/index.component.ts:48</note>
+        <note category="description">Section title</note>
+      </notes>
+      <segment>
+        <source> Permissions </source>
+      </segment>
+    </unit>
+    <unit id="564870720479927873">
+      <notes>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:20</note>
+        <note category="description">Placeholder</note>
+      </notes>
+      <segment>
+        <source>Name of your group</source>
+      </segment>
+    </unit>
+    <unit id="4915431133669985304">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Profile</source>
+      </segment>
+    </unit>
+    <unit id="5824198113756652397">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:34</note>
+        <note category="description">Placeholder</note>
+      </notes>
+      <segment>
+        <source>Icon of the service</source>
+      </segment>
+    </unit>
+    <unit id="594074927045956520">
+      <notes>
+        <note category="location">src/app/components/filters-toolbar.component.ts:21</note>
+        <note category="description">User will be able the create or delete filters</note>
+      </notes>
+      <segment>
+        <source>Manage filters</source>
+      </segment>
+    </unit>
+    <unit id="6036308268629413664">
+      <notes>
+        <note category="location">src/app/results/index.component.ts:45</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Results </source>
+      </segment>
+    </unit>
+    <unit id="6144473462960452579">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:21</note>
+        <note category="description">Dialog description</note>
+      </notes>
+      <segment>
+        <source>Build your filters</source>
+      </segment>
+    </unit>
+    <unit id="6249484391846924804">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:42</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:41</note>
+        <note category="location">src/app/components/filters-dialog.component.ts:65</note>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
+        <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:69</note>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:43</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:67</note>
+        <note category="description">Dialog action</note>
+      </notes>
+      <segment>
+        <source> Confirm </source>
+      </segment>
+    </unit>
+    <unit id="6555318547274416232">
+      <notes>
+        <note category="location">src/app/components/filters-dialog-input.component.ts:18</note>
+        <note category="location">src/app/components/filters-dialog-input.component.ts:24</note>
+        <note category="location">src/app/components/filters-dialog-input.component.ts:40</note>
+        <note category="description">Input label</note>
+      </notes>
+      <segment>
+        <source>Value</source>
+      </segment>
+    </unit>
+    <unit id="6579364864729295853">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:59</note>
+      </notes>
+      <segment>
+        <source>Add a filter rule</source>
+      </segment>
+    </unit>
+    <unit id="6922375991146837233">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:30,32</note>
+        <note category="description">Page description</note>
+      </notes>
+      <segment>
+        <source> Settings are stored in your browser. They are not synced across devices. But you can export and import them manually. This is useful if you want to use the same settings on multiple devices or browsers. You can also create presets and switch between them. </source>
+      </segment>
+    </unit>
+    <unit id="6991486105427794573">
+      <notes>
+        <note category="location">src/app/components/columns-button.component.ts:14</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:13</note>
+        <note category="description">Open a dialog on click</note>
+      </notes>
+      <segment>
+        <source>Modify Columns</source>
+      </segment>
+    </unit>
+    <unit id="712804927671626207">
+      <notes>
+        <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:26</note>
+        <note category="description">Add an external service</note>
+      </notes>
+      <segment>
+        <source>Add a service</source>
+      </segment>
+    </unit>
+    <unit id="7136888919962092730">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:73</note>
+        <note category="description">Button</note>
+      </notes>
+      <segment>
+        <source>Changelog</source>
+      </segment>
+    </unit>
+    <unit id="5737984937850391422">
+      <notes>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:26,28</note>
+      </notes>
+      <segment>
+        <source> Options </source>
+      </segment>
+    </unit>
+    <unit id="7418059960504711183">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:39</note>
+      </notes>
+      <segment>
+        <source> Icon preview: </source>
+      </segment>
+    </unit>
+    <unit id="7462301153729425254">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:121</note>
+      </notes>
+      <segment>
+        <source>Export</source>
+      </segment>
+    </unit>
+    <unit id="763982378603811482">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:28</note>
+        <note category="description">Label input</note>
+      </notes>
+      <segment>
+        <source>Column</source>
+      </segment>
+    </unit>
+    <unit id="7779627316401407129">
+      <notes>
+        <note category="location">src/app/sessions/show.component.ts:19</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Session </source>
+      </segment>
+    </unit>
+    <unit id="7808756054397155068">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:79</note>
+        <note category="location">src/app/settings/index.component.ts:104</note>
+        <note category="location">src/app/settings/index.component.ts:141</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment>
+        <source>Reset</source>
+      </segment>
+    </unit>
+    <unit id="7894046013793805275">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:27,28</note>
+        <note category="description">Input error</note>
+      </notes>
+      <segment>
+        <source> URL is <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">required</pc></source>
+      </segment>
+    </unit>
+    <unit id="7997971230930071756">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:116,118</note>
+        <note category="description">Section description</note>
+      </notes>
+      <segment>
+        <source> Export your settings as a JSON file. This file can be imported later to restore your settings. </source>
+      </segment>
+    </unit>
+    <unit id="8076376022845865451">
+      <notes>
+        <note category="location">src/app/results/index.component.ts:116</note>
+      </notes>
+      <segment>
+        <source>Select page of results</source>
+      </segment>
+    </unit>
+    <unit id="8109855870320864834">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:41</note>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:28</note>
+        <note category="description">Placeholder</note>
+      </notes>
+      <segment>
+        <source>color of your group</source>
+      </segment>
+    </unit>
+    <unit id="8140788824047533083">
+      <notes>
+        <note category="location">src/app/dashboard/index.component.ts:59</note>
+      </notes>
+      <segment>
+        <source>Toggle Groups Header</source>
+      </segment>
+    </unit>
+    <unit id="8347373459657615161">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:113</note>
+        <note category="description">Section title</note>
+      </notes>
+      <segment>
+        <source> Export your data </source>
+      </segment>
+    </unit>
+    <unit id="8354104694633960297">
+      <notes>
+        <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:18</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source> Manage External Services </source>
+      </segment>
+    </unit>
+    <unit id="8455204924704616723">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:136</note>
+        <note category="description">Label input</note>
+      </notes>
+      <segment>
+        <source>File</source>
+      </segment>
+    </unit>
+    <unit id="8184389061942339757">
+      <notes>
+        <note category="location">src/app/components/filters-chips.component.ts:38</note>
+      </notes>
+      <segment>
+        <source>No value</source>
+      </segment>
+    </unit>
+    <unit id="8700121026680200191">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:47</note>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:51</note>
+        <note category="location">src/app/settings/index.component.ts:106</note>
+      </notes>
+      <segment>
+        <source>Clear</source>
+      </segment>
+    </unit>
+    <unit id="8705719361562999017">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:127</note>
+        <note category="description">Section title</note>
+      </notes>
+      <segment>
+        <source> Import your data </source>
+      </segment>
+    </unit>
+    <unit id="8778616811237742446">
+      <notes>
+        <note category="location">src/app/components/navigation/form-external-service.component.ts:17</note>
+        <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:19</note>
+        <note category="description">Name of the external service</note>
+      </notes>
+      <segment>
+        <source> Name </source>
+      </segment>
+    </unit>
+    <unit id="8813319038780713083">
+      <notes>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:39</note>
+      </notes>
+      <segment>
+        <source>Reset Columns</source>
+      </segment>
+    </unit>
+    <unit id="8874012390997067175">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:23</note>
+        <note category="description">Placeholder Input</note>
+      </notes>
+      <segment>
+        <source>Seconds</source>
+      </segment>
+    </unit>
+    <unit id="9014039725781270505">
+      <notes>
+        <note category="location">src/app/components/filters-dialog.component.ts:25</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment>
+        <source>Where</source>
+      </segment>
+    </unit>
+    <unit id="9113798195303194683">
+      <notes>
+        <note category="location">src/app/dashboard/components/add-statuses-group-dialog.component.ts:9</note>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:29</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>Add a group</source>
+      </segment>
+    </unit>
+    <unit id="6961867803915534374">
+      <notes>
+        <note category="location">src/app/applications/index.component.ts:101</note>
+      </notes>
+      <segment>
+        <source> No actions available </source>
+      </segment>
+    </unit>
+    <unit id="1519954996184640001">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:16</note>
+      </notes>
+      <segment>
+        <source>Error</source>
+      </segment>
+    </unit>
+    <unit id="1612722476211621614">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:10</note>
+      </notes>
+      <segment>
+        <source>Submitted</source>
+      </segment>
+    </unit>
+    <unit id="340430316261570792">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:15</note>
+      </notes>
+      <segment>
+        <source>Finished</source>
+      </segment>
+    </unit>
+    <unit id="4043049091728011235">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statuses.service.ts:9</note>
+        <note category="location">src/app/tasks/services/task-status.service.ts:14</note>
+      </notes>
+      <segment>
+        <source>Cancelled</source>
+      </segment>
+    </unit>
+    <unit id="4749295647449765550">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:12</note>
+      </notes>
+      <segment>
+        <source>Processed</source>
+      </segment>
+    </unit>
+    <unit id="5033937537861966242">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:8</note>
+      </notes>
+      <segment>
+        <source>Dispatched</source>
+      </segment>
+    </unit>
+    <unit id="5956316725115867558">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:17</note>
+      </notes>
+      <segment>
+        <source>Timeout</source>
+      </segment>
+    </unit>
+    <unit id="7726080656019750876">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:7</note>
+        <note category="location">src/app/sessions/services/sessions-statuses.service.ts:7</note>
+        <note category="location">src/app/tasks/services/task-status.service.ts:7</note>
+      </notes>
+      <segment>
+        <source>Unspecified</source>
+      </segment>
+    </unit>
+    <unit id="8667665916832796867">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:9</note>
+      </notes>
+      <segment>
+        <source>Creating</source>
+      </segment>
+    </unit>
+    <unit id="8990977482609744250">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:13</note>
+      </notes>
+      <segment>
+        <source>Cancelling</source>
+      </segment>
+    </unit>
+    <unit id="9155387182259025015">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:11</note>
+      </notes>
+      <segment>
+        <source>Processing</source>
+      </segment>
+    </unit>
+    <unit id="2218082343053095278">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
+      </notes>
+      <segment>
+        <source>Service</source>
+      </segment>
+    </unit>
+    <unit id="2724055831234181057">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Version</source>
+      </segment>
+    </unit>
+    <unit id="3193976279273491157">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:20</note>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:23</note>
+        <note category="location">src/app/results/services/results-index.service.ts:25</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:27</note>
+      </notes>
+      <segment>
+        <source>Actions</source>
+      </segment>
+    </unit>
+    <unit id="3294686077659093992">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
+      </notes>
+      <segment>
+        <source>Namespace</source>
+      </segment>
+    </unit>
+    <unit id="8570442593550462519">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:30</note>
+      </notes>
+      <segment>
+        <source>Tasks by Status</source>
+      </segment>
+    </unit>
+    <unit id="8953033926734869941">
+      <notes>
+        <note category="location">src/app/applications/services/applications-index.service.ts:15</note>
+        <note category="location">src/app/results/services/results-index.service.ts:20</note>
+      </notes>
+      <segment>
+        <source>Name</source>
+      </segment>
+    </unit>
+    <unit id="3862497674553063473">
+      <notes>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:44</note>
+        <note category="description">Edit the group</note>
+      </notes>
+      <segment>
+        <source>Edit <ph id="0" equiv="INTERPOLATION" disp="{{ group.name }}"/></source>
+      </segment>
+    </unit>
+    <unit id="4168485708389700387">
+      <notes>
+        <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:48</note>
+        <note category="description">Delete the group</note>
+      </notes>
+      <segment>
+        <source>Delete <ph id="0" equiv="INTERPOLATION" disp="{{ group.name }}"/></source>
+      </segment>
+    </unit>
+    <unit id="1159794349848493024">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:19</note>
+      </notes>
+      <segment>
+        <source>Pod Configuration</source>
+      </segment>
+    </unit>
+    <unit id="1161299114153631702">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:9</note>
+      </notes>
+      <segment>
+        <source>Completed</source>
+      </segment>
+    </unit>
+    <unit id="1520049505561836231">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:23</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:25</note>
+      </notes>
+      <segment>
+        <source>Created at</source>
+      </segment>
+    </unit>
+    <unit id="1536246961640783567">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:20</note>
+      </notes>
+      <segment>
+        <source>Pod Max</source>
+      </segment>
+    </unit>
+    <unit id="2262493601998522390">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:24</note>
+      </notes>
+      <segment>
+        <source>Cancelled at</source>
+      </segment>
+    </unit>
+    <unit id="2532274051867006228">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:29</note>
+      </notes>
+      <segment>
+        <source>Partition IDs</source>
+      </segment>
+    </unit>
+    <unit id="2649059232343656024">
+      <notes>
+        <note category="location">src/app/tasks/services/task-status.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Retried</source>
+      </segment>
+    </unit>
+    <unit id="2734022681675842051">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:17</note>
+      </notes>
+      <segment>
+        <source>Priority</source>
+      </segment>
+    </unit>
+    <unit id="275046745253005384">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:22</note>
+      </notes>
+      <segment>
+        <source>Owner Task ID</source>
+      </segment>
+    </unit>
+    <unit id="2829243786450918109">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:26</note>
+      </notes>
+      <segment>
+        <source>Completed at</source>
+      </segment>
+    </unit>
+    <unit id="2956098160626271284">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-statuses.service.ts:8</note>
+      </notes>
+      <segment>
+        <source>Running</source>
+      </segment>
+    </unit>
+    <unit id="4207916966377787111">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:10</note>
+      </notes>
+      <segment>
+        <source>Created</source>
+      </segment>
+    </unit>
+    <unit id="5611592591303869712">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:31</note>
+        <note category="location">src/app/results/services/results-index.service.ts:21</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:23</note>
+        <note category="description">Label input</note>
+      </notes>
+      <segment>
+        <source>Status</source>
+      </segment>
+    </unit>
+    <unit id="6185028784920723553">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:21</note>
+      </notes>
+      <segment>
+        <source>Pod Reserved</source>
+      </segment>
+    </unit>
+    <unit id="6595008830732269870">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:11</note>
+      </notes>
+      <segment>
+        <source>Not found</source>
+      </segment>
+    </unit>
+    <unit id="7410432243549869948">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:28</note>
+      </notes>
+      <segment>
+        <source>Duration</source>
+      </segment>
+    </unit>
+    <unit id="8040881171107393560">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:16</note>
+      </notes>
+      <segment>
+        <source>ID</source>
+      </segment>
+    </unit>
+    <unit id="8339581786626550712">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:24</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:22</note>
+      </notes>
+      <segment>
+        <source>Session ID</source>
+      </segment>
+    </unit>
+    <unit id="8432562579042371182">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:26</note>
+      </notes>
+      <segment>
+        <source>Options</source>
+      </segment>
+    </unit>
+    <unit id="8541569923897487029">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:18</note>
+      </notes>
+      <segment>
+        <source>Parent Partition Ids</source>
+      </segment>
+    </unit>
+    <unit id="8610204803767997267">
+      <notes>
+        <note category="location">src/app/partitions/services/partitions-index.service.ts:22</note>
+      </notes>
+      <segment>
+        <source>Preemption Percentage</source>
+      </segment>
+    </unit>
+    <unit id="8754753518138536255">
+      <notes>
+        <note category="location">src/app/results/services/results-index.service.ts:27</note>
+      </notes>
+      <segment>
+        <source>Result ID</source>
+      </segment>
+    </unit>
+    <unit id="9135780517563211822">
+      <notes>
+        <note category="location">src/app/results/services/results-statuses.service.ts:8</note>
+      </notes>
+      <segment>
+        <source>Aborted</source>
+      </segment>
+    </unit>
+    <unit id="1042662561872819815">
+      <notes>
+        <note category="location">src/app/components/filters-chips.component.ts:41</note>
+      </notes>
+      <segment>
+        <source> to </source>
+      </segment>
+    </unit>
+    <unit id="1232937568806616482">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:19</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>Personalize tasks by status</source>
+      </segment>
+    </unit>
+    <unit id="1357841157835023893">
+      <notes>
+        <note category="location">src/app/results/index.component.ts:105</note>
+      </notes>
+      <segment>
+        <source> See results </source>
+      </segment>
+    </unit>
+    <unit id="1448398869601733950">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:33</note>
+      </notes>
+      <segment>
+        <source>Options Application Namespace</source>
+      </segment>
+    </unit>
+    <unit id="1629024450201012569">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:38</note>
+      </notes>
+      <segment>
+        <source>Options Max Retries</source>
+      </segment>
+    </unit>
+    <unit id="187187500641108332">
+      <notes>
+        <note category="location">src/app/components/table/table-inspect-object-dialog.component.ts:14</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>
+          <ph id="0" equiv="INTERPOLATION" disp="{{ label }}"/>
+        </source>
+      </segment>
+    </unit>
+    <unit id="2003528003863981175">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:155</note>
+      </notes>
+      <segment>
+        <source>Copy Session ID</source>
+      </segment>
+    </unit>
+    <unit id="2400362719050540518">
+      <notes>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:11</note>
+      </notes>
+      <segment>
+        <source>view</source>
+      </segment>
+    </unit>
+    <unit id="2509141182388535183">
+      <notes>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:11</note>
+      </notes>
+      <segment>
+        <source>View</source>
+      </segment>
+    </unit>
+    <unit id="2804559735674273016">
+      <notes>
+        <note category="location">src/app/components/share-url.component.ts:12</note>
+      </notes>
+      <segment>
+        <source>Copy Page URL</source>
+      </segment>
+    </unit>
+    <unit id="2822766864475703648">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:22</note>
+        <note category="description">Dialog description</note>
+      </notes>
+      <segment>
+        <source>Select the statuses you want to see</source>
+      </segment>
+    </unit>
+    <unit id="2975639660411128862">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:27</note>
+      </notes>
+      <segment>
+        <source>Drag status</source>
+      </segment>
+    </unit>
+    <unit id="3162212494859374768">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:40,42</note>
+        <note category="description">Section description</note>
+      </notes>
+      <segment>
+        <source> Add, remove and reorder, using drap and drop, the items from the sidebar. </source>
+      </segment>
+    </unit>
+    <unit id="3196949978887191760">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:32</note>
+      </notes>
+      <segment>
+        <source>Options Application Name</source>
+      </segment>
+    </unit>
+    <unit id="3768927257183755959">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:80</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment>
+        <source>Save</source>
+      </segment>
+    </unit>
+    <unit id="4215194277711300165">
+      <notes>
+        <note category="location">src/app/components/filters-chips.component.ts:41</note>
+      </notes>
+      <segment>
+        <source>from </source>
+      </segment>
+    </unit>
+    <unit id="43160648223881099">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:163</note>
+      </notes>
+      <segment>
+        <source>Cancel session</source>
+      </segment>
+    </unit>
+    <unit id="4471277768650583130">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:159</note>
+      </notes>
+      <segment>
+        <source>See session</source>
+      </segment>
+    </unit>
+    <unit id="4642661615646709518">
+      <notes>
+        <note category="location">src/app/results/show.component.ts:19</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source> Result </source>
+      </segment>
+    </unit>
+    <unit id="4818969135288286064">
+      <notes>
+        <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:63</note>
+        <note category="location">src/app/settings/index.component.ts:74</note>
+      </notes>
+      <segment>
+        <source> Add a status </source>
+      </segment>
+    </unit>
+    <unit id="4930506384627295710">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:61</note>
+      </notes>
+      <segment>
+        <source>Settings</source>
+      </segment>
+    </unit>
+    <unit id="4947717056895084400">
+      <notes>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:35</note>
+      </notes>
+      <segment>
+        <source>Show more options</source>
+      </segment>
+    </unit>
+    <unit id="4976034006498894948">
+      <notes>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:35</note>
+      </notes>
+      <segment>
+        <source>More Options</source>
+      </segment>
+    </unit>
+    <unit id="5139784495240224403">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:37</note>
+        <note category="description">Section title</note>
+      </notes>
+      <segment>
+        <source> Sidebar </source>
+      </segment>
+    </unit>
+    <unit id="5547981558491672240">
+      <notes>
+        <note category="location">src/app/components/table/table-inspect-object-dialog.component.ts:21</note>
+        <note category="description">Dialog action</note>
+      </notes>
+      <segment>
+        <source> Close </source>
+      </segment>
+    </unit>
+    <unit id="5968132631442328843">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:54</note>
+      </notes>
+      <segment>
+        <source>Results</source>
+      </segment>
+    </unit>
+    <unit id="6055016131495209423">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:40</note>
+      </notes>
+      <segment>
+        <source>Options Priority</source>
+      </segment>
+    </unit>
+    <unit id="6482461637059874837">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:31</note>
+      </notes>
+      <segment>
+        <source>Options Options</source>
+      </segment>
+    </unit>
+    <unit id="648306878592239743">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:78</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment>
+        <source>Reset to default</source>
+      </segment>
+    </unit>
+    <unit id="6562161224622484740">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:149,151</note>
+        <note category="description">No key</note>
+      </notes>
+      <segment>
+        <source> No data stored in your browser. </source>
+      </segment>
+    </unit>
+    <unit id="6570363013146073520">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:26</note>
+      </notes>
+      <segment>
+        <source>Dashboard</source>
+      </segment>
+    </unit>
+    <unit id="6580224975592352227">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:39</note>
+      </notes>
+      <segment>
+        <source>Options Partition ID</source>
+      </segment>
+    </unit>
+    <unit id="6623695355571959944">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:36</note>
+      </notes>
+      <segment>
+        <source>Options Engine Type</source>
+      </segment>
+    </unit>
+    <unit id="6658000829978978023">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:33</note>
+      </notes>
+      <segment>
+        <source>Applications</source>
+      </segment>
+    </unit>
+    <unit id="6749810498938164699">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:37</note>
+      </notes>
+      <segment>
+        <source>Options Max Duration</source>
+      </segment>
+    </unit>
+    <unit id="6773921193302967504">
+      <notes>
+        <note category="location">src/app/applications/index.component.ts:64</note>
+        <note category="location">src/app/sessions/index.component.ts:72</note>
+      </notes>
+      <segment>
+        <source>Personalize Tasks By Status</source>
+      </segment>
+    </unit>
+    <unit id="698601157229513551">
+      <notes>
+        <note category="location">src/app/partitions/index.component.ts:102</note>
+      </notes>
+      <segment>
+        <source>See partition</source>
+      </segment>
+    </unit>
+    <unit id="7027401708987643293">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:90</note>
+        <note category="description">Button</note>
+      </notes>
+      <segment>
+        <source>Core</source>
+      </segment>
+    </unit>
+    <unit id="721963055036507192">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:47</note>
+      </notes>
+      <segment>
+        <source>Sessions</source>
+      </segment>
+    </unit>
+    <unit id="7306009472583884794">
+      <notes>
+        <note category="location">src/app/services/navigation.service.ts:68</note>
+      </notes>
+      <segment>
+        <source>Divider</source>
+      </segment>
+    </unit>
+    <unit id="7419704019640008953">
+      <notes>
+        <note category="location">src/app/components/share-url.component.ts:12</note>
+      </notes>
+      <segment>
+        <source>Share</source>
+      </segment>
+    </unit>
+    <unit id="7593647772982796896">
+      <notes>
+        <note category="location">src/app/components/navigation/theme-selector.component.ts:12</note>
+      </notes>
+      <segment>
+        <source>Choose a theme</source>
+      </segment>
+    </unit>
+    <unit id="7639077755938287321">
+      <notes>
+        <note category="location">src/app/components/filters-toolbar.component.ts:19</note>
+      </notes>
+      <segment>
+        <source>Add or Remove Filters</source>
+      </segment>
+    </unit>
+    <unit id="8442661086292071246">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:51</note>
+        <note category="description">Sidebar item label</note>
+      </notes>
+      <segment>
+        <source> Sidebar item </source>
+      </segment>
+    </unit>
+    <unit id="857008330945080495">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:34</note>
+      </notes>
+      <segment>
+        <source>Options Application Service</source>
+      </segment>
+    </unit>
+    <unit id="8768116776190256027">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:64</note>
+      </notes>
+      <segment>
+        <source>More Infos</source>
+      </segment>
+    </unit>
+    <unit id="8942351587754185907">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:83</note>
+        <note category="description">Button</note>
+      </notes>
+      <segment>
+        <source>API</source>
+      </segment>
+    </unit>
+    <unit id="8969900036143984252">
+      <notes>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:35</note>
+      </notes>
+      <segment>
+        <source>Options Application Version</source>
+      </segment>
+    </unit>
+    <unit id="96019050334234129">
+      <notes>
+        <note category="location">src/app/components/filters-chips.component.ts:19</note>
+      </notes>
+      <segment>
+        <source>No field</source>
+      </segment>
+    </unit>
+  </file>
+</xliff>

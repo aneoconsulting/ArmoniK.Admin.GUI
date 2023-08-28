@@ -11,36 +11,43 @@
     {
       "groupName": "npm packages",
       "groupSlug": "npm",
-      "matchDatasources": ["npm"]
-    },
-    {
-      "groupName": "npm angular packages",
-      "groupSlug": "npm-angular",
-      "matchPackagePatterns": ["^@angular/"],
-      "matchDatasources": ["npm"]
-    },
-    {
-      "groupName": "npm clarity packages",
-      "groupSlug": "npm-clarity",
-      "matchPackagePatterns": ["^@clr/", "^@cds/"],
-      "matchDatasources": ["npm"]
+      "matchDatasources": [
+        "npm"
+      ]
     },
     {
       "groupName": "npm aneoconsultingfr packages",
       "groupSlug": "npm-aneoconsultingfr",
-      "matchPackagePatterns": ["^@aneoconsultingfr/"],
-      "matchDatasources": ["npm"]
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackagePatterns": [
+        "@aneoconsultingfr/*"
+      ]
     },
     {
-      "groupName": "docs npm packages",
-      "groupSlug": "docs-npm",
-      "matchPaths": [".docs/**"],
-      "matchDatasources": ["npm"]
+      "groupName": "npm angular packages",
+      "groupSlug": "npm-angular",
+      "matchDatasources": [
+        "npm"
+      ],
+      "matchPackagePatterns": [
+        "@angular/*"
+      ]
+    },
+    {
+      "groupName": "docker images",
+      "groupSlug": "docker",
+      "matchDatasources": [
+        "docker"
+      ]
     },
     {
       "groupName": "github actions",
       "groupSlug": "github-actions",
-      "matchDatasources": ["github-tags"]
+      "matchDatasources": [
+        "github-tags"
+      ]
     }
   ]
 }

@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
+}
+
+.mat-mdc-snack-bar-container.success {
+  --mdc-snackbar-container-color: #4caf50;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
+.mat-mdc-snack-bar-container.error {
+  --mdc-snackbar-container-color: #f44336;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
+.mat-mdc-snack-bar-container.warning {
+  --mdc-snackbar-container-color: #ff9800;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
+.mat-mdc-snack-bar-container.info {
+  --mdc-snackbar-container-color: #2196f3;
+  --mat-mdc-snack-bar-button-color: #000;
+  --mdc-snackbar-supporting-text-color: #000;
+}
+
+.mat-mdc-card-header-text {
+  width: 100%;
+}

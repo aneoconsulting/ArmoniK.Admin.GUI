@@ -1,4 +1,13 @@
 {
-  "cSpell.words": ["armonik", "Armonik", "datagrid", "Gitflow"],
-  "githubPullRequests.ignoredPullRequestBranches": ["main"]
+  "editor.formatOnSave": false,
+  "eslint.validate": [
+    "typescript"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "cSpell.words": [
+    "Armoni",
+    "armonik"
+  ]
 }
