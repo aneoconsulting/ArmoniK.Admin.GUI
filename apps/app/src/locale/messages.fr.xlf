@@ -99,17 +99,21 @@
     <unit id="2667990283971044762">
       <segment state="initial">
         <source>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 application} other {{{total}} applications}}"/>
+          <ph id="0" equiv="ICU"
+            disp="{total, plural, =1 {1 application} other {{{total}} applications}}" />
         </source>
         <target>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 application} other {{{total}} applications}}"/>
+          <ph id="0" equiv="ICU"
+            disp="{total, plural, =1 {1 application} other {{{total}} applications}}" />
         </target>
       </segment>
     </unit>
     <unit id="2896080322332039141">
       <segment state="initial">
-        <source>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</source>
-        <target>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION"/> applications}}</target>
+        <source>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION" />
+          applications}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 application} other {<ph id="0" equiv="INTERPOLATION" />
+          applications}}</target>
       </segment>
     </unit>
     <unit id="1519954996184640001">
@@ -151,17 +155,19 @@
     <unit id="8042579649547507797">
       <segment state="initial">
         <source>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 result} other {{{total}} results}}"/>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 result} other {{{total}} results}}" />
         </source>
         <target>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 result} other {{{total}} results}}"/>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 result} other {{{total}} results}}" />
         </target>
       </segment>
     </unit>
     <unit id="3079807154693697946">
       <segment state="initial">
-        <source>{VAR_PLURAL, plural, =1 {1 result} other {<ph id="0" equiv="INTERPOLATION"/> results}}</source>
-        <target>{VAR_PLURAL, plural, =1 {1 résultat} other {<ph id="0" equiv="INTERPOLATION"/> résultats}}</target>
+        <source>{VAR_PLURAL, plural, =1 {1 result} other {<ph id="0" equiv="INTERPOLATION" />
+          results}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 résultat} other {<ph id="0" equiv="INTERPOLATION" />
+          résultats}}</target>
       </segment>
     </unit>
     <unit id="983862385866322065">
@@ -191,17 +197,19 @@
     <unit id="1511799404874144981">
       <segment state="initial">
         <source>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 session} other {{{total}} sessions}}"/>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 session} other {{{total}} sessions}}" />
         </source>
         <target>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 session} other {{{total}} sessions}}"/>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 session} other {{{total}} sessions}}" />
         </target>
       </segment>
     </unit>
     <unit id="2117392527188736776">
       <segment state="initial">
-        <source>{VAR_PLURAL, plural, =1 {1 session} other {<ph id="0" equiv="INTERPOLATION"/> sessions}}</source>
-        <target>{VAR_PLURAL, plural, =1 {1 session} other {<ph id="0" equiv="INTERPOLATION"/> sessions}}</target>
+        <source>{VAR_PLURAL, plural, =1 {1 session} other {<ph id="0" equiv="INTERPOLATION" />
+          sessions}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 session} other {<ph id="0" equiv="INTERPOLATION" />
+          sessions}}</target>
       </segment>
     </unit>
     <unit id="7779627316401407129">
@@ -297,7 +305,8 @@
     <unit id="4060983546905729885">
       <segment state="initial">
         <source> Will display data with an Id strictly equal to the one indicated. </source>
-        <target> Permet d&apos;afficher les données dont l&apos;Id est strictement égal à celui indiqué. </target>
+        <target> Permet d&apos;afficher les données dont l&apos;Id est strictement égal à celui
+          indiqué. </target>
       </segment>
     </unit>
     <unit id="2732497740481788559">
@@ -393,17 +402,18 @@
     <unit id="491800464792740898">
       <segment state="initial">
         <source>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 task} other {{{total}} tasks}}"/>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 task} other {{{total}} tasks}}" />
         </source>
         <target>
-          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 task} other {{{total}} tasks}}"/>
+          <ph id="0" equiv="ICU" disp="{total, plural, =1 {1 task} other {{{total}} tasks}}" />
         </target>
       </segment>
     </unit>
     <unit id="1225830295010700202">
       <segment state="initial">
-        <source>{VAR_PLURAL, plural, =1 {1 task} other {<ph id="0" equiv="INTERPOLATION"/> tasks}}</source>
-        <target>{VAR_PLURAL, plural, =1 {1 tâche} other {<ph id="0" equiv="INTERPOLATION"/> tâches}}</target>
+        <source>{VAR_PLURAL, plural, =1 {1 task} other {<ph id="0" equiv="INTERPOLATION" /> tasks}}</source>
+        <target>{VAR_PLURAL, plural, =1 {1 tâche} other {<ph id="0" equiv="INTERPOLATION" />
+          tâches}}</target>
       </segment>
     </unit>
     <unit id="8258325324649507024">
@@ -670,10 +680,10 @@
         <target>Priorité</target>
       </segment>
     </unit>
-    <unit id="2589810979983981192">
+    <unit id="7128279086497006714">
       <segment state="initial">
-        <source>/admin/en/</source>
-        <target>/admin/fr/</target>
+        <source>/admin-0.9/en/</source>
+        <target>/admin-0.9/fr/</target>
       </segment>
     </unit>
     <unit id="8574063679938854809">
@@ -944,6 +954,19 @@
       <segment state="initial">
         <source>d </source>
         <target>j </target>
+      </segment>
+    </unit>
+    <unit id="3667554695995834523">
+      <segment state="initial">
+        <source> This version is deprecated and will be removed soon. Please use the latest version. </source>
+        <target> Cette version est dépréciée et va être supprimée prochainement. Veuillez utiliser
+          la dernière version </target>
+      </segment>
+    </unit>
+    <unit id="2926649585041178986">
+      <segment state="initial">
+        <source> Latest version </source>
+        <target> Dernière version </target>
       </segment>
     </unit>
   </file>
