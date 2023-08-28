@@ -1,7 +1,7 @@
 {
   "npmScope": "armonik.admin.gui",
   "affected": {
-    "defaultBase": "main"
+    "defaultBase": "v0.9"
   },
   "cli": {
     "packageManager": "pnpm"

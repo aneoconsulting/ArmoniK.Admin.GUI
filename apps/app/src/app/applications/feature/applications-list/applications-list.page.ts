@@ -1,7 +1,6 @@
 import {
   ApplicationRaw,
-  ApplicationRawField,
-  ListApplicationsRequest,
+  ApplicationRawEnumField,
   ListApplicationsResponse,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -32,6 +31,13 @@ import { SettingsService } from '../../../shared/util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApplicationsListComponent {
+  constructor(
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
+    private _settingsService: SettingsService,
+    private _grpcApplicationsService: GrpcApplicationsService
+  ) {}
+
   private _state: ClrDatagridStateInterface = {};
   private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
@@ -97,13 +103,6 @@ export class ApplicationsListComponent {
     'service'
   );
 
-  constructor(
-    private _router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private _settingsService: SettingsService,
-    private _grpcApplicationsService: GrpcApplicationsService
-  ) {}
-
   public get refreshIntervalValue() {
     return this._intervalValue;
   }
@@ -123,7 +122,7 @@ export class ApplicationsListComponent {
   }
 
   public get OrderByField() {
-    return ApplicationRawField;
+    return ApplicationRawEnumField;
   }
 
   public get intervals() {
@@ -142,7 +141,9 @@ export class ApplicationsListComponent {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(field: ApplicationRawField): ClrDatagridSortOrder {
+  public defaultSortOrder(
+    field: ApplicationRawEnumField
+  ): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

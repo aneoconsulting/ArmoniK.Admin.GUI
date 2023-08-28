@@ -8,8 +8,9 @@ import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcSessionsService } from './grpc-sessions.service';
 import {
+  FilterStringOperator,
   ListSessionsRequest,
-  SessionRawField,
+  SessionRawEnumField,
   SessionsClient,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -42,9 +43,9 @@ describe('GrpcSessionsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
+      orderBy: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
       order: 1,
-      filter: {} as ListSessionsRequest.Filter,
+      filter: {},
     });
   });
 
@@ -55,7 +56,7 @@ describe('GrpcSessionsService', () => {
         size: 50,
       },
       sort: {
-        by: SessionRawField.SESSION_RAW_FIELD_SESSION_ID as unknown as ClrDatagridComparatorInterface<number>,
+        by: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -69,11 +70,11 @@ describe('GrpcSessionsService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: SessionRawField.SESSION_RAW_FIELD_SESSION_ID,
+      orderBy: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
       order: 2,
       filter: {
         sessionId: 'Some test sessionId',
-      } as ListSessionsRequest.Filter,
+      },
     });
   });
 
@@ -82,9 +83,9 @@ describe('GrpcSessionsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
+        orderBy: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
         order: SortDirection.SORT_DIRECTION_ASC,
-        filter: {} as ListSessionsRequest.Filter,
+        filter: {},
       },
       10000
     );
@@ -108,11 +109,11 @@ describe('GrpcSessionsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: SessionRawField.SESSION_RAW_FIELD_SESSION_ID,
+        orderBy: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
         order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           sessionId: 'Some test sessionId',
-        } as ListSessionsRequest.Filter,
+        },
       },
       30000
     );
@@ -135,9 +136,9 @@ describe('GrpcSessionsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
+      orderBy: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
       order: SortDirection.SORT_DIRECTION_ASC,
-      filter: {} as ListSessionsRequest.Filter,
+      filter: {},
     });
     expect(result).toEqual(
       new ListSessionsRequest({
@@ -145,15 +146,18 @@ describe('GrpcSessionsService', () => {
         pageSize: 10,
         sort: {
           field: {
-            sessionRawField: SessionRawField.SESSION_RAW_FIELD_CREATED_AT,
+            sessionRawField: {
+              field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
-        filter: {
-          applicationName: '',
-          applicationVersion: '',
-          sessionId: '',
-          status: 0,
+        filters: {
+          or: [
+            {
+              and: [],
+            },
+          ],
         },
       })
     );
@@ -163,11 +167,11 @@ describe('GrpcSessionsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: SessionRawField.SESSION_RAW_FIELD_SESSION_ID,
+      orderBy: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
       order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         sessionId: 'Some test sessionId',
-      } as ListSessionsRequest.Filter,
+      },
     });
     expect(result).toEqual(
       new ListSessionsRequest({
@@ -175,15 +179,31 @@ describe('GrpcSessionsService', () => {
         pageSize: 50,
         sort: {
           field: {
-            sessionRawField: SessionRawField.SESSION_RAW_FIELD_SESSION_ID,
+            sessionRawField: {
+              field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_DESC,
         },
-        filter: {
-          applicationName: '',
-          applicationVersion: '',
-          sessionId: 'Some test sessionId',
-          status: 0,
+        filters: {
+          or: [
+            {
+              and: [
+                {
+                  field: {
+                    sessionRawField: {
+                      field:
+                        SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+                    },
+                  },
+                  filterString: {
+                    operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                    value: 'Some test sessionId',
+                  },
+                },
+              ],
+            },
+          ],
         },
       })
     );

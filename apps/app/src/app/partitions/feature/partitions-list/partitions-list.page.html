@@ -18,8 +18,8 @@
       </app-action-bar>
     </clr-dg-action-bar>
     <clr-dg-column
-      [clrDgField]="OrderByField.PARTITION_RAW_FIELD_ID.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_FIELD_ID)"
+      [clrDgField]="OrderByField.PARTITION_RAW_ENUM_FIELD_ID.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_ENUM_FIELD_ID)"
     >
       <span i18n>Id</span>
       <clr-dg-filter [clrDgFilter]="idFilter">
@@ -28,8 +28,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.PARTITION_RAW_FIELD_PARENT_PARTITION_IDS.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_FIELD_PARENT_PARTITION_IDS)"
+      [clrDgField]="OrderByField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS)"
     >
       <span i18n>Parent</span>
       <clr-dg-filter [clrDgFilter]="idParentFilter">
@@ -42,8 +42,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.PARTITION_RAW_FIELD_POD_RESERVED.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_FIELD_POD_RESERVED)"
+      [clrDgField]="OrderByField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED)"
     >
       <span i18n>Reserved pods</span>
       <clr-dg-filter [clrDgFilter]="reservedPodFilter">
@@ -56,8 +56,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.PARTITION_RAW_FIELD_POD_MAX.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_FIELD_POD_MAX)"
+      [clrDgField]="OrderByField.PARTITION_RAW_ENUM_FIELD_POD_MAX.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_ENUM_FIELD_POD_MAX)"
     >
       <span i18n>Maximum pods</span>
       <clr-dg-filter [clrDgFilter]="maxPodFilter">
@@ -70,8 +70,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.PARTITION_RAW_FIELD_PREEMPTION_PERCENTAGE.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_FIELD_PREEMPTION_PERCENTAGE)"
+      [clrDgField]="OrderByField.PARTITION_RAW_ENUM_FIELD_PREEMPTION_PERCENTAGE.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_ENUM_FIELD_PREEMPTION_PERCENTAGE)"
     >
       <span i18n>Percentage</span>
       <clr-dg-filter [clrDgFilter]="percentageFilter">
@@ -84,8 +84,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.PARTITION_RAW_FIELD_PRIORITY.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_FIELD_PRIORITY)"
+      [clrDgField]="OrderByField.PARTITION_RAW_ENUM_FIELD_PRIORITY.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.PARTITION_RAW_ENUM_FIELD_PRIORITY)"
     >
       <span i18n>Priority</span>
       <clr-dg-filter [clrDgFilter]="priorityFilter">

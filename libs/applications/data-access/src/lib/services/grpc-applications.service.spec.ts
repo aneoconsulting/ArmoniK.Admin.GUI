@@ -8,8 +8,10 @@ import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcApplicationsService } from './grpc-applications.service';
 import {
-  ApplicationRawField,
+  ApplicationFilters,
+  ApplicationRawEnumField,
   ApplicationsClient,
+  FilterStringOperator,
   ListApplicationsRequest,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -46,9 +48,9 @@ describe('GrpcApplicationsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
+      orderBy: [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME],
       order: 1,
-      filter: {} as ListApplicationsRequest.Filter,
+      filter: {} as ApplicationFilters,
     });
   });
 
@@ -59,7 +61,7 @@ describe('GrpcApplicationsService', () => {
         size: 50,
       },
       sort: {
-        by: ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE as unknown as ClrDatagridComparatorInterface<number>,
+        by: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -70,14 +72,15 @@ describe('GrpcApplicationsService', () => {
       ],
     };
     const requestParams = service.createListRequestParams(state);
+    console.log(requestParams);
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE],
+      orderBy: [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE],
       order: 2,
       filter: {
         name: 'Some test name',
-      } as ListApplicationsRequest.Filter,
+      },
     });
   });
 
@@ -86,9 +89,9 @@ describe('GrpcApplicationsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
+        orderBy: [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME],
         order: SortDirection.SORT_DIRECTION_ASC,
-        filter: {} as ListApplicationsRequest.Filter,
+        filter: {},
       },
       10000
     );
@@ -106,11 +109,11 @@ describe('GrpcApplicationsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE],
+        orderBy: [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE],
         order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           name: 'Some test name',
-        } as ListApplicationsRequest.Filter,
+        },
       },
       30000
     );
@@ -128,9 +131,9 @@ describe('GrpcApplicationsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAME],
+      orderBy: [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME],
       order: SortDirection.SORT_DIRECTION_ASC,
-      filter: {} as ListApplicationsRequest.Filter,
+      filter: {},
     });
     expect(result).toEqual(
       new ListApplicationsRequest({
@@ -139,16 +142,19 @@ describe('GrpcApplicationsService', () => {
         sort: {
           fields: [
             {
-              applicationField: ApplicationRawField.APPLICATION_RAW_FIELD_NAME,
+              applicationField: {
+                field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+              },
             },
           ],
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
-        filter: {
-          name: '',
-          namespace: '',
-          version: '',
-          service: '',
+        filters: {
+          or: [
+            {
+              and: [],
+            },
+          ],
         },
       })
     );
@@ -158,11 +164,11 @@ describe('GrpcApplicationsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: [ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE],
+      orderBy: [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE],
       order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         name: 'Some test name',
-      } as ListApplicationsRequest.Filter,
+      },
     });
     expect(result).toEqual(
       new ListApplicationsRequest({
@@ -171,17 +177,33 @@ describe('GrpcApplicationsService', () => {
         sort: {
           fields: [
             {
-              applicationField:
-                ApplicationRawField.APPLICATION_RAW_FIELD_NAMESPACE,
+              applicationField: {
+                field:
+                  ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE,
+              },
             },
           ],
           direction: SortDirection.SORT_DIRECTION_DESC,
         },
-        filter: {
-          name: 'Some test name',
-          namespace: '',
-          version: '',
-          service: '',
+        filters: {
+          or: [
+            {
+              and: [
+                {
+                  field: {
+                    applicationField: {
+                      field:
+                        ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+                    },
+                  },
+                  filterString: {
+                    operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                    value: 'Some test name',
+                  },
+                },
+              ],
+            },
+          ],
         },
       })
     );

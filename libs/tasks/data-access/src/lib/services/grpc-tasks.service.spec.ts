@@ -10,8 +10,9 @@ import {
 import {
   ListTasksRequest,
   SortDirection,
-  TaskSummaryField,
   TasksClient,
+  TaskSummaryEnumField,
+  FilterStringOperator,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 describe('GrpcTasksService', () => {
@@ -42,9 +43,9 @@ describe('GrpcTasksService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+      orderBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
       order: 1,
-      filter: {} as ListTasksRequest.Filter,
+      filter: {},
     });
   });
 
@@ -55,7 +56,7 @@ describe('GrpcTasksService', () => {
         size: 50,
       },
       sort: {
-        by: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT as unknown as ClrDatagridComparatorInterface<number>,
+        by: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -69,11 +70,11 @@ describe('GrpcTasksService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+      orderBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
       order: 2,
       filter: {
         sessionId: 'Some test sessionId',
-      } as ListTasksRequest.Filter,
+      },
     });
   });
 
@@ -82,9 +83,9 @@ describe('GrpcTasksService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+        orderBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
         order: SortDirection.SORT_DIRECTION_ASC,
-        filter: {} as ListTasksRequest.Filter,
+        filter: {},
       },
       10000
     );
@@ -110,11 +111,11 @@ describe('GrpcTasksService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+        orderBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
         order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           sessionId: 'Some test sessionId',
-        } as ListTasksRequest.Filter,
+        },
       },
       30000
     );
@@ -139,9 +140,9 @@ describe('GrpcTasksService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+      orderBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
       order: SortDirection.SORT_DIRECTION_ASC,
-      filter: {} as ListTasksRequest.Filter,
+      filter: {},
     });
     expect(result).toEqual(
       new ListTasksRequest({
@@ -149,14 +150,18 @@ describe('GrpcTasksService', () => {
         pageSize: 10,
         sort: {
           field: {
-            taskOptionField: null as any,
-            taskSummaryField: TaskSummaryField.TASK_SUMMARY_FIELD_CREATED_AT,
+            taskSummaryField: {
+              field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
-        filter: {
-          sessionId: '',
-          status: [],
+        filters: {
+          or: [
+            {
+              and: [],
+            },
+          ],
         },
       })
     );
@@ -166,11 +171,11 @@ describe('GrpcTasksService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+      orderBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
       order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         sessionId: 'Some test sessionId',
-      } as ListTasksRequest.Filter,
+      },
     });
     expect(result).toEqual(
       new ListTasksRequest({
@@ -178,14 +183,31 @@ describe('GrpcTasksService', () => {
         pageSize: 50,
         sort: {
           field: {
-            taskOptionField: null as any,
-            taskSummaryField: TaskSummaryField.TASK_SUMMARY_FIELD_STARTED_AT,
+            taskSummaryField: {
+              field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_DESC,
         },
-        filter: {
-          sessionId: 'Some test sessionId',
-          status: [],
+        filters: {
+          or: [
+            {
+              and: [
+                {
+                  field: {
+                    taskSummaryField: {
+                      field:
+                        TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
+                    },
+                  },
+                  filterString: {
+                    operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                    value: 'Some test sessionId',
+                  },
+                },
+              ],
+            },
+          ],
         },
       })
     );

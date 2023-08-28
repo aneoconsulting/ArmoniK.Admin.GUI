@@ -1,8 +1,7 @@
 import {
   GetSessionResponse,
-  ListSessionsRequest,
   ListSessionsResponse,
-  SessionRawField,
+  SessionRawEnumField,
   SessionStatus,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -37,6 +36,14 @@ import { Timestamp } from '@ngx-grpc/well-known-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionsListComponent {
+  constructor(
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
+    private _grpcSessionsService: GrpcSessionsService,
+    private _authorizationService: AuthorizationService,
+    private _settingsService: SettingsService
+  ) {}
+
   private _state: ClrDatagridStateInterface = {};
   private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
@@ -147,14 +154,6 @@ export class SessionsListComponent {
     'applicationVersion'
   );
 
-  constructor(
-    private _router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private _grpcSessionsService: GrpcSessionsService,
-    private _authorizationService: AuthorizationService,
-    private _settingsService: SettingsService
-  ) {}
-
   public get refreshIntervalValue() {
     return this._intervalValue;
   }
@@ -174,7 +173,7 @@ export class SessionsListComponent {
   }
 
   public get OrderByField() {
-    return SessionRawField;
+    return SessionRawEnumField;
   }
 
   public get SessionStatusEnum() {
@@ -207,7 +206,7 @@ export class SessionsListComponent {
   }
 
   // TODO: Move to a service (once https://github.com/aneoconsulting/ArmoniK.Api/issues/87 is resolved)
-  public defaultSortOrder(field: SessionRawField): ClrDatagridSortOrder {
+  public defaultSortOrder(field: SessionRawEnumField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );
