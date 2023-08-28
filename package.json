@@ -10,8 +10,8 @@
     "test": "nx run-many --target=test --all",
     "e2e": "nx run-many --target=e2e --all",
     "e2e:watch": "nx run-many --target=e2e --all --watch",
-    "format": "nx format --base=main",
-    "format:check": "nx format:check --base=main",
+    "format": "nx format --base=v0.9",
+    "format:check": "nx format:check --base=v0.9",
     "lint": "nx run-many --target=lint --all",
     "translate": "nx extract-i18n"
   },

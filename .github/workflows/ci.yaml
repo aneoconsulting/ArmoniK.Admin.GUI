@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - v0.9
   pull_request:
 
 concurrency:
@@ -31,7 +31,7 @@ jobs:
 
       - uses: nrwl/nx-set-shas@177b48373c6dc583ce0d9257ffb484bdd232fedf # v3
         with:
-          main-branch-name: main
+          main-branch-name: v0.9
 
       - name: Check code style
         run: nr ng format:check
@@ -60,7 +60,7 @@ jobs:
 
       - uses: nrwl/nx-set-shas@177b48373c6dc583ce0d9257ffb484bdd232fedf # v3
         with:
-          main-branch-name: main
+          main-branch-name: v0.9
 
       - name: Run Unit Tests
         # run: nr ng affected --target=test --parallel=3 --code-coverage
@@ -165,7 +165,7 @@ jobs:
 
       - uses: nrwl/nx-set-shas@177b48373c6dc583ce0d9257ffb484bdd232fedf # v3
         with:
-          main-branch-name: main
+          main-branch-name: v0.9
 
       - name: Build all
         run: nr ng affected --target=build --parallel=3
