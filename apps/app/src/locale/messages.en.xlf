@@ -670,10 +670,10 @@
         <target>Priority</target>
       </segment>
     </unit>
-    <unit id="2589810979983981192">
+    <unit id="7128279086497006714">
       <segment state="initial">
-        <source>/admin/en/</source>
-        <target>/admin/en/</target>
+        <source>/admin-0.9/en/</source>
+        <target>/admin-0.9/en/</target>
       </segment>
     </unit>
     <unit id="8574063679938854809">
@@ -944,6 +944,18 @@
       <segment state="initial">
         <source>d </source>
         <target>d </target>
+      </segment>
+    </unit>
+    <unit id="3667554695995834523">
+      <segment state="initial">
+        <source> This version is deprecated and will be removed soon. Please use the latest version. </source>
+        <target> This version is deprecated and will be removed soon. Please use the latest version. </target>
+      </segment>
+    </unit>
+    <unit id="2926649585041178986">
+      <segment state="initial">
+        <source> Latest version </source>
+        <target> Latest version </target>
       </segment>
     </unit>
   </file>

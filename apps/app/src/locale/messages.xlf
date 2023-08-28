@@ -554,9 +554,9 @@
         <source>Parent</source>
       </segment>
     </unit>
-    <unit id="2589810979983981192">
+    <unit id="7128279086497006714">
       <segment>
-        <source>/admin/en/</source>
+        <source>/admin-0.9/en/</source>
       </segment>
     </unit>
     <unit id="8574063679938854809">
@@ -782,6 +782,16 @@
     <unit id="8655239516431228340">
       <segment>
         <source>d </source>
+      </segment>
+    </unit>
+    <unit id="2926649585041178986">
+      <segment>
+        <source> Latest version </source>
+      </segment>
+    </unit>
+    <unit id="3667554695995834523">
+      <segment>
+        <source> This version is deprecated and will be removed soon. Please use the latest version. </source>
       </segment>
     </unit>
   </file>
