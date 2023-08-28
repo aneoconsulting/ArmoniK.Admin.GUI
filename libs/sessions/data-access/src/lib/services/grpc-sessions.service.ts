@@ -40,7 +40,9 @@ export class GrpcSessionsService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<Record<string, unknown>>(state);
+      this._grpcParamsService.createFilterParams<Record<string, unknown>>(
+        state
+      );
 
     return {
       page,
