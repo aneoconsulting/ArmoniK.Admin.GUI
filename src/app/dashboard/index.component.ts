@@ -78,11 +78,11 @@ import { Line } from './types';
 </div>
 
 <main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
-  <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
+  <app-page-section *ngFor="let line of lines;let index = index trackBy:trackByLine">
     <app-page-section-header icon="adjust">
       <span i18n="Section title">{{ line.name }}</span>
     </app-page-section-header>
-    <app-dashboard-line [line]="line"  (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+    <app-dashboard-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
   </app-page-section>
 </main>
   `,
@@ -251,6 +251,7 @@ export class IndexComponent implements OnInit {
         lines: structuredClone(this.lines),
       }
     });
+  
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result || !result.lines) return;
