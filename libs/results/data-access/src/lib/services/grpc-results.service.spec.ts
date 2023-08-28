@@ -8,8 +8,9 @@ import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { GrpcResultsService } from './grpc-results.service';
 import {
+  FilterStringOperator,
   ListResultsRequest,
-  ResultRawField,
+  ResultRawEnumField,
   ResultsClient,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -42,9 +43,9 @@ describe('GrpcResultsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+      orderBy: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
       order: 1,
-      filter: {} as ListResultsRequest.Filter,
+      filter: {},
     });
   });
 
@@ -55,7 +56,7 @@ describe('GrpcResultsService', () => {
         size: 50,
       },
       sort: {
-        by: ResultRawField.RESULT_RAW_FIELD_RESULT_ID as unknown as ClrDatagridComparatorInterface<number>,
+        by: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -69,11 +70,11 @@ describe('GrpcResultsService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
+      orderBy: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
       order: 2,
       filter: {
         sessionId: 'Some test sessionId',
-      } as ListResultsRequest.Filter,
+      },
     });
   });
 
@@ -82,9 +83,9 @@ describe('GrpcResultsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+        orderBy: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
         order: SortDirection.SORT_DIRECTION_ASC,
-        filter: {} as ListResultsRequest.Filter,
+        filter: {},
       },
       10000
     );
@@ -108,11 +109,11 @@ describe('GrpcResultsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: ResultRawField.RESULT_RAW_FIELD_SESSION_ID,
+        orderBy: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID,
         order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           sessionId: 'Some test sessionId',
-        } as ListResultsRequest.Filter,
+        },
       },
       30000
     );
@@ -135,9 +136,9 @@ describe('GrpcResultsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+      orderBy: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
       order: SortDirection.SORT_DIRECTION_ASC,
-      filter: {} as ListResultsRequest.Filter,
+      filter: {},
     });
     expect(result).toEqual(
       new ListResultsRequest({
@@ -145,16 +146,18 @@ describe('GrpcResultsService', () => {
         pageSize: 10,
         sort: {
           field: {
-            resultRawField: ResultRawField.RESULT_RAW_FIELD_CREATED_AT,
+            resultRawField: {
+              field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
-        filter: {
-          name: '',
-          ownerTaskId: '',
-          sessionId: '',
-          status: 0,
-          resultId: '',
+        filters: {
+          or: [
+            {
+              and: [],
+            },
+          ],
         },
       })
     );
@@ -164,11 +167,11 @@ describe('GrpcResultsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
+      orderBy: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
       order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         sessionId: 'Some test sessionId',
-      } as ListResultsRequest.Filter,
+      },
     });
     expect(result).toEqual(
       new ListResultsRequest({
@@ -176,16 +179,31 @@ describe('GrpcResultsService', () => {
         pageSize: 50,
         sort: {
           field: {
-            resultRawField: ResultRawField.RESULT_RAW_FIELD_RESULT_ID,
+            resultRawField: {
+              field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_DESC,
         },
-        filter: {
-          name: '',
-          ownerTaskId: '',
-          sessionId: 'Some test sessionId',
-          status: 0,
-          resultId: '',
+        filters: {
+          or: [
+            {
+              and: [
+                {
+                  field: {
+                    resultRawField: {
+                      field:
+                        ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID,
+                    },
+                  },
+                  filterString: {
+                    value: 'Some test sessionId',
+                    operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                  },
+                },
+              ],
+            },
+          ],
         },
       })
     );

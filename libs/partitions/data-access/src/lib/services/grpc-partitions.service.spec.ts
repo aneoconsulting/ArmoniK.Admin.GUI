@@ -8,8 +8,9 @@ import {
   ClrDatagridStateInterface,
 } from '@clr/angular';
 import {
+  FilterStringOperator,
   ListPartitionsRequest,
-  PartitionRawField,
+  PartitionRawEnumField,
   PartitionsClient,
   SortDirection,
 } from '@aneoconsultingfr/armonik.api.angular';
@@ -42,9 +43,9 @@ describe('GrpcPartitionsService', () => {
     expect(requestParams).toEqual({
       page: 0,
       pageSize: 10,
-      orderBy: PartitionRawField.PARTITION_RAW_FIELD_ID,
+      orderBy: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
       order: 1,
-      filter: {} as ListPartitionsRequest.Filter,
+      filter: {},
     });
   });
 
@@ -55,7 +56,7 @@ describe('GrpcPartitionsService', () => {
         size: 50,
       },
       sort: {
-        by: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX as unknown as ClrDatagridComparatorInterface<number>,
+        by: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX as unknown as ClrDatagridComparatorInterface<number>,
         reverse: true,
       },
       filters: [
@@ -69,11 +70,11 @@ describe('GrpcPartitionsService', () => {
     expect(requestParams).toEqual({
       page: 1,
       pageSize: 50,
-      orderBy: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+      orderBy: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX,
       order: 2,
       filter: {
         id: 'Some test id',
-      } as ListPartitionsRequest.Filter,
+      },
     });
   });
 
@@ -82,9 +83,9 @@ describe('GrpcPartitionsService', () => {
       {
         page: 0,
         pageSize: 10,
-        orderBy: PartitionRawField.PARTITION_RAW_FIELD_ID,
+        orderBy: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
         order: SortDirection.SORT_DIRECTION_ASC,
-        filter: {} as ListPartitionsRequest.Filter,
+        filter: {},
       },
       10000
     );
@@ -102,11 +103,11 @@ describe('GrpcPartitionsService', () => {
       {
         page: 2,
         pageSize: 50,
-        orderBy: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+        orderBy: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX,
         order: SortDirection.SORT_DIRECTION_DESC,
         filter: {
           id: 'Some test id',
-        } as ListPartitionsRequest.Filter,
+        },
       },
       30000
     );
@@ -124,9 +125,9 @@ describe('GrpcPartitionsService', () => {
     const result = service.createListRequestOptions({
       page: 0,
       pageSize: 10,
-      orderBy: PartitionRawField.PARTITION_RAW_FIELD_ID,
+      orderBy: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
       order: SortDirection.SORT_DIRECTION_ASC,
-      filter: {} as ListPartitionsRequest.Filter,
+      filter: {},
     });
     expect(result).toEqual(
       new ListPartitionsRequest({
@@ -134,17 +135,18 @@ describe('GrpcPartitionsService', () => {
         pageSize: 10,
         sort: {
           field: {
-            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_ID,
+            partitionRawField: {
+              field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_ASC,
         },
-        filter: {
-          id: '',
-          parentPartitionId: '',
-          podMax: 0,
-          podReserved: 0,
-          preemptionPercentage: 0,
-          priority: 0,
+        filters: {
+          or: [
+            {
+              and: [],
+            },
+          ],
         },
       })
     );
@@ -154,11 +156,11 @@ describe('GrpcPartitionsService', () => {
     const result = service.createListRequestOptions({
       page: 2,
       pageSize: 50,
-      orderBy: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+      orderBy: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX,
       order: SortDirection.SORT_DIRECTION_DESC,
       filter: {
         id: 'Some test id',
-      } as ListPartitionsRequest.Filter,
+      },
     });
     expect(result).toEqual(
       new ListPartitionsRequest({
@@ -166,17 +168,30 @@ describe('GrpcPartitionsService', () => {
         pageSize: 50,
         sort: {
           field: {
-            partitionRawField: PartitionRawField.PARTITION_RAW_FIELD_POD_MAX,
+            partitionRawField: {
+              field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX,
+            },
           },
           direction: SortDirection.SORT_DIRECTION_DESC,
         },
-        filter: {
-          id: 'Some test id',
-          parentPartitionId: '',
-          podMax: 0,
-          podReserved: 0,
-          preemptionPercentage: 0,
-          priority: 0,
+        filters: {
+          or: [
+            {
+              and: [
+                {
+                  field: {
+                    partitionRawField: {
+                      field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+                    },
+                  },
+                  filterString: {
+                    operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                    value: 'Some test id',
+                  },
+                },
+              ],
+            },
+          ],
         },
       })
     );

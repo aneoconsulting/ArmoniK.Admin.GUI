@@ -26,7 +26,7 @@ import {
   SortDirection,
   TaskStatus,
   TaskSummary,
-  TaskSummaryField,
+  TaskSummaryEnumField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import {
   ComboBoxFilterComponent,
@@ -39,6 +39,14 @@ import {
   styleUrls: ['./tasks-list.page.scss'],
 })
 export class TasksListComponent implements OnInit {
+  constructor(
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
+    private _settingsService: SettingsService,
+    private _grpcTasksService: GrpcTasksService,
+    private _authorizationService: AuthorizationService
+  ) {}
+
   private _state: ClrDatagridStateInterface = {};
   private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
@@ -156,14 +164,6 @@ export class TasksListComponent implements OnInit {
     'endedAfter'
   );
 
-  constructor(
-    private _router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private _settingsService: SettingsService,
-    private _grpcTasksService: GrpcTasksService,
-    private _authorizationService: AuthorizationService
-  ) {}
-
   ngOnInit(): void {
     this.taskStatusList = [
       ...Object.keys(TaskStatus)
@@ -195,8 +195,8 @@ export class TasksListComponent implements OnInit {
     );
   }
 
-  public get OrderByField(): typeof TaskSummaryField {
-    return TaskSummaryField;
+  public get OrderByField(): typeof TaskSummaryEnumField {
+    return TaskSummaryEnumField;
   }
 
   public get TaskStatusEnum(): typeof TaskStatus {
@@ -266,7 +266,7 @@ export class TasksListComponent implements OnInit {
     this._subjectDatagrid.next(this._state);
   }
 
-  public defaultSortOrder(field: TaskSummaryField): ClrDatagridSortOrder {
+  public defaultSortOrder(field: TaskSummaryEnumField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

@@ -1,9 +1,8 @@
 import {
   GetPartitionResponse,
-  ListPartitionsRequest,
   ListPartitionsResponse,
   PartitionRaw,
-  PartitionRawField,
+  PartitionRawEnumField,
 } from '@aneoconsultingfr/armonik.api.angular';
 import { Component } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -35,6 +34,13 @@ import {
   styleUrls: ['./partitions-list.page.scss'],
 })
 export class PartitionsListComponent {
+  constructor(
+    private _settingsService: SettingsService,
+    private _activatedRoute: ActivatedRoute,
+    private _grpcPartitionsService: GrpcPartitionsService,
+    private _router: Router
+  ) {}
+
   private _state: ClrDatagridStateInterface = {};
   private _intervalValue = this._settingsService.intervalQueryParam(
     this._activatedRoute.snapshot.queryParams
@@ -131,13 +137,6 @@ export class PartitionsListComponent {
     'priority'
   );
 
-  constructor(
-    private _settingsService: SettingsService,
-    private _activatedRoute: ActivatedRoute,
-    private _grpcPartitionsService: GrpcPartitionsService,
-    private _router: Router
-  ) {}
-
   public get refreshIntervalValue() {
     return this._intervalValue;
   }
@@ -157,7 +156,7 @@ export class PartitionsListComponent {
   }
 
   public get OrderByField() {
-    return PartitionRawField;
+    return PartitionRawEnumField;
   }
 
   public get intervals(): number[] {
@@ -226,7 +225,7 @@ export class PartitionsListComponent {
     return partition.id ?? '';
   }
 
-  public defaultSortOrder(field: PartitionRawField): ClrDatagridSortOrder {
+  public defaultSortOrder(field: PartitionRawEnumField): ClrDatagridSortOrder {
     const orderBy = Number(
       this._activatedRoute.snapshot.queryParamMap.get('orderBy')
     );

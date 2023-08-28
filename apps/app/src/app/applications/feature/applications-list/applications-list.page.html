@@ -19,8 +19,8 @@
     </clr-dg-action-bar>
 
     <clr-dg-column
-      [clrDgField]="OrderByField.APPLICATION_RAW_FIELD_NAME.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_FIELD_NAME)"
+      [clrDgField]="OrderByField.APPLICATION_RAW_ENUM_FIELD_NAME.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_ENUM_FIELD_NAME)"
     >
       <span i18n> Name </span>
       <clr-dg-filter [clrDgFilter]="nameFilterComponent">
@@ -33,8 +33,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.APPLICATION_RAW_FIELD_VERSION.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_FIELD_VERSION)"
+      [clrDgField]="OrderByField.APPLICATION_RAW_ENUM_FIELD_VERSION.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_ENUM_FIELD_VERSION)"
     >
       <span i18n> Version </span>
       <clr-dg-filter [clrDgFilter]="versionFilterComponent">
@@ -47,8 +47,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.APPLICATION_RAW_FIELD_NAMESPACE.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_FIELD_NAMESPACE)"
+      [clrDgField]="OrderByField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE)"
     >
       <span i18n> Namespace </span>
       <clr-dg-filter [clrDgFilter]="namespaceFilterComponent">
@@ -61,8 +61,8 @@
       </clr-dg-filter>
     </clr-dg-column>
     <clr-dg-column
-      [clrDgField]="OrderByField.APPLICATION_RAW_FIELD_SERVICE.toString()"
-      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_FIELD_SERVICE)"
+      [clrDgField]="OrderByField.APPLICATION_RAW_ENUM_FIELD_SERVICE.toString()"
+      [clrDgSortOrder]="defaultSortOrder(OrderByField.APPLICATION_RAW_ENUM_FIELD_SERVICE)"
     >
       <span i18n> Service </span>
       <clr-dg-filter [clrDgFilter]="serviceFilterComponent">

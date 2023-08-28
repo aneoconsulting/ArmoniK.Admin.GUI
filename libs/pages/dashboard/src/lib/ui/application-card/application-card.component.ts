@@ -12,7 +12,7 @@ import { DashboardDefaultGroupService } from '../../data-access/dashboard-defaul
 import { Group } from '../../types/group.type';
 import {
   ApplicationRaw,
-  CountTasksByStatusApplicationResponse,
+  CountTasksByStatusResponse,
 } from '@aneoconsultingfr/armonik.api.angular';
 
 @Component({
@@ -45,7 +45,7 @@ export class ApplicationCardComponent implements OnInit {
     this.groups = this._dashboardDefaultGroupService.defaultGroups;
   }
 
-  private _countTasksByStatus$(): Observable<CountTasksByStatusApplicationResponse> {
+  private _countTasksByStatus$(): Observable<CountTasksByStatusResponse> {
     const params = {
       name: this.application.name,
       version: this.application.version,
