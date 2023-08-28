@@ -1,14 +1,9 @@
 import {
-  ApplicationFilters,
   ApplicationRawEnumField,
-  PartitionFilters,
   PartitionRawEnumField,
-  ResultFilters,
   ResultRawEnumField,
-  SessionFilters,
   SessionRawEnumField,
   SortDirection,
-  TaskFilters,
   TaskSummaryEnumField,
 } from '@aneoconsultingfr/armonik.api.angular';
 
@@ -21,25 +16,25 @@ export type GrpcListApplicationsParams = GrpcListParams<
 export type GrpcListSessionsParams = GrpcListParams<
   SessionRawEnumField,
   SortDirection,
-  SessionFilters
+  Record<string, unknown>
 >;
 
 export type GrpcListTasksParams = GrpcListParams<
   TaskSummaryEnumField,
   SortDirection,
-  TaskFilters
+  Record<string, unknown>
 >;
 
 export type GrpcListResultsParams = GrpcListParams<
   ResultRawEnumField,
   SortDirection,
-  ResultFilters
+  Record<string, unknown>
 >;
 
 export type GrpcListPartitionsParams = GrpcListParams<
   PartitionRawEnumField,
   SortDirection,
-  PartitionFilters
+  Record<string, unknown>
 >;
 
 type GrpcListParams<

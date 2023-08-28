@@ -40,7 +40,7 @@ export class GrpcSessionsService extends BaseGrpcService {
     >(state);
 
     const filter =
-      this._grpcParamsService.createFilterParams<SessionFilters>(state);
+      this._grpcParamsService.createFilterParams<Record<string, unknown>>(state);
 
     return {
       page,
@@ -54,7 +54,7 @@ export class GrpcSessionsService extends BaseGrpcService {
   public createListRequestQueryParams(
     { page, pageSize, orderBy, order, filter }: GrpcListSessionsParams,
     refreshInterval: number
-  ) {
+  ): Record<string, unknown> {
     return {
       page: page !== 0 ? page : undefined,
       pageSize: pageSize !== 10 ? pageSize : undefined,
