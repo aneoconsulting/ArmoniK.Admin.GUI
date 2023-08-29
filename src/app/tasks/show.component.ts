@@ -11,6 +11,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-status.service';
@@ -38,6 +39,7 @@ import { TaskRaw } from './types';
     TableService,
     TableStorageService,
     TableURLService,
+    TasksFiltersService
   ],
   imports: [
     ShowPageComponent,

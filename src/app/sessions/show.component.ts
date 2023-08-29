@@ -12,6 +12,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -35,6 +36,7 @@ import { SessionRaw } from './types';
     SessionsGrpcService,
     SessionsStatusesService,
     SessionsIndexService,
+    SessionsFiltersService,
     TableService,
     TableURLService,
     TableStorageService,

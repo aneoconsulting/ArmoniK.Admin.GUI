@@ -17,7 +17,6 @@ import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -183,10 +182,7 @@ app-table-actions-toolbar {
     TasksStatusesService,
     TasksIndexService,
     FiltersService,
-    {
-      provide: DATA_FILTERS_SERVICE,
-      useClass: PartitionsFiltersService,
-    }
+    PartitionsFiltersService,
   ],
   imports: [
     NoWrapDirective,
@@ -224,7 +220,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #dialog = inject(MatDialog);
   readonly #filtersService = inject(FiltersService);
-  readonly #partitionsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #partitionsFiltersService = inject(PartitionsFiltersService);
 
   displayedColumns: PartitionRawColumnKey[] = [];
   availableColumns: PartitionRawColumnKey[] = [];

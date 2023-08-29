@@ -20,7 +20,6 @@ import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { TaskOptions, TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -236,10 +235,7 @@ app-table-actions-toolbar {
     TasksStatusesService,
     TasksIndexService,
     FiltersService,
-    {
-      provide: DATA_FILTERS_SERVICE,
-      useClass: SessionsFiltersService
-    }
+    SessionsFiltersService
   ],
   imports: [
     DurationPipe,
@@ -276,7 +272,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #dialog = inject(MatDialog);
   readonly #filtersService = inject(FiltersService);
-  readonly #sessionsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #sessionsFiltersService = inject(SessionsFiltersService);
 
   displayedColumns: SessionRawColumnKey[] = [];
   availableColumns: SessionRawColumnKey[] = [];
