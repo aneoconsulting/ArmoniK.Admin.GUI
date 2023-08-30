@@ -14,7 +14,7 @@ import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/t
 <h2 mat-dialog-title i18n="Dialog title"> Manage View in Logs </h2>
 
 <form [formGroup]="viewInLogsForm" (ngSubmit)="onSubmit()">
-  <!-- TODO: ajouter les consignes %s pour l'usage -->
+  <!-- TODO: ajouter les consignes %taskId pour l'usage -->
   <mat-dialog-content>
     <mat-form-field appearance="outline">
       <mat-label for="serviceName" i18n> Service Name </mat-label>
