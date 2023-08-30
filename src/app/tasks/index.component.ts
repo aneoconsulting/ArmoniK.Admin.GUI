@@ -1,4 +1,4 @@
-import { FilterStringOperator, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -17,7 +17,6 @@ import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
-import { ResultRawColumnKey } from '@app/results/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -583,7 +582,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTaskIdQueryParams(taskId: string) {
-    const keyTask = this.#filtersService.createQueryParamsKey<ResultRawColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'ownerTaskId');
+    const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
 
     return {
       [keyTask]: taskId

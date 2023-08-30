@@ -20,7 +20,7 @@ import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskOptions, TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskOptions, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -546,7 +546,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createSessionIdQueryParams(sessionId: string) {
-    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'sessionId');
+    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
@@ -567,7 +567,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTasksByStatusQueryParams(sessionId: string) {
-    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'sessionId');
+    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
