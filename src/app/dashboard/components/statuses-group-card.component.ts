@@ -1,10 +1,10 @@
-import { FilterStringOperator, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { StatusCount, TaskSummaryColumnKey } from '@app/tasks/types';
+import { StatusCount } from '@app/tasks/types';
 import { FiltersService } from '@services/filters.service';
 import { TasksStatusesGroup } from '../types';
 
@@ -112,6 +112,6 @@ export class StatusesGroupCardComponent {
   }
 
   #createQueryParamKey(): string {
-    return this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'status');
+    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 }

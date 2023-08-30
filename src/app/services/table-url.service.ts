@@ -16,7 +16,6 @@ export class TableURLService {
     return this.getQueryParam<T>(key, false);
   }
 
-  // TODO: update this function to support for
   getQueryParamsFilters<T extends number, U extends number | null>(filtersDefinitions: FilterDefinition<T, U>[]): FiltersOr<T, U> {
     const params: Map<string, Filter<T, U>[]>  = new Map();
     const filters: FiltersOr<T, U> = [];
@@ -26,12 +25,12 @@ export class TableURLService {
 
     for (const key of keys) {
       const match = key.match(extractValues);
-      const order = match?.groups?.['order'];
-      const for_ = match?.groups?.['for'] as FilterFor<T, U> | undefined;
-      const field = Number(match?.groups?.['field']) as T | U | undefined;
-      const operator = match?.groups?.['operator'];
+      const order = match?.groups?.['order'] ?? null as string | null;
+      const for_ = match?.groups?.['for'] ?? null as FilterFor<T, U> | null;
+      const field = match?.groups?.['field'] ? Number(match?.groups?.['field']) : null as T | U | null;
+      const operator = match?.groups?.['operator'] ?? null as string | null;
 
-      if (!order || !field || !operator) {
+      if (order === null || field === null || operator === null) {
         continue;
       }
 
@@ -48,7 +47,7 @@ export class TableURLService {
         field: field as T | U,
         operator: Number(operator),
         value: this.getQueryParam(key, false),
-        for: for_ ?? null
+        for: for_ as FilterFor<T, U> ?? null
       });
 
       params.set(order, currentParams);

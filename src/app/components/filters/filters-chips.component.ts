@@ -51,12 +51,12 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
   @Input({ required: true }) filtersAnd: FiltersAnd<T, U> = [];
 
   content(filter: Filter<T, U>): string {
-    const label = this.#dataFiltersService.retriveLabel(filter.for ?? 'root', Number(filter.field));
+    const label = this.#dataFiltersService.retrieveLabel(filter.for ?? 'root', Number(filter.field));
 
     if (!filter.value)
       return label + ' ' + $localize`has no value`;
 
-    const filtersDefinitions = this.#dataFiltersService.retriveFiltersDefinitions();
+    const filtersDefinitions = this.#dataFiltersService.retrieveFiltersDefinitions();
     const type = this.#utilsService.recoverType(filter, filtersDefinitions);
     const operator = this.#filtersService.findOperators(type)[filter.operator as number];
 

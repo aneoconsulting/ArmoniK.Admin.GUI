@@ -95,24 +95,24 @@ export class TasksFiltersService {
   readonly #defaultFilters: TaskSummaryFiltersOr = this.#defaultConfigService.defaultTasks.filters;
 
   saveFilters(filters: TaskSummaryFiltersOr): void {
-    this.#tableService.saveFilters('sessions-filters', filters);
+    this.#tableService.saveFilters('tasks-filters', filters);
   }
 
   restoreFilters(): TaskSummaryFiltersOr {
-    return this.#tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('sessions-filters', this.#filtersDefinitions) ?? this.#defaultFilters;
+    return this.#tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.#filtersDefinitions) ?? this.#defaultFilters;
   }
 
   resetFilters(): TaskSummaryFiltersOr {
-    this.#tableService.resetFilters('sessions-filters');
+    this.#tableService.resetFilters('tasks-filters');
 
     return this.#defaultFilters;
   }
 
-  retriveFiltersDefinitions() {
+  retrieveFiltersDefinitions() {
     return this.#filtersDefinitions;
   }
 
-  retriveLabel(filterFor: TaskFilterFor, filterField:  TaskFilterField): string {
+  retrieveLabel(filterFor: TaskFilterFor, filterField:  TaskFilterField): string {
     switch (filterFor) {
     case 'root':
       return this.#rootField[filterField as TaskSummaryEnumField];

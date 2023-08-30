@@ -166,9 +166,10 @@ app-table-actions-toolbar {
     ResultsGrpcService,
     AutoRefreshService,
     NotificationService,
+    ResultsFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
-      useClass: ResultsFiltersService,
+      useExisting: ResultsFiltersService,
     }
   ],
   imports: [

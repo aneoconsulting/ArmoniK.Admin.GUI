@@ -17,9 +17,10 @@ import { RouterLink } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
+import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskOptions, TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskOptions, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -236,9 +237,11 @@ app-table-actions-toolbar {
     TasksStatusesService,
     TasksIndexService,
     FiltersService,
+    TasksFiltersService,
+    SessionsFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
-      useClass: SessionsFiltersService
+      useExisting: SessionsFiltersService
     }
   ],
   imports: [
@@ -276,7 +279,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #dialog = inject(MatDialog);
   readonly #filtersService = inject(FiltersService);
-  readonly #sessionsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #sessionsFiltersService = inject(SessionsFiltersService);
 
   displayedColumns: SessionRawColumnKey[] = [];
   availableColumns: SessionRawColumnKey[] = [];
@@ -543,7 +546,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createSessionIdQueryParams(sessionId: string) {
-    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'sessionId');
+    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
@@ -564,7 +567,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTasksByStatusQueryParams(sessionId: string) {
-    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'sessionId');
+    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,

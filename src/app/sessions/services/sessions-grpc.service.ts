@@ -2,14 +2,14 @@ import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSess
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
+import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionRawField, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsGrpcService{
-  readonly #sessionsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #sessionsFiltersService = inject(SessionsFiltersService);
   readonly #sessionsClient = inject(SessionsClient);
   readonly #utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
 
@@ -31,7 +31,7 @@ export class SessionsGrpcService{
 
   list$(options: SessionRawListOptions, filters: SessionRawFiltersOr): Observable<ListSessionsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,

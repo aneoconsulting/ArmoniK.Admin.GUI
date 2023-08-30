@@ -16,8 +16,7 @@ import { Observable, Subject, Subscription, catchError, map, merge, of, startWit
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -113,7 +112,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       <!-- Partition's Tasks Count by Status -->
       <ng-container *ngIf="isCountColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <!-- TODO: add correct query params -->
           <app-count-tasks-by-status
             [statuses]="tasksStatusesColored"
             [queryParams]="createTasksByStatusQueryParams(element.id)"
@@ -183,10 +181,7 @@ app-table-actions-toolbar {
     TasksStatusesService,
     TasksIndexService,
     FiltersService,
-    {
-      provide: DATA_FILTERS_SERVICE,
-      useClass: PartitionsFiltersService,
-    }
+    PartitionsFiltersService,
   ],
   imports: [
     NoWrapDirective,
@@ -224,7 +219,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #dialog = inject(MatDialog);
   readonly #filtersService = inject(FiltersService);
-  readonly #partitionsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #partitionsFiltersService = inject(PartitionsFiltersService);
 
   displayedColumns: PartitionRawColumnKey[] = [];
   availableColumns: PartitionRawColumnKey[] = [];
@@ -431,10 +426,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTasksByStatusQueryParams(partition: string) {
-    const keyPartition = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'options.partitionId');
-
     return {
-      [keyPartition]: partition,
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: partition,
     };
   }
 
