@@ -72,11 +72,11 @@ export class PartitionsFiltersService {
     return this.#defaultFilters;
   }
 
-  retriveFiltersDefinitions() {
+  retrieveFiltersDefinitions() {
     return this.#filtersDefinitions;
   }
 
-  retriveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
+  retrieveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
     switch (filterFor) {
     case 'root':
       return this.#rootField[filterField as PartitionRawEnumField];

@@ -126,6 +126,7 @@ app-actions-toolbar {
     UtilsService,
     TasksIndexService,
     TasksGrpcService,
+    TasksFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
       useClass: TasksFiltersService

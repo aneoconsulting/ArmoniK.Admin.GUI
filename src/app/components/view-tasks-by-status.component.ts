@@ -1,12 +1,12 @@
 
-import { FilterStringOperator, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStatusOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { StatusCount, TaskSummaryColumnKey } from '@app/tasks/types';
+import { StatusCount } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { SpinnerComponent } from './spinner.component';
@@ -38,6 +38,7 @@ import { SpinnerComponent } from './spinner.component';
   standalone: true,
   providers: [
     FiltersService,
+    TasksStatusesService
   ],
   imports: [
     NgIf,
@@ -62,10 +63,9 @@ export class ViewTasksByStatusComponent {
   }
 
   createQueryParams(status: TaskStatus): Record<string, string> {
-    const statusKey = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'status');
     return {
       ...this.defaultQueryParams,
-      [statusKey]: status.toString(),
+      [`0-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`]: status.toString(),
     };
   }
 

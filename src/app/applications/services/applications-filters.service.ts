@@ -59,11 +59,11 @@ export class ApplicationsFiltersService {
     return this.#defaultFilters;
   }
 
-  retriveFiltersDefinitions() {
+  retrieveFiltersDefinitions() {
     return this.#filtersDefinitions;
   }
 
-  retriveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
+  retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
     switch (filterFor) {
     case 'root':
       return this.#rootField[filterField as ApplicationRawEnumField];

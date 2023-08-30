@@ -17,7 +17,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   <mat-label i18n="Label input">Column</mat-label>
   <mat-select (valueChange)="onFieldChange($event)" [value]="filter.for + '-' + filter.field?.toString()">
     <mat-option *ngFor="let definition of filtersDefinitions; trackBy: trackByField" [value]="definition.for + '-' + definition.field">
-      {{ retriveLabel(definition) }}
+      {{ retrieveLabel(definition) }}
     </mat-option>
   </mat-select>
 </mat-form-field>
@@ -68,11 +68,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
   get filtersDefinitions() {
-    return this.#dataFiltersService.retriveFiltersDefinitions<T, U>();
+    return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
   }
 
-  retriveLabel(filterDefinition: FilterDefinition<T, U>) {
-    return this.#dataFiltersService.retriveLabel(filterDefinition.for, filterDefinition.field);
+  retrieveLabel(filterDefinition: FilterDefinition<T, U>) {
+    return this.#dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field);
   }
 
   onFieldChange(event: string) {
@@ -172,6 +172,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
-    return this.#dataFiltersService.retriveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+    return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
   }
 }

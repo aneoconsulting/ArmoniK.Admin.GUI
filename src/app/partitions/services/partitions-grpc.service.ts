@@ -2,17 +2,17 @@ import { SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterNumbe
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
+import { PartitionsFiltersService } from './partitions-filters.service';
 import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
 
 
 @Injectable()
 export class PartitionsGrpcService {
-  #partitionsFiltersService = inject(DATA_FILTERS_SERVICE);
-  #partitionsClient = inject(PartitionsClient);
-  #utilsService = inject(UtilsService<PartitionRawEnumField>);
+  readonly #partitionsFiltersService = inject(PartitionsFiltersService);
+  readonly #partitionsClient = inject(PartitionsClient);
+  readonly #utilsService = inject(UtilsService<PartitionRawEnumField>);
 
   readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
     'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
@@ -31,7 +31,7 @@ export class PartitionsGrpcService {
   };
 
   list$(options: PartitionRawListOptions, filters: PartitionRawFiltersOr): Observable<ListPartitionsResponse> {
-    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listPartitionsRequest = new ListPartitionsRequest({
       page: options.pageIndex,
