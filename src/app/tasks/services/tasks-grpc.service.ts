@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskFilters, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';

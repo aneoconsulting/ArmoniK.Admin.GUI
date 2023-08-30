@@ -81,7 +81,7 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
     </app-actions-toolbar>
   </mat-toolbar-row>
 
-  <mat-toolbar-row>
+  <mat-toolbar-row class="filters">
     <app-filters-toolbar [filters]="line.filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -106,6 +106,13 @@ app-actions-toolbar {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
+}
+
+.filters {
+  height: auto;
+  min-height: 64px;
+
+  padding: 1rem;
 }
     `],
   standalone: true,
