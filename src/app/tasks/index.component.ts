@@ -17,7 +17,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
-import { ManageGroupsDialogResult } from '@app/dashboard/types';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { ResultRawColumnKey } from '@app/results/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
