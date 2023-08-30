@@ -17,9 +17,11 @@ import { RouterLink } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
+import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { TaskOptions, TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -235,7 +237,12 @@ app-table-actions-toolbar {
     TasksStatusesService,
     TasksIndexService,
     FiltersService,
-    SessionsFiltersService
+    TasksFiltersService,
+    SessionsFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: SessionsFiltersService
+    }
   ],
   imports: [
     DurationPipe,

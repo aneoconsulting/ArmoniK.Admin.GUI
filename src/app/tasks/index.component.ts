@@ -18,6 +18,7 @@ import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { ResultRawColumnKey } from '@app/results/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -245,8 +246,13 @@ app-table-actions-toolbar {
   ],
   providers: [
     TasksGrpcService,
+    TasksFiltersService,
     TasksStatusesService,
     TasksIndexService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: TasksFiltersService
+    },
     TableService,
     TableStorageService,
     TableURLService,
@@ -256,7 +262,6 @@ app-table-actions-toolbar {
     QueryParamsService,
     UtilsService,
     FiltersService,
-    TasksFiltersService
   ],
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
