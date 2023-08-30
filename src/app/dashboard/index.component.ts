@@ -251,7 +251,6 @@ export class IndexComponent implements OnInit {
         lines: structuredClone(this.lines),
       }
     });
-  
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result || !result.lines) return;
