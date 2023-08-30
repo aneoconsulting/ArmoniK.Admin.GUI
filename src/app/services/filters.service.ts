@@ -58,7 +58,7 @@ export class FiltersService {
     return this.filterOperators[type];
   }
 
-  createQueryParamsKey<T extends string>(or: number, operator: FilterOperators, field: T) {
-    return `or-${or}-operator-${operator.toString()}-${field}`;
+  createQueryParamsKey<T extends number>(or: number, for_: string, operator: FilterOperators, field: T) {
+    return `${or}-${for_}-${field}-${operator.toString()}`;
   }
 }

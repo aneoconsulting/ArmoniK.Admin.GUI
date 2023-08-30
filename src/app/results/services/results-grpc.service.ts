@@ -2,14 +2,14 @@ import { SortDirection as ArmoniKSortDirection, FilterStringOperator, GetResultR
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
+import { ResultsFiltersService } from './results-filters.service';
 import {  ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
 
 @Injectable()
 export class ResultsGrpcService {
-  readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #resultsFiltersService = inject(ResultsFiltersService);
   readonly #utilsService = inject(UtilsService<ResultRawEnumField>);
   readonly #resultsClient = inject(ResultsClient);
 
@@ -32,7 +32,7 @@ export class ResultsGrpcService {
 
   list$(options: ResultRawListOptions, filters: ResultRawFiltersOr): Observable<ListResultsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ResultFilterField.AsObject>(filters, this.#resultsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<ResultFilterField.AsObject>(filters, this.#resultsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listResultRequest = new ListResultsRequest({
       page: options.pageIndex,

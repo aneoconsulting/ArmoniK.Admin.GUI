@@ -12,6 +12,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw } from './types';
@@ -33,6 +34,7 @@ import { PartitionRaw } from './types';
     QueryParamsService,
     PartitionsGrpcService,
     PartitionsIndexService,
+    PartitionsFiltersService,
     TableService,
     TableURLService,
     TableStorageService,
@@ -48,21 +50,18 @@ export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, Af
 
   #iconsService = inject(IconsService);
   #shareUrlService = inject(ShareUrlService);
-
-  constructor(
-    private _route: ActivatedRoute,
-    private _partitionsGrpcService: PartitionsGrpcService,
-  ) {}
+  #partitionsGrpcService = inject(PartitionsGrpcService);
+  #route = inject(ActivatedRoute); 
 
   ngOnInit(): void {
     this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
   }
 
   ngAfterViewInit(): void {
-    this._route.params.pipe(
+    this.#route.params.pipe(
       map(params => params['id']),
       switchMap((id) => {
-        return this._partitionsGrpcService.get$(id);
+        return this.#partitionsGrpcService.get$(id);
       }),
       map((data) => {
         return data.partition ?? null;

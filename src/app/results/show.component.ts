@@ -12,6 +12,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
@@ -38,6 +39,7 @@ import { ResultRaw } from './types';
     TableService,
     TableStorageService,
     TableURLService,
+    ResultsFiltersService,
   ],
   imports: [
     ShowPageComponent,
