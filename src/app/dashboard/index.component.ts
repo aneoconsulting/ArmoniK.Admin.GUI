@@ -82,7 +82,7 @@ import { Line } from './types';
     <app-page-section-header icon="adjust">
       <span i18n="Section title">{{ line.name }}</span>
     </app-page-section-header>
-    <app-dashboard-line [line]="line"  (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+    <app-dashboard-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
   </app-page-section>
 </main>
   `,
