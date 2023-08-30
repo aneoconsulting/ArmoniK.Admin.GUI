@@ -178,6 +178,12 @@ export class DefaultConfigService {
     filters: [],
   };
 
+  readonly #defaultTasksViewInLogs = {
+    serviceName: null,
+    serviceIcon: null,
+    urlTemplate: null,
+  };
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
@@ -224,6 +230,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultTasks);
   }
 
+  get defaultTasksViewInLogs() {
+    return structuredClone(this.#defaultTasksViewInLogs);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'navigation-sidebar': this.#defaultSidebar,
     'navigation-theme': this.#defaultTheme,
@@ -253,6 +263,7 @@ export class DefaultConfigService {
     'tasks-options': this.#defaultTasks.options,
     'tasks-filters': this.#defaultTasks.filters,
     'tasks-interval': this.#defaultTasks.interval,
+    'tasks-view-in-logs': this.#defaultTasksViewInLogs,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

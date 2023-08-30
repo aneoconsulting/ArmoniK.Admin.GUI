@@ -60,6 +60,8 @@ export class TasksIndexService {
 
   readonly defaultIntervalValue: number = this.#defaultConfigService.defaultTasks.interval;
 
+  readonly defaultViewInLogs = this.#defaultConfigService.defaultTasksViewInLogs;
+
   columnToLabel(column: TaskSummaryColumnKey): string {
     return this.columnsLabels[column];
   }
@@ -147,5 +149,16 @@ export class TasksIndexService {
     this.#tableService.resetColumns('tasks-columns');
 
     return Array.from(this.defaultColumns);
+  }
+
+  /**
+   * View in Logs
+   */
+  restoreViewInLogs() {
+    return this.#tableService.restoreViewInLogs('tasks-view-in-logs') ?? this.defaultViewInLogs;
+  }
+
+  saveViewInLogs(serviceIcon: string, serviceName: string, urlTemplate: string) {
+    this.#tableService.saveViewInLogs('tasks-view-in-logs', serviceIcon, serviceName, urlTemplate);
   }
 }

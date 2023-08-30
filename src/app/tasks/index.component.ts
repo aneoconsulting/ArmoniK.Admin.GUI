@@ -6,6 +6,7 @@ import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -16,9 +17,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { ManageGroupsDialogResult } from '@app/dashboard/types';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { ResultRawColumnKey } from '@app/results/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -38,6 +41,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { ManageViewInLogsDialogComponent } from './components/manage-view-in-logs-dialog.component';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
@@ -48,7 +52,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
   selector: 'app-tasks-index',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Tasks </span>
 </app-page-header>
 
@@ -72,6 +76,14 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
             <span i18n> Cancel Tasks </span>
           </button>
         </ng-container>
+        <ng-container extra-menu-items>
+        <button mat-menu-item (click)="manageViewInLogs()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
+          <span i18n appNoWrap>
+            Manage View in Logs
+          </span>
+        </button>
+      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -179,6 +191,10 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
               <mat-icon aria-hidden="true" fontIcon="cancel"></mat-icon>
               <span i18n> Cancel task </span>
             </button>
+            <a mat-menu-item *ngIf="urlTemplate && serviceName && serviceIcon" [href]="generateViewInLogsUrl(element.id)" target="_blank">
+              <mat-icon aria-hidden="true" [fontIcon]="serviceIcon"></mat-icon>
+              <span i18n> View in {{ serviceName }} </span>
+            </a>
             </mat-menu>
           </td>
       </ng-container>
@@ -242,6 +258,7 @@ app-table-actions-toolbar {
     MatSortModule,
     DragDropModule,
     ClipboardModule,
+    MatDialogModule,
     TableEmptyDataComponent
   ],
   providers: [
@@ -264,6 +281,7 @@ app-table-actions-toolbar {
   ],
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+  readonly #dialog = inject(MatDialog);
   readonly #iconsService = inject(IconsService);
   readonly #shareURLService = inject(ShareUrlService);
   readonly #autoRefreshService = inject(AutoRefreshService);
@@ -289,6 +307,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sharableURL = '';
 
+  serviceIcon: string | null = null;
+  serviceName: string | null = null;
+  urlTemplate: string | null = null;
+
   intervalValue = 0;
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
@@ -310,6 +332,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.intervalValue = this.#tasksIndexService.restoreIntervalValue();
 
     this.sharableURL = this.#shareURLService.generateSharableURL(this.options, this.filters);
+
+    const viewInLogs = this.#tasksIndexService.restoreViewInLogs();
+    this.serviceIcon = viewInLogs.serviceIcon;
+    this.serviceName = viewInLogs.serviceName;
+    this.urlTemplate = viewInLogs.urlTemplate;
   }
 
   ngAfterViewInit(): void {
@@ -542,8 +569,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.#autoRefreshService.autoRefreshTooltip(this.intervalValue);
   }
 
-  getIcon(name: Page): string {
+  getPageIcon(name: Page): string {
     return this.#iconsService.getPageIcon(name);
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   onDrop(event: CdkDragDrop<string[]>) {
@@ -587,6 +618,34 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return {
       [keyTask]: taskId
     };
+  }
+
+  manageViewInLogs(): void {
+    const dialogRef = this.#dialog.open<ManageViewInLogsDialogComponent, ManageViewInLogsDialogData, ManageViewInLogsDialogResult>(ManageViewInLogsDialogComponent, {
+      data: {
+        serviceIcon: this.serviceIcon,
+        serviceName: this.serviceName,
+        urlTemplate: this.urlTemplate,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+
+      this.serviceIcon = result.serviceIcon;
+      this.serviceName = result.serviceName;
+      this.urlTemplate = result.urlTemplate;
+
+      this.#tasksIndexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
+    });
+  }
+
+  generateViewInLogsUrl(taskId: string): string {
+    if (!this.urlTemplate) {
+      return '';
+    }
+
+    return this.urlTemplate.replaceAll('%taskId', taskId);
   }
 
   trackByColumn(index: number, item: TaskSummaryColumnKey): string {
