@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { EditNameLineData, EditNameLineResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
@@ -19,17 +20,19 @@ import { Line } from '../types';
   <p i18n="Dialog description">Drag and drop lines to update the order</p>
 
   <div class="lines" cdkDropList (cdkDropListDropped)="drop($event)">
-    <div class="line" *ngFor="let line of lines;let index = index"  cdkDrag>
-      <mat-icon mat-icon aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
-      <span class="line-name">{{ line.name }}</span>
-      <button mat-flat-button (click)="onEditNameLine(line,index)">
-        <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-        <span i18n>Edit name line</span>
-      </button>
-      <button mat-flat-button (click)="onDeleteLine(line)">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-        <span i18n>Delete line</span>
-      </button>
+    <div class="line" *ngFor="let line of lines; let index = index" cdkDrag>
+      <div class="line-name">
+        <mat-icon mat-icon aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
+        <span class="line-name">{{ line.name }}</span>
+      </div>
+      <div clas="line-actions">
+        <button mat-icon-button (click)="onEditNameLine(line, index)" i18n-matTooltip matTooltip="Edit Line">
+          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDeleteLine(line)" i18n-matTooltip matTooltip="Delete Line">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 </mat-dialog-content>
@@ -47,11 +50,23 @@ import { Line } from '../types';
 
 .line {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+}
+
+.line-name {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
+}
 
-  cursor: move;
+.line-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 
 .cdk-drag-preview {
@@ -81,18 +96,18 @@ import { Line } from '../types';
     MatButtonModule,
     DragDropModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltipModule,
   ]
 })
 export class ReorganizeLinesDialogComponent implements OnInit {
-
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
-
 
   readonly #dialogRef = inject(MatDialogRef<ReorganizeLinesDialogData, ReorganizeLinesDialogResult>);
   readonly #iconsService = inject(IconsService);
   readonly #dialog = inject(MatDialog);
+
   lines: Line[] = [];
 
   constructor(
@@ -121,7 +136,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
       this.lines.splice(index, 1);
     }
   }
-  
+
   onEditNameLine(line: Line, index: number) {
     const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
       data: {
@@ -130,13 +145,13 @@ export class ReorganizeLinesDialogComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return; 
+      if (!result) return;
       const selectedLine = this.lines[index];
       const changeSelectedNameLine = (line: Line, newName: string): void => {
         if(line.name === newName) {
           line.name = result.name;
         }
-      }; 
+      };
       this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
     });
 
