@@ -68,7 +68,7 @@ export class StorageService implements Storage {
     const keys = Object.keys(parsedData);
     const defaultKeys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
 
-    for (const key in keys) {
+    for (const key of keys) {
       // We only import keys that are supported.
       if (defaultKeys.includes(key as Key)) {
         this.setItem(key as Key, parsedData[key]);
