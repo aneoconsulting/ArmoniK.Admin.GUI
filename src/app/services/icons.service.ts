@@ -49,6 +49,7 @@ export class IconsService {
     'highlight': 'highlight',
     'list': 'view_list',
     'vertical-split': 'vertical_split',
+    'find-logs': 'plagiarism',
   };
 
   getIcon(name: string): string {
