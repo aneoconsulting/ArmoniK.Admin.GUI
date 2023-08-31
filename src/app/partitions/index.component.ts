@@ -185,7 +185,7 @@ app-table-actions-toolbar {
     PartitionsFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
-      useClass: PartitionsFiltersService
+      useExisting: PartitionsFiltersService
     },
   ],
   imports: [
