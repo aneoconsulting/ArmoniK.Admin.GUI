@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
@@ -147,6 +148,7 @@ import { Line } from './types';
     TableStorageService,
     IconsService,
     FiltersService,
+    ApplicationsFiltersService,
   ],
   imports: [
     NgFor,

@@ -1,4 +1,4 @@
-import { FilterStringOperator, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -16,7 +16,7 @@ import { Observable, Subject, Subscription, catchError, map, merge, of, startWit
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
-import { TaskSummaryColumnKey, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -116,7 +116,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
          </button>
          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="{ 'options.applicationName': element.name, 'options.applicationVersion': element.version }">
+            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="createViewSessionsQueryParams(element.name, element.version)">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
               <span i18n>See session</span>
             </a>
@@ -170,9 +170,10 @@ app-table-actions-toolbar {
     TasksIndexService,
     TasksStatusesService,
     FiltersService,
+    ApplicationsFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
-      useClass: ApplicationsFiltersService
+      useExisting: ApplicationsFiltersService
     }
   ],
   imports: [
@@ -418,11 +419,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTasksByStatusQueryParams(name: string, version: string) {
-    const keyName = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'options.applicationName');
-    const keyVersion = this.#filtersService.createQueryParamsKey<TaskSummaryColumnKey>(1, FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, 'options.applicationVersion');
     return {
-      [keyName]: name,
-      [keyVersion]: version,
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
+      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version,
+    };
+  }
+
+  createViewSessionsQueryParams(name: string, version: string) {
+    return {
+      [`0-options-${SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
+      [`0-options-${SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version,
     };
   }
 

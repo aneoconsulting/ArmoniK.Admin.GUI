@@ -2,14 +2,14 @@ import { ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, So
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
+import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 export class ApplicationsGrpcService {
-  readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #applicationsFiltersService = inject(ApplicationsFiltersService);
   readonly #applicationsClient = inject(ApplicationsClient);
   readonly #utilsService = inject(UtilsService<ApplicationRawEnumField>);
 
@@ -28,7 +28,7 @@ export class ApplicationsGrpcService {
 
   list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter): Observable<ListApplicationsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.retriveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const request = new ListApplicationsRequest({
       page: options.pageIndex,
