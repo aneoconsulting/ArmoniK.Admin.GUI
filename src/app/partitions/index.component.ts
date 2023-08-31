@@ -17,6 +17,7 @@ import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -182,6 +183,10 @@ app-table-actions-toolbar {
     TasksIndexService,
     FiltersService,
     PartitionsFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: PartitionsFiltersService
+    },
   ],
   imports: [
     NoWrapDirective,
