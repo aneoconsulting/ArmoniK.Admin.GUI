@@ -35,7 +35,7 @@ import { SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog'
   ]
 })
 export class SplitLinesDialogComponent implements OnInit {
-  readonly #dialogRef = inject(MatDialogRef<SplitLinesDialogData, SplitLinesDialogResult>);
+  readonly #dialogRef = inject(MatDialogRef<SplitLinesDialogComponent, SplitLinesDialogResult>);
 
   columns: number;
 

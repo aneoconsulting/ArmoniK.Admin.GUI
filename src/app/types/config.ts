@@ -17,6 +17,7 @@ export type Key =
   'applications-tasks-by-status' |
   'sessions-tasks-by-status' |
   'partitions-tasks-by-status' |
+  'tasks-view-in-logs' |
   `${Scope}-${Element}`;
 
 export type ExportedDefaultConfig = {

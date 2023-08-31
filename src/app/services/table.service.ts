@@ -125,4 +125,15 @@ export class TableService {
   resetColumns(key: `${Scope}-columns`): void {
     this._tableStorageService.remove(key);
   }
+
+  /**
+   * Save view in logs to the local storage
+   */
+  saveViewInLogs(key: 'tasks-view-in-logs', serviceIcon: string, serviceName: string, urlTemplate: string): void {
+    this._tableStorageService.save(key, { serviceIcon, serviceName, urlTemplate });
+  }
+
+  restoreViewInLogs(key: 'tasks-view-in-logs'): { serviceIcon: string, serviceName: string, urlTemplate: string } | null {
+    return this._tableStorageService.restore<{ serviceIcon: string, serviceName: string, urlTemplate: string }>(key) as { serviceIcon: string, serviceName: string, urlTemplate: string } | null;
+  }
 }

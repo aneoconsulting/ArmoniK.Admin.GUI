@@ -32,7 +32,7 @@ import { ExternalService } from '@app/types/external-service';
     <mat-form-field subscriptSizing="dynamic" appearance="outline">
       <mat-label for="icon" i18n="Icon of the external service"> Icon </mat-label>
       <input matInput id="icon" type="text" formControlName="icon"i18n-placeholder="Placeholder" placeholder="Icon of the service">
-      <!-- TODO: add a helper -->
+      <!-- TODO: add a helper to tell to user how to choose the icon -->
     </mat-form-field>
 
     <div class="preview">

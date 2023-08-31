@@ -76,3 +76,15 @@ export type SplitLinesDialogData = {
 export type SplitLinesDialogResult = {
   columns: number;
 };
+
+export type ManageViewInLogsDialogData = {
+  serviceIcon: string | null;
+  serviceName: string | null;
+  urlTemplate: string | null;
+};
+
+export type ManageViewInLogsDialogResult = {
+  serviceIcon: string;
+  serviceName: string;
+  urlTemplate: string;
+};
