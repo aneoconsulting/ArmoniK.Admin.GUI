@@ -40,7 +40,7 @@ import { StorageService } from '@services/storage.service';
   </app-page-section-header>
 
   <p i18n="Section description">
-    Add, remove and reorder, using drap and drop, the items from the sidebar.
+    Add, remove and reorder, using drag-and-drop the items from the sidebar.
   </p>
 
   <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
@@ -52,6 +52,7 @@ import { StorageService } from '@services/storage.service';
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
         <mat-select [value]="item" (valueChange)="onSidebarItemChange(index, $event)">
+        <!-- TODO: Disable remove button when being on settings item  -->
           <mat-option *ngFor="let sidebarItem of getSidebarItems(); trackBy:trackByItem" [value]="sidebarItem.value">
             {{ sidebarItem.name }}
           </mat-option>
@@ -291,7 +292,11 @@ export class IndexComponent implements OnInit {
   }
 
   onRemoveSidebarItem(index: number): void {
+    if(this.sidebar[index] === 'settings') {
+      return;
+    } 
     this.sidebar.splice(index, 1);
+
   }
 
   onAddSidebarItem(): void {
