@@ -294,7 +294,7 @@ export class IndexComponent implements OnInit {
   
   /**
    * Remove an item from the sidebar item array with his index number.
-   * Except when equal to "settings" because settings item must stay avalaible for ease of users navigation.
+   * Except when equal to "settings", settings item must be available for an easier users navigation.
    * @param {number} index Index of selected sidebar item
    * @returns {void}
   */
