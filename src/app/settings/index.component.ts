@@ -52,18 +52,19 @@ import { StorageService } from '@services/storage.service';
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
         <mat-select [value]="item" (valueChange)="onSidebarItemChange(index, $event)">
-        <!-- TODO: Disable remove button when being on settings item  -->
           <mat-option *ngFor="let sidebarItem of getSidebarItems(); trackBy:trackByItem" [value]="sidebarItem.value">
             {{ sidebarItem.name }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-
+      
+   
       <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
+      <!-- TODO: hide this button when the sidebar item is equal to "settings"-->
         <button mat-menu-item (click)="onRemoveSidebarItem(index)">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
           <span i18n>Remove</span>
