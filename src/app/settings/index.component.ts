@@ -58,7 +58,6 @@ import { StorageService } from '@services/storage.service';
         </mat-select>
       </mat-form-field>
       
-   
       <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
       </button>
