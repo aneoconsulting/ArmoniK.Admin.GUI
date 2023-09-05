@@ -40,7 +40,7 @@ import { StorageService } from '@services/storage.service';
   </app-page-section-header>
 
   <p i18n="Section description">
-    Add, remove and reorder, using drag-and-drop the items from the sidebar.
+    Add, remove and reorder, using drag-and-drop, the items from the sidebar.
   </p>
 
   <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
