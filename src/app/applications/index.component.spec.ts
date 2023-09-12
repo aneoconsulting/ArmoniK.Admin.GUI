@@ -13,6 +13,8 @@ import { ApplicationsIndexService } from './services/applications-index.service'
 
 describe('Application component', () => {
 
+  let component: IndexComponent;
+
   const setup = (
     tasksByStatusService: unknown,
     notificationService: unknown,
@@ -41,12 +43,13 @@ describe('Application component', () => {
     ]
   }).inject(IndexComponent);
 
-
-  it('Should run', () => {
-    const r = setup({}, {}, {}, {}, {}, {}, {}, {}, {}, {
+  beforeEach(() => {
+    component = setup({}, {}, {}, {}, {}, {}, {}, {}, {}, {
       createInterval: jest.fn()
     });
-    console.log(r);
-    expect(r).toBeTruthy();
+  });
+  
+  it('Should run', () => {
+    expect(component).toBeTruthy();
   });
 });
