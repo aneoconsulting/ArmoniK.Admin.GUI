@@ -1,36 +1,52 @@
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { DefaultConfigService } from '@services/default-config.service';
-import { QueryParamsService } from '@services/query-params.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
+import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
+import { ShareUrlService } from '@services/share-url.service';
+import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { IndexComponent } from './index.component';
-
-const mockConfigService = {
-  structuredClone: jest.fn(),
-  defaultApplications: {
-    columns: []
-  }
-};
+import { ApplicationsGrpcService } from './services/applications-grpc.service';
+import { ApplicationsIndexService } from './services/applications-index.service';
 
 describe('Application component', () => {
 
-  let component: IndexComponent;
+  const setup = (
+    tasksByStatusService: unknown,
+    notificationService: unknown,
+    dialog: unknown,
+    iconsService: unknown,
+    filtersService: unknown,
+    applicationsFiltersService: unknown,
+    shareURLService: unknown,
+    applicationsIndexService: unknown,
+    applicationsGrpcService: unknown,
+    autoRefreshService: unknown
+  ) => TestBed.configureTestingModule({
+    imports: [IndexComponent],
+    providers: [
+      IndexComponent,
+      {provide: TasksByStatusService, useValue: tasksByStatusService },
+      {provide: NotificationService, useValue: notificationService },
+      {provide: MatDialog, useValue: dialog },
+      {provide: IconsService, useValue: iconsService },
+      {provide: FiltersService, useValue: filtersService },
+      {provide: DATA_FILTERS_SERVICE, useValue: applicationsFiltersService },
+      {provide: ShareUrlService, useValue: shareURLService },
+      {provide: ApplicationsIndexService, useValue: applicationsIndexService },
+      {provide: ApplicationsGrpcService, useValue: applicationsGrpcService },
+      {provide: AutoRefreshService, useValue: autoRefreshService },
+    ]
+  }).inject(IndexComponent);
 
-  beforeEach(async () => {
-    TestBed.configureTestingModule({
-      imports: [IndexComponent, RouterTestingModule],
-      providers: [
-        { provide: Window, useValue: window },
-        QueryParamsService,
-        { provide: DefaultConfigService, useValue: mockConfigService }
-      ]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    component = TestBed.createComponent(IndexComponent).componentInstance;
-  });
 
   it('Should run', () => {
-    expect(component).toBeTruthy();
+    const r = setup({}, {}, {}, {}, {}, {}, {}, {}, {}, {
+      createInterval: jest.fn()
+    });
+    console.log(r);
+    expect(r).toBeTruthy();
   });
 });
