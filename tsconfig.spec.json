@@ -4,12 +4,15 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "jasmine",
-      "@angular/localize"
-    ]
+      "jest",
+      "@angular/localize",
+      "node"
+    ],
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
-  ]
+  ],
 }
