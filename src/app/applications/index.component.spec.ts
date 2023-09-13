@@ -15,38 +15,24 @@ describe('Application component', () => {
 
   let component: IndexComponent;
 
-  const setup = (
-    tasksByStatusService: unknown,
-    notificationService: unknown,
-    dialog: unknown,
-    iconsService: unknown,
-    filtersService: unknown,
-    applicationsFiltersService: unknown,
-    shareURLService: unknown,
-    applicationsIndexService: unknown,
-    applicationsGrpcService: unknown,
-    autoRefreshService: unknown
-  ) => TestBed.configureTestingModule({
-    imports: [IndexComponent],
-    providers: [
-      IndexComponent,
-      {provide: TasksByStatusService, useValue: tasksByStatusService },
-      {provide: NotificationService, useValue: notificationService },
-      {provide: MatDialog, useValue: dialog },
-      {provide: IconsService, useValue: iconsService },
-      {provide: FiltersService, useValue: filtersService },
-      {provide: DATA_FILTERS_SERVICE, useValue: applicationsFiltersService },
-      {provide: ShareUrlService, useValue: shareURLService },
-      {provide: ApplicationsIndexService, useValue: applicationsIndexService },
-      {provide: ApplicationsGrpcService, useValue: applicationsGrpcService },
-      {provide: AutoRefreshService, useValue: autoRefreshService },
-    ]
-  }).inject(IndexComponent);
-
   beforeEach(() => {
-    component = setup({}, {}, {}, {}, {}, {}, {}, {}, {}, {
-      createInterval: jest.fn()
-    });
+    component = TestBed.configureTestingModule({
+      providers: [
+        IndexComponent,
+        {provide: TasksByStatusService, useValue: {} },
+        {provide: NotificationService, useValue: {} },
+        {provide: MatDialog, useValue: {} },
+        {provide: IconsService, useValue: {} },
+        {provide: FiltersService, useValue: {} },
+        {provide: DATA_FILTERS_SERVICE, useValue: {} },
+        {provide: ShareUrlService, useValue: {} },
+        {provide: ApplicationsIndexService, useValue: {} },
+        {provide: ApplicationsGrpcService, useValue: {} },
+        {provide: AutoRefreshService, useValue: {
+          createInterval: jest.fn()
+        } },
+      ]
+    }).inject(IndexComponent);
   });
   
   it('Should run', () => {
