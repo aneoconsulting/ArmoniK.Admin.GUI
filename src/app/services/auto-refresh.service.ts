@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Subject, interval, merge, of, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, interval, map, merge, switchMap, takeUntil } from 'rxjs';
 
 @Injectable()
 export class AutoRefreshService {
-  createInterval(intervalSubject: Subject<number>, stopIntervalSubject: Subject<void>) {
+  createInterval(intervalSubject: Subject<number>, stopIntervalSubject: Subject<void>): Observable<number> {
     return merge(intervalSubject).pipe(
+      map(value => !value || value < 0 ? value = 0 : value),
       switchMap((value) => {
-        if (!value || value < 0) return of(undefined);
-        else return interval((value as number) * 1000).pipe(takeUntil(stopIntervalSubject));
+        return interval((value as number) * 1000).pipe(takeUntil(stopIntervalSubject));
       })
     );
   }

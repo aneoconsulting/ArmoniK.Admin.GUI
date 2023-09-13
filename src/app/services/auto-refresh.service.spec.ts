@@ -52,7 +52,7 @@ describe('Auto-refresh service', () => {
 
       service
         .createInterval(intervalSubjet, stopIntervalSubject)
-        .subscribe(value => expect(value).toBeUndefined);
+        .subscribe(value => expect(value).toEqual(0));
     });
     it('Should not return anything when a negative value is given', () => {
       const intervalSubjet: BehaviorSubject<number> = new BehaviorSubject(1);
@@ -60,7 +60,7 @@ describe('Auto-refresh service', () => {
 
       service
         .createInterval(intervalSubjet, stopIntervalSubject)
-        .subscribe(value => expect(value).toBeUndefined);
+        .subscribe(value => expect(value).toEqual(0));
     });
   });
 });
