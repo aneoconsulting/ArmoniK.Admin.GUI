@@ -1,12 +1,10 @@
+/* eslint-env es6 */
+/* eslint-disable no-console */
+const { TextEncoder, TextDecoder } = require('util')
+
 module.exports = {
-  preset: 'jest-preset-angular',
-  moduleNameMapper: {
-    '@app/(.*)': '<rootDir>/src/app/$1',
-    '@services/(.*)': '<rootDir>/src/app/services/$1',
-    '@pipes/(.*)': '<rootDir>/src/app/pipes/$1',
-    '@components/(.*)': '<rootDir>/src/app/components/$1'
-  },
-  setupFiles: [
-    './jest.setup.ts'
-  ]
+  globals: {
+    TextDecoder: TextDecoder,
+    TextEncoder: TextEncoder
+  }
 }

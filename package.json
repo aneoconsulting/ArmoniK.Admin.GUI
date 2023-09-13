@@ -17,7 +17,6 @@
   "private": true,
   "dependencies": {
     "@aneoconsultingfr/armonik.api.angular": "^3.11.0",
-    "@angular-builders/jest": "^16.0.1",
     "@angular/animations": "^16.2.4",
     "@angular/cdk": "16.2.3",
     "@angular/common": "^16.2.4",
@@ -61,6 +60,7 @@
     "eslint-plugin-import": "^2.28.1",
     "jasmine-core": "~5.1.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "ng-extract-i18n-merge": "2.7.0",
     "typescript": "~5.1.6"
   }
