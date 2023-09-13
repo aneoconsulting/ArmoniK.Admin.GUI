@@ -140,7 +140,7 @@ devDependencies:
     specifier: 2.7.1
     version: 2.7.1(@angular-devkit/build-angular@16.2.1)
   typescript:
-    specifier: ~5.1.0
+    specifier: ~5.1.6
     version: 5.1.6
 
 packages:
