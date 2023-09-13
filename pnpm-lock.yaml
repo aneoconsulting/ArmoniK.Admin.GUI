@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
-    specifier: ^3.11.0
-    version: 3.11.0(@angular/common@16.2.4)(@angular/core@16.2.4)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1)
+    specifier: ^3.12.0
+    version: 3.12.0(@angular/common@16.2.4)(@angular/core@16.2.4)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1)
   '@angular/animations':
     specifier: ^16.2.4
     version: 16.2.4(@angular/core@16.2.4)
@@ -158,14 +158,14 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
-  /@aneoconsultingfr/armonik.api.angular@3.11.0(@angular/common@16.2.4)(@angular/core@16.2.4)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.1)(google-protobuf@3.21.2)(rxjs@7.8.1):
-    resolution: {integrity: sha512-zdpfFZzFxXQOAEr8MGfH6F1nr55OKB5jt1aJVV/C7XDU3FwTZ5gQTzkazKdXoKL1+twDQ/vTWpy0bmMK6TuYEg==}
+  /@aneoconsultingfr/armonik.api.angular@3.12.0(@angular/common@16.2.4)(@angular/core@16.2.4)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1):
+    resolution: {integrity: sha512-q55FDtA9AtbPXjy+AaSz/Xz3x85m4EaoMzMffx8IhZrXuhNurdYIXuv95TJVUu1oVWJinmapznNiBNkOniFBJA==}
     peerDependencies:
-      '@angular/common': ^16.1.6
-      '@angular/core': ^16.1.6
-      '@ngx-grpc/common': ^3.1.1
-      '@ngx-grpc/core': ^3.1.1
-      '@ngx-grpc/well-known-types': ^3.1.1
+      '@angular/common': ^16.2.1
+      '@angular/core': ^16.2.1
+      '@ngx-grpc/common': ^3.1.2
+      '@ngx-grpc/core': ^3.1.2
+      '@ngx-grpc/well-known-types': ^3.1.2
       google-protobuf: ^3.21.2
       rxjs: ~7.8.1
     dependencies:
@@ -173,7 +173,7 @@ packages:
       '@angular/core': 16.2.4(rxjs@7.8.1)(zone.js@0.13.3)
       '@ngx-grpc/common': 3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1)
       '@ngx-grpc/core': 3.1.2(@angular/core@16.2.4)(@ngx-grpc/common@3.1.2)(rxjs@7.8.1)
-      '@ngx-grpc/well-known-types': 3.1.1(@ngx-grpc/common@3.1.2)(google-protobuf@3.21.2)
+      '@ngx-grpc/well-known-types': 3.1.2(@ngx-grpc/common@3.1.2)(google-protobuf@3.21.2)
       google-protobuf: 3.21.2
       rxjs: 7.8.1
       tslib: 2.6.2
@@ -3322,10 +3322,10 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@ngx-grpc/well-known-types@3.1.1(@ngx-grpc/common@3.1.2)(google-protobuf@3.21.2):
-    resolution: {integrity: sha512-iPcUqsgm0s+g8i8sDazPnJya0lPJ8981PdnjzTyqKlc8y97B75K20bRS9/mc2EjKP+FXHUfDejzA+SehjeRzew==}
+  /@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2)(google-protobuf@3.21.2):
+    resolution: {integrity: sha512-otJ8C/NuLwm4JuvqzTT/xAHLJJN/EpkowooKgVGzXOnfTckzp5OWiUmBdxBk/pXo234CTT42KvOnDMtSloa+sA==}
     peerDependencies:
-      '@ngx-grpc/common': 3.1.1
+      '@ngx-grpc/common': 3.1.2
       google-protobuf: ^3.10.0
     dependencies:
       '@ngx-grpc/common': 3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1)
