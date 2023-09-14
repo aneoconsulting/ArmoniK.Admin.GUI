@@ -14,16 +14,18 @@ import { FiltersDialogComponent } from './filters-dialog.component';
   selector: 'app-filters-toolbar',
   template: `
 <div class="filters-toolbar">
-  <ng-container  *ngFor="let filtersAnd of filters; let first = first; trackBy: trackByFilter">
-    <div class="filters-toolbar-and">
-      <span class="filters-toolbar-text" *ngIf="first">
-        Where
-      </span>
-      <span class="filters-toolbar-text" *ngIf="!first">
-        OR
-      </span>
-      <app-filters-chips [filtersAnd]="filtersAnd"></app-filters-chips>
-    </div>
+  <ng-container *ngIf="showFilters()">
+    <ng-container *ngFor="let filtersAnd of filters; let first = first; trackBy: trackByFilter">
+      <div class="filters-toolbar-and">
+        <span class="filters-toolbar-text" *ngIf="first">
+          Where
+        </span>
+        <span class="filters-toolbar-text" *ngIf="!first">
+          OR
+        </span>
+        <app-filters-chips [filtersAnd]="filtersAnd"></app-filters-chips>
+      </div>
+    </ng-container>
   </ng-container>
 
   <button mat-button (click)="openFiltersDialog()" matTooltip="Add or Remove Filters" i18n-matTooltip>
@@ -86,8 +88,12 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   }
 
   showFilters(): boolean {
-    return true;
-    // return  this.filters.length > 1 || (this.filters[0]?.value !== null && this.filters.length === 1);
+    for(let i=0; i < this.filters.length; i++) {
+      if (this.filters[i].length !== 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   openFiltersDialog(): void {
