@@ -37,6 +37,10 @@ export class AutoRefreshButtonComponent {
     return this.#iconsService.getIcon(name);
   }
 
+  emit(value: number): void {
+    this.intervalValueChange.emit(value);
+  }
+
   openAutoRefreshDialog(): void {
     // Get value from the storage
     const dialogRef = this._dialog.open(AutoRefreshDialogComponent, {
@@ -49,8 +53,8 @@ export class AutoRefreshButtonComponent {
       if (value === undefined) {
         return;
       }
-
-      this.intervalValueChange.emit(value);
+      
+      this.emit(value);
     });
   }
 }
