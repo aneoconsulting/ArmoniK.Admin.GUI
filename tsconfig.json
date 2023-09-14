@@ -2,10 +2,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "types": [
-      "node",
-      "jest"
-    ],
     "baseUrl": "./",
     "paths": {
       "@components/*": [
