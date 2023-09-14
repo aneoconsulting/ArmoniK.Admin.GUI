@@ -1721,7 +1721,7 @@
       </notes>
       <segment state="initial">
         <source>Add an And Filter</source>
-        <target>Ajouter un filtre "ET"</target>
+        <target>Ajouter un filtre &quot;ET&quot;</target>
       </segment>
     </unit>
     <unit id="6260977790392668731">
@@ -1730,7 +1730,7 @@
       </notes>
       <segment state="initial">
         <source>Add an Or Group</source>
-        <target>Ajouter un groupe "Ou"</target>
+        <target>Ajouter un groupe &quot;Ou&quot;</target>
       </segment>
     </unit>
     <unit id="4155177714864609822">
@@ -1739,7 +1739,7 @@
       </notes>
       <segment state="initial">
         <source>No data founded.</source>
-        <target>Aucune donnée n'a été trouvée.</target>
+        <target>Aucune donnée n&apos;a été trouvée.</target>
       </segment>
     </unit>
     <unit id="407208852147182717">
@@ -1816,7 +1816,7 @@
       </notes>
       <segment state="initial">
         <source>Drag and drop lines to update the order</source>
-        <target>Déplacez les lignes pour modifier l'ordre</target>
+        <target>Déplacez les lignes pour modifier l&apos;ordre</target>
       </segment>
     </unit>
     <unit id="2363459055476280585">
@@ -2109,7 +2109,7 @@
       </notes>
       <segment state="initial">
         <source>Max Retries</source>
-        <target>Nombre d'essais maximal</target>
+        <target>Nombre d&apos;essais maximal</target>
       </segment>
     </unit>
     <unit id="8518087201830601782">
@@ -2129,7 +2129,7 @@
       </notes>
       <segment state="initial">
         <source>Application Name</source>
-        <target>Nom de l'application</target>
+        <target>Nom de l&apos;application</target>
       </segment>
     </unit>
     <unit id="8245536584787530067">
@@ -2139,7 +2139,7 @@
       </notes>
       <segment state="initial">
         <source>Application Version</source>
-        <target>Version de l'application</target>
+        <target>Version de l&apos;application</target>
       </segment>
     </unit>
     <unit id="2181667099499539549">
@@ -2149,7 +2149,7 @@
       </notes>
       <segment state="initial">
         <source>Application Namespace</source>
-        <target>Espace de noms de l'application</target>
+        <target>Espace de noms de l&apos;application</target>
       </segment>
     </unit>
     <unit id="7280857163912109342">
@@ -2159,7 +2159,7 @@
       </notes>
       <segment state="initial">
         <source>Application Service</source>
-        <target>Service de l'application</target>
+        <target>Service de l&apos;application</target>
       </segment>
     </unit>
     <unit id="4903114218713198116">
@@ -2169,7 +2169,7 @@
       </notes>
       <segment state="initial">
         <source>Engine Type</source>
-        <target>Type de l'engine</target>
+        <target>Type de l&apos;engine</target>
       </segment>
     </unit>
     <unit id="8500840478218589285">
@@ -2199,7 +2199,7 @@
       </notes>
       <segment state="initial">
         <source> URL Template </source>
-        <target> Template de l'url </target>
+        <target> Template de l&apos;url </target>
       </segment>
     </unit>
     <unit id="327028402432944302">
@@ -2218,7 +2218,7 @@
       </notes>
       <segment state="initial">
         <source> Icon is <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">required</pc></source>
-        <target> L'icône est <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">requise</pc></target>
+        <target> L&apos;icône est <pc id="0" equivStart="START_TAG_STRONG" equivEnd="CLOSE_TAG_STRONG" type="other" dispStart="&lt;strong&gt;" dispEnd="&lt;/strong&gt;">requise</pc></target>
       </segment>
     </unit>
     <unit id="5356677481738441703">
@@ -2397,7 +2397,7 @@
       </notes>
       <segment state="initial">
         <source>Creation to End Duration</source>
-        <target>Durée de la création jusqu'à la fin</target>
+        <target>Durée de la création jusqu&apos;à la fin</target>
       </segment>
     </unit>
     <unit id="1061253263570604035">
@@ -2407,7 +2407,7 @@
       </notes>
       <segment state="initial">
         <source>Processing to End Duration</source>
-        <target>Traitement jusqu'à la fin de la durée</target>
+        <target>Traitement jusqu&apos;à la fin de la durée</target>
       </segment>
     </unit>
     <unit id="1857276125679236383">
@@ -2427,7 +2427,7 @@
       </notes>
       <segment state="initial">
         <source>Pod Hostname</source>
-        <target>Nom de l'hôte du Pod</target>
+        <target>Nom de l&apos;hôte du Pod</target>
       </segment>
     </unit>
     <unit id="4429145828633458850">
@@ -2502,6 +2502,26 @@
       <segment state="initial">
         <source>Select</source>
         <target>Sélectionner</target>
+      </segment>
+    </unit>
+    <unit id="8461712739701887700">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:19,21</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment state="initial">
+        <source> Where </source>
+        <target> Avec </target>
+      </segment>
+    </unit>
+    <unit id="6867381603185205680">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:22,24</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment state="initial">
+        <source> Or </source>
+        <target> Ou </target>
       </segment>
     </unit>
   </file>

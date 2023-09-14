@@ -2251,5 +2251,23 @@
         <source> Your dashboard is empty, add a line to start monitoring your tasks. </source>
       </segment>
     </unit>
+    <unit id="6867381603185205680">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:22,24</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment>
+        <source> Or </source>
+      </segment>
+    </unit>
+    <unit id="8461712739701887700">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:19,21</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment>
+        <source> Where </source>
+      </segment>
+    </unit>
   </file>
 </xliff>

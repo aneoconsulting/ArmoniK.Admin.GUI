@@ -16,11 +16,11 @@ import { FiltersDialogComponent } from './filters-dialog.component';
 <div class="filters-toolbar">
   <ng-container  *ngFor="let filtersAnd of filters; let first = first; trackBy: trackByFilter">
     <div class="filters-toolbar-and">
-      <span class="filters-toolbar-text" *ngIf="first">
+      <span class="filters-toolbar-text" *ngIf="first" i18n="Filter condition">
         Where
       </span>
-      <span class="filters-toolbar-text" *ngIf="!first">
-        OR
+      <span class="filters-toolbar-text" *ngIf="!first" i18n="Filter condition">
+        Or
       </span>
       <app-filters-chips [filtersAnd]="filtersAnd"></app-filters-chips>
     </div>
