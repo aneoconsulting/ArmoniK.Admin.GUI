@@ -52,7 +52,7 @@ jobs:
         run: nci
 
       - name: Test
-        run: nr test --no-watch --no-progress
+        run: nr test
 
   build:
     
