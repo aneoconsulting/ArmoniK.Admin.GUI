@@ -58,7 +58,7 @@ import { StorageService } from '@services/storage.service';
         </mat-select>
       </mat-form-field>
 
-      <button mat-icon-button [disabled]="onHideRemoveBtn(index)" aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
+      <button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
       </button>
 
@@ -288,10 +288,6 @@ export class IndexComponent implements OnInit {
   onSaveSidebar(): void {
     this.#navigationService.saveSidebar(this.sidebar);
     this.keys = this.#sortKeys(this.#storageService.restoreKeys());
-  }
-  
-  onHideRemoveBtn(index: number) :boolean {
-    return this.sidebar[index] === 'settings' ? true : false;
   }
 
   onRemoveSidebarItem(index: number): void {
