@@ -1831,12 +1831,12 @@
         <source>After or Equal</source>
       </segment>
     </unit>
-    <unit id="4155177714864609822">
+    <unit id="1057119163510563812">
       <notes>
         <note category="location">src/app/components/table/table-empty-data.component.ts:6</note>
       </notes>
       <segment>
-        <source>No data founded.</source>
+        <source>No data found.</source>
       </segment>
     </unit>
     <unit id="4310249443741035479">
