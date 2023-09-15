@@ -1816,7 +1816,7 @@
       </notes>
       <segment state="initial">
         <source>Drag and drop lines to update the order</source>
-        <target>Déplacez les lignes pour modifier l&apos;ordre</target>
+        <target>Déplacer les lignes pour modifier l&apos;ordre</target>
       </segment>
     </unit>
     <unit id="2363459055476280585">
@@ -1825,7 +1825,7 @@
       </notes>
       <segment state="initial">
         <source>Edit Line</source>
-        <target>Modifiez la ligne</target>
+        <target>Modifier la ligne</target>
       </segment>
     </unit>
     <unit id="7051047199538689120">
@@ -1844,7 +1844,7 @@
       </notes>
       <segment state="initial">
         <source>Split lines</source>
-        <target>diviser la ligne</target>
+        <target>Diviser les lignes</target>
       </segment>
     </unit>
     <unit id="7826847114051402137">
@@ -2228,7 +2228,7 @@
       </notes>
       <segment state="initial">
         <source> Tasks </source>
-        <target> Tâche </target>
+        <target> Tâches </target>
       </segment>
     </unit>
     <unit id="5618923336828241352">
@@ -2273,7 +2273,7 @@
       </notes>
       <segment state="initial">
         <source> See Retries </source>
-        <target> Voir les essais </target>
+        <target> Voir les tentatives </target>
       </segment>
     </unit>
     <unit id="860465032145625679">
