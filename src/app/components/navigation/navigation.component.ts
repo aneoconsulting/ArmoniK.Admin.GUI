@@ -109,12 +109,17 @@ import pkg from '../../../../package.json';
             </ng-container>
             <ng-container *ngIf="item.type !== 'divider'">
               <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected">
-              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="item.icon"></mat-icon>
-              <span matListItemTitle> {{ item.display }} </span>
-            </a>
+                <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="item.icon"></mat-icon>
+                <span matListItemTitle> {{ item.display}} </span>
+              </a>
             </ng-container>
-          </ng-container>
+          </ng-container> 
+          <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
+            <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
+            <span matListItemTitle> {{ settingsItem }} </span>
+          </a>  
         </mat-nav-list>
+        
       </mat-sidenav>
       <mat-sidenav-content>
         <main>
@@ -190,6 +195,8 @@ export class NavigationComponent implements OnInit{
   version = pkg.version;
   externalServices: ExternalService[];
 
+  
+
   #breakpointObserver = inject(BreakpointObserver);
   #dialog = inject(MatDialog);
   #navigationService = inject(NavigationService);
@@ -200,9 +207,11 @@ export class NavigationComponent implements OnInit{
 
   environment = this.#environmentService.getEnvironment();
 
+  
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
-
+  settingsItem = $localize`Settings`;
+  
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
