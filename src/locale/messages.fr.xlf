@@ -2109,7 +2109,7 @@
       </notes>
       <segment state="initial">
         <source>Max Retries</source>
-        <target>Nombre d&apos;essais maximal</target>
+        <target>Nombre maximum de tentatives</target>
       </segment>
     </unit>
     <unit id="8518087201830601782">
