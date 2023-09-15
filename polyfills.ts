@@ -1,0 +1,3 @@
+
+import '@angular/localize/init';
+
