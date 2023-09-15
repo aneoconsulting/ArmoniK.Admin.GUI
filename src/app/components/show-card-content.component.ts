@@ -112,7 +112,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
   }
 
   hasLength(value: unknown): boolean {
-    return (value as unknown as unknown[]).length > 0;
+    return value != undefined && (value as unknown as unknown[]).length > 0;
   }
 
   toArray(value: unknown): unknown[] {
@@ -138,7 +138,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
     const value = (this.data as unknown as Data)[key];
 
-    if (value === null) {
+    if (value === null || value === undefined) {
       return '-';
     }
 
@@ -152,7 +152,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
     const value = (this.data as unknown as Data)[key];
 
-    if (value === null) {
+    if (value === null || value === undefined) {
       return [];
     }
 
@@ -166,7 +166,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
     const value = (this.data as unknown as Data)[key];
 
-    if (value === null) {
+    if (value === null || value === undefined) {
       return {};
     }
 
