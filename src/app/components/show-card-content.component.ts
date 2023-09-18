@@ -180,7 +180,8 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
     const value = (this.data as unknown as Data)[key] as unknown as Duration;
 
-    if (value.seconds === '0' && value.nanos === 0) {
+    if (!value || (value.seconds === '0' && value.nanos === 0)
+    || (value.seconds === undefined && value.nanos === undefined)) {
       return '-';
     }
 
@@ -192,9 +193,10 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
       return '-';
     }
 
-    const value = (this.data as unknown as Data)[key] as unknown as Timestamp;
+    const value = new Timestamp((this.data as unknown as Data)[key] as Data);
 
-    if (value.seconds === '0' && value.nanos === 0) {
+    if (!value || (value.seconds === '0' && value.nanos === 0)
+    || (value.seconds === undefined && value.nanos === undefined)) {
       return '-';
     }
 
@@ -202,13 +204,13 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
   }
 
   statusToLabel(key: string): string {
-    if (!this.data) {
+    if (!this.data || !this.statuses) {
       return '-';
     }
 
-    const status = (this.data as unknown as Data)[key] as unknown as number;
+    const status = Number((this.data as unknown as Data)[key]);
 
-    return this.statuses[status];
+    return this.statuses[status] ? this.statuses[status] : '-';
   }
 
   trackByKey(index: number, key: string): string {
