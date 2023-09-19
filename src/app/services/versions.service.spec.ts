@@ -15,22 +15,29 @@ describe('versions service', () => {
       expect(service.core?.split('.').length).toBe(3); 
     });
 
-    test('core version should only be numbers', () => {
-      service.setCoreVersion('nouvelle.version.de.core');
-      expect(service.core).toBe(' version indisponible');
+    test('should send an error message when core version does not contain only numbers', () => {
+      service.setCoreVersion('nouvelle.8.de.3');
+      expect(service.core).toBe(service.VERSION_NOT_FOUND);
+    });
+
+    test('should send an error message when core version is equal to null', () => {
+      service.setCoreVersion(null);
+      expect(service.core).toBe(service.VERSION_NOT_FOUND);
     });
   });
-
 
   describe('verify API version', () => {
     test('API version should only have 3 numbers', () => {
       service.setAPIVersion('0.1.8.9');
-      expect(service.api?.split('.').length).toBe(3); 
+      expect(service.api.split('.').length).toBe(3); 
     });
-
     test('API version should only be numbers', () => {
-      service.setAPIVersion('nouvelle.version.de.core');
-      expect(service.api).toBe(' version indisponible');
+      service.setAPIVersion('nouvelle.5.de.aping ');
+      expect(service.api).toBe(service.VERSION_NOT_FOUND);
+    });
+    test('should send an error message when API version is equal to null', () => {
+      service.setAPIVersion(null);
+      expect(service.core).toBe(service.VERSION_NOT_FOUND);
     });  
   });
 
