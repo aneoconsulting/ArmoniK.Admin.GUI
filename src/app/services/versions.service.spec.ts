@@ -25,12 +25,12 @@ describe('versions service', () => {
   describe('verify API version', () => {
     test('API version should only have 3 numbers', () => {
       service.setAPIVersion('0.1.8.9');
-      expect(service.core?.split('.').length).toBe(3); 
+      expect(service.api?.split('.').length).toBe(3); 
     });
 
     test('API version should only be numbers', () => {
       service.setAPIVersion('nouvelle.version.de.core');
-      expect(service.core).toBe(' version indisponible');
+      expect(service.api).toBe(' version indisponible');
     });  
   });
 
