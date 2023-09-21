@@ -1,5 +1,4 @@
 import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
-import { TestBed } from '@angular/core/testing';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsService } from './query-params.service';
@@ -9,9 +8,7 @@ describe('QueryParamsService', () => {
   let service: QueryParamsService;
 
   beforeEach(() => {
-    service = TestBed.configureTestingModule({
-      providers: [QueryParamsService]
-    }).inject(QueryParamsService);
+    service = new QueryParamsService;
   });
 
   it('Should run', () => {
