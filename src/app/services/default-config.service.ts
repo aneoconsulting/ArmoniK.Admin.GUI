@@ -66,7 +66,6 @@ export class DefaultConfigService {
     'tasks',
     'results',
     'divider',
-    'settings',
     'divider'
   ];
 
