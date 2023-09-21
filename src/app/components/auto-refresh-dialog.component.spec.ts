@@ -1,18 +1,21 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AutoRefreshDialogData } from '@app/types/dialog';
 import { AutoRefreshDialogComponent } from './auto-refresh-dialog.component';
 
 describe('AutoRefreshDialogComponent', () => {
   
   let component: AutoRefreshDialogComponent;
+  let fixture: ComponentFixture<AutoRefreshDialogComponent>;
   const model: AutoRefreshDialogData = {
     value: 3
   };
 
-  beforeEach(() => {
-    component = TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ BrowserAnimationsModule ],
       providers: [
         AutoRefreshDialogComponent,
         { provide: MatDialogRef, useValue: {
@@ -20,8 +23,14 @@ describe('AutoRefreshDialogComponent', () => {
         }},
         { provide: MAT_DIALOG_DATA, useValue: model}
       ]
-    }).inject(AutoRefreshDialogComponent);
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AutoRefreshDialogComponent);
+    component = fixture.componentInstance;
     component.ngOnInit();
+    fixture.detectChanges();
   });
 
   it('Should run', () => {
