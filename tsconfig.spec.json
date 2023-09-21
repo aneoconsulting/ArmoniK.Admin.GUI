@@ -5,7 +5,8 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jest",
-      "node"
+      "node",
+      "@angular/localize"
     ],
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
