@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AutoRefreshService } from './auto-refresh.service';
 
@@ -7,10 +6,7 @@ describe('Auto-refresh service', () => {
   let service: AutoRefreshService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [AutoRefreshService]
-    });
-    service = TestBed.inject(AutoRefreshService);
+    service = new AutoRefreshService();
   });
   
   it('Should run', () => {
