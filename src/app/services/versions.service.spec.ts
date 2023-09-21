@@ -13,6 +13,7 @@ describe('versions service', () => {
     test('core version should only have 3 numbers', () => {
       service.setCoreVersion('0.1.8.9');
       expect(service.core.split('.').length).toBe(3); 
+
     });
 
     test('should send an error message when core version does not contain only numbers', () => {
