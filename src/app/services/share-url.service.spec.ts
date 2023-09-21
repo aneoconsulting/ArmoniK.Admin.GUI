@@ -11,7 +11,7 @@ describe('Share Url service', () => {
   const urlRoot = 'originpathname';
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
+    service = TestBed.configureTestingModule({
       providers: [
         ShareUrlService,
         { provide: Window, useValue: {
@@ -22,16 +22,15 @@ describe('Share Url service', () => {
         } },
         QueryParamsService
       ]
-    });
-    service = TestBed.inject(ShareUrlService);
+    }).inject(ShareUrlService);
   });
 
   it('should run', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('Should return a url', () => {
-    it('without any parameters when none are provided', () => {
+  describe('generateSharableURL', () => {
+    it('Should return a url without any parameters when none are provided', () => {
       expect(service.generateSharableURL(null, null)).toBe(`${urlRoot}`);
     });
     describe('with optionals parameters when they are provided', () => {
