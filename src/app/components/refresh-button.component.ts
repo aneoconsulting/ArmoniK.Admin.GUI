@@ -32,7 +32,11 @@ export class RefreshButtonComponent {
     return this.#iconsService.getIcon(name);
   }
 
-  onClick() {
+  emit(): void {
     this.refreshChange.emit();
+  }
+
+  onClick() {
+    this.emit();
   }
 }
