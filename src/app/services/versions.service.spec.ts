@@ -12,7 +12,7 @@ describe('versions service', () => {
   describe('verify core version', () => {
     test('core version should only have 3 numbers', () => {
       service.setCoreVersion('0.1.8.9');
-      expect(service.core?.split('.').length).toBe(3); 
+      expect(service.core.split('.').length).toBe(3); 
     });
 
     test('should send an error message when core version does not contain only numbers', () => {
@@ -37,7 +37,7 @@ describe('versions service', () => {
     });
     test('should send an error message when API version is equal to null', () => {
       service.setAPIVersion(null);
-      expect(service.core).toBe(service.VERSION_NOT_FOUND);
+      expect(service.api).toBe(service.VERSION_NOT_FOUND);
     });  
   });
 
