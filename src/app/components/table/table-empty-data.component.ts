@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-table-empty-data',
   template: `
-<em i18n>No data founded.</em>
+<em i18n>No data found.</em>
   `,
   styles: [`
 :host {
