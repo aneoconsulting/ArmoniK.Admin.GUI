@@ -2,10 +2,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "types": [
-      "node",
-      "jest"
-    ],
     "baseUrl": "./",
     "paths": {
       "@components/*": [
@@ -21,6 +17,7 @@
         "src/app/*"
       ],
     },
+    "rootDir": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
