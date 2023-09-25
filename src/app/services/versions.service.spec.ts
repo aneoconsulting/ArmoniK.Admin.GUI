@@ -41,6 +41,4 @@ describe('versions service', () => {
       expect(service.api).toBe(service.VERSION_NOT_FOUND);
     });  
   });
-
-
 });
