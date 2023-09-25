@@ -66,7 +66,6 @@ export class DefaultConfigService {
     'tasks',
     'results',
     'divider',
-    'divider'
   ];
 
   readonly #defaultApplications: ScopeConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter> = {
