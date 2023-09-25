@@ -2,6 +2,7 @@
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
  */
+
 import structuredClone from '@ungap/structured-clone';
 import type {Config} from 'jest';
 
@@ -68,7 +69,7 @@ const config: Config = {
 
   // A set of global variables that need to be available in all test environments
   globals: {
-    structuredClone
+    structuredClone,
   },
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
