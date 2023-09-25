@@ -22,6 +22,18 @@ describe('Default config service', () => {
       const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups); 
       expect(taskStatuses[0]).toHaveLength(3);
     });
+    it('the line by default should have finished, running error task statuses by default ', () => {
+      const defaultDashboardLines = service.defaultDashboardLines;
+      const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups); 
+      expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Finished')).toBeTruthy(); 
+      expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Running')).toBeTruthy();  
+      expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Errors')).toBeTruthy();  
+    });
+
+    it('default DashboardSplitLines should return 1 line', ()=> {
+      const defaultDashboardSplitLines :number = service.defaultDashboardSplitLines;
+      expect(defaultDashboardSplitLines).toEqual(1);
+    });
   });
 
 }); 
