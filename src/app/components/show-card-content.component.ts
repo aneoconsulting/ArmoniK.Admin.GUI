@@ -92,7 +92,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
   }
 
   pretty(key: string): string {
-    return key.replace('_', '').replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+    return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
   isString(value: unknown): boolean {
@@ -180,8 +180,8 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
     const value = (this.data as unknown as Data)[key] as unknown as Duration;
 
-    if (!value || (value.seconds === '0' && value.nanos === 0)
-    || (value.seconds === undefined && value.nanos === undefined)) {
+    if (!value || value.seconds === undefined || value.nanos === undefined 
+    || (value.seconds === '0' && value.nanos === 0)) {
       return '-';
     }
 
@@ -195,8 +195,8 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
     const value = new Timestamp((this.data as unknown as Data)[key] as Data);
 
-    if (!value || (value.seconds === '0' && value.nanos === 0)
-    || (value.seconds === undefined && value.nanos === undefined)) {
+    if (value.seconds === undefined || value.nanos === undefined 
+    || (value.seconds === '0' && value.nanos === 0)) {
       return '-';
     }
 

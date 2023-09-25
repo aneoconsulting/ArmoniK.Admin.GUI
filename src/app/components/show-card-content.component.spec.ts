@@ -4,8 +4,8 @@ import { ShowCardContentComponent } from './show-card-content.component';
 
 type TestingObject = {
   first_key: string | number | {seconds: string | number, nanos: string | number};
-  second_key: string | number | {seconds: string | number, nanos: string | number};
-  third_key: string | string[] | number | {seconds: string | number, nanos: string | number};
+  second_key: string | number | {seconds: string | number | undefined, nanos: string | number | undefined};
+  third_key: string | string[] | number | {seconds: string | number | undefined, nanos: string | number | undefined};
 };
 
 type Data = {
@@ -242,6 +242,11 @@ describe('ShowCardContentComponent', () => {
       component.data = [];
       expect(component.findValue('first_key')).toEqual('-');
     });
+
+    it('Should return "-" if data is null', () => {
+      component.data = null;
+      expect(component.findValue('first_key')).toEqual('-');
+    });
   });
 
   describe('findArray', () => {
@@ -267,6 +272,11 @@ describe('ShowCardContentComponent', () => {
 
     it('Should return an empty array if there is no data', () => {
       component.data = [];
+      expect(component.findArray('first_key')).toEqual([]);
+    });
+
+    it('Should return an empty array if data is null', () => {
+      component.data = null;
       expect(component.findArray('first_key')).toEqual([]);
     });
   });
@@ -296,6 +306,11 @@ describe('ShowCardContentComponent', () => {
       component.data = [];
       expect(component.findObject('first_key')).toEqual({});
     });
+
+    it('Should return an empty array if data is null', () => {
+      component.data = null;
+      expect(component.findObject('first_key')).toEqual({});
+    });
   });
 
   describe('toTime', () => {
@@ -308,6 +323,16 @@ describe('ShowCardContentComponent', () => {
       expect(component.toTime('first_key')).toEqual('1234s 456ns');
       expect(component.toTime('second_key')).toEqual('1234s 456ns');
       expect(component.toTime('third_key')).toEqual('1234s 456ns');
+    });
+
+    it('Should return "-" if time is equal to 0', () => {
+      component.data = {
+        first_key: { seconds: '0', nanos: 0},
+        second_key: { seconds: 0, nanos: '0'}, 
+        third_key: ''
+      };
+      expect(component.toTime('first_key')).toEqual('-');
+      expect(component.toTime('second_key')).toEqual('-');
     });
 
     it('Should return "-" if the data is invalid', () => {
@@ -343,6 +368,17 @@ describe('ShowCardContentComponent', () => {
       expect(component.toTimestamp('first_key')).toEqual(expectedResult);
       expect(component.toTimestamp('second_key')).toEqual(expectedResult);
       expect(component.toTimestamp('third_key')).toEqual(expectedResult);
+    });
+
+    it('Should return "-" if time is equal to 0', () => {
+      component.data = {
+        first_key: { seconds: '0', nanos: 0},
+        second_key: { seconds: 0, nanos: undefined}, 
+        third_key: {seconds: undefined, nanos: undefined}
+      };
+      expect(component.toTimestamp('first_key')).toEqual('-');
+      expect(component.toTimestamp('second_key')).toEqual('-');
+      expect(component.toTimestamp('third_key')).toEqual('-');
     });
 
     it('Should return "-" if the data is invalid', () => {
@@ -412,5 +448,38 @@ describe('ShowCardContentComponent', () => {
       expect(component.statusToLabel('first_key')).toEqual('-');
       expect(component.statusToLabel('second_key')).toEqual('-');
     });
+  });
+
+  it('pretty should return readable strings', () => {
+    expect(component.pretty('My string should not change.')).toEqual('My string should not change.');
+    expect(component.pretty('MyStringShouldChange.')).toEqual('My String Should Change.');
+    expect(component.pretty('My_String_Should_Change_.')).toEqual('My String Should Change.');
+  });
+
+  describe('ngOnChange', () => {
+    it('Should sort data keys and store it into keys on change', () => {
+      component.data = {
+        first_key: 'my_first_value',
+        second_key: 'my_second_value', 
+        third_key: ['my_third_value', 'my_fourth_value']
+      };
+      component.ngOnChanges();
+      expect(component.keys).toEqual(['first_key', 'second_key', 'third_key']);
+    });
+
+    it('Should not do anything if there is no data', () => {
+      component.ngOnChanges();
+      expect(component.keys).toEqual([]);
+    });
+  });
+
+  it('trackByKey', () => {
+    const key = 'my_key';
+    expect(component.trackByKey(0, key)).toBe(key);
+  });
+
+  it('trackByItem', () => {
+    expect(component.trackByItem(0, 1)).toEqual('1');
+    expect(component.trackByItem(0, undefined)).toEqual('undefined');
   });
 });
