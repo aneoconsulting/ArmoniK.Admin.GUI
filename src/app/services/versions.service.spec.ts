@@ -42,5 +42,7 @@ describe('versions service', () => {
     });  
   });
 
-
+  it('Should crash tests', () => {
+    expect(false).toBeTruthy();
+  });
 });
