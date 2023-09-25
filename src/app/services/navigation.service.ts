@@ -61,13 +61,6 @@ export class NavigationService {
       route: '/results',
     },
     {
-      type: 'link',
-      id: 'settings',
-      display: $localize`Settings`,
-      icon: 'settings',
-      route: '/settings',
-    },
-    {
       type: 'divider',
       id: 'divider',
       display: $localize`Divider`,
