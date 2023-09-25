@@ -57,6 +57,11 @@ describe('AutoRefreshDialogComponent', () => {
       component.onNumberChange(myEvent);
       expect(component.value).toEqual(0);
     });
+    it('when value is null', () => {
+      const myEvent = { target: { value: null } } as unknown as Event;
+      component.onNumberChange(myEvent);
+      expect(component.value).toEqual(0);
+    });
   });
   
   describe('onOptionSelected should change value on event', () => {
@@ -73,6 +78,11 @@ describe('AutoRefreshDialogComponent', () => {
     it('when value is a string', () => {
       const myEvent = { option: { value: 'This is a string' } } as unknown as MatAutocompleteSelectedEvent;
       component.onOptionSelected(myEvent);
+      expect(component.value).toEqual(0);
+    });
+    it('when value is null', () => {
+      const myEvent = { target: { value: null } } as unknown as Event;
+      component.onNumberChange(myEvent);
       expect(component.value).toEqual(0);
     });
   });
