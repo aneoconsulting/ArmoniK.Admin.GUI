@@ -2,25 +2,38 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class VersionsService {
-  core: string | null = null;
-  api: string | null = null;
+  core: string;
+  api: string;
+  VERSION_NOT_FOUND = '- version indisponible';
 
-  setCoreVersion(version: string): void {
-    this.core = this.#fixVersion(version);
-  }
-
-  setAPIVersion(version: string): void {
-    this.api = this.#fixVersion(version);
-  }
-
-  #fixVersion(version: string): string {
-    // If version has 4 numbers, remove the last one
+  #formatVersion(version: string ): number[] {
     const versionParts = version.split('.');
-
-    if (versionParts.length === 4) {
-      versionParts.pop();
-    }
-
-    return versionParts.join('.');
+    return versionParts.map(versionPart =>  Number(versionPart)); 
   }
+
+  #handleNullableVersion( version:  string | null = null) : string {
+    return  version === null ? this.VERSION_NOT_FOUND : version;
+  }
+
+  #fixVersion(version: number[]): string {
+    if (version.length === 4) {
+      version.pop();
+    }
+    return version.join('.');
+  } 
+
+  setCoreVersion(version: string | null = null ): void {
+    const notNullableNumberVersion = this.#handleNullableVersion(version);
+    const coreNumber = this.#formatVersion(notNullableNumberVersion);
+    const isInvalidCoreNumber = coreNumber.some(number => Number.isNaN(number));
+    this.core = isInvalidCoreNumber ? this.VERSION_NOT_FOUND : this.#fixVersion(coreNumber);  
+  }
+
+  setAPIVersion(version: string | null = null): void {
+    const notNullableNumbersVersion = this.#handleNullableVersion(version);
+    const APINumber = this.#formatVersion(notNullableNumbersVersion);
+    const isInvalidAPINumber = APINumber.some(number => Number.isNaN(number));
+    this.api = isInvalidAPINumber ? this.VERSION_NOT_FOUND : this.#fixVersion(APINumber);
+  }
+  
 }
