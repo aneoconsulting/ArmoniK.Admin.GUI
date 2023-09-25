@@ -1,4 +1,5 @@
 
+import { Sidebar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 
 describe('Default config service', () => {
@@ -22,7 +23,7 @@ describe('Default config service', () => {
       const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups); 
       expect(taskStatuses[0]).toHaveLength(3);
     });
-    it('the line by default should have finished, running error task statuses by default ', () => {
+    it('the line by default should have finished, running, error, task statuses by default ', () => {
       const defaultDashboardLines = service.defaultDashboardLines;
       const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups); 
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Finished')).toBeTruthy(); 
@@ -34,6 +35,33 @@ describe('Default config service', () => {
       const defaultDashboardSplitLines :number = service.defaultDashboardSplitLines;
       expect(defaultDashboardSplitLines).toEqual(1);
     });
+  });
+
+  describe('default sidebar configuration', () => {
+    const mockSidebar = [
+      'profile',
+      'divider',
+      'dashboard',
+      'divider',
+      'applications',
+      'partitions',
+      'divider',
+      'sessions',
+      'tasks',
+      'results',
+      'divider',
+    ] ;
+    it('should return ', () => {
+      const defaultSidebar :Sidebar[] = service.defaultSidebar; 
+      expect(defaultSidebar).toEqual(mockSidebar); 
+    });
+  });
+
+  describe('default external service', () =>{
+    it('should contain an array type ExternalService',()=>{ 
+      const externalService = service.defaultExternalServices;
+      expect(externalService).toEqual([]);
+    } );
   });
 
 }); 
