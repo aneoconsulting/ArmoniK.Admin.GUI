@@ -12,6 +12,7 @@
     "lint:fix": "ng lint --fix",
     "watch": "ng build --watch --configuration development",
     "test": "jest",
+    "test-coverage": "jest --coverage",
     "release": "bumpp --no-tag --no-push"
   },
   "private": true,
