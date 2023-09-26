@@ -34,7 +34,7 @@ describe('VersionsGrpcService', () => {
   });
 
   it('should return an user', () => {
-    expect(service.me$()).toBe(user);
+    expect(service.getUser$()).toBe(user);
   });
 
 });
