@@ -5,18 +5,20 @@ import { StorageService } from './storage.service';
 
 describe('StorageService', () => {
   let service: StorageService;
+  const mockItemData: Record<string, string> = {
+    'navigation-sidebar': 'myItemData1',
+    'navigation-theme': 'myItemData2'
+  }; 
   const mockStorage = {
     length: 1,
     clear: jest.fn(),
     getItem: jest.fn(),
     key: jest.fn(),
     removeItem: jest.fn(),
-    setItem: jest.fn()
-  };
-  const mockItemData: Record<string, string> = {
+    setItem: jest.fn(),
     'navigation-sidebar': 'myItemData1',
     'navigation-theme': 'myItemData2'
-  }; 
+  };
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -130,8 +132,96 @@ describe('StorageService', () => {
     });
   });
 
-  // TODO: exportData
-  // TODO: importData
-  // TODO: restoreKeys
-  // Should be enough for the who code
+  describe('exportData', () => {
+    it('Should export properly', () => {
+      mockStorage.getItem.mockImplementationOnce((key: Key, parse) => {
+        const result = mockItemData[key];
+        if (!parse) return result ? {'12': 'sessions'} : undefined;
+        else return result ? JSON.stringify({'12': 'sessions'}) : undefined;
+      });
+      expect(service.exportData()['navigation-sidebar'])
+        .toEqual({
+          '0': 'profile',
+          '1': 'divider',
+          '2': 'dashboard',
+          '3': 'divider',
+          '4': 'applications',
+          '5': 'partitions',
+          '6': 'divider',
+          '7': 'sessions',
+          '8': 'tasks',
+          '9': 'results',
+          '10': 'divider',
+          '11': 'divider',
+          '12': 'sessions'
+        });
+      expect(service.exportData()['applications-tasks-by-status'])
+        .toEqual([
+          { status: 4, color: '#4caf50' },
+          { status: 5, color: '#ff0000' },
+          { status: 6, color: '#ff6944' },
+          { status: 11, color: '#ff9800' }
+        ],);
+    });
+
+    it('Should use defu properly', () => {
+      mockStorage.getItem.mockImplementationOnce((key: Key, parse) => {
+        const result = mockItemData[key];
+        if (!parse) return result ? [{
+          '0': 'profile',
+          '1': 'divider',
+          '2': 'dashboard',
+          '3': 'sessions'
+        }] : undefined;
+        else return result ? JSON.stringify([{
+          '0': 'profile',
+          '1': 'divider',
+          '2': 'dashboard',
+          '3': 'sessions'
+        }]) : undefined;
+      });
+      expect(service.exportData()['navigation-sidebar'])
+        .toEqual([{
+          '0': 'profile',
+          '1': 'divider',
+          '2': 'dashboard',
+          '3': 'sessions'
+        }]);
+    });
+  });
+
+  describe('importData', () => {
+    let setItemSpy: jest.SpyInstance;
+    let consoleSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      setItemSpy = jest.spyOn(service, 'setItem').mockImplementation();
+      consoleSpy = jest.spyOn(console, 'warn').mockImplementationOnce(() => {return;});
+    });
+
+    it('should set item in case of a supported key and valid JSON', () => {
+      service.importData('{"navigation-sidebar":"profile"}');
+      expect(setItemSpy).toHaveBeenCalledWith('navigation-sidebar', 'profile');
+      service.importData('{"navigation-sidebar":["profile", "divider", "sessions"]}');
+      expect(setItemSpy).toHaveBeenCalledWith('navigation-sidebar', ['profile', 'divider', 'sessions']);
+      service.importData('[{"navigation-sidebar":["profile", "divider", "sessions"]}, {"navigation-theme": "dark-green"}]');
+      expect(setItemSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('Should throw a syntaxError in case of an invalid JSON data', () => {
+      expect(() => {service.importData('Invalid-json-data');}).toThrow(SyntaxError);
+      expect(() => {service.importData('{"still-some":Invalid-json-data}');}).toThrow(SyntaxError);
+      expect(() => {service.importData('[{"navigation-sidebar":is-that-invalid-data?}, {"navigation-theme": "dark-green"}]');}).toThrow(SyntaxError);
+    });
+
+    it('should warn in case of an unsupported key.', () => {
+      service.importData('{"unsuported-key": "some-value"}');
+      expect(consoleSpy).toHaveBeenCalled();
+    });
+  });
+
+  it('restoreKeys should create a set of the keys', () => {
+    const result: Set<Key> = new Set(['navigation-sidebar', 'navigation-theme']);
+    expect(service.restoreKeys()).toEqual(result);
+  });
 });

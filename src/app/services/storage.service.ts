@@ -16,6 +16,11 @@ export class StorageService implements Storage {
     this.#localStorage.clear();
   }
 
+  /**
+   * @param key type [key](../types/config.ts)
+   * @param parse boolean, either you want to parse the JSON data or not. Default=false
+   * @returns the parsed/unparsed data.
+   */
   getItem<T>(key: Key, parse = false) {
     const data = this.#localStorage.getItem(key);
 
@@ -32,6 +37,10 @@ export class StorageService implements Storage {
     return null;
   }
 
+  /**
+   * @param index 
+   * @returns the key stored at the provided index or null if not found
+   */
   key(index: number): string | null {
     return this.#localStorage.key(index);
   }
@@ -40,6 +49,10 @@ export class StorageService implements Storage {
     this.#localStorage.removeItem(key);
   }
 
+  /**
+   * @param key type [key](../types/config.ts)
+   * @param data the data to store, will be stringified if not already.
+   */
   setItem(key: Key, data: unknown): void {
     if (typeof data === 'string') {
       this.#localStorage.setItem(key, data);
@@ -48,6 +61,10 @@ export class StorageService implements Storage {
     }
   }
 
+  /**
+   * Retrieve all the data located in the store, and export it regarding the default config of armonik.
+   * @returns the different configurations of armonik GUI.
+   */
   exportData(): Record<string, unknown> {
     const data = {} as Record<string, unknown>;
 
@@ -62,16 +79,40 @@ export class StorageService implements Storage {
     return this.#defu()(data, this.#defaultConfigService.exportedDefaultConfig);
   }
 
+  /**
+   * Stores the provided JSON data in the local storage of the application.
+   * Prints warning in case of invalid data.
+   * @param data - JSON object you want to store. Either an object or an array.
+   */
   importData(data: string): void {
     const parsedData = JSON.parse(data) as Record<string, string>;
 
-    const keys = Object.keys(parsedData);
-    const defaultKeys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
+    if (Array.isArray(parsedData)) {
+      for (const data in parsedData) {
+        try {
+          this.#importDataObject(JSON.parse(data) as Record<string, string>);
+        } catch (e) {
+          console.warn('Data format is not supported');
+        }
+      }
+    }
+    else {
+      this.#importDataObject(parsedData);
+    }
+  }
 
+  /**
+   * Takes a JSON object and store it into the storage
+   * The JSON keys must be of type [key](../types/config.ts)
+   * @param data - JSON data.
+   */
+  #importDataObject(data: Record<string, string>) {
+    const defaultKeys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
+    const keys = Object.keys(data);
     for (const key of keys) {
       // We only import keys that are supported.
       if (defaultKeys.includes(key as Key)) {
-        this.setItem(key as Key, parsedData[key]);
+        this.setItem(key as Key, data[key]);
       } else {
         console.warn(`Key "${key}" is not supported`);
       }
@@ -85,10 +126,18 @@ export class StorageService implements Storage {
     return dirtyKeys.filter((key) => defaultKeys.includes(key)) as Key[];
   }
 
+  /**
+   * @returns a new set of the stored keys 
+   */
   restoreKeys(): Set<Key> {
     return new Set(this.keys);
   }
 
+  /**
+   * Add keys to the defaultConfig attributes. If a key is linked to an array, the default config
+   * of the GUI will be override by the array.
+   * @returns 
+   */
   #defu() {
     // If array, we return the storage array instead of merging it with default config.
     return createDefu((obj, key, value) => {
