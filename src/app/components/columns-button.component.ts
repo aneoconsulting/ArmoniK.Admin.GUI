@@ -40,6 +40,10 @@ export class ColumnsButtonComponent<T extends object, O extends object> {
     return this.#iconsService.getIcon(name);
   }
 
+  emit(result: ColumnsModifyDialogResult<T, O>): void {
+    this.displayedColumnsChange.emit(result);
+  }
+
   openModifyColumnsDialog(): void {
     const dialogRef = this._dialog.open<ColumnsModifyDialogComponent<T, O>, ColumnsModifyDialogData<T, O>, ColumnsModifyDialogResult<T, O>>(ColumnsModifyDialogComponent, {
       data: {
@@ -54,7 +58,7 @@ export class ColumnsButtonComponent<T extends object, O extends object> {
         return;
       }
 
-      this.displayedColumnsChange.emit(result);
+      this.emit(result);
     });
   }
 }
