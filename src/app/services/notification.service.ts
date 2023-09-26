@@ -7,15 +7,19 @@ export class NotificationService {
   #snackBar = inject(MatSnackBar);
 
   success(message: string): void {
-    this.#openSnackBar(message, 'Close', 'success');
+    this.displaySnackBar(message, 'Close', 'success');
   }
 
   error(message: string): void {
-    this.#openSnackBar(message, 'Close', 'error');
+    this.displaySnackBar(message, 'Close', 'error');
   }
 
   warning(message: string): void {
-    this.#openSnackBar(message, 'Close', 'warning');
+    this.displaySnackBar(message, 'Close', 'warning');
+  }
+
+  displaySnackBar(message: string, action: string, status: NotificationStatus) : void {
+    this.#openSnackBar(message, action, status);
   }
 
   #openSnackBar(message: string, action: string, status: NotificationStatus): void {
