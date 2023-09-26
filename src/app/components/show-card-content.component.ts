@@ -91,8 +91,15 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     }
   }
 
+  /**
+   * Changes the syntax of a camelCase string by removing "_", place a
+   * space between each UpperCase character, and put this character in lowercase,
+   * and turn the first character to an uppercase character
+   * @param key string to format
+   * @returns formatted string
+   */
   pretty(key: string): string {
-    return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+    return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1'.toLowerCase()).replace(/^./, (str) => str.toUpperCase());
   }
 
   isString(value: unknown): boolean {
@@ -131,6 +138,11 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return value instanceof Timestamp;
   }
 
+  /**
+   * Search for a string in the component JSON data.
+   * @param key the key of the JSON data you are looking for.
+   * @returns the string, or "-" if not found.
+   */
   findValue(key: string) {
     if (!this.data) {
       return '-';
@@ -145,6 +157,11 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return value;
   }
 
+  /**
+   * Search for an array in the component JSON data.
+   * @param key the key of the JSON data you are looking for.
+   * @returns the array, or an empty array if not found.
+   */
   findArray(key: string): string[] {
     if (!this.data) {
       return [];
@@ -159,6 +176,11 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return value as string[];
   }
 
+  /**
+   * Search for a object in the component JSON data.
+   * @param key the key of the JSON data you are looking for.
+   * @returns the object, or an empty object if not found.
+   */
   findObject(key: string): Data {
     if (!this.data) {
       return {};
@@ -173,6 +195,12 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return value as Data;
   }
 
+  /**
+   * Turns a stored JSON data into a string of Time.
+   * The JSON data is of type Duration.
+   * @param key the key of the JSON time you are looking for.
+   * @returns "seconds+s nanos+s" if found, "-" if not. 
+   */
   toTime(key: string): string {
     if (!this.data) {
       return '-';
@@ -188,6 +216,12 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return `${value.seconds}s ${value.nanos}ns`;
   }
 
+  /**
+   * Turns a stored JSON data into a TimeStamp.
+   * The JSON data is of type Duration.
+   * @param key the key of the JSON time you are looking for.
+   * @returns a Date if found, "-" if not.
+   */
   toTimestamp(key: string): string | Date {
     if (!this.data) {
       return '-';
@@ -203,6 +237,11 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return value.toDate();
   }
 
+  /**
+   * Returns the label associated to a status.
+   * @param key the key of the status
+   * @returns the label if found, "-" if not
+   */
   statusToLabel(key: string): string {
     if (!this.data || !this.statuses) {
       return '-';
@@ -213,10 +252,16 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return this.statuses[status] ? this.statuses[status] : '-';
   }
 
+  /**
+   * Used for a for-loop angular element.
+   */
   trackByKey(index: number, key: string): string {
     return key;
   }
 
+  /**
+   * Used for a for-loop angular element.
+   */
   trackByItem(index: number, item: unknown): string {
     return String(item);
   }

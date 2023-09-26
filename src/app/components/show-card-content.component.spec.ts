@@ -328,7 +328,7 @@ describe('ShowCardContentComponent', () => {
     it('Should return "-" if time is equal to 0', () => {
       component.data = {
         first_key: { seconds: '0', nanos: 0},
-        second_key: { seconds: 0, nanos: '0'}, 
+        second_key: { seconds: '0', nanos: undefined}, 
         third_key: ''
       };
       expect(component.toTime('first_key')).toEqual('-');
@@ -452,8 +452,8 @@ describe('ShowCardContentComponent', () => {
 
   it('pretty should return readable strings', () => {
     expect(component.pretty('My string should not change.')).toEqual('My string should not change.');
-    expect(component.pretty('MyStringShouldChange.')).toEqual('My String Should Change.');
-    expect(component.pretty('My_String_Should_Change_.')).toEqual('My String Should Change.');
+    expect(component.pretty('MyStringShouldChange.')).toEqual('My string should change.');
+    expect(component.pretty('My_String_Should_Change_.')).toEqual('My string should change.');
   });
 
   describe('ngOnChange', () => {
