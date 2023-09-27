@@ -23,8 +23,7 @@ export class QueryParamsService {
     for (const filtesrsAnd of filtersOr) {
       for (const filter of filtesrsAnd) {
         const key = `${i}-${filter.for}-${filter.field}-${filter.operator}`; // or-for-field-operator
-        const value = filter.value;
-        queryParamsFilters[key] = value;
+        queryParamsFilters[key] = filter.value;
       }
       i++;
     }
