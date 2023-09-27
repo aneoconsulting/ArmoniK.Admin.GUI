@@ -7,8 +7,10 @@ export class UserGrpcService {
   constructor(
     private _authenticationService: AuthenticationClient,
   ) {}
-
-  me$(): Observable<GetCurrentUserResponse> {
+  /**
+   *@returns an Observable<GetCurrentUserResponse> fetching a user
+   */
+  getUser$(): Observable<GetCurrentUserResponse> {
     const request = new GetCurrentUserRequest();
     return this._authenticationService.getCurrentUser(request);
   }
