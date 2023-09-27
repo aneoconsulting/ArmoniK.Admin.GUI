@@ -3,11 +3,7 @@ import { AutoRefreshService } from './auto-refresh.service';
 
 describe('Auto-refresh service', () => {
   
-  let service: AutoRefreshService;
-
-  beforeEach(() => {
-    service = new AutoRefreshService();
-  });
+  const service = new AutoRefreshService();
   
   it('Should run', () => {
     expect(service).toBeTruthy();
