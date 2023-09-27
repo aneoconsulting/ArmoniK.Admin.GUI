@@ -452,8 +452,8 @@ describe('ShowCardContentComponent', () => {
 
   it('pretty should return readable strings', () => {
     expect(component.pretty('My string should not change.')).toEqual('My string should not change.');
-    expect(component.pretty('MyStringShouldChange.')).toEqual('My string should change.');
-    expect(component.pretty('My_String_Should_Change_.')).toEqual('My string should change.');
+    expect(component.pretty('MyStringShouldChange.')).toEqual('My String Should Change.');
+    expect(component.pretty('My_String_Should_Change_.')).toEqual('My String Should Change.');
   });
 
   describe('ngOnChange', () => {

@@ -99,7 +99,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
    * @returns formatted string
    */
   pretty(key: string): string {
-    return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1'.toLowerCase()).replace(/^./, (str) => str.toUpperCase());
+    return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
   isString(value: unknown): boolean {
