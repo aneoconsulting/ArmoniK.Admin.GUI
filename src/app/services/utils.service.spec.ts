@@ -5,6 +5,7 @@ import { UtilsService } from './utils.service';
 
 describe('UtilsService', () => {
   const service = new UtilsService<number, number>();
+  
   const cb = (filter: Filter<number, number>) => {
     return (type: FilterType, field: number | null) => {
       const filterfield = {
@@ -12,18 +13,13 @@ describe('UtilsService', () => {
           field: field as TaskSummaryEnumField
         }
       };
-      switch(type) {
-      case 'date':
-        throw new Error('Type date not supported');
-      default:
-        return {
-          field: filterfield,
-          filterString: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator
-          }
-        };
-      }
+      return {
+        field: filterfield,
+        filterString: {
+          value: filter.value?.toString() ?? '',
+          operator: filter.operator
+        }
+      };
     };
   };
 
