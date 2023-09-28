@@ -31,7 +31,7 @@ describe('Notification service', () => {
     }; 
     const spy = jest.spyOn(snackBar, 'open');
     service.success('succes');
-    expect(spy).toHaveBeenCalledWith('succes', 'Close', status('success'));
+    expect(spy).toHaveBeenCalledWith('succes', 'Close', status);
   });
 
   it('should open a snackBar with warning status', () => {
