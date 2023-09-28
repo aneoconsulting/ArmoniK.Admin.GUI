@@ -78,7 +78,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   columnToLabel(column: ColumnKey<T, O>): string {
-    return this.columnsLabels[column];
+    return this.columnsLabels[column] ?? column.toString();
   }
 
   /**
@@ -99,12 +99,20 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
 
   /**
    * Update the columns array when a checkbox is checked or unchecked
+   * checked: add the column.
+   * Unchecked: remove it
    */
   updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T, O>): void {
     if (checked) {
-      this.columns.push(column);
+      if (!this.columns.includes(column) && this.data.availableColumns.includes(column)) {
+        this.columns.push(column);
+        this.data.availableColumns = this.data.availableColumns.filter(c => c !== column);
+      }
     } else {
-      this.columns = this.columns.filter(c => c !== column);
+      if(this.columns.includes(column)) {
+        this.columns = this.columns.filter(c => c !== column);
+        this.data.availableColumns.push(column);
+      }
     }
   }
 
