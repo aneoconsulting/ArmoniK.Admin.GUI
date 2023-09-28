@@ -89,10 +89,12 @@ export class NavigationService {
     this.currentSidebar = this.#formatSidebar(sidebar);
   }
 
+  /**
+   * Change the format of a simple sidebar to a [SidebarItem](../types/navigation.ts)
+   */
   #formatSidebar(sidebarItems: Sidebar[]): SidebarItem[] {
     const sidebar = sidebarItems.reduce((acc, item) => {
       const sidebarItem = this.sidebarItems.find(sidebarItem => sidebarItem.id === item);
-
       if (sidebarItem) {
         acc.push(sidebarItem);
       }

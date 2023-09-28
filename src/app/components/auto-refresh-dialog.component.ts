@@ -65,7 +65,6 @@ export class AutoRefreshDialogComponent implements OnInit {
 
   onNumberChange(event: Event) {
     const target = event.target as HTMLInputElement;
-
     this._setValue(target.value);
   }
 
@@ -89,7 +88,8 @@ export class AutoRefreshDialogComponent implements OnInit {
     if (Number.isNaN(value)) {
       this.value = 0;
     }
-
-    this.value = value;
+    else {
+      this.value = value;
+    }
   }
 }
