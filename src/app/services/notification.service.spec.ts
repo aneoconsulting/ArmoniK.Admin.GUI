@@ -1,7 +1,6 @@
 
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NotificationStatus } from '@app/types/notification';
 import { NotificationService } from './notification.service';
 
 describe('Notification service', () => {
@@ -42,19 +41,18 @@ describe('Notification service', () => {
     };
     const spy = jest.spyOn(snackBar, 'open');
     service.warning('attention');
-    expect(spy).toHaveBeenCalledWith('attention', 'Close', 'status');
+    expect(spy).toHaveBeenCalledWith('attention', 'Close', status);
   });
 
   it('should open a snackBar with error status', () => {
     const status = {
       duration: 5000,
       horizontalPosition: 'end',
-      panelClass: notificationStatus
+      panelClass: 'error'
     };
     const spy = jest.spyOn(snackBar, 'open');
     service.error('erreur');
-    expect(spy).toHaveBeenCalledWith('erreur', 'Close', status('error'));
+    expect(spy).toHaveBeenCalledWith('erreur', 'Close', status);
   });
   
-
 });
