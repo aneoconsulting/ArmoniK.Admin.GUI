@@ -43,41 +43,73 @@ describe('AutoRefreshDialogComponent', () => {
     expect(mockMatDialogRef.close).toHaveBeenCalled();
   });
 
-  test('onNumberChange should update component.value if the event value is correct', async () => {
-    const inputEvent = {
-      target: {
-        value: 2
-      }
-    } as unknown as Event;
-
-    component.onNumberChange(inputEvent);
-    expect(component.value).toEqual(2);
-  });
-
-  test('onOptionSelected should update component.value if the event value is correct', async () => {
-    const selectedEvent = {
-      option: {
-        value: 2
-      }
-    } as unknown as MatAutocompleteSelectedEvent;
-
-    component.onOptionSelected(selectedEvent);
-    expect(component.value).toEqual(2);
-  });
-
-  describe('_setValue', () => {
-    it('should change the value of component.value', () => {
-      component['_setValue'](3);
-      expect(component.value).toEqual(3);
+  describe('onNumberChange', () => {
+    it('should update component.value if the event value is correct', async () => {
+      const inputEvent = {
+        target: {
+          value: 2
+        }
+      } as unknown as Event;
+  
+      component.onNumberChange(inputEvent);
+      expect(component.value).toEqual(2);
     });
 
-    it('Should set the component.value to 0 in case of a null parameter',() => {
-      component['_setValue'](null);
+    it('should update component.value to 0 if the event value is null', async () => {
+      const inputEvent = {
+        target: {
+          value: null
+        }
+      } as unknown as Event;
+  
+      component.onNumberChange(inputEvent);
       expect(component.value).toEqual(0);
     });
 
-    it('Should set the component.value to 0 in case of a NaN parameter', () => {
-      component['_setValue']('NaNValue');
+    it('should update component.value to 0 if the event value is NaN', async () => {
+      const inputEvent = {
+        target: {
+          value: 'NaNValue'
+        }
+      } as unknown as Event;
+  
+      component.onNumberChange(inputEvent);
+      expect(component.value).toEqual(0);
+    });
+  });
+
+
+  describe('onOptionSelected', () => {
+    it('should update component.value if the event value is correct', async () => {
+      const inputEvent = {
+        option: {
+          value: 2
+        }
+      } as unknown as MatAutocompleteSelectedEvent;
+  
+      component.onOptionSelected(inputEvent);
+      expect(component.value).toEqual(2);
+    });
+
+    it('should update component.value to 0 if the event value is null', async () => {
+      const inputEvent = {
+        option: {
+          value: null
+        }
+      } as unknown as MatAutocompleteSelectedEvent;
+  
+      component.onOptionSelected(inputEvent);
+      expect(component.value).toEqual(0);
+    });
+
+    it('should update component.value to 0 if the event value is NaN', async () => {
+      const inputEvent = {
+        option: {
+          value: 'NaNValue'
+        }
+      } as unknown as MatAutocompleteSelectedEvent;
+  
+      component.onOptionSelected(inputEvent);
       expect(component.value).toEqual(0);
     });
   });
