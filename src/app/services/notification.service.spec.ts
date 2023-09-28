@@ -46,12 +46,10 @@ describe('Notification service', () => {
   });
 
   it('should open a snackBar with error status', () => {
-    const status = (notificationStatus: NotificationStatus) => {
-      return {
-        duration: 5000,
-        horizontalPosition: 'end',
-        panelClass: notificationStatus
-      }; 
+    const status = {
+      duration: 5000,
+      horizontalPosition: 'end',
+      panelClass: notificationStatus
     };
     const spy = jest.spyOn(snackBar, 'open');
     service.error('erreur');
