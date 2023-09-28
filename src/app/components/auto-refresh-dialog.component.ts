@@ -83,13 +83,16 @@ export class AutoRefreshDialogComponent implements OnInit {
     if (!value) {
       this.value = 0;
     }
-
-    value = Number(value);
-
-    if (Number.isNaN(value)) {
-      this.value = 0;
+    else {
+      const newValue = Number(value); 
+      if (Number.isNaN(newValue)) {
+        this.value = 0;
+      }
+      else {
+        this.value = newValue;
+      }
     }
 
-    this.value = value;
+
   }
 }
