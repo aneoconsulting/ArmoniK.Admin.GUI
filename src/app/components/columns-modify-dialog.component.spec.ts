@@ -68,29 +68,29 @@ describe('', () => {
   });
 
   describe('updateColumn', () => {
-    it('should push a new column to the columnList if checked', () => {
+    it('should push a new column', () => {
       component.updateColumn({checked: true} as MatCheckboxChange, 'duration' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['id', 'created_time', 'duration']);
       expect(component.data.availableColumns).toEqual(['name', 'options.task_id', 'actions']);
     });
 
-    it('should remove a column from the columnList if it is unchecked', () => {
+    it('should remove a column if parameter is unchecked', () => {
       component.updateColumn({checked: false} as MatCheckboxChange, 'id' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['created_time']);
       expect(component.data.availableColumns).toEqual(['name', 'options.task_id', 'actions', 'id']);
     });
 
-    it('should not push a column already in the column list', () => {
+    it('should not push a column that is already in the column list', () => {
       component.updateColumn({checked: true} as MatCheckboxChange, 'id' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['id', 'created_time']);
     });
 
-    it('should not push a column already that is not in the available columns', () => {
+    it('should not push a column that is not in the available columns', () => {
       component.updateColumn({checked: true} as MatCheckboxChange, 'someColumn' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['id', 'created_time']);
     });
 
-    it('should not do anything if a column not in the column list is removed', () => {
+    it('should not do remove a column that is not in the column list', () => {
       component.updateColumn({checked: false} as MatCheckboxChange, 'someColumn' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['id', 'created_time']);
     });
