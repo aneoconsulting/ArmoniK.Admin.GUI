@@ -2,7 +2,7 @@ import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneocons
 import { Injectable, inject } from '@angular/core';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { TasksStatusesService } from './tasks-status.service';
+import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFiltersOr } from '../types';
 
 @Injectable({

@@ -5,7 +5,7 @@ import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';

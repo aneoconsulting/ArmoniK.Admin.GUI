@@ -43,7 +43,7 @@ import { ManageViewInLogsDialogComponent } from './components/manage-view-in-log
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
-import { TasksStatusesService } from './services/tasks-status.service';
+import { TasksStatusesService } from './services/tasks-statuses.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilter, TaskSummaryFiltersOr, TaskSummaryListOptions } from './types';
 
 @Component({

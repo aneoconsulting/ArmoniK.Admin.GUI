@@ -726,7 +726,7 @@
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:32</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:53</note>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:17</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:17</note>
       </notes>
       <segment>
         <source>Error</source>
@@ -734,7 +734,7 @@
     </unit>
     <unit id="1612722476211621614">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:11</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:11</note>
       </notes>
       <segment>
         <source>Submitted</source>
@@ -742,7 +742,7 @@
     </unit>
     <unit id="340430316261570792">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:16</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:16</note>
       </notes>
       <segment>
         <source>Finished</source>
@@ -751,7 +751,7 @@
     <unit id="4043049091728011235">
       <notes>
         <note category="location">src/app/sessions/services/sessions-statuses.service.ts:9</note>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:15</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:15</note>
       </notes>
       <segment>
         <source>Cancelled</source>
@@ -759,7 +759,7 @@
     </unit>
     <unit id="4749295647449765550">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:13</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:13</note>
       </notes>
       <segment>
         <source>Processed</source>
@@ -767,7 +767,7 @@
     </unit>
     <unit id="5033937537861966242">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:9</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:9</note>
       </notes>
       <segment>
         <source>Dispatched</source>
@@ -775,7 +775,7 @@
     </unit>
     <unit id="5956316725115867558">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:18</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:18</note>
       </notes>
       <segment>
         <source>Timeout</source>
@@ -791,7 +791,7 @@
         <note category="location">src/app/sessions/services/sessions-statuses.service.ts:7</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:33</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:37</note>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:8</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:8</note>
       </notes>
       <segment>
         <source>Unspecified</source>
@@ -799,7 +799,7 @@
     </unit>
     <unit id="8667665916832796867">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:10</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:10</note>
       </notes>
       <segment>
         <source>Creating</source>
@@ -807,7 +807,7 @@
     </unit>
     <unit id="8990977482609744250">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:14</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:14</note>
       </notes>
       <segment>
         <source>Cancelling</source>
@@ -815,7 +815,7 @@
     </unit>
     <unit id="9155387182259025015">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:12</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:12</note>
       </notes>
       <segment>
         <source>Processing</source>
@@ -952,7 +952,7 @@
     </unit>
     <unit id="2649059232343656024">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-status.service.ts:19</note>
+        <note category="location">src/app/tasks/services/tasks-statuses.service.ts:19</note>
       </notes>
       <segment>
         <source>Retried</source>
