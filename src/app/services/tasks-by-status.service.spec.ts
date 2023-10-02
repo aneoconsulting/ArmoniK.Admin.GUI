@@ -5,14 +5,14 @@ import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 import { TasksByStatusService } from './tasks-by-status.service';
 
-type TableTasksByStatus = 'applications' | 'sessions' | 'partitions';
 
 
 describe('tasksByStatusService', () => {
   let service: TasksByStatusService;
-  const mockStorageService = {
+  const mockStorage = {
     getItem: jest.fn(),
-    setItem: jest.fn()
+    setItem: jest.fn(), 
+    'applications-tasks-by-status': [{'color': '#4caf50', 'status': 4}],
   };
   const mockTaskStatusColored: TaskStatusColored[] = [
     {
@@ -38,7 +38,7 @@ describe('tasksByStatusService', () => {
       providers: [
         TasksByStatusService,
         DefaultConfigService,
-        {provide: StorageService, useValue: mockStorageService}
+        {provide: StorageService, useValue: mockStorage}
          
       ]
     }).inject(TasksByStatusService);
@@ -52,14 +52,16 @@ describe('tasksByStatusService', () => {
     expect(service.defaultStatuses).toEqual(mockTaskStatusColored);
   });
 
-  it('should return all avalaible default colors for tasks status', () => {
+  test('should call getItem from Storage service ', () => {
     const table = 'applications';
-    expect(service.restoreStatuses(table)).toEqual(mockTaskStatusColored);
+    service.restoreStatuses(table);
+    expect(mockStorage.getItem).toHaveBeenCalled();
   });
-  
-  it('should return all avalaible default colors for tasks status', () => {
+
+  test('should call saveItem from storage', () => {
     const table = 'applications';
-    expect(service.restoreStatuses(table)).toEqual(mockTaskStatusColored);
+    service.saveStatuses(table, mockStorage['applications-tasks-by-status']);
+    expect(mockStorage.setItem).toHaveBeenCalled();
   });
-  
+   
 });

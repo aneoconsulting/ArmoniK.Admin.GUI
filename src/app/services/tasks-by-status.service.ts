@@ -19,7 +19,7 @@ export class TasksByStatusService {
    * @returns An array of TaskStatusColored objects
    */
   restoreStatuses(table: TableTasksByStatus): TaskStatusColored[] {
-    return this.#storageService.getItem<TaskStatusColored[]>(`${table}-${this.#key}`, true) as TaskStatusColored[] ?? this.defaultStatuses;
+    return this.#storageService.getItem<TaskStatusColored[]>(`${table}-${this.#key}`, true) as TaskStatusColored[] | null ?? this.defaultStatuses;
   }
   /**
    * Save colors corresponding to tasks statuses for applications, sessions or partitions
