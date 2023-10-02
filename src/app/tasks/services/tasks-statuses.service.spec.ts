@@ -16,7 +16,7 @@ describe('tasksStatusesService', () => {
   });
   
 
-  test('should return retried status', () => {
+  test('should return true', () => {
     const mockRetriedTaskStatus = service.isRetried(11);
     expect(mockRetriedTaskStatus).toBeTruthy();
   });
