@@ -1,11 +1,13 @@
-import { TestBed } from '@angular/core/testing';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { ShowCardContentComponent } from './show-card-content.component';
 
-type TestingObject = {
-  first_key: string | number | {seconds: string | number, nanos: string | number};
-  second_key: string | number | {seconds: string | number | undefined, nanos: string | number | undefined};
-  third_key: string | string[] | number | {seconds: string | number | undefined, nanos: string | number | undefined};
+/**
+ * This item will help us test the various cases of the component.
+ * Its structure covers every possible case of the component's data, which
+ * is why it is call SandBox.
+ */
+type SandBox = {
+  [key: string]: string | string[] | number | {seconds: string | number | undefined, nanos: string | number | undefined};
 };
 
 type Data = {
@@ -14,14 +16,10 @@ type Data = {
 
 describe('ShowCardContentComponent', () => {
 
-  let component: ShowCardContentComponent<TestingObject>;
+  let component: ShowCardContentComponent<SandBox>;
 
   beforeEach(() => {
-    component = TestBed.configureTestingModule({
-      providers: [
-        ShowCardContentComponent
-      ]
-    }).inject(ShowCardContentComponent);
+    component = new ShowCardContentComponent();
   });
 
   it('Should run', () => {
@@ -221,19 +219,19 @@ describe('ShowCardContentComponent', () => {
 
     it('Should return a value if the key is correct', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
-      expect(component.findValue('first_key')).toEqual('my_first_value');
-      expect(component.findValue('third_key')).toEqual(['my_third_value', 'my_fourth_value']);
+      expect(component.findValue('first_key')).toEqual('first_value');
+      expect(component.findValue('third_key')).toEqual(['third_value', 'fourth_value']);
     });
 
     it('Should return "-" if the key is incorrect', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
       expect(component.findValue('some_incorrect_key')).toEqual('-');
     });
@@ -253,19 +251,19 @@ describe('ShowCardContentComponent', () => {
 
     it('Should return a value if the key is correct', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
-      expect(component.findArray('first_key')).toEqual('my_first_value');
-      expect(component.findArray('third_key')).toEqual(['my_third_value', 'my_fourth_value']);
+      expect(component.findArray('first_key')).toEqual('first_value');
+      expect(component.findArray('third_key')).toEqual(['third_value', 'fourth_value']);
     });
 
     it('Should return an empty array if the key is incorrect', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
       expect(component.findArray('some_incorrect_key')).toEqual([]);
     });
@@ -285,19 +283,19 @@ describe('ShowCardContentComponent', () => {
 
     it('Should return a value if the key is correct', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
-      expect(component.findObject('first_key')).toEqual('my_first_value' as unknown as Data);
-      expect(component.findObject('third_key')).toEqual(['my_third_value', 'my_fourth_value'] as unknown as Data);
+      expect(component.findObject('first_key')).toEqual('first_value' as unknown as Data);
+      expect(component.findObject('third_key')).toEqual(['third_value', 'fourth_value'] as unknown as Data);
     });
 
     it('Should return an empty array if the key is incorrect', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
       expect(component.findObject('some_incorrect_key')).toEqual({});
     });
@@ -401,19 +399,19 @@ describe('ShowCardContentComponent', () => {
   describe('statusToLabel', () => {
     it('Should return a label if the key and data are correct', () => {
 
-      component.statuses = {1: 'My_first_label', 2: 'My_second_label'};
+      component.statuses = {1: 'first_label', 2: 'second_label'};
 
       component.data = {
         first_key: '1',
         second_key: 2, 
         third_key: ['45', '62']
       };
-      expect(component.statusToLabel('first_key')).toEqual('My_first_label');
-      expect(component.statusToLabel('second_key')).toEqual('My_second_label');
+      expect(component.statusToLabel('first_key')).toEqual('first_label');
+      expect(component.statusToLabel('second_key')).toEqual('second_label');
     });
 
     it('Should return "-" if no data is provided', () => {
-      component.statuses = {1: 'My_first_label', 2: 'My_second_label'};
+      component.statuses = {1: 'first_label', 2: 'second_label'};
       expect(component.statusToLabel('first_key')).toEqual('-');
     });
 
@@ -427,7 +425,7 @@ describe('ShowCardContentComponent', () => {
     });
 
     it('Should return "-" if the data key is invalid', () => {
-      component.statuses = {1: 'My_first_label', 2: 'My_second_label'};
+      component.statuses = {1: 'first_label', 2: 'second_label'};
 
       component.data = {
         first_key: '1',
@@ -438,7 +436,7 @@ describe('ShowCardContentComponent', () => {
     });
 
     it('Should return "-" if the data value is invalid', () => {
-      component.statuses = {1: 'My_first_label', 2: 'My_second_label'};
+      component.statuses = {1: 'first_label', 2: 'second_label'};
 
       component.data = {
         first_key: 'invalid data',
@@ -459,9 +457,9 @@ describe('ShowCardContentComponent', () => {
   describe('ngOnChange', () => {
     it('Should sort data keys and store it into keys on change', () => {
       component.data = {
-        first_key: 'my_first_value',
-        second_key: 'my_second_value', 
-        third_key: ['my_third_value', 'my_fourth_value']
+        first_key: 'first_value',
+        second_key: 'second_value', 
+        third_key: ['third_value', 'fourth_value']
       };
       component.ngOnChanges();
       expect(component.keys).toEqual(['first_key', 'second_key', 'third_key']);
@@ -474,7 +472,7 @@ describe('ShowCardContentComponent', () => {
   });
 
   it('trackByKey', () => {
-    const key = 'my_key';
+    const key = 'key';
     expect(component.trackByKey(0, key)).toBe(key);
   });
 
