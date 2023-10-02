@@ -5,8 +5,8 @@ import { Observable, Subject, interval, map, merge, switchMap, takeUntil } from 
 export class AutoRefreshService {
   /**
    * Creates an observable containing the interval time before refreshing the data in a table.
-   * @param intervalSubject The observable is depending on this subject, so if the the subject has a new value, the observable will update.
-   * @param stopIntervalSubject The interval can be stoped if with this subjet.
+   * @param intervalSubject The observable is depending on this subject, so if the the subject has a new value, the observable will be updated.
+   * @param stopIntervalSubject The interval can be stopped if with this subject.
    * @returns the observable
    */
   createInterval(intervalSubject: Subject<number>, stopIntervalSubject: Subject<void>): Observable<number> {
