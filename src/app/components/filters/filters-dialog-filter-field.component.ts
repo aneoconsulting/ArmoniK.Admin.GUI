@@ -91,7 +91,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       this.filter.value = event.value;
       break;
     case 'number':
-      this.filter.value = Number(event.value);
+      this.filter.value = Number(event.value) || null;
       break;
     }
   }
@@ -104,7 +104,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'string':
       return {
         type: 'string',
-        value: filter.value as FilterInputValueString || null
+        value: filter.value as FilterInputValueString
       };
     case 'number': {
       return {
@@ -115,7 +115,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'array':
       return {
         type: 'string',
-        value: filter.value as FilterInputValueString || null
+        value: filter.value as FilterInputValueString
       };
     case 'status':
       return {
@@ -157,7 +157,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return field.statuses;
   }
 
-  findOperator(filter: Filter<T, U>) {
+  findOperator(filter: Filter<T, U>): Record<number, string> {
     const type = this.findType(filter);
     const operators = this.#filtersService.findOperators(type);
     return operators;
