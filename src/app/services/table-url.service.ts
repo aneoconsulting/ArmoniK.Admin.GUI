@@ -10,7 +10,7 @@ import { QueryParamsOptionsKey } from '@app/types/query-params';
  */
 @Injectable()
 export class TableURLService {
-  constructor(private _route: ActivatedRoute) {}
+    #route = inject(ActivatedRoute) 
 
   /**
    * Returns the wanted table options from the url.
