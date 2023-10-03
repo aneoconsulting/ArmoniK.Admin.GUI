@@ -13,11 +13,14 @@ export class TasksByStatusService {
   #storageService = inject(StorageService);
 
   readonly defaultStatuses: TaskStatusColored[] = this.#defaultConfigService.defaultTasksByStatus;
-
   restoreStatuses(table: TableTasksByStatus): TaskStatusColored[] {
     return this.#storageService.getItem<TaskStatusColored[]>(`${table}-${this.#key}`, true) as TaskStatusColored[] | null ?? this.defaultStatuses;
   }
-
+  /**
+   * Save colors corresponding to tasks statuses for applications, sessions or partitions
+   * @param table a type TableTasksByStatus object 
+   * @param statuses array of TaskStatusColored objects
+   */
   saveStatuses(table: TableTasksByStatus, statuses: TaskStatusColored[]): void {
     this.#storageService.setItem(`${table}-${this.#key}`, statuses);
   }
