@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
 import { Filter, FiltersOr } from '@app/types/filters';
@@ -10,12 +10,22 @@ import { QueryParamsOptionsKey } from '@app/types/query-params';
  */
 @Injectable()
 export class TableURLService {
-  constructor(private _route: ActivatedRoute) {}
+  #route = inject(ActivatedRoute);
 
+  /**
+   * Returns the wanted table options from the url.
+   * @param key [QueryParamsOptionsKey](../types/query-params.ts)
+   * @returns The wanted data, not parsed.
+   */
   getQueryParamsOptions<T>(key: QueryParamsOptionsKey) {
     return this.getQueryParam<T>(key, false);
   }
 
+  /**
+   * Retrieve the filters specified in the filtersDefinition from the url.
+   * @param filtersDefinitions [FilterDefinition](../sessions/services/sessions-filters.service.ts)
+   * @returns an array of every wanted filter
+   */
   getQueryParamsFilters<T extends number, U extends number | null>(filtersDefinitions: FilterDefinition<T, U>[]): FiltersOr<T, U> {
     const params: Map<string, Filter<T, U>[]>  = new Map();
     const filters: FiltersOr<T, U> = [];
@@ -25,12 +35,12 @@ export class TableURLService {
 
     for (const key of keys) {
       const match = key.match(extractValues);
-      const order = match?.groups?.['order'] ?? null as string | null;
-      const for_ = match?.groups?.['for'] ?? null as FilterFor<T, U> | null;
+      const order = match?.groups?.['order'] as string ?? null;
+      const for_ = match?.groups?.['for'] as FilterFor<T, U> ?? null;
       const field = match?.groups?.['field'] ? Number(match?.groups?.['field']) : null as T | U | null;
-      const operator = match?.groups?.['operator'] ?? null as string | null;
+      const operator = match?.groups?.['operator'] as string ?? null;
 
-      if (order === null || field === null || operator === null) {
+      if (order === null || field === null || operator === null || for_ === null) {
         continue;
       }
 
@@ -47,7 +57,7 @@ export class TableURLService {
         field: field as T | U,
         operator: Number(operator),
         value: this.getQueryParam(key, false),
-        for: for_ as FilterFor<T, U> ?? null
+        for: for_ as FilterFor<T, U>
       });
 
       params.set(order, currentParams);
@@ -60,12 +70,21 @@ export class TableURLService {
     return filters;
   }
 
+  /**
+   * @returns all the keys contained in the route. 
+   */
   getQueryParamKeys(): string[] {
-    return this._route.snapshot.queryParamMap.keys;
+    return this.#route.snapshot.queryParamMap.keys;
   }
 
+  /**
+   * Return a parameter from the route by its key.
+   * @param key `string`, also in the route.
+   * @param parse If you want your data to be parsed. Default = true
+   * @returns the data
+   */
   getQueryParam<T>(key: string, parse = true) {
-    const data = this._route.snapshot.queryParamMap.get(key);
+    const data = this.#route.snapshot.queryParamMap.get(key);
 
     if(data && parse) {
       return JSON.parse(data) as T;
@@ -74,9 +93,5 @@ export class TableURLService {
     }
 
     return null;
-  }
-
-  #unreachable(x: never): never {
-    throw new Error('Unreachable ' + x);
   }
 }
