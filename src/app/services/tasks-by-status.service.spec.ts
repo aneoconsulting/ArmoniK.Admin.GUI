@@ -51,7 +51,7 @@ describe('tasksByStatusService', () => {
     expect(service.defaultStatuses).toEqual(mockTaskStatusColored);
   });
 
-  test('should call getItem from Storage service ', () => {
+  it('should call getItem from Storage service ', () => {
     const table = 'applications';
     service.restoreStatuses(table);
     expect(mockStorage.getItem).toHaveBeenCalled();
