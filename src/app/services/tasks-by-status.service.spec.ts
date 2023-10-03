@@ -43,7 +43,7 @@ describe('tasksByStatusService', () => {
     }).inject(TasksByStatusService);
   });
 
-  test('it should create tasks by status', () =>{
+  it('should create tasks by status', () =>{
     expect(service).toBeTruthy();
   }); 
 
