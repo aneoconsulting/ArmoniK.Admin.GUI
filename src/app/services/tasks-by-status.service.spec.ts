@@ -57,7 +57,7 @@ describe('tasksByStatusService', () => {
     expect(mockStorage.getItem).toHaveBeenCalled();
   });
 
-  test('should call saveItem from storage', () => {
+  it('should call saveItem from storage', () => {
     const table = 'applications';
     service.saveStatuses(table, mockStorage['applications-tasks-by-status']);
     expect(mockStorage.setItem).toHaveBeenCalled();
