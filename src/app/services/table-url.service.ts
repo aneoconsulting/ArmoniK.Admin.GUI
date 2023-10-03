@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
 import { Filter, FiltersOr } from '@app/types/filters';
@@ -10,7 +10,7 @@ import { QueryParamsOptionsKey } from '@app/types/query-params';
  */
 @Injectable()
 export class TableURLService {
-    #route = inject(ActivatedRoute) 
+  #route = inject(ActivatedRoute);
 
   /**
    * Returns the wanted table options from the url.
@@ -74,7 +74,7 @@ export class TableURLService {
    * @returns all the keys contained in the route. 
    */
   getQueryParamKeys(): string[] {
-    return this._route.snapshot.queryParamMap.keys;
+    return this.#route.snapshot.queryParamMap.keys;
   }
 
   /**
@@ -84,7 +84,7 @@ export class TableURLService {
    * @returns the data
    */
   getQueryParam<T>(key: string, parse = true) {
-    const data = this._route.snapshot.queryParamMap.get(key);
+    const data = this.#route.snapshot.queryParamMap.get(key);
 
     if(data && parse) {
       return JSON.parse(data) as T;
