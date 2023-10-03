@@ -80,9 +80,11 @@ export class FiltersDialogInputComponent {
   }
 
   onNumberChange(event: Event): void {
+    const value = Number((event.target as HTMLInputElement).value);
+    if (isNaN(value)) return;
     this.valueChange.emit({
       type: 'number',
-      value: Number((event.target as HTMLInputElement).value),
+      value: value,
     });
   }
 
