@@ -39,7 +39,6 @@ describe('tasksByStatusService', () => {
         TasksByStatusService,
         DefaultConfigService,
         {provide: StorageService, useValue: mockStorage}
-         
       ]
     }).inject(TasksByStatusService);
   });
