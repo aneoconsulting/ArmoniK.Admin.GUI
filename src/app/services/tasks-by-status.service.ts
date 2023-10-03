@@ -13,11 +13,6 @@ export class TasksByStatusService {
   #storageService = inject(StorageService);
 
   readonly defaultStatuses: TaskStatusColored[] = this.#defaultConfigService.defaultTasksByStatus;
-  /**
-   * 
-   * @param table 
-   * @returns An array of TaskStatusColored objects
-   */
   restoreStatuses(table: TableTasksByStatus): TaskStatusColored[] {
     return this.#storageService.getItem<TaskStatusColored[]>(`${table}-${this.#key}`, true) as TaskStatusColored[] | null ?? this.defaultStatuses;
   }
