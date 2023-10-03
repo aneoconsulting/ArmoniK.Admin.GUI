@@ -47,7 +47,7 @@ describe('tasksByStatusService', () => {
     expect(service).toBeTruthy();
   }); 
 
-  test('should have right default status colors', () => {
+  it('should have right default status colors', () => {
     expect(service.defaultStatuses).toEqual(mockTaskStatusColored);
   });
 
