@@ -135,12 +135,6 @@ export class SessionsFiltersService {
         };
       }),
     },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
-      type: 'number'
-    }
-
   ];
 
   readonly #defaultFilters: SessionRawFiltersOr = this.#defaultConfigService.defaultSessions.filters;
