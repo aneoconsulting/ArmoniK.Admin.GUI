@@ -56,7 +56,7 @@ describe('ThemeSelectorComponent', () => {
       component.updateTheme('indigo-pink');
     });
 
-    it('should not remove theme if it is not availabe', () => {
+    it('should not remove theme if it is not available', () => {
       const wrongTheme = 'some-theme' as Theme;
       component.currentTheme = wrongTheme;
       const spy = jest.spyOn(document, 'getElementById');
