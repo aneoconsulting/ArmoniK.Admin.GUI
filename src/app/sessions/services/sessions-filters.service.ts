@@ -44,7 +44,7 @@ type FilterDefinitionRootArray<T extends number> = {
  *
  * `for` and `field` are used to identify the filter.
  */
-type FilterDefinitionRootSatus<T extends number> = {
+type FilterDefinitionRootStatus<T extends number> = {
   /**
    * Used to know which field comes from since it's just a number from an enum.
    */
@@ -54,7 +54,7 @@ type FilterDefinitionRootSatus<T extends number> = {
   statuses: FilterValueOptions;
 };
 
-type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootSatus<T>;
+type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T>;
 
 type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**
