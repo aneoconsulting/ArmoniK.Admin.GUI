@@ -72,7 +72,7 @@ describe('ViewTasksByStatusDialogComponent', () => {
   });
 
   describe('isUsedStatus', () => {
-    it('should indicates wether or not a status is used', () => {
+    it('should show whether or not a status is used', () => {
       expect(component.isUsedStatus(TaskStatus.TASK_STATUS_CANCELLED)).toBeFalsy();
       expect(component.isUsedStatus(TaskStatus.TASK_STATUS_COMPLETED)).toBeTruthy();
     });
