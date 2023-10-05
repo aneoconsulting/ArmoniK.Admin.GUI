@@ -6,7 +6,7 @@ import { Filter, FilterInputValueDate } from '@app/types/filters';
  * @param filter 
  * @returns the seconds in string
  */
-export class DateHandlerService<T extends number, U extends number> {
+export class DateHandlerService<T extends number, U extends number | null> {
   setSecondsByDateOperator(filter: Filter<T, U>): string {
     const seconds = (filter.value as FilterInputValueDate);
     if (!seconds) {
