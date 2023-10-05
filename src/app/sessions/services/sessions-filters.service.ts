@@ -54,7 +54,13 @@ type FilterDefinitionRootSatus<T extends number> = {
   statuses: FilterValueOptions;
 };
 
-type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootSatus<T>;
+type FilterDefinitionRootDate<T extends number> = {
+  for: 'root',
+  field: T,
+  type: 'date';
+};
+
+type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootSatus<T> | FilterDefinitionRootDate<T>;
 
 type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**
@@ -135,6 +141,16 @@ export class SessionsFiltersService {
         };
       }),
     },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
+      type: 'date'
+    }
   ];
 
   readonly #defaultFilters: SessionRawFiltersOr = this.#defaultConfigService.defaultSessions.filters;

@@ -1,7 +1,8 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterDateOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
+import { DateHandlerService } from '@app/services/date-handler';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
@@ -90,6 +91,17 @@ export class SessionsGrpcService{
           filterStatus: {
             value: Number(filter.value) ?? 0,
             operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+          }
+        } satisfies SessionFilterField.AsObject;
+      case 'date':
+        return {
+          field: filterField,
+          filterDate: {
+            value: {
+              nanos: 0,
+              seconds: new DateHandlerService<SessionRawEnumField, SessionTaskOptionEnumField>().setSecondsByDateOperator(filter)
+            },
+            operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
           }
         } satisfies SessionFilterField.AsObject;
       default:
