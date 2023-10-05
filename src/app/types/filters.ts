@@ -64,22 +64,19 @@ export type FilterInputValueNumber = MaybeNull<number>;
 export type FilterInputValueDate = MaybeNull<number>;
 
 // Input for a filter input.
-interface FilterInputBase {
-  type: FilterType;
-}
-export interface FilterInputString extends FilterInputBase {
+export interface FilterInputString {
   type: 'string' | 'array';
   value: FilterInputValueString;
 }
-export interface FilterInputNumber extends FilterInputBase  {
+export interface FilterInputNumber {
   type: 'number';
   value: FilterInputValueNumber;
 }
-export interface FilterInputDate extends FilterInputBase {
+export interface FilterInputDate {
   type: 'date';
   value: FilterInputValueDate;
 }
-export interface FilterInputStatus extends FilterInputBase  {
+export interface FilterInputStatus {
   type: 'status';
   value: MaybeNull<string>;
   statuses: FilterValueOptions;
