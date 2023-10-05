@@ -30,7 +30,7 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
     </app-actions-toolbar>
   </mat-toolbar>
 
-  <ul class="external-services" cdkDropList (cdkDropListDropped)="drop($event)">
+  <ul class="external-services" cdkDropList (cdkDropListDropped)="onDrop($event)">
     <li *ngFor="let externalService of externalServices; trackBy:trackByService" cdkDrag>
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')" cdkDragHandle></mat-icon>
       <a mat-flat-button [href]="externalService.url" target="_blank" rel="noopener noreferrer" [matTooltip]="externalService.url" class="name">
@@ -196,7 +196,7 @@ export class ManageExternalServicesDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.externalServices, event.previousIndex, event.currentIndex);
   }
 
