@@ -89,7 +89,37 @@ export class TasksFiltersService {
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
       type: 'string',
-    }
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ENDED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_AT,
+      type: 'date'
+    },
   ];
 
   readonly #defaultFilters: TaskSummaryFiltersOr = this.#defaultConfigService.defaultTasks.filters;

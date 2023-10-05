@@ -1,8 +1,9 @@
-import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
+import { DateHandlerService } from '@services/date-handler';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
@@ -125,6 +126,17 @@ export class TasksGrpcService {
             value: Number(filter.value) ?? 0,
             operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
           },
+        } satisfies TaskFilterField.AsObject;
+      case 'date':
+        return {
+          field: filterField,
+          filterDate: {
+            value: {
+              nanos: 0,
+              seconds: new DateHandlerService<TaskSummaryEnumField, TaskOptionEnumField>().setSecondsByDateOperator(filter)
+            },
+            operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
+          }
         } satisfies TaskFilterField.AsObject;
       default:
         throw new Error(`Type ${type} not supported`);
