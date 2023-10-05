@@ -1,5 +1,5 @@
 import { SessionRawEnumField, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { DateHandlerService } from './date-handler';
+import { DateHandlerService } from './date-handler.service';
 import { Filter } from '../types/filters';
 
 describe('date-handler', () => {
