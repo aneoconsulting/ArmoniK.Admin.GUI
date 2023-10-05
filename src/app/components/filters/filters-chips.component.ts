@@ -59,7 +59,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
 
     const label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
 
-    if (!filter.value)
+    if (filter.value === null)
       return label + ' ' + $localize`has no value`;
 
     const filtersDefinitions = this.#dataFiltersService.retrieveFiltersDefinitions();

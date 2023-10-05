@@ -40,6 +40,11 @@ describe('FiltersChipsComponent', () => {
       type: 'array',
       for: 'root'
     },
+    {
+      field: 6,
+      type: 'date',
+      for: 'root'
+    },
     ({
       field: 5,
       type: 'unknownType',
@@ -66,6 +71,7 @@ describe('FiltersChipsComponent', () => {
     mockDataFilterService.retrieveLabel.mockImplementation((for_: string, field: number) => {
       if (for_ === 'root' && field === 4) return 'number';
       else if (for_ === 'root' && field === 1) return 'status';
+      else if (for_ === 'root' && field === 6) return 'date';
       else return 'other';
     });
   });
@@ -92,6 +98,16 @@ describe('FiltersChipsComponent', () => {
       value: 'status1'
     };
     expect(component.content(filter)).toEqual('status Equal dispatched');
+  });
+
+  it('should create the label of the date filter', () => {
+    const filter: Filter<number, number> = {
+      field: 6,
+      for: 'root',
+      operator: 0,
+      value: 0
+    };
+    expect(component.content(filter)).toEqual('date Equal 1970-01-01');
   });
 
   it('should create the content of the component even with no for', () => {
