@@ -143,7 +143,7 @@ describe('TasksFilterService', () => {
 
   test('the service must throw an error ', () => {
     const mockFilterFor = {for: 'dummy for'} as never;
-    const mockFilterField = mockFiltersDefinitions[6].field; 
+    const mockFilterField = expectedFiltersDefinitions[6].field; 
     expect(() => {service.retrieveLabel(mockFilterFor , mockFilterField );}).toThrowError(`Unknown filter type: ${mockFilterFor} ${mockFilterField}`);
   });
 });
