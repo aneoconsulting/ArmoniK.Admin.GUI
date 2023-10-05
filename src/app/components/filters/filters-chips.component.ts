@@ -51,7 +51,12 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
   @Input({ required: true }) filtersAnd: FiltersAnd<T, U> = [];
 
   content(filter: Filter<T, U>): string {
-    const label = this.#dataFiltersService.retrieveLabel(filter.for ?? 'root', Number(filter.field));
+
+    if(!filter.for) {
+      filter.for = 'root';
+    }
+
+    const label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
 
     if (!filter.value)
       return label + ' ' + $localize`has no value`;
