@@ -105,7 +105,6 @@ describe('TasksFilterService', () => {
     const spySaveFilters = jest.spyOn(mockTableService, 'saveFilters');
     const filters = mockTaskSummaryfilterOr;
     service.saveFilters(filters);
-    expect(spySaveFilters).toHaveBeenCalled();
     expect(spySaveFilters).toHaveBeenCalledWith('tasks-filters', filters);
   });
 
