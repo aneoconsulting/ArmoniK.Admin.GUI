@@ -75,10 +75,6 @@ export class ThemeSelectorComponent implements OnInit {
   }
 
   updateTheme(themeName: Theme) {
-    if (!themeName) {
-      return;
-    }
-
     if(this.currentTheme) {
       this.#removeTheme(this.currentTheme);
     }

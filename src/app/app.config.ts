@@ -27,7 +27,7 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         throw err;
       })
     ),
-    userGrpcService.me$().pipe(
+    userGrpcService.getUser$().pipe(
       tap((data) => {
         if (!data.user) {
           throw new Error('No user');
