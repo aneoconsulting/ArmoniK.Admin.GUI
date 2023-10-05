@@ -11,8 +11,7 @@ describe('tasksStatusesService', () => {
   });
 
   test('should return the right task status', () => {
-    const mockStatus = service.statusToLabel(10);
-    expect(mockStatus).toBe('Processed');
+    expect(service.statusToLabel(10)).toEqual('Processed');
   });
   
 
