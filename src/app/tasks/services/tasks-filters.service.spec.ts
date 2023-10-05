@@ -10,11 +10,6 @@ import { TaskFilterDefinition, TaskSummaryFiltersOr } from '../types';
 
 describe('TasksFilterService', () => {
   let service: TasksFiltersService;
-  const mockDefaultConfigService = {
-    defaultTasks: {
-      filters: [] as unknown as TaskSummaryFiltersOr 
-    }
-  };
   const mockTasksStatusesService = {
     statuses: {
       0: $localize`Unspecified`,
@@ -36,7 +31,7 @@ describe('TasksFilterService', () => {
     resetFilters: jest.fn(),
     restoreFilters: jest.fn(),
   };
-  const mockFiltersDefinitions : TaskFilterDefinition[] = [
+  const expectedFiltersDefinitions : TaskFilterDefinition[] = [
     {
       for: 'root',
       field: 16,
@@ -94,8 +89,8 @@ describe('TasksFilterService', () => {
     service = TestBed.configureTestingModule({
       providers: [
         TasksFiltersService,
-        {provide: TasksStatusesService, useValue: mockTasksStatusesService},
-        {provide: DefaultConfigService, useValue: mockDefaultConfigService }, 
+        DefaultConfigService,
+        {provide: TasksStatusesService, useValue: mockTasksStatusesService}, 
         {provide: TableService, useValue: mockTableService}
         
       ]
@@ -107,9 +102,9 @@ describe('TasksFilterService', () => {
   }); 
 
   test('the service must call saveFilters from Table Service', () => {
+    const spySaveFilters = jest.spyOn(mockTableService, 'saveFilters');
     const filters = mockTaskSummaryfilterOr;
     service.saveFilters(filters);
-    const spySaveFilters = jest.spyOn(mockTableService, 'saveFilters');
     expect(spySaveFilters).toHaveBeenCalled();
     expect(spySaveFilters).toHaveBeenCalledWith('tasks-filters', filters);
   });
@@ -117,27 +112,26 @@ describe('TasksFilterService', () => {
   test('the service must call restoreFilters from Table Service', () => {
     const spyRestoreFilters = jest.spyOn(mockTableService, 'restoreFilters');
     service.restoreFilters();
-    expect(spyRestoreFilters).toHaveBeenCalledWith('tasks-filters', mockFiltersDefinitions);
+    expect(spyRestoreFilters).toHaveBeenCalledWith('tasks-filters', expectedFiltersDefinitions);
   });
   test('the service must call resetFilters from Table Service', () => {
-    service.resetFilters();
     const spyRestoreFilters = jest.spyOn(mockTableService, 'resetFilters');
-    const mockDefaultFilters = mockDefaultConfigService.defaultTasks.filters;
-    expect(spyRestoreFilters).toHaveBeenCalled();
+    const mockDefaultFilters = new DefaultConfigService().defaultTasks.filters;
+    service.resetFilters();
     expect(spyRestoreFilters).toHaveBeenCalledWith('tasks-filters');
-    expect(service.resetFilters()).toBe(mockDefaultFilters);
+    expect(service.resetFilters()).toEqual(mockDefaultFilters);
   });
   test('the service must return #filtersDefinitions', () =>{
-    expect(service.retrieveFiltersDefinitions()).toEqual(mockFiltersDefinitions);
+    expect(service.retrieveFiltersDefinitions()).toEqual(expectedFiltersDefinitions);
   });
 
   test('the service must return the right label with filterFor root', () => {
-    const mockLabelFilterRoot = service.retrieveLabel(mockFiltersDefinitions[2].for, mockFiltersDefinitions[2].field);
+    const mockLabelFilterRoot = service.retrieveLabel(expectedFiltersDefinitions[2].for, expectedFiltersDefinitions[2].field);
     expect(mockLabelFilterRoot).toEqual('Initial Task ID');
   });
 
   test('the service must return the right label with filterFor options', () => {
-    const mockLabelFilterOptions = service.retrieveLabel(mockFiltersDefinitions[6].for, mockFiltersDefinitions[6].field);
+    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[6].for, expectedFiltersDefinitions[6].field);
     expect(mockLabelFilterOptions).toEqual('Partition ID');
   });
 
