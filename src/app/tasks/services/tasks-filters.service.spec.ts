@@ -115,9 +115,8 @@ describe('TasksFilterService', () => {
   });
 
   test('the service must call restoreFilters from Table Service', () => {
-    service.restoreFilters();
     const spyRestoreFilters = jest.spyOn(mockTableService, 'restoreFilters');
-    expect(spyRestoreFilters).toHaveBeenCalled();
+    service.restoreFilters();
     expect(spyRestoreFilters).toHaveBeenCalledWith('tasks-filters', mockFiltersDefinitions);
   });
   test('the service must call resetFilters from Table Service', () => {
