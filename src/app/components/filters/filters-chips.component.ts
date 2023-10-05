@@ -1,6 +1,7 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { DateTime } from 'luxon';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FiltersAnd } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -69,6 +70,9 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
       const statuses = this.#utilsService.recoverStatuses(filter, filtersDefinitions);
       const status = statuses.find(s => s.key.toString() === filter.value?.toString());
       return `${label} ${operator} ${status?.value}`;
+    }
+    else if (type === 'date') {
+      return `${label} ${operator} ${DateTime.fromSeconds(filter.value as number).toISODate()}`;
     }
 
     return `${label} ${operator} ${filter.value}`;
