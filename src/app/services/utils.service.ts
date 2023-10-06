@@ -6,7 +6,7 @@ import { Filter, FilterType, FilterValueOptions, FiltersAnd, FiltersOr } from '@
 // Need to generalize SessionRawEnumField
 export class UtilsService<T extends number, U extends number | null = null> {
 
-  createFilters<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null) => F) {
+  createFilters<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null, isForRoot: boolean) => F) {
     const or = this.#createFiltersOr<F>(filters, filtersDefinitions, cb);
 
     return or;
@@ -15,7 +15,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
   /**
    * Used to create a group of lines (OR).
    */
-  #createFiltersOr<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null) => F) {
+  #createFiltersOr<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null, isForRoot: boolean) => F) {
     const filtersOr = [];
 
     for (const filter of filters) {
@@ -34,7 +34,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
   /**
    * Used to create a line of filters (AND).
    */
-  #createFiltersAnd<F>(filters: FiltersAnd<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null) => F) {
+  #createFiltersAnd<F>(filters: FiltersAnd<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | null, isForRoot: boolean) => F) {
     const filtersAnd = [];
 
     for (const filter of filters) {
@@ -53,7 +53,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
   /**
    * Used to define a filter field.
    */
-  #createFilterField<F>(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (type: FilterType, field: T | U | null) => F): F | null {
+  #createFilterField<F>(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (type: FilterType, field: T | U | null, isForRoot: boolean) => F): F | null {
     if (filter.field === null || filter.value === null || filter.operator === null) {
       return null;
     }
@@ -61,7 +61,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
     const type = this.recoverType(filter, filtersDefinitions);
     const field = this.#recoverField(filter, filtersDefinitions);
 
-    return cb(type, field);
+    return cb(type, field, this.#isForRoot(filter, filtersDefinitions));
   }
 
   /**
@@ -84,6 +84,16 @@ export class UtilsService<T extends number, U extends number | null = null> {
     }
 
     return filterDefinition.statuses;
+  }
+
+  /**
+   * Check if a filter is used for a root property of the table. 
+   * @param filter 
+   * @param filtersDefinitions 
+   * @returns true if root, false if options
+   */
+  #isForRoot(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): boolean {
+    return this.#recoverFilterDefinition(filter, filtersDefinitions).for === 'root';
   }
 
   /**
