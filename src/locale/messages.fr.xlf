@@ -22,7 +22,7 @@
     </unit>
     <unit id="1771632592264032965">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:57</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:62</note>
       </notes>
       <segment state="initial">
         <source>has no value</source>
@@ -206,16 +206,6 @@
         <target>Et</target>
       </segment>
     </unit>
-    <unit id="763982378603811482">
-      <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
-        <note category="description">Label input</note>
-      </notes>
-      <segment state="initial">
-        <source>Column</source>
-        <target>Colonne</target>
-      </segment>
-    </unit>
     <unit id="9147046130713106935">
       <notes>
         <note category="location">src/app/services/filters.service.ts:40</note>
@@ -229,7 +219,7 @@
       <notes>
         <note category="location">src/app/components/filters/filters-dialog-and.component.ts:25</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:52</note>
-        <note category="location">src/app/settings/index.component.ts:108</note>
+        <note category="location">src/app/settings/index.component.ts:110</note>
       </notes>
       <segment state="initial">
         <source>Clear</source>
@@ -241,7 +231,7 @@
         <note category="location">src/app/components/filters/filters-dialog-and.component.ts:29</note>
         <note category="location">src/app/components/filters/filters-dialog-or.component.ts:43</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:56</note>
-        <note category="location">src/app/settings/index.component.ts:68</note>
+        <note category="location">src/app/settings/index.component.ts:69</note>
       </notes>
       <segment state="initial">
         <source>Remove</source>
@@ -250,7 +240,7 @@
     </unit>
     <unit id="594074927045956520">
       <notes>
-        <note category="location">src/app/components/filters/filters-toolbar.component.ts:31</note>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:33</note>
         <note category="description">User will be able the create or delete filters</note>
       </notes>
       <segment state="initial">
@@ -699,7 +689,7 @@
     </unit>
     <unit id="442332459324576103">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:88</note>
+        <note category="location">src/app/settings/index.component.ts:90</note>
         <note category="description">Section title</note>
       </notes>
       <segment state="initial">
@@ -709,7 +699,7 @@
     </unit>
     <unit id="349093322085927405">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:91,93</note>
+        <note category="location">src/app/settings/index.component.ts:93,95</note>
         <note category="description">Section description</note>
       </notes>
       <segment state="initial">
@@ -719,9 +709,9 @@
     </unit>
     <unit id="7808756054397155068">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:81</note>
-        <note category="location">src/app/settings/index.component.ts:106</note>
-        <note category="location">src/app/settings/index.component.ts:143</note>
+        <note category="location">src/app/settings/index.component.ts:82</note>
+        <note category="location">src/app/settings/index.component.ts:108</note>
+        <note category="location">src/app/settings/index.component.ts:145</note>
         <note category="description">Form</note>
       </notes>
       <segment state="initial">
@@ -731,7 +721,7 @@
     </unit>
     <unit id="8347373459657615161">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:115</note>
+        <note category="location">src/app/settings/index.component.ts:117</note>
         <note category="description">Section title</note>
       </notes>
       <segment state="initial">
@@ -741,7 +731,7 @@
     </unit>
     <unit id="7997971230930071756">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:118,120</note>
+        <note category="location">src/app/settings/index.component.ts:120,122</note>
         <note category="description">Section description</note>
       </notes>
       <segment state="initial">
@@ -751,7 +741,7 @@
     </unit>
     <unit id="7462301153729425254">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:123</note>
+        <note category="location">src/app/settings/index.component.ts:125</note>
       </notes>
       <segment state="initial">
         <source>Export</source>
@@ -760,7 +750,7 @@
     </unit>
     <unit id="8705719361562999017">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:129</note>
+        <note category="location">src/app/settings/index.component.ts:131</note>
         <note category="description">Section title</note>
       </notes>
       <segment state="initial">
@@ -770,7 +760,7 @@
     </unit>
     <unit id="5259094143665293961">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:132,134</note>
+        <note category="location">src/app/settings/index.component.ts:134,136</note>
         <note category="description">Section description</note>
       </notes>
       <segment state="initial">
@@ -780,7 +770,7 @@
     </unit>
     <unit id="8455204924704616723">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:138</note>
+        <note category="location">src/app/settings/index.component.ts:140</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -790,7 +780,7 @@
     </unit>
     <unit id="1071721880474488785">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:144</note>
+        <note category="location">src/app/settings/index.component.ts:146</note>
         <note category="description">Form</note>
       </notes>
       <segment state="initial">
@@ -1260,7 +1250,7 @@
     </unit>
     <unit id="7639077755938287321">
       <notes>
-        <note category="location">src/app/components/filters/filters-toolbar.component.ts:29</note>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:31</note>
       </notes>
       <segment state="initial">
         <source>Add or Remove Filters</source>
@@ -1418,7 +1408,7 @@
     <unit id="4818969135288286064">
       <notes>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:64</note>
-        <note category="location">src/app/settings/index.component.ts:76</note>
+        <note category="location">src/app/settings/index.component.ts:77</note>
       </notes>
       <segment state="initial">
         <source> Add a status </source>
@@ -1491,7 +1481,7 @@
     </unit>
     <unit id="4930506384627295710">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:66</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:213</note>
       </notes>
       <segment state="initial">
         <source>Settings</source>
@@ -1500,7 +1490,7 @@
     </unit>
     <unit id="7306009472583884794">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:73</note>
+        <note category="location">src/app/services/navigation.service.ts:66</note>
       </notes>
       <segment state="initial">
         <source>Divider</source>
@@ -1637,7 +1627,7 @@
     </unit>
     <unit id="5139784495240224403">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:39</note>
+        <note category="location">src/app/settings/index.component.ts:40</note>
         <note category="description">Section title</note>
       </notes>
       <segment state="initial">
@@ -1647,7 +1637,7 @@
     </unit>
     <unit id="3162212494859374768">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:42,44</note>
+        <note category="location">src/app/settings/index.component.ts:43,45</note>
         <note category="description">Section description</note>
       </notes>
       <segment state="initial">
@@ -1657,7 +1647,7 @@
     </unit>
     <unit id="8442661086292071246">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:53</note>
+        <note category="location">src/app/settings/index.component.ts:54</note>
         <note category="description">Sidebar item label</note>
       </notes>
       <segment state="initial">
@@ -1667,7 +1657,7 @@
     </unit>
     <unit id="648306878592239743">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:80</note>
+        <note category="location">src/app/settings/index.component.ts:81</note>
         <note category="description">Form</note>
       </notes>
       <segment state="initial">
@@ -1677,7 +1667,7 @@
     </unit>
     <unit id="3768927257183755959">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:82</note>
+        <note category="location">src/app/settings/index.component.ts:83</note>
         <note category="description">Form</note>
       </notes>
       <segment state="initial">
@@ -1687,7 +1677,7 @@
     </unit>
     <unit id="6562161224622484740">
       <notes>
-        <note category="location">src/app/settings/index.component.ts:151,153</note>
+        <note category="location">src/app/settings/index.component.ts:155,157</note>
         <note category="description">No key</note>
       </notes>
       <segment state="initial">
@@ -2504,24 +2494,14 @@
         <target>Sélectionner</target>
       </segment>
     </unit>
-    <unit id="8461712739701887700">
+    <unit id="3792445020401925970">
       <notes>
-        <note category="location">src/app/components/filters/filters-toolbar.component.ts:19,21</note>
-        <note category="description">Filter condition</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
+        <note category="description">Label input</note>
       </notes>
       <segment state="initial">
-        <source> Where </source>
-        <target> Avec </target>
-      </segment>
-    </unit>
-    <unit id="6867381603185205680">
-      <notes>
-        <note category="location">src/app/components/filters/filters-toolbar.component.ts:22,24</note>
-        <note category="description">Filter condition</note>
-      </notes>
-      <segment state="initial">
-        <source> Or </source>
-        <target> Ou </target>
+        <source>Property</source>
+        <target>Propriété</target>
       </segment>
     </unit>
   </file>
