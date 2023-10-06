@@ -71,7 +71,17 @@ type FilterDefinitionTaskOptionString<T extends number | null> = {
   type: 'string';
 };
 
-type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T>;
+type FilterDefinitionTaskOptionNumber<T extends number | null> = {
+  /**
+   * Used to know which field comes from since it's just a number from an enum.
+   */
+  for: 'options';
+  field: T;
+  type: 'number';
+};
+
+
+type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T>;
 
 export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U>;
 
@@ -150,7 +160,47 @@ export class SessionsFiltersService {
       for: 'root',
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
       type: 'date'
-    }
+    },
+    {  
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_SERVICE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_ENGINE_TYPE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY,
+      type: 'number'
+    },
+    {
+      for: 'options',
+      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
+      type: 'number'
+    },
   ];
 
   readonly #defaultFilters: SessionRawFiltersOr = this.#defaultConfigService.defaultSessions.filters;
