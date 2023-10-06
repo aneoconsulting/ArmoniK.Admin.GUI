@@ -1,6 +1,6 @@
 import { DefaultConfigService } from './default-config.service';
 
-describe('Default config service', () => {
+describe('DefaultConfigService', () => {
   let service: DefaultConfigService; 
   
   it('should create default config service', () => {
