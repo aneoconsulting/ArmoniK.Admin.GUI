@@ -1,4 +1,4 @@
-import { FilterNumberOperator, FilterStatusOperator, FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterNumberOperator, FilterStatusOperator, FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TaskFilterDefinition } from '@app/tasks/types';
 import { Filter, FilterType, FiltersAnd, FiltersOr } from '@app/types/filters';
 import { UtilsService } from './utils.service';
@@ -7,12 +7,19 @@ describe('UtilsService', () => {
   const service = new UtilsService<number, number>();
   
   const cb = (filter: Filter<number, number>) => {
-    return (type: FilterType, field: number | null) => {
-      const filterfield = {
-        taskField: {
-          field: field as TaskSummaryEnumField
+    return (type: FilterType, field: number | null, isForRoot: boolean) => {
+      const filterfield = isForRoot ? 
+        {
+          taskField: {
+            field: field as TaskSummaryEnumField
+          }
+        } :
+        {
+          optionsTaskField: {
+            field: field as TaskOptionEnumField
+          }
         }
-      };
+      ;
       return {
         field: filterfield,
         filterString: {
@@ -43,12 +50,20 @@ describe('UtilsService', () => {
       }
     ];
 
-    const filtersAnd2: FiltersAnd<number, number> = [{
-      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
-      for: 'root',
-      operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_GREATER_THAN_OR_EQUAL,
-      value: 2
-    }];
+    const filtersAnd2: FiltersAnd<number, number> = [
+      {
+        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
+        for: 'root',
+        operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_GREATER_THAN_OR_EQUAL,
+        value: 2
+      },
+      {
+        field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+        for: 'options',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+        value: 'someValue'
+      }
+    ];
 
     const filtersOr: FiltersOr<number, number> = [filtersAnd1, filtersAnd2];
 
@@ -72,6 +87,11 @@ describe('UtilsService', () => {
         for: 'root',
         field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
         type: 'number'
+      },
+      {
+        for: 'options',
+        field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+        type: 'string'
       }
     ];
     const result = {
@@ -100,17 +120,30 @@ describe('UtilsService', () => {
         }]
       },
       {and: 
-        [{
-          field: {
-            taskField: {
-              field: 12
+        [
+          {
+            field: {
+              taskField: {
+                field: 12
+              }
+            },
+            filterString: {
+              value: '2',
+              operator: 4
             }
           },
-          filterString: {
-            value: '2',
-            operator: 4
+          {
+            field: {
+              optionsTaskField: {
+                field: 5
+              }
+            },
+            filterString: {
+              value: 'someValue',
+              operator: 2
+            }
           }
-        }]
+        ]
       }]
     };
 
