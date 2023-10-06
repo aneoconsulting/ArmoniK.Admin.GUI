@@ -7,7 +7,6 @@ import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterField, SessionFilterFor, SessionRawFiltersOr } from '../types';
 // import { SessionFilterDefinition, SessionFilterField, SessionFilterFor } from '../types';
 
-
 export type SessionFilterDefinition = FilterDefinition<SessionRawEnumField, SessionTaskOptionEnumField>;
 
 @Injectable({

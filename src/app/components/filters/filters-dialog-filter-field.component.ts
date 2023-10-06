@@ -93,6 +93,9 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'number':
       this.filter.value = Number(event.value);
       break;
+    case 'date':
+      this.filter.value = this.fromDateTimeToSecond(event.value);
+      break;
     }
   }
 
@@ -122,6 +125,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
         type: 'status',
         value: filter.value as string || null,
         statuses
+      };
+    case 'date':
+      return {
+        type: 'date',
+        value: filter.value as FilterInputValueDate || null
       };
     default:
       throw new Error(`Unknown type ${type}`);
@@ -173,5 +181,13 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+  }
+
+  fromDateTimeToSecond(value: DateTime | null): number | null {
+    if (!value) {
+      return null;
+    }
+    const seconds = value.toSeconds();
+    return seconds ? seconds : null;
   }
 }
