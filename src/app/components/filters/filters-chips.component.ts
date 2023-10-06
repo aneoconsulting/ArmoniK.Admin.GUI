@@ -68,7 +68,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
 
     if (type === 'status') {
       const statuses = this.#utilsService.recoverStatuses(filter, filtersDefinitions);
-      const status = statuses.find(s => s.key.toString() === filter.value?.toString());
+      const status = statuses.find(status => status.key.toString() === filter.value?.toString());
       return `${label} ${operator} ${status?.value}`;
     }
     else if (type === 'date') {
