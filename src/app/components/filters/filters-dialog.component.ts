@@ -115,7 +115,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
     return this.#iconsService.getIcon(name);
   }
 
-  trackByFilter(index: number, filters: Filter<T, U>[]) {
-    return index + filters.length;
+  trackByFilter(index: number, filters: Filter<T, U>[]): string {
+    return index.toString() + filters.length.toString();
   }
 }

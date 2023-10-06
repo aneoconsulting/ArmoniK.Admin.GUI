@@ -19,7 +19,10 @@ export class ShareUrlService {
     const queryParamsOptions = options ? this.#queryParamsService.createOptions<T>(options) : null;
     const queryParamsFilters = filters ? this.#queryParamsService.createFilters<U, K>(filters) : null;
 
-    const queryParams = [this.#stringify(queryParamsOptions), this.#stringify(queryParamsFilters)].join('&');
+    let queryParams = [this.#stringify(queryParamsOptions), this.#stringify(queryParamsFilters)].join('&');
+    
+    if (queryParams.at(0) === '&') queryParams = queryParams.substring(1);
+    if (queryParams.at(-1) === '&') queryParams = queryParams.slice(0, -1);
 
     return `${origin}${pathname}?${queryParams}`;
   }

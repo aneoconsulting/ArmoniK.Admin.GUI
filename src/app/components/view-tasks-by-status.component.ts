@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { StatusCount } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
-import { FiltersService } from '@services/filters.service';
 import { SpinnerComponent } from './spinner.component';
 
 @Component({
@@ -37,7 +36,6 @@ import { SpinnerComponent } from './spinner.component';
     `],
   standalone: true,
   providers: [
-    FiltersService,
     TasksStatusesService
   ],
   imports: [
@@ -55,7 +53,6 @@ export class ViewTasksByStatusComponent {
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input() defaultQueryParams: Record<string, string> = {};
 
-  readonly #filtersService = inject(FiltersService);
   readonly #tasksStatusesService = inject(TasksStatusesService);
 
   findStatusCount(status: TaskStatus): StatusCount | undefined {
