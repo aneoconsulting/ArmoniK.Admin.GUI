@@ -149,7 +149,7 @@ export class TasksFiltersService {
     case 'options':
       return this.#optionsField[filterField as TaskOptionEnumField];
     default:
-      throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
+      throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
   }
 }
