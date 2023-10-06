@@ -2,16 +2,10 @@ import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-<<<<<<< HEAD
 import { DateTime } from 'luxon';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDate, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
-=======
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
->>>>>>> 9be8c1605d76fb04076969821b6a3b46a7c85dd6
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
