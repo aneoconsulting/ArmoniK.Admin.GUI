@@ -196,16 +196,6 @@
         <target>Et</target>
       </segment>
     </unit>
-    <unit id="763982378603811482">
-      <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:18</note>
-        <note category="description">Label input</note>
-      </notes>
-      <segment state="initial">
-        <source>Column</source>
-        <target>Colonne</target>
-      </segment>
-    </unit>
     <unit id="9147046130713106935">
       <notes>
         <note category="location">src/app/services/filters.service.ts:40</note>
@@ -2502,6 +2492,14 @@
       <segment state="initial">
         <source>Choose a date</source>
         <target>Indiquez une date</target>
+    <unit id="3792445020401925970">
+      <notes>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
+        <note category="description">Label input</note>
+      </notes>
+      <segment state="initial">
+        <source>Property</source>
+        <target>Propriété</target>
       </segment>
     </unit>
   </file>
