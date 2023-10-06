@@ -1,8 +1,8 @@
 import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { DateHandlerService } from '@app/services/date-handler';
 import { Observable } from 'rxjs';
+import { DateHandlerService } from '@app/services/date-handler.service';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
