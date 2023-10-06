@@ -1,9 +1,9 @@
 import { SortDirection as ArmoniKSortDirection, FilterDateOperator, FilterStringOperator, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { DateHandlerService } from '@services/date-handler';
 import { Observable } from 'rxjs';
 import { FilterType } from '@app/types/filters';
+import { DateHandlerService } from '@services/date-handler.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
 import {  ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
@@ -68,7 +68,6 @@ export class ResultsGrpcService {
           field: field as ResultRawEnumField
         }
       } satisfies ResultFilterField.AsObject['field'];
-
 
       switch (type) {
       case 'string':
