@@ -114,7 +114,7 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
     });
   }
 
-  trackByFilter(index: number, filtersAnd: FiltersAnd<T, U>) {
-    return index + filtersAnd.length;
+  trackByFilter(index: number, filtersAnd: FiltersAnd<T, U>): string {
+    return index.toString() + filtersAnd.length.toString();
   }
 }
