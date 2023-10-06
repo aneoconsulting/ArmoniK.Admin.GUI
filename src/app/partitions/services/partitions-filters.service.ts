@@ -1,6 +1,6 @@
 import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FilterFor } from '@app/sessions/services/sessions-filters.service';
+import { FilterFor } from '@app/types/filter-definition';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { PartitionFilterField, PartitionRawFiltersOr, PartitionsFiltersDefinition } from '../types';

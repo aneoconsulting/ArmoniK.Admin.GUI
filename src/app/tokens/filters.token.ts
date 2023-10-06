@@ -1,4 +1,4 @@
 import { InjectionToken } from '@angular/core';
-import { FiltersService } from '@app/sessions/services/sessions-filters.service';
+import { FiltersServiceDefinition } from '@app/types/filter-definition';
 
-export const DATA_FILTERS_SERVICE = new InjectionToken<FiltersService>('DATA_FILTERS_SERVICE');
+export const DATA_FILTERS_SERVICE = new InjectionToken<FiltersServiceDefinition>('DATA_FILTERS_SERVICE');
