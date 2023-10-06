@@ -25,13 +25,10 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
 </mat-form-field>
 
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
-  <mat-label i18n="Input label">Enter a date range</mat-label>
-  <mat-date-range-input [rangePicker]="picker">
-    <input matStartDate placeholder="Start date" [value]="input.value.start" (dateChange)="onDateChange('start', $event)">
-    <input matEndDate placeholder="End date" [value]="input.value.end" (dateChange)="onDateChange('end', $event)">
-  </mat-date-range-input>
+  <mat-label i18n="Input label">Choose a date</mat-label>
+  <input matInput [matDatepicker]="picker" [value]="toDateTime(input.value)" (dateChange)="onDateChange($event)">
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-date-range-picker #picker></mat-date-range-picker>
+  <mat-datepicker #picker></mat-datepicker> 
 </mat-form-field>
 
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'status'">
@@ -72,6 +69,10 @@ export class FiltersDialogInputComponent {
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
 
+  toDateTime(seconds: number | null) {
+    return seconds && seconds !== 0 ? DateTime.fromSeconds(seconds) : undefined;
+  }
+
   onStringChange(event: Event): void {
     this.valueChange.emit({
       type: 'string',
@@ -88,9 +89,9 @@ export class FiltersDialogInputComponent {
     });
   }
 
-  onDateChange(dateType: 'end' | 'start', event: MatDatepickerInputEvent<DateTime>): void {
+  onDateChange(event: MatDatepickerInputEvent<DateTime>): void {
     this.valueChange.emit({
-      type: `date-${dateType}`,
+      type: 'date',
       value: event.value,
     });
   }
