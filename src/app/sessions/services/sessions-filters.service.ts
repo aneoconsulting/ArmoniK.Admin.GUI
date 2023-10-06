@@ -54,7 +54,16 @@ type FilterDefinitionRootStatus<T extends number> = {
   statuses: FilterValueOptions;
 };
 
-type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T>;
+type FilterDefinitionRootDate<T extends number> = {
+  /**
+   * Used to know which field comes from since it's just a number from an enum.
+   */
+  for: 'root';
+  field: T;
+  type: 'date';
+};
+
+type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
 
 type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**

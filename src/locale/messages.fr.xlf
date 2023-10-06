@@ -22,7 +22,7 @@
     </unit>
     <unit id="1771632592264032965">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:62</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:63</note>
       </notes>
       <segment state="initial">
         <source>has no value</source>
@@ -147,22 +147,12 @@
       <notes>
         <note category="location">src/app/components/filters/filters-dialog-input.component.ts:18</note>
         <note category="location">src/app/components/filters/filters-dialog-input.component.ts:23</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:38</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:35</note>
         <note category="description">Input label</note>
       </notes>
       <segment state="initial">
         <source>Value</source>
         <target>Valeur</target>
-      </segment>
-    </unit>
-    <unit id="193735854885505934">
-      <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:28</note>
-        <note category="description">Input label</note>
-      </notes>
-      <segment state="initial">
-        <source>Enter a date range</source>
-        <target>Entrer une plage de dates</target>
       </segment>
     </unit>
     <unit id="4163272119298020373">
@@ -187,7 +177,7 @@
     </unit>
     <unit id="9014039725781270505">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:14</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:15</note>
         <note category="location">src/app/components/filters/filters-dialog-or.component.ts:13</note>
         <note category="description">Filter condition</note>
       </notes>
@@ -198,7 +188,7 @@
     </unit>
     <unit id="188313477943387511">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:15</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
         <note category="description">Filter condition</note>
       </notes>
       <segment state="initial">
@@ -793,8 +783,8 @@
         <note category="location">src/app/partitions/services/partitions-filters.service.ts:22</note>
         <note category="location">src/app/results/services/results-filters.service.ts:25</note>
         <note category="location">src/app/results/services/results-statuses.service.ts:7</note>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:100</note>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:104</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:106</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:110</note>
         <note category="location">src/app/sessions/services/sessions-statuses.service.ts:7</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:33</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:37</note>
@@ -995,7 +985,7 @@
       <notes>
         <note category="location">src/app/partitions/services/partitions-filters.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:21</note>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:107</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:113</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:40</note>
       </notes>
       <segment state="initial">
@@ -1056,7 +1046,7 @@
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:32</note>
         <note category="location">src/app/results/services/results-filters.service.ts:24</note>
         <note category="location">src/app/results/services/results-index.service.ts:19</note>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:94</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:100</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:20</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:21</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:22</note>
@@ -1094,7 +1084,7 @@
       <notes>
         <note category="location">src/app/results/services/results-filters.service.ts:23</note>
         <note category="location">src/app/results/services/results-index.service.ts:22</note>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:93</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:99</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:19</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:18</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:35</note>
@@ -1171,7 +1161,7 @@
     </unit>
     <unit id="8432562579042371182">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:98</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:104</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:23</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:48</note>
       </notes>
@@ -1182,7 +1172,7 @@
     </unit>
     <unit id="7410432243549869948">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:97</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:103</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:25</note>
       </notes>
       <segment state="initial">
@@ -1192,7 +1182,7 @@
     </unit>
     <unit id="2532274051867006228">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:99</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:105</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:26</note>
       </notes>
       <segment state="initial">
@@ -1231,7 +1221,7 @@
     </unit>
     <unit id="96019050334234129">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:22</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:23</note>
       </notes>
       <segment state="initial">
         <source>No field</source>
@@ -1687,7 +1677,7 @@
     </unit>
     <unit id="1179184907489210406">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:26</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:27</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -2066,7 +2056,7 @@
     </unit>
     <unit id="7186187311199183622">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:95</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:101</note>
       </notes>
       <segment state="initial">
         <source>Cancelled At</source>
@@ -2075,7 +2065,7 @@
     </unit>
     <unit id="7293347258713947796">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:96</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:102</note>
       </notes>
       <segment state="initial">
         <source>Created At</source>
@@ -2084,7 +2074,7 @@
     </unit>
     <unit id="1104728638429258355">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:105</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:111</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:38</note>
       </notes>
       <segment state="initial">
@@ -2094,7 +2084,7 @@
     </unit>
     <unit id="6390665602020766712">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:106</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:112</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:39</note>
       </notes>
       <segment state="initial">
@@ -2104,7 +2094,7 @@
     </unit>
     <unit id="8518087201830601782">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:108</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:114</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:41</note>
       </notes>
       <segment state="initial">
@@ -2114,7 +2104,7 @@
     </unit>
     <unit id="2887251461858216261">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:109</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:115</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:42</note>
       </notes>
       <segment state="initial">
@@ -2124,7 +2114,7 @@
     </unit>
     <unit id="8245536584787530067">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:110</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:116</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:43</note>
       </notes>
       <segment state="initial">
@@ -2134,7 +2124,7 @@
     </unit>
     <unit id="2181667099499539549">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:111</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:117</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:44</note>
       </notes>
       <segment state="initial">
@@ -2144,7 +2134,7 @@
     </unit>
     <unit id="7280857163912109342">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:112</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:118</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:45</note>
       </notes>
       <segment state="initial">
@@ -2154,7 +2144,7 @@
     </unit>
     <unit id="4903114218713198116">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-filters.service.ts:113</note>
+        <note category="location">src/app/sessions/services/sessions-filters.service.ts:119</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:46</note>
       </notes>
       <segment state="initial">
@@ -2492,6 +2482,16 @@
       <segment state="initial">
         <source>Select</source>
         <target>Sélectionner</target>
+      </segment>
+    </unit>
+    <unit id="6524262610032366385">
+      <notes>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:28</note>
+        <note category="description">Input label</note>
+      </notes>
+      <segment state="initial">
+        <source>Choose a date</source>
+        <target>Indiquez une date</target>
       </segment>
     </unit>
     <unit id="3792445020401925970">
