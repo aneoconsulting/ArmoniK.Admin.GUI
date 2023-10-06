@@ -1,3 +1,4 @@
+import { FilterNumberOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -168,7 +169,16 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   findOperator(filter: Filter<T, U>) {
     const type = this.findType(filter);
+
+    if (type === 'number' && filter.for === 'options') {
+      return {
+        [FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL]: $localize`Equal`,
+        [FilterNumberOperator.FILTER_NUMBER_OPERATOR_NOT_EQUAL]: $localize`Not Equal`,
+      };
+    }
+
     const operators = this.#filtersService.findOperators(type);
+
     return operators;
   }
 
