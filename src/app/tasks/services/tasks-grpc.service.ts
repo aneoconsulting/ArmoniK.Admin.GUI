@@ -1,9 +1,9 @@
-import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterNumberOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
-import { DateHandlerService } from '@services/date-handler';
+import { DateHandlerService } from '@services/date-handler.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
@@ -95,20 +95,21 @@ export class TasksGrpcService {
   }
 
   #buildFilterField(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>) {
-    return (type: FilterType, field: TaskSummaryField) => {
+    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean) => {
 
 
-      const filterField: TaskFilterField.AsObject['field'] = {};
-
-      if(filter.for === 'options') {
-        filterField['taskOptionField'] = {
-          field: field as TaskOptionEnumField
-        };
-      } else {
-        filterField['taskSummaryField'] = {
-          field: field as TaskSummaryEnumField
-        };
-      }
+      const filterField = (isForRoot ? 
+        {
+          taskSummaryField: {
+            field: field as TaskSummaryEnumField
+          }
+        } :
+        {
+          taskOptionField: {
+            field: field as TaskOptionEnumField
+          }
+        }
+      ) as TaskFilterField.AsObject['field'];
 
       switch (type) {
       case 'string':
@@ -125,6 +126,14 @@ export class TasksGrpcService {
           filterStatus: {
             value: Number(filter.value) ?? 0,
             operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
+          },
+        } satisfies TaskFilterField.AsObject;
+      case 'number':
+        return {
+          field: filterField,
+          filterStatus: {
+            value: Number(filter.value) ?? 0,
+            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
           },
         } satisfies TaskFilterField.AsObject;
       case 'date':

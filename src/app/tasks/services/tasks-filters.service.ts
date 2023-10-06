@@ -76,21 +76,6 @@ export class TasksFiltersService {
       }),
     },
     {
-      for: 'options',
-      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
-      type: 'string',
-    },
-    {
-      for: 'options',
-      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
-      type: 'string',
-    },
-    {
-      for: 'options',
-      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
-      type: 'string',
-    },
-    {
       for: 'root',
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,
       type: 'date'
@@ -119,6 +104,46 @@ export class TasksFiltersService {
       for: 'root',
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_AT,
       type: 'date'
+    },
+    {  
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_SERVICE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_ENGINE_TYPE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY,
+      type: 'number'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
+      type: 'number'
     },
   ];
 
