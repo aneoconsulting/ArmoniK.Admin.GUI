@@ -46,10 +46,17 @@ export type FilterDefinitionRootStatus<T extends number> = {
   statuses: FilterValueOptions;
 };
   
-  
+export type FilterDefinitionRootDate<T extends number> = {
+  /**
+   * Used to know which field comes from since it's just a number from an enum.
+   */
+  for: 'root';
+  field: T;
+  type: 'date';
+};
+
   
 
-export type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T>;
 
 export type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**
@@ -59,6 +66,9 @@ export type FilterDefinitionTaskOptionString<T extends number | null> = {
   field: T;
   type: 'string';
 };
+
+
+type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T> | FilterDefinitionRootDate<T>;
 
 
 export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T>;
