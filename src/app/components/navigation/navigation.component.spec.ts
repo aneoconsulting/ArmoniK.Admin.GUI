@@ -90,7 +90,7 @@ describe('NavigationComponent', () => {
     expect(component.getSidebar()).toEqual(currentSidebar);
   });
   
-  it('should greats correctly', () => {
+  it('should greet correctly', () => {
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
     expect(component.greeting()).toEqual('Good morning');
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T12:00:00'));
