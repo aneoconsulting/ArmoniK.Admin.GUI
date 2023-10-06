@@ -14,7 +14,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 <span *ngIf="first" i18n="Filter condition">Where</span>
 <span *ngIf="!first" i18n="Filter condition">And</span>
 <mat-form-field appearance="outline"  subscriptSizing="dynamic">
-  <mat-label i18n="Label input">Column</mat-label>
+  <mat-label i18n="Label input">Property</mat-label>
   <mat-select (valueChange)="onFieldChange($event)" [value]="filter.for + '-' + filter.field?.toString()">
     <mat-option *ngFor="let definition of filtersDefinitions; trackBy: trackByField" [value]="definition.for + '-' + definition.field">
       {{ retrieveLabel(definition) }}
