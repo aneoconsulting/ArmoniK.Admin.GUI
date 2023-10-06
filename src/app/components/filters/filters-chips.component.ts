@@ -3,7 +3,7 @@ import { Component, Input, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FiltersAnd } from '@app/types/filters';
-import { FiltersService } from '@services/filters.service';
+import { FiltersOperationService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
 
 @Component({
@@ -40,11 +40,11 @@ import { UtilsService } from '@services/utils.service';
     MatChipsModule,
   ],
   providers: [
-    FiltersService,
+    FiltersOperationService,
   ],
 })
 export class FiltersChipsComponent<T extends number, U extends number | null = null> {
-  #filtersService = inject(FiltersService);
+  #filtersOperationService = inject(FiltersOperationService);
   #utilsService = inject(UtilsService<T, U>);
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
@@ -63,7 +63,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
 
     const filtersDefinitions = this.#dataFiltersService.retrieveFiltersDefinitions();
     const type = this.#utilsService.recoverType(filter, filtersDefinitions);
-    const operator = this.#filtersService.findOperators(type)[filter.operator as number];
+    const operator = this.#filtersOperationService.findOperators(type)[filter.operator as number];
 
     if (type === 'status') {
       const statuses = this.#utilsService.recoverStatuses(filter, filtersDefinitions);

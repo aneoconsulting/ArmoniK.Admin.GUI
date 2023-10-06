@@ -30,7 +30,7 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
-import { FiltersService } from '@services/filters.service';
+import { FiltersOperationService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -276,7 +276,7 @@ app-table-actions-toolbar {
     ShareUrlService,
     QueryParamsService,
     UtilsService,
-    FiltersService,
+    FiltersOperationService,
   ],
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -288,7 +288,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #tasksIndexService = inject(TasksIndexService);
   readonly #tasksGrpcService = inject(TasksGrpcService);
   readonly #notificationService = inject(NotificationService);
-  readonly #filtersService = inject(FiltersService);
+  readonly #filtersOperationService = inject(FiltersOperationService);
   readonly #tasksFiltersService = inject(TasksFiltersService);
 
   displayedColumns: TaskSummaryColumnKey[] = [];
@@ -612,7 +612,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTaskIdQueryParams(taskId: string) {
-    const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+    const keyTask = this.#filtersOperationService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
 
     return {
       [keyTask]: taskId

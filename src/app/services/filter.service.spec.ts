@@ -1,8 +1,8 @@
 import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
-import { FiltersService } from './filters.service';
+import { FiltersOperationService } from './filters.service';
 
-describe('FiltersService', () => {
-  const service = new FiltersService();
+describe('FiltersOperationService', () => {
+  const service = new FiltersOperationService();
 
   describe('findOperators', () => {
     it('should return the filterStringOperators when "string" is provided', () => {

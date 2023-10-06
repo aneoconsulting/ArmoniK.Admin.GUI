@@ -35,7 +35,7 @@ import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-stat
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
-import { FiltersService } from '@services/filters.service';
+import { FiltersOperationService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -236,7 +236,7 @@ app-table-actions-toolbar {
     TasksByStatusService,
     TasksStatusesService,
     TasksIndexService,
-    FiltersService,
+    FiltersOperationService,
     TasksFiltersService,
     SessionsFiltersService,
     {
@@ -278,7 +278,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #notificationService = inject(NotificationService);
   readonly #dialog = inject(MatDialog);
-  readonly #filtersService = inject(FiltersService);
+  readonly #filtersOperationService = inject(FiltersOperationService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
 
   displayedColumns: SessionRawColumnKey[] = [];
@@ -546,7 +546,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createSessionIdQueryParams(sessionId: string) {
-    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+    const keySession = this.#filtersOperationService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
@@ -567,7 +567,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createTasksByStatusQueryParams(sessionId: string) {
-    const keySession = this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+    const keySession = this.#filtersOperationService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,

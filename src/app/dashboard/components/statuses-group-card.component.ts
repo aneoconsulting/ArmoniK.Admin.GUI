@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { StatusCount } from '@app/tasks/types';
-import { FiltersService } from '@services/filters.service';
+import { FiltersOperationService } from '@services/filters.service';
 import { TasksStatusesGroup } from '../types';
 
 @Component({
@@ -69,7 +69,7 @@ ul li a {
   standalone: true,
   providers: [
     TasksStatusesService,
-    FiltersService,
+    FiltersOperationService,
   ],
   imports: [
     NgFor,
@@ -84,7 +84,7 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) data: StatusCount[] = [];
 
   #tasksStatusesService = inject(TasksStatusesService);
-  #filtersService = inject(FiltersService);
+  #filtersOperationService = inject(FiltersOperationService);
 
   statusToLabel(status: TaskStatus): string {
     return this.#tasksStatusesService.statusToLabel(status);
@@ -112,6 +112,6 @@ export class StatusesGroupCardComponent {
   }
 
   #createQueryParamKey(): string {
-    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+    return this.#filtersOperationService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 }

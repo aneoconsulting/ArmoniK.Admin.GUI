@@ -29,7 +29,7 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
-import { FiltersService } from '@services/filters.service';
+import { FiltersOperationService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -169,7 +169,7 @@ app-table-actions-toolbar {
     TasksByStatusService,
     TasksIndexService,
     TasksStatusesService,
-    FiltersService,
+    FiltersOperationService,
     ApplicationsFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
@@ -206,7 +206,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #dialog = inject(MatDialog);
   readonly #iconsService = inject(IconsService);
-  readonly #filtersService = inject(FiltersService);
+  readonly #filtersOperationService = inject(FiltersOperationService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: ApplicationRawColumnKey[] = [];

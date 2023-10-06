@@ -2,10 +2,10 @@ import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
-import { FiltersService } from '@services/filters.service';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
+import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDate, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
+import { FiltersOperationService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 @Component({
@@ -57,14 +57,14 @@ span {
     FiltersDialogInputComponent,
   ],
   providers: [
-    FiltersService,
+    FiltersOperationService,
   ],
 })
 export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
 
-  #filtersService = inject(FiltersService);
+  #filtersOperationService = inject(FiltersOperationService);
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
   get filtersDefinitions() {
@@ -123,6 +123,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
         value: filter.value as string || null,
         statuses
       };
+    case 'date':
+      return {
+        type: 'date',
+        value: filter.value as FilterInputValueDate || null
+      };
     default:
       throw new Error(`Unknown type ${type}`);
     }
@@ -159,7 +164,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   findOperator(filter: Filter<T, U>) {
     const type = this.findType(filter);
-    const operators = this.#filtersService.findOperators(type);
+    const operators = this.#filtersOperationService.findOperators(type);
     return operators;
   }
 

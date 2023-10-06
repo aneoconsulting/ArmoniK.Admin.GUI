@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { FilterOperators, FilterType } from '@app/types/filters';
 
 @Injectable()
-export class FiltersService {
+export class FiltersOperationService {
   readonly filterStringOperators: Record<FilterStringOperator, string> = {
     [FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL]: $localize`Equal`,
     [FilterStringOperator.FILTER_STRING_OPERATOR_NOT_EQUAL]: $localize`Not Equal`,
