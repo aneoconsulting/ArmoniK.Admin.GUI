@@ -44,7 +44,7 @@ type FilterDefinitionRootArray<T extends number> = {
  *
  * `for` and `field` are used to identify the filter.
  */
-type FilterDefinitionRootSatus<T extends number> = {
+type FilterDefinitionRootStatus<T extends number> = {
   /**
    * Used to know which field comes from since it's just a number from an enum.
    */
@@ -55,12 +55,15 @@ type FilterDefinitionRootSatus<T extends number> = {
 };
 
 type FilterDefinitionRootDate<T extends number> = {
-  for: 'root',
-  field: T,
+  /**
+   * Used to know which field comes from since it's just a number from an enum.
+   */
+  for: 'root';
+  field: T;
   type: 'date';
 };
 
-type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootSatus<T> | FilterDefinitionRootDate<T>;
+type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
 
 type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**
