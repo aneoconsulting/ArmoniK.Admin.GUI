@@ -79,7 +79,7 @@ export type FilterFor<T extends number, U extends number | null = null> = Filter
 
 
 
-export abstract class BasicFilterService {
+export abstract class DataFilterService {
   abstract retrieveFiltersDefinitions<T extends number, U extends number | null = null>(): FilterDefinition<T, U>[];
   abstract retrieveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U): string;
   abstract saveFilters<T extends number, U extends number | null = null>(filters: FiltersAnd<T, U>[]): void;
