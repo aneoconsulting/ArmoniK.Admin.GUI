@@ -58,21 +58,9 @@ describe('FiltersDialogInputComponent', () => {
       value: 19043234
     } as unknown as MatDatepickerInputEvent<DateTime>;
 
-    component.onDateChange('end', event);
+    component.onDateChange(event);
     expect(valueChangeSpy).toHaveBeenCalledWith({
-      type: 'date-end',
-      value: 19043234
-    });
-  });
-
-  it('should emit on end Date change', () => {
-    const event = {
-      value: 19043234
-    } as unknown as MatDatepickerInputEvent<DateTime>;
-
-    component.onDateChange('start', event);
-    expect(valueChangeSpy).toHaveBeenCalledWith({
-      type: 'date-start',
+      type: 'date',
       value: 19043234
     });
   });
