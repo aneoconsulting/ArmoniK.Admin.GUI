@@ -5,7 +5,6 @@ import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
-
 export type SessionRaw = GrpcSessionRaw.AsObject;
 export type SessionRawColumnKey = ColumnKey<SessionRaw, TaskOptions> | 'count';
 export type SessionRawFieldKey = FieldKey<SessionRaw>;
