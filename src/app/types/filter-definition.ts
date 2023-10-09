@@ -70,7 +70,6 @@ export type FilterDefinitionTaskOptionString<T extends number | null> = {
 
 type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
 
-
 export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T>;
 
 export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U>;
