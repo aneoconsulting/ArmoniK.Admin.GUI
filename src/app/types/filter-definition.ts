@@ -55,9 +55,6 @@ export type FilterDefinitionRootDate<T extends number> = {
   type: 'date';
 };
 
-  
-
-
 export type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**
    * Used to know which field comes from since it's just a number from an enum.
