@@ -22,7 +22,7 @@ import { IconsService } from '@services/icons.service';
 <mat-dialog-content>
   <p i18n="Dialog description">Select the statuses you want to see</p>
 
-  <div cdkDropList (cdkDropListDropped)="drop($event)" class="statuses">
+  <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="statuses">
     <div cdkDrag class="status" *ngFor="let count of statusesCounts; let index = index">
       <div class="status-drag">
         <mat-icon cdkDragHandle aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
@@ -31,7 +31,7 @@ import { IconsService } from '@services/icons.service';
       <mat-form-field appearance="outline"  subscriptSizing="dynamic">
         <mat-label i18n="Label input">Status</mat-label>
         <mat-select (valueChange)="onStatusChange(index, $event)" [value]="count.status.toString()">
-          <mat-option *ngFor="let status of tasksStatuses(); trackBy:trackByStatus" [value]="status" [disabled]="disableStatus(status)">
+          <mat-option *ngFor="let status of tasksStatuses(); trackBy:trackByStatus" [value]="status" [disabled]="isUsedStatus(status)">
             {{ statusToLabel(status) }}
           </mat-option>
         </mat-select>
@@ -159,7 +159,7 @@ export class ViewTasksByStatusDialogComponent implements OnInit {
     return this.#tasksStatusesService.statusToLabel(status);
   }
 
-  disableStatus(status: TaskStatus) {
+  isUsedStatus(status: TaskStatus) {
     const usedStatuses = this.statusesCounts?.map(({ status }) => status.toString()) ?? [];
     return usedStatuses.includes(status.toString());
   }
@@ -201,7 +201,7 @@ export class ViewTasksByStatusDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  drop(event: CdkDragDrop<TaskStatusColored[]>) {
+  onDrop(event: CdkDragDrop<TaskStatusColored[]>) {
     if (!this.statusesCounts) {
       return;
     }
