@@ -176,7 +176,7 @@ describe('UtilsService', () => {
       expect(service.createFilters(filtersOr, filterDefinitions, cb)).toEqual(result);
     });
 
-    it('Should throw an error if its definition is not in the filtersDefinition', () => {
+    it('Should throw an error if its definitions are not in the filtersDefinition', () => {
       const filtersAnd3: FiltersAnd<number, number> = [
         {
           field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
