@@ -4,7 +4,7 @@ import { FiltersAnd } from '@app/types/filters';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TasksStatusesService } from './tasks-status.service';
+import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskSummaryFiltersOr } from '../types';
 
 
