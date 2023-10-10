@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksIndexService } from './tasks-index.service';
-import { TaskSummaryColumnKey } from '../types';
+import { TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 
 describe('TasksIndexService', () => {
@@ -51,20 +51,14 @@ describe('TasksIndexService', () => {
   const mockDateColumns = ['acquiredAt', 'createdAt', 'endedAt', 'receivedAt', 'startedAt', 'submittedAt'];
   const mockDurationColums = ['creationToEndDuration', 'processingToEndDuration', 'options.maxDuration'];
   const mockObjectColumns = ['options', 'options.options'];
-  const mockDefaultOptions = {
-    defaultTasks: {
-      options: {
-        pageIndex: 0,
-        pageSize: 10,
-        sort: {
-          active: 'id',
-          direction: 'asc'
-        },
-      }
-    }
-  };
-
-  const mockDefaultIntervalValue = 5; 
+  const mockDefaultOptions :TaskSummaryListOptions = {
+    pageIndex: 0,
+    pageSize: 10,
+    sort: {
+      active: 'id',
+      direction: 'asc'
+    },
+  };  
   const mockDefaultViewInLogs = {
     serviceName: null, 
     serviceIcon: null, 
@@ -99,11 +93,102 @@ describe('TasksIndexService', () => {
  
 
   describe('Columns', ()=> {
-    test('columnToLabels',() => { 
+    test('the service should label the right column among available columns labels',() => { 
       for(const [key] of Object.entries(mockColumnLabels)) {
         expect(service.columnToLabel(key as TaskSummaryColumnKey)).toEqual(service.columnsLabels[`${key}` as TaskSummaryColumnKey]);
       }
+    });
+  });
+
+  describe('Table', () => {
+    it('should return true if the column is actions', () =>{
+      expect(service.isActionsColumn('actions')).toBe(true);
+    });
+    it('should return false if the column is not actions', () =>{
+      expect(service.isActionsColumn('id')).toBe(false);
+    }); 
+
+    it('should return true if the column is id', () =>{
+      expect(service.isTaskIdColumn('id')).toBe(true);
+    });
+    it('should return false if the column is not id', () =>{
+      expect(service.isTaskIdColumn('status')).toBe(false);
+    });
+
+    it('should return true if the column is status', () =>{
+      expect(service.isStatusColumn('status')).toBe(true);
+    });
+    it('should return false if the column is not status', () =>{
+      expect(service.isStatusColumn('actions')).toBe(false);
+    }); 
     
+    it('should return true if the column is in dateColumns array', () =>{
+      expect(service.isDateColumn('createdAt')).toBe(true);
+    }); 
+    it('should return false if the column is not in dateColumns array', () =>{
+      expect(service.isDateColumn('actions')).toBe(false);
+    });
+    
+    it('should return true if the column is in durationColumn array', () =>{
+      expect(service.isDurationColumn('processingToEndDuration')).toBe(true);
+    });
+    it('should return false if the column is not in durationColumn array', () =>{
+      expect(service.isDurationColumn('createdAt')).toBe(false);
+    });
+
+    it('should return true if the column is in objectColumn array', () =>{
+      expect(service.isObjectColumn('options')).toBe(true);
+    });
+    it('should return false if the column is not in objectColumn array', () =>{
+      expect(service.isObjectColumn('createdAt')).toBe(false);
+    });
+
+    it('should return true if the column is select', () =>{
+      expect(service.isSelectColumn('select')).toBe(true);
+    });
+    it('should return false if the column is not select', () =>{
+      expect(service.isSelectColumn('actions')).toBe(false);
+    });
+
+    it('should return true if the column is a simple column', () =>{
+      expect(service.isSimpleColumn('sessionId')).toBe(true);
+    });
+    it('should return false if the column is not a simple column', () =>{
+      expect(service.isSimpleColumn('createdAt')).toBe(false);
+      expect(service.isSimpleColumn('creationToEndDuration')).toBe(false);
+      expect(service.isSimpleColumn('options')).toBe(false);
+      expect(service.isSimpleColumn('id')).toBe(false);
+      expect(service.isSimpleColumn('status')).toBe(false);
+    });
+    
+    it('should return true if the column is not sortable', () =>{
+      expect(service.isNotSortableColumn('select')).toBe(true);
+      expect(service.isNotSortableColumn('actions')).toBe(true);
+      expect(service.isNotSortableColumn('options')).toBe(true);
+    });
+    it('should return false if the column is sortable', () =>{
+      expect(service.isNotSortableColumn('id')).toBe(false);
+    });
+  });
+
+  describe('Interval', ()=>{
+    it('should call saveIntervalValue from TableService', ()=>{
+      service.saveIntervalValue(9);
+      expect(mockTableService.saveIntervalValue).toBeCalledWith('tasks-interval', 9);
+    });
+
+    it('should call restoreIntervalValue from TableService', ()=>{
+      service.restoreIntervalValue();
+      expect(mockTableService.restoreIntervalValue).toBeCalledWith('tasks-interval');
+      mockTableService.restoreIntervalValue.mockImplementationOnce(() => null );
+      expect(service.restoreIntervalValue()).toEqual(10);
+    });
+  });
+
+  describe('Options', ()=>{
+    it('should call saveOptions from TableService', ()=>{
+      service.saveOptions(mockDefaultOptions);
+      expect(mockTableService.saveOptions).toBeCalledWith('tasks-options',mockDefaultOptions );
     });
   });
 });
