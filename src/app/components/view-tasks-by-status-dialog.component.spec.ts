@@ -3,7 +3,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskStatusColored } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { ViewTasksByStatusDialogComponent } from './view-tasks-by-status-dialog.component';

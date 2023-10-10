@@ -3,7 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
-import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount } from '@app/tasks/types';
 import { FiltersService } from '@services/filters.service';
 import { TasksStatusesGroup } from '../types';

@@ -1,6 +1,6 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { ViewTasksByStatusComponent } from './view-tasks-by-status.component';
 
 describe('ViewTasksByStatusComponent', () => {

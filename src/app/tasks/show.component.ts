@@ -14,7 +14,7 @@ import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
-import { TasksStatusesService } from './services/tasks-status.service';
+import { TasksStatusesService } from './services/tasks-statuses.service';
 import { TaskRaw } from './types';
 
 @Component({
