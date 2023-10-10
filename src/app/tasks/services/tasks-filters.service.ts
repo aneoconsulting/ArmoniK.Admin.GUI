@@ -2,7 +2,7 @@ import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneocons
 import { Injectable, inject } from '@angular/core';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { TasksStatusesService } from './tasks-status.service';
+import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFiltersOr } from '../types';
 
 @Injectable({
@@ -76,20 +76,75 @@ export class TasksFiltersService {
       }),
     },
     {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ENDED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_AT,
+      type: 'date'
+    },
+    {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
-      type: 'string',
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_SERVICE,
+      type: 'string'
     },
     {
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
-      type: 'string',
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_ENGINE_TYPE,
+      type: 'string'
     },
     {
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
-      type: 'string',
-    }
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY,
+      type: 'number'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
+      type: 'number'
+    },
   ];
 
   readonly #defaultFilters: TaskSummaryFiltersOr = this.#defaultConfigService.defaultTasks.filters;

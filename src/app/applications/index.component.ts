@@ -15,7 +15,7 @@ import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
