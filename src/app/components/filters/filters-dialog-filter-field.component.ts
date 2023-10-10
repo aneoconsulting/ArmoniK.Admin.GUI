@@ -1,3 +1,4 @@
+import { FilterNumberOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -92,7 +93,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       this.filter.value = event.value;
       break;
     case 'number':
-      this.filter.value = Number(event.value);
+      this.filter.value = Number(event.value) || null;
       break;
     case 'date':
       this.filter.value = this.fromDateTimeToSecond(event.value);
@@ -108,7 +109,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'string':
       return {
         type: 'string',
-        value: filter.value as FilterInputValueString || null
+        value: filter.value as FilterInputValueString
       };
     case 'number': {
       return {
@@ -119,7 +120,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'array':
       return {
         type: 'string',
-        value: filter.value as FilterInputValueString || null
+        value: filter.value as FilterInputValueString
       };
     case 'status':
       return {
@@ -166,9 +167,18 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return field.statuses;
   }
 
-  findOperator(filter: Filter<T, U>) {
+  findOperator(filter: Filter<T, U>): Record<number, string> {
     const type = this.findType(filter);
+
+    if (type === 'number' && filter.for === 'options') {
+      return {
+        [FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL]: $localize`Equal`,
+        [FilterNumberOperator.FILTER_NUMBER_OPERATOR_NOT_EQUAL]: $localize`Not Equal`,
+      };
+    }
+
     const operators = this.#filtersService.findOperators(type);
+
     return operators;
   }
 
