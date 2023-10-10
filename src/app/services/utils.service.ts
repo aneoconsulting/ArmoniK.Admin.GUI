@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterType, FilterValueOptions, FiltersAnd, FiltersOr } from '@app/types/filters';
 
 @Injectable()

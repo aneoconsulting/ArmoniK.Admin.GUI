@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
 import { Scope } from '@app/types/config';
 import { FieldKey } from '@app/types/data';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { TableStorageService } from './table-storage.service';

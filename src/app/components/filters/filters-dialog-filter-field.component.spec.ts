@@ -1,8 +1,8 @@
 import { KeyValue } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInputOutput } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field.component';

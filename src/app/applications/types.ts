@@ -1,6 +1,6 @@
 import { ApplicationRawEnumField, ApplicationRaw as GrpcApplicationRaw  } from '@aneoconsultingfr/armonik.api.angular';
-import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
 import { ColumnKey, FieldKey } from '@app/types/data';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
