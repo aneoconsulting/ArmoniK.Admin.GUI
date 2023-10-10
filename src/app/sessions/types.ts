@@ -1,9 +1,9 @@
 import {SessionRaw as GrpcSessionRaw, SessionRawEnumField, SessionTaskOptionEnumField, SessionTaskOptionGenericField } from '@aneoconsultingfr/armonik.api.angular';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, FieldKey } from '@app/types/data';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
-import { FilterDefinition, FilterFor } from './services/sessions-filters.service';
 
 export type SessionRaw = GrpcSessionRaw.AsObject;
 export type SessionRawColumnKey = ColumnKey<SessionRaw, TaskOptions> | 'count';

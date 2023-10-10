@@ -19,6 +19,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-status.service';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { DataFilterService } from '@app/types/filter-definition';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -206,7 +207,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #dialog = inject(MatDialog);
   readonly #iconsService = inject(IconsService);
-  readonly #filtersService = inject(FiltersService);
+  readonly #DataFilterService = inject(DataFilterService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: ApplicationRawColumnKey[] = [];
