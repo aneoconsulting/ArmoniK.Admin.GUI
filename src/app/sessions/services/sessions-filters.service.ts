@@ -1,101 +1,11 @@
 import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FilterValueOptions, FiltersAnd } from '@app/types/filters';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterField, SessionFilterFor, SessionRawFiltersOr } from '../types';
 // import { SessionFilterDefinition, SessionFilterField, SessionFilterFor } from '../types';
-
-/**
- *
- * `for` and `field` are used to identify the filter.
- */
-type FilterDefinitionRootString<T extends number> = {
-  for: 'root';
-  field: T;
-  type: 'string'
-};
-
-/**
- *
- * `for` and `field` are used to identify the filter.
- */
-type FilterDefinitionRootNumber<T extends number> = {
-  for: 'root';
-  field: T;
-  type: 'number'
-};
-
-/**
- *
- * `for` and `field` are used to identify the filter.
- */
-type FilterDefinitionRootArray<T extends number> = {
-  /**
-   * Used to know which field comes from since it's just a number from an enum.
-   */
-  for: 'root';
-  field: T;
-  type: 'array';
-};
-
-/**
- *
- * `for` and `field` are used to identify the filter.
- */
-type FilterDefinitionRootStatus<T extends number> = {
-  /**
-   * Used to know which field comes from since it's just a number from an enum.
-   */
-  for: 'root';
-  field: T;
-  type: 'status';
-  statuses: FilterValueOptions;
-};
-
-type FilterDefinitionRootDate<T extends number> = {
-  /**
-   * Used to know which field comes from since it's just a number from an enum.
-   */
-  for: 'root';
-  field: T;
-  type: 'date';
-};
-
-type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
-
-type FilterDefinitionTaskOptionString<T extends number | null> = {
-  /**
-   * Used to know which field comes from since it's just a number from an enum.
-   */
-  for: 'options';
-  field: T;
-  type: 'string';
-};
-
-type FilterDefinitionTaskOptionNumber<T extends number | null> = {
-  /**
-   * Used to know which field comes from since it's just a number from an enum.
-   */
-  for: 'options';
-  field: T;
-  type: 'number';
-};
-
-type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T>;
-
-export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U>;
-
-export type FilterFor<T extends number, U extends number | null = null> = FilterDefinition<T, U>['for'];
-
-export abstract class FiltersService {
-  abstract retrieveFiltersDefinitions<T extends number, U extends number | null = null>(): FilterDefinition<T, U>[];
-  abstract retrieveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U): string;
-  abstract saveFilters<T extends number, U extends number | null = null>(filters: FiltersAnd<T, U>[]): void;
-  abstract restoreFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
-  abstract resetFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
-}
 
 export type SessionFilterDefinition = FilterDefinition<SessionRawEnumField, SessionTaskOptionEnumField>;
 
