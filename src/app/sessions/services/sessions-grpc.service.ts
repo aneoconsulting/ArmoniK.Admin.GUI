@@ -1,7 +1,8 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
+import { DateHandlerService } from '@app/services/date-handler.service';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
@@ -67,13 +68,21 @@ export class SessionsGrpcService{
   }
 
   #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {
-    return (type: FilterType, field: SessionRawField) => {
+    return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean) => {
 
-      const filterField = {
-        sessionRawField: {
-          field: field as SessionRawEnumField
-        }
-      } satisfies SessionFilterField.AsObject['field'];
+      const filterField = (
+        isForRoot ? 
+          {
+            sessionRawField: {
+              field: field as SessionRawEnumField
+            }
+          } :
+          {
+            taskOptionField: {
+              field: field as SessionTaskOptionEnumField
+            }
+          }
+        ) satisfies SessionFilterField.AsObject['field'];
 
       switch (type) {
       case 'string':
@@ -90,6 +99,25 @@ export class SessionsGrpcService{
           filterStatus: {
             value: Number(filter.value) ?? 0,
             operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+          }
+        } satisfies SessionFilterField.AsObject;
+      case 'date':
+        return {
+          field: filterField,
+          filterDate: {
+            value: {
+              nanos: 0,
+              seconds: new DateHandlerService<SessionRawEnumField, SessionTaskOptionEnumField>().setSecondsByDateOperator(filter)
+            },
+            operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
+          }
+        } satisfies SessionFilterField.AsObject;
+      case 'number':
+        return {
+          field: filterField,
+          filterStatus: {
+            value: Number(filter.value) ?? 0,
+            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL,
           }
         } satisfies SessionFilterField.AsObject;
       default:

@@ -1,10 +1,10 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FiltersAnd } from '@app/types/filters';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TasksStatusesService } from './tasks-status.service';
+import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskSummaryFiltersOr } from '../types';
 
 
@@ -59,20 +59,75 @@ describe('TasksFilterService', () => {
       }),
     },
     {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ENDED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_AT,
+      type: 'date'
+    },
+    {  
       for: 'options',
-      field: 5,
-      type: 'string',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
+      type: 'string'
     },
     {
       for: 'options',
-      field: 6,
-      type: 'string',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE,
+      type: 'string'
     },
     {
       for: 'options',
-      field: 4,
-      type: 'string',
-    }
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_SERVICE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_ENGINE_TYPE,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
+      type: 'string'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY,
+      type: 'number'
+    },
+    {
+      for: 'options',
+      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
+      type: 'number'
+    },
   ];
 
   const filterAnd: FiltersAnd<number, number> = [{
@@ -130,7 +185,7 @@ describe('TasksFilterService', () => {
   });
 
   test('the service must return the right label with filterFor options', () => {
-    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[6].for, expectedFiltersDefinitions[6].field);
+    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[15].for, expectedFiltersDefinitions[15].field);
     expect(mockLabelFilterOptions).toEqual('Partition ID');
   });
 
