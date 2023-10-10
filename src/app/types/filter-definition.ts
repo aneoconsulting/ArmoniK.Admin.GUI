@@ -64,10 +64,19 @@ export type FilterDefinitionTaskOptionString<T extends number | null> = {
   type: 'string';
 };
 
+type FilterDefinitionTaskOptionNumber<T extends number | null> = {
+  /**
+   * Used to know which field comes from since it's just a number from an enum.
+   */
+  for: 'options';
+  field: T;
+  type: 'number';
+};
+
 
 type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
 
-export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T>;
+export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T>;
 
 export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U>;
 
