@@ -195,8 +195,6 @@ export class NavigationComponent implements OnInit{
   version = pkg.version;
   externalServices: ExternalService[];
 
-  
-
   #breakpointObserver = inject(BreakpointObserver);
   #dialog = inject(MatDialog);
   #navigationService = inject(NavigationService);
@@ -250,11 +248,11 @@ export class NavigationComponent implements OnInit{
     const username = this.#userService.user ? this.#userService.user.username : '';
     // TODO: localize with params
     if (hour < 12) {
-      return 'Good morning' + (username ? ', ' + username : '');
+      return 'Good morning' + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
-      return 'Good afternoon' + (username ? ', ' + username : '');
+      return 'Good afternoon' + (username !== '' ? ', ' + username : '');
     } else {
-      return 'Good evening' + (username ? ', ' + username : '');
+      return 'Good evening' + (username !== '' ? ', ' + username : '');
     }
   }
 

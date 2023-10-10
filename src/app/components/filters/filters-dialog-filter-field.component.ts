@@ -2,9 +2,10 @@ import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { DateTime } from 'luxon';
 import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDate, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
@@ -14,7 +15,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 <span *ngIf="first" i18n="Filter condition">Where</span>
 <span *ngIf="!first" i18n="Filter condition">And</span>
 <mat-form-field appearance="outline"  subscriptSizing="dynamic">
-  <mat-label i18n="Label input">Column</mat-label>
+  <mat-label i18n="Label input">Property</mat-label>
   <mat-select (valueChange)="onFieldChange($event)" [value]="filter.for + '-' + filter.field?.toString()">
     <mat-option *ngFor="let definition of filtersDefinitions; trackBy: trackByField" [value]="definition.for + '-' + definition.field">
       {{ retrieveLabel(definition) }}
@@ -93,6 +94,9 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'number':
       this.filter.value = Number(event.value) || null;
       break;
+    case 'date':
+      this.filter.value = this.fromDateTimeToSecond(event.value);
+      break;
     }
   }
 
@@ -122,6 +126,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
         type: 'status',
         value: filter.value as string || null,
         statuses
+      };
+    case 'date':
+      return {
+        type: 'date',
+        value: filter.value as FilterInputValueDate || null
       };
     default:
       throw new Error(`Unknown type ${type}`);
@@ -173,5 +182,13 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+  }
+
+  fromDateTimeToSecond(value: DateTime | null): number | null {
+    if (!value) {
+      return null;
+    }
+    const seconds = value.toSeconds();
+    return seconds ? seconds : null;
   }
 }
