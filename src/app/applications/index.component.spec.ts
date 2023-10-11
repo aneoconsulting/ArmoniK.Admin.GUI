@@ -37,7 +37,9 @@ describe('Application component', () => {
   };
 
   const mockApplicationsFilterService = {
-    restoreFilters: jest.fn()
+    restoreFilters: jest.fn(),
+    saveFilters: jest.fn(),
+    resetFilters: jest.fn(),
   };
 
   const mockTasksByStatusService = {
@@ -47,6 +49,15 @@ describe('Application component', () => {
 
   const mockNotificationService = {
     error: jest.fn()
+  };
+
+  const mockGrpcApplicationsService = {
+    list$: jest.fn()
+  };
+
+  const mockAutoRefreshService = {
+    createInterval: jest.fn(),
+    autoRefreshTooltip: jest.fn()
   };
 
   beforeEach(() => {
@@ -62,15 +73,27 @@ describe('Application component', () => {
         { provide: DATA_FILTERS_SERVICE, useValue: mockApplicationsFilterService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
-        { provide: ApplicationsGrpcService, useValue: {} },
-        { provide: AutoRefreshService, useValue: {
-          createInterval: jest.fn()
-        } },
+        { provide: ApplicationsGrpcService, useValue: mockGrpcApplicationsService },
+        { provide: AutoRefreshService, useValue: mockAutoRefreshService },
       ]
     }).inject(IndexComponent);
+
+    component.paginator.pageIndex = 1;
+    component.paginator.pageSize = 25;
   });
   
   it('Should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should init', () => {
+    component.ngOnInit();
+    expect(mockApplicationIndexService.restoreColumns).toHaveBeenCalled();
+    expect(mockApplicationIndexService.restoreOptions).toHaveBeenCalled();
+    expect(mockApplicationsFilterService.restoreFilters).toHaveBeenCalled();
+    expect(mockApplicationIndexService.restoreIntervalValue).toHaveBeenCalled();
+    expect(mockShareUrlService.generateSharableUrl).toHaveBeenCalledWith(component.options, component.filters);
+    expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('applications');
+    expect(component.availableColumns).toEqual();
   });
 });
