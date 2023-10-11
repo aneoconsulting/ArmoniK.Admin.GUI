@@ -51,7 +51,7 @@ jobs:
         run: nci
 
       - name: Test
-        run: nr test-coverage
+        run: nr test-ci
 
       - name: Coverage
         uses: MishaKav/jest-coverage-comment@main

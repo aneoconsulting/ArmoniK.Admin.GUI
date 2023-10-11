@@ -13,6 +13,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "test-coverage": "jest --coverage",
+    "test-ci": "jest --coverage --coverageReporters json-summary",
     "release": "bumpp --no-tag --no-push"
   },
   "private": true,
