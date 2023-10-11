@@ -72,7 +72,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
       return `${label} ${operator} ${status?.value}`;
     }
     else if (type === 'date') {
-      return `${label} ${operator} ${DateTime.fromSeconds(filter.value as number).toISODate()}`;
+      return `${label} ${operator} ${DateTime.fromSeconds(Number(filter.value)).toISODate()}`;
     }
 
     return `${label} ${operator} ${filter.value}`;
