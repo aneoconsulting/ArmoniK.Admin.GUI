@@ -1,4 +1,3 @@
-import { mock } from 'node:test';
 import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
@@ -9,7 +8,7 @@ import { TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 describe('TasksIndexService', () => {
   let service: TasksIndexService; 
 
-  const mockColumnLabels: Record<TaskSummaryColumnKey, string> = {
+  const expectedColumnLabels: Record<TaskSummaryColumnKey, string> = {
     id: 'Task ID',
     status: 'Status',
     createdAt: 'Created at',
@@ -46,13 +45,7 @@ describe('TasksIndexService', () => {
     select: 'Select',
   };
 
-  const mockAvailableColumns =  [
-    'id', 'acquiredAt', 'actions', 'createdAt', 'creationToEndDuration', 'endedAt','initialTaskId', 'options', 'options.applicationName', 'options.maxDuration', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxRetries', 'options.partitionId', 'options.priority', 'ownerPodId', 'podHostname', 'podTtl', 'processingToEndDuration', 'receivedAt', 'sessionId', 'startedAt', 'status', 'statusMessage', 'submittedAt', 'countDataDependencies', 'countExpectedOutputIds', 'countParentTaskIds', 'countRetryOfIds', 'select'
-  ];
-  const mockDateColumns = ['acquiredAt', 'createdAt', 'endedAt', 'receivedAt', 'startedAt', 'submittedAt'];
-  const mockDurationColums = ['creationToEndDuration', 'processingToEndDuration', 'options.maxDuration'];
-  const mockObjectColumns = ['options', 'options.options'];
-  const mockDefaultOptions :TaskSummaryListOptions = {
+  const expectDefaultOptions :TaskSummaryListOptions = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -60,12 +53,9 @@ describe('TasksIndexService', () => {
       direction: 'asc'
     },
   };  
-  const mockDefaultViewInLogs = {
-    serviceName: null, 
-    serviceIcon: null, 
-    urlTemplate: null,
-  };
-  const mockDefaultIntervalValue = new DefaultConfigService().defaultTasks.interval;
+  const expectedDefaultColumns = new DefaultConfigService().defaultTasks.columns;
+
+  const expectedDefaultIntervalValue = new DefaultConfigService().defaultTasks.interval;
   const mockTableService = {
     saveIntervalValue: jest.fn(),
     restoreIntervalValue: jest.fn(),
@@ -96,7 +86,7 @@ describe('TasksIndexService', () => {
 
   describe('Columns', ()=> {
     test('the service should label the right column among available columns labels',() => { 
-      for(const [key] of Object.entries(mockColumnLabels)) {
+      for(const [key] of Object.entries(expectedColumnLabels)) {
         expect(service.columnToLabel(key as TaskSummaryColumnKey)).toEqual(service.columnsLabels[`${key}` as TaskSummaryColumnKey]);
       }
     });
@@ -183,20 +173,52 @@ describe('TasksIndexService', () => {
       service.restoreIntervalValue();
       expect(mockTableService.restoreIntervalValue).toHaveBeenCalledWith('tasks-interval');
       mockTableService.restoreIntervalValue.mockImplementationOnce(() => null);
-      expect(service.restoreIntervalValue()).toEqual(mockDefaultIntervalValue);
+      expect(service.restoreIntervalValue()).toEqual(expectedDefaultIntervalValue);
     });
     
   });
 
   describe('Options', ()=>{
     it('should call saveOptions from TableService', ()=>{
-      service.saveOptions(mockDefaultOptions);
-      expect(mockTableService.saveOptions).toBeCalledWith('tasks-options',mockDefaultOptions);
+      service.saveOptions(expectDefaultOptions);
+      expect(mockTableService.saveOptions).toBeCalledWith('tasks-options',expectDefaultOptions);
     });
 
     it('should call restoreOptions from TableService', ()=>{
       service.restoreOptions(); 
-      expect(mockTableService.restoreOptions).toBeCalledWith('tasks-options',mockDefaultOptions);
+      expect(mockTableService.restoreOptions).toBeCalledWith('tasks-options',expectDefaultOptions);
+    });
+  });
+
+  describe('Columns', ()=>{
+    it('should call saveColums from TableService', ()=>{
+      service.saveColumns(['createdAt', 'actions', 'initialTaskId']); 
+      expect(mockTableService.saveColumns).toBeCalledWith('tasks-columns', ['createdAt', 'actions', 'initialTaskId']);
+    });
+
+    it('should call restoreColumns from TableService', ()=>{
+      service.restoreColumns(); 
+      expect(mockTableService.restoreColumns).toBeCalledWith('tasks-columns');
+      mockTableService.restoreColumns.mockImplementationOnce(() => null);
+      expect(service.restoreColumns()).toEqual(expectedDefaultColumns);
+    });
+    
+    it('should call resetColumns from TableService', ()=>{
+      service.resetColumns(); 
+      expect(mockTableService.resetColumns).toBeCalledWith('tasks-columns');
+      expect(service.resetColumns()).toEqual(expectedDefaultColumns);
+    });
+  });
+
+  describe('View in logs', ()=>{
+    it('should call saveViewInLongs from TableService', ()=>{
+      service.saveViewInLogs('Apple', 'apple', 'https://www.apple.com/fr/');
+      expect(mockTableService.saveViewInLogs).toBeCalledWith('tasks-view-in-logs','Apple', 'apple', 'https://www.apple.com/fr/');
+    });
+
+    it('should call restoreViewInLogs from TableService', ()=>{
+      service.restoreViewInLogs(); 
+      expect(mockTableService.restoreViewInLogs).toBeCalledWith('tasks-view-in-logs');
     });
   });
 });
