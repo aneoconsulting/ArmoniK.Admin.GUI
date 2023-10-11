@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
