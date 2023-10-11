@@ -55,6 +55,10 @@ jobs:
 
       - name: Coverage
         uses: MishaKav/jest-coverage-comment@main
+        with:
+          hide-comment: false
+          create-new-comment: false
+          hide-summary: false
 
   build:
     
