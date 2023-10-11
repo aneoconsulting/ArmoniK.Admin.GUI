@@ -59,8 +59,6 @@ jobs:
           hide-comment: false
           create-new-comment: false
           hide-summary: false
-          junitxml-path: ./junit.xml
-          junitxml-title: JUnit report
 
   build:
     
