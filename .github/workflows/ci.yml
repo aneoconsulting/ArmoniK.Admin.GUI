@@ -27,7 +27,6 @@ jobs:
           node-version: 18
           cache: pnpm
 
-
       - name: Install dependencies
         run: nci
 
@@ -48,11 +47,16 @@ jobs:
           node-version: 18
           cache: pnpm
 
-      - name: Test & coverage
-        uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Install dependencies
+        run: nci
+
+      - name: Test
+        run: nr test-coverage
+
+      - name: Coverage
+        uses: MishaKav/jest-coverage-comment@main
         with:
-          package-manager: pnpm
-          test-script: pnpm test
+          coverage-summary-path: ./coverage/coverage-final.json
 
   build:
     
@@ -69,7 +73,6 @@ jobs:
         with:
           node-version: 18
           cache: pnpm
-
 
       - name: Install dependencies
         run: nci
