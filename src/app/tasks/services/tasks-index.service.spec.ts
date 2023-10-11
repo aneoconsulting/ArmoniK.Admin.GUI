@@ -1,3 +1,4 @@
+import { mock } from 'node:test';
 import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
@@ -64,7 +65,7 @@ describe('TasksIndexService', () => {
     serviceIcon: null, 
     urlTemplate: null,
   };
-
+  const mockDefaultIntervalValue = new DefaultConfigService().defaultTasks.interval;
   const mockTableService = {
     saveIntervalValue: jest.fn(),
     restoreIntervalValue: jest.fn(),
@@ -76,6 +77,7 @@ describe('TasksIndexService', () => {
     saveViewInLogs: jest.fn(),
     restoreViewInLogs: jest.fn()
   };
+
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -179,16 +181,22 @@ describe('TasksIndexService', () => {
 
     it('should call restoreIntervalValue from TableService', ()=>{
       service.restoreIntervalValue();
-      expect(mockTableService.restoreIntervalValue).toBeCalledWith('tasks-interval');
-      mockTableService.restoreIntervalValue.mockImplementationOnce(() => null );
-      expect(service.restoreIntervalValue()).toEqual(10);
+      expect(mockTableService.restoreIntervalValue).toHaveBeenCalledWith('tasks-interval');
+      mockTableService.restoreIntervalValue.mockImplementationOnce(() => null);
+      expect(service.restoreIntervalValue()).toEqual(mockDefaultIntervalValue);
     });
+    
   });
 
   describe('Options', ()=>{
     it('should call saveOptions from TableService', ()=>{
       service.saveOptions(mockDefaultOptions);
-      expect(mockTableService.saveOptions).toBeCalledWith('tasks-options',mockDefaultOptions );
+      expect(mockTableService.saveOptions).toBeCalledWith('tasks-options',mockDefaultOptions);
+    });
+
+    it('should call restoreOptions from TableService', ()=>{
+      service.restoreOptions(); 
+      expect(mockTableService.restoreOptions).toBeCalledWith('tasks-options',mockDefaultOptions);
     });
   });
 });
