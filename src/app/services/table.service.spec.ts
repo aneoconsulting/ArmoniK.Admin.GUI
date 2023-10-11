@@ -1,8 +1,8 @@
 import { TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { FilterDefinition } from '@app/sessions/services/sessions-filters.service';
 import { TaskFilterDefinition } from '@app/tasks/types';
 import { FieldKey } from '@app/types/data';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { ListOptions } from '@app/types/options';
 import { StorageService } from './storage.service';
 import { TableStorageService } from './table-storage.service';

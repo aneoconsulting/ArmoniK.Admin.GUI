@@ -1,6 +1,6 @@
 import { StatusCount as GrpcStatusCount, TaskOptions as GrpcTaskOptions, TaskDetailed as GrpcTaskRaw, TaskSummary as GrpcTaskSummary, TaskOptionEnumField, TaskOptionGenericField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
 import { ColumnKey, FieldKey, PrefixedOptions } from '@app/types/data';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 

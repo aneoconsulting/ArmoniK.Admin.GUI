@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FilterDefinition, FilterFor } from '@app/sessions/services/sessions-filters.service';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { QueryParamsOptionsKey } from '@app/types/query-params';
 

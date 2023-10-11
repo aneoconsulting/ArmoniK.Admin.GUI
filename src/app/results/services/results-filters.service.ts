@@ -1,6 +1,6 @@
 import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FilterFor } from '@app/sessions/services/sessions-filters.service';
+import { FilterFor } from '@app/types/filter-definition';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
@@ -51,7 +51,13 @@ export class ResultsFiltersService {
           value: this.#resultsStatusesService.statuses[Number(status) as ResultStatus],
         };
       }),
-    }];
+    },
+    {
+      for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
+      type: 'date'
+    }
+  ];
 
   readonly #defaultFilters: ResultRawFiltersOr = this.#defaultConfigService.defaultResults.filters;
 
