@@ -361,7 +361,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumns = [...data];
+    this.displayedColumns = data;
 
     this._applicationsIndexService.saveColumns(data);
   }
