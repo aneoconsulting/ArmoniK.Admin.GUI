@@ -27,7 +27,6 @@ jobs:
           node-version: 18
           cache: pnpm
 
-
       - name: Install dependencies
         run: nci
 
@@ -48,10 +47,19 @@ jobs:
           node-version: 18
           cache: pnpm
 
-      - name: Test & coverage
-        uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Install dependencies
+        run: nci
+
+      - name: Test
+        run: nr test-ci
+
+      - name: Coverage
+        uses: MishaKav/jest-coverage-comment@main
         with:
-          package-manager: pnpm
+          junitxml-title: JUnit
+          junitxml-path: ./junit.xml
+          coverage-title: Files coverage
+          coverage-path: ./coverage.txt
 
   build:
     
@@ -68,7 +76,6 @@ jobs:
         with:
           node-version: 18
           cache: pnpm
-
 
       - name: Install dependencies
         run: nci

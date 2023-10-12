@@ -42,3 +42,5 @@ testem.log
 Thumbs.db
 
 src/proxy.conf.json
+coverage.txt
+junit.xml
