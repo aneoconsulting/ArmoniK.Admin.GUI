@@ -92,7 +92,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   availableOptionsColumns(): PrefixedOptions<O>[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort() as PrefixedOptions<O>[];
 
     return columns;
   }
