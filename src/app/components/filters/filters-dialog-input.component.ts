@@ -69,7 +69,8 @@ export class FiltersDialogInputComponent {
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
 
-  toDateTime(seconds: number | null) {
+  toDateTime(seconds: string | number | null) {
+    seconds = Number(seconds);
     return seconds && seconds !== 0 ? DateTime.fromSeconds(seconds) : undefined;
   }
 
