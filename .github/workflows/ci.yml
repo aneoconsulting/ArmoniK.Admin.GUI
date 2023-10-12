@@ -56,9 +56,6 @@ jobs:
       - name: Coverage
         uses: MishaKav/jest-coverage-comment@main
         with:
-          hide-comment: false
-          create-new-comment: false
-          hide-summary: false
           junitxml-title: JUnit
           junitxml-path: ./junit.xml
           coverage-title: Files coverage
