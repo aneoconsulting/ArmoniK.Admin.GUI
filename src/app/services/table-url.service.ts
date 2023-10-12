@@ -30,7 +30,7 @@ export class TableURLService {
     const params: Map<string, Filter<T, U>[]>  = new Map();
     const filters: FiltersOr<T, U> = [];
 
-    const extractValues = /(?<order>\d)-(?<for>.*)-(?<field>.*)-(?<operator>\d)/;
+    const extractValues = /(?<order>\d{1,2})-(?<for>root|options)-(?<field>\d{1,3})-(?<operator>\d{1,2})/;
     const keys = this.getQueryParamKeys();
 
     for (const key of keys) {
