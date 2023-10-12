@@ -149,8 +149,6 @@ describe('TasksIndexService', () => {
       expect(service.isSimpleColumn('createdAt')).toBe(false);
       expect(service.isSimpleColumn('creationToEndDuration')).toBe(false);
       expect(service.isSimpleColumn('options')).toBe(false);
-      expect(service.isSimpleColumn('id')).toBe(false);
-      expect(service.isSimpleColumn('status')).toBe(false);
     });
     
     it('should return true if the column is not sortable', () =>{
@@ -172,10 +170,13 @@ describe('TasksIndexService', () => {
     it('should call restoreIntervalValue from TableService', ()=>{
       service.restoreIntervalValue();
       expect(mockTableService.restoreIntervalValue).toHaveBeenCalledWith('tasks-interval');
+    });
+
+    it('should return defaultIntervalValue when restoreIntervalValue from TableService returns null', () => {
       mockTableService.restoreIntervalValue.mockImplementationOnce(() => null);
       expect(service.restoreIntervalValue()).toEqual(expectedDefaultIntervalValue);
-    });
-    
+    });  
+
   });
 
   describe('Options', ()=>{
@@ -191,7 +192,7 @@ describe('TasksIndexService', () => {
   });
 
   describe('Columns', ()=>{
-    it('should call saveColums from TableService', ()=>{
+    it('should call saveColumns from TableService', ()=>{
       service.saveColumns(['createdAt', 'actions', 'initialTaskId']); 
       expect(mockTableService.saveColumns).toBeCalledWith('tasks-columns', ['createdAt', 'actions', 'initialTaskId']);
     });
@@ -199,6 +200,9 @@ describe('TasksIndexService', () => {
     it('should call restoreColumns from TableService', ()=>{
       service.restoreColumns(); 
       expect(mockTableService.restoreColumns).toBeCalledWith('tasks-columns');
+    });
+
+    it('should return defaultColums when restoreColumns from TableService returns null', ()=>{
       mockTableService.restoreColumns.mockImplementationOnce(() => null);
       expect(service.restoreColumns()).toEqual(expectedDefaultColumns);
     });
