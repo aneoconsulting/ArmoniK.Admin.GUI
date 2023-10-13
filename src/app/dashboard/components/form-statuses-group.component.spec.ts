@@ -83,9 +83,7 @@ describe('FormStatusesGroupComponent', () => {
       removeAt: jest.fn()
     } as unknown as AbstractControl;
     const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce((path: string | (string | number)[]) => {
-      return path ? initialObject : null;
-    });
+    spyGroupFormGet.mockImplementationOnce(() => initialObject);
 
     const event = {
       checked: false,
@@ -122,9 +120,7 @@ describe('FormStatusesGroupComponent', () => {
     } as unknown as MatCheckboxChange;
 
     const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce((path: string | (string | number)[]) => {
-      return path ? initialObject : null;
-    });
+    spyGroupFormGet.mockImplementationOnce(() => initialObject);
 
     component.onCheckboxChange(event);
     expect((initialObject as FormArray).push).toHaveBeenCalled();
@@ -139,9 +135,7 @@ describe('FormStatusesGroupComponent', () => {
     } as unknown as MatCheckboxChange;
 
     const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce((path: string | (string | number)[]) => {
-      return path ? null : null;
-    });
+    spyGroupFormGet.mockImplementationOnce(() => null);
     expect(component.onCheckboxChange(event)).toEqual(undefined);
   });
 
