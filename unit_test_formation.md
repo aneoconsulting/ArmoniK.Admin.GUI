@@ -35,11 +35,11 @@
 
 
 
-  #### Jest installation and configuration
+  #### Jest installation 
 
   ArmoniK Admin GUI is developed with Angular. Angular natively offers to use Jasmine and Karma for testing. 
+
   As we choose using Jest, we need to delete Jasmine and Karma of our project.
-  Then, we replace it by Jest Library and some usefuls packages with.
 
   To remove Jasmine and Karma from the project, run `pnpm remove jasmine karma`.
 
@@ -50,6 +50,16 @@
   @types/jest ts-node ts-jest and jest-preset-angular are needed for jest configuration in Typescript/Angular projects. 
 
   jest-environment-jsdom is a package recommended by Jest documentation for DOM simulation. (https://jestjs.io/docs/tutorial-jquery). 
+
+
+
+  #### Jest setup and configuration 
+
+Once Jest installed, we need to declare it in our Typescript configuration file. 
+in ./tsconfig.spec.json, add "jest" and "node" to property types.
+![Alt text](image.png)
+
+
 
   
 
