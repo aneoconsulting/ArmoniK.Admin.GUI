@@ -51,7 +51,7 @@ import { DashboardStorageService } from '../services/dashboard-storage.service';
         </div>
       </div>
       <ul cdkDropList
-          (cdkDropListDropped)="drop($event)"
+          (cdkDropListDropped)="onDrop($event)"
           [cdkDropListData]="group.statuses"
         >
         <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
@@ -180,13 +180,7 @@ export class ManageGroupsDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.groups = [...this.data.groups.map(group => {
-      return {
-        ...group,
-        statuses: [...group.statuses]
-      };
-    })
-    ];
+    this.groups = this.data.groups;
   }
 
   getIcon(name: string): string {
@@ -197,7 +191,7 @@ export class ManageGroupsDialogComponent implements OnInit {
     return this.#tasksStatusesService.statusToLabel(status);
   }
 
-  drop(event: CdkDragDrop<TaskStatus[]>) {
+  onDrop(event: CdkDragDrop<TaskStatus[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
