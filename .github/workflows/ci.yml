@@ -57,6 +57,7 @@ jobs:
         run: nr test-ci
 
       - uses: actions/upload-artifact@master
+        if: always()
         with:
           name: Coverage
           path: ./coverage
@@ -65,6 +66,7 @@ jobs:
     name: Coverage
     runs-on: ubuntu-latest
     needs: ['test']
+    if: always()
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
 
