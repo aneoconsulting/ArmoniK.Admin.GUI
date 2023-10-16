@@ -14,7 +14,7 @@ describe('IndexComponent', () => {
 
   let dialogRef$: Observable<AddLineDialogResult | SplitLinesDialogResult  | ReorganizeLinesDialogResult | undefined>;
 
-  const defaultUrl = 'http://some-url/';
+  const defaultUrl = 'https://some-url/';
   const defaultLines: Line[] = [
     {
       name: 'line1',
