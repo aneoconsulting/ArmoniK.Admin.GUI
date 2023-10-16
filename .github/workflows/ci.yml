@@ -52,7 +52,7 @@ jobs:
 
       - name: Test
         run: |
-            nr test-ci && ${PIPESTATUS[0]}
+            nr test-ci && exit ${PIPESTATUS[0]}
 
       - name: Coverage
         if: always()
