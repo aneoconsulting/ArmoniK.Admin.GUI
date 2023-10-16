@@ -150,7 +150,7 @@ run `pnpm run test` let's go for tests !!
 
 
 
-### Write our first test suite
+### Write unit tests for a simple service
 
 We start by setting up our environment for testing our class. 
 
@@ -168,7 +168,7 @@ The second argument is a callback function where you will write all your  unit t
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/e040fafc-7d81-4ae2-ac6b-d65d79d72b46)
 
 
-In this example, we classicly create our service. 
+In the example above, we classicly create our service. 
 
 We use Jest API `expect` for testing that the service is really instantiated. 
 
@@ -185,6 +185,77 @@ The first argument must describe what we expect from the unit test.
 In order to make our tests more readable and quick to understand, it's usually important to write precisely the expected behaviour or value. 
 
 The second argument is a callback function including our test. 
+
+
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/39c4989f-1fc4-4a95-b74a-91509161e171)
+
+In the example above, we use the well-known AAA pattern for organzing our unit test 
+
+1. Arrange : We initialize the object with methods and parameters we want to run after.
+2. Act : We invoke methods or functions.
+3. Assert : We check outputs and if returned values match with the expected behaviour.
+
+In this case, we use `jest.spyOn()`function to watch method calls. 
+You can read the documentation for more informations: https://jestjs.io/docs/jest-object#jestspyonobject-methodname
+
+Once spied, we call the getter. 
+
+Then, we check with the spy if the getter was actually called with `toHaveBeenCalled()`.
+You can read the documentation for more informations: https://jestjs.io/docs/expect#tohavebeencalled
+
+
+
+### Write unit tests for a service with dependencies
+
+
+For testing a service with dependencies, we need to use more tools for configuration. 
+
+We are going to work with Storage service for example. 
+As we can see, the Storage.service have 2 others services injected. 
+DefaultConfigService and Storage. 
+To test methods linked with these injected services and reflect dependency injection , we are going to mock them.
+
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/5bb526c8-a55d-42d3-bfc9-008378036cd9)
+
+
+In the example above, we create two mocks:
+1. mockItemData for simulating an object stored in local storage.
+2. mockStorage for imitating behaviours of local storage browser Web API implemented by the service.
+
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/9e806d3e-7b24-46a5-a4a2-6a330740ff65)
+
+Then, we create our service by provding its required dependencies. We use the Angular API TestBed giving access to configureTestingModule.
+We are going to configure our service thanks to this method. It takes an object wherein we will push mocked dependencies into an array at providers property. 
+We can directly push required services into providers' array. 
+
+Or we can use an object like this :   ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/c5fa29d6-d75c-4c83-a35f-0ed31d2eb05c)
+ The "provide" value is the required service name. 
+
+ The "useValue" value is the mock in charge to replicating behaviours of the real dependency. 
+
+we also need to push the real Storage Service into providers' array. 
+
+After this, we call the inject() method to inject the dependencies. We call this function because we use it our project instead of using constructor. 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
