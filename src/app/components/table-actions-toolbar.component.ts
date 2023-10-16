@@ -32,6 +32,7 @@ import { SpinnerComponent } from './spinner.component';
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
       (displayedColumnsChange)="onDisplayedColumnsChange($event)"
+      [disabled]="lockColumns"
     >
     </app-columns-button>
 
@@ -39,6 +40,15 @@ import { SpinnerComponent } from './spinner.component';
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
     </button>
     <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onLockColumnsChange()">
+        <mat-icon aria-hidden="true" [fontIcon]="lockColumns ? getIcon('unlock') : getIcon('lock')"></mat-icon>
+        <span *ngIf="!lockColumns" i18n>
+          Lock columns
+        </span>
+        <span *ngIf="lockColumns" i18n>
+          Unlock columns
+        </span>
+      </button>
       <button mat-menu-item (click)="onResetColumns()">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('format-clear')"></mat-icon>
         <span i18n>
@@ -83,12 +93,14 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[] = [];
+  @Input({ required: true }) lockColumns = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
+  @Output() lockColumnsChange = new EventEmitter<void>();
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
@@ -112,5 +124,9 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
 
   onResetFilters(): void {
     this.resetFilters.emit();
+  }
+
+  onLockColumnsChange(): void {
+    this.lockColumnsChange.emit();
   }
 }

@@ -9,6 +9,7 @@ export class TasksIndexService {
   #tableService = inject(TableService);
 
   readonly defaultColumns: TaskSummaryColumnKey[] = this.#defaultConfigService.defaultTasks.columns;
+  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultTasks.lockColumns;
   readonly availableColumns: TaskSummaryColumnKey[] = [
     'id', 'acquiredAt', 'actions', 'createdAt', 'creationToEndDuration', 'endedAt','initialTaskId', 'options', 'options.applicationName', 'options.maxDuration', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxRetries', 'options.partitionId', 'options.priority', 'ownerPodId', 'podHostname', 'podTtl', 'processingToEndDuration', 'receivedAt', 'sessionId', 'startedAt', 'status', 'statusMessage', 'submittedAt', 'countDataDependencies', 'countExpectedOutputIds', 'countParentTaskIds', 'countRetryOfIds', 'select'
   ];
@@ -113,6 +114,18 @@ export class TasksIndexService {
 
   restoreIntervalValue(): number {
     return this.#tableService.restoreIntervalValue('tasks-interval') ?? this.defaultIntervalValue;
+  }
+
+  /**
+   * Lock columns
+   */
+
+  saveLockColumns(value: boolean): void {
+    this.#tableService.saveLockColumns('tasks-lock-columns', value);
+  }
+
+  restoreLockColumns(): boolean {
+    return this.#tableService.restoreLockColumns('tasks-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**

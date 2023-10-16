@@ -10,6 +10,7 @@ export class ResultsIndexService {
   #resultsStatusesService = inject(ResultsStatusesService);
 
   readonly defaultColumns: ResultRawColumnKey[] = this.#defaultConfigService.defaultResults.columns;
+  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultResults.lockColumns;
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
 
   readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
@@ -73,6 +74,18 @@ export class ResultsIndexService {
 
   restoreIntervalValue(): number {
     return this.#tableService.restoreIntervalValue('results-interval') ?? this.defaultIntervalValue;
+  }
+
+  /**
+   * Lock columns
+   */
+
+  saveLockColumns(value: boolean): void {
+    this.#tableService.saveLockColumns('results-lock-columns', value);
+  }
+
+  restoreLockColumns(): boolean {
+    return this.#tableService.restoreLockColumns('results-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**

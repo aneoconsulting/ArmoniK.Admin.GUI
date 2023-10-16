@@ -71,6 +71,16 @@ describe('TableService', () => {
     });
   });
 
+  test('saveLockColumns should call TableStorageService.save', () => {
+    service.saveLockColumns('applications-lock-columns', true);
+    expect(saveSpy).toHaveBeenCalledWith('applications-lock-columns', true);
+  });
+
+  test('restoreLockColumns should call TableStorageService.retore', () => {
+    service.restoreLockColumns('applications-lock-columns');
+    expect(restoreSpy).toHaveBeenCalledWith('applications-lock-columns');
+  });
+
   it('saveOptions should call TableStorageService.save', () => {
     service.saveOptions('applications-options', 1);
     expect(saveSpy).toHaveBeenCalledWith('applications-options', 1);

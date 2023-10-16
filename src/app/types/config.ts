@@ -1,12 +1,13 @@
 export type ScopeConfig<C, O, F> = {
   interval: number;
+  lockColumns: boolean;
   columns: C[];
   options: O;
   filters: F;
 };
 
 export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
-export type Element = 'columns' | 'options' | 'filters' | 'interval';
+export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns';
 
 export type Key =
   'navigation-sidebar' |
