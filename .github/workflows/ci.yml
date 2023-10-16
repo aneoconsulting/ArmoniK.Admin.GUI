@@ -59,6 +59,7 @@ jobs:
             else
               echo "Unit tests failed"
               exit 1
+            fi
 
       - name: Coverage
         if: always()
