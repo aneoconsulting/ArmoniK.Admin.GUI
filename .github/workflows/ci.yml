@@ -58,9 +58,9 @@ jobs:
         uses: MishaKav/jest-coverage-comment@main
         with:
           junitxml-title: JUnit
-          junitxml-path: ./coverage/junit.xml
+          junitxml-path: ./junit.xml
           coverage-title: Files coverage
-          coverage-path: ./coverage/coverage.txt
+          coverage-path: ./coverage.txt
 
   build:
     
