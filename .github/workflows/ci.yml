@@ -55,13 +55,8 @@ jobs:
 
       - uses: actions/upload-artifact@master
         with:
-          name: JUnit
-          path: ./junit.xml
-
-      - uses: actions/upload-artifact@master
-        with:
-          name: Coverage file
-          path: ./coverage.txt
+          name: Coverage
+          path: ./coverage
 
   coverage:
     name: Coverage
@@ -72,21 +67,16 @@ jobs:
 
       - uses: actions/download-artifact@master
         with:
-          name: JUnit
-          path: ./junit.xml
-
-      - uses: actions/download-artifact@master
-        with:
-          name: Coverage file
-          path: ./coverage.txt
+          name: Coverage
+          path: ./coverage
 
       - name: Coverage
         uses: MishaKav/jest-coverage-comment@main
         with:
           junitxml-title: JUnit
-          junitxml-path: ./junit.xml
+          junitxml-path: ./coverage/junit.xml
           coverage-title: Files coverage
-          coverage-path: ./coverage.txt
+          coverage-path: ./coverage/coverage.txt
 
   build:
     
