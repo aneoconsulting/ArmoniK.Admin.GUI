@@ -53,6 +53,16 @@ jobs:
       - name: Test
         run: nr test-ci
 
+      - uses: actions/upload-artifact@master
+        with:
+          name: JUnit
+          path: ./junit.xml
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: Coverage file
+          path: ./coverage.txt
+
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
@@ -60,13 +70,15 @@ jobs:
     steps:
       - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
 
-      - run: npm i -g @antfu/ni
-      - run: corepack enable
-
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3
+      - uses: actions/download-artifact@master
         with:
-          node-version: 18
-          cache: pnpm
+          name: JUnit
+          path: ./junit.xml
+
+      - uses: actions/download-artifact@master
+        with:
+          name: Coverage file
+          path: ./coverage.txt
 
       - name: Coverage
         uses: MishaKav/jest-coverage-comment@main
