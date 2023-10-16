@@ -13,7 +13,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "test-coverage": "jest --coverage",
-    "test-ci": "jest --coverage --reporters=default --reporters=jest-junit --coverageReporters json-summary text | tee ./coverage.txt && exit ${PIPESTATUS[0]}",
+    "test-ci": "jest --coverage --reporters=default --reporters=jest-junit --coverageReporters json-summary text | tee ./coverage.txt",
     "release": "bumpp --no-tag --no-push"
   },
   "private": true,

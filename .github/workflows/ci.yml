@@ -53,6 +53,12 @@ jobs:
       - name: Test
         run: |
             nr test-ci
+            if ${PIPESTATUS[0]} == 0;
+            then
+              echo "Unit tests passed"
+            else
+              echo "Unit tests failed"
+              exit 1
 
       - name: Coverage
         if: always()
