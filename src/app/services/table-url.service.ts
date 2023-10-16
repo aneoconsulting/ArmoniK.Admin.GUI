@@ -30,7 +30,14 @@ export class TableURLService {
     const params: Map<string, Filter<T, U>[]>  = new Map();
     const filters: FiltersOr<T, U> = [];
 
-    const extractValues = /(?<order>\d)-(?<for>.*)-(?<field>.*)-(?<operator>\d)/;
+    /**
+     * The following regex extracts 4 groups according to the following rules:
+     * - order: a string from 1 to 2 characters.
+     * - for: a string, either "root" or "options".
+     * - field: a number representing the filtered property. 1 to 3 characters long.
+     * - operator: a number representing the operation. 1 to 2 characters.
+     */
+    const extractValues = /(?<order>\d{1,2})-(?<for>root|options)-(?<field>\d{1,3})-(?<operator>\d{1,2})/;
     const keys = this.getQueryParamKeys();
 
     for (const key of keys) {
