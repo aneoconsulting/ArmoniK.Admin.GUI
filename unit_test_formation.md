@@ -35,6 +35,11 @@
   We choose using Jest for his large adoption and popularity by Javascript community and frameworks like React, Vue and Angular.
 
 
+### Prerequisites
+
+Before getting started with unit testing using Jest, make sure you have the following prerequisites:
+
+- Node.js and npm installed
 
 
   ### Jest installation 
@@ -208,7 +213,7 @@ You can read the documentation for more informations: https://jestjs.io/docs/exp
 ### Write unit tests for a service with dependencies
 
 
-For testing a service with dependencies, we need to use more tools for configuration. 
+For testing a service with dependencies, we need to use more tools. 
 
 We are going to work with Storage service for example. 
 As we can see, the Storage.service have 2 others services injected. 
@@ -224,18 +229,34 @@ In the example above, we create two mocks:
 
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/9e806d3e-7b24-46a5-a4a2-6a330740ff65)
 
-Then, we create our service by provding its required dependencies. We use the Angular API TestBed giving access to configureTestingModule.
-We are going to configure our service thanks to this method. It takes an object wherein we will push mocked dependencies into an array at providers property. 
+Then, we create our service by provding its required dependencies inside BeforeEach() function. 
+
+This function will be called before each run of our test file.
+
+We use the Angular API `TestBed` giving access to `configureTestingModule()`.
+We are going to configure our service thanks to this method. 
+
+It takes an object wherein we will push mocked dependencies into an array at providers property. 
 We can directly push required services into providers' array. 
 
-Or we can use an object like this :   ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/c5fa29d6-d75c-4c83-a35f-0ed31d2eb05c)
- The "provide" value is the required service name. 
+Or we can use an object like this : 
 
- The "useValue" value is the mock in charge to replicating behaviours of the real dependency. 
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/c5fa29d6-d75c-4c83-a35f-0ed31d2eb05c)
+
+
+The "provide" value is the required service name. 
+
+The "useValue" value is the mock in charge to replicate behaviour of the real dependency. 
 
 we also need to push the real Storage Service into providers' array. 
 
-After this, we call the inject() method to inject the dependencies. We call this function because we use it our project instead of using constructor. 
+After this, we call the `inject()` method to inject the dependencies. We call this function because we use it our project instead of using `constructor()`. 
+
+
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/6d201e17-a2a8-45e3-a7bf-9f5d56d0b352)
+
+
+Rigth thre, we test the clear method of Storage service. 
 
 
  
