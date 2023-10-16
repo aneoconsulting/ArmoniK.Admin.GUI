@@ -194,7 +194,7 @@ describe('TasksIndexService', () => {
 
     it('should return defaultLockColumn when restoreLockColumns from TableService returns null', () => {
       mockTableService.restoreLockColumns.mockImplementationOnce(() => null);
-      expect(service.restoreIntervalValue()).toEqual(expectedDefaultLockColumnsValue);
+      expect(service.restoreLockColumns()).toEqual(expectedDefaultLockColumnsValue);
     });  
   });
 
