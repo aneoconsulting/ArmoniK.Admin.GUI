@@ -50,6 +50,9 @@ jobs:
       - name: Install dependencies
         run: nci
 
+      - name: Coverage output folder
+        run: mkdir ./coverage
+
       - name: Test
         run: nr test-ci
 
