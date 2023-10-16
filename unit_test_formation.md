@@ -150,18 +150,46 @@ run `pnpm run test` let's go for tests !!
 
 
 
-### Write our first test
+### Write our first test suite
+
+We start by setting up our environment for testing our class. 
+
+For a simple service, there is nothing hard to do. 
+
+Jest provides us some API and functions to make our tests easier and readable. 
+
+In  `describe()` function, you must define the target of your test suite. 
+
+A test suite is a set of multiple tests programmed for testing expected or unexpected behaviours of a class.
+
+The second argument is a callback function where you will write all your  unit tests about the class.
 
 
-Jest provides us some API and functions to test our components.
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/e040fafc-7d81-4ae2-ac6b-d65d79d72b46)
 
-`describe()` allows us to define our tests suite. two parameters are expected: a string for the name of your test suite and a callback function in which we are going to write our unit tests.
 
-Before, we need to set up our component with BeforeEach() function in which we gonna create a component/service and provide his dependencies. 
+In this example, we classicly create our service. 
 
-We'll see later mocking is a quite good practice for testing components with dependecny injection. 
+We use Jest API `expect` for testing that the service is really instantiated. 
 
-It's going to help us to only select what we need from other services and avoid to call real services and components in our tests when possible.
+[Expect](https://jestjs.io/docs/expect#expectvalue) API provides us lot of functions called "matchers" to check values and class behaviours in our assertions. 
+
+We use `ToBeTruthy()` matcher to check if our service is correctly instantiated. 
+
+You can read the documentation for more informations about matchers : https://jestjs.io/docs/expect#matchers
+
+
+We use `it` function or `test()` function to write our unit test within. 
+
+The first argument must describe what we expect from the unit test. 
+In order to make our tests more readable and quick to understand, it's usually important to write precisely the expected behaviour or value. 
+
+The second argument is a callback function including our test. 
+
+
+
+
+
 
 
 
