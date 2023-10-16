@@ -208,8 +208,6 @@ export class IndexComponent implements OnInit {
     const dialogRef = this.#dialog.open<AddLineDialogComponent, AddLineDialogData, AddLineDialogResult>(AddLineDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-
       if (result) {
         this.lines.push({
           name: result.name,
@@ -255,9 +253,7 @@ export class IndexComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result || !result.lines) return;
-
-      if (result) {
+      if (result && result.lines) {
         this.lines = result.lines;
         this.onSaveChange();
       }
@@ -272,17 +268,14 @@ export class IndexComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result || !result.columns) return;
-
-      if (result) {
+      if (result && result.columns) {
         this.columns = result.columns;
         this.#dashboardIndexService.saveSplitLines(this.columns);
       }
     });
-
   }
 
-  onDeleteLine( value: Line) {
+  onDeleteLine(value: Line) {
     const index = this.lines.indexOf(value);
     if (index > -1) {
       this.lines.splice(index, 1);
