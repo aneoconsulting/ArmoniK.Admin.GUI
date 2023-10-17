@@ -70,7 +70,7 @@ describe('DashboardStorageService', () => {
     expect(mockStorageService.setItem).toHaveBeenCalledWith('dashboard-split-lines', 4);
   });
 
-  it('should restore splited lines', () => {
+  it('should restore splitted lines', () => {
     mockStorageService.getItem.mockImplementationOnce(() => 2);
     expect(service.restoreSplitLines()).toEqual(2);
   });
