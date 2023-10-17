@@ -65,7 +65,7 @@ describe('DashboardStorageService', () => {
     expect(service.restoreLines()).toEqual(null);
   });
 
-  it('should save splited lines', () => {
+  it('should save splitted lines', () => {
     service.saveSplitLines(4);
     expect(mockStorageService.setItem).toHaveBeenCalledWith('dashboard-split-lines', 4);
   });
