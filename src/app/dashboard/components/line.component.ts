@@ -10,10 +10,9 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount, TaskSummaryColumnKey } from '@app/tasks/types';
+import { StatusCount } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
@@ -181,17 +180,13 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
       tap(() => (this.loadTasksStatus = true)),
       switchMap(() => this.#taskGrpcService.countByStatu$(this.line.filters)),
     ).subscribe((data) => {
-
-      if (!data.status) {
-        return;
+      if (data.status) {
+        this.data = data.status;
+        this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
+  
+        this.loadTasksStatus = false;
       }
-
-      this.data = data.status;
-      this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-
-      this.loadTasksStatus = false;
     });
-
     this.subscriptions.add(mergeSubscription);
   }
 
@@ -203,23 +198,15 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
     return this.#iconsService.getIcon(name);
   }
 
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
   autoRefreshTooltip(): string {
     return this.#autoRefreshService.autoRefreshTooltip(this.line.interval);
-  }
-
-  columnsLabels(): Record<TaskSummaryColumnKey, string> {
-    return this.#tasksIndexService.columnsLabels;
   }
 
   onRefresh() {
     this.refresh.next();
   }
 
-  onIntervalValueChange( value: number) {
+  onIntervalValueChange(value: number) {
     this.line.interval = value;
 
     if(value === 0) {
@@ -236,7 +223,6 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
   onToggleGroupsHeader() {
     this.line.hideGroupsHeader = !this.line.hideGroupsHeader;
     this.lineChange.emit();
-
   }
 
   onEditNameLine(value: string) {
@@ -252,7 +238,6 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
       this.line.name = result.name;
       this.lineChange.emit();
     });
-
   }
 
   onDeleteLine(value: Line): void {
@@ -274,8 +259,8 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
       this.line.taskStatusesGroups = result.groups;
       this.lineChange.emit();
     });
-
   }
+
   onFiltersChange(value: unknown[]) {
     this.line.filters = value as [];
     this.lineChange.emit();
