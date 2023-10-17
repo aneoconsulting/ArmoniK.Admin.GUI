@@ -17,7 +17,6 @@
 
 
 
-
  We'll be focused on unit testing.
 
 ### What are Unit tests ? 
@@ -155,7 +154,7 @@ run `pnpm run test` let's go for tests !!
 
 
 
-### Write unit tests for a simple service
+### Writing unit tests for a simple service
 
 We start by setting up our environment for testing our class. 
 
@@ -200,7 +199,7 @@ In the example above, we use the well-known AAA pattern for organzing our unit t
 2. Act : We invoke methods or functions.
 3. Assert : We check outputs and if returned values match with the expected behaviour.
 
-In this case, we use `jest.spyOn()`function to watch method calls. 
+In this case, we use `jest.spyOn()`function to watch and tracks object method calls. 
 You can read the documentation for more informations: https://jestjs.io/docs/jest-object#jestspyonobject-methodname
 
 Once spied, we call the getter. 
@@ -210,15 +209,21 @@ You can read the documentation for more informations: https://jestjs.io/docs/exp
 
 
 
-### Write unit tests for a service with dependencies
+### Writing unit tests for a service with dependencies
 
 
 For testing a service with dependencies, we need to use more tools. 
 
 We are going to work with Storage service for example. 
-As we can see, the Storage.service have 2 others services injected. 
+Ou Storage service have 2 others services injected. 
 DefaultConfigService and Storage. 
-To test methods linked with these injected services and reflect dependency injection , we are going to mock them.
+For testing methods linked with these injected services and reflect dependency injection , we are going to mock them.
+
+Mocking in unit testing is a technique used to create simulated or "mock" versions of objects, components, or services that a unit of code being tested depends on. These mock objects simulate the behavior of real objects we use but allow you to control and isolate the interactions with those dependencies. 
+
+When writing unit tests for Angular standalone components as we use in ArmoniK Admin GUI, creating mocks objects ease components and services isolation from their dependencies. We can then only be focused on testing specific units of code we are interested in.
+
+
 
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/5bb526c8-a55d-42d3-bfc9-008378036cd9)
 
@@ -237,7 +242,10 @@ We use the Angular API `TestBed` giving access to `configureTestingModule()`.
 We are going to configure our service thanks to this method. 
 
 It takes an object wherein we will push mocked dependencies into an array at providers property. 
-We can directly push required services into providers' array. 
+We can directly push required services into providers' array.
+
+As we work with Angular standalone components (https://angular.io/guide/standalone-components), we don't need to declare ngModule in declarations' array because we don't use it.  
+ 
 
 Or we can use an object like this : 
 
@@ -248,15 +256,105 @@ The "provide" value is the required service name.
 
 The "useValue" value is the mock in charge to replicate behaviour of the real dependency. 
 
-we also need to push the real Storage Service into providers' array. 
+We also need to push the real Storage Service into providers' array. 
 
-After this, we call the `inject()` method to inject the dependencies. We call this function because we use it our project instead of using `constructor()`. 
+After this, we call the `inject()` method to instantiate our service. We call it because we mainly use it our project for dependency injection. 
+
 
 
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/6d201e17-a2a8-45e3-a7bf-9f5d56d0b352)
 
 
-Rigth thre, we test the clear method of Storage service. 
+Rigth there, we test the clear method of Storage service. 
+
+First, we call clear() function from the service. Then, we test whether local storage clear function implemented by our function has been called. 
+
+Run `pnpm run test` and you will see your test result : 
+
+![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/4bd5066f-8d30-425a-92d5-0ef50c4ae3b9)
+
+
+We can see the name of the service we test written in our first describe(). We also can see that our test is good. The behaviour of the tested function is really what we expect from it. 
+
+When failing,  Jest throws an error showing us exactly the failing test suite with the failing unit test within. 
+
+
+### Writing unit test for a component 
+
+
+
+When writing unit tests for a component, we have to configure our component in another way. 
+Let's see with `view-tasks-by-status.component.spec.ts` : 
+
+```
+
+
+describe('ViewTasksByStatusComponent', () => {
+  let component: ViewTasksByStatusComponent;
+  let fixture: ComponentFixture<ViewTasksByStatusComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        ViewTasksByStatusComponent,
+        TasksStatusesService
+      ]
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ViewTasksByStatusComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+...
+
+}
+
+```
+
+
+In the example above, we provide dependencies as usual. But we use `compileComponents()` for setting up our component. 
+
+We create a fixture based on the component we created with `TestBed.createComponent()`. In unit testing, a fixture consists in a fixed state or set of inputs that serves as the basis for testing a particular unit of code, such as a function or method. The fixture ensures that the unit of code being tested has a consistent and known environment.
+
+We call `detectChange()`function on our fixture for triggering change detection. (https://angular.io/api/core/testing/ComponentFixture#detectChanges)
+
+
+
+Then, we can test our component as we are used to. 
+
+
+
+### Add coverage 
+
+Code coverage brings us useful metric for monitoring unit tests, as it provides insights into the effectiveness and completeness of your test suite. Code coverage helps you assess how much of your code is exercised by your tests and can be valuable. 
+
+You can add coverage for your unit test with adding this in scripts in `package.json`: 
+
+```
+...
+ "test-coverage": "jest --coverage"
+```
+
+It will show you the proprtion of uncovered and covered code segements of all your tests in the app. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
  
