@@ -71,6 +71,7 @@ export class DefaultConfigService {
 
   readonly #defaultApplications: ScopeConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter> = {
     interval: 10,
+    lockColumns: false,
     columns: [
       'name',
       'version',
@@ -108,6 +109,7 @@ export class DefaultConfigService {
 
   readonly #defaultPartitions: ScopeConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFiltersOr> = {
     interval: 10,
+    lockColumns: false,
     columns: [
       'id',
       'actions',
@@ -125,6 +127,7 @@ export class DefaultConfigService {
 
   readonly #defaultSessions: ScopeConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFiltersOr> = {
     interval: 10,
+    lockColumns: false,
     columns: [
       'sessionId',
       'count',
@@ -143,6 +146,7 @@ export class DefaultConfigService {
 
   readonly #defaultResults: ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFiltersOr> = {
     interval: 10,
+    lockColumns: false,
     columns: [
       'name',
       'actions',
@@ -160,6 +164,7 @@ export class DefaultConfigService {
 
   readonly #defaultTasks: ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFiltersOr> = {
     interval: 10,
+    lockColumns: false,
     columns: [
       'id',
       'status',
@@ -246,23 +251,28 @@ export class DefaultConfigService {
     'applications-options': this.#defaultApplications.options,
     'applications-filters': this.#defaultApplications.filters,
     'applications-interval': this.#defaultApplications.interval,
+    'applications-lock-columns': this.#defaultApplications.lockColumns,
     'partitions-columns': this.#defaultPartitions.columns,
     'partitions-options': this.#defaultPartitions.options,
     'partitions-filters': this.#defaultPartitions.filters,
     'partitions-interval': this.#defaultPartitions.interval,
+    'partitions-lock-columns': this.#defaultPartitions.lockColumns,
     'sessions-columns': this.#defaultSessions.columns,
     'sessions-options': this.#defaultSessions.options,
     'sessions-filters': this.#defaultSessions.filters,
     'sessions-interval': this.#defaultSessions.interval,
+    'sessions-lock-columns': this.#defaultSessions.lockColumns,
     'results-columns': this.#defaultResults.columns,
     'results-options': this.#defaultResults.options,
     'results-filters': this.#defaultResults.filters,
     'results-interval': this.#defaultResults.interval,
+    'results-lock-columns': this.#defaultResults.lockColumns,
     'tasks-columns': this.#defaultTasks.columns,
     'tasks-options': this.#defaultTasks.options,
     'tasks-filters': this.#defaultTasks.filters,
     'tasks-interval': this.#defaultTasks.interval,
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
+    'tasks-lock-columns': this.#defaultTasks.lockColumns
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

@@ -10,7 +10,7 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
 @Component({
   selector: 'app-columns-button',
   template: `
-<button mat-stroked-button (click)="openModifyColumnsDialog()">
+<button [disabled]="disabled" mat-stroked-button (click)="openModifyColumnsDialog()">
   <mat-icon aria-hidden="true" [fontIcon]="getIcon('modify-columns')"></mat-icon>
   <span i18n="Open a dialog on click">Modify Columns</span>
 </button>
@@ -31,6 +31,7 @@ export class ColumnsButtonComponent<T extends object, O extends object> {
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
+  @Input({ required: true}) disabled: boolean = false;
 
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
 

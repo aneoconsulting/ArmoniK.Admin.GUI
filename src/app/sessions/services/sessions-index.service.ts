@@ -9,6 +9,7 @@ export class SessionsIndexService {
   #tableService = inject(TableService);
 
   readonly defaultColumns: SessionRawColumnKey[] = this.#defaultConfigService.defaultSessions.columns;
+  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultSessions.lockColumns;
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
@@ -95,6 +96,18 @@ export class SessionsIndexService {
 
   restoreIntervalValue(): number {
     return this.#tableService.restoreIntervalValue('sessions-interval') ?? this.defaultIntervalValue;
+  }
+
+  /**
+   * Lock columns
+   */
+
+  saveLockColumns(value: boolean): void {
+    this.#tableService.saveLockColumns('sessions-lock-columns', value);
+  }
+
+  restoreLockColumns(): boolean {
+    return this.#tableService.restoreLockColumns('sessions-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**

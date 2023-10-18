@@ -65,4 +65,10 @@ describe('TableActionsToolbarComponent', () => {
     component.onResetFilters();
     expect(spyOnEventEmitter).toHaveBeenCalled();
   });
+
+  test('onLockColumns should emit', () => {
+    spyOnEventEmitter = jest.spyOn(component.lockColumnsChange, 'emit');
+    component.onLockColumnsChange();
+    expect(spyOnEventEmitter).toHaveBeenCalled();
+  });
 });
