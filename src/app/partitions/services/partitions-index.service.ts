@@ -11,6 +11,7 @@ export class PartitionsIndexService {
   readonly tableName: string = 'partitions';
 
   readonly defaultColumns: PartitionRawColumnKey[] = this.#defaultConfigService.defaultPartitions.columns;
+  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultPartitions.lockColumns;
   readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions', 'count'];
 
   // TODO: We could use a custom type to know which columns are objects
@@ -75,6 +76,18 @@ export class PartitionsIndexService {
 
   restoreIntervalValue(): number {
     return this.#tableService.restoreIntervalValue('partitions-interval') ?? this.defaultIntervalValue;
+  }
+
+  /**
+   * Lock columns
+   */
+
+  saveLockColumns(value: boolean): void {
+    this.#tableService.saveLockColumns('partitions-lock-columns', value);
+  }
+
+  restoreLockColumns(): boolean {
+    return this.#tableService.restoreLockColumns('partitions-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**

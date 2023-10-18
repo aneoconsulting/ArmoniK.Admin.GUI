@@ -50,6 +50,8 @@ export class IconsService {
     'list': 'view_list',
     'vertical-split': 'vertical_split',
     'find-logs': 'plagiarism',
+    'lock': 'lock',
+    'unlock': 'lock_open'
   };
 
   getIcon(name: string): string {
