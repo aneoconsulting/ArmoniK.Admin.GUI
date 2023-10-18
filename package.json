@@ -19,6 +19,7 @@
   "private": true,
   "dependencies": {
     "@aneoconsultingfr/armonik.api.angular": "^3.13.1",
+    "@angular-material-components/datetime-picker": "^16.0.1",
     "@angular/animations": "^16.2.8",
     "@angular/cdk": "16.2.7",
     "@angular/common": "^16.2.8",
@@ -37,6 +38,7 @@
     "defu": "^6.1.2",
     "jest-junit": "^16.0.0",
     "luxon": "^3.4.3",
+    "pnpm": "^8.11.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.13.3"
