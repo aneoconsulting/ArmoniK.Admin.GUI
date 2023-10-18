@@ -455,6 +455,6 @@ export class IndexComponent implements OnInit {
   }
 
   #sortKeys(keys: Set<Key>): Set<Key> {
-    return new Set([...keys].sort());
+    return new Set([...keys].sort((a, b) => a.localeCompare(b)));
   }
 }

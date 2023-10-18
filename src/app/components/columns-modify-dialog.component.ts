@@ -86,13 +86,13 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
    * Sort the columns alphabetically
    */
   availableColumns(): (keyof T | 'actions')[] {
-    const columns = this.data.availableColumns.filter(column => !column.toString().startsWith('options.')).sort() as (keyof T | 'actions')[];
+    const columns = this.data.availableColumns.filter(column => !column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as (keyof T | 'actions')[];
 
     return columns;
   }
 
   availableOptionsColumns(): PrefixedOptions<O>[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort() as PrefixedOptions<O>[];
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
 
     return columns;
   }

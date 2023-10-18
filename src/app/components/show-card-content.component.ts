@@ -87,7 +87,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
 
   ngOnChanges() {
     if (this.data) {
-      this.keys = Object.keys(this.data).sort();
+      this.keys = Object.keys(this.data).sort((a, b) => a.toString().localeCompare(b.toString()));
     }
   }
 

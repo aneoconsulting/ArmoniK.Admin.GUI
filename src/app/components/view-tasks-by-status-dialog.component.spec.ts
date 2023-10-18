@@ -51,7 +51,7 @@ describe('ViewTasksByStatusDialogComponent', () => {
   });
 
   it('should retrieve tasks keys with tasksStatuses', () => {
-    expect(component.tasksStatuses().sort()).toEqual([
+    expect(component.tasksStatuses().sort((a, b) => a.toString().localeCompare(b.toString()))).toEqual([
       TaskStatus.TASK_STATUS_UNSPECIFIED.toString(),
       TaskStatus.TASK_STATUS_DISPATCHED.toString(),
       TaskStatus.TASK_STATUS_CREATING.toString(),
@@ -64,7 +64,7 @@ describe('ViewTasksByStatusDialogComponent', () => {
       TaskStatus.TASK_STATUS_ERROR.toString(),
       TaskStatus.TASK_STATUS_TIMEOUT.toString(),
       TaskStatus.TASK_STATUS_RETRIED.toString()
-    ].sort());
+    ].sort((a, b) => a.toString().localeCompare(b.toString())));
   });
 
   it('should retrieve a label by its corresponding status', () => {
