@@ -309,7 +309,7 @@ describe('ViewTasksByStatusComponent', () => {
   });
 ...
 
-}
+})
 
 ```
 
