@@ -100,7 +100,7 @@ describe('DashboardIndexService', () => {
     expect(service.restoreSplitLines()).toEqual(defaultValues.defaultDashboardSplitLines);
   });
 
-  it('should save splited lines', () => {
+  it('should save splitted lines', () => {
     service.saveSplitLines(2);
     expect(mockDashboardStorageService.saveSplitLines).toHaveBeenCalledWith(2);
   });
