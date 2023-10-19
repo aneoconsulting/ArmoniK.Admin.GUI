@@ -69,11 +69,13 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       [columnsLabels]="columnsLabels()"
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
       (refresh)="onRefresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
     >
       <ng-container extra-menu-items>
         <button mat-menu-item (click)="personalizeTasksByStatus()">
@@ -92,7 +94,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
@@ -283,6 +285,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: SessionRawColumnKey[] = [];
   availableColumns: SessionRawColumnKey[] = [];
+  lockColumns: boolean = false;
 
   isLoading = true;
   data: SessionRaw[] = [];
@@ -318,6 +321,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.displayedColumns = this._sessionsIndexService.restoreColumns();
     this.availableColumns = this._sessionsIndexService.availableColumns;
+    this.lockColumns = this._sessionsIndexService.restoreLockColumns();
 
     this.options = this._sessionsIndexService.restoreOptions();
 
@@ -515,6 +519,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filters = this.#sessionsFiltersService.resetFilters();
     this.paginator.pageIndex = 0;
     this.refresh.next();
+  }
+  
+  onLockColumnsChange() {
+    this.lockColumns = !this.lockColumns;
+    this._sessionsIndexService.saveLockColumns(this.lockColumns);
   }
 
   autoRefreshTooltip() {

@@ -63,11 +63,14 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       [columnsLabels]="columnsLabels()"
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
       (refresh)="onRefresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()">
+      (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
+      >
       <ng-container extra-menu-items>
         <button mat-menu-item (click)="personalizeTasksByStatus()">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
@@ -85,7 +88,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
@@ -228,6 +231,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: PartitionRawColumnKey[] = [];
   availableColumns: PartitionRawColumnKey[] = [];
+  lockColumns: boolean;
 
   isLoading = true;
   data: PartitionRaw[] = [];
@@ -254,6 +258,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.displayedColumns = this.#partitionsIndexService.restoreColumns();
     this.availableColumns = this.#partitionsIndexService.availableColumns;
+    this.lockColumns = this.#partitionsIndexService.restoreLockColumns();
 
     this.options = this.#partitionsIndexService.restoreOptions();
 
@@ -397,6 +402,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.filters = this.#partitionsFiltersService.resetFilters();
     this.paginator.pageIndex = 0;
     this.refresh.next();
+  }
+  
+  onLockColumnsChange() {
+    this.lockColumns = !this.lockColumns;
+    this.#partitionsIndexService.saveLockColumns(this.lockColumns);
   }
 
   autoRefreshTooltip() {
