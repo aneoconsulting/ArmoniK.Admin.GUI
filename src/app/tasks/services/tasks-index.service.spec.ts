@@ -56,9 +56,12 @@ describe('TasksIndexService', () => {
   const expectedDefaultColumns = new DefaultConfigService().defaultTasks.columns;
 
   const expectedDefaultIntervalValue = new DefaultConfigService().defaultTasks.interval;
+  const expectedDefaultLockColumnsValue = new DefaultConfigService().defaultTasks.lockColumns;
   const mockTableService = {
     saveIntervalValue: jest.fn(),
     restoreIntervalValue: jest.fn(),
+    saveLockColumns: jest.fn(),
+    restoreLockColumns: jest.fn(),
     saveOptions: jest.fn(),
     restoreOptions: jest.fn(),
     saveColumns: jest.fn(),
@@ -161,7 +164,7 @@ describe('TasksIndexService', () => {
     });
   });
 
-  describe('Interval', ()=>{
+  describe('Interval', () => {
     it('should call saveIntervalValue from TableService', ()=>{
       service.saveIntervalValue(9);
       expect(mockTableService.saveIntervalValue).toBeCalledWith('tasks-interval', 9);
@@ -176,7 +179,23 @@ describe('TasksIndexService', () => {
       mockTableService.restoreIntervalValue.mockImplementationOnce(() => null);
       expect(service.restoreIntervalValue()).toEqual(expectedDefaultIntervalValue);
     });  
+  });
 
+  describe('Lock columns', () => {
+    it('should call saveLockColumns from TableService', () => {
+      service.saveLockColumns(true);
+      expect(mockTableService.saveLockColumns).toHaveBeenCalledWith('tasks-lock-columns', true);
+    });
+
+    it('should call restoreLockColumns from TableService', () => {
+      service.restoreLockColumns();
+      expect(mockTableService.restoreLockColumns).toHaveBeenCalledWith('tasks-lock-columns');
+    });
+
+    it('should return defaultLockColumn when restoreLockColumns from TableService returns null', () => {
+      mockTableService.restoreLockColumns.mockImplementationOnce(() => null);
+      expect(service.restoreLockColumns()).toEqual(expectedDefaultLockColumnsValue);
+    });  
   });
 
   describe('Options', ()=>{

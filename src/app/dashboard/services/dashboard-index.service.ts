@@ -16,8 +16,8 @@ export class DashboardIndexService {
 
   // TODO: move to TasksStatusesService
   statuses(): { value: string, name: string }[] {
-    const values = Object.values(this.#tasksStatusesService.statuses).sort();
-    const keys = Object.keys(this.#tasksStatusesService.statuses).sort();
+    const values = Object.values(this.#tasksStatusesService.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
+    const keys = Object.keys(this.#tasksStatusesService.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
     const sortedKeys = values.map((value) => {
       return keys.find((key) => {
         return this.#tasksStatusesService.statuses[Number(key) as TaskStatus] === value;

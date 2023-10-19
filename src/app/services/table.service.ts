@@ -126,6 +126,14 @@ export class TableService {
     this._tableStorageService.remove(key);
   }
 
+  saveLockColumns(key: `${Scope}-lock-columns`, lockColumns: boolean): void {
+    this._tableStorageService.save(key, lockColumns);
+  }
+
+  restoreLockColumns(key: `${Scope}-lock-columns`): boolean {
+    return this._tableStorageService.restore(key) as boolean;
+  }
+
   /**
    * Save view in logs to the local storage
    */
