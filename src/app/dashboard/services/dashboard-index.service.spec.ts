@@ -90,7 +90,7 @@ describe('DashboardIndexService', () => {
     expect(mockDashboardStorageService.saveLines).toHaveBeenCalledWith(lines);
   });
 
-  it('should restore splited lines', () => {
+  it('should restore splitted lines', () => {
     mockDashboardStorageService.restoreSplitLines.mockImplementationOnce(() => 4);
     expect(service.restoreSplitLines()).toEqual(4);
   });
