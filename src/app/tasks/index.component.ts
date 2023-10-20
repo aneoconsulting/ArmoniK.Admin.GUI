@@ -63,11 +63,14 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       [columnsLabels]="columnsLabels()"
       [displayedColumns]="displayedColumns"
       [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
       (refresh)="onRefresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()">
+      (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
+      >
         <ng-container extra-buttons-right>
           <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.selected.length">
             <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
@@ -91,7 +94,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns; trackBy:trackByColumn" [matColumnDef]="column">
       <!-- Header -->
@@ -293,6 +296,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumns: TaskSummaryColumnKey[] = [];
   availableColumns: TaskSummaryColumnKey[] = [];
+  lockColumns: boolean = false;
 
   selection = new SelectionModel<TaskSummary>(true, []);
 
@@ -323,6 +327,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.displayedColumns = this.#tasksIndexService.restoreColumns();
     this.availableColumns = this.#tasksIndexService.availableColumns;
+    this.lockColumns = this.#tasksIndexService.restoreLockColumns();
 
     this.options = this.#tasksIndexService.restoreOptions();
 
@@ -521,6 +526,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   onCancelTasksSelection():void {
     const tasksIds = this.selection.selected.map((task) => task.id);
     this.cancelTasks(tasksIds);
+  }
+
+  
+  onLockColumnsChange() {
+    this.lockColumns = !this.lockColumns;
+    this.#tasksIndexService.saveLockColumns(this.lockColumns);
   }
 
   cancelTasks(tasksIds: string[]): void {

@@ -24,6 +24,7 @@ export class ApplicationsIndexService {
   readonly defaultOptions: ApplicationRawListOptions = this.#defaultConfigService.defaultApplications.options;
 
   readonly defaultIntervalValue = this.#defaultConfigService.defaultApplications.interval;
+  readonly defaultLockColumnValue = this.#defaultConfigService.defaultApplications.lockColumns;
 
   #tableService = inject(TableService);
 
@@ -60,6 +61,18 @@ export class ApplicationsIndexService {
 
   restoreIntervalValue(): number {
     return this.#tableService.restoreIntervalValue('applications-interval') ?? this.defaultIntervalValue;
+  }
+
+  /**
+   * Lock columns
+   */
+
+  saveLockColumns(value: boolean): void {
+    this.#tableService.saveLockColumns('applications-lock-columns', value);
+  }
+
+  restoreLockColumns(): boolean {
+    return this.#tableService.restoreLockColumns('applications-lock-columns') ?? this.defaultLockColumnValue;
   }
 
   /**
