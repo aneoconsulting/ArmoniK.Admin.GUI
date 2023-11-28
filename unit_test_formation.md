@@ -2,13 +2,12 @@
 
 
 ### Brief introduction on testing in frontend 
-  Testing is a crucial part of software developement.
+  Testing is a crucial part of software development.
   
   It brings to developers more confidence on what they're working on and more quality on software. 
   
   We have traditionally 3 types of tests.
 
-    Tests
     1. Unit tests
     2. Integration tests
     3. End-to-End tests
@@ -19,7 +18,7 @@
 
  We'll be focused on unit testing.
 
-### What are Unit tests ? 
+### What are unit tests ? 
  
   Unit testing is focused on writing tests for small building blocks of an application.
 
@@ -29,7 +28,7 @@
 
   Unit testing allows us to quicker find out and fix bugs. It also adds a technical documentation support for developers. 
   
-  In Javascript community you can use librairies like [Jasmine](https://jasmine.github.io/), [Jest](https://jestjs.io/) and recently [Vitest](https://vitest.dev/).
+  In Javascript community you can use libraries like [Jasmine](https://jasmine.github.io/), [Jest](https://jestjs.io/) and recently [Vitest](https://vitest.dev/).
 
   We choose using Jest for his large adoption and popularity by Javascript community and frameworks like React, Vue and Angular.
 
@@ -47,7 +46,7 @@ Before getting started with unit testing using Jest, make sure you have the foll
 
   As we choose using Jest, we need to delete Jasmine and Karma of the project.
 
-  For removing Jasmine and Karma from the project, run `pnpm remove karma karma-chrome-launcher karma-coverage karma-jasmine karma-jasmine-html-reporter` and `pnpm remove jasmine-core @types/jasmine`.
+  To remove Jasmine and Karma from the project, run `pnpm remove karma karma-chrome-launcher karma-coverage karma-jasmine karma-jasmine-html-reporter` and `pnpm remove jasmine-core @types/jasmine`.
 
   #### Installation of Jest library and packages
 
@@ -62,7 +61,7 @@ Before getting started with unit testing using Jest, make sure you have the foll
   ### Jest setup and configuration 
 
 Once Jest installed, we need to declare it in our Typescript configuration file. 
-in `tsconfig.spec.json`, replace "jasmine" by :
+In `tsconfig.spec.json` file, replace "jasmine" by:
 ```
 "types": [
       "jest",
@@ -71,7 +70,7 @@ in `tsconfig.spec.json`, replace "jasmine" by :
     ]
 ```
 
-Add also this after types array in tsconfig.spec.json: 
+Add also this after `types` array in tsconfig.spec.json: 
 ```
   "emitDecoratorMetadata": true,
   "esModuleInterop": true,
@@ -93,7 +92,7 @@ import { TextEncoder } from 'util';
 
 global.TextEncoder = TextEncoder;
 ```
-Create a file named `jest.config.ts` with the following contents
+Create a file named `jest.config.ts` with the following content:
 ```
 import type {Config} from 'jest';
 
@@ -120,17 +119,17 @@ const config: Config = {
 
 export default config;
 ```
-We use the javascript function structuredClone() for deep-copying objects in GUI. Unfornately, jest-environment-jsdom doesn't support it. So we use a polyfill for testing services using it. 
+We use the Javascript function structuredClone() for deep-copying objects in GUI. Unfortunately, jest-environment-jsdom doesn't support it. So we use a `polyfill` for testing services using it. 
 
 
 To add it, run: 
 
  1. `pnpm  install @ungap/structured-clone`
  2. `pnpm i --save-dev @types/ungap__structured-clone`
- 3. add `"allowSyntheticDefaultImports": true` into compilerOptions object JSON in tsconfig.json.
- 4. Then, add the following line at the top of jest.config.ts `import structuredClone from '@ungap/structured-clone'`.
+ 3. Add `"allowSyntheticDefaultImports": true` into compilerOptions object JSON in `tsconfig.json` file.
+ 4. Then, add the following line at the top of `jest.config.ts` file `import structuredClone from '@ungap/structured-clone'`.
 
-Create a file named `JSDOMEnvironmentPatch.ts` with the following contents: 
+Create a file named `JSDOMEnvironmentPatch.ts` with the following content: 
 ```
  import JSDOMEnvironment from 'jest-environment-jsdom';
   export default class JSDOMEnvironmentPatch extends JSDOMEnvironment {
@@ -143,9 +142,9 @@ Create a file named `JSDOMEnvironmentPatch.ts` with the following contents:
   }
 }
 ```
-Don't forget to link it with jest.config.ts file with : `testEnvironment: './JSDOMEnvironmentPatch.ts'`.
+Don't forget to link it with `jest.config.ts` file with : `testEnvironment: './JSDOMEnvironmentPatch.ts'`.
 
-In package.json, replace `ng test` by `jest` into scripts : `"test": "jest"`.
+In `package.json` file, replace `ng test` by `jest` into scripts : `"test": "jest"`.
 ```
 // package.json
     ..."test": "jest"
@@ -172,7 +171,7 @@ The second argument is a callback function where you will write all your  unit t
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/e040fafc-7d81-4ae2-ac6b-d65d79d72b46)
 
 
-In the example above, we classicly create our service. 
+In the example above, we classically create our service. 
 
 We use Jest API `expect` for testing that the service is really instantiated. 
 
@@ -193,13 +192,13 @@ The second argument is a callback function including our test.
 
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/39c4989f-1fc4-4a95-b74a-91509161e171)
 
-In the example above, we use the well-known AAA pattern for organzing our unit test 
+In the example above, we use the well-known AAA pattern for organizing our unit test 
 
 1. Arrange : We initialize the object with methods and parameters we want to run after.
 2. Act : We invoke methods or functions.
 3. Assert : We check outputs and if returned values match with the expected behaviour.
 
-In this case, we use `jest.spyOn()`function to watch and tracks object method calls. 
+In this case, we use `jest.spyOn()`function to watch and track object method calls. 
 You can read the documentation for more informations: https://jestjs.io/docs/jest-object#jestspyonobject-methodname
 
 Once spied, we call the getter. 
@@ -215,7 +214,7 @@ You can read the documentation for more informations: https://jestjs.io/docs/exp
 For testing a service with dependencies, we need to use more tools. 
 
 We are going to work with Storage service for example. 
-Ou Storage service have 2 others services injected. 
+Our Storage service has 2 others services injected. 
 DefaultConfigService and Storage. 
 For testing methods linked with these injected services and reflect dependency injection , we are going to mock them.
 
@@ -265,7 +264,7 @@ After this, we call the `inject()` method to instantiate our service. We call it
 ![image](https://github.com/aneoconsulting/ArmoniK.Admin.GUI/assets/136307285/6d201e17-a2a8-45e3-a7bf-9f5d56d0b352)
 
 
-Rigth there, we test the clear method of Storage service. 
+Right there, we test the clear method of Storage service. 
 
 First, we call clear() function from the service. Then, we test whether local storage clear function implemented by our function has been called. 
 
@@ -338,65 +337,3 @@ You can add coverage for your unit test with adding this in scripts in `package.
 ```
 
 It will show you the proprtion of uncovered and covered code segements of all your tests in the app. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-  
-           
-
-
-
