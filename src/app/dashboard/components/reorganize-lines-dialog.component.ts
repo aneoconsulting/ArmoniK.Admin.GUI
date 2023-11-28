@@ -19,7 +19,7 @@ import { Line } from '../types';
 <mat-dialog-content>
   <p i18n="Dialog description">Drag and drop lines to update the order</p>
 
-  <div class="lines" cdkDropList (cdkDropListDropped)="drop($event)">
+  <div class="lines" cdkDropList (cdkDropListDropped)="onDrop($event)">
     <div class="line" *ngFor="let line of lines; let index = index" cdkDrag>
       <div class="line-name">
         <mat-icon mat-icon aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
@@ -126,11 +126,11 @@ export class ReorganizeLinesDialogComponent implements OnInit {
     this.#dialogRef.close();
   }
 
-  drop(event: CdkDragDrop<Line[]>) {
+  onDrop(event: CdkDragDrop<Line[]>) {
     moveItemInArray(this.lines, event.previousIndex, event.currentIndex);
   }
 
-  onDeleteLine( line: Line) {
+  onDeleteLine(line: Line) {
     const index = this.lines.indexOf(line);
     if (index > -1) {
       this.lines.splice(index, 1);
@@ -145,17 +145,18 @@ export class ReorganizeLinesDialogComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      const selectedLine = this.lines[index];
-      const changeSelectedNameLine = (line: Line, newName: string): void => {
-        if(line.name === newName) {
-          line.name = result.name;
-        }
-      };
-      this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
+      if (result) {
+        const selectedLine = this.lines[index];
+        const changeSelectedNameLine = (line: Line, oldName: string): void => {
+          if(line.name === oldName) {
+            line.name = result.name;
+          }
+        };
+        this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
+      }
     });
-
   }
+
   trackByLine(index: number, line: Line): string {
     return line.name + index;
   }
