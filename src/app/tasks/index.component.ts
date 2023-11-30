@@ -172,7 +172,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       <ng-container *ngIf="isActionsColumn(column)">
         <!-- TODO: use icons service -->
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more" i18n-aria-label>
+          <button mat-icon-button [matMenuTriggerFor]="menu" (menuOpened)="this.stopInterval.next()" (menuClosed)="this.interval.next(this.intervalValue)" aria-label="Show more" i18n-aria-label>
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
