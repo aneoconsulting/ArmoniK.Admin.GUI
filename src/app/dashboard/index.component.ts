@@ -253,7 +253,7 @@ export class IndexComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.lines) {
+      if (result?.lines) {
         this.lines = result.lines;
         this.onSaveChange();
       }
@@ -268,7 +268,7 @@ export class IndexComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.columns) {
+      if (result?.columns) {
         this.columns = result.columns;
         this.#dashboardIndexService.saveSplitLines(this.columns);
       }
