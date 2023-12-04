@@ -195,7 +195,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   fromDateTimeToSecond(value: DateTime | null): number | null {
-    console.log(value);
     if (!value) {
       return null;
     }
