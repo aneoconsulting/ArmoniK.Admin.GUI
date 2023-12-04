@@ -53,7 +53,7 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
   ]
 })
 export class AutoRefreshDialogComponent implements OnInit {
-  options = [0, 1, 5, 10, 30, 60, 300, 600, 1800, 3600];
+  options = [0, 5, 10, 30, 60, 300, 600, 1800, 3600];
 
   value = 0;
 
