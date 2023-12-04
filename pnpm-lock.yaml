@@ -8,6 +8,9 @@ dependencies:
   '@aneoconsultingfr/armonik.api.angular':
     specifier: ^3.13.1
     version: 3.13.1(@angular/common@16.2.8)(@angular/core@16.2.8)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1)
+  '@angular-material-components/datetime-picker':
+    specifier: ^16.0.1
+    version: 16.0.1(@angular/cdk@16.2.7)(@angular/common@16.2.8)(@angular/core@16.2.8)(@angular/forms@16.2.8)(@angular/material@16.2.7)(@angular/platform-browser@16.2.8)
   '@angular/animations':
     specifier: ^16.2.8
     version: 16.2.8(@angular/core@16.2.8)
@@ -62,6 +65,9 @@ dependencies:
   luxon:
     specifier: ^3.4.3
     version: 3.4.3
+  pnpm:
+    specifier: ^8.11.0
+    version: 8.11.0
   rxjs:
     specifier: ~7.8.1
     version: 7.8.1
@@ -527,6 +533,25 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@angular-material-components/datetime-picker@16.0.1(@angular/cdk@16.2.7)(@angular/common@16.2.8)(@angular/core@16.2.8)(@angular/forms@16.2.8)(@angular/material@16.2.7)(@angular/platform-browser@16.2.8):
+    resolution: {integrity: sha512-dbkwWiC8qL7NVlMclb1hvuZvuP2l1nvfnnmijEc/zGsoWeoLNDXn/+z/UQtMcbUphcwCzFt9CfHhhpGUGgQLgw==}
+    peerDependencies:
+      '@angular/cdk': ^16.0.0
+      '@angular/common': ^16.0.0
+      '@angular/core': ^16.0.0
+      '@angular/forms': ^16.0.0
+      '@angular/material': ^16.0.0
+      '@angular/platform-browser': ^16.0.0
+    dependencies:
+      '@angular/cdk': 16.2.7(@angular/common@16.2.8)(@angular/core@16.2.8)(rxjs@7.8.1)
+      '@angular/common': 16.2.8(@angular/core@16.2.8)(rxjs@7.8.1)
+      '@angular/core': 16.2.8(rxjs@7.8.1)(zone.js@0.13.3)
+      '@angular/forms': 16.2.8(@angular/common@16.2.8)(@angular/core@16.2.8)(@angular/platform-browser@16.2.8)(rxjs@7.8.1)
+      '@angular/material': 16.2.7(@angular/animations@16.2.8)(@angular/cdk@16.2.7)(@angular/common@16.2.8)(@angular/core@16.2.8)(@angular/forms@16.2.8)(@angular/platform-browser@16.2.8)(rxjs@7.8.1)
+      '@angular/platform-browser': 16.2.8(@angular/animations@16.2.8)(@angular/common@16.2.8)(@angular/core@16.2.8)
+      tslib: 2.6.2
+    dev: false
 
   /@angular/animations@16.2.8(@angular/core@16.2.8):
     resolution: {integrity: sha512-tjJID1eZORcC9N1f0JIcOzirv6D1q2q7y2S6h51WncJC5G9vOUpIOoOE3gmg0TH0FS41wJe/WfiQku3BuoMA9w==}
@@ -9150,6 +9175,12 @@ packages:
       mlly: 1.4.0
       pathe: 1.1.1
     dev: true
+
+  /pnpm@8.11.0:
+    resolution: {integrity: sha512-nfh8FsmNsntOBR14fmfyIH7EfoCcywe/e17ErNzRYTNVg5o40LkAFEkj1qcFdwC3TSoMyxVYvrJBZHoSBqmnqw==}
+    engines: {node: '>=16.14'}
+    hasBin: true
+    dev: false
 
   /postcss-loader@7.3.3(postcss@8.4.31)(webpack@5.88.2):
     resolution: {integrity: sha512-YgO/yhtevGO/vJePCQmTxiaEwER94LABZN0ZMT4A0vsak9TpO+RvKRs7EmJ8peIlB9xfXCsS7M8LjqncsUZ5HA==}

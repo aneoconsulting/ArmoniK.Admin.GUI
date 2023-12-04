@@ -172,7 +172,8 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       <ng-container *ngIf="isActionsColumn(column)">
         <!-- TODO: use icons service -->
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <button mat-icon-button [matMenuTriggerFor]="menu" (menuOpened)="this.stopInterval.next()" (menuClosed)="this.interval.next(this.intervalValue)" aria-label="Show more" i18n-aria-label>
+        <button mat-icon-button [matMenuTriggerFor]="menu" (menuOpened)="this.stopInterval.next()" (menuClosed)="this.interval.next(this.intervalValue)" aria-label="Show more" i18n-aria-label>
+
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
@@ -303,6 +304,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   isLoading = true;
   data: TaskSummary[] = [];
   total = 0;
+
+  taskId: string;
 
   options: TaskSummaryListOptions;
 
@@ -660,5 +663,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   trackByColumn(index: number, item: TaskSummaryColumnKey): string {
     return item;
+  }
+
+  idAssignment(taskId: string) {
+    this.taskId = taskId;
   }
 }
