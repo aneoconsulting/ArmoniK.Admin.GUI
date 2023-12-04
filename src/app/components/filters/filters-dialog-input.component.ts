@@ -1,14 +1,16 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { LuxonDateAdapter, MAT_LUXON_DATE_ADAPTER_OPTIONS, MAT_LUXON_DATE_FORMATS  } from '@angular/material-luxon-adapter';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+// eslint-disable-next-line import/no-unresolved
+import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { DateTime } from 'luxon';
 import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
-import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
+
 
 
 @Component({
@@ -100,7 +102,7 @@ export class FiltersDialogInputComponent {
   }
 
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
-    this.inputDate = DateTime.local(event.value!.getFullYear(), event.value!.getMonth()+1, event.value!.getDate(), event.value!.getHours(), event.value!.getMinutes(), event.value!.getSeconds())
+    this.inputDate = DateTime.local(event.value!.getFullYear(), event.value!.getMonth()+1, event.value!.getDate(), event.value!.getHours(), event.value!.getMinutes(), event.value!.getSeconds());
     this.valueChange.emit({
       type: 'date',
       value: this.inputDate,
