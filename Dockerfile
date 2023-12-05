@@ -11,7 +11,7 @@ COPY .npmrc ./
 RUN nci
 
 COPY src ./src
-COPY tsconfig.* ./
+COPY tsconfig.app.json tsconfig.json tsconfig.spec.json ./
 COPY angular.json ./
 
 RUN nr build --base-href=/admin/
