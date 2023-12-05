@@ -2,7 +2,7 @@ FROM node:lts-alpine as build
 
 WORKDIR /usr/src/app
 
-RUN npm install -g pnpm @antfu/ni --ignore-scripts
+RUN npm install --ignore-scripts -g pnpm @antfu/ni 
 
 COPY package.json ./
 COPY pnpm-lock.yaml ./
