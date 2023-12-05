@@ -136,9 +136,19 @@ describe('StorageService', () => {
     it('Should export properly', () => {
       mockStorage.getItem.mockImplementationOnce((key: Key, parse) => {
         const result = mockItemData[key];
-        if (!parse) return result ? {'12': 'sessions'} : undefined;
-        else return result ? JSON.stringify({'12': 'sessions'}) : undefined;
+        if(result) {
+          if(!parse) {
+            return {'12': 'sessions'};
+          } 
+          else {
+            return JSON.stringify({'12': 'sessions'});
+          }
+        }
+        else {
+          return undefined;
+        }
       });
+      
       expect(service.exportData()['navigation-sidebar'])
         .toEqual({
           '0': 'profile',
