@@ -64,7 +64,7 @@ describe('DashboardIndexService', () => {
       { value: '1', name: 'Creating' },
       { value: '2', name: 'Submitted' },
       { value: '3', name: 'Dispatched' },
-      { value: '4', name: 'Finished' },
+      { value: '4', name: 'Completed' },
       { value: '5', name: 'Error' },
       { value: '6', name: 'Timeout' },
       { value: '7', name: 'Cancelling' },

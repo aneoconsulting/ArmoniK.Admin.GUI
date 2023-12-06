@@ -61,7 +61,7 @@ describe('ViewTasksByStatusComponent', () => {
   });
 
   test('tooltip should get the label of a status ', () => {
-    expect(component.tooltip(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Finished');
+    expect(component.tooltip(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
   });
 
   test('trackByCount should return the status', () => {
