@@ -8,13 +8,17 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-auto-refresh-button',
   template: `
-<button mat-stroked-button (click)="openAutoRefreshDialog()">
+<button mat-stroked-button [class]="isDisabled() ? 'auto-refresh-disabled' : ''" (click)="openAutoRefreshDialog()">
   <mat-icon aria-hidden="true" [fontIcon]="getIcon('auto-refresh')"></mat-icon>
   <span i18n="Open a dialog on click">Set up Auto Refresh</span>
 </button>
   `,
   styles: [`
-
+    .auto-refresh-disabled {
+      border: 0px;
+      color: #8A8A8A;
+      background-color: #D7D7D7;   
+    }
   `],
   standalone: true,
   imports: [
@@ -32,15 +36,15 @@ export class AutoRefreshButtonComponent {
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private _dialog: MatDialog) { }
-
+  
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
   }
-
+  
   emit(value: number): void {
     this.intervalValueChange.emit(value);
   }
-
+  
   openAutoRefreshDialog(): void {
     // Get value from the storage
     const dialogRef = this._dialog.open(AutoRefreshDialogComponent, {
@@ -48,7 +52,7 @@ export class AutoRefreshButtonComponent {
         value: this.intervalValue
       }
     });
-
+    
     dialogRef.afterClosed().subscribe(value => {
       if (value === undefined) {
         return;
@@ -56,5 +60,9 @@ export class AutoRefreshButtonComponent {
       
       this.emit(value);
     });
+  }
+
+  isDisabled(): boolean {
+    return this.intervalValue === 0 ? true : false;
   }
 }
