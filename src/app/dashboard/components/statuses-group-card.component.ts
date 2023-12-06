@@ -14,9 +14,9 @@ import { TasksStatusesGroup } from '../types';
 <mat-card>
   <mat-card-header *ngIf="!hideGroupHeaders">
     <mat-card-title>
-      <span [style]="'color:' + group.color">
+      <a routerLink="/tasks" [style]="'color:' + group.color + '; text-decoration: none'">
         {{ group.name }}
-      </span>
+      </a>
       <span>
         {{ sumStatusCount(group.statuses) }}
       </span>
