@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import { IconsService } from '@services/icons.service';
   template: `
 <button mat-stroked-button (click)="openAutoRefreshDialog()">
   <mat-icon aria-hidden="true" [fontIcon]="getIcon('auto-refresh')"></mat-icon>
-  <span i18n="Open a dialog on click">Set up Auto Refresh</span>
+  <span i18n="Open a dialog on click">Set up Auto Refresh - {{intervalDisplay}}</span>
 </button>
   `,
   styles: [`
@@ -24,14 +24,18 @@ import { IconsService } from '@services/icons.service';
     MatIconModule,
   ]
 })
-export class AutoRefreshButtonComponent {
+export class AutoRefreshButtonComponent implements OnInit{
   #iconsService = inject(IconsService);
-
+  intervalDisplay: string;
   @Input({ required: true }) intervalValue: number;
 
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private _dialog: MatDialog) { }
+
+  ngOnInit(): void {
+    this.intervalDisplay = this.intervalValue == 0 ? 'Disabled' : (this.intervalValue + ' seconds');
+  }
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
@@ -52,9 +56,9 @@ export class AutoRefreshButtonComponent {
     dialogRef.afterClosed().subscribe(value => {
       if (value === undefined) {
         return;
-      }
-      
+      }   
       this.emit(value);
-    });
+      this.intervalDisplay = value == 0 ? 'Disabled' : (value + ' seconds');
+    });  
   }
 }
