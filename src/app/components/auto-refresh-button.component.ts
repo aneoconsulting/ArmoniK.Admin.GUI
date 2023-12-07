@@ -63,6 +63,6 @@ export class AutoRefreshButtonComponent {
   }
 
   isDisabled(): boolean {
-    return this.intervalValue === 0 ? true : false;
+    return this.intervalValue === 0;
   }
 }

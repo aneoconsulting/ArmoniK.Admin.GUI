@@ -54,7 +54,7 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
   ]
 })
 export class AutoRefreshDialogComponent implements OnInit {
-  options = ["Disabled", 5, 10, 30, 60, 300, 600, 1800, 3600];
+  options = ['Disabled', 5, 10, 30, 60, 300, 600, 1800, 3600];
 
   value = 0;
 
@@ -80,7 +80,7 @@ export class AutoRefreshDialogComponent implements OnInit {
   }
 
   private _setValue(value: number | string | null) {
-    if (!value || value == "Disabled") {
+    if (!value || value === 'Disabled') {
       this.value = 0;
     }
 
