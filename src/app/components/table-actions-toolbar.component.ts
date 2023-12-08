@@ -19,13 +19,12 @@ import { SpinnerComponent } from './spinner.component';
 <app-actions-toolbar>
   <app-actions-toolbar-group>
     <app-refresh-button [tooltip]="refreshTooltip" (refreshChange)="onRefresh()"> </app-refresh-button>
+    <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"> </app-auto-refresh-button>
     <app-spinner *ngIf="loading"> </app-spinner>
   </app-actions-toolbar-group>
 
   <app-actions-toolbar-group>
     <ng-content select="[extra-buttons-right]"></ng-content>
-
-    <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"> </app-auto-refresh-button>
 
     <app-columns-button
       [columnsLabels]="columnsLabels"
@@ -109,7 +108,7 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
   onRefresh(): void {
     this.refresh.emit();
   }
-
+  
   onIntervalValueChange(value: number): void {
     this.intervalValueChange.emit(value);
   }
