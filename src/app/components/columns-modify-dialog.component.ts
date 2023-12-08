@@ -107,10 +107,8 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
       if (!this.columns.includes(column) && this.data.availableColumns.includes(column)) {
         this.columns.push(column);
       }
-    } else {
-      if(this.columns.includes(column)) {
-        this.columns = this.columns.filter(currentColumn => currentColumn !== column);
-      }
+    } else if(this.columns.includes(column)) {
+      this.columns = this.columns.filter(currentColumn => currentColumn !== column);
     }
   }
 
