@@ -37,7 +37,7 @@ jobs:
       
       - name: Modify version in package.json to follow tagging
         run: |
-          sed -i '/"version"/c  \ \ "version": "${{ env.DOCKER_METADATA_OUTPUT_VERSION }}",' package.json 
+          echo $(jq '.version = "${{ env.DOCKER_METADATA_OUTPUT_VERSION }}"' package.json)  > package.json 
 
       - name: Login to DockerHub
         uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3
