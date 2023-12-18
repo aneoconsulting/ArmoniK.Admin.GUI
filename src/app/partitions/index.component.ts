@@ -104,7 +104,9 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       <!-- ID -->
       <ng-container *ngIf="isPartitionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element[column] }}
+          <a mat-button [routerLink]="['/partitions', element.id]">
+            {{ element[column] }}
+          </a>
         </td>
       </ng-container>
       <!-- Object -->
@@ -125,7 +127,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
         </td>
       </ng-container>
       <!-- Action -->
-      <ng-container *ngIf="isActionsColumn(column)">
+      <!-- <ng-container *ngIf="isActionsColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
@@ -137,7 +139,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
             </a>
           </mat-menu>
         </td>
-      </ng-container>
+      </ng-container> -->
     </ng-container>
 
     <!-- Empty -->
@@ -333,10 +335,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isPartitionIdColumn(column: PartitionRawColumnKey): boolean {
     return this.#partitionsIndexService.isPartitionIdColumn(column);
-  }
-
-  isActionsColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isActionsColumn(column);
   }
 
   isObjectColumn(column: PartitionRawColumnKey): boolean {

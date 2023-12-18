@@ -77,13 +77,17 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
       </th>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element[column] | emptyCell }}
+          <a mat-button
+            [routerLink]="['/results', element.resultId]"
+          >
+            {{ element[column] | emptyCell }}
+          </a>
         </td>
       </ng-container>
       <!-- Session ID -->
@@ -112,7 +116,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
         </td>
       </ng-container>
       <!-- Action -->
-      <ng-container *ngIf="isActionsColumn(column)">
+      <!-- <ng-container *ngIf="isActionsColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
@@ -124,7 +128,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
             </a>
           </mat-menu>
         </td>
-      </ng-container>
+      </ng-container> -->
     </ng-container>
 
     <!-- Empty -->
@@ -337,9 +341,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._resultsIndexService.isSessionIdColumn(column);
   }
 
-  isActionsColumn(column: ResultRawColumnKey): boolean {
-    return this._resultsIndexService.isActionsColumn(column);
-  }
+  // isActionsColumn(column: ResultRawColumnKey): boolean {
+  //   return this._resultsIndexService.isActionsColumn(column);
+  // }
 
   isDateColumn(column: ResultRawColumnKey): boolean {
     return this._resultsIndexService.isDateColumn(column);
@@ -349,9 +353,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._resultsIndexService.isStatusColumn(column);
   }
 
-  isNotSortableColumn(column: ResultRawColumnKey): boolean {
-    return this._resultsIndexService.isNotSortableColumn(column);
-  }
+  // isNotSortableColumn(column: ResultRawColumnKey): boolean {
+  //   return this._resultsIndexService.isNotSortableColumn(column);
+  // }
 
   isSimpleColumn(column: ResultRawColumnKey): boolean {
     return this._resultsIndexService.isSimpleColumn(column);
