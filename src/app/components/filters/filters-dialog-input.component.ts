@@ -28,9 +28,9 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
 
 <mat-form-field class="dateForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Choose a date</mat-label>
-  <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" placeholder="Choose a date">
+  <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="input.value" placeholder="Choose a date">
    <ngx-mat-datepicker-toggle matSuffix [for]="picker"></ngx-mat-datepicker-toggle>
-   <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="true" >
+   <ngx-mat-datetime-picker #picker [startAt]="actualDate" [showSpinners]="true" [showSeconds]="true" >
     <ngx-mat-datepicker-actions>
       <button mat-flat-button color="accent" ngxMatDatepickerApply>
       <span i18n>Apply</span>
@@ -78,7 +78,7 @@ export class FiltersDialogInputComponent {
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
-  inputDate: DateTime;
+  actualDate = new Date();
 
   toDateTime(seconds: string | number | null) {
     seconds = Number(seconds);
@@ -102,10 +102,10 @@ export class FiltersDialogInputComponent {
   }
 
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
-    this.inputDate = DateTime.local(event.value!.getFullYear(), event.value!.getMonth()+1, event.value!.getDate(), event.value!.getHours(), event.value!.getMinutes(), event.value!.getSeconds());
+    const inputDate = DateTime.local(event.value!.getFullYear(), event.value!.getMonth()+1, event.value!.getDate(), event.value!.getHours(), event.value!.getMinutes(), event.value!.getSeconds());
     this.valueChange.emit({
       type: 'date',
-      value: this.inputDate,
+      value: inputDate,
     });
   }
 

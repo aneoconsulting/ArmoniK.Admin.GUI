@@ -131,7 +131,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'date':
       return {
         type: 'date',
-        value: filter.value as FilterInputValueDate || null
+        value: (filter.value ? new Date(filter.value) : null) as FilterInputValueDate
       };
     default:
       throw new Error(`Unknown type ${type}`);

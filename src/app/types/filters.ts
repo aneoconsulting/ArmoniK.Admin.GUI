@@ -61,7 +61,7 @@ export type Filter<T extends number, U extends number | null = null> = {
 // Value of a filter input.
 export type FilterInputValueString = MaybeNull<string>;
 export type FilterInputValueNumber = MaybeNull<number>;
-export type FilterInputValueDate = MaybeNull<number>;
+export type FilterInputValueDate = MaybeNull<Date>;
 
 // Input for a filter input.
 export interface FilterInputString {
