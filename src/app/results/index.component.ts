@@ -73,7 +73,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
