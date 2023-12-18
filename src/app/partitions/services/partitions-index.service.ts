@@ -18,7 +18,7 @@ export class PartitionsIndexService {
   readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
 
   readonly columnsLabels: Record<PartitionRawColumnKey, string> = {
-    id: $localize`ID`,
+    id: $localize`Id`,
     priority: $localize`Priority`,
     parentPartitionIds: $localize`Parent Partition Ids`,
     podConfiguration: $localize`Pod Configuration`,

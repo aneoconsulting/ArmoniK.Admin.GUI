@@ -130,7 +130,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
           <span> {{ show(element, column) | emptyCell }} </span>
         </td>
       </ng-container>
-      <!-- ID -->
+      <!-- Id -->
       <ng-container *ngIf="isTaskIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
@@ -179,7 +179,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
           <mat-menu #menu="matMenu">
             <button mat-menu-item [cdkCopyToClipboard]="element.id" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
               <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
-              <span i18n>Copy Task ID</span>
+              <span i18n>Copy Task Id</span>
             </button>
             <a mat-menu-item [routerLink]="['/tasks', element.id]">
               <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
@@ -597,7 +597,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onCopiedTaskId() {
-    this.#notificationService.success('Task ID copied to clipboard');
+    this.#notificationService.success('Task Id copied to clipboard');
   }
 
   isAllSelected(): boolean {

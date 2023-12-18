@@ -18,12 +18,12 @@ export class ResultsIndexService {
   readonly columnsLabels: Record<ResultRawColumnKey, string> = {
     name: $localize`Name`,
     status: $localize`Status`,
-    ownerTaskId: $localize`Owner Task ID`,
+    ownerTaskId: $localize`Owner Task Id`,
     createdAt: $localize`Created at`,
-    sessionId: $localize`Session ID`,
+    sessionId: $localize`Session Id`,
     actions: $localize`Actions`,
     completedAt: $localize`Completed at`,
-    resultId: $localize`Result ID`,
+    resultId: $localize`Result Id`,
   };
 
   readonly defaultOptions: ResultRawListOptions = this.#defaultConfigService.defaultResults.options;

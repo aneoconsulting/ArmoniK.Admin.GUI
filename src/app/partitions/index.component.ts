@@ -101,7 +101,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
           {{ element[column] | emptyCell }}
         </td>
       </ng-container>
-      <!-- ID -->
+      <!-- Id -->
       <ng-container *ngIf="isPartitionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           {{ element[column] }}
