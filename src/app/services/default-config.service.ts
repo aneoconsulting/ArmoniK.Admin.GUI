@@ -19,13 +19,13 @@ export class DefaultConfigService {
 
   readonly #defaultDashboardLines: Line[] = [
     {
-      name: 'Tasks by status',
+      name: $localize`Tasks by status`,
       interval: 5,
       hideGroupsHeader: false,
       filters: [],
       taskStatusesGroups: [
         {
-          name: 'Finished',
+          name: $localize`Finished`,
           color: '#00ff00',
           statuses: [
             TaskStatus.TASK_STATUS_COMPLETED,
@@ -33,14 +33,14 @@ export class DefaultConfigService {
           ],
         },
         {
-          name: 'Running',
+          name: $localize`Running`,
           color: '#ffa500',
           statuses: [
             TaskStatus.TASK_STATUS_PROCESSING,
           ]
         },
         {
-          name: 'Errors',
+          name: $localize`Errors`,
           color: '#ff0000',
           statuses: [
             TaskStatus.TASK_STATUS_ERROR,

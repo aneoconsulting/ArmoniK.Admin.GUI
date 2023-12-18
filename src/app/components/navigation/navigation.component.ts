@@ -46,7 +46,7 @@ import pkg from '../../../../package.json';
         {{ environment.name }} {{ environment.version }}
       </div>
       <div class="spacer"></div>
-       <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
+       <button mat-button class="external-services" [matMenuTriggerFor]="external_services" [matTooltip]="externalServicesToolTip">
         <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
         <span i18n="Button to view external services">
           External Services
@@ -209,6 +209,7 @@ export class NavigationComponent implements OnInit{
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
+  externalServicesToolTip = $localize`Access to external services`;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -248,11 +249,11 @@ export class NavigationComponent implements OnInit{
     const username = this.#userService.user ? this.#userService.user.username : '';
     // TODO: localize with params
     if (hour < 12) {
-      return 'Good morning' + (username !== '' ? ', ' + username : '');
+      return $localize`Good morning` + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
-      return 'Good afternoon' + (username !== '' ? ', ' + username : '');
+      return $localize`Good afternoon` + (username !== '' ? ', ' + username : '');
     } else {
-      return 'Good evening' + (username !== '' ? ', ' + username : '');
+      return $localize`Good evening` + (username !== '' ? ', ' + username : '');
     }
   }
 

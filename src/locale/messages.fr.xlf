@@ -870,6 +870,7 @@
     </unit>
     <unit id="8953033926734869941">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:16</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
         <note category="location">src/app/results/services/results-filters.service.ts:20</note>
         <note category="location">src/app/results/services/results-index.service.ts:19</note>
@@ -881,6 +882,7 @@
     </unit>
     <unit id="3294686077659093992">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:17</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
       </notes>
       <segment state="initial">
@@ -890,6 +892,7 @@
     </unit>
     <unit id="2218082343053095278">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:18</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
       </notes>
       <segment state="initial">
@@ -899,6 +902,7 @@
     </unit>
     <unit id="2724055831234181057">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:19</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
       </notes>
       <segment state="initial">
@@ -998,7 +1002,7 @@
       </notes>
       <segment state="initial">
         <source>Pod Max</source>
-        <target>Max Pod</target>
+        <target>Maximum de Pod</target>
       </segment>
     </unit>
     <unit id="6185028784920723553">
@@ -1071,7 +1075,7 @@
       </notes>
       <segment state="initial">
         <source>Session ID</source>
-        <target>Session ID</target>
+        <target>Id de Session</target>
       </segment>
     </unit>
     <unit id="2829243786450918109">
@@ -1173,6 +1177,7 @@
     </unit>
     <unit id="2956098160626271284">
       <notes>
+        <note category="location">src/app/services/default-config.service.ts:36</note>
         <note category="location">src/app/sessions/services/sessions-statuses.service.ts:8</note>
       </notes>
       <segment state="initial">
@@ -1474,7 +1479,7 @@
       </notes>
       <segment state="initial">
         <source>Copy Session ID</source>
-        <target>Copier l&apos;ID de la Session</target>
+        <target>Copier l&apos;Id de la Session</target>
       </segment>
     </unit>
     <unit id="4471277768650583130">
@@ -2132,7 +2137,7 @@
       </notes>
       <segment state="initial">
         <source>Engine Type</source>
-        <target>Type de l&apos;engine</target>
+        <target>Type de moteur</target>
       </segment>
     </unit>
     <unit id="8500840478218589285">
@@ -2504,7 +2509,7 @@
       </notes>
       <segment state="initial">
         <source> Enter the number of seconds between each refresh. Use 0 or choose &quot;Disabled&quot; to disable. </source>
-        <target> Indiquez le nombre de secondes entre chaque rafraîchissement. Utilisez 0 ou choississez &quot;Désactiver&quot; pour le désactiver. </target>
+        <target> Indiquez le nombre de secondes entre chaque rafraîchissement. Indiquez 0 ou choississez &quot;Désactiver&quot; pour le désactiver. </target>
       </segment>
     </unit>
     <unit id="4391289919356861627">
@@ -2532,6 +2537,148 @@
       <segment state="initial">
         <source> Unlock columns </source>
         <target> Déverrouiller les colonnes </target>
+      </segment>
+    </unit>
+    <unit id="autoRefreshButton">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:64</note>
+        <note category="description">Button disabled</note>
+      </notes>
+      <segment state="initial">
+        <source>Disabled</source>
+        <target>Désactivé</target>
+      </segment>
+    </unit>
+    <unit id="8877382706249482557">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:64</note>
+      </notes>
+      <segment state="initial">
+        <source> seconds</source>
+        <target> secondes</target>
+      </segment>
+    </unit>
+    <unit id="8461712739701887700">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:20,22</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment state="initial">
+        <source> Where </source>
+        <target> Où </target>
+      </segment>
+    </unit>
+    <unit id="6867381603185205680">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:23,25</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment state="initial">
+        <source> Or </source>
+        <target> Ou </target>
+      </segment>
+    </unit>
+    <unit id="2755093429202648414">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:212</note>
+      </notes>
+      <segment state="initial">
+        <source>Access to external services</source>
+        <target>Accéder aux services externes</target>
+      </segment>
+    </unit>
+    <unit id="8829540234129394429">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:252</note>
+      </notes>
+      <segment state="initial">
+        <source>Good morning</source>
+        <target>Bonjour</target>
+      </segment>
+    </unit>
+    <unit id="3856348061305553948">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:254</note>
+      </notes>
+      <segment state="initial">
+        <source>Good afternoon</source>
+        <target>Bonjour</target>
+      </segment>
+    </unit>
+    <unit id="8772850684697870535">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:256</note>
+      </notes>
+      <segment state="initial">
+        <source>Good evening</source>
+        <target>Bonne soirée,</target>
+      </segment>
+    </unit>
+    <unit id="3980864845655128791">
+      <notes>
+        <note category="location">src/app/components/navigation/theme-selector.component.ts:64</note>
+      </notes>
+      <segment state="initial">
+        <source>Select a theme</source>
+        <target>Sélectionner un thème</target>
+      </segment>
+    </unit>
+    <unit id="150451235248811455">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:540</note>
+      </notes>
+      <segment state="initial">
+        <source>Session ID copied to clipboard</source>
+        <target>Id de session aujouté au presse-papier</target>
+      </segment>
+    </unit>
+    <unit id="8193912662253833654">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:109</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment state="initial">
+        <source>Clear All</source>
+        <target>Tout réinitialiser</target>
+      </segment>
+    </unit>
+    <unit id="autoRefreshDialog">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:57</note>
+        <note category="description">Dialog disabled</note>
+      </notes>
+      <segment state="initial">
+        <source>Disabled</source>
+        <target>Désactiver</target>
+      </segment>
+    </unit>
+    <unit id="3867445261912406579">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:22</note>
+      </notes>
+      <segment state="initial">
+        <source>Tasks by status</source>
+        <target>Tâches par status</target>
+      </segment>
+    </unit>
+    <unit id="340430316261570792">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:28</note>
+      </notes>
+      <segment state="initial">
+        <source>Finished</source>
+        <target>Terminées</target>
+      </segment>
+    </unit>
+    <unit id="8157372473189397040">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:43</note>
+      </notes>
+      <segment state="initial">
+        <source>Errors</source>
+        <target>Erreurs</target>
       </segment>
     </unit>
   </file>

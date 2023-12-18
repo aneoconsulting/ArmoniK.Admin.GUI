@@ -787,6 +787,7 @@
     </unit>
     <unit id="2218082343053095278">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:18</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
       </notes>
       <segment>
@@ -795,6 +796,7 @@
     </unit>
     <unit id="2724055831234181057">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:19</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
       </notes>
       <segment>
@@ -816,6 +818,7 @@
     </unit>
     <unit id="3294686077659093992">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:17</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
       </notes>
       <segment>
@@ -834,6 +837,7 @@
     </unit>
     <unit id="8953033926734869941">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:16</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
         <note category="location">src/app/results/services/results-filters.service.ts:20</note>
         <note category="location">src/app/results/services/results-index.service.ts:19</note>
@@ -954,6 +958,7 @@
     </unit>
     <unit id="2956098160626271284">
       <notes>
+        <note category="location">src/app/services/default-config.service.ts:36</note>
         <note category="location">src/app/sessions/services/sessions-statuses.service.ts:8</note>
       </notes>
       <segment>
@@ -2276,6 +2281,133 @@
       </notes>
       <segment>
         <source> Unlock columns </source>
+      </segment>
+    </unit>
+    <unit id="150451235248811455">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:540</note>
+      </notes>
+      <segment>
+        <source>Session ID copied to clipboard</source>
+      </segment>
+    </unit>
+    <unit id="2755093429202648414">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:212</note>
+      </notes>
+      <segment>
+        <source>Access to external services</source>
+      </segment>
+    </unit>
+    <unit id="3856348061305553948">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:254</note>
+      </notes>
+      <segment>
+        <source>Good afternoon</source>
+      </segment>
+    </unit>
+    <unit id="3980864845655128791">
+      <notes>
+        <note category="location">src/app/components/navigation/theme-selector.component.ts:64</note>
+      </notes>
+      <segment>
+        <source>Select a theme</source>
+      </segment>
+    </unit>
+    <unit id="autoRefreshButton">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:64</note>
+        <note category="description">Button disabled</note>
+      </notes>
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="6867381603185205680">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:23,25</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment>
+        <source> Or </source>
+      </segment>
+    </unit>
+    <unit id="8193912662253833654">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:109</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment>
+        <source>Clear All</source>
+      </segment>
+    </unit>
+    <unit id="8461712739701887700">
+      <notes>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:20,22</note>
+        <note category="description">Filter condition</note>
+      </notes>
+      <segment>
+        <source> Where </source>
+      </segment>
+    </unit>
+    <unit id="8772850684697870535">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:256</note>
+      </notes>
+      <segment>
+        <source>Good evening</source>
+      </segment>
+    </unit>
+    <unit id="8829540234129394429">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:252</note>
+      </notes>
+      <segment>
+        <source>Good morning</source>
+      </segment>
+    </unit>
+    <unit id="8877382706249482557">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:64</note>
+      </notes>
+      <segment>
+        <source> seconds</source>
+      </segment>
+    </unit>
+    <unit id="autoRefreshDialog">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:57</note>
+        <note category="description">Dialog disabled</note>
+      </notes>
+      <segment>
+        <source>Disabled</source>
+      </segment>
+    </unit>
+    <unit id="340430316261570792">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:28</note>
+      </notes>
+      <segment>
+        <source>Finished</source>
+      </segment>
+    </unit>
+    <unit id="3867445261912406579">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:22</note>
+      </notes>
+      <segment>
+        <source>Tasks by status</source>
+      </segment>
+    </unit>
+    <unit id="8157372473189397040">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:43</note>
+      </notes>
+      <segment>
+        <source>Errors</source>
       </segment>
     </unit>
   </file>

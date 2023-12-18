@@ -537,7 +537,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onCopiedSessionId() {
-    this.#notificationService.success('Session ID copied to clipboard');
+    this.#notificationService.success($localize`Session ID copied to clipboard`);
   }
 
   onCancel(sessionId: string) {
