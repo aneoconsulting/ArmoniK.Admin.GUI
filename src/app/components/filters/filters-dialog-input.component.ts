@@ -1,14 +1,11 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { LuxonDateAdapter, MAT_LUXON_DATE_ADAPTER_OPTIONS, MAT_LUXON_DATE_FORMATS  } from '@angular/material-luxon-adapter';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
-import { DateTime } from 'luxon';
 import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
 
 
@@ -52,15 +49,6 @@ mat-form-field {
 };
 `],
   standalone: true,
-  providers: [
-    // Not working with the module import. (https://stackblitz.com/edit/components-issue-j5ktcc?file=src/app/not-working-datepicker.component.ts)
-    {provide: MAT_DATE_FORMATS, useValue: MAT_LUXON_DATE_FORMATS},
-    {
-      provide: DateAdapter,
-      useClass: LuxonDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_LUXON_DATE_ADAPTER_OPTIONS],
-    },
-  ],
   imports: [
     NgIf,
     NgFor,
@@ -80,11 +68,6 @@ export class FiltersDialogInputComponent {
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
   actualDate = new Date();
 
-  toDateTime(seconds: string | number | null) {
-    seconds = Number(seconds);
-    return seconds && seconds !== 0 ? DateTime.fromSeconds(seconds) : undefined;
-  }
-
   onStringChange(event: Event): void {
     this.valueChange.emit({
       type: 'string',
@@ -102,10 +85,9 @@ export class FiltersDialogInputComponent {
   }
 
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
-    const inputDate = DateTime.local(event.value!.getFullYear(), event.value!.getMonth()+1, event.value!.getDate(), event.value!.getHours(), event.value!.getMinutes(), event.value!.getSeconds());
     this.valueChange.emit({
       type: 'date',
-      value: inputDate,
+      value: event.value?.getTime() ? (event.value?.getTime() / 1000) : null,
     });
   }
 

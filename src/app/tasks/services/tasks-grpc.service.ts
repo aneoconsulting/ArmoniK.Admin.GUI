@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
-import { DateHandlerService } from '@services/date-handler.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
@@ -142,7 +141,7 @@ export class TasksGrpcService {
           filterDate: {
             value: {
               nanos: 0,
-              seconds: new DateHandlerService<TaskSummaryEnumField, TaskOptionEnumField>().setSecondsByDateOperator(filter)
+              seconds: filter.value?.toString() ?? '0'
             },
             operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
           }

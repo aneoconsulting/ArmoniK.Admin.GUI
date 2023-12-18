@@ -1,5 +1,4 @@
 import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
-import { DateTime } from 'luxon';
 import { FilterFor } from './filter-definition';
 
 export type MaybeNull<T> = T | null;
@@ -97,6 +96,6 @@ export interface FilterInputOutputNumber {
 }
 export interface FilterInputOutputDate {
   type: 'date';
-  value: MaybeNull<DateTime>;
+  value: MaybeNull<number>;
 }
 export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate;
