@@ -1,5 +1,5 @@
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { DateTime } from 'luxon';
+// eslint-disable-next-line import/no-unresolved
+import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
@@ -55,8 +55,8 @@ describe('FiltersDialogInputComponent', () => {
 
   it('should emit on end Date change', () => {
     const event = {
-      value: 19043234
-    } as unknown as MatDatepickerInputEvent<DateTime>;
+      value: new Date(19043234000) // Date takes milliseconds, not seconds.
+    } as unknown as NgxMatDatepickerInputEvent<Date>;
 
     component.onDateChange(event);
     expect(valueChangeSpy).toHaveBeenCalledWith({
