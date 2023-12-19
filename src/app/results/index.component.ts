@@ -1,4 +1,4 @@
-import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -23,6 +23,7 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
 import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -95,9 +96,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
             [routerLink]="['/sessions']"
-            [queryParams]="{
-              sessionId: element[column],
-            }"
+            [queryParams]="createSessionIdQueryParams(element.sessionId)"
           >
             {{ element[column] }}
           </a>
@@ -160,6 +159,7 @@ app-table-actions-toolbar {
     AutoRefreshService,
     NotificationService,
     ResultsFiltersService,
+    FiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
       useExisting: ResultsFiltersService,
@@ -191,6 +191,7 @@ app-table-actions-toolbar {
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
+  readonly #filtersService = inject(FiltersService);
   readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: ResultRawColumnKey[] = [];
@@ -401,5 +402,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+
+  createSessionIdQueryParams(sessionId: string) {
+    const keySession = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+
+    return {
+      [keySession]: sessionId,
+    };
   }
 }
