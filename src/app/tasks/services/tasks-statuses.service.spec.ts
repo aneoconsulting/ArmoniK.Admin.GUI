@@ -22,8 +22,4 @@ describe('tasksStatusesService', () => {
   test('should return false ', () => {
     expect(service.isRetried(10)).toBeFalsy();
   });
-
-  test('some test', () => {
-    expect(false).toBeTruthy();
-  });
 });
