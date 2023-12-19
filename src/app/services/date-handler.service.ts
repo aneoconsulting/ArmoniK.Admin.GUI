@@ -13,7 +13,7 @@ export class DateHandlerService<T extends number, U extends number | null> {
       return '0';
     }
     if (filter.operator === FilterDateOperator.FILTER_DATE_OPERATOR_AFTER || filter.operator === FilterDateOperator.FILTER_DATE_OPERATOR_BEFORE_OR_EQUAL) {
-      return (seconds + 86400).toString();
+      return (seconds).toString();
     }
     return seconds.toString();
   }

@@ -68,7 +68,7 @@ describe('ViewTasksByStatusDialogComponent', () => {
   });
 
   it('should retrieve a label by its corresponding status', () => {
-    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Finished');
+    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
   });
 
   describe('isUsedStatus', () => {

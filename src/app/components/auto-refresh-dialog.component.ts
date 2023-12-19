@@ -13,12 +13,13 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
 
     <mat-dialog-content>
       <p i18n="Dialog description">
-        Enter the number of seconds between each refresh. Use 0 to disable.
+        Enter the number of seconds between each refresh.
+        Use 0 or choose "Disabled" to disable.
       </p>
 
       <mat-form-field class="example-full-width" appearance="outline">
         <mat-label i18n="Label Input">Interval</mat-label>
-        <input type="number"
+        <input type="text"
         i18n-placeholder="Placeholder Input"
         placeholder="Seconds"
         aria-label="Number"
@@ -53,7 +54,7 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
   ]
 })
 export class AutoRefreshDialogComponent implements OnInit {
-  options = [0, 1, 5, 10, 30, 60, 300, 600, 1800, 3600];
+  options = ['Disabled', 5, 10, 30, 60, 300, 600, 1800, 3600];
 
   value = 0;
 
@@ -79,7 +80,7 @@ export class AutoRefreshDialogComponent implements OnInit {
   }
 
   private _setValue(value: number | string | null) {
-    if (!value) {
+    if (!value || value === 'Disabled') {
       this.value = 0;
     }
 

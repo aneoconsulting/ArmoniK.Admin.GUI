@@ -20,7 +20,7 @@ describe('TasksFilterService', () => {
       10: $localize`Processed`,
       7: $localize`Cancelling`,
       8: $localize`Cancelled`,
-      4: $localize`Finished`,
+      4: $localize`Completed`,
       5: $localize`Error`,
       6: $localize`Timeout`,
       11: $localize`Retried`,
