@@ -182,7 +182,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
             </button>
             <a mat-menu-item [routerLink]="['/results']" [queryParams]="createTaskIdQueryParams(element.id)">
               <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-              <span i18n> See matching result </span>
+              <span i18n> See related result </span>
             </a>
             <button *ngIf="isRetried(element)" mat-menu-item (click)="onRetries(element)">
               <mat-icon aria-hidden="true" fontIcon="published_with_changes"></mat-icon>

@@ -168,7 +168,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
             </button>
             <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="{ sessionId: element.sessionId }">
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
-              <span i18n>See tasks</span>
+              <span i18n>See related tasks</span>
             </a>
             <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.sessionId }">
               <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>

@@ -115,20 +115,6 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
           <span> {{ statusToLabel(element[column]) }} </span>
         </td>
       </ng-container>
-      <!-- Action -->
-      <!-- <ng-container *ngIf="isActionsColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/results', element.resultId]">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n> See result </span>
-            </a>
-          </mat-menu>
-        </td>
-      </ng-container> -->
     </ng-container>
 
     <!-- Empty -->
@@ -341,10 +327,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._resultsIndexService.isSessionIdColumn(column);
   }
 
-  // isActionsColumn(column: ResultRawColumnKey): boolean {
-  //   return this._resultsIndexService.isActionsColumn(column);
-  // }
-
   isDateColumn(column: ResultRawColumnKey): boolean {
     return this._resultsIndexService.isDateColumn(column);
   }
@@ -352,10 +334,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   isStatusColumn(column: ResultRawColumnKey): boolean {
     return this._resultsIndexService.isStatusColumn(column);
   }
-
-  // isNotSortableColumn(column: ResultRawColumnKey): boolean {
-  //   return this._resultsIndexService.isNotSortableColumn(column);
-  // }
 
   isSimpleColumn(column: ResultRawColumnKey): boolean {
     return this._resultsIndexService.isSimpleColumn(column);
