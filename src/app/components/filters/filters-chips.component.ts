@@ -71,7 +71,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
       return `${label} ${operator} ${status?.value}`;
     }
     else if (type === 'date') {
-      return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toLocaleString()}`;
+      return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
     }
 
     return `${label} ${operator} ${filter.value}`;
