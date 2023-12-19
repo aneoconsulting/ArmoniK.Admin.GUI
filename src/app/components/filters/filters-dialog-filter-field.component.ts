@@ -130,7 +130,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'date':
       return {
         type: 'date',
-        value: new Date(Number(filter.value) * 1000)
+        value: filter.value ? new Date(Number(filter.value) * 1000) : null
       };
     default:
       throw new Error(`Unknown type ${type}`);
