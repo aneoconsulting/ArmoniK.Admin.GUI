@@ -59,12 +59,15 @@ export class TableURLService {
       }
 
       const currentParams = params.get(order) ?? [] as Filter<T, U>[];
+      const parametersValues = this.getQueryParamFilterValue<string>(key, false);
 
-      currentParams.push({
-        field: field as T | U,
-        operator: Number(operator),
-        value: this.getQueryParam(key, false),
-        for: for_ as FilterFor<T, U>
+      parametersValues?.forEach((parameter) => {
+        currentParams.push({
+          field: field as T | U,
+          operator: Number(operator),
+          value: parameter,
+          for: for_ as FilterFor<T, U>
+        });
       });
 
       params.set(order, currentParams);
@@ -82,6 +85,26 @@ export class TableURLService {
    */
   getQueryParamKeys(): string[] {
     return this.#route.snapshot.queryParamMap.keys;
+  }
+
+  /**
+   * Return all the parameters from the route by its key.
+   * @param key `string`, also in the route.
+   * @param parse If you want your data to be parsed. Default = true
+   * @returns the data
+   */
+  getQueryParamFilterValue<T>(key: string, parse = true) {
+    const data = this.#route.snapshot.queryParamMap.getAll(key);
+
+    if(data && parse) {
+      const jsonData: {[key: number]: string} = {};
+      data.forEach((d, index) => jsonData[index] = JSON.parse(d));
+      return jsonData as T[];
+    } else if (data) {
+      return data as T[];
+    }
+
+    return null;
   }
 
   /**
