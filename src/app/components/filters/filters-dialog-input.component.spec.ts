@@ -55,7 +55,7 @@ describe('FiltersDialogInputComponent', () => {
 
   it('should emit on end Date change', () => {
     const event = {
-      value: 19043234
+      value: new Date(19043234000) // Date takes milliseconds, not seconds.
     } as unknown as NgxMatDatepickerInputEvent<Date>;
 
     component.onDateChange(event);
