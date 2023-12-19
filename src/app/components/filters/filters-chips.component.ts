@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { DateTime } from 'luxon';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FiltersAnd } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -72,7 +71,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
       return `${label} ${operator} ${status?.value}`;
     }
     else if (type === 'date') {
-      return `${label} ${operator} ${DateTime.fromSeconds(Number(filter.value)).toISODate()}`;
+      return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
     }
 
     return `${label} ${operator} ${filter.value}`;

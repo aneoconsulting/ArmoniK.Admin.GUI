@@ -83,6 +83,8 @@ describe('Application component', () => {
     restoreIntervalValue: jest.fn(),
     saveIntervalValue: jest.fn(),
     saveOptions: jest.fn(),
+    saveLockColumns: jest.fn(),
+    restoreLockColumns: jest.fn()
   };
 
   const mockShareUrlService = {
@@ -418,5 +420,18 @@ describe('Application component', () => {
     dialogSubject = new BehaviorSubject<TaskStatusColored[] | undefined>(undefined);
     component.personalizeTasksByStatus();
     expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledTimes(0);
+  });
+
+  describe('onLockColumnsChange', () => {
+    it('should switch the value of lockColumns', () => {
+      component.lockColumns = false;
+      component.onLockColumnsChange();
+      expect(component.lockColumns).toBeTruthy();
+    });
+
+    it('should call applications index service saveLockColumns', () => {
+      component.onLockColumnsChange();
+      expect(mockApplicationIndexService.saveLockColumns).toHaveBeenCalledWith(component.lockColumns);
+    });
   });
 });
