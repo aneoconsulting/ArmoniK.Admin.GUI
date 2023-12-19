@@ -107,7 +107,7 @@ describe('FiltersChipsComponent', () => {
       operator: 0,
       value: 0
     };
-    expect(component.content(filter)).toEqual('date Equal 1970-01-01');
+    expect(component.content(filter)).toEqual('date Equal Thu, 01 Jan 1970 00:00:00 GMT');
   });
 
   it('should create the content of the component even with no for', () => {

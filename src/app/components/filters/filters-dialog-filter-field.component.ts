@@ -3,10 +3,9 @@ import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { DateTime } from 'luxon';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDate, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
@@ -96,7 +95,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       this.filter.value = Number(event.value) || null;
       break;
     case 'date':
-      this.filter.value = this.fromDateTimeToSecond(event.value);
+      this.filter.value = event.value;
       break;
     }
   }
@@ -131,7 +130,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'date':
       return {
         type: 'date',
-        value: filter.value as FilterInputValueDate || null
+        value: filter.value ? new Date(Number(filter.value) * 1000) : null
       };
     default:
       throw new Error(`Unknown type ${type}`);
@@ -192,13 +191,5 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
-  }
-
-  fromDateTimeToSecond(value: DateTime | null): number | null {
-    if (!value) {
-      return null;
-    }
-    const seconds = value.toSeconds();
-    return seconds ? seconds : null;
   }
 }
