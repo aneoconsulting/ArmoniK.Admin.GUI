@@ -44,9 +44,9 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
 </mat-form-field>
 
 <mat-form-field style="" id="durationForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'duration'">
-  <input matInput style="width: 25%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue(0)" (change)="onDurationChange($event, 0)" placeholder="hh">:
-  <input matInput style="width: 30%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue(1)" (change)="onDurationChange($event, 1)" placeholder="mm">:
-  <input matInput style="width: 25%;" type="number" min="0" [value]="getDurationInputValue(2)" (change)="onDurationChange($event, 2)" placeholder="ss">
+  <input matInput style="width: 25%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue('hours')" (change)="onDurationChange($event, 0)" placeholder="hh">:
+  <input matInput style="width: 30%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue('minutes')" (change)="onDurationChange($event, 1)" placeholder="mm">:
+  <input matInput style="width: 25%;" type="number" min="0" [value]="getDurationInputValue('seconds')" (change)="onDurationChange($event, 2)" placeholder="ss">
 </mat-form-field>
   `,
   styles: [`
@@ -107,9 +107,13 @@ export class FiltersDialogInputComponent {
 
   onDurationChange(event: Event, index: number) {
     this.duration[index] = (event.target as HTMLInputElement).value;
-    const durationSeconds = Number(this.duration[0] ?? this.getDurationInputValue(0) ?? 0) * 3600
-      + Number(this.duration[1] ?? this.getDurationInputValue(1) ?? 0) * 60 
-      + Number(this.duration[2] ?? this.getDurationInputValue(2) ?? 0);
+    const getHours = !isNaN(Number(this.duration[0])) ? Number(this.duration[0]) : this.getDurationInputValue('hours');
+    const getMinutes = !isNaN(Number(this.duration[1])) ? Number(this.duration[1]) : this.getDurationInputValue('minutes');
+    const getSeconds = !isNaN(Number(this.duration[2])) ? Number(this.duration[2]) : this.getDurationInputValue('seconds');
+
+    const durationSeconds = (getHours ?? 0) * 3600
+      + (getMinutes ?? 0) * 60 
+      + (getSeconds ?? 0);
     this.valueChange.emit({
       type: 'duration',
       value: durationSeconds
@@ -133,14 +137,14 @@ export class FiltersDialogInputComponent {
     }
   }
 
-  getDurationInputValue(index: number): number | undefined {
-    switch (index) {
-    case 0:
-      return Math.floor(Number(this.input.value)/3600) ?? undefined;
-    case 1:
-      return Math.floor((Number(this.input.value)%3600)/60) ?? undefined;
-    case 2:
-      return Math.floor(((Number(this.input.value))%3600)%60) ?? undefined;
+  getDurationInputValue(searchItem: string): number | undefined {
+    switch (searchItem) {
+    case 'hours':
+      return !isNaN(Number(this.input.value)) ? Math.floor(Number(this.input.value)/3600) : undefined;
+    case 'minutes':
+      return !isNaN(Number(this.input.value)) ? Math.floor((Number(this.input.value)%3600)/60) : undefined;
+    case 'seconds':
+      return !isNaN(Number(this.input.value)) ? Math.floor(((Number(this.input.value))%3600)%60) : undefined;
     default:
       return undefined;
     }
