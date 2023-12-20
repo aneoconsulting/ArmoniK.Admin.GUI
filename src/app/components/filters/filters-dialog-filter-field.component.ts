@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
@@ -97,6 +97,8 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'date':
       this.filter.value = event.value;
       break;
+    case 'duration':
+      this.filter.value = Number(event.value) || null;
     }
   }
 
@@ -131,6 +133,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       return {
         type: 'date',
         value: filter.value ? new Date(Number(filter.value) * 1000) : null
+      };
+    case 'duration':
+      return {
+        type: 'duration',
+        value: filter.value as FilterInputValueDuration
       };
     default:
       throw new Error(`Unknown type ${type}`);

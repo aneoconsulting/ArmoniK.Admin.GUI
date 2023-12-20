@@ -42,6 +42,12 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
     <mat-option *ngFor="let option of input.statuses; trackBy: trackBySelect" [value]="option.key">{{ option.value }}</mat-option>
   </mat-select>
 </mat-form-field>
+
+<mat-form-field style="" id="durationForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'duration'">
+  <input matInput style="width: 25%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue(0)" (change)="onDurationChange($event, 0)" placeholder="hh">:
+  <input matInput style="width: 30%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue(1)" (change)="onDurationChange($event, 1)" placeholder="mm">:
+  <input matInput style="width: 25%;" type="number" min="0" [value]="getDurationInputValue(2)" (change)="onDurationChange($event, 2)" placeholder="ss">
+</mat-form-field>
   `,
   styles: [`
 mat-form-field {
@@ -67,6 +73,7 @@ export class FiltersDialogInputComponent {
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
   actualDate = new Date();
+  duration: {[key: number]: string} = {};
 
   onStringChange(event: Event): void {
     this.valueChange.emit({
@@ -98,6 +105,17 @@ export class FiltersDialogInputComponent {
     });
   }
 
+  onDurationChange(event: Event, index: number) {
+    this.duration[index] = (event.target as HTMLInputElement).value;
+    const durationSeconds = Number(this.duration[0] ?? this.getDurationInputValue(0) ?? 0) * 3600
+      + Number(this.duration[1] ?? this.getDurationInputValue(1) ?? 0) * 60 
+      + Number(this.duration[2] ?? this.getDurationInputValue(2) ?? 0);
+    this.valueChange.emit({
+      type: 'duration',
+      value: durationSeconds
+    });
+  }
+
   getInputType(): FilterInputType  {
     switch (this.input.type) {
     case 'string':
@@ -112,6 +130,19 @@ export class FiltersDialogInputComponent {
       return 'status';
     default:
       return 'string';
+    }
+  }
+
+  getDurationInputValue(index: number): number | undefined {
+    switch (index) {
+    case 0:
+      return Math.floor(Number(this.input.value)/3600) ?? undefined;
+    case 1:
+      return Math.floor((Number(this.input.value)%3600)/60) ?? undefined;
+    case 2:
+      return Math.floor(((Number(this.input.value))%3600)%60) ?? undefined;
+    default:
+      return undefined;
     }
   }
 

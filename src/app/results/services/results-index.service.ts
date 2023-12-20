@@ -24,6 +24,7 @@ export class ResultsIndexService {
     actions: $localize`Actions`,
     completedAt: $localize`Completed at`,
     resultId: $localize`Result ID`,
+    size: $localize`Size`
   };
 
   readonly defaultOptions: ResultRawListOptions = this.#defaultConfigService.defaultResults.options;
