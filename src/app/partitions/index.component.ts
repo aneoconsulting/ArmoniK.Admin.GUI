@@ -126,20 +126,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
           </app-count-tasks-by-status>
         </td>
       </ng-container>
-      <!-- Action -->
-      <!-- <ng-container *ngIf="isActionsColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/partitions', element.id]">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n>See partition</span>
-            </a>
-          </mat-menu>
-        </td>
-      </ng-container> -->
     </ng-container>
 
     <!-- Empty -->
