@@ -13,6 +13,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ExternalService } from '@app/types/external-service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -48,10 +49,12 @@ import pkg from '../../../../package.json';
       <div class="spacer"></div>
       <button mat-button [matMenuTriggerFor]="switchLanguage">
         <mat-icon matListItemIcon [fontIcon]="getIcon('language')" aria-hidden="true">Truc</mat-icon>
-        <span>EN</span>
+        <span>{{selectedLanguage.toLocaleUpperCase()}}</span>
       </button>
       <mat-menu #switchLanguage="matMenu">
-        <button mat-menu-item (click)="setLanguage('FR')">FR</button>
+        <ng-container *ngFor="let language of availableLanguages; trackBy:trackByLanguage">
+          <a mat-menu-item [href]="language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
+        </ng-container>
       </mat-menu>
       <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
         <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
@@ -210,6 +213,12 @@ export class NavigationComponent implements OnInit{
   #versionsService = inject(VersionsService);
   #environmentService = inject(EnvironmentService);
   #router = inject(Router);
+  #storageService = inject(StorageService);
+  #defaultConfigService = inject(DefaultConfigService);
+
+  allLanguages = ['en', 'fr'];
+  availableLanguages: string[];
+  selectedLanguage: string;
 
   environment = this.#environmentService.getEnvironment();
 
@@ -226,6 +235,9 @@ export class NavigationComponent implements OnInit{
 
   ngOnInit(): void {
     this.externalServices = this.#navigationService.restoreExternalServices();
+    
+    this.selectedLanguage = this.#storageService.getItem('language') ?? this.#defaultConfigService.defaultLanguage;
+    this.availableLanguages = this.allLanguages.filter(language => language != this.selectedLanguage);
   }
 
   manageExternalServices() {
@@ -244,7 +256,13 @@ export class NavigationComponent implements OnInit{
   }
 
   setLanguage(language: string) {
-    console.log(this.#router.url);
+    this.selectedLanguage = language;
+    this.#storageService.setItem('language', language);
+    this.availableLanguages = this.allLanguages.filter(lang => lang != this.selectedLanguage);
+  }
+
+  getRoute() {
+    return this.#router.url;
   }
 
   getIcon(name: string): string {
@@ -270,5 +288,9 @@ export class NavigationComponent implements OnInit{
 
   trackByService(_: number, service: ExternalService) {
     return service.name + service.url;
+  }
+
+  trackByLanguage(_: number, language: string) {
+    return language;
   }
 }
