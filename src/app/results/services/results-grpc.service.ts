@@ -3,7 +3,6 @@ import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { FilterType } from '@app/types/filters';
-import { DateHandlerService } from '@services/date-handler.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
 import {  ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
@@ -84,7 +83,7 @@ export class ResultsGrpcService {
           filterDate: {
             value: {
               nanos: 0,
-              seconds: new DateHandlerService<ResultRawEnumField, null>().setSecondsByDateOperator(filter)
+              seconds: filter.value?.toString() ?? ''
             },
             operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
           }

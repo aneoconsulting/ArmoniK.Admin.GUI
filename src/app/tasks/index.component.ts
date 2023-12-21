@@ -94,7 +94,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns; trackBy:trackByColumn" [matColumnDef]="column">
       <!-- Header -->
@@ -134,8 +134,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       <ng-container *ngIf="isTaskIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
-            [routerLink]="['/results']"
-            [queryParams]="createTaskIdQueryParams(element[column])"
+            [routerLink]="['/tasks/', element[column]]"
           >
             {{ element[column] }}
           </a>
@@ -181,9 +180,9 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
               <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
               <span i18n>Copy Task ID</span>
             </button>
-            <a mat-menu-item [routerLink]="['/tasks', element.id]">
+            <a mat-menu-item [routerLink]="['/results']" [queryParams]="createTaskIdQueryParams(element.id)">
               <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-              <span i18n> See task </span>
+              <span i18n> See related result </span>
             </a>
             <button *ngIf="isRetried(element)" mat-menu-item (click)="onRetries(element)">
               <mat-icon aria-hidden="true" fontIcon="published_with_changes"></mat-icon>

@@ -12,7 +12,7 @@ export class PartitionsIndexService {
 
   readonly defaultColumns: PartitionRawColumnKey[] = this.#defaultConfigService.defaultPartitions.columns;
   readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultPartitions.lockColumns;
-  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'actions', 'count'];
+  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'count'];
 
   // TODO: We could use a custom type to know which columns are objects
   readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
@@ -46,12 +46,9 @@ export class PartitionsIndexService {
     return column === 'id';
   }
 
-  isActionsColumn(column: PartitionRawColumnKey): boolean {
-    return column === 'actions';
-  }
 
   isNotSortableColumn(column: PartitionRawColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isObjectColumn(column) || this.isCountColumn(column);
+    return this.isObjectColumn(column) || this.isCountColumn(column);
   }
 
   isObjectColumn(column: PartitionRawColumnKey): boolean {
@@ -63,7 +60,7 @@ export class PartitionsIndexService {
   }
 
   isSimpleColumn(column: PartitionRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isPartitionIdColumn(column) && !this.isObjectColumn(column) && !this.isCountColumn(column);
+    return !this.isPartitionIdColumn(column) && !this.isObjectColumn(column) && !this.isCountColumn(column);
   }
 
   /**
