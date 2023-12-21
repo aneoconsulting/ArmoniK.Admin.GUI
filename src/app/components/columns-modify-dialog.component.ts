@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ColumnKey, PrefixedOptions } from '@app/types/data';
+import { ColumnKey, PrefixedCustom, PrefixedOptions } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
@@ -31,6 +31,18 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
     <ng-container *ngFor="let column of availableOptionsColumns(); let index = index; trackBy:trackByColumn">
         <mat-checkbox [value]="optionsColumnValue(column)" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
           {{ columnToLabel(column) }}
+        </mat-checkbox>
+    </ng-container>
+  </div>
+
+  <h2 i18n *ngIf="availableCustomsColumns().length">
+    Options Options
+  </h2>
+
+  <div class="columns" *ngIf="availableCustomsColumns().length">
+    <ng-container *ngFor="let column of availableCustomsColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="column" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ customColumnToLabel(column) }}
         </mat-checkbox>
     </ng-container>
   </div>
@@ -81,18 +93,28 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
     return this.columnsLabels[column] ?? column.toString();
   }
 
+  customColumnToLabel(column: PrefixedCustom): string {
+    return column.replace('customs.', '_');
+  }
+
   /**
    * Get the available columns (all the columns that can be added)
    * Sort the columns alphabetically
    */
   availableColumns(): (keyof T | 'actions')[] {
-    const columns = this.data.availableColumns.filter(column => !column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as (keyof T | 'actions')[];
+    const columns = this.data.availableColumns.filter(column => !column.toString().startsWith('options.') && !column.toString().startsWith('customs.')).sort((a, b) => a.toString().localeCompare(b.toString())) as (keyof T | 'actions')[];
 
     return columns;
   }
 
   availableOptionsColumns(): PrefixedOptions<O>[] {
     const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
+
+    return columns;
+  }
+
+  availableCustomsColumns(): PrefixedCustom[] {
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('customs.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedCustom[];
 
     return columns;
   }

@@ -19,6 +19,7 @@ import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { PrefixedCustom } from '@app/types/data';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -165,6 +166,12 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       <ng-container *ngIf="isObjectColumn(column)">
        <td mat-cell *matCellDef="let element" appNoWrap>
           <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+        </td>
+      </ng-container>
+      <!-- Customs -->
+      <ng-container *ngIf="isCustomColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          {{ extractCustomData(element, column) }}
         </td>
       </ng-container>
       <!-- Actions -->
@@ -382,6 +389,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.total = data?.total ?? 0;
 
           const tasks = data?.tasks ?? [];
+          this.getCustomColumns(tasks);
+
           return tasks;
         }),
       )
@@ -666,5 +675,35 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   idAssignment(taskId: string) {
     this.taskId = taskId;
+  }
+
+  isCustomColumn(column: TaskSummaryColumnKey) {
+    return column.includes('customs.');
+  }
+
+  /**
+   * The "customs" label correspond to options->options. Since the user of armonik are defining it, in the code we refers its as custom.
+   * @param tasks 
+   */
+  getCustomColumns(tasks: TaskSummary[]) {
+    const customColumns: PrefixedCustom[] = [];
+
+    tasks.forEach(task => {
+      if (task.options) {
+        const getCustomColumns = Object.keys(task.options.options);
+        getCustomColumns.forEach(customColumn => {
+          if (!customColumns.includes(`customs.${customColumn}`)) {
+            customColumns.push(`customs.${customColumn}`);
+          }
+        });
+      }
+    });
+    customColumns.forEach(column => {
+      this.availableColumns.push(column);
+    });
+  }
+
+  extractCustomData(element: TaskSummary, column: TaskSummaryColumnKey) {
+    return element.options?.options[column.replace('customs.', '')] ?? '-';
   }
 }
