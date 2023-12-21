@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ExternalService } from '@app/types/external-service';
@@ -46,7 +46,14 @@ import pkg from '../../../../package.json';
         {{ environment.name }} {{ environment.version }}
       </div>
       <div class="spacer"></div>
-       <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
+      <button mat-button [matMenuTriggerFor]="switchLanguage">
+        <mat-icon matListItemIcon [fontIcon]="getIcon('language')" aria-hidden="true">Truc</mat-icon>
+        <span>EN</span>
+      </button>
+      <mat-menu #switchLanguage="matMenu">
+        <button mat-menu-item (click)="setLanguage('FR')">FR</button>
+      </mat-menu>
+      <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
         <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
         <span i18n="Button to view external services">
           External Services
@@ -202,6 +209,7 @@ export class NavigationComponent implements OnInit{
   #iconsService = inject(IconsService);
   #versionsService = inject(VersionsService);
   #environmentService = inject(EnvironmentService);
+  #router = inject(Router);
 
   environment = this.#environmentService.getEnvironment();
 
@@ -233,6 +241,10 @@ export class NavigationComponent implements OnInit{
         this.#navigationService.saveExternalServices(this.externalServices);
       }
     });
+  }
+
+  setLanguage(language: string) {
+    console.log(this.#router.url);
   }
 
   getIcon(name: string): string {
