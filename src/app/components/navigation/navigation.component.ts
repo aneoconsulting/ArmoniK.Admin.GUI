@@ -53,7 +53,7 @@ import pkg from '../../../../package.json';
       </button>
       <mat-menu #switchLanguage="matMenu">
         <ng-container *ngFor="let language of availableLanguages; trackBy:trackByLanguage">
-          <a mat-menu-item [href]="'/' + language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
+          <a mat-menu-item [href]="'/admin/' + language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
         </ng-container>
       </mat-menu>
       <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
