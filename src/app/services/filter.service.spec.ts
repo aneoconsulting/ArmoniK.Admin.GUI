@@ -1,4 +1,4 @@
-import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { FiltersService } from './filters.service';
 
 describe('FiltersService', () => {
@@ -27,6 +27,10 @@ describe('FiltersService', () => {
 
     it('should return the filterBooleanOperators when "boolean" is provided', () => {
       expect(service.findOperators('boolean')).toBe(service.filterBooleanOperators);
+    });
+
+    it('should return the filterDurationOperators when "duration" is provided', () => {
+      expect(service.findOperators('duration')).toBe(service.filterDurationOperators);
     });
   });
 
@@ -69,6 +73,11 @@ describe('FiltersService', () => {
     it('should return the correct string if a boolean filter operator is provided', () => {
       expect(service.createQueryParamsKey(1, 'my_string', FilterBooleanOperator.FILTER_BOOLEAN_OPERATOR_IS, 1))
         .toEqual('1-my_string-1-0');
+    });
+
+    it('should return the correct string if a duration filter operator is provied', () => {
+      expect(service.createQueryParamsKey(1, 'my_string', FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL, 7))
+        .toEqual('1-my_string_7-0');
     });
   });
 });
