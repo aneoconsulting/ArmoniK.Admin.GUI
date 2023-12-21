@@ -96,12 +96,16 @@ export class TasksIndexService {
     return column === 'select';
   }
 
+  isCustomColumn(column: TaskSummaryColumnKey) {
+    return column.includes('customs.');
+  }
+
   isSimpleColumn(column: TaskSummaryColumnKey): boolean {
-    return !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column) && !this.isStatusColumn(column) && !this.isTaskIdColumn(column) && !this.isActionsColumn(column) && !this.isSelectColumn(column);
+    return !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column) && !this.isStatusColumn(column) && !this.isTaskIdColumn(column) && !this.isActionsColumn(column) && !this.isSelectColumn(column) && !this.isCustomColumn(column);
   }
 
   isNotSortableColumn(column: TaskSummaryColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isObjectColumn(column) || this.isSelectColumn(column);
+    return this.isActionsColumn(column) || this.isObjectColumn(column) || this.isSelectColumn(column) || this.isCustomColumn(column);
   }
 
   /**

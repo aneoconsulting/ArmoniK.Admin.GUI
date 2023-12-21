@@ -19,7 +19,6 @@ import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { PrefixedCustom } from '@app/types/data';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -127,7 +126,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       </ng-container>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
+        <td mat-cell id="SIMPLECOLUMN" *matCellDef="let element" appNoWrap>
           <span> {{ show(element, column) | emptyCell }} </span>
         </td>
       </ng-container>
@@ -170,7 +169,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       </ng-container>
       <!-- Customs -->
       <ng-container *ngIf="isCustomColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
+        <td id="CUSTOMCOLUMN" mat-cell *matCellDef="let element" appNoWrap>
           {{ extractCustomData(element, column) }}
         </td>
       </ng-container>
@@ -563,7 +562,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   columnToLabel(column: TaskSummaryColumnKey): string {
-    return this.#tasksIndexService.columnToLabel(column);
+    return !column.includes('customs.') ? this.#tasksIndexService.columnToLabel(column) : column.replace('customs.', '');
   }
 
   columnToDate(element: Timestamp | undefined): Date | null {
@@ -678,7 +677,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isCustomColumn(column: TaskSummaryColumnKey) {
-    return column.includes('customs.');
+    return this.#tasksIndexService.isCustomColumn(column);
   }
 
   /**
@@ -686,24 +685,19 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
    * @param tasks 
    */
   getCustomColumns(tasks: TaskSummary[]) {
-    const customColumns: PrefixedCustom[] = [];
-
     tasks.forEach(task => {
       if (task.options) {
         const getCustomColumns = Object.keys(task.options.options);
         getCustomColumns.forEach(customColumn => {
-          if (!customColumns.includes(`customs.${customColumn}`)) {
-            customColumns.push(`customs.${customColumn}`);
+          if (!this.availableColumns.includes(`customs.${customColumn}`)) {
+            this.availableColumns.push(`customs.${customColumn}`);
           }
         });
       }
     });
-    customColumns.forEach(column => {
-      this.availableColumns.push(column);
-    });
   }
 
   extractCustomData(element: TaskSummary, column: TaskSummaryColumnKey) {
-    return element.options?.options[column.replace('customs.', '')] ?? '-';
+    return element.options?.options[column.replace('customs.', '')] ?? 'truc';
   }
 }

@@ -94,7 +94,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   customColumnToLabel(column: PrefixedCustom): string {
-    return column.replace('customs.', '_');
+    return column.replace('customs.', '');
   }
 
   /**
