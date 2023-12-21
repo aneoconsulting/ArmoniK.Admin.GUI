@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterNumberOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -144,17 +144,6 @@ export class TasksGrpcService {
               seconds: filter.value?.toString() ?? '0'
             },
             operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
-          }
-        } satisfies TaskFilterField.AsObject;
-      case 'duration':
-        return {
-          field: filterField,
-          filterDuration: {
-            value: {
-              nanos: 0,
-              seconds: filter.value?.toString() ?? ''
-            },
-            operator: filter.operator ?? FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL
           }
         } satisfies TaskFilterField.AsObject;
       default:

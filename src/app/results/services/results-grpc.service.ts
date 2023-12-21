@@ -27,7 +27,6 @@ export class ResultsGrpcService {
     'ownerTaskId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID,
     'resultId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
     'completedAt': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT,
-    'size': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
   };
 
 

@@ -128,11 +128,6 @@ describe('TasksFilterService', () => {
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
       type: 'number'
     },
-    {
-      for: 'options',
-      field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION,
-      type: 'duration'
-    }
   ];
 
   const filterAnd: FiltersAnd<number, number> = [{
