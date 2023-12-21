@@ -111,8 +111,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       <ng-container *ngIf="isSessionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
-            [routerLink]="['/tasks']"
-            [queryParams]="createSessionIdQueryParams(element[column])"
+            [routerLink]="['/sessions', element.sessionId]"
           >
             {{ element[column] }}
           </a>
@@ -167,13 +166,9 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
               <span i18n>Copy Session ID</span>
             </button>
-            <a mat-menu-item [routerLink]="['/sessions', element.sessionId]">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n>See session</span>
-            </a>
-            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="{ sessionId: element.sessionId }">
+            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.sessionId)">
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
-              <span i18n>See tasks</span>
+              <span i18n>See related tasks</span>
             </a>
             <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.sessionId }">
               <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
