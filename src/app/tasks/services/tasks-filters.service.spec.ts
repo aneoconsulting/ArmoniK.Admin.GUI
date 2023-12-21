@@ -34,17 +34,17 @@ describe('TasksFilterService', () => {
   const expectedFiltersDefinitions : TaskFilterDefinition[] = [
     {
       for: 'root',
-      field: 16,
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
       type: 'string',
     },
     {
       for: 'root',
-      field: 1,
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
       type: 'string',
     },
     {
       for: 'root',
-      field: 10,
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID,
       type: 'string',
     },
     {
@@ -88,6 +88,21 @@ describe('TasksFilterService', () => {
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_AT,
       type: 'date'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_HOSTNAME,
+      type: 'string'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID,
+      type: 'string'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
+      type: 'date'
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -127,7 +142,7 @@ describe('TasksFilterService', () => {
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
       type: 'number'
-    },
+    }
   ];
 
   const filterAnd: FiltersAnd<number, number> = [{
