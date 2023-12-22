@@ -256,9 +256,7 @@ export class NavigationComponent implements OnInit{
   }
 
   setLanguage(language: string) {
-    this.selectedLanguage = language;
     this.#storageService.setItem('language', language);
-    this.availableLanguages = this.allLanguages.filter(lang => lang != this.selectedLanguage);
   }
 
   getRoute() {
