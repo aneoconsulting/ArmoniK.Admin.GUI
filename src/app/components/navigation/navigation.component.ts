@@ -47,7 +47,7 @@ import pkg from '../../../../package.json';
         {{ environment.name }} {{ environment.version }}
       </div>
       <div class="spacer"></div>
-      <button mat-button [matMenuTriggerFor]="switchLanguage">
+      <button mat-button [matMenuTriggerFor]="switchLanguage" [matTooltip]="languageButtonTip">
         <mat-icon matListItemIcon [fontIcon]="getIcon('language')" aria-hidden="true">Truc</mat-icon>
         <span>{{selectedLanguage.toLocaleUpperCase()}}</span>
       </button>
@@ -224,6 +224,8 @@ export class NavigationComponent implements OnInit{
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
+
+  languageButtonTip = $localize`Change language`;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
