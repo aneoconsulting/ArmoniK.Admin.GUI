@@ -20,7 +20,7 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses">
+<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="tasks">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="taskIcon"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
