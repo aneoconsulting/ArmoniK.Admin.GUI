@@ -83,6 +83,19 @@ describe('DefaultConfigService', () => {
     service.exportedDefaultConfig;
     expect(spyGetExportedDefaultConfig).toHaveBeenCalled();
   });
+
+  it('should call defaultLanguage getter', () => {
+    const spyGetDefaultLanguage = jest.spyOn(service, 'defaultLanguage', 'get');
+    service.exportedDefaultConfig;
+    expect(spyGetDefaultLanguage).toHaveBeenCalled();
+  });
+
+  it('should call availableLanguages getter', () => {
+    const spyGetAvailableLanguage = jest.spyOn(service, 'availableLanguages', 'get');
+    service.availableLanguages;
+    expect(spyGetAvailableLanguage).toHaveBeenCalled();
+  });
+
   describe(' default dashboard configuration', () => {
     it('the dashboard lines configuration should display at least 1 line', () => {
       expect(service.defaultDashboardLines).toHaveLength(1);

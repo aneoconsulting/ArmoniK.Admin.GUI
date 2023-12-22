@@ -182,7 +182,8 @@ export class DefaultConfigService {
     filters: [],
   };
 
-  readonly #defaultLanguage = window.location.href.includes('/en/') ? 'en' : 'fr';
+  readonly #availableLanguages = ['en', 'fr'];
+  readonly #defaultLanguage = this.#availableLanguages.includes(navigator.language) ? navigator.language : 'en';
 
   readonly #defaultTasksViewInLogs = {
     serviceName: null,
@@ -242,6 +243,10 @@ export class DefaultConfigService {
 
   get defaultLanguage() {
     return structuredClone(this.#defaultLanguage);
+  }
+
+  get availableLanguages() {
+    return structuredClone(this.#availableLanguages);
   }
 
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {

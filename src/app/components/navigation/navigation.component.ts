@@ -216,13 +216,11 @@ export class NavigationComponent implements OnInit{
   #storageService = inject(StorageService);
   #defaultConfigService = inject(DefaultConfigService);
 
-  allLanguages = ['en', 'fr'];
   availableLanguages: string[];
   selectedLanguage: string;
 
   environment = this.#environmentService.getEnvironment();
 
-  
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
@@ -237,7 +235,7 @@ export class NavigationComponent implements OnInit{
     this.externalServices = this.#navigationService.restoreExternalServices();
     
     this.selectedLanguage = this.#storageService.getItem('language') ?? this.#defaultConfigService.defaultLanguage;
-    this.availableLanguages = this.allLanguages.filter(language => language != this.selectedLanguage);
+    this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language != this.selectedLanguage);
   }
 
   manageExternalServices() {
