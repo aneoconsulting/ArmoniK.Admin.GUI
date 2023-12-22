@@ -66,7 +66,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:156</note>
+        <note category="location">src/app/partitions/index.component.ts:142</note>
       </notes>
       <segment>
         <source>Select page of partitions</source>
@@ -101,7 +101,7 @@
     </unit>
     <unit id="188313477943387511">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
         <note category="description">Filter condition</note>
       </notes>
       <segment>
@@ -418,7 +418,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:47</note>
+        <note category="location">src/app/results/index.component.ts:48</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -456,9 +456,9 @@
     </unit>
     <unit id="6555318547274416232">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:20</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:25</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:43</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:22</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:40</note>
         <note category="description">Input label</note>
       </notes>
       <segment>
@@ -568,7 +568,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:131</note>
+        <note category="location">src/app/results/index.component.ts:130</note>
       </notes>
       <segment>
         <source>Select page of results</source>
@@ -621,7 +621,7 @@
     </unit>
     <unit id="1771632592264032965">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:63</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:62</note>
       </notes>
       <segment>
         <source>has no value</source>
@@ -676,7 +676,7 @@
     </unit>
     <unit id="9014039725781270505">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:15</note>
         <note category="location">src/app/components/filters/filters-dialog-or.component.ts:13</note>
         <note category="description">Filter condition</note>
       </notes>
@@ -1077,7 +1077,7 @@
     </unit>
     <unit id="6442812322325259685">
       <notes>
-        <note category="location">src/app/tasks/show.component.ts:25</note>
+        <note category="location">src/app/tasks/show.component.ts:27</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -1210,6 +1210,7 @@
     <unit id="4471277768650583130">
       <notes>
         <note category="location">src/app/applications/index.component.ts:123</note>
+        <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment>
         <source>See session</source>
@@ -1469,7 +1470,7 @@
     </unit>
     <unit id="96019050334234129">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:23</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:22</note>
       </notes>
       <segment>
         <source>No field</source>
@@ -1495,7 +1496,7 @@
     </unit>
     <unit id="1179184907489210406">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:28</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:27</note>
         <note category="description">Label input</note>
       </notes>
       <segment>
@@ -1520,6 +1521,8 @@
     </unit>
     <unit id="1279830352886589977">
       <notes>
+        <note category="location">src/app/components/show-actions.component.ts:47</note>
+        <note category="location">src/app/components/show-actions.component.ts:52</note>
         <note category="location">src/app/sessions/index.component.ts:175</note>
       </notes>
       <segment>
@@ -1814,7 +1817,7 @@
     </unit>
     <unit id="4601499081638035991">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:176</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
         <note category="location">src/app/services/filters.service.ts:9</note>
         <note category="location">src/app/services/filters.service.ts:18</note>
         <note category="location">src/app/services/filters.service.ts:27</note>
@@ -2029,7 +2032,7 @@
     </unit>
     <unit id="7514940606218254317">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:174</note>
         <note category="location">src/app/services/filters.service.ts:8</note>
         <note category="location">src/app/services/filters.service.ts:17</note>
         <note category="location">src/app/services/filters.service.ts:26</note>
@@ -2187,7 +2190,7 @@
     </unit>
     <unit id="6524262610032366385">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:30</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:27</note>
         <note category="description">Input label</note>
       </notes>
       <segment>
@@ -2196,7 +2199,7 @@
     </unit>
     <unit id="3792445020401925970">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:19</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:18</note>
         <note category="description">Label input</note>
       </notes>
       <segment>
@@ -2230,7 +2233,7 @@
     </unit>
     <unit id="4391289919356861627">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:36</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:33</note>
       </notes>
       <segment>
         <source>Apply</source>
@@ -2259,6 +2262,55 @@
       </notes>
       <segment>
         <source> Unlock columns </source>
+      </segment>
+    </unit>
+    <unit id="2310023070484904143">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:57</note>
+      </notes>
+      <segment>
+        <source>See partitions</source>
+      </segment>
+    </unit>
+    <unit id="2926475737721192412">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:69</note>
+      </notes>
+      <segment>
+        <source>Cancel Task</source>
+      </segment>
+    </unit>
+    <unit id="3085155813035349251">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:42</note>
+      </notes>
+      <segment>
+        <source>See task</source>
+      </segment>
+    </unit>
+    <unit id="6022529099150705711">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:27</note>
+      </notes>
+      <segment>
+        <source>See sessions</source>
+      </segment>
+    </unit>
+    <unit id="6174579065408758827">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:32</note>
+        <note category="location">src/app/components/show-actions.component.ts:37</note>
+      </notes>
+      <segment>
+        <source>See tasks</source>
+      </segment>
+    </unit>
+    <unit id="698601157229513551">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:62</note>
+      </notes>
+      <segment>
+        <source>See partition</source>
       </segment>
     </unit>
   </file>
