@@ -1,6 +1,6 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,9 +21,11 @@ import { ShowCardComponent } from './show-card.component';
     <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
   </button>
 </app-page-header>
+
 <ng-container *ngIf="data">
-  <app-show-actions [type]="type" [data]="data"></app-show-actions>
+  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()"></app-show-actions>
 </ng-container>
+
 <app-show-card [data]="data" [statuses]="statuses"></app-show-card>
   `,
   styles: [`
@@ -52,11 +54,16 @@ export class ShowPageComponent {
   @Input({ required: true }) data: DataRaw | null = null;
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
+  @Output() cancel = new EventEmitter<never>();
   @Input({ required: true }) type: Page;
 
   #notificationService = inject(NotificationService);
 
   onCopiedTaskId() {
     this.#notificationService.success('Task ID copied to clipboard');
+  }
+
+  onCancel() {
+    this.cancel.emit();
   }
 }
