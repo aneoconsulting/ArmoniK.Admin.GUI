@@ -86,7 +86,7 @@ describe('DefaultConfigService', () => {
 
   it('should call defaultLanguage getter', () => {
     const spyGetDefaultLanguage = jest.spyOn(service, 'defaultLanguage', 'get');
-    service.exportedDefaultConfig;
+    service.defaultLanguage;
     expect(spyGetDefaultLanguage).toHaveBeenCalled();
   });
 
