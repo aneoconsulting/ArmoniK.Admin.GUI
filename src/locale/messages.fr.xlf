@@ -22,7 +22,7 @@
     </unit>
     <unit id="1771632592264032965">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:63</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:62</note>
       </notes>
       <segment state="initial">
         <source>has no value</source>
@@ -31,7 +31,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:53</note>
+        <note category="location">src/app/applications/index.component.ts:54</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -134,9 +134,9 @@
     </unit>
     <unit id="6555318547274416232">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:20</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:25</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:43</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:22</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:40</note>
         <note category="description">Input label</note>
       </notes>
       <segment state="initial">
@@ -166,7 +166,7 @@
     </unit>
     <unit id="9014039725781270505">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:15</note>
         <note category="location">src/app/components/filters/filters-dialog-or.component.ts:13</note>
         <note category="description">Filter condition</note>
       </notes>
@@ -177,7 +177,7 @@
     </unit>
     <unit id="188313477943387511">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
         <note category="description">Filter condition</note>
       </notes>
       <segment state="initial">
@@ -444,7 +444,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:47</note>
+        <note category="location">src/app/results/index.component.ts:48</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -572,7 +572,7 @@
     </unit>
     <unit id="118284616495039929">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:54</note>
+        <note category="location">src/app/partitions/index.component.ts:55</note>
         <note category="location">src/app/services/navigation.service.ts:38</note>
         <note category="description">Page title</note>
       </notes>
@@ -583,7 +583,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:156</note>
+        <note category="location">src/app/partitions/index.component.ts:138</note>
       </notes>
       <segment state="initial">
         <source>Select page of partitions</source>
@@ -630,7 +630,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:131</note>
+        <note category="location">src/app/results/index.component.ts:130</note>
       </notes>
       <segment state="initial">
         <source>Select page of results</source>
@@ -639,7 +639,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:197</note>
+        <note category="location">src/app/sessions/index.component.ts:192</note>
       </notes>
       <segment state="initial">
         <source>Select page of sessions</source>
@@ -919,7 +919,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:117</note>
+        <note category="location">src/app/applications/index.component.ts:113</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
@@ -1189,20 +1189,20 @@
         <target>Retesté</target>
       </segment>
     </unit>
-    <unit id="7414725219702666225">
+    <unit id="1822341529834994016">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:76,78</note>
-        <note category="location">src/app/partitions/index.component.ts:77,79</note>
-        <note category="location">src/app/sessions/index.component.ts:83,85</note>
+        <note category="location">src/app/applications/index.component.ts:236</note>
+        <note category="location">src/app/partitions/index.component.ts:243</note>
+        <note category="location">src/app/sessions/index.component.ts:302</note>
       </notes>
       <segment state="initial">
-        <source> Personalize Tasks Status </source>
+        <source>Personalize Tasks Status</source>
         <target>Personnaliser les Tâches par Statut</target>
       </segment>
     </unit>
     <unit id="96019050334234129">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:23</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:22</note>
       </notes>
       <segment state="initial">
         <source>No field</source>
@@ -1452,7 +1452,7 @@
     </unit>
     <unit id="2003528003863981175">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:167</note>
+        <note category="location">src/app/sessions/index.component.ts:162</note>
       </notes>
       <segment state="initial">
         <source>Copy Session ID</source>
@@ -1461,7 +1461,7 @@
     </unit>
     <unit id="4471277768650583130">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:123</note>
+        <note category="location">src/app/applications/index.component.ts:119</note>
       </notes>
       <segment state="initial">
         <source>See session</source>
@@ -1470,7 +1470,7 @@
     </unit>
     <unit id="43160648223881099">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:179</note>
+        <note category="location">src/app/sessions/index.component.ts:174</note>
       </notes>
       <segment state="initial">
         <source>Cancel session</source>
@@ -1639,7 +1639,7 @@
     </unit>
     <unit id="1179184907489210406">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:28</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:27</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -1857,7 +1857,7 @@
     </unit>
     <unit id="7514940606218254317">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:174</note>
         <note category="location">src/app/services/filters.service.ts:8</note>
         <note category="location">src/app/services/filters.service.ts:17</note>
         <note category="location">src/app/services/filters.service.ts:26</note>
@@ -1870,7 +1870,7 @@
     </unit>
     <unit id="4601499081638035991">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:176</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
         <note category="location">src/app/services/filters.service.ts:9</note>
         <note category="location">src/app/services/filters.service.ts:18</note>
         <note category="location">src/app/services/filters.service.ts:27</note>
@@ -2002,7 +2002,7 @@
     </unit>
     <unit id="1279830352886589977">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:175</note>
+        <note category="location">src/app/sessions/index.component.ts:170</note>
       </notes>
       <segment state="initial">
         <source>See results</source>
@@ -2432,7 +2432,7 @@
     </unit>
     <unit id="6524262610032366385">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:30</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:27</note>
         <note category="description">Input label</note>
       </notes>
       <segment state="initial">
@@ -2442,7 +2442,7 @@
     </unit>
     <unit id="3792445020401925970">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:19</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:18</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -2472,7 +2472,7 @@
     </unit>
     <unit id="4391289919356861627">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:36</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:33</note>
       </notes>
       <segment state="initial">
         <source>Apply</source>
@@ -2499,7 +2499,7 @@
     </unit>
     <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:171</note>
+        <note category="location">src/app/sessions/index.component.ts:166</note>
       </notes>
       <segment state="initial">
         <source>See related tasks</source>
