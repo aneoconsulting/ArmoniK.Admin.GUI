@@ -148,7 +148,7 @@ export class DefaultConfigService {
     interval: 10,
     lockColumns: false,
     columns: [
-      'name',
+      'resultId',
       'sessionId',
     ],
     options: {

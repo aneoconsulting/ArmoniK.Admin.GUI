@@ -11,7 +11,7 @@ export class ResultsIndexService {
 
   readonly defaultColumns: ResultRawColumnKey[] = this.#defaultConfigService.defaultResults.columns;
   readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultResults.lockColumns;
-  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId'];
+  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'resultId'];
 
   readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
 
@@ -40,10 +40,13 @@ export class ResultsIndexService {
    * Table
    */
 
+  isResultIdColumn(column: ResultRawColumnKey): boolean {
+    return column === 'resultId';
+  }
+
   isSessionIdColumn(column: ResultRawColumnKey): boolean {
     return column === 'sessionId';
   }
-
 
   isStatusColumn(column: ResultRawColumnKey): boolean {
     return column === 'status';
