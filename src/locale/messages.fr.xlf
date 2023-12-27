@@ -465,6 +465,7 @@
     <unit id="1102717806459547726">
       <notes>
         <note category="location">src/app/components/refresh-button.component.ts:12</note>
+        <note category="location">src/app/components/show-actions.component.ts:81</note>
       </notes>
       <segment state="initial">
         <source>Refresh</source>
@@ -648,7 +649,7 @@
     </unit>
     <unit id="7779627316401407129">
       <notes>
-        <note category="location">src/app/sessions/show.component.ts:26</note>
+        <note category="location">src/app/sessions/show.component.ts:28</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -2571,6 +2572,15 @@
       <segment state="initial">
         <source>Cancel Task</source>
         <target>Annuler la tâche</target>
+      </segment>
+    </unit>
+    <unit id="5213720747752417161">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:74</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancel Session</source>
+        <target>Annuler la session</target>
       </segment>
     </unit>
   </file>

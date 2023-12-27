@@ -64,9 +64,14 @@ import { IconsService } from '@services/icons.service';
 
     <div class="spacer"></div>
 
-    <button *ngIf="taskActions || sessionActions" mat-flat-button color="accent" [disabled]="isNotEnded()" (click)="onCancel()">
-    <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-      <span i18n>Cancel {{prettyType}}</span>
+    <button *ngIf="taskActions" mat-flat-button color="accent" [disabled]="taskNotEnded()" (click)="onCancel()">
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
+      <span i18n>Cancel Task</span>
+    </button>
+
+    <button *ngIf="sessionActions" mat-flat-button color="accent" [disabled]="sessionNotEnded()" (click)="onCancel()">
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
+      <span i18n>Cancel Session</span>
     </button>
 
     <div class="smallSpace"></div>
@@ -205,15 +210,14 @@ export class ShowActionsComponent {
     this.refresh.emit();
   }
 
-  isNotEnded() {
-    if (this.type === 'tasks') {
-      return (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_SUBMITTED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_CREATING
-        && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_DISPATCHED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSING 
-        && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_RETRIED 
-        && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_UNSPECIFIED;
-    } else if (this.type === 'sessions') {
-      return (this.data as SessionRaw).status !== SessionStatus.SESSION_STATUS_RUNNING;
-    }
-    return false;
+  taskNotEnded() {
+    return (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_SUBMITTED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_CREATING
+    && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_DISPATCHED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSING 
+    && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_RETRIED 
+    && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_UNSPECIFIED;
+  }
+
+  sessionNotEnded() {
+    return (this.data as SessionRaw).status !== SessionStatus.SESSION_STATUS_RUNNING;
   }
 }
