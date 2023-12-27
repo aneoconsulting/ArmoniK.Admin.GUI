@@ -6,6 +6,8 @@ import {  MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { AddLineDialogResult } from '@app/types/dialog';
 
 @Component({
   selector: 'app-form-name-line',
@@ -13,11 +15,21 @@ import { MatInputModule } from '@angular/material/input';
 <form [formGroup]="lineForm" (ngSubmit)="onSubmit()">
   <mat-dialog-content>
 
-    <mat-form-field subscriptSizing="dynamic" appearance="outline">
+    <mat-form-field appearance="outline">
       <mat-label for="name" i18n="Name of the statuses group"> Name </mat-label>
       <input matInput id="name" type="text" formControlName="name" i18n-placeholder="Placeholder" placeholder="Name of your line" required i18n="Input error">
-       <mat-error *ngIf="lineForm.get('name')?.hasError('required')">
+      <mat-error *ngIf="lineForm.get('name')?.hasError('required')">
       Name is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label for="type"> Type </mat-label>
+      <mat-select id="type" [value]="types" formControlName="type" required>
+        <mat-option *ngFor="let option of types; trackByOption" [value]="option">{{option}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="lineForm.get('type')?.hasError('required')">
+      Type is <strong>required</strong>
       </mat-error>
     </mat-form-field>
 
@@ -50,33 +62,43 @@ mat-dialog-content {
     MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSelectModule
   ]
 })
 export class FormNameLineComponent implements OnInit {
   @Input() line: string | null = null;
+  @Input() type: string | null = null;
+  types = ['Tasks', 'Applications'];
 
   @Output() cancelChange = new EventEmitter<void>();
-  @Output() submitChange = new EventEmitter<string>();
+  @Output() submitChange = new EventEmitter<AddLineDialogResult>();
 
   lineForm = new FormGroup({
     name: new FormControl('', [
       Validators.required,
+    ]),
+    type: new FormControl('', [
+      Validators.required
     ])
   });
 
   ngOnInit() {
 
-    if(this.line) {
+    if(this.line && this.type) {
       this.lineForm.setValue({
         name: this.line,
+        type: this.type
       });
     }
 
   }
 
   onSubmit() {
-    const result = this.lineForm.value.name ?? '';
+    const result = {
+      name: this.lineForm.value.name ?? '',
+      type: this.lineForm.value.type ?? ''
+    } as AddLineDialogResult;
     this.submitChange.emit(result);
   }
 
@@ -86,5 +108,9 @@ export class FormNameLineComponent implements OnInit {
 
   trackByStatus(_: number, item: { value: string, name: string }) {
     return item.value;
+  }
+
+  trackByOption(_: number, item: string) {
+    return item;
   }
 }

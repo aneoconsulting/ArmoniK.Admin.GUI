@@ -20,6 +20,7 @@ export class DefaultConfigService {
   readonly #defaultDashboardLines: Line[] = [
     {
       name: 'Tasks by status',
+      type: 'Tasks',
       interval: 5,
       hideGroupsHeader: false,
       filters: [],

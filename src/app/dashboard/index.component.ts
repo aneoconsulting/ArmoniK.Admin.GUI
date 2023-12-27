@@ -36,9 +36,10 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
-import { LineComponent } from './components/line.component';
+import { ApplicationsLineComponent } from './components/ApplicationsLine.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
+import { LineComponent } from './components/taskStatusLine.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
 import { Line } from './types';
@@ -80,10 +81,15 @@ import { Line } from './types';
 
 <main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
   <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
-    <app-page-section-header icon="adjust">
+    <app-page-section-header [icon]="getPageIcon(line.type === 'Tasks' ? 'tasks' : 'applications')">
       <span i18n="Section title">{{ line.name }}</span>
     </app-page-section-header>
-    <app-dashboard-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+    <ng-container *ngIf="line.type === 'Tasks'">
+      <app-dashboard-task-status-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-task-status-line>
+    </ng-container>
+    <ng-container *ngIf="line.type === 'Applications'">
+      <app-dashboard-applications-line [line]="line"></app-dashboard-applications-line>
+    </ng-container>
   </app-page-section>
 </main>
   `,
@@ -171,7 +177,8 @@ import { Line } from './types';
     MatTooltipModule,
     MatProgressSpinnerModule,
     FiltersToolbarComponent,
-    LineComponent
+    LineComponent,
+    ApplicationsLineComponent
   ]
 })
 export class IndexComponent implements OnInit {
@@ -208,9 +215,13 @@ export class IndexComponent implements OnInit {
     const dialogRef = this.#dialog.open<AddLineDialogComponent, AddLineDialogData, AddLineDialogResult>(AddLineDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (!result) {
+        return;
+      }
+      else if (result.type === 'Tasks') {
         this.lines.push({
           name: result.name,
+          type: 'Tasks',
           interval: 5,
           hideGroupsHeader: false,
           filters: [],
@@ -240,8 +251,16 @@ export class IndexComponent implements OnInit {
             },
           ],
         });
-        this.onSaveChange();
       }
+      else if (result.type === 'Applications') {
+        this.lines.push({
+          name: result.name,
+          type: 'Applications',
+          interval: 5,
+          filters: []
+        });
+      }
+      this.onSaveChange();
     });
   }
 

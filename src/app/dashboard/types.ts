@@ -1,12 +1,14 @@
 import {TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawFilter } from '@app/applications/types';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 
 export type Line = {
   name: string,
+  type: 'Applications' | 'Tasks',
   interval: number,
-  hideGroupsHeader: boolean,
-  filters: TaskSummaryFiltersOr,
-  taskStatusesGroups: TasksStatusesGroup[],
+  hideGroupsHeader?: boolean,
+  filters: TaskSummaryFiltersOr | ApplicationRawFilter,
+  taskStatusesGroups?: TasksStatusesGroup[],
 };
 
 export type TasksStatusesGroup = {

@@ -51,6 +51,7 @@ export type AddLineDialogData = Record<string, never>;
 
 export type AddLineDialogResult = {
   name: string;
+  type: 'Applications' | 'Tasks';
 };
 
 export type EditNameLineData = {

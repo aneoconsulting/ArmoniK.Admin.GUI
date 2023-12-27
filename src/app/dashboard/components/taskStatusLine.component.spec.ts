@@ -6,7 +6,7 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
-import { LineComponent } from './line.component';
+import { LineComponent } from './taskStatusLine.component';
 import { TasksStatusesGroup } from '../types';
 
 describe('LineComponent', () => {

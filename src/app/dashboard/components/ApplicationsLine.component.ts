@@ -4,24 +4,26 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
-import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
+import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
+import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
+import { ApplicationStatusGroupCardComponent } from './applications-status-group-card.component';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
-import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
 import { StatusesGroupCardComponent } from './statuses-group-card.component';
 import { ActionsToolbarGroupComponent } from '../../components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '../../components/actions-toolbar.component';
@@ -30,17 +32,17 @@ import { PageSectionHeaderComponent } from '../../components/page-section-header
 import { PageSectionComponent } from '../../components/page-section.component';
 import { RefreshButtonComponent } from '../../components/refresh-button.component';
 import { SpinnerComponent } from '../../components/spinner.component';
-import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types';
+import { Line } from '../types';
 
 @Component({
-  selector: 'app-dashboard-line',
+  selector: 'app-dashboard-applications-line',
   template: `
 <mat-toolbar>
   <mat-toolbar-row>
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-        <app-spinner *ngIf="loadTasksStatus"></app-spinner>
+        <app-spinner *ngIf="loadApplicationData"></app-spinner>
       </app-actions-toolbar-group>
 
       <app-actions-toolbar-group>
@@ -51,18 +53,6 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
         </button>
 
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onToggleGroupsHeader()">
-            <mat-icon aria-hidden="true" [fontIcon]="line.hideGroupsHeader ? getIcon('view') : getIcon('view-off')"></mat-icon>
-            <span i18n>
-              Toggle Groups Header
-            </span>
-          </button>
-          <button mat-menu-item (click)="onManageGroupsDialog()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-            <span i18n>
-              Manage Groups
-            </span>
-          </button>
           <button mat-menu-item (click)="onEditNameLine(line.name)">
             <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
               <span i18n>
@@ -81,31 +71,17 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="line.filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="groups">
-  <app-statuses-group-card
-  *ngFor="let group of line.taskStatusesGroups"
-  [group]="group"
-  [data]="data"
-  [hideGroupHeaders]="line.hideGroupsHeader"
-  ></app-statuses-group-card>
-</div>
+<app-application-status-group-card [data]="data"></app-application-status-group-card>
   `,
   styles: [`
 app-actions-toolbar {
   flex-grow: 1;
 }
 
-.groups {
-  margin-top: 1rem;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-}
 
 .filters {
   height: auto;
@@ -116,19 +92,20 @@ app-actions-toolbar {
     `],
   standalone: true,
   providers: [
-    TasksStatusesService,
     ShareUrlService,
     QueryParamsService,
-    TasksGrpcService,
     StorageService,
     AutoRefreshService,
     UtilsService,
     TasksIndexService,
     TasksGrpcService,
-    TasksFiltersService,
+    ApplicationsFiltersService,
+    ApplicationsGrpcService,
+    NotificationService,
+    MatSnackBar,
     {
       provide: DATA_FILTERS_SERVICE,
-      useClass: TasksFiltersService
+      useClass: ApplicationsFiltersService
     },
   ],
   imports: [
@@ -146,47 +123,63 @@ app-actions-toolbar {
     MatButtonModule,
     StatusesGroupCardComponent,
     NgIf,
-    NgForOf
+    NgForOf,
+    ApplicationStatusGroupCardComponent
   ]
 })
-export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
+export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
-  readonly #taskGrpcService = inject(TasksGrpcService);
-  readonly #tasksIndexService = inject(TasksIndexService);
+  readonly #applicationGrpcService = inject(ApplicationsGrpcService);
+  readonly #notificationService = inject(NotificationService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
   total: number;
-  loadTasksStatus = false;
-  data: StatusCount[] = [];
+  loadApplicationData = false;
+  data: ApplicationRaw[] = [];
+  filters: ApplicationRawFilter;
 
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   subscriptions: Subscription = new Subscription();
   interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-
+  
   ngOnInit(): void {
-    this.loadTasksStatus = true;
+    this.loadApplicationData = true;
+    this.filters = this.line.filters as ApplicationRawFilter;
   }
 
   ngAfterViewInit() {
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
-      tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this.#taskGrpcService.countByStatu$(this.line.filters)),
-    ).subscribe((data) => {
-      if (data.status) {
-        this.data = data.status;
-        this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-  
-        this.loadTasksStatus = false;
-      }
+      tap(() => (this.loadApplicationData = true)),
+      switchMap(() => {
+        const options: ApplicationRawListOptions = {
+          pageIndex: 0,
+          pageSize: 5,
+          sort: {
+            active: 'name' as ApplicationRawFieldKey,
+            direction: 'desc',
+          },
+        };
+
+        const filters: ApplicationRawFilter = [];
+        return this.#applicationGrpcService.list$(options, filters).pipe(catchError((error) => {
+          console.error(error);
+          this.#notificationService.error('Unable to fetch applications');
+          return of(null);
+        }));
+      })
+    ).subscribe(data => {
+      this.data = data?.applications ?? [];
+      this.loadApplicationData = false;
     });
+
     this.subscriptions.add(mergeSubscription);
   }
 
@@ -242,23 +235,6 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
 
   onDeleteLine(value: Line): void {
     this.lineDelete.emit(value);
-  }
-
-  onManageGroupsDialog() {
-    const dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult> = this.#dialog.open<ManageGroupsDialogComponent, ManageGroupsDialogData, ManageGroupsDialogResult>(ManageGroupsDialogComponent, {
-      data: {
-        groups: this.line.taskStatusesGroups,
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
-
-      this.line.taskStatusesGroups = result.groups;
-      this.lineChange.emit();
-    });
   }
 
   onFiltersChange(value: unknown[]) {
