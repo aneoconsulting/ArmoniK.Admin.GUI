@@ -1,4 +1,4 @@
-import { FilterStringOperator, PartitionRawEnumField, ResultRawEnumField, SessionRaw, SessionRawEnumField, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, PartitionRawEnumField, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -64,10 +64,11 @@ import { IconsService } from '@services/icons.service';
 
     <div class="spacer"></div>
 
-    <button *ngIf="taskActions" mat-flat-button color="accent" [disabled]="isNotEnded()" (click)="onCancel()">
+    <button *ngIf="taskActions || sessionActions" mat-flat-button color="accent" [disabled]="isNotEnded()" (click)="onCancel()">
     <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-      <span i18n>Cancel Task</span>
+      <span i18n>Cancel {{prettyType}}</span>
     </button>
+
   </mat-toolbar>
   `,
   styles: [`
@@ -111,6 +112,11 @@ export class ShowActionsComponent {
 
   get partitionActions(): boolean {
     return this.type === 'partitions';
+  }
+
+  get prettyType() {
+    const pretty = this.type.slice(0, -1);
+    return pretty.charAt(0).toLocaleUpperCase() + pretty.slice(1);
   }
 
   ownerSessionId() {
@@ -180,9 +186,14 @@ export class ShowActionsComponent {
   }
 
   isNotEnded() {
-    return (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_SUBMITTED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_CREATING
-    && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_DISPATCHED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSING 
-    && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_RETRIED 
-    && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_UNSPECIFIED;
+    if (this.type === 'tasks') {
+      return (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_SUBMITTED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_CREATING
+        && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_DISPATCHED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSING 
+        && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_PROCESSED && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_RETRIED 
+        && (this.data as TaskRaw).status !== TaskStatus.TASK_STATUS_UNSPECIFIED;
+    } else if (this.type === 'sessions') {
+      return (this.data as SessionRaw).status !== SessionStatus.SESSION_STATUS_RUNNING;
+    }
+    return false;
   }
 }

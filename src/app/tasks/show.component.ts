@@ -96,12 +96,12 @@ export class ShowComponent implements AppShowComponent<TaskRaw>, OnInit, AfterVi
 
     this.#tasksGrpcService.cancel$([this.data.id]).subscribe({
       complete: () => {
-        this.#notificationService.success('Tasks canceled');
+        this.#notificationService.success('Task canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this.#notificationService.error('Unable to cancel tasks');
+        this.#notificationService.error('Unable to cancel task');
       },
     });
   }

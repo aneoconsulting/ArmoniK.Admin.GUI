@@ -1,11 +1,13 @@
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { Subject, Subscription, map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -21,7 +23,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [type]="'sessions'">
+<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [type]="'sessions'" (cancel)="cancelSessions()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -40,6 +42,8 @@ import { SessionRaw } from './types';
     TableService,
     TableURLService,
     TableStorageService,
+    NotificationService,
+    MatSnackBar
   ],
   imports: [
     ShowPageComponent,
@@ -49,10 +53,13 @@ import { SessionRaw } from './types';
 export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, AfterViewInit {
   sharableURL = '';
   data: SessionRaw | null = null;
+  subscription: Subscription;
+  refresh: Subject<void> = new Subject<void>();
 
   #iconsService = inject(IconsService);
   #shareURLService = inject(ShareUrlService);
   #sessionsStatusesService = inject(SessionsStatusesService);
+  #notificationService = inject(NotificationService);
 
   constructor(
     private _route: ActivatedRoute,
@@ -64,7 +71,7 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
   }
 
   ngAfterViewInit(): void {
-    this._route.params.pipe(
+    this.subscription = this._route.params.pipe(
       map(params => params['id']),
       switchMap((id) => {
         return this._sessionsGrpcService.get$(id);
@@ -72,8 +79,8 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
       map((data) => {
         return data.session ?? null;
       })
-    )
-      .subscribe((data) => this.data = data);
+    ).subscribe((data) => this.data = data);
+    this.subscription.add(this.refresh);
   }
 
   get statuses() {
@@ -82,5 +89,22 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
 
   getPageIcon(page: Page) {
     return this.#iconsService.getPageIcon(page);
+  }
+
+  cancelSessions(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._sessionsGrpcService.cancel$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.#notificationService.success('Session canceled');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.#notificationService.error('Unable to cancel session');
+      },
+    });
   }
 }
