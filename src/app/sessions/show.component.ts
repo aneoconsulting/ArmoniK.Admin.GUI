@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, Subscription, map, switchMap } from 'rxjs';
+import { Subject, map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
@@ -53,8 +53,8 @@ import { SessionRaw } from './types';
 export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, AfterViewInit {
   sharableURL = '';
   data: SessionRaw | null = null;
-  subscription: Subscription;
   refresh: Subject<void> = new Subject<void>();
+  id: string;
 
   #iconsService = inject(IconsService);
   #shareURLService = inject(ShareUrlService);
@@ -71,16 +71,21 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
   }
 
   ngAfterViewInit(): void {
-    this.subscription = this._route.params.pipe(
-      map(params => params['id']),
-      switchMap((id) => {
-        return this._sessionsGrpcService.get$(id);
+    this.refresh.pipe(
+      switchMap(() => {
+        return this._sessionsGrpcService.get$(this.id);
       }),
       map((data) => {
         return data.session ?? null;
       })
     ).subscribe((data) => this.data = data);
-    this.subscription.add(this.refresh);
+
+    this._route.params.pipe(
+      map(params => params['id']),
+    ).subscribe(id => {
+      this.id = id;
+      this.refresh.next();
+    });
   }
 
   get statuses() {

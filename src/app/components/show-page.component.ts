@@ -23,7 +23,7 @@ import { ShowCardComponent } from './show-card.component';
 </app-page-header>
 
 <ng-container *ngIf="data">
-  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()"></app-show-actions>
+  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()" (refresh)="onRefresh()"></app-show-actions>
 </ng-container>
 
 <app-show-card [data]="data" [statuses]="statuses"></app-show-card>
@@ -54,8 +54,9 @@ export class ShowPageComponent {
   @Input({ required: true }) data: DataRaw | null = null;
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
-  @Output() cancel = new EventEmitter<never>();
   @Input({ required: true }) type: Page;
+  @Output() cancel = new EventEmitter<never>();
+  @Output() refresh = new EventEmitter<never>();
 
   #notificationService = inject(NotificationService);
 
@@ -65,5 +66,9 @@ export class ShowPageComponent {
 
   onCancel() {
     this.cancel.emit();
+  }
+
+  onRefresh() {
+    this.refresh.emit();
   }
 }

@@ -69,11 +69,22 @@ import { IconsService } from '@services/icons.service';
       <span i18n>Cancel {{prettyType}}</span>
     </button>
 
+    <div class="smallSpace"></div>
+
+    <button mat-flat-button color="primary" (click)="onRefreshClick()" matTooltip="Refresh data">
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('refresh')"></mat-icon>
+      <span i18n>Refresh</span>
+    </button>
+
   </mat-toolbar>
   `,
   styles: [`
   .spacer {
     flex: 1 1 auto;
+  }
+  .smallSpace {
+    margin-left: 5px;
+    margin-right: 5px;
   }
   `],
   standalone: true,
@@ -94,6 +105,7 @@ export class ShowActionsComponent {
   @Input({ required: true }) type: Page;
   @Input({ required: true }) data: DataRaw = {} as DataRaw;
   @Output() cancel = new EventEmitter<never>();
+  @Output() refresh = new EventEmitter<never>();
 
   _iconsService = inject(IconsService);
   _filtersService = inject(FiltersService);
@@ -137,6 +149,10 @@ export class ShowActionsComponent {
 
   getPageIcon(name: Page): string {
     return this._iconsService.getPageIcon(name);
+  }
+
+  getIcon(name: string): string {
+    return this._iconsService.getIcon(name);
   }
 
   resultTaskIdQueryParams() {
@@ -183,6 +199,10 @@ export class ShowActionsComponent {
 
   onCancel() {
     this.cancel.emit();
+  }
+
+  onRefreshClick() {
+    this.refresh.emit();
   }
 
   isNotEnded() {

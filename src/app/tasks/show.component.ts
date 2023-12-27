@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, Subscription, map, switchMap } from 'rxjs';
+import { Subject, map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
@@ -22,7 +22,7 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="tasks" (cancel)="cancelTasks()">
+<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="tasks" (cancel)="cancelTasks()" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="taskIcon"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
@@ -53,8 +53,8 @@ import { TaskRaw } from './types';
 export class ShowComponent implements AppShowComponent<TaskRaw>, OnInit, AfterViewInit {
   sharableURL = '';
   data: TaskRaw | null = null;
-  subscription: Subscription;
   refresh: Subject<void> = new Subject<void>();
+  id: string;
 
   #shareURLService = inject(ShareUrlService);
   #route = inject(ActivatedRoute);
@@ -69,16 +69,22 @@ export class ShowComponent implements AppShowComponent<TaskRaw>, OnInit, AfterVi
   }
 
   ngAfterViewInit(): void {
-    this.subscription  = this.#route.params.pipe(
-      map(params => params['id']),
-      switchMap((id) => {
-        return this.#tasksGrpcService.get$(id);
+
+    this.refresh.pipe(
+      switchMap(() => {
+        return this.#tasksGrpcService.get$(this.id);
       }),
       map((data) => {
         return data.task ?? null;
       })
     ).subscribe((data) => this.data = data);
-    this.subscription.add(this.refresh);
+
+    this.#route.params.pipe(
+      map(params => params['id']),
+    ).subscribe(id => {
+      this.id = id;
+      this.refresh.next();
+    });
   }
 
   get statuses() {
@@ -104,5 +110,9 @@ export class ShowComponent implements AppShowComponent<TaskRaw>, OnInit, AfterVi
         this.#notificationService.error('Unable to cancel task');
       },
     });
+  }
+
+  onRefresh() {
+    this.refresh.next();
   }
 }
