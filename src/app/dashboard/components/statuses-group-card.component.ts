@@ -1,10 +1,11 @@
-import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount } from '@app/tasks/types';
+import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { Filter } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { TasksStatusesGroup } from '../types';
 
@@ -82,6 +83,7 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) group: TasksStatusesGroup;
   @Input({ required: true }) hideGroupHeaders: boolean;
   @Input({ required: true }) data: StatusCount[] = [];
+  @Input({required: true}) filters: TaskSummaryFiltersOr;
 
   #tasksStatusesService = inject(TasksStatusesService);
   #filtersService = inject(FiltersService);
@@ -106,15 +108,46 @@ export class StatusesGroupCardComponent {
   }
 
   createQueryParamManyStatuses() {
-    const params: { [key: string]: number} = {};
-    this.group.statuses.forEach((status, index) => params[this.#createQueryParamKeyOr(index)] = status);
+    const params: { [key: string]: string | number | Date | null} = {};
+    let orGroup = 0;
+    
+    if (this.filters.length !== 0) {
+      this.group.statuses.forEach((status) => {
+        this.filters.forEach((filterAnd) => {
+          filterAnd.forEach(filter => {
+            const filterLabel = this.#createQueryParamFilterKey(filter, orGroup);
+            if (filterLabel) params[filterLabel] = filter.value;
+          });
+          params[this.#createQueryParamKeyOr(orGroup)] = status;
+          orGroup++;
+        });
+      });
+    } else {
+      this.group.statuses.forEach((status, index) => params[this.#createQueryParamKeyOr(index)] = status);
+    }
+    
     return params;
   }
 
   createQueryParam(status: TaskStatus) {
-    return {
-      [this.#createQueryParamKey()]: status,
-    };
+    if(this.filters.length === 0) {
+      return {
+        [this.#createQueryParamKey()]: status,
+      };
+    }
+    else {
+      const params: { [key: string]: string | number | Date | null} = {};
+
+      this.filters.forEach((filterAnd, index) => {
+        params[this.#createQueryParamKeyOr(index)] = status;
+        filterAnd.forEach(filter => {
+          const filterLabel = this.#createQueryParamFilterKey(filter, index);
+          if (filterLabel) params[filterLabel] = filter.value;
+        });
+      });
+
+      return params;
+    }
   }
 
   #createQueryParamKey(): string {
@@ -123,5 +156,12 @@ export class StatusesGroupCardComponent {
 
   #createQueryParamKeyOr(orGroup: number): string {
     return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+  }
+
+  #createQueryParamFilterKey(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number): string | null {
+    if (filter.field && filter.operator && filter.for) {
+      return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField | TaskOptionEnumField>(orGroup, filter.for, filter.operator, filter.field);
+    }
+    return null;
   }
 }
