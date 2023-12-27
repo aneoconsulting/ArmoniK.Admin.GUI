@@ -10,7 +10,8 @@ describe('ShowActionComponent', () => {
   let component: ShowActionsComponent;
 
   const mockIconService = {
-    getPage: jest.fn()
+    getPageIcon: jest.fn(),
+    getIcon: jest.fn()
   };
 
   beforeEach(() => {
@@ -144,6 +145,11 @@ describe('ShowActionComponent', () => {
   it('should get the icons of the pages', () => {
     const icon = 'applications';
     component.getPageIcon(icon);
-    expect(mockIconService.getPage).toHaveBeenCalledWith(icon);
+    expect(mockIconService.getPageIcon).toHaveBeenCalledWith(icon);
+  });
+
+  it('should get an icon', () => {
+    component.getIcon('cancel');
+    expect(mockIconService.getIcon).toHaveBeenCalledWith('cancel');
   });
 });
