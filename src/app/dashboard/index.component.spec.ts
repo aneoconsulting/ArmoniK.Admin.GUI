@@ -103,7 +103,7 @@ describe('IndexComponent', () => {
   });
 
   it('should add a line', () => {
-    dialogRef$ = of({name: 'New line'} as unknown as Line);
+    dialogRef$ = of({name: 'New line', type: 'Tasks'} as unknown as Line);
     const newLines = structuredClone(defaultLines);
     newLines.push({
       name: 'New line',
