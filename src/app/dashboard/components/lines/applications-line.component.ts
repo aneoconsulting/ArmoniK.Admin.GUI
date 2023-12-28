@@ -17,6 +17,7 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -25,7 +26,6 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { ActionsToolbarGroupComponent } from '../../../components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
 import { PageSectionHeaderComponent } from '../../../components/page-section-header.component';
@@ -41,35 +41,36 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
   template: `
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-        <app-spinner *ngIf="loadApplicationData"></app-spinner>
-      </app-actions-toolbar-group>
-
-      <app-actions-toolbar-group>
-        <app-auto-refresh-button [intervalValue]="line.interval" (intervalValueChange)="onIntervalValueChange($event)"></app-auto-refresh-button>
-
-        <button  mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
-          <mat-icon class="add-button" aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
+    <app-table-actions-toolbar
+      [loading]="loadApplicationData"
+      [refreshTooltip]="autoRefreshTooltip()"
+      [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels()"
+      [displayedColumns]="displayedColumns"
+      [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
+      (refresh)="onRefresh()"
+      (intervalValueChange)="onIntervalValueChange($event)"
+      (displayedColumnsChange)="onColumnsChange($event)"
+      (resetColumns)="onColumnsReset()"
+      (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
+    >
+      <ng-container extra-menu-items>
+        <button mat-menu-item (click)="onEditNameLine(line.name)">
+          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
+          <span i18n appNoWrap>
+            Edit name line
+          </span>
         </button>
-
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onEditNameLine(line.name)">
-            <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-              <span i18n>
-                Edit name line
-              </span>
-          </button>
-          <button mat-menu-item (click)="onDeleteLine(line)">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-              <span i18n>
-                Delete line
-              </span>
-          </button>
-        </mat-menu>
-        </app-actions-toolbar-group>
-    </app-actions-toolbar>
+        <button mat-menu-item (click)="onDeleteLine(line)">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
+          <span i18n appNoWrap>
+            Delete line
+          </span>
+        </button>
+      </ng-container>
+    </app-table-actions-toolbar>
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">
@@ -83,14 +84,14 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
   [options]="options"
   [total]="total"
   [displayedColumns]="displayedColumns"
+  [lockColumns]="lockColumns"
   (optionsChange)="onOptionsChange()"
 ></app-application-table>
   `,
   styles: [`
-app-actions-toolbar {
+app-table-actions-toolbar {
   flex-grow: 1;
 }
-
 
 .filters {
   height: auto;
@@ -125,7 +126,6 @@ app-actions-toolbar {
     ActionsToolbarComponent,
     RefreshButtonComponent,
     SpinnerComponent,
-    ActionsToolbarGroupComponent,
     AutoRefreshButtonComponent,
     FiltersToolbarComponent,
     MatToolbarModule,
@@ -135,7 +135,8 @@ app-actions-toolbar {
     StatusesGroupCardComponent,
     NgIf,
     NgForOf,
-    ApplicationTableComponent
+    ApplicationTableComponent,
+    TableActionsToolbarComponent
   ]
 })
 export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestroy {
@@ -160,6 +161,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   displayedColumns: ApplicationRawColumnKey[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
   lockColumns: boolean = false;
+  intervalValue: number;
 
   refresh: Subject<void> = new Subject<void>();
   optionsChange: Subject<void> = new Subject<void>();
@@ -174,9 +176,14 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.displayedColumns = this.line.displayedColumns ?? this.#defaultConfigService.defaultApplications.columns;
     this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
     this.availableColumns = this.#applicationsIndexService.availableColumns;
+    this.intervalValue = this.line.interval;
 
     this.filters = this.line.filters as ApplicationRawFilter;
     this.interval.next(this.line.interval);
+  }
+
+  columnsLabels(): Record<ApplicationRawColumnKey, string> {
+    return this.#applicationsIndexService.columnsLabels;
   }
 
   ngAfterViewInit() {
@@ -259,5 +266,27 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.line.options = this.options;
     this.optionsChange.next();
     this.lineChange.emit();
+  }
+
+  onColumnsChange(data: ApplicationRawColumnKey[]) {
+    this.displayedColumns = data;
+
+    this.#applicationsIndexService.saveColumns(data);
+  }
+
+  onColumnsReset() {
+    this.displayedColumns = this.#applicationsIndexService.resetColumns();
+  }
+
+  onFiltersReset() {
+    this.filters = [];
+    this.line.filters = [];
+    this.lineChange.emit();
+    this.refresh.next();
+  }
+
+  onLockColumnsChange() {
+    this.lockColumns = !this.lockColumns;
+    this.#applicationsIndexService.saveLockColumns(this.lockColumns);
   }
 }
