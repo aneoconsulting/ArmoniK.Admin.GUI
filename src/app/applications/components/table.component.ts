@@ -214,10 +214,26 @@ export class ApplicationTableComponent implements OnInit, AfterViewInit {
 
   #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
-      const taskField = filter.field + 5; // We transform it into an options filter for a task
-      return this._filtersService.createQueryParamsKey<ApplicationRawEnumField>(orGroup, 'options', filter.operator, taskField); 
+      const taskField = this.#applicationsToTaskField(filter.field); // We transform it into an options filter for a task
+      if (!taskField) return null;
+      return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 
     }
     return null;
+  }
+
+  #applicationsToTaskField(applicationField: ApplicationRawEnumField) {
+    switch (applicationField) {
+    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME:
+      return TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME;
+    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE:
+      return TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE;
+    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE:
+      return TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_SERVICE;
+    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION:
+      return TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION;
+    default:
+      return null;
+    }
   }
 
   personalizeTasksByStatus() {
