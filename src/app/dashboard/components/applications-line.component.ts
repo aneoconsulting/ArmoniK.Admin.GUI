@@ -18,6 +18,7 @@ import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -116,6 +117,7 @@ app-actions-toolbar {
       useClass: ApplicationsFiltersService
     },
     ApplicationsIndexService,
+    DefaultConfigService
   ],
   imports: [
     PageSectionComponent,
@@ -143,6 +145,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   readonly #applicationGrpcService = inject(ApplicationsGrpcService);
   readonly #notificationService = inject(NotificationService);
   readonly #applicationsIndexService = inject(ApplicationsIndexService);
+  readonly #defaultConfigService = inject(DefaultConfigService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
@@ -167,8 +170,9 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   
   ngOnInit(): void {
     this.loadApplicationData = true;
-    this.options = this.#applicationsIndexService.restoreOptions();
-    this.displayedColumns = this.#applicationsIndexService.restoreColumns();
+    this.options = this.line.options ?? this.#defaultConfigService.defaultApplications.options;
+    this.displayedColumns = this.line.displayedColumns ?? this.#defaultConfigService.defaultApplications.columns;
+    this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
     this.availableColumns = this.#applicationsIndexService.availableColumns;
 
     this.filters = this.line.filters as ApplicationRawFilter;
@@ -252,6 +256,8 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onOptionsChange() {
+    this.line.options = this.options;
     this.optionsChange.next();
+    this.lineChange.emit();
   }
 }

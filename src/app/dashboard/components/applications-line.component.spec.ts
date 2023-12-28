@@ -2,8 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
+import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ApplicationsLineComponent } from './applications-line.component';
@@ -12,11 +14,21 @@ import { Line } from '../types';
 describe('ApplicationsLineComponent', () => {
   let component: ApplicationsLineComponent;
 
+  const options: ApplicationRawListOptions = {
+    pageIndex: 0,
+    pageSize: 5,
+    sort: {
+      active: 'name' as ApplicationRawFieldKey,
+      direction: 'desc',
+    },
+  };
+
   const line: Line = {
     name: 'Tasks',
     type: 'Applications',
     filters: [],
     interval: 20,
+    options: options
   };
 
   const nameLine = {
@@ -40,13 +52,8 @@ describe('ApplicationsLineComponent', () => {
     error: jest.fn()
   };
 
-  const options: ApplicationRawListOptions = {
-    pageIndex: 0,
-    pageSize: 5,
-    sort: {
-      active: 'name' as ApplicationRawFieldKey,
-      direction: 'desc',
-    },
+  const mockApplicationsIndexService = {
+    availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count']
   };
 
   beforeEach(() => {
@@ -57,7 +64,9 @@ describe('ApplicationsLineComponent', () => {
         { provide: ApplicationsGrpcService, useValue: mockGrpcApplicationsService },
         AutoRefreshService,
         IconsService,
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
+        DefaultConfigService
       ]
     }).inject(ApplicationsLineComponent);
     component.line = line;
@@ -76,6 +85,7 @@ describe('ApplicationsLineComponent', () => {
   });
 
   it('should create subscriptions after init', () => {
+    component.ngOnInit();
     component.ngAfterViewInit();
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, component.filters);
   });
@@ -164,6 +174,34 @@ describe('ApplicationsLineComponent', () => {
     it('should refresh', () => {
       const spy = jest.spyOn(component.refresh, 'next');
       component.onFiltersChange(newFilters);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('onOptionsChange', () => {
+    it('should change line options', () => {
+      const newOptions: ApplicationRawListOptions = {
+        pageIndex: 2,
+        pageSize: 25,
+        sort: {
+          active: 'service',
+          direction: 'desc'
+        }
+      };
+      component.options = newOptions;
+      component.onOptionsChange();
+      expect(component.line.options).toEqual(newOptions);
+    });
+
+    it('should refresh', () => {
+      const spy = jest.spyOn(component.optionsChange, 'next');
+      component.onOptionsChange();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should emit', () => {
+      const spy = jest.spyOn(component.lineChange, 'emit');
+      component.onOptionsChange();
       expect(spy).toHaveBeenCalled();
     });
   });

@@ -1,5 +1,5 @@
 import {TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { ApplicationRawFilter } from '@app/applications/types';
+import { ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 
 export type Line = {
@@ -8,7 +8,10 @@ export type Line = {
   interval: number,
   hideGroupsHeader?: boolean,
   filters: TaskSummaryFiltersOr | ApplicationRawFilter,
+  options?: ApplicationRawListOptions;
   taskStatusesGroups?: TasksStatusesGroup[],
+  displayedColumns?: ApplicationRawColumnKey[],
+  lockColumns?: boolean;
 };
 
 export type TasksStatusesGroup = {
