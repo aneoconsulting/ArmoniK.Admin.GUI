@@ -12,8 +12,6 @@ import { ApplicationsFiltersService } from '@app/applications/services/applicati
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
-import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -22,10 +20,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
-import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { StorageService } from '@services/storage.service';
-import { UtilsService } from '@services/utils.service';
 import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
 import { PageSectionHeaderComponent } from '../../../components/page-section-header.component';
@@ -103,22 +98,17 @@ app-table-actions-toolbar {
   standalone: true,
   providers: [
     ShareUrlService,
-    QueryParamsService,
-    StorageService,
     AutoRefreshService,
-    UtilsService,
-    TasksIndexService,
-    TasksGrpcService,
-    ApplicationsFiltersService,
     ApplicationsGrpcService,
     NotificationService,
+    ApplicationsIndexService,
+    DefaultConfigService,
     MatSnackBar,
     {
       provide: DATA_FILTERS_SERVICE,
       useClass: ApplicationsFiltersService
     },
-    ApplicationsIndexService,
-    DefaultConfigService
+    ApplicationsFiltersService
   ],
   imports: [
     PageSectionComponent,

@@ -7,12 +7,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
-import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationRaw, } from '@app/applications/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
@@ -20,10 +17,7 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
-import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { StorageService } from '@services/storage.service';
-import { UtilsService } from '@services/utils.service';
 import { ActionsToolbarGroupComponent } from '../../../components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
@@ -120,17 +114,11 @@ app-actions-toolbar {
     `],
   standalone: true,
   providers: [
-    TasksStatusesService,
     ShareUrlService,
-    QueryParamsService,
     TasksGrpcService,
-    StorageService,
     AutoRefreshService,
-    UtilsService,
-    TasksIndexService,
     TasksGrpcService,
     TasksFiltersService,
-    ApplicationsGrpcService,
     NotificationService,
     MatSnackBar,
     {
