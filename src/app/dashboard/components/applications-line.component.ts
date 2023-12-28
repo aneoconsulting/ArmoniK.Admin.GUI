@@ -152,6 +152,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   ngOnInit(): void {
     this.loadApplicationData = true;
     this.filters = this.line.filters as ApplicationRawFilter;
+    this.interval.next(this.line.interval);
   }
 
   ngAfterViewInit() {
@@ -168,8 +169,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
           },
         };
 
-        const filters: ApplicationRawFilter = [];
-        return this.#applicationGrpcService.list$(options, filters).pipe(catchError((error) => {
+        return this.#applicationGrpcService.list$(options, this.filters).pipe(catchError((error) => {
           console.error(error);
           this.#notificationService.error('Unable to fetch applications');
           return of(null);
@@ -213,11 +213,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   }
 
-  onToggleGroupsHeader() {
-    this.line.hideGroupsHeader = !this.line.hideGroupsHeader;
-    this.lineChange.emit();
-  }
-
   onEditNameLine(value: string) {
     const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
       data: {
@@ -226,10 +221,10 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-
-      this.line.name = result.name;
-      this.lineChange.emit();
+      if (result) {
+        this.line.name = result.name;
+        this.lineChange.emit();
+      }
     });
   }
 
