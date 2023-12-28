@@ -274,6 +274,7 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
   }
 
   onFiltersChange(value: unknown[]) {
+    this.filters = value as [];
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();

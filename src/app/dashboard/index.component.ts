@@ -88,7 +88,7 @@ import { Line } from './types';
       <app-dashboard-task-status-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-task-status-line>
     </ng-container>
     <ng-container *ngIf="line.type === 'Applications'">
-      <app-dashboard-applications-line [line]="line"></app-dashboard-applications-line>
+      <app-dashboard-applications-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-applications-line>
     </ng-container>
   </app-page-section>
 </main>
