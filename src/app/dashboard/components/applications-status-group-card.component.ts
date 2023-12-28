@@ -1,4 +1,4 @@
-import { FilterStringOperator, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, FilterStringOperator, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,11 +7,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ApplicationRaw } from '@app/applications/types';
+import { ApplicationRaw, ApplicationRawFilter } from '@app/applications/types';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 
@@ -58,7 +60,8 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
   providers: [
     TasksByStatusService,
     IconsService,
-    MatDialog
+    MatDialog,
+    FiltersService
   ],
   imports: [
     MatCardModule,
@@ -73,12 +76,15 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 })
 export class ApplicationStatusGroupCardComponent implements OnInit {
   @Input({required: true}) data: ApplicationRaw[];
+  @Input({required: true}) filters: ApplicationRawFilter;
+
   tasksStatusesColored: TaskStatusColored[] = [];
   displayedColumns = ['name', 'statuses'];
   
-  #tasksByStatusService = inject(TasksByStatusService);
-  #iconsService = inject(IconsService);
+  readonly #tasksByStatusService = inject(TasksByStatusService);
+  readonly #iconsService = inject(IconsService);
   readonly #dialog = inject(MatDialog);
+  readonly #filtersService = inject(FiltersService);
 
   ngOnInit(): void {
     this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses('applications');
@@ -91,7 +97,7 @@ export class ApplicationStatusGroupCardComponent implements OnInit {
     case 'statuses':
       return $localize`Tasks by Status`;
     default:
-      return '';
+      return '-';
     }
   }
 
@@ -115,10 +121,34 @@ export class ApplicationStatusGroupCardComponent implements OnInit {
   }
 
   createTasksByStatusQueryParams(name: string, version: string) {
-    return {
-      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
-      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version,
-    };
+    if(this.filters.length === 0) {
+      return {
+        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
+        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (!(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
+          !(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+            const filterLabel = this.#createQueryParamFilterKey(filter, index);
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
+      });
+      return params;
+    }
+  }
+
+  #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
+    if (filter.field !== null && filter.operator !== null) {
+      const taskField = filter.field + 5; // We transform it into an options filter for a task
+      return this.#filtersService.createQueryParamsKey<ApplicationRawEnumField>(orGroup, 'options', filter.operator, taskField); 
+    }
+    return null;
   }
 
   getIcon(name: string) {
@@ -133,12 +163,10 @@ export class ApplicationStatusGroupCardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
-        return;
+      if (result) {
+        this.tasksStatusesColored = result;
+        this.#tasksByStatusService.saveStatuses('applications', result);
       }
-
-      this.tasksStatusesColored = result;
-      this.#tasksByStatusService.saveStatuses('applications', result);
     });
   }
 }

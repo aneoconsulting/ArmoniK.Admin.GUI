@@ -75,7 +75,7 @@ import { Line } from '../types';
   </mat-toolbar-row>
 </mat-toolbar>
 
-<app-application-status-group-card [data]="data"></app-application-status-group-card>
+<app-application-status-group-card [data]="data" [filters]="filters"></app-application-status-group-card>
   `,
   styles: [`
 app-actions-toolbar {
