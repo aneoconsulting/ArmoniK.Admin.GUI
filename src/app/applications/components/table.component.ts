@@ -138,7 +138,6 @@ export class ApplicationTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('applications');
-    this.total = this.data.length;
   }
 
   ngAfterViewInit(): void {

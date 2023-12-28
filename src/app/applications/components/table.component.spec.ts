@@ -1,7 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject } from 'rxjs';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
@@ -47,6 +50,18 @@ describe('ApplicationTableComponent', () => {
 
   let dialogSubject: BehaviorSubject<TaskStatusColored[] | undefined>;
 
+  const sort: MatSort = {
+    active: 'namespace',
+    direction: 'asc',
+    sortChange: new EventEmitter()
+  } as unknown as MatSort;
+
+  const paginator: MatPaginator = {
+    pageIndex: 2,
+    pageSize: 50,
+    page: new EventEmitter()
+  } as unknown as MatPaginator;
+
   const filters: ApplicationRawFilter = [
     [
       {
@@ -70,10 +85,16 @@ describe('ApplicationTableComponent', () => {
     ],
     [
       {
-        field: 1,
+        field: 4,
         for: 'root',
         operator: 3,
         value: 'someValue'
+      },
+      {
+        field: 3,
+        for: 'root',
+        operator: 2,
+        value: 'namespace'
       }
     ]
   ];
@@ -102,10 +123,47 @@ describe('ApplicationTableComponent', () => {
 
     component.displayedColumns = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
     component.filters = [];
+    component.options = {
+      pageIndex: 0,
+      pageSize: 10,
+      sort: {
+        active: 'name',
+        direction: 'desc'
+      }
+    };
+    component.sort = sort;
+    component.paginator = paginator;
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should restore taskStatus on init', () => {
+    component.ngOnInit();
+    expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('applications');
+  });
+
+  it('should update options sort on sort change', () => {
+    component.ngAfterViewInit();
+    sort.sortChange.emit();
+    expect(component.options.sort).toEqual({
+      active: sort.active,
+      direction: sort.direction
+    });
+  });
+
+  it('should update options sort on sort change', () => {
+    component.ngAfterViewInit();
+    paginator.page.emit();
+    expect(component.options).toEqual({
+      pageIndex: paginator.pageIndex,
+      pageSize: paginator.pageSize,
+      sort: {
+        active: 'name',
+        direction: 'desc'
+      }
+    });
   });
 
   it('should return the label of a column', () => {
@@ -184,11 +242,12 @@ describe('ApplicationTableComponent', () => {
       expect(component.createTasksByStatusQueryParams(name, version)).toEqual({
         '0-options-5-0': name,
         '0-options-6-0': version,
-        '0-options-6-1': '2',
-        '0-options-7-2': 'string',
+        '0-options-5-1': '2',
+        '0-options-6-2': 'string',
         '1-options-5-0': name,
         '1-options-6-0': version,
-        '1-options-6-3': 'someValue',
+        '1-options-8-3': 'someValue',
+        '1-options-7-2': 'namespace'
       });
     });
   });
