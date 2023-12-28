@@ -7,7 +7,7 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { LineComponent } from './task-status-line.component';
-import { TasksStatusesGroup } from '../types';
+import { TasksStatusesGroup } from '../../types';
 
 describe('LineComponent', () => {
   let component: LineComponent;

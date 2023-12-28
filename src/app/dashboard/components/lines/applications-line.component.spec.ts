@@ -9,7 +9,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ApplicationsLineComponent } from './applications-line.component';
-import { Line } from '../types';
+import { Line } from '../../types';
 
 describe('ApplicationsLineComponent', () => {
   let component: ApplicationsLineComponent;

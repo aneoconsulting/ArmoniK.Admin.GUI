@@ -6,45 +6,45 @@ import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
+import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { ApplicationTableComponent } from '@app/applications/components/table.component';
+import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
-import { ApplicationRaw, } from '@app/applications/types';
-import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
-import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
-import { StatusesGroupCardComponent } from './statuses-group-card.component';
-import { ActionsToolbarGroupComponent } from '../../components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '../../components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '../../components/auto-refresh-button.component';
-import { PageSectionHeaderComponent } from '../../components/page-section-header.component';
-import { PageSectionComponent } from '../../components/page-section.component';
-import { RefreshButtonComponent } from '../../components/refresh-button.component';
-import { SpinnerComponent } from '../../components/spinner.component';
-import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types';
+import { ActionsToolbarGroupComponent } from '../../../components/actions-toolbar-group.component';
+import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
+import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
+import { PageSectionHeaderComponent } from '../../../components/page-section-header.component';
+import { PageSectionComponent } from '../../../components/page-section.component';
+import { RefreshButtonComponent } from '../../../components/refresh-button.component';
+import { SpinnerComponent } from '../../../components/spinner.component';
+import { Line } from '../../types';
+import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
+import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
 @Component({
-  selector: 'app-dashboard-task-status-line',
+  selector: 'app-dashboard-applications-line',
   template: `
 <mat-toolbar>
   <mat-toolbar-row>
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-        <app-spinner *ngIf="loadTasksStatus"></app-spinner>
+        <app-spinner *ngIf="loadApplicationData"></app-spinner>
       </app-actions-toolbar-group>
 
       <app-actions-toolbar-group>
@@ -55,18 +55,6 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
         </button>
 
         <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onToggleGroupsHeader()">
-            <mat-icon aria-hidden="true" [fontIcon]="line.hideGroupsHeader ? getIcon('view') : getIcon('view-off')"></mat-icon>
-            <span i18n>
-              Toggle Groups Header
-            </span>
-          </button>
-          <button mat-menu-item (click)="onManageGroupsDialog()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-            <span i18n>
-              Manage Groups
-            </span>
-          </button>
           <button mat-menu-item (click)="onEditNameLine(line.name)">
             <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
               <span i18n>
@@ -85,31 +73,24 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="this.filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<div class="groups">
-  <app-statuses-group-card
-  *ngFor="let group of line.taskStatusesGroups"
-  [group]="group"
+<app-application-table
   [data]="data"
-  [hideGroupHeaders]="line.hideGroupsHeader ?? false"
-  ></app-statuses-group-card>
-</div>
+  [filters]="filters"
+  [options]="options"
+  [total]="total"
+  [displayedColumns]="displayedColumns"
+  (optionsChange)="onOptionsChange()"
+></app-application-table>
   `,
   styles: [`
 app-actions-toolbar {
   flex-grow: 1;
 }
 
-.groups {
-  margin-top: 1rem;
-
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-}
 
 .filters {
   height: auto;
@@ -120,23 +101,23 @@ app-actions-toolbar {
     `],
   standalone: true,
   providers: [
-    TasksStatusesService,
     ShareUrlService,
     QueryParamsService,
-    TasksGrpcService,
     StorageService,
     AutoRefreshService,
     UtilsService,
     TasksIndexService,
     TasksGrpcService,
-    TasksFiltersService,
+    ApplicationsFiltersService,
     ApplicationsGrpcService,
     NotificationService,
     MatSnackBar,
     {
       provide: DATA_FILTERS_SERVICE,
-      useClass: TasksFiltersService
+      useClass: ApplicationsFiltersService
     },
+    ApplicationsIndexService,
+    DefaultConfigService
   ],
   imports: [
     PageSectionComponent,
@@ -154,47 +135,65 @@ app-actions-toolbar {
     StatusesGroupCardComponent,
     NgIf,
     NgForOf,
+    ApplicationTableComponent
   ]
 })
-export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
+export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
-  readonly #taskGrpcService = inject(TasksGrpcService);
+  readonly #applicationGrpcService = inject(ApplicationsGrpcService);
+  readonly #notificationService = inject(NotificationService);
+  readonly #applicationsIndexService = inject(ApplicationsIndexService);
+  readonly #defaultConfigService = inject(DefaultConfigService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
   total: number;
-  loadTasksStatus = false;
-  data: StatusCount[] = [];
-  applicationData: ApplicationRaw[];
-  filters: TaskSummaryFiltersOr;
+  loadApplicationData = false;
+  data: ApplicationRaw[] = [];
+  filters: ApplicationRawFilter;
+  options: ApplicationRawListOptions;
+
+  displayedColumns: ApplicationRawColumnKey[] = [];
+  availableColumns: ApplicationRawColumnKey[] = [];
+  lockColumns: boolean = false;
 
   refresh: Subject<void> = new Subject<void>();
+  optionsChange: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   subscriptions: Subscription = new Subscription();
   interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
   
   ngOnInit(): void {
-    this.loadTasksStatus = true;
-    this.filters = (this.line.filters as TaskSummaryFiltersOr);
+    this.loadApplicationData = true;
+    this.options = this.line.options ?? this.#defaultConfigService.defaultApplications.options;
+    this.displayedColumns = this.line.displayedColumns ?? this.#defaultConfigService.defaultApplications.columns;
+    this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
+    this.availableColumns = this.#applicationsIndexService.availableColumns;
+
+    this.filters = this.line.filters as ApplicationRawFilter;
+    this.interval.next(this.line.interval);
   }
 
   ngAfterViewInit() {
-    const mergeSubscription = merge(this.refresh, this.interval$).pipe(
+    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).pipe(
       startWith(0),
-      tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this.#taskGrpcService.countByStatu$(this.filters)),
-    ).subscribe((data) => {
-      if (data.status) {
-        this.data = data.status;
-        this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-  
-        this.loadTasksStatus = false;
-      }
+      tap(() => (this.loadApplicationData = true)),
+      switchMap(() => {
+        return this.#applicationGrpcService.list$(this.options, this.filters).pipe(catchError((error) => {
+          console.error(error);
+          this.#notificationService.error('Unable to fetch applications');
+          return of(null);
+        }));
+      })
+    ).subscribe(data => {
+      this.data = data?.applications ?? [];
+      this.total = data?.applications?.length ?? 0;
+      this.loadApplicationData = false;
     });
 
     this.subscriptions.add(mergeSubscription);
@@ -230,11 +229,6 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
 
   }
 
-  onToggleGroupsHeader() {
-    this.line.hideGroupsHeader = !this.line.hideGroupsHeader;
-    this.lineChange.emit();
-  }
-
   onEditNameLine(value: string) {
     const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
       data: {
@@ -243,10 +237,10 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-
-      this.line.name = result.name;
-      this.lineChange.emit();
+      if (result) {
+        this.line.name = result.name;
+        this.lineChange.emit();
+      }
     });
   }
 
@@ -254,27 +248,16 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
     this.lineDelete.emit(value);
   }
 
-  onManageGroupsDialog() {
-    const dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult> = this.#dialog.open<ManageGroupsDialogComponent, ManageGroupsDialogData, ManageGroupsDialogResult>(ManageGroupsDialogComponent, {
-      data: {
-        groups: this.line.taskStatusesGroups ?? [],
-      }
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
-
-      this.line.taskStatusesGroups = result.groups;
-      this.lineChange.emit();
-    });
-  }
-
   onFiltersChange(value: unknown[]) {
     this.filters = value as [];
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();
+  }
+
+  onOptionsChange() {
+    this.line.options = this.options;
+    this.optionsChange.next();
+    this.lineChange.emit();
   }
 }
