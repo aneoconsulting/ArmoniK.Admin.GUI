@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DataFilterService } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
@@ -72,7 +72,7 @@ describe('Application component', () => {
     isCountColumn: jest.fn(),
     isSimpleColumn: jest.fn(),
     isNotSortableColumn: jest.fn(),
-    restoreOptions: jest.fn(),
+    restoreOptions: jest.fn(() => options),
     restoreIntervalValue: jest.fn(),
     saveIntervalValue: jest.fn(),
     saveOptions: jest.fn(),
@@ -97,7 +97,7 @@ describe('Application component', () => {
   };
 
   const mockGrpcApplicationsService = {
-    list$: jest.fn()
+    list$: jest.fn(() => of(dataSample))
   };
 
   const mockAutoRefreshService = {
@@ -138,34 +138,6 @@ describe('Application component', () => {
     expect(component.availableColumns).toBe(mockApplicationIndexService.availableColumns);
   });
 
-  describe('ngAfterViewInit', () => {
-    mockGrpcApplicationsService.list$.mockImplementation(() => {
-      return new BehaviorSubject(dataSample);
-    });
-
-    describe('on sort change', () => {
-
-      it('should reset pageIndex', () => {
-        component.sort.next();
-        expect(component.options.pageIndex).toEqual(0);
-      });
-
-      it('should load data', () => {
-        component.sort.next();
-        expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
-        expect(component.total).toEqual(3);
-        expect(component.data).toEqual(dataSample.applications);
-      });
-    });
-  });
-
-  it('should load data on page change', () => {
-    component.paginator.next();
-    expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
-    expect(component.total).toEqual(3);
-    expect(component.data).toEqual(dataSample.applications);
-  });
-
   it('should load data on user refresh', () => {
     component.refresh.next();
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
@@ -175,6 +147,13 @@ describe('Application component', () => {
 
   it('should load data on interval refresh', () => {
     intervalRefreshSubject.next(1);
+    expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
+    expect(component.total).toEqual(3);
+    expect(component.data).toEqual(dataSample.applications);
+  });
+
+  it('should load data on options change', () => {
+    component.onOptionsChange();
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
     expect(component.total).toEqual(3);
     expect(component.data).toEqual(dataSample.applications);

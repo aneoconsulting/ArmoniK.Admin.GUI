@@ -4,10 +4,12 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { TaskStatusColored } from '@app/types/dialog';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationTableComponent } from './table.component';
 import { ApplicationsIndexService } from '../services/applications-index.service';
+import { ApplicationRawFilter } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ApplicationTableComponent;
@@ -45,6 +47,37 @@ describe('ApplicationTableComponent', () => {
 
   let dialogSubject: BehaviorSubject<TaskStatusColored[] | undefined>;
 
+  const filters: ApplicationRawFilter = [
+    [
+      {
+        field: 1,
+        for: 'root',
+        operator: 1,
+        value: 2
+      },
+      {
+        field: 2,
+        for: 'root',
+        operator: 2,
+        value: 'string'
+      },
+      {
+        field: 1,
+        for: 'root',
+        operator: 0, // This shouldn't appear as a filter when redirecting on a task since it is the application name
+        value: 2
+      },
+    ],
+    [
+      {
+        field: 1,
+        for: 'root',
+        operator: 3,
+        value: 'someValue'
+      }
+    ]
+  ];
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -62,11 +95,13 @@ describe('ApplicationTableComponent', () => {
             }
           }
         },
-        IconsService
+        IconsService,
+        FiltersService
       ]
     }).inject(ApplicationTableComponent);
 
     component.displayedColumns = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
+    component.filters = [];
   });
 
   it('should run', () => {
@@ -132,12 +167,30 @@ describe('ApplicationTableComponent', () => {
       ]]);
   });
 
-  it('should create the query params of the tasks by status', () => {
-    expect(component.createTasksByStatusQueryParams('name', 'version'))
-      .toEqual({
-        ['0-options-5-0']: 'name',
-        ['0-options-6-0']: 'version'
+  describe('createTasksByStatusQueryParams', () => {
+
+    const name = 'Application 1';
+    const version = '1.0.0';
+
+    it('should create query params for the specified application', () => {
+      expect(component.createTasksByStatusQueryParams(name, version)).toEqual({
+        '0-options-5-0': name,
+        '0-options-6-0': version
       });
+    });
+
+    it('should create query params for the specified application and applied filters', () => {
+      component.filters = filters;
+      expect(component.createTasksByStatusQueryParams(name, version)).toEqual({
+        '0-options-5-0': name,
+        '0-options-6-0': version,
+        '0-options-6-1': '2',
+        '0-options-7-2': 'string',
+        '1-options-5-0': name,
+        '1-options-6-0': version,
+        '1-options-6-3': 'someValue',
+      });
+    });
   });
 
   it('should create the query params to view sessions', () => {

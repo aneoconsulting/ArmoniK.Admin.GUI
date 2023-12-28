@@ -280,5 +280,4 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   onOptionsChange() {
     this.optionsChange.next();
   }
-
 }
