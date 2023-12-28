@@ -1,4 +1,4 @@
-import { ApplicationRaw, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRaw, ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -12,6 +12,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -19,10 +20,11 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
 import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '../types';
+import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
@@ -91,7 +93,8 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOpti
     ApplicationsIndexService,
     TasksByStatusService,
     MatDialog,
-    IconsService
+    IconsService,
+    FiltersService
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -118,6 +121,7 @@ export class ApplicationTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) options: ApplicationRawListOptions;
   @Input({required: true}) data: ApplicationRaw.AsObject[] = [];
   @Input({required: true}) total: number;
+  @Input({required: true}) filters: ApplicationRawFilter;
   @Input() lockColumns = false;
 
   @Output() optionsChange = new EventEmitter<never>();
@@ -130,6 +134,7 @@ export class ApplicationTableComponent implements OnInit, AfterViewInit {
   readonly _tasksByStatusService = inject(TasksByStatusService);
   readonly _dialog = inject(MatDialog);
   readonly _iconsService = inject(IconsService);
+  readonly _filtersService = inject(FiltersService);
 
   ngOnInit(): void {
     this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('applications');
@@ -177,18 +182,42 @@ export class ApplicationTableComponent implements OnInit, AfterViewInit {
     return this._applicationsIndexService.isNotSortableColumn(column);
   }
 
-  createTasksByStatusQueryParams(name: string, version: string) {
-    return {
-      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
-      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version,
-    };
-  }
-
   createViewSessionsQueryParams(name: string, version: string) {
     return {
       [`0-options-${SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
       [`0-options-${SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version,
     };
+  }
+
+  createTasksByStatusQueryParams(name: string, version: string) {
+    if(this.filters.length === 0) {
+      return {
+        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: name,
+        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: version
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (!(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
+          !(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+            const filterLabel = this.#createQueryParamFilterKey(filter, index);
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
+      });
+      return params;
+    }
+  }
+
+  #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
+    if (filter.field !== null && filter.operator !== null) {
+      const taskField = filter.field + 5; // We transform it into an options filter for a task
+      return this._filtersService.createQueryParamsKey<ApplicationRawEnumField>(orGroup, 'options', filter.operator, taskField); 
+    }
+    return null;
   }
 
   personalizeTasksByStatus() {

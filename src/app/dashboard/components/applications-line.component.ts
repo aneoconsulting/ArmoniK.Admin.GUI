@@ -7,9 +7,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { ApplicationTableComponent } from '@app/applications/components/table.component';
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
-import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
@@ -22,7 +24,6 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationStatusGroupCardComponent } from './applications-status-group-card.component';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
 import { StatusesGroupCardComponent } from './statuses-group-card.component';
 import { ActionsToolbarGroupComponent } from '../../components/actions-toolbar-group.component';
@@ -75,7 +76,14 @@ import { Line } from '../types';
   </mat-toolbar-row>
 </mat-toolbar>
 
-<app-application-status-group-card [data]="data" [filters]="filters"></app-application-status-group-card>
+<app-application-table
+  [data]="data"
+  [filters]="filters"
+  [options]="options"
+  [total]="total"
+  [displayedColumns]="displayedColumns"
+  (optionsChange)="onOptionsChange()"
+></app-application-table>
   `,
   styles: [`
 app-actions-toolbar {
@@ -107,6 +115,7 @@ app-actions-toolbar {
       provide: DATA_FILTERS_SERVICE,
       useClass: ApplicationsFiltersService
     },
+    ApplicationsIndexService,
   ],
   imports: [
     PageSectionComponent,
@@ -124,7 +133,7 @@ app-actions-toolbar {
     StatusesGroupCardComponent,
     NgIf,
     NgForOf,
-    ApplicationStatusGroupCardComponent
+    ApplicationTableComponent
   ]
 })
 export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestroy {
@@ -133,6 +142,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   readonly #iconsService = inject(IconsService);
   readonly #applicationGrpcService = inject(ApplicationsGrpcService);
   readonly #notificationService = inject(NotificationService);
+  readonly #applicationsIndexService = inject(ApplicationsIndexService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
@@ -142,8 +152,14 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   loadApplicationData = false;
   data: ApplicationRaw[] = [];
   filters: ApplicationRawFilter;
+  options: ApplicationRawListOptions;
+
+  displayedColumns: ApplicationRawColumnKey[] = [];
+  availableColumns: ApplicationRawColumnKey[] = [];
+  lockColumns: boolean = false;
 
   refresh: Subject<void> = new Subject<void>();
+  optionsChange: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   subscriptions: Subscription = new Subscription();
@@ -151,25 +167,20 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   
   ngOnInit(): void {
     this.loadApplicationData = true;
+    this.options = this.#applicationsIndexService.restoreOptions();
+    this.displayedColumns = this.#applicationsIndexService.restoreColumns();
+    this.availableColumns = this.#applicationsIndexService.availableColumns;
+
     this.filters = this.line.filters as ApplicationRawFilter;
     this.interval.next(this.line.interval);
   }
 
   ngAfterViewInit() {
-    const mergeSubscription = merge(this.refresh, this.interval$).pipe(
+    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).pipe(
       startWith(0),
       tap(() => (this.loadApplicationData = true)),
       switchMap(() => {
-        const options: ApplicationRawListOptions = {
-          pageIndex: 0,
-          pageSize: 5,
-          sort: {
-            active: 'name' as ApplicationRawFieldKey,
-            direction: 'desc',
-          },
-        };
-
-        return this.#applicationGrpcService.list$(options, this.filters).pipe(catchError((error) => {
+        return this.#applicationGrpcService.list$(this.options, this.filters).pipe(catchError((error) => {
           console.error(error);
           this.#notificationService.error('Unable to fetch applications');
           return of(null);
@@ -177,6 +188,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
       })
     ).subscribe(data => {
       this.data = data?.applications ?? [];
+      this.total = data?.applications?.length ?? 0;
       this.loadApplicationData = false;
     });
 
@@ -237,5 +249,9 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();
+  }
+
+  onOptionsChange() {
+    this.optionsChange.next();
   }
 }

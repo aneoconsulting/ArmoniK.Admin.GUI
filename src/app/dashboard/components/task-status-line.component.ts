@@ -24,7 +24,6 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationStatusGroupCardComponent } from './applications-status-group-card.component';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
 import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
 import { StatusesGroupCardComponent } from './statuses-group-card.component';
@@ -155,7 +154,6 @@ app-actions-toolbar {
     StatusesGroupCardComponent,
     NgIf,
     NgForOf,
-    ApplicationStatusGroupCardComponent
   ]
 })
 export class LineComponent implements OnInit, AfterViewInit,OnDestroy {

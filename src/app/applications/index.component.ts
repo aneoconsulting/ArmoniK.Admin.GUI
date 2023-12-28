@@ -65,6 +65,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, Applicat
 
 <app-application-table 
   [data]="data"
+  [filters]="filters"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
