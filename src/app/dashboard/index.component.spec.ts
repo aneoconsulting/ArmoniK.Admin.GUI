@@ -12,10 +12,10 @@ import { Line } from './types';
 describe('IndexComponent', () => {
   let component: IndexComponent;
 
-  let dialogRef$: Observable<AddLineDialogResult | SplitLinesDialogResult  | ReorganizeLinesDialogResult<object, object, number> | undefined>;
+  let dialogRef$: Observable<AddLineDialogResult | SplitLinesDialogResult  | ReorganizeLinesDialogResult | undefined>;
 
   const defaultUrl = 'https://some-url/';
-  const defaultLines: Line<object, object, number>[] = [
+  const defaultLines: Line[] = [
     {
       name: 'line1',
       type: 'Tasks',
@@ -103,7 +103,7 @@ describe('IndexComponent', () => {
   });
 
   it('should add a line', () => {
-    dialogRef$ = of({name: 'New line', type: 'Tasks'} as unknown as Line<never, never, never>);
+    dialogRef$ = of({name: 'New line', type: 'Tasks'} as unknown as Line);
     const newLines = structuredClone(defaultLines);
     newLines.push({
       name: 'New line',

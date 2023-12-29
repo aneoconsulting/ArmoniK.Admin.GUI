@@ -14,6 +14,7 @@ describe('ReorganizeLinesDialogComponent', () => {
   const defaultLines: Line[] = [
     {
       name: 'line1',
+      type: 'Tasks',
       interval: 10,
       hideGroupsHeader: false,
       filters: [],
@@ -25,6 +26,7 @@ describe('ReorganizeLinesDialogComponent', () => {
     },
     {
       name: 'line2',
+      type: 'Tasks',
       interval: 20,
       hideGroupsHeader: true,
       filters: [],
