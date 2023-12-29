@@ -1,3 +1,4 @@
+import { ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
@@ -92,6 +93,35 @@ describe('ApplicationsLineComponent', () => {
     component.ngOnInit();
     component.ngAfterViewInit();
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, component.filters);
+  });
+
+  describe('Data fetching', () => {
+    it('should load received data', () => {
+      const receivedData: ListApplicationsResponse = {
+        applications: [
+          {
+            name: 'application 1',
+            namespace: 'namespace 1'
+          },
+          {
+            name: 'application 2',
+            namespace: 'namespace 2'
+          }
+        ]
+      } as ListApplicationsResponse;
+      mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(receivedData));
+      component.ngAfterViewInit();
+      expect(component.data).toEqual(receivedData.applications);
+      expect(component.total).toEqual(receivedData.applications?.length);
+    });
+
+    it('should load default data', () => {
+      component.data = [{name: 'applications', namespace: 'namespace 1', service: 'service', version: '1'}];
+      mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(null));
+      component.ngAfterViewInit();
+      expect(component.data).toEqual([]);
+      expect(component.total).toEqual(0);
+    });
   });
 
   it('should unsubscribe on destroy', () => {
