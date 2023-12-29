@@ -10,7 +10,7 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount } from '@app/tasks/types';
+import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -90,7 +90,7 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
   *ngFor="let group of line.taskStatusesGroups"
   [group]="group"
   [data]="data"
-  [hideGroupHeaders]="line.hideGroupsHeader"
+  [hideGroupHeaders]="line.hideGroupsHeader ?? false"
   ></app-statuses-group-card>
 </div>
   `,
@@ -178,7 +178,7 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
       tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this.#taskGrpcService.countByStatu$(this.line.filters)),
+      switchMap(() => this.#taskGrpcService.countByStatu$(this.line.filters as TaskSummaryFiltersOr)),
     ).subscribe((data) => {
       if (data.status) {
         this.data = data.status;
@@ -247,7 +247,7 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
   onManageGroupsDialog() {
     const dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult> = this.#dialog.open<ManageGroupsDialogComponent, ManageGroupsDialogData, ManageGroupsDialogResult>(ManageGroupsDialogComponent, {
       data: {
-        groups: this.line.taskStatusesGroups,
+        groups: this.line.taskStatusesGroups ?? [],
       }
     });
 

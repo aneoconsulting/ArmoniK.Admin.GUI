@@ -180,7 +180,7 @@ export class IndexComponent implements OnInit {
   readonly #shareURLService = inject(ShareUrlService);
   readonly #dashboardIndexService = inject(DashboardIndexService);
 
-  lines: Line<object, object, number>[];
+  lines: Line[];
   showFabActions = false;
   columns = 1;
 
@@ -259,7 +259,7 @@ export class IndexComponent implements OnInit {
   }
 
   onReorganizeLinesDialog() {
-    const dialogRef = this.#dialog.open<ReorganizeLinesDialogComponent, ReorganizeLinesDialogData<object, object, number>, ReorganizeLinesDialogResult<object, object, number>>(ReorganizeLinesDialogComponent, {
+    const dialogRef = this.#dialog.open<ReorganizeLinesDialogComponent, ReorganizeLinesDialogData, ReorganizeLinesDialogResult>(ReorganizeLinesDialogComponent, {
       data: {
         lines: structuredClone(this.lines),
       }
@@ -288,7 +288,7 @@ export class IndexComponent implements OnInit {
     });
   }
 
-  onDeleteLine(value: Line<object, object, number>) {
+  onDeleteLine(value: Line) {
     const index = this.lines.indexOf(value);
     if (index > -1) {
       this.lines.splice(index, 1);
@@ -300,7 +300,7 @@ export class IndexComponent implements OnInit {
     this.#dashboardIndexService.saveLines(this.lines);
   }
 
-  trackByLine(index: number, line: Line<object, object, number>): string {
+  trackByLine(index: number, line: Line): string {
     return line.name + index;
   }
 }

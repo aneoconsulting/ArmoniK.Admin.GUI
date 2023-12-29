@@ -17,7 +17,7 @@ export class DefaultConfigService {
   readonly #defaultTheme: Theme = 'indigo-pink';
   readonly #defaultExternalServices: ExternalService[] = [];
 
-  readonly #defaultDashboardLines: Line<never, never, never>[] = [
+  readonly #defaultDashboardLines: Line[] = [
     {
       name: 'Tasks by status',
       type: 'Tasks',
@@ -199,7 +199,7 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultExternalServices);
   }
 
-  get defaultDashboardLines(): Line<never, never, never>[] {
+  get defaultDashboardLines(): Line[] {
     return structuredClone(this.#defaultDashboardLines);
   }
 

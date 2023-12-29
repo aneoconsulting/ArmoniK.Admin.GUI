@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { AddLineDialogResult } from '@app/types/dialog';
+import { LineType } from '../types';
 
 @Component({
   selector: 'app-form-name-line',
@@ -69,7 +70,7 @@ mat-dialog-content {
 export class FormNameLineComponent implements OnInit {
   @Input() line: string | null = null;
   @Input() type: string | null = null;
-  types = ['Tasks', 'Applications'];
+  types: LineType[] = ['Tasks'];
 
   @Output() cancelChange = new EventEmitter<void>();
   @Output() submitChange = new EventEmitter<AddLineDialogResult>();
