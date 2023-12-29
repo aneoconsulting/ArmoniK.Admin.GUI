@@ -115,7 +115,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
     MatButtonModule
   ]
 })
-export class ApplicationTableComponent implements OnInit, AfterViewInit {
+export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Input({required: true}) displayedColumns: ApplicationRawColumnKey[] = [];
   @Input({required: true}) options: ApplicationRawListOptions;

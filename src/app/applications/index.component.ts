@@ -27,7 +27,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationTableComponent } from './components/table.component';
+import { ApplicationsTableComponent } from './components/table.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
@@ -122,7 +122,7 @@ app-table-actions-toolbar {
     MatIconModule,
     MatSnackBarModule,
     MatMenuModule,
-    ApplicationTableComponent
+    ApplicationsTableComponent
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
