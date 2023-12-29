@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -52,8 +52,12 @@ describe('ApplicationsLineComponent', () => {
     error: jest.fn()
   };
 
+  const columnsLabels = ['Name', 'Namespace', 'Service', 'Version', 'Actions', 'Count'];
+
   const mockApplicationsIndexService = {
-    availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count']
+    availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count'],
+    columnsLabels: columnsLabels,
+    resetColumns: jest.fn()
   };
 
   beforeEach(() => {
@@ -110,27 +114,29 @@ describe('ApplicationsLineComponent', () => {
     expect(refreshSpy).toHaveBeenCalled();
   });
 
+  it('should get columns labels', () => {
+    expect(component.columnsLabels()).toBe(columnsLabels);
+  });
+
   describe('onIntervalValueChange', () => {
+    const lineSpy = jest.spyOn(component.lineChange, 'emit');
+    const spyInterval = jest.spyOn(component.interval, 'next');
+    const spyStopInterval = jest.spyOn(component.stopInterval, 'next');
+
     it('should change interval line value', () => {
       component.onIntervalValueChange(5);
       expect(component.line.interval).toEqual(5);
     });
 
     it('should emit on interval change', () => {
-      const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onIntervalValueChange(5);
-      expect(spy).toHaveBeenCalled();
+      expect(lineSpy).toHaveBeenCalled();
     });
 
     it('should change interval value with new value', () => {
-      const spyInterval = jest.spyOn(component.interval, 'next');
-      component.onIntervalValueChange(5);
       expect(spyInterval).toHaveBeenCalledWith(5);
     });
 
     it('should stop interval when the value is 0', () => {
-      const spyStopInterval = jest.spyOn(component.stopInterval, 'next');
-      component.onIntervalValueChange(0);
       expect(spyStopInterval).toHaveBeenCalled();
     });
   });
@@ -153,6 +159,8 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
+    const lineSpy = jest.spyOn(component.lineChange, 'emit');
+    const refreshSpy = jest.spyOn(component.refresh, 'next');
     const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
     
     it('should update applied filters', () => {
@@ -166,19 +174,18 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should emit', () => {
-      const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onFiltersChange(newFilters);
-      expect(spy).toHaveBeenCalled();
+      expect(lineSpy).toHaveBeenCalledTimes(2);
     });
 
     it('should refresh', () => {
-      const spy = jest.spyOn(component.refresh, 'next');
-      component.onFiltersChange(newFilters);
-      expect(spy).toHaveBeenCalled();
+      expect(refreshSpy).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('onOptionsChange', () => {
+    const optionsSpy = jest.spyOn(component.optionsChange, 'next');
+    const lineSpy = jest.spyOn(component.lineChange, 'emit');
+
     it('should change line options', () => {
       const newOptions: ApplicationRawListOptions = {
         pageIndex: 2,
@@ -194,15 +201,111 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const spy = jest.spyOn(component.optionsChange, 'next');
-      component.onOptionsChange();
-      expect(spy).toHaveBeenCalled();
+      expect(optionsSpy).toHaveBeenCalled();
     });
 
     it('should emit', () => {
-      const spy = jest.spyOn(component.lineChange, 'emit');
-      component.onOptionsChange();
-      expect(spy).toHaveBeenCalled();
+      expect(lineSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('OnColumnsChange', () => {
+    const spy = jest.spyOn(component.lineChange, 'emit');
+    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
+
+    beforeEach(() => {
+      component.displayedColumns = ['namespace', 'service'];
+      component.line.displayedColumns = ['namespace', 'service'];
+    });
+
+    it('should change displayedColumns', () => {
+      component.onColumnsChange(newColumns);
+      expect(component.displayedColumns).toEqual(newColumns);
+    });
+
+    it('should change line displayedColumns', () => {
+      component.onColumnsChange(newColumns);
+      expect(component.line.displayedColumns).toEqual(newColumns);
+    });
+
+    it('should emit', () => {
+      expect(spy).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('onColumnsReset', () => {
+    const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
+    const spy = jest.spyOn(component.lineChange, 'emit');
+    mockApplicationsIndexService.resetColumns.mockImplementation(() => defaultColumns);
+
+    beforeEach(() => {
+      component.displayedColumns = ['namespace', 'service'];
+      component.line.displayedColumns = ['namespace', 'service'];
+    });
+
+    it('should reset to default columns', () => {
+      component.onColumnsReset();
+      expect(component.displayedColumns).toEqual(defaultColumns);
+    });
+
+    it('should reset line displayedColumns', () => {
+      component.onColumnsReset();
+      expect(component.line.displayedColumns).toEqual(defaultColumns);
+    });
+
+    it('should emit', () => {
+      expect(spy).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('onFiltersReset', () => {
+    const lineSpy = jest.spyOn(component.lineChange, 'emit');
+    const refreshSpy = jest.spyOn(component.refresh, 'next');
+
+    beforeEach(() => {
+      component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+      component.line.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
+    });
+
+    it('should reset filters', () => {
+      component.onFiltersReset();
+      expect(component.filters).toEqual([]);
+    });
+
+    it('should reset line filters', () => {
+      component.onFiltersReset();
+      expect(component.line.filters).toEqual([]);
+    });
+
+    it('should emit', () => {
+      expect(lineSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('should refresh', () => {
+      expect(refreshSpy).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('onLockColumnChange', () => {
+    const spy = jest.spyOn(component.lineChange, 'emit');
+
+    beforeEach(() => {
+      component.lockColumns = true;
+      component.line.lockColumns = true;
+    });
+
+    it('should toggle lockColumns', () => {
+      component.onLockColumnsChange();
+      expect(component.lockColumns).toBeFalsy();
+    });
+
+    it('should toggle line lockColumns', () => {
+      component.onLockColumnsChange();
+      expect(component.line.lockColumns).toBeFalsy();
+    });
+
+    it('should emit', () => {
+      expect(spy).toHaveBeenCalledTimes(2);
     });
   });
 });

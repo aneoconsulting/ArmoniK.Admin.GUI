@@ -260,12 +260,14 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
     this.displayedColumns = data;
-
-    this.#applicationsIndexService.saveColumns(data);
+    this.line.displayedColumns = data;
+    this.lineChange.emit();
   }
 
   onColumnsReset() {
     this.displayedColumns = this.#applicationsIndexService.resetColumns();
+    this.line.displayedColumns = this.displayedColumns;
+    this.lineChange.emit();
   }
 
   onFiltersReset() {
@@ -277,6 +279,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   onLockColumnsChange() {
     this.lockColumns = !this.lockColumns;
-    this.#applicationsIndexService.saveLockColumns(this.lockColumns);
+    this.line.lockColumns = this.lockColumns;
+    this.lineChange.emit();
   }
 }
