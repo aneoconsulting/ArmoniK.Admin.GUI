@@ -101,6 +101,7 @@ describe('ReorganizeLinesDialogComponent', () => {
     expect(component.lines).toEqual(
       [{
         name: 'line2',
+        type: 'Tasks',
         interval: 20,
         hideGroupsHeader: true,
         filters: [],
