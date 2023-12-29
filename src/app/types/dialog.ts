@@ -53,6 +53,10 @@ export type AddLineDialogResult = {
   name: string;
 };
 
+export type AddLineFromTableDialogResult = {
+  name: string;
+};
+
 export type EditNameLineData = {
   name: string;
 };

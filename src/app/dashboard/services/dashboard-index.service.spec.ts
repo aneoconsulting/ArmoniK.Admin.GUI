@@ -90,6 +90,21 @@ describe('DashboardIndexService', () => {
     expect(mockDashboardStorageService.saveLines).toHaveBeenCalledWith(lines);
   });
 
+  it('should add a line', () => {
+    const newLine: Line = {
+      name: 'Applications',
+      type: 'Applications',
+      displayedColumns: ['name', 'count'],
+      lockColumns: true,
+      options: {pageIndex: 0, pageSize: 10, sort: {active: 'name', direction: 'asc'}},
+      filters: [],
+      interval: 5,
+    };
+    mockDashboardStorageService.restoreLines.mockImplementationOnce(() => []);
+    service.addLine(newLine);
+    expect(mockDashboardStorageService.saveLines).toHaveBeenCalledWith([newLine]);
+  });
+
   it('should restore splitted lines', () => {
     mockDashboardStorageService.restoreSplitLines.mockImplementationOnce(() => 4);
     expect(service.restoreSplitLines()).toEqual(4);

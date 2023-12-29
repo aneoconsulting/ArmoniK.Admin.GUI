@@ -60,6 +60,12 @@ import { SpinnerComponent } from './spinner.component';
           Reset Filters
         </span>
       </button>
+      <button *ngIf="canAddToDashboard" mat-menu-item (click)="onAddLine()">
+          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('dashboard')"></mat-icon>
+          <span i18n appNoWrap>
+            Add this as a line to the dashboard
+          </span>
+        </button>
       <ng-content select="[extra-menu-items]"></ng-content>
     </mat-menu>
   </app-actions-toolbar-group>
@@ -93,6 +99,7 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[] = [];
   @Input({ required: true }) lockColumns = false;
+  @Input() canAddToDashboard = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
@@ -100,6 +107,7 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
   @Output() lockColumnsChange = new EventEmitter<void>();
+  @Output() addLine = new EventEmitter<void>();
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
@@ -127,5 +135,9 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
 
   onLockColumnsChange(): void {
     this.lockColumnsChange.emit();
+  }
+
+  onAddLine(): void {
+    this.addLine.emit();
   }
 }
