@@ -119,24 +119,26 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('onIntervalValueChange', () => {
-    const lineSpy = jest.spyOn(component.lineChange, 'emit');
-    const spyInterval = jest.spyOn(component.interval, 'next');
-    const spyStopInterval = jest.spyOn(component.stopInterval, 'next');
-
     it('should change interval line value', () => {
       component.onIntervalValueChange(5);
       expect(component.line.interval).toEqual(5);
     });
 
     it('should emit on interval change', () => {
+      const lineSpy = jest.spyOn(component.lineChange, 'emit');
+      component.onIntervalValueChange(5);
       expect(lineSpy).toHaveBeenCalled();
     });
 
     it('should change interval value with new value', () => {
+      const spyInterval = jest.spyOn(component.interval, 'next');
+      component.onIntervalValueChange(5);
       expect(spyInterval).toHaveBeenCalledWith(5);
     });
 
     it('should stop interval when the value is 0', () => {
+      const spyStopInterval = jest.spyOn(component.stopInterval, 'next');
+      component.onIntervalValueChange(0);
       expect(spyStopInterval).toHaveBeenCalled();
     });
   });
@@ -159,8 +161,6 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
-    const lineSpy = jest.spyOn(component.lineChange, 'emit');
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
     const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
     
     it('should update applied filters', () => {
@@ -174,18 +174,19 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should emit', () => {
-      expect(lineSpy).toHaveBeenCalledTimes(2);
+      const lineSpy = jest.spyOn(component.lineChange, 'emit');
+      component.onFiltersChange(newFilters);
+      expect(lineSpy).toHaveBeenCalled();
     });
 
     it('should refresh', () => {
-      expect(refreshSpy).toHaveBeenCalledTimes(2);
+      const refreshSpy = jest.spyOn(component.refresh, 'next');
+      component.onFiltersChange(newFilters);
+      expect(refreshSpy).toHaveBeenCalled();
     });
   });
 
   describe('onOptionsChange', () => {
-    const optionsSpy = jest.spyOn(component.optionsChange, 'next');
-    const lineSpy = jest.spyOn(component.lineChange, 'emit');
-
     it('should change line options', () => {
       const newOptions: ApplicationRawListOptions = {
         pageIndex: 2,
@@ -201,16 +202,19 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should refresh', () => {
+      const optionsSpy = jest.spyOn(component.optionsChange, 'next');
+      component.onOptionsChange();
       expect(optionsSpy).toHaveBeenCalled();
     });
 
     it('should emit', () => {
+      const lineSpy = jest.spyOn(component.lineChange, 'emit');
+      component.onOptionsChange();
       expect(lineSpy).toHaveBeenCalled();
     });
   });
 
   describe('OnColumnsChange', () => {
-    const spy = jest.spyOn(component.lineChange, 'emit');
     const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
 
     beforeEach(() => {
@@ -229,13 +233,14 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should emit', () => {
-      expect(spy).toHaveBeenCalledTimes(2);
+      const spy = jest.spyOn(component.lineChange, 'emit');
+      component.onColumnsChange(newColumns);
+      expect(spy).toHaveBeenCalled();
     });
   });
 
   describe('onColumnsReset', () => {
     const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
-    const spy = jest.spyOn(component.lineChange, 'emit');
     mockApplicationsIndexService.resetColumns.mockImplementation(() => defaultColumns);
 
     beforeEach(() => {
@@ -254,13 +259,13 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should emit', () => {
-      expect(spy).toHaveBeenCalledTimes(2);
+      const spy = jest.spyOn(component.lineChange, 'emit');
+      component.onColumnsReset();
+      expect(spy).toHaveBeenCalled();
     });
   });
 
   describe('onFiltersReset', () => {
-    const lineSpy = jest.spyOn(component.lineChange, 'emit');
-    const refreshSpy = jest.spyOn(component.refresh, 'next');
 
     beforeEach(() => {
       component.filters = [[{ field: 1, for: 'root', operator: 1, value: 2 }]];
@@ -278,17 +283,19 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should emit', () => {
-      expect(lineSpy).toHaveBeenCalledTimes(2);
+      const lineSpy = jest.spyOn(component.lineChange, 'emit');
+      component.onFiltersReset();
+      expect(lineSpy).toHaveBeenCalled();
     });
 
     it('should refresh', () => {
-      expect(refreshSpy).toHaveBeenCalledTimes(2);
+      const refreshSpy = jest.spyOn(component.refresh, 'next');
+      component.onFiltersReset();
+      expect(refreshSpy).toHaveBeenCalled();
     });
   });
 
   describe('onLockColumnChange', () => {
-    const spy = jest.spyOn(component.lineChange, 'emit');
-
     beforeEach(() => {
       component.lockColumns = true;
       component.line.lockColumns = true;
@@ -305,7 +312,9 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should emit', () => {
-      expect(spy).toHaveBeenCalledTimes(2);
+      const spy = jest.spyOn(component.lineChange, 'emit');
+      component.onLockColumnsChange();
+      expect(spy).toHaveBeenCalled();
     });
   });
 });
