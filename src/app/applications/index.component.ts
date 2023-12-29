@@ -1,13 +1,18 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
+import { Line } from '@app/dashboard/types';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { AddLineDialogData } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -104,7 +109,8 @@ app-table-actions-toolbar {
     {
       provide: DATA_FILTERS_SERVICE,
       useExisting: ApplicationsFiltersService
-    }
+    },
+    DashboardStorageService
   ],
   imports: [
     NoWrapDirective,
@@ -125,6 +131,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly #dialog = inject(MatDialog);
+  readonly #dashboardIndexService = inject(DashboardIndexService);
 
   displayedColumns: ApplicationRawColumnKey[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
@@ -279,5 +287,25 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onOptionsChange() {
     this.optionsChange.next();
+  }
+
+  onAddLine() {
+    const dialogRef = this.#dialog.open<AddDashboardLineComponent, AddLineDialogData, AddLineFromTableDialogResult>(AddDashboardLineComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const newLine: Line = {
+          name: result.name,
+          type: 'Applications',
+          displayedColumns: this.displayedColumns,
+          lockColumns: this.lockColumns,
+          options: this.options,
+          filters: this.filters,
+          interval: this.intervalValue,
+        };
+        this.#dashboardIndexService.addLine(newLine);
+        this.#notificationService.success('Line successfuly added to the Dashboard !');
+      }
+    });
   }
 }

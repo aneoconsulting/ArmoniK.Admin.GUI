@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { Subject, of, throwError } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { Line } from '@app/dashboard/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DataFilterService } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
@@ -93,17 +95,23 @@ describe('Application component', () => {
   };
 
   const mockNotificationService = {
-    error: jest.fn()
+    error: jest.fn(),
+    success: jest.fn()
   };
 
   const mockGrpcApplicationsService = {
-    list$: jest.fn(() => of(dataSample))
+    list$: jest.fn()
   };
 
   const mockAutoRefreshService = {
     autoRefreshTooltip: jest.fn(),
     createInterval: jest.fn(() => intervalRefreshSubject),
   };
+
+  const mockDashboardIndexService = {
+    addLine: jest.fn()
+  };
+
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
@@ -118,6 +126,7 @@ describe('Application component', () => {
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
         { provide: ApplicationsGrpcService, useValue: mockGrpcApplicationsService },
         { provide: AutoRefreshService, useValue: mockAutoRefreshService },
+        { provide: DashboardIndexService, useValue: mockDashboardIndexService },
       ]
     }).inject(IndexComponent);
     
@@ -268,6 +277,27 @@ describe('Application component', () => {
     it('should call applications index service saveLockColumns', () => {
       component.onLockColumnsChange();
       expect(mockApplicationIndexService.saveLockColumns).toHaveBeenCalledWith(component.lockColumns);
+    });
+  });
+
+  describe('onAddLine', () => {
+    it('should add a line to the dashboard', () => {
+      const newLine: Line = {
+        name: 'Applications',
+        type: 'Applications',
+        displayedColumns: component.displayedColumns,
+        lockColumns: component.lockColumns,
+        options: component.options,
+        filters: component.filters,
+        interval: component.intervalValue,
+      };
+      component.onAddLine();
+      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith(newLine);
+    });
+
+    it('should notify the user', () => {
+      component.onAddLine();
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Line successfuly added to the Dashboard !');
     });
   });
 });
