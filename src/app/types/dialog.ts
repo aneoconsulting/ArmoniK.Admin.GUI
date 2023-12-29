@@ -62,12 +62,12 @@ export type EditNameLineResult = {
   name: string;
 };
 
-export type ReorganizeLinesDialogData<T extends object, U extends object, K extends number> = {
-  lines: Line<T, U, K>[];
+export type ReorganizeLinesDialogData = {
+  lines: Line[];
 };
 
-export type ReorganizeLinesDialogResult<T extends object, U extends object, K extends number> = {
-  lines: Line<T, U, K>[];
+export type ReorganizeLinesDialogResult = {
+  lines: Line[];
 };
 
 export type SplitLinesDialogData = {
