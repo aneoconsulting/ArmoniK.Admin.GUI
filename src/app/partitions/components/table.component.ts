@@ -1,4 +1,4 @@
-import { FilterStringOperator, PartitionRaw, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, PartitionRaw, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -11,6 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored,  } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -129,6 +130,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   
   readonly #partitionsIndexService = inject(PartitionsIndexService);
   readonly #tasksByStatusService = inject(TasksByStatusService);
+  readonly #filtersService = inject(FiltersService);
 
   ngOnInit() {
     this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses('partitions');
@@ -176,9 +178,38 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   }
 
   createTasksByStatusQueryParams(partition: string) {
-    return {
-      [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: partition,
-    };
+    if (this.filters.length === 0) {
+      return {
+        [`0-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`]: partition,
+      };
+    }
+    const params: Record<string, string> = {};
+    this.filters.forEach((filtersAnd, index) => {
+      filtersAnd.filter(filter => this.#isTaskFilter(filter)).forEach((filter) => {
+        const taskField = this.#partitionToTaskFilter(filter.field);
+        if (taskField && filter.operator !== null && filter.value !== null) {
+          const key = this.#filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
+          params[key] = filter.value?.toString();
+        }
+      });
+      params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
+    });
+    return params;
+  }
+
+  #isTaskFilter(filter: Filter<PartitionRawEnumField, null>): boolean {
+    return filter.field === PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID || filter.field === PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY;
+  }
+
+  #partitionToTaskFilter(field: PartitionRawEnumField | null) {
+    switch (field) {
+    case PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID:
+      return TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID;
+    case PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY:
+      return TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY;
+    default:
+      return null;
+    }
   }
 
   countTasksByStatusFilters(partitionId: string): TaskSummaryFiltersOr {
