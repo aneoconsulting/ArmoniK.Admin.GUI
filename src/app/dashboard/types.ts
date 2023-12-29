@@ -8,7 +8,7 @@ import { ColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
-export type LineType = 'Applications' | 'Tasks' | 'Sessions' | 'Partitions' | 'Results';
+export type LineType = 'Applications' | 'Tasks' | 'Sessions' | 'Partitions' | 'Results' | 'CountStatus';
 export type Summary = TaskSummary | ApplicationRaw | PartitionRaw | SessionRaw | ResultRaw;
 export type SummaryOptions = TaskOptions;
 export type FiltersEnums = ApplicationRawEnumField | PartitionRawEnumField | SessionRawEnumField | TaskSummaryEnumField | ResultRawEnumField;

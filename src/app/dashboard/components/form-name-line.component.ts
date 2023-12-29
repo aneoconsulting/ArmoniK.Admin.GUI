@@ -70,7 +70,7 @@ mat-dialog-content {
 export class FormNameLineComponent implements OnInit {
   @Input() line: string | null = null;
   @Input() type: string | null = null;
-  types: LineType[] = ['Tasks'];
+  types: LineType[] = ['CountStatus'];
 
   @Output() cancelChange = new EventEmitter<void>();
   @Output() submitChange = new EventEmitter<AddLineDialogResult>();
