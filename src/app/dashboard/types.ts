@@ -1,12 +1,20 @@
-import {TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ColumnKey } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 
-export type Line = {
+export type LineType = 'Applications' | 'Tasks' | 'Sessions' | 'Partitions' | 'Results';  
+
+export type Line<T extends object, U extends object, K extends number> = {
   name: string,
+  type: LineType
   interval: number,
-  hideGroupsHeader: boolean,
-  filters: TaskSummaryFiltersOr,
-  taskStatusesGroups: TasksStatusesGroup[],
+  hideGroupsHeader?: boolean,
+  filters: FiltersOr<K>,
+  options?: ListOptions<T>;
+  taskStatusesGroups?: TasksStatusesGroup[],
+  displayedColumns?: ColumnKey<T, U>,
+  lockColumns?: boolean;
 };
 
 export type TasksStatusesGroup = {

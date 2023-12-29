@@ -180,7 +180,7 @@ export class IndexComponent implements OnInit {
   readonly #shareURLService = inject(ShareUrlService);
   readonly #dashboardIndexService = inject(DashboardIndexService);
 
-  lines: Line[];
+  lines: Line<object, object, number>[];
   showFabActions = false;
   columns = 1;
 
@@ -208,9 +208,13 @@ export class IndexComponent implements OnInit {
     const dialogRef = this.#dialog.open<AddLineDialogComponent, AddLineDialogData, AddLineDialogResult>(AddLineDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (!result) {
+        return;
+      }
+      else if (result.type === 'Tasks') {
         this.lines.push({
           name: result.name,
+          type: 'Tasks',
           interval: 5,
           hideGroupsHeader: false,
           filters: [],
@@ -242,11 +246,20 @@ export class IndexComponent implements OnInit {
         });
         this.onSaveChange();
       }
+      else {
+        this.lines.push({
+          name: result.name,
+          type: result.type,
+          interval: 5,
+          filters: []
+        });
+      }
+      this.onSaveChange();
     });
   }
 
   onReorganizeLinesDialog() {
-    const dialogRef = this.#dialog.open<ReorganizeLinesDialogComponent, ReorganizeLinesDialogData, ReorganizeLinesDialogResult>(ReorganizeLinesDialogComponent, {
+    const dialogRef = this.#dialog.open<ReorganizeLinesDialogComponent, ReorganizeLinesDialogData<object, object, number>, ReorganizeLinesDialogResult<object, object, number>>(ReorganizeLinesDialogComponent, {
       data: {
         lines: structuredClone(this.lines),
       }
@@ -275,7 +288,7 @@ export class IndexComponent implements OnInit {
     });
   }
 
-  onDeleteLine(value: Line) {
+  onDeleteLine(value: Line<object, object, number>) {
     const index = this.lines.indexOf(value);
     if (index > -1) {
       this.lines.splice(index, 1);
@@ -287,7 +300,7 @@ export class IndexComponent implements OnInit {
     this.#dashboardIndexService.saveLines(this.lines);
   }
 
-  trackByLine(index: number, line: Line): string {
+  trackByLine(index: number, line: Line<object, object, number>): string {
     return line.name + index;
   }
 }
