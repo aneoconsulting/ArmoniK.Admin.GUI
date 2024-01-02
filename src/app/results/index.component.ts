@@ -81,14 +81,20 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
       <th mat-header-cell mat-sort-header *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
       </th>
-      <!-- Columns -->
-      <ng-container *ngIf="isSimpleColumn(column)">
+      <!-- Result ID -->
+      <ng-container *ngIf="isResultIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
             [routerLink]="['/results', element.resultId]"
           >
             {{ element[column] | emptyCell }}
           </a>
+        </td>
+      </ng-container>
+      <!-- Columns -->
+      <ng-container *ngIf="isSimpleColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+            {{ element[column] | emptyCell }}
         </td>
       </ng-container>
       <!-- Session ID -->
@@ -322,6 +328,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
+  }
+
+  isResultIdColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isResultIdColumn(column);
   }
 
   isSessionIdColumn(column: ResultRawColumnKey): boolean {
