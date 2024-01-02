@@ -115,7 +115,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+          <app-table-inspect-object [object]="handleNestedKeys(column, element)" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Date -->
@@ -590,5 +590,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.tasksStatusesColored = result;
       this.#tasksByStatusService.saveStatuses('sessions', result);
     });
+  }
+
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
   }
 }
