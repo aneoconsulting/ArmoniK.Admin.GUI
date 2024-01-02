@@ -22,7 +22,7 @@
     </unit>
     <unit id="1771632592264032965">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:63</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:62</note>
       </notes>
       <segment state="initial">
         <source>has no value</source>
@@ -134,9 +134,9 @@
     </unit>
     <unit id="6555318547274416232">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:20</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:25</note>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:43</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:22</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:40</note>
         <note category="description">Input label</note>
       </notes>
       <segment state="initial">
@@ -166,7 +166,7 @@
     </unit>
     <unit id="9014039725781270505">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:15</note>
         <note category="location">src/app/components/filters/filters-dialog-or.component.ts:13</note>
         <note category="description">Filter condition</note>
       </notes>
@@ -177,7 +177,7 @@
     </unit>
     <unit id="188313477943387511">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
         <note category="description">Filter condition</note>
       </notes>
       <segment state="initial">
@@ -366,7 +366,7 @@
     </unit>
     <unit id="461988732763685587">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:51,53</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:61,63</note>
         <note category="description">Button to view external services</note>
       </notes>
       <segment state="initial">
@@ -376,7 +376,7 @@
     </unit>
     <unit id="3809296122060449520">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:65</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:75</note>
         <note category="description">Button</note>
       </notes>
       <segment state="initial">
@@ -386,7 +386,7 @@
     </unit>
     <unit id="7136888919962092730">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:77</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:87</note>
         <note category="description">Button</note>
       </notes>
       <segment state="initial">
@@ -396,7 +396,7 @@
     </unit>
     <unit id="4895326106573044490">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:81</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:91</note>
         <note category="description">Button</note>
       </notes>
       <segment state="initial">
@@ -444,7 +444,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:47</note>
+        <note category="location">src/app/results/index.component.ts:48</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -583,7 +583,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:156</note>
+        <note category="location">src/app/partitions/index.component.ts:142</note>
       </notes>
       <segment state="initial">
         <source>Select page of partitions</source>
@@ -630,7 +630,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:131</note>
+        <note category="location">src/app/results/index.component.ts:130</note>
       </notes>
       <segment state="initial">
         <source>Select page of results</source>
@@ -1202,7 +1202,7 @@
     </unit>
     <unit id="96019050334234129">
       <notes>
-        <note category="location">src/app/components/filters/filters-chips.component.ts:23</note>
+        <note category="location">src/app/components/filters/filters-chips.component.ts:22</note>
       </notes>
       <segment state="initial">
         <source>No field</source>
@@ -1230,7 +1230,7 @@
     </unit>
     <unit id="8768116776190256027">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:68</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:78</note>
       </notes>
       <segment state="initial">
         <source>More Infos</source>
@@ -1239,7 +1239,7 @@
     </unit>
     <unit id="8942351587754185907">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:87</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:97</note>
         <note category="description">Button</note>
       </notes>
       <segment state="initial">
@@ -1249,7 +1249,7 @@
     </unit>
     <unit id="7027401708987643293">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:94</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:104</note>
         <note category="description">Button</note>
       </notes>
       <segment state="initial">
@@ -1434,7 +1434,7 @@
     </unit>
     <unit id="4930506384627295710">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:211</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:226</note>
       </notes>
       <segment state="initial">
         <source>Settings</source>
@@ -1639,7 +1639,7 @@
     </unit>
     <unit id="1179184907489210406">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:28</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:27</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -1857,7 +1857,7 @@
     </unit>
     <unit id="7514940606218254317">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:174</note>
         <note category="location">src/app/services/filters.service.ts:8</note>
         <note category="location">src/app/services/filters.service.ts:17</note>
         <note category="location">src/app/services/filters.service.ts:26</note>
@@ -1870,7 +1870,7 @@
     </unit>
     <unit id="4601499081638035991">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:176</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
         <note category="location">src/app/services/filters.service.ts:9</note>
         <note category="location">src/app/services/filters.service.ts:18</note>
         <note category="location">src/app/services/filters.service.ts:27</note>
@@ -2432,7 +2432,7 @@
     </unit>
     <unit id="6524262610032366385">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:30</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:27</note>
         <note category="description">Input label</note>
       </notes>
       <segment state="initial">
@@ -2442,7 +2442,7 @@
     </unit>
     <unit id="3792445020401925970">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:19</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:18</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -2472,7 +2472,7 @@
     </unit>
     <unit id="4391289919356861627">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:36</note>
+        <note category="location">src/app/components/filters/filters-dialog-input.component.ts:33</note>
       </notes>
       <segment state="initial">
         <source>Apply</source>
@@ -2513,6 +2513,15 @@
       <segment state="initial">
         <source> See related result </source>
         <target> Voir les résultats liés </target>
+      </segment>
+    </unit>
+    <unit id="1210069423269934042">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:228</note>
+      </notes>
+      <segment state="initial">
+        <source>Change language</source>
+        <target>Changer la langue</target>
       </segment>
     </unit>
   </file>
