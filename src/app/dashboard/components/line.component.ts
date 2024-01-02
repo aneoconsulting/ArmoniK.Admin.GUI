@@ -91,6 +91,7 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
   [group]="group"
   [data]="data"
   [hideGroupHeaders]="line.hideGroupsHeader"
+  [filters]="line.filters"
   ></app-statuses-group-card>
 </div>
   `,
