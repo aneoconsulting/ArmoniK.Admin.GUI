@@ -37,6 +37,9 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Application Column -->
       <ng-container *ngIf="isSimpleColumn(column)">

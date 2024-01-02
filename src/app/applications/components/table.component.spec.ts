@@ -10,12 +10,12 @@ import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { ApplicationTableComponent } from './table.component';
+import { ApplicationsTableComponent } from './table.component';
 import { ApplicationsIndexService } from '../services/applications-index.service';
 import { ApplicationRawFilter } from '../types';
 
 describe('ApplicationTableComponent', () => {
-  let component: ApplicationTableComponent;
+  let component: ApplicationsTableComponent;
 
   const mockApplicationIndexService = {
     availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count'],
@@ -102,7 +102,7 @@ describe('ApplicationTableComponent', () => {
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        ApplicationTableComponent,
+        ApplicationsTableComponent,
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
         {provide: TasksByStatusService, useValue: mockTasksByStatusService },
         {provide: MatDialog, useValue:
@@ -119,7 +119,7 @@ describe('ApplicationTableComponent', () => {
         IconsService,
         FiltersService
       ]
-    }).inject(ApplicationTableComponent);
+    }).inject(ApplicationsTableComponent);
 
     component.displayedColumns = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
     component.filters = [];
