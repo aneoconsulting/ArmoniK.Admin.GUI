@@ -57,7 +57,7 @@
     </unit>
     <unit id="118284616495039929">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:55</note>
+        <note category="location">src/app/partitions/index.component.ts:50</note>
         <note category="location">src/app/services/navigation.service.ts:38</note>
         <note category="description">Page title</note>
       </notes>
@@ -67,7 +67,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:138</note>
+        <note category="location">src/app/partitions/components/table.component.ts:89</note>
       </notes>
       <segment>
         <source>Select page of partitions</source>
@@ -1370,7 +1370,7 @@
     <unit id="1822341529834994016">
       <notes>
         <note category="location">src/app/applications/index.component.ts:236</note>
-        <note category="location">src/app/partitions/index.component.ts:243</note>
+        <note category="location">src/app/partitions/components/table.component.ts:41</note>
         <note category="location">src/app/sessions/index.component.ts:302</note>
       </notes>
       <segment>
