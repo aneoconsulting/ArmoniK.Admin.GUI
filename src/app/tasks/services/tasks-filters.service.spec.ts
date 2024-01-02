@@ -200,7 +200,7 @@ describe('TasksFilterService', () => {
   });
 
   test('the service must return the right label with filterFor options', () => {
-    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[15].for, expectedFiltersDefinitions[15].field);
+    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[18].for, expectedFiltersDefinitions[18].field);
     expect(mockLabelFilterOptions).toEqual('Partition ID');
   });
 

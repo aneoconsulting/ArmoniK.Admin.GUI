@@ -66,7 +66,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:138</note>
+        <note category="location">src/app/partitions/index.component.ts:142</note>
       </notes>
       <segment>
         <source>Select page of partitions</source>
@@ -228,7 +228,7 @@
     </unit>
     <unit id="3809296122060449520">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:65</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:75</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -317,7 +317,7 @@
     </unit>
     <unit id="461988732763685587">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:51,53</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:61,63</note>
         <note category="description">Button to view external services</note>
       </notes>
       <segment>
@@ -355,7 +355,7 @@
     </unit>
     <unit id="4895326106573044490">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:81</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:91</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -495,7 +495,7 @@
     </unit>
     <unit id="7136888919962092730">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:77</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:87</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -1235,7 +1235,7 @@
     </unit>
     <unit id="4930506384627295710">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:211</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:226</note>
       </notes>
       <segment>
         <source>Settings</source>
@@ -1376,7 +1376,7 @@
     </unit>
     <unit id="7027401708987643293">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:94</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:104</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -1443,7 +1443,7 @@
     </unit>
     <unit id="8768116776190256027">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:68</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:78</note>
       </notes>
       <segment>
         <source>More Infos</source>
@@ -1451,7 +1451,7 @@
     </unit>
     <unit id="8942351587754185907">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:87</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:97</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -2259,6 +2259,14 @@
       </notes>
       <segment>
         <source> Unlock columns </source>
+      </segment>
+    </unit>
+    <unit id="1210069423269934042">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:228</note>
+      </notes>
+      <segment>
+        <source>Change language</source>
       </segment>
     </unit>
   </file>

@@ -148,7 +148,7 @@ export class DefaultConfigService {
     interval: 10,
     lockColumns: false,
     columns: [
-      'name',
+      'resultId',
       'sessionId',
     ],
     options: {
@@ -181,6 +181,9 @@ export class DefaultConfigService {
     },
     filters: [],
   };
+
+  readonly #availableLanguages = ['en', 'fr'];
+  readonly #defaultLanguage = this.#availableLanguages.includes(navigator.language) ? navigator.language : 'en';
 
   readonly #defaultTasksViewInLogs = {
     serviceName: null,
@@ -238,7 +241,16 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultTasksViewInLogs);
   }
 
+  get defaultLanguage() {
+    return structuredClone(this.#defaultLanguage);
+  }
+
+  get availableLanguages() {
+    return structuredClone(this.#availableLanguages);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
+    'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
     'navigation-theme': this.#defaultTheme,
     'navigation-external-services': this.#defaultExternalServices,
