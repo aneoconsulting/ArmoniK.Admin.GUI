@@ -14,10 +14,10 @@ export class TasksFiltersService {
   readonly #tableService = inject(TableService);
 
   readonly #rootField: Record<TaskSummaryEnumField, string> = {
-    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task Id`,
-    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID]: $localize`Session Id`,
-    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID]: $localize`Owner Pod Id`,
-    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID]: $localize`Initial Task Id`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID]: $localize`Owner Pod ID`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID]: $localize`Initial Task ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS]: $localize`Status`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT]: $localize`Created at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT]: $localize`Submitted at`,
@@ -38,7 +38,7 @@ export class TasksFiltersService {
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION]: $localize`Max Duration`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES]: $localize`Max Retries`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY]: $localize`Priority`,
-    [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID]: $localize`Partition Id`,
+    [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID]: $localize`Partition ID`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME]: $localize`Application Name`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION]: $localize`Application Version`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE]: $localize`Application Namespace`,

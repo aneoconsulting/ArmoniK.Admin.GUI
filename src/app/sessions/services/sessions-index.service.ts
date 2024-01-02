@@ -17,7 +17,7 @@ export class SessionsIndexService {
   readonly objectColumns: SessionRawColumnKey[] = ['options', 'options.options', 'partitionIds'];
 
   readonly columnsLabels: Record<SessionRawColumnKey, string> = {
-    sessionId: $localize`Session Id`,
+    sessionId: $localize`Session ID`,
     status: $localize`Status`,
     cancelledAt: $localize`Cancelled at`,
     createdAt: $localize`Created at`,
@@ -34,7 +34,7 @@ export class SessionsIndexService {
     'options.engineType': $localize`Options Engine Type`,
     'options.maxDuration': $localize`Options Max Duration`,
     'options.maxRetries': $localize`Options Max Retries`,
-    'options.partitionId': $localize`Options Partition Id`,
+    'options.partitionId': $localize`Options Partition ID`,
     'options.priority': $localize`Options Priority`,
   };
 

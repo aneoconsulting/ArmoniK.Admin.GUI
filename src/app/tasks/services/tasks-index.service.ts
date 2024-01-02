@@ -19,7 +19,7 @@ export class TasksIndexService {
   readonly objectColumns: TaskSummaryColumnKey[] = ['options', 'options.options'];
 
   readonly columnsLabels: Record<TaskSummaryColumnKey, string> = {
-    id: $localize`Task Id`,
+    id: $localize`Task ID`,
     status: $localize`Status`,
     createdAt: $localize`Created at`,
     actions: $localize`Actions`,
@@ -30,14 +30,14 @@ export class TasksIndexService {
     'options.engineType': $localize`Options Engine Type`,
     'options.maxDuration': $localize`Options Max Duration`,
     'options.maxRetries': $localize`Options Max Retries`,
-    'options.partitionId': $localize`Options Partition Id`,
+    'options.partitionId': $localize`Options Partition ID`,
     'options.priority': $localize`Options Priority`,
     'options.options': $localize`Options Options`,
-    sessionId: $localize`Session Id`,
+    sessionId: $localize`Session ID`,
     acquiredAt: $localize`Acquired at`,
     endedAt: $localize`Ended at`,
-    initialTaskId: $localize`Initial Task Id`,
-    ownerPodId: $localize`Owner Pod Id`,
+    initialTaskId: $localize`Initial Task ID`,
+    ownerPodId: $localize`Owner Pod ID`,
     podHostname: $localize`Pod Hostname`,
     podTtl: $localize`Pod TTL`,
     receivedAt: $localize`Received at`,

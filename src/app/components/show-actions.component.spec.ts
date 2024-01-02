@@ -49,7 +49,7 @@ describe('ShowActionComponent', () => {
   });
 
   describe('ownerSessionId', () => {
-    it('should retrieve the session Id of a task', () => {
+    it('should retrieve the session ID of a task', () => {
       component.data = {
         sessionId: '01ezac-erzd30t-reE'
       } as unknown as TaskRaw;
@@ -57,7 +57,7 @@ describe('ShowActionComponent', () => {
       expect(component.ownerSessionId()).toEqual('01ezac-erzd30t-reE');
     });
 
-    it('should retrieve the session Id of a result', () => {
+    it('should retrieve the session ID of a result', () => {
       component.data = {
         sessionId: '01ezac-erzd30t-reA'
       } as unknown as ResultRaw;
@@ -66,7 +66,7 @@ describe('ShowActionComponent', () => {
     });
   });
 
-  it('should get the owner task Id of a result', () => {
+  it('should get the owner task ID of a result', () => {
     component.data = {
       ownerTaskId: 'some-task-id'
     } as unknown as ResultRaw;

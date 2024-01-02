@@ -97,7 +97,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
             {{ element[column] | emptyCell }}
         </td>
       </ng-container>
-      <!-- Session Id -->
+      <!-- Session ID -->
       <ng-container *ngIf="isSessionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button

@@ -97,7 +97,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
           {{ element[column] | emptyCell }}
         </td>
       </ng-container>
-      <!-- Id -->
+      <!-- ID -->
       <ng-container *ngIf="isPartitionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button [routerLink]="['/partitions', element.id]">

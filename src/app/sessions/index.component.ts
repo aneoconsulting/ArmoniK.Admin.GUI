@@ -102,7 +102,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
           <span> {{ show(element, column) | emptyCell }} </span>
         </td>
       </ng-container>
-      <!-- Id -->
+      <!-- ID -->
       <ng-container *ngIf="isSessionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
@@ -159,7 +159,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
           <mat-menu #menu="matMenu">
             <button mat-menu-item [cdkCopyToClipboard]="element.sessionId" (cdkCopyToClipboardCopied)="onCopiedSessionId()">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
-              <span i18n>Copy Session Id</span>
+              <span i18n>Copy Session ID</span>
             </button>
             <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.sessionId)">
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
@@ -529,7 +529,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onCopiedSessionId() {
-    this.#notificationService.success('Session Id copied to clipboard');
+    this.#notificationService.success('Session ID copied to clipboard');
   }
 
   onCancel(sessionId: string) {

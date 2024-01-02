@@ -145,7 +145,7 @@ describe('SessionsFiltersService', () => {
   });
 
   it('should retrieve labels for a root filter', () => {
-    expect(service.retrieveLabel('root', 1)).toEqual('Session Id');
+    expect(service.retrieveLabel('root', 1)).toEqual('Session ID');
   });
 
   it('should retrieve labels for an option filter', () => {

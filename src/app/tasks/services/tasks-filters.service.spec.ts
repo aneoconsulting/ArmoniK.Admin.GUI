@@ -196,7 +196,7 @@ describe('TasksFilterService', () => {
 
   test('the service must return the right label with filterFor root', () => {
     const mockLabelFilterRoot = service.retrieveLabel(expectedFiltersDefinitions[2].for, expectedFiltersDefinitions[2].field);
-    expect(mockLabelFilterRoot).toEqual('Initial Task Id');
+    expect(mockLabelFilterRoot).toEqual('Initial Task ID');
   });
 
   test('the service must return the right label with filterFor options', () => {

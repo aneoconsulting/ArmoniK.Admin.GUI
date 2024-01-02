@@ -9,7 +9,7 @@ describe('TasksIndexService', () => {
   let service: TasksIndexService; 
 
   const expectedColumnLabels: Record<TaskSummaryColumnKey, string> = {
-    id: 'Task Id',
+    id: 'Task ID',
     status: 'Status',
     createdAt: 'Created at',
     actions:'Actions',
@@ -20,14 +20,14 @@ describe('TasksIndexService', () => {
     'options.engineType': 'Options Engine Type',
     'options.maxDuration': 'Options Max Duration',
     'options.maxRetries': 'Options Max Retries',
-    'options.partitionId':'Options Partition Id',
+    'options.partitionId':'Options Partition ID',
     'options.priority': 'Options Priority',
     'options.options': 'Options Options',
-    sessionId: 'Session Id',
+    sessionId: 'Session ID',
     acquiredAt: 'Acquired at',
     endedAt: 'Ended at',
-    initialTaskId: 'Initial Task Id',
-    ownerPodId: 'Owner Pod Id',
+    initialTaskId: 'Initial Task ID',
+    ownerPodId: 'Owner Pod ID',
     podHostname: 'Pod Hostname',
     podTtl: 'Pod TTL',
     receivedAt: 'Received at',

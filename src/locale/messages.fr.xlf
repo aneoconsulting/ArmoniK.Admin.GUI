@@ -166,7 +166,7 @@
     </unit>
     <unit id="9014039725781270505">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:15</note>
         <note category="location">src/app/components/filters/filters-dialog-or.component.ts:13</note>
         <note category="description">Filter condition</note>
       </notes>
@@ -177,7 +177,7 @@
     </unit>
     <unit id="188313477943387511">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:17</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:16</note>
         <note category="description">Filter condition</note>
       </notes>
       <segment state="initial">
@@ -952,14 +952,14 @@
         <target>Supprimer <ph id="0" equiv="INTERPOLATION" disp="{{ group.name }}"/></target>
       </segment>
     </unit>
-    <unit id="7286430803380181008">
+    <unit id="8040881171107393560">
       <notes>
         <note category="location">src/app/partitions/services/partitions-filters.service.ts:16</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:21</note>
       </notes>
       <segment state="initial">
-        <source>Id</source>
-        <target>Id</target>
+        <source>ID</source>
+        <target>ID</target>
       </segment>
     </unit>
     <unit id="2734022681675842051">
@@ -976,6 +976,7 @@
     </unit>
     <unit id="8541569923897487029">
       <notes>
+        <note category="location">src/app/partitions/services/partitions-filters.service.ts:17</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:23</note>
       </notes>
       <segment state="initial">
@@ -1038,14 +1039,14 @@
         <target>Statut</target>
       </segment>
     </unit>
-    <unit id="4938343305746289115">
+    <unit id="275046745253005384">
       <notes>
         <note category="location">src/app/results/services/results-filters.service.ts:21</note>
         <note category="location">src/app/results/services/results-index.service.ts:21</note>
       </notes>
       <segment state="initial">
-        <source>Owner Task Id</source>
-        <target>Id du Propriétaire de la Tâche</target>
+        <source>Owner Task ID</source>
+        <target>ID du Propriétaire de la Tâche</target>
       </segment>
     </unit>
     <unit id="1520049505561836231">
@@ -1061,7 +1062,7 @@
         <target>Créé à</target>
       </segment>
     </unit>
-    <unit id="1029693137012546084">
+    <unit id="8339581786626550712">
       <notes>
         <note category="location">src/app/results/services/results-filters.service.ts:23</note>
         <note category="location">src/app/results/services/results-index.service.ts:23</note>
@@ -1071,8 +1072,8 @@
         <note category="location">src/app/tasks/services/tasks-index.service.ts:36</note>
       </notes>
       <segment state="initial">
-        <source>Session Id</source>
-        <target>Session Id</target>
+        <source>Session ID</source>
+        <target>Session ID</target>
       </segment>
     </unit>
     <unit id="2829243786450918109">
@@ -1085,14 +1086,14 @@
         <target>Complété à</target>
       </segment>
     </unit>
-    <unit id="5705184982606558141">
+    <unit id="8754753518138536255">
       <notes>
         <note category="location">src/app/results/services/results-filters.service.ts:22</note>
         <note category="location">src/app/results/services/results-index.service.ts:26</note>
       </notes>
       <segment state="initial">
-        <source>Result Id</source>
-        <target>Id du Résultat</target>
+        <source>Result ID</source>
+        <target>ID du Résultat</target>
       </segment>
     </unit>
     <unit id="9135780517563211822">
@@ -1451,13 +1452,13 @@
         <target>Séparateur</target>
       </segment>
     </unit>
-    <unit id="7672054629986400255">
+    <unit id="2003528003863981175">
       <notes>
         <note category="location">src/app/sessions/index.component.ts:162</note>
       </notes>
       <segment state="initial">
-        <source>Copy Session Id</source>
-        <target>Copier l&apos;Id de la Session</target>
+        <source>Copy Session ID</source>
+        <target>Copier l&apos;ID de la Session</target>
       </segment>
     </unit>
     <unit id="4471277768650583130">
@@ -1559,14 +1560,14 @@
         <target>Options Tentatives Maximales</target>
       </segment>
     </unit>
-    <unit id="3100793020528993603">
+    <unit id="6580224975592352227">
       <notes>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:37</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:33</note>
       </notes>
       <segment state="initial">
-        <source>Options Partition Id</source>
-        <target>Options Id des Partitions</target>
+        <source>Options Partition ID</source>
+        <target>Options ID des Partitions</target>
       </segment>
     </unit>
     <unit id="6055016131495209423">
@@ -1641,7 +1642,7 @@
     </unit>
     <unit id="1179184907489210406">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:28</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:27</note>
         <note category="description">Label input</note>
       </notes>
       <segment state="initial">
@@ -2042,14 +2043,14 @@
         <target>Nombre maximum de tentatives</target>
       </segment>
     </unit>
-    <unit id="5753198685834101034">
+    <unit id="8518087201830601782">
       <notes>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:36</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:41</note>
       </notes>
       <segment state="initial">
-        <source>Partition Id</source>
-        <target>Id des Partition</target>
+        <source>Partition ID</source>
+        <target>ID des Partition</target>
       </segment>
     </unit>
     <unit id="2887251461858216261">
@@ -2179,13 +2180,13 @@
         <target>Étendre</target>
       </segment>
     </unit>
-    <unit id="6331220093106488374">
+    <unit id="2053193386661149821">
       <notes>
         <note category="location">src/app/tasks/index.component.ts:181</note>
       </notes>
       <segment state="initial">
-        <source>Copy Task Id</source>
-        <target>Copier les Id des tâches</target>
+        <source>Copy Task ID</source>
+        <target>Copier les ID des tâches</target>
       </segment>
     </unit>
     <unit id="7754017504605840618">
@@ -2251,34 +2252,34 @@
         <target>Sélectionner la tâche <ph id="0" equiv="PH" disp="row.id"/></target>
       </segment>
     </unit>
-    <unit id="4667673865076211922">
+    <unit id="7839508346035554208">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:17</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:22</note>
       </notes>
       <segment state="initial">
-        <source>Task Id</source>
-        <target>Id de la tâche</target>
+        <source>Task ID</source>
+        <target>ID de la tâche</target>
       </segment>
     </unit>
-    <unit id="830915784711048075">
+    <unit id="6950534549804195606">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:19</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:40</note>
       </notes>
       <segment state="initial">
-        <source>Owner Pod Id</source>
-        <target>Id du Pod Propriétaire</target>
+        <source>Owner Pod ID</source>
+        <target>ID du Pod Propriétaire</target>
       </segment>
     </unit>
-    <unit id="506972729589968546">
+    <unit id="8925219422630998687">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:20</note>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:39</note>
       </notes>
       <segment state="initial">
-        <source>Initial Task Id</source>
-        <target>Id de la tâche initiale</target>
+        <source>Initial Task ID</source>
+        <target>ID de la tâche initiale</target>
       </segment>
     </unit>
     <unit id="3028758082504855499">
@@ -2389,18 +2390,9 @@
         <target>Compter les dépendances de données</target>
       </segment>
     </unit>
-    <unit id="5111264093259746517">
+    <unit id="6990738933464485342">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:51</note>
-      </notes>
-      <segment state="initial">
-        <source>Count Expected Output IDs</source>
-        <target>Compter les IDs de sortie attendus</target>
-      </segment>
-    </unit>
-    <unit id="2247755933693524640">
-      <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:52</note>
       </notes>
       <segment state="initial">
         <source>Count Expected Output Ids</source>
@@ -2409,7 +2401,7 @@
     </unit>
     <unit id="920308880438249076">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:53</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:52</note>
       </notes>
       <segment state="initial">
         <source>Count Parent Task Ids</source>

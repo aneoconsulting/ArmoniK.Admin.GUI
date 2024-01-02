@@ -13,7 +13,7 @@ export class PartitionsFiltersService {
   readonly #tableService = inject(TableService);
 
   readonly #rootField: Record<PartitionRawEnumField, string> = {
-    [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID]: $localize`Id`,
+    [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID]: $localize`ID`,
     [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS]: $localize`Parent Partition Ids`,
     [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX]: $localize`Pod Max`,
     [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_RESERVED]: $localize`Pod Reserved`,
