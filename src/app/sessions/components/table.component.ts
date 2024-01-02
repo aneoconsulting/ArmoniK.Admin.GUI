@@ -90,7 +90,7 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
         <td mat-cell *matCellDef="let element" appNoWrap>
           <app-count-tasks-by-status
             [statuses]="tasksStatusesColored"
-            [queryParams]="createTasksByStatusQueryParams(element.sessionId)"
+            [queryParams]="createSessionIdQueryParams(element.sessionId)"
             [filters]="countTasksByStatusFilters(element.sessionId)"
           >
           </app-count-tasks-by-status>
@@ -271,18 +271,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   }
 
   extractData(element: SessionRaw, column: SessionRawColumnKey): Duration | null {
-    if (column.startsWith('options.')) {
-      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = element['options'] as TaskOptions | undefined;
-
-      if (!options) {
-        return null;
-      }
-
-      return options[optionColumn] as unknown as Duration;
-    }
-
-    return element[column as keyof SessionRaw] as unknown as Duration;
+    return this.show(element, column) as Duration | null;
   }
 
   // TODO: move to a service for date and time
@@ -321,14 +310,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         }
       ]
     ];
-  }
-
-  createTasksByStatusQueryParams(sessionId: string) {
-    const keySession = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-
-    return {
-      [keySession]: sessionId,
-    };
   }
 
   onCancel(sessionId: string) {
