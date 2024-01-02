@@ -4,7 +4,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -13,13 +13,14 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
-import { TaskStatusColored } from '@app/types/dialog';
+import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
+import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
@@ -41,6 +42,9 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
@@ -173,7 +177,8 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
     DatePipe,
     DurationPipe,
     EmptyCellPipe,
-    TableInspectObjectComponent
+    TableInspectObjectComponent,
+    MatDialogModule
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
@@ -198,9 +203,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   readonly _filtersService = inject(FiltersService);
   readonly _notificationService = inject(NotificationService);
   readonly _sessionsStatusesService = inject(SessionsStatusesService);
+  readonly _dialog = inject(MatDialog);
 
   ngOnInit(): void {
-    this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('applications');
+    this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('sessions');
   }
 
   ngAfterViewInit(): void {
@@ -329,5 +335,20 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     }
 
     return session[column as keyof SessionRaw];
+  }
+
+  personalizeTasksByStatus() {
+    const dialogRef = this._dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
+      data: {
+        statusesCounts: this.tasksStatusesColored,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.tasksStatusesColored = result;
+        this._tasksByStatusService.saveStatuses('sessions', result);
+      }
+    });
   }
 }

@@ -2,9 +2,11 @@ import { SessionRaw, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { of } from 'rxjs';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -49,7 +51,8 @@ describe('ApplicationsTableComponent', () => {
   } as unknown as MatPaginator;
 
   const mockTasksByStatusService = {
-    restoreStatuses: jest.fn(() => tasksStatusesColored)
+    restoreStatuses: jest.fn(() => tasksStatusesColored),
+    saveStatuses: jest.fn(),
   };
 
   const mockSessionsIndexService = {
@@ -70,6 +73,17 @@ describe('ApplicationsTableComponent', () => {
     success: jest.fn()
   };
 
+  const dialogResult = 'color';
+  const mockMatDialog = {
+    open: () => {
+      return {
+        afterClosed() {
+          return of(dialogResult);
+        }
+      };
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -79,7 +93,8 @@ describe('ApplicationsTableComponent', () => {
         IconsService,
         FiltersService,
         {provide: NotificationService, useValue: mockNotificationService},
-        SessionsStatusesService
+        SessionsStatusesService,
+        {provide: MatDialog, useValue: mockMatDialog}
       ]
     }).inject(ApplicationsTableComponent);
 
@@ -283,7 +298,8 @@ describe('ApplicationsTableComponent', () => {
     expect(spy).toHaveBeenCalledWith('sessionId');
   });
 
-  it('should show the specified option of a session', () => {
-    
+  it('should personalize tasks by status', () => {
+    component.personalizeTasksByStatus();
+    expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith('sessions', dialogResult);
   });
 });

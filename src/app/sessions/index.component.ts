@@ -2,7 +2,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -15,14 +14,13 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { TaskStatusColored } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -147,7 +145,6 @@ app-table-actions-toolbar {
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    MatDialogModule,
     ApplicationsTableComponent
   ]
 })
@@ -155,7 +152,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #notificationService = inject(NotificationService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
-  readonly _dialog = inject(MatDialog);
   readonly _tasksByStatusService = inject(TasksByStatusService);
 
   displayedColumns: SessionRawColumnKey[] = [];
@@ -182,8 +178,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
-
-  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   constructor(
     private _iconsService: IconsService,
@@ -323,27 +317,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  personalizeTasksByStatus() {
-    const dialogRef = this._dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
-      data: {
-        statusesCounts: this.tasksStatusesColored,
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
-        return;
-      }
-
-      this.tasksStatusesColored = result;
-      this._tasksByStatusService.saveStatuses('sessions', result);
-    });
-  }
-
   onOptionsChange() {
     this.optionsChange.next();
   }
-  
+
   handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
     const keys = nestedKeys.split('.');
     let resultObject: {[key: string]: object} = element;
