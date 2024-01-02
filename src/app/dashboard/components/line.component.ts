@@ -91,6 +91,7 @@ import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types
   [group]="group"
   [data]="data"
   [hideGroupHeaders]="line.hideGroupsHeader ?? false"
+  [filters]="taskByStatusFilters()"
   ></app-statuses-group-card>
 </div>
   `,
@@ -265,5 +266,9 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();
+  }
+
+  taskByStatusFilters() {
+    return this.line.filters as TaskSummaryFiltersOr;
   }
 }

@@ -11,6 +11,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
@@ -71,14 +72,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
       >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-          <span i18n appNoWrap>
-            Personalize Tasks Status
-          </span>
-        </button>
-      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -94,6 +87,9 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" [matTooltip]="personnalizedTaskToolTip">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Application Column -->
       <ng-container *ngIf="isSimpleColumn(column)">
@@ -203,6 +199,7 @@ app-table-actions-toolbar {
     MatMenuModule,
     MatDialogModule,
     TableEmptyDataComponent,
+    MatTooltipModule,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -242,6 +239,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
+
+  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   ngOnInit() {
     this.displayedColumns = this.#partitionsIndexService.restoreColumns();
