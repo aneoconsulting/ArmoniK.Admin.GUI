@@ -434,7 +434,7 @@
     </unit>
     <unit id="2914520322361316995">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:60</note>
+        <note category="location">src/app/sessions/index.component.ts:50</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -640,7 +640,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:192</note>
+        <note category="location">src/app/sessions/components/table.component.ts:142</note>
       </notes>
       <segment state="initial">
         <source>Select page of sessions</source>
@@ -1195,7 +1195,7 @@
       <notes>
         <note category="location">src/app/applications/index.component.ts:236</note>
         <note category="location">src/app/partitions/index.component.ts:243</note>
-        <note category="location">src/app/sessions/index.component.ts:302</note>
+        <note category="location">src/app/sessions/components/table.component.ts:45</note>
       </notes>
       <segment state="initial">
         <source>Personalize Tasks Status</source>
@@ -1454,7 +1454,7 @@
     </unit>
     <unit id="2003528003863981175">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:162</note>
+        <note category="location">src/app/sessions/components/table.component.ts:112</note>
       </notes>
       <segment state="initial">
         <source>Copy Session ID</source>
@@ -1473,7 +1473,7 @@
     </unit>
     <unit id="43160648223881099">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:174</note>
+        <note category="location">src/app/sessions/components/table.component.ts:124</note>
       </notes>
       <segment state="initial">
         <source>Cancel session</source>
@@ -1998,7 +1998,7 @@
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:47</note>
         <note category="location">src/app/components/show-actions.component.ts:52</note>
-        <note category="location">src/app/sessions/index.component.ts:170</note>
+        <note category="location">src/app/sessions/components/table.component.ts:120</note>
       </notes>
       <segment state="initial">
         <source>See results</source>
@@ -2495,7 +2495,7 @@
     </unit>
     <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:166</note>
+        <note category="location">src/app/sessions/components/table.component.ts:116</note>
       </notes>
       <segment state="initial">
         <source>See related tasks</source>
