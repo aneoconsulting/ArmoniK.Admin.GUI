@@ -164,7 +164,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+          <app-table-inspect-object [object]="handleNestedKeys(column, element)" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Actions -->
@@ -666,5 +666,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   idAssignment(taskId: string) {
     this.taskId = taskId;
+  }
+
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
   }
 }

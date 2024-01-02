@@ -69,14 +69,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOpt
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
     >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-          <span i18n appNoWrap>
-            Personalize Tasks Status
-          </span>
-        </button>
-      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -190,6 +182,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
+
+  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   constructor(
     private _iconsService: IconsService,
@@ -348,5 +342,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onOptionsChange() {
     this.optionsChange.next();
+  }
+  
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
   }
 }

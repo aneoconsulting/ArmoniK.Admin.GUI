@@ -10,6 +10,7 @@ export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'ta
 export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns';
 
 export type Key =
+  'language' |
   'navigation-sidebar' |
   'navigation-theme' |
   'navigation-external-services' |
