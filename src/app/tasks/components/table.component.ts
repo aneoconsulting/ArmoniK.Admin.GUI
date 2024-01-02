@@ -240,10 +240,10 @@ export class TasksTableComponent implements AfterViewInit {
     });
   }
 
-  show(session: TaskSummary, column: TaskSummaryColumnKey) {
+  show(task: TaskSummary, column: TaskSummaryColumnKey) {
     if (column.startsWith('options.')) {
       const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = session['options'] as TaskOptions | undefined;
+      const options = task['options'] as TaskOptions | undefined;
 
       if (!options) {
         return null;
@@ -252,22 +252,11 @@ export class TasksTableComponent implements AfterViewInit {
       return options[optionColumn];
     }
 
-    return session[column as keyof TaskSummary];
+    return task[column as keyof TaskSummary];
   }
 
-  extractData(element: TaskSummary, column: TaskSummaryColumnKey): Duration | null {
-    if (column.startsWith('options.')) {
-      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = element['options'] as TaskOptions | undefined;
-
-      if (!options) {
-        return null;
-      }
-
-      return options[optionColumn] as unknown as Duration;
-    }
-
-    return element[column as keyof TaskSummary] as unknown as Duration;
+  extractData(task: TaskSummary, column: TaskSummaryColumnKey): Duration | null {
+    return (this.show(task, column) as Duration) ?? null;
   }
 
   isActionsColumn(column: TaskSummaryColumnKey): boolean {
@@ -368,14 +357,14 @@ export class TasksTableComponent implements AfterViewInit {
 
   checkboxLabel(row?: TaskSummary): string {
     if (!row) {
-      return $localize`${this.isAllSelected() ? 'select' : 'deselect'} all`;
+      return $localize`${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
-
-    if (this.selection.isSelected(row)) {
+    else if (this.selection.isSelected(row)) {
       return $localize`Deselect Task ${row.id}`;
     }
-
-    return $localize`Select Task ${row.id}`;
+    else {
+      return $localize`Select Task ${row.id}`;
+    }
   }
 
   trackByColumn(index: number, item: TaskSummaryColumnKey): string {
