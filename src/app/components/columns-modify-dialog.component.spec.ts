@@ -13,11 +13,11 @@ describe('', () => {
   const mockMatDialogData = {
     currentColumns: ['id', 'created_time'],
     columnsLabels: {
-      'id': 'Id',
+      'id': 'ID',
       'created_time': 'Creation time',
       'name': 'Name',
       'duration': 'Duration',
-      'options.task_id': 'Task Id',
+      'options.task_id': 'Task ID',
       'actions': 'Actions'
     } as Record<ColumnKey<object, object>, string>,
     availableColumns: ['name', 'duration', 'options.task_id', 'actions']
