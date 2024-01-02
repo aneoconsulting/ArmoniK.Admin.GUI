@@ -153,7 +153,7 @@ describe('ApplicationTableComponent', () => {
     });
   });
 
-  it('should update options sort on sort change', () => {
+  it('should update options pagination on page change', () => {
     component.ngAfterViewInit();
     paginator.page.emit();
     expect(component.options).toEqual({
