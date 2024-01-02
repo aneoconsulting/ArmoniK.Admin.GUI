@@ -19,7 +19,8 @@ describe('ApplicationTableComponent', () => {
     isDateColumn: jest.fn(),
     isStatusColumn: jest.fn(),
     isSimpleColumn: jest.fn(),
-    saveColumns: jest.fn()
+    saveColumns: jest.fn(),
+    isResultIdColumn: jest.fn()
   };
 
   const sort: MatSort = {
@@ -86,6 +87,11 @@ describe('ApplicationTableComponent', () => {
   it('should return the label of a column', () => {
     component.columnToLabel('name');
     expect(mockResultsIndexService.columnToLabel).toHaveBeenCalledWith('name');
+  });
+
+  it('should check if a column is a resultId column', () => {
+    component.isResultIdColumn('resultId');
+    expect(mockResultsIndexService.isResultIdColumn).toHaveBeenCalledWith('resultId');
   });
 
   it('should check if a column is sessionId', () => {
