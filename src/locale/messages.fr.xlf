@@ -583,7 +583,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:142</note>
+        <note category="location">src/app/partitions/index.component.ts:138</note>
       </notes>
       <segment state="initial">
         <source>Select page of partitions</source>
@@ -630,7 +630,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:130</note>
+        <note category="location">src/app/results/index.component.ts:136</note>
       </notes>
       <segment state="initial">
         <source>Select page of results</source>
