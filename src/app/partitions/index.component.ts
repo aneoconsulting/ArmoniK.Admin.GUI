@@ -11,6 +11,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
@@ -71,14 +72,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
       >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-          <span i18n appNoWrap>
-            Personalize Tasks Status
-          </span>
-        </button>
-      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -88,12 +81,15 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" [matTooltip]="personnalizedTaskToolTip">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Application Column -->
       <ng-container *ngIf="isSimpleColumn(column)">
@@ -104,7 +100,9 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
       <!-- Id -->
       <ng-container *ngIf="isPartitionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element[column] }}
+          <a mat-button [routerLink]="['/partitions', element.id]">
+            {{ element[column] }}
+          </a>
         </td>
       </ng-container>
       <!-- Object -->
@@ -122,20 +120,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
             [filters]="countTasksByStatusFilters(element.id)"
           >
           </app-count-tasks-by-status>
-        </td>
-      </ng-container>
-      <!-- Action -->
-      <ng-container *ngIf="isActionsColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/partitions', element.id]">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n>See partition</span>
-            </a>
-          </mat-menu>
         </td>
       </ng-container>
     </ng-container>
@@ -215,6 +199,7 @@ app-table-actions-toolbar {
     MatMenuModule,
     MatDialogModule,
     TableEmptyDataComponent,
+    MatTooltipModule,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -254,6 +239,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
+
+  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   ngOnInit() {
     this.displayedColumns = this.#partitionsIndexService.restoreColumns();
@@ -333,10 +320,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isPartitionIdColumn(column: PartitionRawColumnKey): boolean {
     return this.#partitionsIndexService.isPartitionIdColumn(column);
-  }
-
-  isActionsColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isActionsColumn(column);
   }
 
   isObjectColumn(column: PartitionRawColumnKey): boolean {

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { Subject, map, switchMap } from 'rxjs';
 import { AppShowComponent } from '@app/types/components';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
@@ -21,7 +21,7 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses">
+<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="results" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
@@ -49,6 +49,8 @@ import { ResultRaw } from './types';
 export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, AfterViewInit {
   sharableURL = '';
   data: ResultRaw | null = null;
+  refresh = new Subject<void>();
+  id: string;
 
   #iconsService = inject(IconsService);
   #shareURLService = inject(ShareUrlService);
@@ -64,16 +66,21 @@ export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, After
   }
 
   ngAfterViewInit(): void {
-    this._route.params.pipe(
-      map(params => params['id']),
-      switchMap((id) => {
-        return this._resultsGrpcService.get$(id);
+    this.refresh.pipe(
+      switchMap(() => {
+        return this._resultsGrpcService.get$(this.id);
       }),
       map((data) => {
         return data.result ?? null;
       })
-    )
-      .subscribe((data) => this.data = data);
+    ).subscribe((data) => this.data = data);
+
+    this._route.params.pipe(
+      map(params => params['id']),
+    ).subscribe(id => {
+      this.id = id;
+      this.refresh.next();
+    });
   }
 
   get statuses() {
@@ -82,5 +89,9 @@ export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, After
 
   getPageIcon(page: Page): string {
     return this.#iconsService.getPageIcon(page);
+  }
+
+  onRefresh() {
+    this.refresh.next();
   }
 }

@@ -11,7 +11,7 @@ export class ResultsIndexService {
 
   readonly defaultColumns: ResultRawColumnKey[] = this.#defaultConfigService.defaultResults.columns;
   readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultResults.lockColumns;
-  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'actions'];
+  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'resultId'];
 
   readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
 
@@ -40,12 +40,12 @@ export class ResultsIndexService {
    * Table
    */
 
-  isSessionIdColumn(column: ResultRawColumnKey): boolean {
-    return column === 'sessionId';
+  isResultIdColumn(column: ResultRawColumnKey): boolean {
+    return column === 'resultId';
   }
 
-  isActionsColumn(column: ResultRawColumnKey): boolean {
-    return column === 'actions';
+  isSessionIdColumn(column: ResultRawColumnKey): boolean {
+    return column === 'sessionId';
   }
 
   isStatusColumn(column: ResultRawColumnKey): boolean {
@@ -56,12 +56,9 @@ export class ResultsIndexService {
     return this.dateColumns.includes(column);
   }
 
-  isNotSortableColumn(column: ResultRawColumnKey): boolean {
-    return this.isActionsColumn(column);
-  }
 
   isSimpleColumn(column: ResultRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isStatusColumn(column) && !this.isDateColumn(column) && !this.isSessionIdColumn(column);
+    return !this.isStatusColumn(column) && !this.isDateColumn(column) && !this.isSessionIdColumn(column);
   }
 
   /**
