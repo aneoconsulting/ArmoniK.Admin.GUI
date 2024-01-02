@@ -1,4 +1,4 @@
-import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
@@ -23,6 +23,7 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
 import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -73,17 +74,27 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
+      <th mat-header-cell mat-sort-header *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
       </th>
+      <!-- Result ID -->
+      <ng-container *ngIf="isResultIdColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          <a mat-button
+            [routerLink]="['/results', element.resultId]"
+          >
+            {{ element[column] | emptyCell }}
+          </a>
+        </td>
+      </ng-container>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element[column] | emptyCell }}
+            {{ element[column] | emptyCell }}
         </td>
       </ng-container>
       <!-- Session ID -->
@@ -91,9 +102,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
             [routerLink]="['/sessions']"
-            [queryParams]="{
-              sessionId: element[column],
-            }"
+            [queryParams]="createSessionIdQueryParams(element.sessionId)"
           >
             {{ element[column] }}
           </a>
@@ -109,20 +118,6 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawFiltersOr, R
       <ng-container *ngIf="isStatusColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <span> {{ statusToLabel(element[column]) }} </span>
-        </td>
-      </ng-container>
-      <!-- Action -->
-      <ng-container *ngIf="isActionsColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/results', element.resultId]">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n> See result </span>
-            </a>
-          </mat-menu>
         </td>
       </ng-container>
     </ng-container>
@@ -170,6 +165,7 @@ app-table-actions-toolbar {
     AutoRefreshService,
     NotificationService,
     ResultsFiltersService,
+    FiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
       useExisting: ResultsFiltersService,
@@ -201,6 +197,7 @@ app-table-actions-toolbar {
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
+  readonly #filtersService = inject(FiltersService);
   readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
 
   displayedColumns: ResultRawColumnKey[] = [];
@@ -333,12 +330,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.#iconsService.getIcon(name);
   }
 
-  isSessionIdColumn(column: ResultRawColumnKey): boolean {
-    return this._resultsIndexService.isSessionIdColumn(column);
+  isResultIdColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isResultIdColumn(column);
   }
 
-  isActionsColumn(column: ResultRawColumnKey): boolean {
-    return this._resultsIndexService.isActionsColumn(column);
+  isSessionIdColumn(column: ResultRawColumnKey): boolean {
+    return this._resultsIndexService.isSessionIdColumn(column);
   }
 
   isDateColumn(column: ResultRawColumnKey): boolean {
@@ -347,10 +344,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isStatusColumn(column: ResultRawColumnKey): boolean {
     return this._resultsIndexService.isStatusColumn(column);
-  }
-
-  isNotSortableColumn(column: ResultRawColumnKey): boolean {
-    return this._resultsIndexService.isNotSortableColumn(column);
   }
 
   isSimpleColumn(column: ResultRawColumnKey): boolean {
@@ -419,5 +412,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+
+  createSessionIdQueryParams(sessionId: string) {
+    const keySession = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+
+    return {
+      [keySession]: sessionId,
+    };
   }
 }

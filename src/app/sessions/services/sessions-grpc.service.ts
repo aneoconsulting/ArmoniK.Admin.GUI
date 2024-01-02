@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -113,9 +113,17 @@ export class SessionsGrpcService{
       case 'number':
         return {
           field: filterField,
-          filterStatus: {
-            value: Number(filter.value) ?? 0,
+          filterNumber: {
+            value: filter.value?.toString() ?? '',
             operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL,
+          }
+        } satisfies SessionFilterField.AsObject;
+      case 'array':
+        return {
+          field: filterField,
+          filterArray: {
+            value: filter.value?.toString() ?? '',
+            operator: filter.operator ?? FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS
           }
         } satisfies SessionFilterField.AsObject;
       default:

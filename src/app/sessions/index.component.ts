@@ -77,14 +77,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
     >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-          <span i18n appNoWrap>
-            Personalize Tasks Status
-          </span>
-        </button>
-      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -94,12 +86,15 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
 </mat-toolbar>
 
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear recycleRows [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" [matTooltip]="personnalizedTaskToolTip">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
@@ -111,8 +106,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       <ng-container *ngIf="isSessionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
-            [routerLink]="['/tasks']"
-            [queryParams]="createSessionIdQueryParams(element[column])"
+            [routerLink]="['/sessions', element.sessionId]"
           >
             {{ element[column] }}
           </a>
@@ -121,7 +115,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+          <app-table-inspect-object [object]="handleNestedKeys(column, element)" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Date -->
@@ -167,13 +161,9 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
               <span i18n>Copy Session ID</span>
             </button>
-            <a mat-menu-item [routerLink]="['/sessions', element.sessionId]">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n>See session</span>
-            </a>
-            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="{ sessionId: element.sessionId }">
+            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.sessionId)">
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
-              <span i18n>See tasks</span>
+              <span i18n>See related tasks</span>
             </a>
             <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.sessionId }">
               <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
@@ -308,6 +298,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
+
+  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   constructor(
     private _sessionsStatusesService: SessionsStatusesService,
@@ -598,5 +590,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.tasksStatusesColored = result;
       this.#tasksByStatusService.saveStatuses('sessions', result);
     });
+  }
+
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
   }
 }

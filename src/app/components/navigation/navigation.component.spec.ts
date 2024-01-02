@@ -7,6 +7,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
+import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { NavigationComponent } from './navigation.component';
@@ -34,6 +35,11 @@ describe('NavigationComponent', () => {
     user: undefined as unknown as {username: string}
   };
 
+  const mockStorageService = {
+    setItem: jest.fn(),
+    getItem: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -46,6 +52,7 @@ describe('NavigationComponent', () => {
         VersionsService,
         EnvironmentService,
         DefaultConfigService,
+        { provide: StorageService, useValue: mockStorageService },
       ]
     }).inject(NavigationComponent);
   });
@@ -57,6 +64,7 @@ describe('NavigationComponent', () => {
   it('should restore external services on load', () => {
     component.ngOnInit();
     expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
+    expect(mockStorageService.getItem).toHaveBeenCalledWith('language');
   });
 
   it('should manage external services', () => {
@@ -116,4 +124,10 @@ describe('NavigationComponent', () => {
     } as ExternalService;
     expect(component.trackByService(0, externalService)).toEqual('serviceurl');
   });
+  
+  it('setLanguage should store the current language on change', () => {
+    component.setLanguage('fr');
+    expect(mockStorageService.setItem).toHaveBeenCalledWith('language', 'fr');
+  });
+
 });
