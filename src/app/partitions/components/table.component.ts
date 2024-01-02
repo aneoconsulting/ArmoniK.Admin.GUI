@@ -3,6 +3,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -10,7 +11,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
-import { TaskStatusColored,  } from '@app/types/dialog';
+import { TaskStatusColored, ViewTasksByStatusDialogData,  } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -18,6 +19,7 @@ import { TableEmptyDataComponent } from '@components/table/table-empty-data.comp
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
+import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -36,6 +38,9 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, Par
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Application Column -->
       <ng-container *ngIf="isSimpleColumn(column)">
@@ -110,7 +115,8 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, Par
     EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    TableInspectObjectComponent
+    TableInspectObjectComponent,
+    MatDialogModule
   ]
 })
 export class PartitionsTableComponent implements OnInit, AfterViewInit {
@@ -131,6 +137,8 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   readonly #partitionsIndexService = inject(PartitionsIndexService);
   readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #filtersService = inject(FiltersService);
+  readonly #dialog = inject(MatDialog);
+  readonly #iconsService = inject(IconsService);
 
   ngOnInit() {
     this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses('partitions');
@@ -151,6 +159,10 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
     });
+  }
+
+  getIcon(name: string): string {
+    return this.#iconsService.getIcon(name);
   }
 
   columnToLabel(column: PartitionRawColumnKey): string {
@@ -229,5 +241,22 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
     this.#partitionsIndexService.saveColumns(this.displayedColumns);
+  }
+
+  personalizeTasksByStatus() {
+    const dialogRef = this.#dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
+      data: {
+        statusesCounts: this.tasksStatusesColored,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      this.tasksStatusesColored = result;
+      this.#tasksByStatusService.saveStatuses('partitions', result);
+    });
   }
 }

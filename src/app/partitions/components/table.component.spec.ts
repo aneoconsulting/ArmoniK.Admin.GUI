@@ -1,8 +1,10 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { of } from 'rxjs';
 import { FiltersService } from '@services/filters.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
@@ -24,6 +26,7 @@ describe('ApplicationTableComponent', () => {
 
   const mockTasksByStatusService = {
     restoreStatuses: jest.fn(),
+    saveStatuses: jest.fn(),
   };
 
   const sort: MatSort = {
@@ -75,13 +78,25 @@ describe('ApplicationTableComponent', () => {
     ]
   ];
 
+  const dialogResult = 'color';
+  const mockMatDialog = {
+    open: () => {
+      return {
+        afterClosed() {
+          return of(dialogResult);
+        }
+      };
+    }
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         PartitionsTableComponent,
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },
-        FiltersService
+        FiltersService,
+        {provide: MatDialog, useValue: mockMatDialog}
       ]
     }).inject(PartitionsTableComponent);
 
@@ -200,5 +215,10 @@ describe('ApplicationTableComponent', () => {
         '1-options-4-0': 'bench'
       });
     });
+  });
+
+  it('should personalize tasks by status', () => {
+    component.personalizeTasksByStatus();
+    expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith('partitions', dialogResult);
   });
 });

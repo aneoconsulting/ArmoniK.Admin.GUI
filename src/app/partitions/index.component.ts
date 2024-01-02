@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -15,7 +14,7 @@ import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { TaskStatusColored } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -24,7 +23,6 @@ import { TableEmptyDataComponent } from '@components/table/table-empty-data.comp
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -145,7 +143,6 @@ app-table-actions-toolbar {
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    MatDialogModule,
     TableEmptyDataComponent,
     PartitionsTableComponent
   ]
@@ -153,12 +150,10 @@ app-table-actions-toolbar {
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
-  readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #shareURLService = inject(ShareUrlService);
   readonly #partitionsIndexService = inject(PartitionsIndexService);
   readonly #partitionsGrpcService = inject(PartitionsGrpcService);
   readonly #autoRefreshService = inject(AutoRefreshService);
-  readonly #dialog = inject(MatDialog);
   readonly #partitionsFiltersService = inject(PartitionsFiltersService);
 
   displayedColumns: PartitionRawColumnKey[] = [];
@@ -185,8 +180,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
-
-  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   ngOnInit() {
     this.displayedColumns = this.#partitionsIndexService.restoreColumns();
@@ -244,10 +237,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   columnsLabels(): Record<PartitionRawColumnKey, string> {
     return this.#partitionsIndexService.columnsLabels;
-  }
-
-  getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
   }
 
   getPageIcon(page: Page): string {
@@ -309,23 +298,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
-  }
-
-  personalizeTasksByStatus() {
-    const dialogRef = this.#dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
-      data: {
-        statusesCounts: this.tasksStatusesColored,
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
-        return;
-      }
-
-      this.tasksStatusesColored = result;
-      this.#tasksByStatusService.saveStatuses('partitions', result);
-    });
   }
 
   onOptionsChange() {
