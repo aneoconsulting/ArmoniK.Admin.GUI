@@ -976,6 +976,7 @@
     </unit>
     <unit id="8541569923897487029">
       <notes>
+        <note category="location">src/app/partitions/services/partitions-filters.service.ts:17</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:23</note>
       </notes>
       <segment state="initial">
@@ -1162,14 +1163,14 @@
         <target>Durée</target>
       </segment>
     </unit>
-    <unit id="2532274051867006228">
+    <unit id="1339831764151610299">
       <notes>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:27</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:27</note>
       </notes>
       <segment state="initial">
-        <source>Partition IDs</source>
-        <target>IDs des Partitions</target>
+        <source>Partition Ids</source>
+        <target>Ids des Partitions</target>
       </segment>
     </unit>
     <unit id="2956098160626271284">
@@ -1848,15 +1849,6 @@
         <target> Votre tableau de bord est vide. Ajoutez une ligne pour monitorer vos données </target>
       </segment>
     </unit>
-    <unit id="3907924624916192366">
-      <notes>
-        <note category="location">src/app/partitions/services/partitions-filters.service.ts:17</note>
-      </notes>
-      <segment state="initial">
-        <source>Parent Partition IDs</source>
-        <target>Id des partitions parentes</target>
-      </segment>
-    </unit>
     <unit id="7514940606218254317">
       <notes>
         <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:174</note>
@@ -2267,7 +2259,7 @@
       </notes>
       <segment state="initial">
         <source>Task ID</source>
-        <target>Id de la tâche</target>
+        <target>ID de la tâche</target>
       </segment>
     </unit>
     <unit id="6950534549804195606">
@@ -2277,7 +2269,7 @@
       </notes>
       <segment state="initial">
         <source>Owner Pod ID</source>
-        <target>Id du Pod Propriétaire</target>
+        <target>ID du Pod Propriétaire</target>
       </segment>
     </unit>
     <unit id="8925219422630998687">
@@ -2398,31 +2390,31 @@
         <target>Compter les dépendances de données</target>
       </segment>
     </unit>
-    <unit id="5111264093259746517">
+    <unit id="6990738933464485342">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:51</note>
       </notes>
       <segment state="initial">
-        <source>Count Expected Output IDs</source>
-        <target>Compter les IDs de sortie attendus</target>
+        <source>Count Expected Output Ids</source>
+        <target>Compter les Ids de sortie attendus</target>
       </segment>
     </unit>
-    <unit id="2247755933693524640">
+    <unit id="920308880438249076">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:52</note>
       </notes>
       <segment state="initial">
-        <source>Count Parent Task IDs</source>
-        <target>Compter les IDs des tâches parentes</target>
+        <source>Count Parent Task Ids</source>
+        <target>Compter les Ids des tâches parentes</target>
       </segment>
     </unit>
-    <unit id="7629389539179449839">
+    <unit id="1451163785538643540">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:53</note>
       </notes>
       <segment state="initial">
-        <source>Count Retry Of IDs</source>
-        <target>Compter les essais des IDs</target>
+        <source>Count Retry Of Ids</source>
+        <target>Compter les essais des Ids</target>
       </segment>
     </unit>
     <unit id="3797570084942068182">
