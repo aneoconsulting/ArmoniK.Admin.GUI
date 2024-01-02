@@ -1133,7 +1133,7 @@
     </unit>
     <unit id="2400362719050540518">
       <notes>
-        <note category="location">src/app/components/table/table-inspect-object.component.ts:12</note>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:13</note>
       </notes>
       <segment>
         <source>view</source>
@@ -1141,7 +1141,7 @@
     </unit>
     <unit id="2509141182388535183">
       <notes>
-        <note category="location">src/app/components/table/table-inspect-object.component.ts:12</note>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:13</note>
       </notes>
       <segment>
         <source>View</source>
@@ -1211,6 +1211,7 @@
     <unit id="4471277768650583130">
       <notes>
         <note category="location">src/app/applications/index.component.ts:119</note>
+        <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment>
         <source>See session</source>
@@ -1521,6 +1522,8 @@
     </unit>
     <unit id="1279830352886589977">
       <notes>
+        <note category="location">src/app/components/show-actions.component.ts:47</note>
+        <note category="location">src/app/components/show-actions.component.ts:52</note>
         <note category="location">src/app/sessions/index.component.ts:170</note>
       </notes>
       <segment>
@@ -2317,6 +2320,14 @@
       </notes>
       <segment>
         <source>Cancel Session</source>
+      </segment>
+    </unit>
+    <unit id="1210069423269934042">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:228</note>
+      </notes>
+      <segment>
+        <source>Change language</source>
       </segment>
     </unit>
   </file>
