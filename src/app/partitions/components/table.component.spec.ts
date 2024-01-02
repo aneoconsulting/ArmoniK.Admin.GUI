@@ -6,12 +6,13 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { of } from 'rxjs';
 import { FiltersService } from '@services/filters.service';
+import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
 import { PartitionsIndexService } from '../services/partitions-index.service';
 import { PartitionRawFiltersOr } from '../types';
 
-describe('ApplicationTableComponent', () => {
+describe('PartitionsTableComponent', () => {
   let component: PartitionsTableComponent;
 
   const mockPartitionsIndexService = {
@@ -96,7 +97,8 @@ describe('ApplicationTableComponent', () => {
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         FiltersService,
-        {provide: MatDialog, useValue: mockMatDialog}
+        {provide: MatDialog, useValue: mockMatDialog},
+        IconsService
       ]
     }).inject(PartitionsTableComponent);
 
@@ -220,5 +222,9 @@ describe('ApplicationTableComponent', () => {
   it('should personalize tasks by status', () => {
     component.personalizeTasksByStatus();
     expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith('partitions', dialogResult);
+  });
+
+  it('should get required icons', () => {
+    expect(component.getIcon('tune')).toEqual('tune');
   });
 });
