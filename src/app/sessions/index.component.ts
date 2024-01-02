@@ -77,14 +77,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
     >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="personalizeTasksByStatus()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-          <span i18n appNoWrap>
-            Personalize Tasks Status
-          </span>
-        </button>
-      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -100,6 +92,9 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersO
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
         {{ columnToLabel(column) }}
+        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" [matTooltip]="personnalizedTaskToolTip">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+        </button>
       </th>
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
@@ -303,6 +298,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   tasksStatusesColored: TaskStatusColored[] = [];
 
   subscriptions: Subscription = new Subscription();
+
+  personnalizedTaskToolTip = $localize`Personalize Tasks Status`;
 
   constructor(
     private _sessionsStatusesService: SessionsStatusesService,
