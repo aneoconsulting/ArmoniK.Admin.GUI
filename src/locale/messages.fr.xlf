@@ -465,6 +465,7 @@
     <unit id="1102717806459547726">
       <notes>
         <note category="location">src/app/components/refresh-button.component.ts:12</note>
+        <note category="location">src/app/components/show-actions.component.ts:81</note>
       </notes>
       <segment state="initial">
         <source>Refresh</source>
@@ -648,7 +649,7 @@
     </unit>
     <unit id="7779627316401407129">
       <notes>
-        <note category="location">src/app/sessions/show.component.ts:26</note>
+        <note category="location">src/app/sessions/show.component.ts:28</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -1211,7 +1212,7 @@
     </unit>
     <unit id="6442812322325259685">
       <notes>
-        <note category="location">src/app/tasks/show.component.ts:25</note>
+        <note category="location">src/app/tasks/show.component.ts:27</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -1330,7 +1331,7 @@
     </unit>
     <unit id="2509141182388535183">
       <notes>
-        <note category="location">src/app/components/table/table-inspect-object.component.ts:12</note>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:13</note>
       </notes>
       <segment state="initial">
         <source>View</source>
@@ -1339,7 +1340,7 @@
     </unit>
     <unit id="2400362719050540518">
       <notes>
-        <note category="location">src/app/components/table/table-inspect-object.component.ts:12</note>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:13</note>
       </notes>
       <segment state="initial">
         <source>view</source>
@@ -1462,6 +1463,7 @@
     <unit id="4471277768650583130">
       <notes>
         <note category="location">src/app/applications/index.component.ts:119</note>
+        <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment state="initial">
         <source>See session</source>
@@ -2002,6 +2004,8 @@
     </unit>
     <unit id="1279830352886589977">
       <notes>
+        <note category="location">src/app/components/show-actions.component.ts:47</note>
+        <note category="location">src/app/components/show-actions.component.ts:52</note>
         <note category="location">src/app/sessions/index.component.ts:170</note>
       </notes>
       <segment state="initial">
@@ -2522,6 +2526,70 @@
       <segment state="initial">
         <source>Change language</source>
         <target>Changer la langue</target>
+      </segment>
+    </unit>
+    <unit id="6022529099150705711">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:27</note>
+      </notes>
+      <segment state="initial">
+        <source>See sessions</source>
+        <target>Voir les sessions</target>
+      </segment>
+    </unit>
+    <unit id="6174579065408758827">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:32</note>
+        <note category="location">src/app/components/show-actions.component.ts:37</note>
+      </notes>
+      <segment state="initial">
+        <source>See tasks</source>
+        <target>Voir les tâches</target>
+      </segment>
+    </unit>
+    <unit id="3085155813035349251">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:42</note>
+      </notes>
+      <segment state="initial">
+        <source>See task</source>
+        <target>Voir la tâche</target>
+      </segment>
+    </unit>
+    <unit id="2310023070484904143">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:57</note>
+      </notes>
+      <segment state="initial">
+        <source>See partitions</source>
+        <target>Voir les partitions</target>
+      </segment>
+    </unit>
+    <unit id="698601157229513551">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:62</note>
+      </notes>
+      <segment state="initial">
+        <source>See partition</source>
+        <target>Voir la partition</target>
+      </segment>
+    </unit>
+    <unit id="2926475737721192412">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:69</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancel Task</source>
+        <target>Annuler la tâche</target>
+      </segment>
+    </unit>
+    <unit id="5213720747752417161">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:74</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancel Session</source>
+        <target>Annuler la session</target>
       </segment>
     </unit>
   </file>
