@@ -1,3 +1,4 @@
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -9,8 +10,11 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
 @Component({
   selector: 'app-table-inspect-object',
   template: `
-    <button mat-icon-button matTooltip="View" i18n-matTooltip (click)="onViewObject()" aria-label="view" i18n-aria-label>
-      <mat-icon [fontIcon]="getIcon('view')"></mat-icon>
+    <button mat-icon-button matTooltip="View" i18n-matTooltip (click)="onViewObject()" [disabled]="!isObjectUndefined" aria-label="view" i18n-aria-label>
+      <ng-container *ngIf="isObjectUndefined">
+        <mat-icon [fontIcon]="getIcon('view')"></mat-icon>
+      </ng-container>
+      <mat-icon *ngIf="!isObjectUndefined" [fontIcon]="getIcon('view-off')"></mat-icon>
     </button>
   `,
   styles: [`
@@ -21,6 +25,8 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    NgIf,
+    CommonModule
   ],
   providers: [],
 })
@@ -43,5 +49,9 @@ export class TableInspectObjectComponent
         object: this.object,
       },
     });
+  }
+
+  get isObjectUndefined(): boolean {
+    return !!this.object && Object.keys(this.object).length !== 0;
   }
 }

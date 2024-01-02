@@ -24,7 +24,7 @@ export class SessionsFiltersService {
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT]: $localize`Created At`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DURATION]: $localize`Duration`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_OPTIONS]: $localize`Options`,
-    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS]: $localize`Partition IDs`,
+    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS]: $localize`Partition Ids`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
   };
 

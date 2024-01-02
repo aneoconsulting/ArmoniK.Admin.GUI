@@ -129,8 +129,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
-  readonly #dialog = inject(MatDialog);
-  readonly #dashboardIndexService = inject(DashboardIndexService);
 
   displayedColumns: ApplicationRawColumnKey[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
