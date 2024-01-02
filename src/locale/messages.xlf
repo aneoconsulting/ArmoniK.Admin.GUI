@@ -57,7 +57,7 @@
     </unit>
     <unit id="118284616495039929">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:54</note>
+        <note category="location">src/app/partitions/index.component.ts:55</note>
         <note category="location">src/app/services/navigation.service.ts:38</note>
         <note category="description">Page title</note>
       </notes>
@@ -67,7 +67,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:142</note>
+        <note category="location">src/app/partitions/index.component.ts:138</note>
       </notes>
       <segment>
         <source>Select page of partitions</source>
@@ -111,7 +111,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:53</note>
+        <note category="location">src/app/applications/index.component.ts:54</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -157,7 +157,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:197</note>
+        <note category="location">src/app/sessions/index.component.ts:192</note>
       </notes>
       <segment>
         <source>Select page of sessions</source>
@@ -229,7 +229,7 @@
     </unit>
     <unit id="3809296122060449520">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:65</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:75</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -318,7 +318,7 @@
     </unit>
     <unit id="461988732763685587">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:51,53</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:61,63</note>
         <note category="description">Button to view external services</note>
       </notes>
       <segment>
@@ -356,7 +356,7 @@
     </unit>
     <unit id="4895326106573044490">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:81</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:91</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -496,7 +496,7 @@
     </unit>
     <unit id="7136888919962092730">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:77</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:87</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -569,7 +569,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:130</note>
+        <note category="location">src/app/results/index.component.ts:136</note>
       </notes>
       <segment>
         <source>Select page of results</source>
@@ -804,7 +804,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:117</note>
+        <note category="location">src/app/applications/index.component.ts:113</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
@@ -1125,7 +1125,7 @@
     </unit>
     <unit id="2003528003863981175">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:167</note>
+        <note category="location">src/app/sessions/index.component.ts:162</note>
       </notes>
       <segment>
         <source>Copy Session ID</source>
@@ -1202,7 +1202,7 @@
     </unit>
     <unit id="43160648223881099">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:179</note>
+        <note category="location">src/app/sessions/index.component.ts:174</note>
       </notes>
       <segment>
         <source>Cancel session</source>
@@ -1210,8 +1210,7 @@
     </unit>
     <unit id="4471277768650583130">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:123</note>
-        <note category="location">src/app/components/show-actions.component.ts:22</note>
+        <note category="location">src/app/applications/index.component.ts:119</note>
       </notes>
       <segment>
         <source>See session</source>
@@ -1237,7 +1236,7 @@
     </unit>
     <unit id="4930506384627295710">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:211</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:226</note>
       </notes>
       <segment>
         <source>Settings</source>
@@ -1366,19 +1365,19 @@
         <source>Options Max Duration</source>
       </segment>
     </unit>
-    <unit id="7414725219702666225">
+    <unit id="1822341529834994016">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:76,78</note>
-        <note category="location">src/app/partitions/index.component.ts:77,79</note>
-        <note category="location">src/app/sessions/index.component.ts:83,85</note>
+        <note category="location">src/app/applications/index.component.ts:236</note>
+        <note category="location">src/app/partitions/index.component.ts:243</note>
+        <note category="location">src/app/sessions/index.component.ts:302</note>
       </notes>
       <segment>
-        <source> Personalize Tasks Status </source>
+        <source>Personalize Tasks Status</source>
       </segment>
     </unit>
     <unit id="7027401708987643293">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:94</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:104</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -1445,7 +1444,7 @@
     </unit>
     <unit id="8768116776190256027">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:68</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:78</note>
       </notes>
       <segment>
         <source>More Infos</source>
@@ -1453,7 +1452,7 @@
     </unit>
     <unit id="8942351587754185907">
       <notes>
-        <note category="location">src/app/components/navigation/navigation.component.ts:87</note>
+        <note category="location">src/app/components/navigation/navigation.component.ts:97</note>
         <note category="description">Button</note>
       </notes>
       <segment>
@@ -1522,9 +1521,7 @@
     </unit>
     <unit id="1279830352886589977">
       <notes>
-        <note category="location">src/app/components/show-actions.component.ts:47</note>
-        <note category="location">src/app/components/show-actions.component.ts:52</note>
-        <note category="location">src/app/sessions/index.component.ts:175</note>
+        <note category="location">src/app/sessions/index.component.ts:170</note>
       </notes>
       <segment>
         <source>See results</source>
@@ -2226,7 +2223,7 @@
     </unit>
     <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:171</note>
+        <note category="location">src/app/sessions/index.component.ts:166</note>
       </notes>
       <segment>
         <source>See related tasks</source>

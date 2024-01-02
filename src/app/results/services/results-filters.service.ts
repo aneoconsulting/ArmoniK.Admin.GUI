@@ -38,6 +38,11 @@ export class ResultsFiltersService {
     },
     {
       for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
+      type: 'string'
+    },
+    {
+      for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID,
       type: 'string',
     },
