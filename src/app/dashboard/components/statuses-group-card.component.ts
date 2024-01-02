@@ -14,7 +14,7 @@ import { TasksStatusesGroup } from '../types';
 <mat-card>
   <mat-card-header *ngIf="!hideGroupHeaders">
     <mat-card-title>
-      <a routerLink="/tasks" [style]="'color:' + group.color + '; text-decoration: none'">
+      <a routerLink="/tasks" [queryParams]="createQueryParamManyStatuses()" [style]="'color:' + group.color + '; text-decoration: none'">
         {{ group.name }}
       </a>
       <span>
@@ -105,6 +105,12 @@ export class StatusesGroupCardComponent {
     }, 0);
   }
 
+  createQueryParamManyStatuses() {
+    const params: { [key: string]: number} = {};
+    this.group.statuses.forEach((status, index) => params[this.#createQueryParamKeyOr(index)] = status);
+    return params;
+  }
+
   createQueryParam(status: TaskStatus) {
     return {
       [this.#createQueryParamKey()]: status,
@@ -113,5 +119,9 @@ export class StatusesGroupCardComponent {
 
   #createQueryParamKey(): string {
     return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+  }
+
+  #createQueryParamKeyOr(orGroup: number): string {
+    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 }

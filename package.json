@@ -1,6 +1,6 @@
 {
   "name": "armonik-admin-gui",
-  "version": "0.10.3",
+  "version": "0.10.6",
   "packageManager": "pnpm@8.7.5",
   "scripts": {
     "ng": "ng",
@@ -13,7 +13,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "test-coverage": "jest --coverage",
-    "test-ci": "jest --coverage --reporters=default --reporters=jest-junit --coverageReporters json-summary text | tee ./coverage.txt",
+    "test-coverage-ci": "jest --coverage --reporters=default --reporters=jest-junit --coverageReporters json-summary text | tee ./coverage.txt",
     "release": "bumpp --no-tag --no-push"
   },
   "private": true,

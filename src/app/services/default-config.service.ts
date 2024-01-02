@@ -112,7 +112,7 @@ export class DefaultConfigService {
     lockColumns: false,
     columns: [
       'id',
-      'actions',
+      'count'
     ],
     options: {
       pageIndex: 0,
@@ -149,7 +149,7 @@ export class DefaultConfigService {
     lockColumns: false,
     columns: [
       'name',
-      'actions',
+      'sessionId',
     ],
     options: {
       pageIndex: 0,
