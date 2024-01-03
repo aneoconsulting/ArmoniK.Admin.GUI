@@ -121,15 +121,14 @@ export class IndexComponent implements OnInit, AfterViewInit {
       })
     ).subscribe((data) => {
       this.loading = false;
-      if (data) {
-        this.data = data.services;
-      }
+      this.data = data?.services ?? undefined;
     });
     this.handleAutoRefreshStart();
   }
 
   onIntervalValueChange(newInterval: number) {
     this.intervalValue = newInterval;
+    this.#healthCheckIndexService.saveIntervalValue(newInterval);
     this.refresh.next();
   }
 
