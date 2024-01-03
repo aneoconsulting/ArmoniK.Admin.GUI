@@ -171,7 +171,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
     case HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED:
       return $localize`Service is Degraded`;
     default:
-      return $localize`There is no data on the service.`;
+      return $localize`There is no data on the service`;
     }
   }
 }

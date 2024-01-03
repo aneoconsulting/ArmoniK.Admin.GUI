@@ -58,7 +58,7 @@
     <unit id="118284616495039929">
       <notes>
         <note category="location">src/app/partitions/index.component.ts:55</note>
-        <note category="location">src/app/services/navigation.service.ts:38</note>
+        <note category="location">src/app/services/navigation.service.ts:45</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -749,7 +749,7 @@
     <unit id="7726080656019750876">
       <notes>
         <note category="location">src/app/partitions/services/partitions-filters.service.ts:22</note>
-        <note category="location">src/app/results/services/results-filters.service.ts:25</note>
+        <note category="location">src/app/results/services/results-filters.service.ts:26</note>
         <note category="location">src/app/results/services/results-statuses.service.ts:7</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:28</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:32</note>
@@ -1282,7 +1282,7 @@
     </unit>
     <unit id="5968132631442328843">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:59</note>
+        <note category="location">src/app/services/navigation.service.ts:66</note>
       </notes>
       <segment>
         <source>Results</source>
@@ -1326,7 +1326,7 @@
     </unit>
     <unit id="6570363013146073520">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:24</note>
+        <note category="location">src/app/services/navigation.service.ts:31</note>
       </notes>
       <segment>
         <source>Dashboard</source>
@@ -1352,7 +1352,7 @@
     </unit>
     <unit id="6658000829978978023">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:31</note>
+        <note category="location">src/app/services/navigation.service.ts:38</note>
       </notes>
       <segment>
         <source>Applications</source>
@@ -1388,7 +1388,7 @@
     </unit>
     <unit id="721963055036507192">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:45</note>
+        <note category="location">src/app/services/navigation.service.ts:52</note>
       </notes>
       <segment>
         <source>Sessions</source>
@@ -1396,7 +1396,7 @@
     </unit>
     <unit id="7306009472583884794">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:66</note>
+        <note category="location">src/app/services/navigation.service.ts:73</note>
       </notes>
       <segment>
         <source>Divider</source>
@@ -1952,7 +1952,7 @@
     </unit>
     <unit id="6904866445262015585">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:52</note>
+        <note category="location">src/app/services/navigation.service.ts:59</note>
       </notes>
       <segment>
         <source>Tasks</source>
@@ -2321,6 +2321,73 @@
       </notes>
       <segment>
         <source>Change language</source>
+      </segment>
+    </unit>
+    <unit id="4433806526451389349">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:118</note>
+      </notes>
+      <segment>
+        <source>Unable to get service health data</source>
+      </segment>
+    </unit>
+    <unit id="45739481977493163">
+      <notes>
+        <note category="location">src/app/results/services/results-filters.service.ts:25</note>
+        <note category="location">src/app/results/services/results-index.service.ts:27</note>
+      </notes>
+      <segment>
+        <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="5628116626310055941">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:170</note>
+      </notes>
+      <segment>
+        <source>Service is Unhealthy</source>
+      </segment>
+    </unit>
+    <unit id="574352586411354475">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:28</note>
+        <note category="location">src/app/services/navigation.service.ts:24</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source>HealthChecks</source>
+      </segment>
+    </unit>
+    <unit id="826373001404059352">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:174</note>
+      </notes>
+      <segment>
+        <source>There is no data on the service</source>
+      </segment>
+    </unit>
+    <unit id="7790671864055228467">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:56</note>
+      </notes>
+      <segment>
+        <source>No data to show</source>
+      </segment>
+    </unit>
+    <unit id="7953743545949086622">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:168</note>
+      </notes>
+      <segment>
+        <source>Service is Healthy</source>
+      </segment>
+    </unit>
+    <unit id="8759764801510671478">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:172</note>
+      </notes>
+      <segment>
+        <source>Service is Degraded</source>
       </segment>
     </unit>
   </file>
