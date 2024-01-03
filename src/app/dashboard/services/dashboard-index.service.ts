@@ -41,6 +41,12 @@ export class DashboardIndexService {
     this.#dashboardStorageService.saveLines(lines);
   }
 
+  addLine(line: Line): void {
+    const lines = this.restoreLines();
+    lines.push(line);
+    this.saveLines(lines);
+  }
+
   restoreSplitLines(): number {
     return this.#dashboardStorageService.restoreSplitLines() ?? this.defaultSplitLines;
   }
