@@ -25,7 +25,7 @@ import { ServiceHealth } from './types';
   template: `
 <app-page-header>
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon()"></mat-icon>
-  <span i18n="Page title">HealthCheck</span>
+  <span i18n="Page title" i18n>HealthChecks</span>
 </app-page-header>
 
 <mat-toolbar>
@@ -53,7 +53,7 @@ import { ServiceHealth } from './types';
 </ng-container>
 
 <ng-template #noData>
-  <h2 *ngIf="!loading">No data to show</h2>
+  <h2 *ngIf="!loading" i18n>No data to show</h2>
 </ng-template>
   `,
   styles: [`
@@ -115,7 +115,7 @@ export class IndexComponent implements OnInit, AfterViewInit {
         this.loading = true;
         return this.#healthcheckGrpcService.list$().pipe(catchError((error) => {
           console.error(error);
-          this.#notificationService.error('Unable to get service health data');
+          this.#notificationService.error($localize`Unable to get service health data`);
           return of(null);
         }));
       })
@@ -165,13 +165,13 @@ export class IndexComponent implements OnInit, AfterViewInit {
   getToolTip(healthy: HealthStatusEnum) {
     switch(healthy){
     case HealthStatusEnum.HEALTH_STATUS_ENUM_HEALTHY:
-      return 'Service is Healthy';
+      return $localize`Service is Healthy`;
     case HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY:
-      return 'Service is Unhealthy';
+      return $localize`Service is Unhealthy`;
     case HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED:
-      return 'Service is Degraded';
+      return $localize`Service is Degraded`;
     default:
-      return 'There is no data on the service.';
+      return $localize`There is no data on the service.`;
     }
   }
 }

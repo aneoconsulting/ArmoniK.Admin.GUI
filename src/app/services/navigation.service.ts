@@ -21,7 +21,7 @@ export class NavigationService {
     {
       type: 'link',
       id: 'healthcheck',
-      display: $localize`HealthCheck`,
+      display: $localize`HealthChecks`,
       icon: 'monitor_heart',
       route: '/healthcheck'
     },
