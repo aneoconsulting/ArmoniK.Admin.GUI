@@ -14,7 +14,7 @@ export class HealthCheckIndexService {
   restoreIntervalValue(): number {
     const value = Number(this.#storageService.getItem<number>('healthcheck-interval'));
 
-    if(!value || Number.isNaN(value)) {
+    if(Number.isNaN(value)) {
       return this.#defaultConfigService.healthCheck.interval;
     }
 
