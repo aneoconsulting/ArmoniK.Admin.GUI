@@ -57,6 +57,8 @@ export class DefaultConfigService {
   readonly #defaultSidebar: Sidebar[] = [
     'profile',
     'divider',
+    'healthcheck',
+    'divider',
     'dashboard',
     'divider',
     'applications',
