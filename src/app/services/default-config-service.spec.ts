@@ -1,3 +1,4 @@
+import { TasksStatusesGroup } from '@app/dashboard/types';
 import { DefaultConfigService } from './default-config.service';
 
 describe('DefaultConfigService', () => {
@@ -108,7 +109,7 @@ describe('DefaultConfigService', () => {
     });
     it('the line by default should have finished, running, error, task statuses by default ', () => {
       const defaultDashboardLines = service.defaultDashboardLines;
-      const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups); 
+      const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups) as unknown as TasksStatusesGroup[][]; 
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Finished')).toBeTruthy(); 
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Running')).toBeTruthy();  
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Errors')).toBeTruthy();  
