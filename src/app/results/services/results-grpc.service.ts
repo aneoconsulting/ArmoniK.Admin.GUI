@@ -1,4 +1,4 @@
-import { SortDirection as ArmoniKSortDirection, FilterDateOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -95,6 +95,14 @@ export class ResultsGrpcService {
           filterStatus: {
             value: Number(filter.value) ?? 0,
             operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL
+          }
+        } satisfies ResultFilterField.AsObject;
+      case 'number':
+        return {
+          field: filterField,
+          filterNumber: {
+            value: filter.value?.toString() ?? '',
+            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
           }
         } satisfies ResultFilterField.AsObject;
       default: {

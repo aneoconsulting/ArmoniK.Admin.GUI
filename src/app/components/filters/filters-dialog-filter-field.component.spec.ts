@@ -45,7 +45,17 @@ describe('FiltersDialogFilterFieldComponent', () => {
       field: 5,
       type: 'unknownType',
       for: 'root'
-    } as unknown as FilterDefinition<number, number>)
+    } as unknown as FilterDefinition<number, number>),
+    {
+      field: 6,
+      type: 'duration',
+      for: 'options'
+    },
+    {
+      field: 7,
+      type: 'date',
+      for: 'root'
+    }
   ];
 
   beforeEach(async () => {
@@ -131,6 +141,24 @@ describe('FiltersDialogFilterFieldComponent', () => {
       } as unknown as FilterInputOutput;
       component.onInputChange(inputEvent);
       expect(component.filter.value).toBeNull();
+    });
+
+    it('should change the filter value to date if one is passed', () => {
+      const inputEvent = {
+        type: 'date',
+        value: 95603
+      } as unknown as FilterInputOutput;
+      component.onInputChange(inputEvent);
+      expect(component.filter.value).toEqual(95603);
+    });
+
+    it('should change the filter value to a duration if one is passed', () => {
+      const inputEvent = {
+        type: 'duration',
+        value: 94350
+      } as unknown as FilterInputOutput;
+      component.onInputChange(inputEvent);
+      expect(component.filter.value).toEqual(94350);
     });
   });
 
@@ -273,6 +301,62 @@ describe('FiltersDialogFilterFieldComponent', () => {
       expect(() => {component.findInput(unknownFilter);}).toThrowError(
         'Unknown type unknownType'
       );
+    });
+
+    describe('input filter of type date', () => {
+      it('should return a date', () => {
+        const dateFilter: Filter<number, number> = {
+          for: 'root',
+          field: 7,
+          operator: 1,
+          value: 1703085190
+        };
+        expect(component.findInput(dateFilter)).toEqual({
+          type: 'date',
+          value: new Date(1703085190000)
+        });
+      });
+
+      it('should return null if there is no date', () => {
+        const dateFilter: Filter<number, number> = {
+          for: 'root',
+          field: 7,
+          operator: 1,
+          value: null
+        };
+        expect(component.findInput(dateFilter)).toEqual({
+          type: 'date',
+          value: null
+        });
+      });
+    });
+
+    describe('input filter of type duration', () => {
+      it('should return a filterinput with a duration in seconds', () => {
+        const durationFilter: Filter<number, number> = {
+          field: 6,
+          for: 'options',
+          operator: 1,
+          value: 94350
+        };
+        expect(component.findInput(durationFilter)).toEqual({
+          type: 'duration',
+          value: 94350
+        });
+      });
+    });
+
+    it('should return a null filterInput if the duration is not existing', () => {
+      const durationFilter: Filter<number, number> = {
+        field: 6,
+        for: 'options',
+        operator: 1,
+        value: null
+      };
+      expect(component.findInput(durationFilter)).toEqual({
+        type: 'duration',
+        value: null
+      });
     });
   });
 
