@@ -1,9 +1,8 @@
-import { SortDirection as ArmoniKSortDirection, FilterDateOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { FilterType } from '@app/types/filters';
-import { DateHandlerService } from '@services/date-handler.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
 import {  ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
@@ -28,6 +27,7 @@ export class ResultsGrpcService {
     'ownerTaskId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID,
     'resultId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
     'completedAt': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT,
+    'size': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
   };
 
 
@@ -84,7 +84,7 @@ export class ResultsGrpcService {
           filterDate: {
             value: {
               nanos: 0,
-              seconds: new DateHandlerService<ResultRawEnumField, null>().setSecondsByDateOperator(filter)
+              seconds: filter.value?.toString() ?? ''
             },
             operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
           }
@@ -95,6 +95,14 @@ export class ResultsGrpcService {
           filterStatus: {
             value: Number(filter.value) ?? 0,
             operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL
+          }
+        } satisfies ResultFilterField.AsObject;
+      case 'number':
+        return {
+          field: filterField,
+          filterNumber: {
+            value: filter.value?.toString() ?? '',
+            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
           }
         } satisfies ResultFilterField.AsObject;
       default: {

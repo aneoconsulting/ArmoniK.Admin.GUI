@@ -1,5 +1,5 @@
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { DateTime } from 'luxon';
+// eslint-disable-next-line import/no-unresolved
+import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
@@ -55,8 +55,8 @@ describe('FiltersDialogInputComponent', () => {
 
   it('should emit on end Date change', () => {
     const event = {
-      value: 19043234
-    } as unknown as MatDatepickerInputEvent<DateTime>;
+      value: new Date(19043234000) // Date takes milliseconds, not seconds.
+    } as unknown as NgxMatDatepickerInputEvent<Date>;
 
     component.onDateChange(event);
     expect(valueChangeSpy).toHaveBeenCalledWith({
@@ -93,5 +93,35 @@ describe('FiltersDialogInputComponent', () => {
       value: 'selected'
     };
     expect(component.trackBySelect(0, item)).toBe(item.value);
+  });
+
+  it('should emit a duration in second', () => {
+    const inputEvent = {
+      target: {
+        value: '35'
+      }
+    } as unknown as Event;
+    component.onDurationChange(inputEvent, 0);
+    expect(valueChangeSpy).toHaveBeenCalledWith({type: 'duration', value: 126000});
+    (inputEvent.target as HTMLInputElement).value = '39';
+    component.onDurationChange(inputEvent, 1);
+    expect(valueChangeSpy).toHaveBeenLastCalledWith({type: 'duration', value: 128340});
+    component.onDurationChange(inputEvent, 2);
+    expect(valueChangeSpy).toHaveBeenLastCalledWith({type: 'duration', value: 128379});
+  });
+
+  describe('getDurationInputValue', () => {
+    beforeEach(() => {
+      component.input.value = 94350;
+    });
+    it('should get the hours from a duration in seconds', () => {
+      expect(component.getDurationInputValue('hours')).toEqual(26);
+    });
+    it('should get the minutes from a duration in seconds', () => {
+      expect(component.getDurationInputValue('minutes')).toEqual(12);
+    });
+    it('should get the seconds from a duration in seconds', () => {
+      expect(component.getDurationInputValue('seconds')).toEqual(30);
+    });
   });
 });

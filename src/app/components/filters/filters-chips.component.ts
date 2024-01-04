@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { DateTime } from 'luxon';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FiltersAnd } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -72,10 +71,30 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
       return `${label} ${operator} ${status?.value}`;
     }
     else if (type === 'date') {
-      return `${label} ${operator} ${DateTime.fromSeconds(Number(filter.value)).toISODate()}`;
+      return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
+    }
+    else if (type === 'duration') {
+      return `${label} ${operator} ${this.durationToString(Number(filter.value))}`;
     }
 
     return `${label} ${operator} ${filter.value}`;
+  }
+
+  durationToString(value: number): string {
+    let resultString = '';
+    const hours = Math.floor(Number(value)/3600);
+    const minutes = Math.floor((Number(value)%3600)/60);
+    const seconds = Math.floor(((Number(value))%3600)%60);
+    if (hours > 0) {
+      resultString += `${hours}h `;
+    }
+    if (minutes > 0) {
+      resultString += `${minutes}m `;
+    }
+    if (seconds > 0) {
+      resultString += `${seconds}s`;
+    }
+    return resultString;
   }
 
   trackByFilter(_: number, filter: Filter<T, U>): string {

@@ -1,8 +1,7 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
-import { DateHandlerService } from '@app/services/date-handler.service';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
@@ -69,7 +68,6 @@ export class SessionsGrpcService{
 
   #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {
     return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean) => {
-
       const filterField = (
         isForRoot ? 
           {
@@ -107,7 +105,7 @@ export class SessionsGrpcService{
           filterDate: {
             value: {
               nanos: 0,
-              seconds: new DateHandlerService<SessionRawEnumField, SessionTaskOptionEnumField>().setSecondsByDateOperator(filter)
+              seconds: filter.value?.toString() ?? '0'
             },
             operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
           }
@@ -115,9 +113,17 @@ export class SessionsGrpcService{
       case 'number':
         return {
           field: filterField,
-          filterStatus: {
-            value: Number(filter.value) ?? 0,
+          filterNumber: {
+            value: filter.value?.toString() ?? '',
             operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL,
+          }
+        } satisfies SessionFilterField.AsObject;
+      case 'array':
+        return {
+          field: filterField,
+          filterArray: {
+            value: filter.value?.toString() ?? '',
+            operator: filter.operator ?? FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS
           }
         } satisfies SessionFilterField.AsObject;
       default:

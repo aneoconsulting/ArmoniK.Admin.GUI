@@ -34,10 +34,10 @@ jobs:
         run: nr lint
 
   test:
-    name: Test & Coverage
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@7cdaf2fbc075e6f3b9ca94cfd6cec5adc8a75622
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
       
       - run: npm i -g @antfu/ni
       - run: corepack enable
@@ -51,9 +51,30 @@ jobs:
         run: nci
 
       - name: Test
-        run: nr test-ci
+        run: nr test
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4
+      
+      - run: npm i -g @antfu/ni
+      - run: corepack enable
+
+      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: nci
+
+      - name: Test
+        run: nr test-coverage-ci
 
       - name: Coverage
+        if: always()
         uses: MishaKav/jest-coverage-comment@main
         with:
           junitxml-title: JUnit

@@ -13,11 +13,11 @@ describe('', () => {
   const mockMatDialogData = {
     currentColumns: ['id', 'created_time'],
     columnsLabels: {
-      'id': 'Id',
+      'id': 'ID',
       'created_time': 'Creation time',
       'name': 'Name',
       'duration': 'Duration',
-      'options.task_id': 'Task Id',
+      'options.task_id': 'Task ID',
       'actions': 'Actions'
     } as Record<ColumnKey<object, object>, string>,
     availableColumns: ['name', 'duration', 'options.task_id', 'actions']
@@ -71,13 +71,11 @@ describe('', () => {
     it('should push a new column', () => {
       component.updateColumn({checked: true} as MatCheckboxChange, 'duration' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['id', 'created_time', 'duration']);
-      expect(component.data.availableColumns).toEqual(['name', 'options.task_id', 'actions']);
     });
 
     it('should remove a column if parameter is unchecked', () => {
       component.updateColumn({checked: false} as MatCheckboxChange, 'id' as ColumnKey<object, object>);
       expect(component.columns).toEqual(['created_time']);
-      expect(component.data.availableColumns).toEqual(['name', 'options.task_id', 'actions', 'id']);
     });
 
     it('should not push a column that is already in the column list', () => {

@@ -105,6 +105,21 @@ export class TasksFiltersService {
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_AT,
       type: 'date'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_HOSTNAME,
+      type: 'string'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID,
+      type: 'string'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
+      type: 'date'
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -144,7 +159,7 @@ export class TasksFiltersService {
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
       type: 'number'
-    },
+    }
   ];
 
   readonly #defaultFilters: TaskSummaryFiltersOr = this.#defaultConfigService.defaultTasks.filters;
