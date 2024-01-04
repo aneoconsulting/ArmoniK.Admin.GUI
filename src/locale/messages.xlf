@@ -157,7 +157,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:192</note>
+        <note category="location">src/app/sessions/components/table.component.ts:142</note>
       </notes>
       <segment>
         <source>Select page of sessions</source>
@@ -184,7 +184,7 @@
     </unit>
     <unit id="2914520322361316995">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:60</note>
+        <note category="location">src/app/sessions/index.component.ts:50</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -419,7 +419,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:48</note>
+        <note category="location">src/app/results/index.component.ts:42</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -569,7 +569,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:136</note>
+        <note category="location">src/app/results/components/table.component.ts:91</note>
       </notes>
       <segment>
         <source>Select page of results</source>
@@ -1126,7 +1126,7 @@
     </unit>
     <unit id="2003528003863981175">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:162</note>
+        <note category="location">src/app/sessions/components/table.component.ts:112</note>
       </notes>
       <segment>
         <source>Copy Session ID</source>
@@ -1203,7 +1203,7 @@
     </unit>
     <unit id="43160648223881099">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:174</note>
+        <note category="location">src/app/sessions/components/table.component.ts:124</note>
       </notes>
       <segment>
         <source>Cancel session</source>
@@ -1371,7 +1371,7 @@
       <notes>
         <note category="location">src/app/applications/components/table.component.ts:40</note>
         <note category="location">src/app/partitions/components/table.component.ts:41</note>
-        <note category="location">src/app/sessions/index.component.ts:302</note>
+        <note category="location">src/app/sessions/components/table.component.ts:45</note>
       </notes>
       <segment>
         <source>Personalize Tasks Status</source>
@@ -1525,7 +1525,7 @@
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:47</note>
         <note category="location">src/app/components/show-actions.component.ts:52</note>
-        <note category="location">src/app/sessions/index.component.ts:170</note>
+        <note category="location">src/app/sessions/components/table.component.ts:120</note>
       </notes>
       <segment>
         <source>See results</source>
@@ -2219,7 +2219,7 @@
     </unit>
     <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:166</note>
+        <note category="location">src/app/sessions/components/table.component.ts:116</note>
       </notes>
       <segment>
         <source>See related tasks</source>
