@@ -444,7 +444,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:48</note>
+        <note category="location">src/app/results/index.component.ts:42</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -631,7 +631,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:136</note>
+        <note category="location">src/app/results/components/table.component.ts:91</note>
       </notes>
       <segment state="initial">
         <source>Select page of results</source>
