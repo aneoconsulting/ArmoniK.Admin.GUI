@@ -19,7 +19,7 @@ export class DefaultConfigService {
 
   readonly #defaultDashboardLines: Line[] = [
     {
-      name: 'Tasks by status',
+      name: $localize`Tasks by status`,
       type: 'CountStatus',
       interval: 5,
       hideGroupsHeader: false,

@@ -15,17 +15,17 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
   template: `
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'string'">
   <mat-label i18n="Input label">Value</mat-label>
-  <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
+  <input matInput [type]="getInputType()" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
 </mat-form-field>
 
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'number'">
   <mat-label i18n="Input label">Value</mat-label>
-  <input matInput type="number" placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
+  <input matInput type="number" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
 </mat-form-field>
 
 <mat-form-field class="dateForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Choose a date</mat-label>
-  <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="input.value" placeholder="Choose a date">
+  <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="input.value" i18n-placeholder placeholder="Choose a date">
    <ngx-mat-datepicker-toggle matSuffix [for]="picker"></ngx-mat-datepicker-toggle>
    <ngx-mat-datetime-picker #picker [startAt]="actualDate" [showSpinners]="true" [showSeconds]="true" >
     <ngx-mat-datepicker-actions>
