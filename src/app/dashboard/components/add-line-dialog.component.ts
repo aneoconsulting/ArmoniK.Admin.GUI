@@ -28,10 +28,8 @@ export class AddLineDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: AddLineDialogData,
   ) {}
 
-  onSubmit(result: string) {
-    this._dialogRef.close({
-      name: result
-    });
+  onSubmit(result: AddLineDialogResult) {
+    this._dialogRef.close(result);
   }
 
   onNoClick(): void {

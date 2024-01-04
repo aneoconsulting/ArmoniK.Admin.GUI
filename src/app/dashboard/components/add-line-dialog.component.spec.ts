@@ -24,8 +24,8 @@ describe('AddLineDialogComponent', () => {
   });
 
   it('should close with result on submit', () => {
-    component.onSubmit('result');
-    expect(mockMatDialogRef.close).toHaveBeenCalledWith({name: 'result'});
+    component.onSubmit({name:'result', type: 'Tasks'});
+    expect(mockMatDialogRef.close).toHaveBeenCalledWith({name:'result', type: 'Tasks'});
   });
 
   it('should close on "no" click', () => {

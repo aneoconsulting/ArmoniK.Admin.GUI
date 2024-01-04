@@ -31,7 +31,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:54</note>
+        <note category="location">src/app/applications/index.component.ts:39</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -77,7 +77,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:69</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:27</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:40</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:42</note>
         <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:67</note>
         <note category="location">src/app/dashboard/components/reorganize-lines-dialog.component.ts:41</note>
@@ -98,7 +98,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:54</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:70</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:28</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:41</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:43</note>
         <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:68</note>
         <note category="location">src/app/dashboard/components/reorganize-lines-dialog.component.ts:42</note>
@@ -250,7 +250,7 @@
     <unit id="8778616811237742446">
       <notes>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:17</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:17</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:20</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:19</note>
         <note category="description">Name of the external service</note>
       </notes>
@@ -573,7 +573,7 @@
     </unit>
     <unit id="118284616495039929">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:55</note>
+        <note category="location">src/app/partitions/index.component.ts:50</note>
         <note category="location">src/app/services/navigation.service.ts:38</note>
         <note category="description">Page title</note>
       </notes>
@@ -584,7 +584,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:138</note>
+        <note category="location">src/app/partitions/components/table.component.ts:89</note>
       </notes>
       <segment state="initial">
         <source>Select page of partitions</source>
@@ -771,7 +771,7 @@
     <unit id="7726080656019750876">
       <notes>
         <note category="location">src/app/partitions/services/partitions-filters.service.ts:22</note>
-        <note category="location">src/app/results/services/results-filters.service.ts:25</note>
+        <note category="location">src/app/results/services/results-filters.service.ts:26</note>
         <note category="location">src/app/results/services/results-statuses.service.ts:7</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:28</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:32</note>
@@ -920,7 +920,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:113</note>
+        <note category="location">src/app/applications/components/table.component.ts:64</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
@@ -1193,8 +1193,8 @@
     </unit>
     <unit id="1822341529834994016">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:236</note>
-        <note category="location">src/app/partitions/index.component.ts:243</note>
+        <note category="location">src/app/applications/components/table.component.ts:40</note>
+        <note category="location">src/app/partitions/components/table.component.ts:41</note>
         <note category="location">src/app/sessions/index.component.ts:302</note>
       </notes>
       <segment state="initial">
@@ -1463,7 +1463,7 @@
     </unit>
     <unit id="4471277768650583130">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:119</note>
+        <note category="location">src/app/applications/components/table.component.ts:70</note>
         <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment state="initial">
@@ -1709,7 +1709,7 @@
     </unit>
     <unit id="7649283649914601183">
       <notes>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:18</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:21</note>
         <note category="description">Placeholder</note>
       </notes>
       <segment state="initial">
@@ -2582,6 +2582,16 @@
       <segment state="initial">
         <source>Cancel Session</source>
         <target>Annuler la session</target>
+      </segment>
+    </unit>
+    <unit id="45739481977493163">
+      <notes>
+        <note category="location">src/app/results/services/results-filters.service.ts:25</note>
+        <note category="location">src/app/results/services/results-index.service.ts:27</note>
+      </notes>
+      <segment state="initial">
+        <source>Size</source>
+        <target>Taille</target>
       </segment>
     </unit>
   </file>
