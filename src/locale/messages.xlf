@@ -58,7 +58,7 @@
     <unit id="118284616495039929">
       <notes>
         <note category="location">src/app/partitions/index.component.ts:50</note>
-        <note category="location">src/app/services/navigation.service.ts:38</note>
+        <note category="location">src/app/services/navigation.service.ts:45</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -1282,7 +1282,7 @@
     </unit>
     <unit id="5968132631442328843">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:59</note>
+        <note category="location">src/app/services/navigation.service.ts:66</note>
       </notes>
       <segment>
         <source>Results</source>
@@ -1326,7 +1326,7 @@
     </unit>
     <unit id="6570363013146073520">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:24</note>
+        <note category="location">src/app/services/navigation.service.ts:31</note>
       </notes>
       <segment>
         <source>Dashboard</source>
@@ -1352,7 +1352,7 @@
     </unit>
     <unit id="6658000829978978023">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:31</note>
+        <note category="location">src/app/services/navigation.service.ts:38</note>
       </notes>
       <segment>
         <source>Applications</source>
@@ -1388,7 +1388,7 @@
     </unit>
     <unit id="721963055036507192">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:45</note>
+        <note category="location">src/app/services/navigation.service.ts:52</note>
       </notes>
       <segment>
         <source>Sessions</source>
@@ -1396,7 +1396,7 @@
     </unit>
     <unit id="7306009472583884794">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:66</note>
+        <note category="location">src/app/services/navigation.service.ts:73</note>
       </notes>
       <segment>
         <source>Divider</source>
@@ -1542,7 +1542,7 @@
     </unit>
     <unit id="1617807706088097497">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:624</note>
+        <note category="location">src/app/tasks/components/table.component.ts:366</note>
       </notes>
       <segment>
         <source>Select Task <ph id="0" equiv="PH" disp="row.id"/></source>
@@ -1576,7 +1576,7 @@
     </unit>
     <unit id="2053193386661149821">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:181</note>
+        <note category="location">src/app/tasks/components/table.component.ts:123</note>
       </notes>
       <segment>
         <source>Copy Task ID</source>
@@ -1625,7 +1625,7 @@
     </unit>
     <unit id="2497877733587308955">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:215</note>
+        <note category="location">src/app/tasks/components/table.component.ts:157</note>
       </notes>
       <segment>
         <source>Select page of tasks</source>
@@ -1874,7 +1874,7 @@
     </unit>
     <unit id="5356677481738441703">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:54</note>
+        <note category="location">src/app/tasks/index.component.ts:43</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -1892,7 +1892,7 @@
     </unit>
     <unit id="5618923336828241352">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:77</note>
+        <note category="location">src/app/tasks/index.component.ts:66</note>
       </notes>
       <segment>
         <source> Cancel Tasks </source>
@@ -1952,7 +1952,7 @@
     </unit>
     <unit id="6904866445262015585">
       <notes>
-        <note category="location">src/app/services/navigation.service.ts:52</note>
+        <note category="location">src/app/services/navigation.service.ts:59</note>
       </notes>
       <segment>
         <source>Tasks</source>
@@ -1969,10 +1969,10 @@
     </unit>
     <unit id="701865426370037180">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:617</note>
+        <note category="location">src/app/tasks/components/table.component.ts:360</note>
       </notes>
       <segment>
-        <source><ph id="0" equiv="PH" disp="this.isAllSelected() ? &apos;select&apos; : &apos;deselect&apos;"/> all</source>
+        <source><ph id="0" equiv="PH" disp="this.isAllSelected() ? &apos;deselect&apos; : &apos;select&apos;"/> all</source>
       </segment>
     </unit>
     <unit id="7051047199538689120">
@@ -1985,7 +1985,7 @@
     </unit>
     <unit id="7096606594443117653">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:621</note>
+        <note category="location">src/app/tasks/components/table.component.ts:363</note>
       </notes>
       <segment>
         <source>Deselect Task <ph id="0" equiv="PH" disp="row.id"/></source>
@@ -2001,7 +2001,7 @@
     </unit>
     <unit id="7215101881367554791">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:174</note>
+        <note category="location">src/app/tasks/components/table.component.ts:116</note>
       </notes>
       <segment>
         <source>Show more</source>
@@ -2055,7 +2055,7 @@
     </unit>
     <unit id="7754017504605840618">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:189</note>
+        <note category="location">src/app/tasks/components/table.component.ts:131</note>
       </notes>
       <segment>
         <source> See Retries </source>
@@ -2108,7 +2108,7 @@
     <unit id="8500840478218589285">
       <notes>
         <note category="location">src/app/tasks/components/manage-view-in-logs-dialog.component.ts:14</note>
-        <note category="location">src/app/tasks/index.component.ts:83,85</note>
+        <note category="location">src/app/tasks/index.component.ts:72,74</note>
         <note category="description">Dialog title</note>
       </notes>
       <segment>
@@ -2126,7 +2126,7 @@
     </unit>
     <unit id="8519276135536398786">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:197</note>
+        <note category="location">src/app/tasks/components/table.component.ts:139</note>
       </notes>
       <segment>
         <source> View in <ph id="0" equiv="INTERPOLATION" disp="{{ serviceName }}"/> </source>
@@ -2134,7 +2134,7 @@
     </unit>
     <unit id="860465032145625679">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:193</note>
+        <note category="location">src/app/tasks/components/table.component.ts:135</note>
       </notes>
       <segment>
         <source> Cancel task </source>
@@ -2244,7 +2244,7 @@
     </unit>
     <unit id="890160499914624979">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:185</note>
+        <note category="location">src/app/tasks/components/table.component.ts:127</note>
       </notes>
       <segment>
         <source> See related result </source>
@@ -2323,6 +2323,14 @@
         <source>Change language</source>
       </segment>
     </unit>
+    <unit id="4433806526451389349">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:118</note>
+      </notes>
+      <segment>
+        <source>Unable to get service health data</source>
+      </segment>
+    </unit>
     <unit id="45739481977493163">
       <notes>
         <note category="location">src/app/results/services/results-filters.service.ts:25</note>
@@ -2330,6 +2338,56 @@
       </notes>
       <segment>
         <source>Size</source>
+      </segment>
+    </unit>
+    <unit id="5628116626310055941">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:169</note>
+      </notes>
+      <segment>
+        <source>Service is Unhealthy</source>
+      </segment>
+    </unit>
+    <unit id="574352586411354475">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:28</note>
+        <note category="location">src/app/services/navigation.service.ts:24</note>
+        <note category="description">Page title</note>
+      </notes>
+      <segment>
+        <source>HealthChecks</source>
+      </segment>
+    </unit>
+    <unit id="826373001404059352">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:173</note>
+      </notes>
+      <segment>
+        <source>There is no data on the service</source>
+      </segment>
+    </unit>
+    <unit id="7790671864055228467">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:56</note>
+      </notes>
+      <segment>
+        <source>No data to show</source>
+      </segment>
+    </unit>
+    <unit id="7953743545949086622">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:167</note>
+      </notes>
+      <segment>
+        <source>Service is Healthy</source>
+      </segment>
+    </unit>
+    <unit id="8759764801510671478">
+      <notes>
+        <note category="location">src/app/healthcheck/index.component.ts:171</note>
+      </notes>
+      <segment>
+        <source>Service is Degraded</source>
       </segment>
     </unit>
   </file>
