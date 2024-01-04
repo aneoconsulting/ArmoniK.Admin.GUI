@@ -100,6 +100,12 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
           </app-count-tasks-by-status>
         </td>
       </ng-container>
+      <!-- Generics -->
+      <ng-container *ngIf="isGenericColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          {{handleGenericColumn(column, element)}}
+        </td>
+      </ng-container>
       <!-- Actions -->
       <ng-container *ngIf="isActionsColumn(column)">
         <td mat-cell *matCellDef="let element">
@@ -234,6 +240,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this._sessionsIndexService.columnToLabel(column);
   }
 
+  isGenericColumn(column: SessionRawColumnKey): boolean {
+    return this._sessionsIndexService.isGenericColumn(column);
+  }
+
   isNotSortableColumn(column: SessionRawColumnKey): boolean {
     return this._sessionsIndexService.isNotSortableColumn(column);
   }
@@ -350,5 +360,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         this._tasksByStatusService.saveStatuses('sessions', result);
       }
     });
+  }
+
+  handleGenericColumn(column: SessionRawColumnKey, element: SessionRaw) {
+    const field = this._sessionsIndexService.genericField(column);
+    return element.options?.options[field];
   }
 }

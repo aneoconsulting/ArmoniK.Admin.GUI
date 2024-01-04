@@ -109,6 +109,12 @@ import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } fro
           <app-table-inspect-object [object]="handleNestedKeys(column, element)" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
+      <!-- Generics -->
+      <ng-container *ngIf="isGenericColumn(column)">
+        <td mat-cell *matCellDef="let element" appNoWrap>
+          {{handleGenericColumn(column, element)}}
+        </td>
+      </ng-container>
       <!-- Actions -->
       <ng-container *ngIf="isActionsColumn(column)">
         <!-- TODO: use icons service -->
@@ -259,6 +265,10 @@ export class TasksTableComponent implements AfterViewInit {
     return (this.show(task, column) as Duration) ?? null;
   }
 
+  isGenericColumn(column: TaskSummaryColumnKey): boolean {
+    return this.#tasksIndexService.isGenericColumn(column);
+  }
+
   isActionsColumn(column: TaskSummaryColumnKey): boolean {
     return this.#tasksIndexService.isActionsColumn(column);
   }
@@ -384,5 +394,10 @@ export class TasksTableComponent implements AfterViewInit {
       resultObject = resultObject[key] as unknown as {[key: string]: object};
     });
     return resultObject;
+  }
+
+  handleGenericColumn(column: TaskSummaryColumnKey, element: TaskSummary) {
+    const field = this.#tasksIndexService.genericField(column);
+    return element.options?.options[field];
   }
 }

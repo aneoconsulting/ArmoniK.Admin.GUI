@@ -12,9 +12,11 @@ import { RouterModule } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { GenericColumn } from '@app/types/data';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -71,6 +73,12 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
           <span i18n appNoWrap>
             Manage View in Logs
+          </span>
+        </button>
+        <button mat-menu-item (click)="addGenericColumn()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-generics')"></mat-icon>
+          <span i18n appNoWrap>
+            Manage Generic Column
           </span>
         </button>
       </ng-container>
@@ -176,6 +184,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   options: TaskSummaryListOptions;
 
   filters: TaskSummaryFiltersOr = [];
+  genericColumns: GenericColumn[];
 
   sharableURL = '';
 
@@ -196,6 +205,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.displayedColumns = this.#tasksIndexService.restoreColumns();
     this.availableColumns = this.#tasksIndexService.availableColumns;
     this.lockColumns = this.#tasksIndexService.restoreLockColumns();
+
+    this.genericColumns = this.#tasksIndexService.restoreGenericColumns();
+    this.availableColumns.push(...this.genericColumns);
 
     this.options = this.#tasksIndexService.restoreOptions();
 
@@ -382,6 +394,24 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.urlTemplate = result.urlTemplate;
 
       this.#tasksIndexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
+    });
+  }
+
+  addGenericColumn(): void {
+    const dialogRef = this.#dialog.open<ManageGenericColumnDialogComponent, GenericColumn[], GenericColumn[]>(ManageGenericColumnDialogComponent, {
+      data: this.genericColumns
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if(result) {
+        this.genericColumns = result;
+        this.availableColumns = this.availableColumns.filter(column => this.#tasksIndexService.availableColumns.includes(column)
+        || (result as TaskSummaryColumnKey[]).includes(column));
+        this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
+        this.displayedColumns.push(...result);
+        this.#tasksIndexService.saveColumns(this.displayedColumns);
+        this.#tasksIndexService.saveGenericColumns(this.genericColumns);
+      }
     });
   }
 

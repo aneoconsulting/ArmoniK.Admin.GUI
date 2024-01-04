@@ -2,6 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -14,10 +15,12 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { GenericColumn } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -67,6 +70,14 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOpt
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
     >
+      <ng-container extra-menu-items>
+        <button mat-menu-item (click)="addGenericColumn()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-generics')"></mat-icon>
+          <span i18n appNoWrap>
+            Manage Generic Column
+          </span>
+        </button>
+      </ng-container>
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -122,7 +133,8 @@ app-table-actions-toolbar {
       provide: DATA_FILTERS_SERVICE,
       useExisting: SessionsFiltersService
     },
-    SessionsStatusesService
+    SessionsStatusesService,
+    MatDialog
   ],
   imports: [
     DurationPipe,
@@ -153,9 +165,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
   readonly _tasksByStatusService = inject(TasksByStatusService);
+  readonly #dialog = inject(MatDialog);
 
   displayedColumns: SessionRawColumnKey[] = [];
   availableColumns: SessionRawColumnKey[] = [];
+  genericColumns: GenericColumn[];
   lockColumns: boolean = false;
 
   isLoading = true;
@@ -191,6 +205,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.displayedColumns = this._sessionsIndexService.restoreColumns();
     this.availableColumns = this._sessionsIndexService.availableColumns;
     this.lockColumns = this._sessionsIndexService.restoreLockColumns();
+
+    this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
+    this.availableColumns.push(...this.genericColumns);
 
     this.options = this._sessionsIndexService.restoreOptions();
 
@@ -328,5 +345,23 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       resultObject = resultObject[key] as unknown as {[key: string]: object};
     });
     return resultObject;
+  }
+
+  addGenericColumn(): void {
+    const dialogRef = this.#dialog.open<ManageGenericColumnDialogComponent, GenericColumn[], GenericColumn[]>(ManageGenericColumnDialogComponent, {
+      data: this.genericColumns
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if(result) {
+        this.genericColumns = result;
+        this.availableColumns = this.availableColumns.filter(column => this._sessionsIndexService.availableColumns.includes(column)
+        || (result as SessionRawColumnKey[]).includes(column));
+        this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
+        this.displayedColumns.push(...result);
+        this._sessionsIndexService.saveColumns(this.displayedColumns);
+        this._sessionsIndexService.saveGenericColumns(this.genericColumns);
+      }
+    });
   }
 }
