@@ -38,9 +38,9 @@ describe('TasksIndexService', () => {
     processingToEndDuration: 'Processing to End Duration',
     options: 'Options',
     countDataDependencies: 'Count Data Dependencies',
-    countExpectedOutputIds: 'Count Expected Output IDs',
-    countParentTaskIds: 'Count Parent Task IDs',
-    countRetryOfIds: 'Count Retry Of IDs',
+    countExpectedOutputIds: 'Count Expected Output Ids',
+    countParentTaskIds: 'Count Parent Task Ids',
+    countRetryOfIds: 'Count Retry Of Ids',
     error: 'Error',
     select: 'Select',
   };

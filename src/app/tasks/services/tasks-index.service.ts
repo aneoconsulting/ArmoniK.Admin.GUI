@@ -48,9 +48,9 @@ export class TasksIndexService {
     processingToEndDuration: $localize`Processing to End Duration`,
     options: $localize`Options`,
     countDataDependencies: $localize`Count Data Dependencies`,
-    countExpectedOutputIds: $localize`Count Expected Output IDs`,
-    countParentTaskIds: $localize`Count Parent Task IDs`,
-    countRetryOfIds: $localize`Count Retry Of IDs`,
+    countExpectedOutputIds: $localize`Count Expected Output Ids`,
+    countParentTaskIds: $localize`Count Parent Task Ids`,
+    countRetryOfIds: $localize`Count Retry Of Ids`,
     error: $localize`Error`,
     select: $localize`Select`,
   };

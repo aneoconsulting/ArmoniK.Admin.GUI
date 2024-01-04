@@ -31,7 +31,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:54</note>
+        <note category="location">src/app/applications/index.component.ts:39</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -77,7 +77,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:69</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:27</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:40</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:42</note>
         <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:67</note>
         <note category="location">src/app/dashboard/components/reorganize-lines-dialog.component.ts:41</note>
@@ -98,7 +98,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:54</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:70</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:28</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:41</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:43</note>
         <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:68</note>
         <note category="location">src/app/dashboard/components/reorganize-lines-dialog.component.ts:42</note>
@@ -250,7 +250,7 @@
     <unit id="8778616811237742446">
       <notes>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:17</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:17</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:20</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:19</note>
         <note category="description">Name of the external service</note>
       </notes>
@@ -444,7 +444,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:48</note>
+        <note category="location">src/app/results/index.component.ts:42</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -465,6 +465,7 @@
     <unit id="1102717806459547726">
       <notes>
         <note category="location">src/app/components/refresh-button.component.ts:12</note>
+        <note category="location">src/app/components/show-actions.component.ts:81</note>
       </notes>
       <segment state="initial">
         <source>Refresh</source>
@@ -572,7 +573,7 @@
     </unit>
     <unit id="118284616495039929">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:55</note>
+        <note category="location">src/app/partitions/index.component.ts:50</note>
         <note category="location">src/app/services/navigation.service.ts:38</note>
         <note category="description">Page title</note>
       </notes>
@@ -583,7 +584,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:138</note>
+        <note category="location">src/app/partitions/components/table.component.ts:89</note>
       </notes>
       <segment state="initial">
         <source>Select page of partitions</source>
@@ -630,7 +631,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:136</note>
+        <note category="location">src/app/results/components/table.component.ts:91</note>
       </notes>
       <segment state="initial">
         <source>Select page of results</source>
@@ -648,7 +649,7 @@
     </unit>
     <unit id="7779627316401407129">
       <notes>
-        <note category="location">src/app/sessions/show.component.ts:26</note>
+        <note category="location">src/app/sessions/show.component.ts:28</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -770,7 +771,7 @@
     <unit id="7726080656019750876">
       <notes>
         <note category="location">src/app/partitions/services/partitions-filters.service.ts:22</note>
-        <note category="location">src/app/results/services/results-filters.service.ts:25</note>
+        <note category="location">src/app/results/services/results-filters.service.ts:26</note>
         <note category="location">src/app/results/services/results-statuses.service.ts:7</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:28</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:32</note>
@@ -919,7 +920,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:113</note>
+        <note category="location">src/app/applications/components/table.component.ts:64</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
@@ -975,6 +976,7 @@
     </unit>
     <unit id="8541569923897487029">
       <notes>
+        <note category="location">src/app/partitions/services/partitions-filters.service.ts:17</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:23</note>
       </notes>
       <segment state="initial">
@@ -1161,14 +1163,14 @@
         <target>Durée</target>
       </segment>
     </unit>
-    <unit id="2532274051867006228">
+    <unit id="1339831764151610299">
       <notes>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:27</note>
         <note category="location">src/app/sessions/services/sessions-index.service.ts:27</note>
       </notes>
       <segment state="initial">
-        <source>Partition IDs</source>
-        <target>IDs des Partitions</target>
+        <source>Partition Ids</source>
+        <target>Ids des Partitions</target>
       </segment>
     </unit>
     <unit id="2956098160626271284">
@@ -1191,8 +1193,8 @@
     </unit>
     <unit id="1822341529834994016">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:236</note>
-        <note category="location">src/app/partitions/index.component.ts:243</note>
+        <note category="location">src/app/applications/components/table.component.ts:40</note>
+        <note category="location">src/app/partitions/components/table.component.ts:41</note>
         <note category="location">src/app/sessions/index.component.ts:302</note>
       </notes>
       <segment state="initial">
@@ -1211,7 +1213,7 @@
     </unit>
     <unit id="6442812322325259685">
       <notes>
-        <note category="location">src/app/tasks/show.component.ts:25</note>
+        <note category="location">src/app/tasks/show.component.ts:27</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -1330,7 +1332,7 @@
     </unit>
     <unit id="2509141182388535183">
       <notes>
-        <note category="location">src/app/components/table/table-inspect-object.component.ts:12</note>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:13</note>
       </notes>
       <segment state="initial">
         <source>View</source>
@@ -1339,7 +1341,7 @@
     </unit>
     <unit id="2400362719050540518">
       <notes>
-        <note category="location">src/app/components/table/table-inspect-object.component.ts:12</note>
+        <note category="location">src/app/components/table/table-inspect-object.component.ts:13</note>
       </notes>
       <segment state="initial">
         <source>view</source>
@@ -1461,7 +1463,8 @@
     </unit>
     <unit id="4471277768650583130">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:119</note>
+        <note category="location">src/app/applications/components/table.component.ts:70</note>
+        <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment state="initial">
         <source>See session</source>
@@ -1706,7 +1709,7 @@
     </unit>
     <unit id="7649283649914601183">
       <notes>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:18</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:21</note>
         <note category="description">Placeholder</note>
       </notes>
       <segment state="initial">
@@ -1844,15 +1847,6 @@
       <segment state="initial">
         <source> Your dashboard is empty, add a line to start monitoring your tasks. </source>
         <target> Votre tableau de bord est vide. Ajoutez une ligne pour monitorer vos données </target>
-      </segment>
-    </unit>
-    <unit id="3907924624916192366">
-      <notes>
-        <note category="location">src/app/partitions/services/partitions-filters.service.ts:17</note>
-      </notes>
-      <segment state="initial">
-        <source>Parent Partition IDs</source>
-        <target>Id des partitions parentes</target>
       </segment>
     </unit>
     <unit id="7514940606218254317">
@@ -2002,6 +1996,8 @@
     </unit>
     <unit id="1279830352886589977">
       <notes>
+        <note category="location">src/app/components/show-actions.component.ts:47</note>
+        <note category="location">src/app/components/show-actions.component.ts:52</note>
         <note category="location">src/app/sessions/index.component.ts:170</note>
       </notes>
       <segment state="initial">
@@ -2263,7 +2259,7 @@
       </notes>
       <segment state="initial">
         <source>Task ID</source>
-        <target>Id de la tâche</target>
+        <target>ID de la tâche</target>
       </segment>
     </unit>
     <unit id="6950534549804195606">
@@ -2273,7 +2269,7 @@
       </notes>
       <segment state="initial">
         <source>Owner Pod ID</source>
-        <target>Id du Pod Propriétaire</target>
+        <target>ID du Pod Propriétaire</target>
       </segment>
     </unit>
     <unit id="8925219422630998687">
@@ -2394,31 +2390,31 @@
         <target>Compter les dépendances de données</target>
       </segment>
     </unit>
-    <unit id="5111264093259746517">
+    <unit id="6990738933464485342">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:51</note>
       </notes>
       <segment state="initial">
-        <source>Count Expected Output IDs</source>
-        <target>Compter les IDs de sortie attendus</target>
+        <source>Count Expected Output Ids</source>
+        <target>Compter les Ids de sortie attendus</target>
       </segment>
     </unit>
-    <unit id="2247755933693524640">
+    <unit id="920308880438249076">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:52</note>
       </notes>
       <segment state="initial">
-        <source>Count Parent Task IDs</source>
-        <target>Compter les IDs des tâches parentes</target>
+        <source>Count Parent Task Ids</source>
+        <target>Compter les Ids des tâches parentes</target>
       </segment>
     </unit>
-    <unit id="7629389539179449839">
+    <unit id="1451163785538643540">
       <notes>
         <note category="location">src/app/tasks/services/tasks-index.service.ts:53</note>
       </notes>
       <segment state="initial">
-        <source>Count Retry Of IDs</source>
-        <target>Compter les essais des IDs</target>
+        <source>Count Retry Of Ids</source>
+        <target>Compter les essais des Ids</target>
       </segment>
     </unit>
     <unit id="3797570084942068182">
@@ -2522,6 +2518,80 @@
       <segment state="initial">
         <source>Change language</source>
         <target>Changer la langue</target>
+      </segment>
+    </unit>
+    <unit id="6022529099150705711">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:27</note>
+      </notes>
+      <segment state="initial">
+        <source>See sessions</source>
+        <target>Voir les sessions</target>
+      </segment>
+    </unit>
+    <unit id="6174579065408758827">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:32</note>
+        <note category="location">src/app/components/show-actions.component.ts:37</note>
+      </notes>
+      <segment state="initial">
+        <source>See tasks</source>
+        <target>Voir les tâches</target>
+      </segment>
+    </unit>
+    <unit id="3085155813035349251">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:42</note>
+      </notes>
+      <segment state="initial">
+        <source>See task</source>
+        <target>Voir la tâche</target>
+      </segment>
+    </unit>
+    <unit id="2310023070484904143">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:57</note>
+      </notes>
+      <segment state="initial">
+        <source>See partitions</source>
+        <target>Voir les partitions</target>
+      </segment>
+    </unit>
+    <unit id="698601157229513551">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:62</note>
+      </notes>
+      <segment state="initial">
+        <source>See partition</source>
+        <target>Voir la partition</target>
+      </segment>
+    </unit>
+    <unit id="2926475737721192412">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:69</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancel Task</source>
+        <target>Annuler la tâche</target>
+      </segment>
+    </unit>
+    <unit id="5213720747752417161">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:74</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancel Session</source>
+        <target>Annuler la session</target>
+      </segment>
+    </unit>
+    <unit id="45739481977493163">
+      <notes>
+        <note category="location">src/app/results/services/results-filters.service.ts:25</note>
+        <note category="location">src/app/results/services/results-index.service.ts:27</note>
+      </notes>
+      <segment state="initial">
+        <source>Size</source>
+        <target>Taille</target>
       </segment>
     </unit>
   </file>

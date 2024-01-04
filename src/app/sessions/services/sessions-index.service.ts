@@ -24,7 +24,7 @@ export class SessionsIndexService {
     options: $localize`Options`,
     actions: $localize`Actions`,
     duration: $localize`Duration`,
-    partitionIds: $localize`Partition IDs`,
+    partitionIds: $localize`Partition Ids`,
     count: $localize`Tasks by Status`,
     'options.options': $localize`Options Options`,
     'options.applicationName': $localize`Options Application Name`,

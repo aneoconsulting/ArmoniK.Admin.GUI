@@ -3,6 +3,7 @@ import { FormNameLineComponent } from './form-name-line.component';
 describe('FormNameLineComponent', () => {
   const component = new FormNameLineComponent();
   component.line = 'line';
+  component.type = 'Applications';
   component.ngOnInit();
 
   it('should create', () => {
@@ -11,6 +12,7 @@ describe('FormNameLineComponent', () => {
 
   it('should init', () => {
     expect(component.lineForm.value.name).toEqual('line');
+    expect(component.lineForm.value.type).toEqual('Applications');
   });
 
   describe('onSubmit', () => {
@@ -18,14 +20,17 @@ describe('FormNameLineComponent', () => {
     const spySubmit = jest.spyOn(component.submitChange, 'emit');
 
     it('should submit if there is a value', () => {
+      component.lineForm.value.name = 'line';
+      component.lineForm.value.type = 'Applications';
       component.onSubmit();
-      expect(spySubmit).toHaveBeenCalledWith('line');
+      expect(spySubmit).toHaveBeenCalledWith({name: 'line', type: 'Applications'});
     });
   
     it('should submit empty if there no value', () => {
       component.lineForm.value.name = null;
+      component.lineForm.value.type = null;
       component.onSubmit();
-      expect(spySubmit).toHaveBeenCalledWith('');
+      expect(spySubmit).toHaveBeenCalledWith({name:'', type: ''});
     });
   });
 
