@@ -53,7 +53,8 @@ export class IconsService {
     'find-logs': 'plagiarism',
     'lock': 'lock',
     'unlock': 'lock_open',
-    'language': 'language'
+    'language': 'language',
+    'manage-generics': 'splitscreen_vertical_add',
   };
 
   getIcon(name: string): string {

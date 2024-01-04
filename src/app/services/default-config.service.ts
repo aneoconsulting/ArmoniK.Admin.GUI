@@ -296,7 +296,9 @@ export class DefaultConfigService {
     'tasks-interval': this.#defaultTasks.interval,
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
     'tasks-lock-columns': this.#defaultTasks.lockColumns,
-    'healthcheck-interval': this.#defaultHealthCheck.interval
+    'healthcheck-interval': this.#defaultHealthCheck.interval,
+    'tasks-generic-columns': [],
+    'sessions-generic-columns': [],
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

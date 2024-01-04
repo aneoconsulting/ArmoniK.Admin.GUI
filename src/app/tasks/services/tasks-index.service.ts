@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { GenericColumn } from '@app/types/data';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
@@ -62,7 +63,7 @@ export class TasksIndexService {
   readonly defaultViewInLogs = this.#defaultConfigService.defaultTasksViewInLogs;
 
   columnToLabel(column: TaskSummaryColumnKey): string {
-    return this.columnsLabels[column];
+    return !this.isGenericColumn(column) ? this.columnsLabels[column] : this.genericField(column);
   }
 
   /**
@@ -97,7 +98,7 @@ export class TasksIndexService {
   }
 
   isSimpleColumn(column: TaskSummaryColumnKey): boolean {
-    return !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column) && !this.isStatusColumn(column) && !this.isTaskIdColumn(column) && !this.isActionsColumn(column) && !this.isSelectColumn(column);
+    return !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column) && !this.isStatusColumn(column) && !this.isTaskIdColumn(column) && !this.isActionsColumn(column) && !this.isSelectColumn(column) && !this.isGenericColumn(column);
   }
 
   isNotSortableColumn(column: TaskSummaryColumnKey): boolean {
@@ -106,6 +107,14 @@ export class TasksIndexService {
 
   isSpecifiedNotSortableColumn(column: TaskSummaryColumnKey): boolean {
     return column === 'countDataDependencies' || column === 'countParentTaskIds' || column === 'countExpectedOutputIds' || column === 'countRetryOfIds' || column === 'statusMessage';
+  }
+
+  isGenericColumn(column: TaskSummaryColumnKey): boolean {
+    return column.startsWith('generic.');
+  }
+
+  genericField(column: TaskSummaryColumnKey) {
+    return column.replace('generic.', '');
   }
 
   /**
@@ -164,6 +173,19 @@ export class TasksIndexService {
     this.#tableService.resetColumns('tasks-columns');
 
     return Array.from(this.defaultColumns);
+  }
+
+  /**
+   * Generic Columns
+   */
+
+  saveGenericColumns(columns: GenericColumn[]): void {
+    this.#tableService.saveColumns('tasks-generic-columns', columns);
+  }
+
+  restoreGenericColumns(): GenericColumn[] {
+    const columns = this.#tableService.restoreColumns<GenericColumn[]>('tasks-generic-columns') ?? [];
+    return [...columns] ;
   }
 
   /**

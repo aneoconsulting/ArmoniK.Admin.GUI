@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { GenericColumn } from '@app/types/data';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
@@ -43,7 +44,7 @@ export class SessionsIndexService {
   readonly defaultIntervalValue: number = this.#defaultConfigService.defaultSessions.interval;
 
   columnToLabel(column: SessionRawColumnKey): string {
-    return this.columnsLabels[column];
+    return !this.isGenericColumn(column) ? this.columnsLabels[column] : this.genericField(column);
   }
 
   /**
@@ -84,6 +85,14 @@ export class SessionsIndexService {
   isNotSortableColumn(column: SessionRawColumnKey): boolean {
     // FIXME: Not implemented yet in Core (for duration, once implemented, it will be sortable)
     return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column) || this.isDurationColumn(column);
+  }
+
+  isGenericColumn(column: SessionRawColumnKey): boolean {
+    return column.startsWith('generic.');
+  }
+
+  genericField(column: SessionRawColumnKey) {
+    return column.replace('generic.', '');
   }
 
   /**
@@ -136,6 +145,19 @@ export class SessionsIndexService {
     const columns = this.#tableService.restoreColumns<SessionRawColumnKey[]>('sessions-columns') ?? this.defaultColumns;
 
     return [...columns];
+  }
+
+  /**
+   * Generic Columns
+   */
+
+  saveGenericColumns(columns: GenericColumn[]): void {
+    this.#tableService.saveColumns('sessions-generic-columns', columns);
+  }
+  
+  restoreGenericColumns(): GenericColumn[] {
+    const columns = this.#tableService.restoreColumns<GenericColumn[]>('sessions-generic-columns') ?? [];
+    return [...columns] ;
   }
 
   resetColumns(): SessionRawColumnKey[] {
