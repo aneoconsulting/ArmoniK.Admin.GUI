@@ -1,8 +1,12 @@
 import { FilterNumberOperator } from '@aneoconsultingfr/armonik.api.angular';
-import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { AsyncPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Observable, Subject, map, merge, startWith } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
@@ -16,23 +20,25 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 <span *ngIf="!first" i18n="Filter condition">And</span>
 <mat-form-field appearance="outline"  subscriptSizing="dynamic">
   <mat-label i18n="Label input">Property</mat-label>
-  <mat-select (valueChange)="onFieldChange($event)" [value]="filter.for + '-' + filter.field?.toString()">
-    <mat-option *ngFor="let definition of filtersDefinitions; trackBy: trackByField" [value]="definition.for + '-' + definition.field">
-      {{ retrieveLabel(definition) }}
+  <input matInput [matAutocomplete]="autoProperty" [formControl]="propertyFormControl" (input)="onPropertyChange()">
+  <mat-autocomplete #autoProperty (optionSelected)="onPropertyChange()">
+    <mat-option *ngFor="let property of filteredProperties | async" [value]="property">
+      {{ property }}
     </mat-option>
-  </mat-select>
+  </mat-autocomplete>
 </mat-form-field>
 
 <mat-form-field appearance="outline"  subscriptSizing="dynamic">
   <mat-label i18n="Label input">Operator</mat-label>
-  <mat-select (valueChange)="onOperatorChange($event)" [value]="filter.operator?.toString()">
-    <mat-option *ngFor="let operator of findOperator(filter) | keyvalue; trackBy: trackByOperator" [value]="operator.key">
-      {{ operator.value }}
+  <input matInput [matAutocomplete]="autoOperators" [formControl]="operatorFormControl" (input)="onOperatorChange()">
+  <mat-autocomplete #autoOperators (optionSelected)="onOperatorChange()">
+    <mat-option *ngFor="let operator of filteredOperators | async" [value]="operator">
+      {{ operator }}
     </mat-option>
-  </mat-select>
+  </mat-autocomplete>
 </mat-form-field>
 
-<app-filters-dialog-input [input]="findInput(filter)" (valueChange)="onInputChange($event)"></app-filters-dialog-input>
+<app-filters-dialog-input [input]="findInput(filter)" [inputStatus]="filterPropertyChange$" (valueChange)="onInputChange($event)"></app-filters-dialog-input>
   `,
   styles: [`
 :host {
@@ -56,34 +62,102 @@ span {
     MatFormFieldModule,
     MatSelectModule,
     FiltersDialogInputComponent,
+    MatAutocompleteModule,
+    MatInputModule,
+    AsyncPipe,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     FiltersService,
   ],
 })
-export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> {
+export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> implements OnInit {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
+
+  properties: string[];
+  propertyFormControl = new FormControl('');
+  filteredProperties: Observable<string[]>;
+
+  labelledOperators: string[];
+  operators: Record<number, string>;
+  operatorFormControl = new FormControl('');
+  filteredOperators: Observable<string[]>;
+  filterPropertyChange$ = new Subject<void>();
 
   #filtersService = inject(FiltersService);
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
+  ngOnInit(): void {
+    this.propertyFormControl.setValue(this.columnValue);
+    this.properties = this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().map(value => this.retrieveLabel(value));
+    
+    this.operators = this.findOperator(this.filter);
+    this.labelledOperators = Object.values(this.operators);
+
+    this.operatorFormControl.setValue(this.filter.operator !== null ? this.operators[this.filter.operator] : '');
+
+    this.filteredProperties = this.propertyFormControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._fieldFilter(value || '', this.properties)),
+    );
+
+    this.filteredOperators = merge(this.operatorFormControl.valueChanges, this.filterPropertyChange$).pipe(
+      startWith(''),
+      map(value => this._fieldFilter(value || '', this.labelledOperators))
+    );
+  }
+
+  private _fieldFilter(value: string, fields: string[]): string[] {
+    const filterValue = value.toLowerCase();
+
+    return fields.filter(field => field.toLowerCase().includes(filterValue));
+  }
+
   get filtersDefinitions() {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
+  }
+
+  get columnValue() {
+    return this.filter.field && this.filter.for ? this.#dataFiltersService.retrieveLabel(this.filter.for, this.filter.field) : '';
   }
 
   retrieveLabel(filterDefinition: FilterDefinition<T, U>) {
     return this.#dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field);
   }
 
-  onFieldChange(event: string) {
-    const [for_, key] = event.split('-');
+  onPropertyChange() {
+    const field = this.#dataFiltersService.retrieveField(this.propertyFormControl.value as unknown as string);
+    if (field === -1) {
+      return;
+    }
+
+    const for_ = this.filtersDefinitions.find((value) => value.field === field)?.for;
+    if (!for_) {
+      return;
+    }
+
     this.filter.for = for_ as FilterFor<T, U>;
-    this.filter.field = Number(key) as T | U;
+    this.filter.field = field as T | U;
+
+    this.operators = this.findOperator(this.filter);
+    this.labelledOperators = Object.values(this.operators);
+    this.operatorFormControl.setValue('');
+    this.filterPropertyChange$.next();
+    this.filter.value = null;
   }
 
-  onOperatorChange(event: string) {
-    this.filter.operator = Number(event);
+  onOperatorChange() {
+    const newOperator = this.operatorFormControl.value?.toLowerCase();
+    if (!newOperator) {
+      return;
+    }
+
+    const value = this.labelledOperators.find(label => label.toLowerCase() === newOperator);
+    const key = Object.keys(this.operators).map(key => Number(key)).find((key: number) => this.operators[key] === value);
+
+    this.filter.operator = key !== undefined ? key : null;
   }
 
   onInputChange(event: FilterInputOutput) {
@@ -179,14 +253,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     const operators = this.#filtersService.findOperators(type);
 
     return operators;
-  }
-
-  trackByField(_: number, definition: FilterDefinition<T, U>) {
-    return definition.for + definition.field;
-  }
-
-  trackByOperator(_: number, operator: KeyValue<string, string>) {
-    return operator.key;
   }
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {

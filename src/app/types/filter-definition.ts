@@ -90,4 +90,5 @@ export abstract class DataFilterService {
   abstract saveFilters<T extends number, U extends number | null = null>(filters: FiltersAnd<T, U>[]): void;
   abstract restoreFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
   abstract resetFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
+  abstract retrieveField<U extends number>(filterField: string): U;
 }

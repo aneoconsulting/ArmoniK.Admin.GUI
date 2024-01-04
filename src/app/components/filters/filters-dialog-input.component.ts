@@ -1,12 +1,14 @@
-import { NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
-import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
+import { Observable, Subject, delay, map, merge, startWith } from 'rxjs';
+import { FilterInput, FilterInputOutput, FilterInputStatus, FilterInputType, FilterValueOptions } from '@app/types/filters';
 
 
 
@@ -38,9 +40,10 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
 
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'status'">
   <mat-label i18n="Input label">Value</mat-label>
-  <mat-select [value]="input.value?.toString()" (valueChange)="onStatusChange($event)">
-    <mat-option *ngFor="let option of input.statuses; trackBy: trackBySelect" [value]="option.key">{{ option.value }}</mat-option>
-  </mat-select>
+  <input matInput [matAutocomplete]="autoStatus" [formControl]="statusFormControl" (input)="onStatusChange()">
+  <mat-autocomplete (optionSelected)="onStatusChange()" #autoStatus>
+    <mat-option *ngFor="let option of (filteredStatuses | async)" [value]="option.value">{{ option.value }}</mat-option>
+  </mat-autocomplete>
 </mat-form-field>
   `,
   styles: [`
@@ -54,19 +57,53 @@ mat-form-field {
     NgFor,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
+    AsyncPipe,
+    MatAutocompleteModule,
+    ReactiveFormsModule
   ],
 })
-export class FiltersDialogInputComponent {
+export class FiltersDialogInputComponent implements OnInit {
   @Input({ required: true }) input: FilterInput;
+  @Input() inputStatus: Subject<void>;
 
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
   actualDate = new Date();
+
+  statusFormControl = new FormControl<string>('');
+  statuses: FilterValueOptions;
+  filteredStatuses: Observable<FilterValueOptions>;
+  dataLoaded = new Subject<void>();
+
+  ngOnInit(): void {
+    this.statuses = (this.input as FilterInputStatus).statuses ?? [];
+    
+    if(this.statuses.length !== 0) {
+      const key = ((this.input as FilterInputStatus).value as unknown as number);
+      const actualStatus: string | undefined = key ? this.statuses[key].value : undefined;
+      this.statusFormControl.setValue(actualStatus ? actualStatus : '');
+    }
+    
+    this.inputStatus.pipe(delay(500)).subscribe(() => {
+      this.statuses = (this.input as FilterInputStatus).statuses;
+      this.dataLoaded.next();
+    });
+
+    this.filteredStatuses = merge(this.statusFormControl.valueChanges, this.dataLoaded).pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    );
+  }
+
+  private _filter(value: string): FilterValueOptions {
+    const filterValue = value.toLowerCase();
+
+    return this.statuses.filter(status => status.value.toLowerCase().includes(filterValue));
+  }
 
   onStringChange(event: Event): void {
     this.valueChange.emit({
@@ -91,11 +128,17 @@ export class FiltersDialogInputComponent {
     });
   }
 
-  onStatusChange(event: string): void {
-    this.valueChange.emit({
-      type: 'string',
-      value: event,
-    });
+  onStatusChange(): void {
+    const formValue = this.statusFormControl.value?.toLowerCase();
+    const key = this.statuses.find(status => status.value.toLowerCase() === formValue)?.key;
+    
+    if (key !== undefined) {
+      this.valueChange.emit({
+        type: 'string',
+        value: key.toString(),
+      });
+    }
+    
   }
 
   getInputType(): FilterInputType  {
