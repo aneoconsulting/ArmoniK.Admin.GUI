@@ -31,7 +31,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:54</note>
+        <note category="location">src/app/applications/index.component.ts:39</note>
         <note category="description">Page title</note>
       </notes>
       <segment state="initial">
@@ -920,7 +920,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:113</note>
+        <note category="location">src/app/applications/components/table.component.ts:64</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
@@ -1193,7 +1193,7 @@
     </unit>
     <unit id="1822341529834994016">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:236</note>
+        <note category="location">src/app/applications/components/table.component.ts:40</note>
         <note category="location">src/app/partitions/index.component.ts:243</note>
         <note category="location">src/app/sessions/index.component.ts:302</note>
       </notes>
@@ -1463,7 +1463,7 @@
     </unit>
     <unit id="4471277768650583130">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:119</note>
+        <note category="location">src/app/applications/components/table.component.ts:70</note>
         <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment state="initial">
