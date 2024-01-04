@@ -872,6 +872,7 @@
     </unit>
     <unit id="8953033926734869941">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:16</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:16</note>
         <note category="location">src/app/results/services/results-filters.service.ts:20</note>
         <note category="location">src/app/results/services/results-index.service.ts:19</note>
@@ -883,6 +884,7 @@
     </unit>
     <unit id="3294686077659093992">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:17</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:17</note>
       </notes>
       <segment state="initial">
@@ -892,6 +894,7 @@
     </unit>
     <unit id="2218082343053095278">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:18</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:18</note>
       </notes>
       <segment state="initial">
@@ -901,6 +904,7 @@
     </unit>
     <unit id="2724055831234181057">
       <notes>
+        <note category="location">src/app/applications/services/applications-filters.service.ts:19</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:19</note>
       </notes>
       <segment state="initial">
@@ -1001,7 +1005,7 @@
       </notes>
       <segment state="initial">
         <source>Pod Max</source>
-        <target>Max Pod</target>
+        <target>Maximum de Pod</target>
       </segment>
     </unit>
     <unit id="6185028784920723553">
@@ -1074,7 +1078,7 @@
       </notes>
       <segment state="initial">
         <source>Session ID</source>
-        <target>Session ID</target>
+        <target>Id de Session</target>
       </segment>
     </unit>
     <unit id="2829243786450918109">
@@ -1176,6 +1180,7 @@
     </unit>
     <unit id="2956098160626271284">
       <notes>
+        <note category="location">src/app/services/default-config.service.ts:37</note>
         <note category="location">src/app/sessions/services/sessions-statuses.service.ts:8</note>
       </notes>
       <segment state="initial">
@@ -1389,6 +1394,15 @@
         <target> Ajouter un statut </target>
       </segment>
     </unit>
+    <unit id="698601157229513551">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:62</note>
+      </notes>
+      <segment state="initial">
+        <source>See partition</source>
+        <target>Voir la partition</target>
+      </segment>
+    </unit>
     <unit id="4642661615646709518">
       <notes>
         <note category="location">src/app/results/show.component.ts:26</note>
@@ -1459,7 +1473,7 @@
       </notes>
       <segment state="initial">
         <source>Copy Session ID</source>
-        <target>Copier l&apos;ID de la Session</target>
+        <target>Copier l&apos;Id de la Session</target>
       </segment>
     </unit>
     <unit id="4471277768650583130">
@@ -1852,11 +1866,12 @@
     </unit>
     <unit id="7514940606218254317">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:174</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:181</note>
         <note category="location">src/app/services/filters.service.ts:8</note>
         <note category="location">src/app/services/filters.service.ts:17</note>
         <note category="location">src/app/services/filters.service.ts:26</note>
         <note category="location">src/app/services/filters.service.ts:44</note>
+        <note category="location">src/app/services/filters.service.ts:49</note>
       </notes>
       <segment state="initial">
         <source>Equal</source>
@@ -1865,11 +1880,12 @@
     </unit>
     <unit id="4601499081638035991">
       <notes>
-        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:175</note>
+        <note category="location">src/app/components/filters/filters-dialog-filter-field.component.ts:182</note>
         <note category="location">src/app/services/filters.service.ts:9</note>
         <note category="location">src/app/services/filters.service.ts:18</note>
         <note category="location">src/app/services/filters.service.ts:27</note>
         <note category="location">src/app/services/filters.service.ts:45</note>
+        <note category="location">src/app/services/filters.service.ts:50</note>
       </notes>
       <segment state="initial">
         <source>Not Equal</source>
@@ -1995,6 +2011,16 @@
         <target>Tâches</target>
       </segment>
     </unit>
+    <unit id="6174579065408758827">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:32</note>
+        <note category="location">src/app/components/show-actions.component.ts:37</note>
+      </notes>
+      <segment state="initial">
+        <source>See tasks</source>
+        <target>Voir les tâches</target>
+      </segment>
+    </unit>
     <unit id="1279830352886589977">
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:47</note>
@@ -2101,7 +2127,7 @@
       </notes>
       <segment state="initial">
         <source>Engine Type</source>
-        <target>Type de l&apos;engine</target>
+        <target>Type de moteur</target>
       </segment>
     </unit>
     <unit id="8500840478218589285">
@@ -2188,6 +2214,15 @@
       <segment state="initial">
         <source>Copy Task ID</source>
         <target>Copier les ID des tâches</target>
+      </segment>
+    </unit>
+    <unit id="3085155813035349251">
+      <notes>
+        <note category="location">src/app/components/show-actions.component.ts:42</note>
+      </notes>
+      <segment state="initial">
+        <source>See task</source>
+        <target> Voir les tâches </target>
       </segment>
     </unit>
     <unit id="7754017504605840618">
@@ -2454,7 +2489,28 @@
       </notes>
       <segment state="initial">
         <source>Set up Auto Refresh - <ph id="0" equiv="INTERPOLATION" disp="{{intervalDisplay}}"/></source>
-        <target>Set up Auto Refresh - <ph id="0" equiv="INTERPOLATION" disp="{{intervalDisplay}}"/></target>
+        <target>Activer le rafraîchissement automatique - <ph id="0" equiv="INTERPOLATION" disp="{{intervalDisplay}}"/></target>
+      </segment>
+    </unit>
+    <unit id="autoRefreshButton">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:64</note>
+        <note category="description">Button disabled</note>
+      </notes>
+      <segment state="initial">
+        <source>Disabled</source>
+        <target>Désactivé</target>
+      </segment>
+    </unit>
+    <unit id="8877382706249482557">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:41</note>
+        <note category="location">src/app/components/auto-refresh-button.component.ts:64</note>
+      </notes>
+      <segment state="initial">
+        <source> seconds</source>
+        <target> secondes</target>
       </segment>
     </unit>
     <unit id="7363108796384207065">
@@ -2464,7 +2520,26 @@
       </notes>
       <segment state="initial">
         <source> Enter the number of seconds between each refresh. Use 0 or choose &quot;Disabled&quot; to disable. </source>
-        <target> Enter the number of seconds between each refresh. Use 0 or choose &quot;Disabled&quot; to disable. </target>
+        <target> Indiquez le nombre de secondes entre chaque rafraîchissement. Utilisez 0 ou choisissez &quot;Désactiver&quot; pour le désactiver. </target>
+      </segment>
+    </unit>
+    <unit id="autoRefreshDialog">
+      <notes>
+        <note category="location">src/app/components/auto-refresh-dialog.component.ts:57</note>
+        <note category="description">Dialog disabled</note>
+      </notes>
+      <segment state="initial">
+        <source>Disabled</source>
+        <target>Désactivé</target>
+      </segment>
+    </unit>
+    <unit id="8262971220218366882">
+      <notes>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:38,40</note>
+      </notes>
+      <segment state="initial">
+        <source> Generic Columns </source>
+        <target> Colonnes Génériques </target>
       </segment>
     </unit>
     <unit id="4391289919356861627">
@@ -2473,43 +2548,84 @@
       </notes>
       <segment state="initial">
         <source>Apply</source>
-        <target>Apply</target>
+        <target>Modifier</target>
       </segment>
     </unit>
-    <unit id="1412474733140010549">
+    <unit id="8461712739701887700">
       <notes>
-        <note category="location">src/app/components/table-actions-toolbar.component.ts:44,46</note>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:20,22</note>
+        <note category="description">Filter condition</note>
       </notes>
       <segment state="initial">
-        <source> Lock columns </source>
-        <target> Lock columns </target>
+        <source> Where </source>
+        <target> Où </target>
       </segment>
     </unit>
-    <unit id="8998366795698450690">
+    <unit id="6867381603185205680">
       <notes>
-        <note category="location">src/app/components/table-actions-toolbar.component.ts:47,49</note>
+        <note category="location">src/app/components/filters/filters-toolbar.component.ts:23,25</note>
+        <note category="description">Filter condition</note>
       </notes>
       <segment state="initial">
-        <source> Unlock columns </source>
-        <target> Unlock columns </target>
+        <source> Or </source>
+        <target> Ou </target>
       </segment>
     </unit>
-    <unit id="4164391770539122685">
+    <unit id="3033971069746971952">
       <notes>
-        <note category="location">src/app/sessions/components/table.component.ts:122</note>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:16</note>
+        <note category="description">Dialog title</note>
       </notes>
       <segment state="initial">
-        <source>See related tasks</source>
-        <target>Voir les tâches liées</target>
+        <source>Generic Columns</source>
+        <target>Colonnes Génériques</target>
       </segment>
     </unit>
-    <unit id="890160499914624979">
+    <unit id="4124542718196605979">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:133</note>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:19,23</note>
+        <note category="description">Dialog description</note>
       </notes>
       <segment state="initial">
-        <source> See related result </source>
-        <target> Voir les résultats liés </target>
+        <source> Enter the generic (options.options) field you want to add as a column. <ph id="0" equiv="LINE_BREAK" type="fmt" disp="&lt;br&gt;"/> The field is case sensitive and will not show any data if it is incorrect. </source>
+        <target> Renseignez le champ générique (options.options) que vous souhaitez ajouter en tant que colonne. <ph id="0" equiv="LINE_BREAK" type="fmt" disp="&lt;br&gt;"/> Le champ est sensible à la casse et ne n&apos;affichera aucune donnée s&apos;il est incorrect. </target>
+      </segment>
+    </unit>
+    <unit id="1715850505460606347">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:26</note>
+      </notes>
+      <segment state="initial">
+        <source>Existing Generics</source>
+        <target>Génériques existants</target>
+      </segment>
+    </unit>
+    <unit id="5863981282365725678">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:35</note>
+      </notes>
+      <segment state="initial">
+        <source>press enter to edit</source>
+        <target>Appuyez sur entrée pour modifier</target>
+      </segment>
+    </unit>
+    <unit id="2167066890120100205">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:41</note>
+      </notes>
+      <segment state="initial">
+        <source>New generic...</source>
+        <target>Nouveau générique...</target>
+      </segment>
+    </unit>
+    <unit id="2159130950882492111">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:51</note>
+        <note category="description">Dialog action</note>
+      </notes>
+      <segment state="initial">
+        <source>Cancel</source>
+        <target>Annuler</target>
       </segment>
     </unit>
     <unit id="1210069423269934042">
@@ -2521,6 +2637,42 @@
         <target>Changer la langue</target>
       </segment>
     </unit>
+    <unit id="8829540234129394429">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:279</note>
+      </notes>
+      <segment state="initial">
+        <source>Good morning</source>
+        <target>Bonjour</target>
+      </segment>
+    </unit>
+    <unit id="3856348061305553948">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:281</note>
+      </notes>
+      <segment state="initial">
+        <source>Good afternoon</source>
+        <target>Bonne après-midi</target>
+      </segment>
+    </unit>
+    <unit id="8772850684697870535">
+      <notes>
+        <note category="location">src/app/components/navigation/navigation.component.ts:283</note>
+      </notes>
+      <segment state="initial">
+        <source>Good evening</source>
+        <target>Bonne soiréee</target>
+      </segment>
+    </unit>
+    <unit id="3980864845655128791">
+      <notes>
+        <note category="location">src/app/components/navigation/theme-selector.component.ts:64</note>
+      </notes>
+      <segment state="initial">
+        <source>Select a theme</source>
+        <target>Sélectionnez un thème</target>
+      </segment>
+    </unit>
     <unit id="6022529099150705711">
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:27</note>
@@ -2528,25 +2680,6 @@
       <segment state="initial">
         <source>See sessions</source>
         <target>Voir les sessions</target>
-      </segment>
-    </unit>
-    <unit id="6174579065408758827">
-      <notes>
-        <note category="location">src/app/components/show-actions.component.ts:32</note>
-        <note category="location">src/app/components/show-actions.component.ts:37</note>
-      </notes>
-      <segment state="initial">
-        <source>See tasks</source>
-        <target>Voir les tâches</target>
-      </segment>
-    </unit>
-    <unit id="3085155813035349251">
-      <notes>
-        <note category="location">src/app/components/show-actions.component.ts:42</note>
-      </notes>
-      <segment state="initial">
-        <source>See task</source>
-        <target>Voir la tâche</target>
       </segment>
     </unit>
     <unit id="2310023070484904143">
@@ -2558,22 +2691,13 @@
         <target>Voir les partitions</target>
       </segment>
     </unit>
-    <unit id="698601157229513551">
-      <notes>
-        <note category="location">src/app/components/show-actions.component.ts:62</note>
-      </notes>
-      <segment state="initial">
-        <source>See partition</source>
-        <target>Voir la partition</target>
-      </segment>
-    </unit>
     <unit id="2926475737721192412">
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:69</note>
       </notes>
       <segment state="initial">
         <source>Cancel Task</source>
-        <target>Annuler la tâche</target>
+        <target>Annuler les tâches</target>
       </segment>
     </unit>
     <unit id="5213720747752417161">
@@ -2582,7 +2706,25 @@
       </notes>
       <segment state="initial">
         <source>Cancel Session</source>
-        <target>Annuler la session</target>
+        <target>Annuler les sessions</target>
+      </segment>
+    </unit>
+    <unit id="1412474733140010549">
+      <notes>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:44,46</note>
+      </notes>
+      <segment state="initial">
+        <source> Lock columns </source>
+        <target> Verrouiller les colonnes </target>
+      </segment>
+    </unit>
+    <unit id="8998366795698450690">
+      <notes>
+        <note category="location">src/app/components/table-actions-toolbar.component.ts:47,49</note>
+      </notes>
+      <segment state="initial">
+        <source> Unlock columns </source>
+        <target> Déverouiller les colonnes </target>
       </segment>
     </unit>
     <unit id="574352586411354475">
@@ -2602,7 +2744,7 @@
       </notes>
       <segment state="initial">
         <source>No data to show</source>
-        <target>Aucune donnée</target>
+        <target>Aucune donnée à afficher</target>
       </segment>
     </unit>
     <unit id="4433806526451389349">
@@ -2611,7 +2753,7 @@
       </notes>
       <segment state="initial">
         <source>Unable to get service health data</source>
-        <target>Nous ne pouvons pas accéder aux états des services</target>
+        <target>Impossible d&apos;accéder aux états des services</target>
       </segment>
     </unit>
     <unit id="7953743545949086622">
@@ -2660,70 +2802,67 @@
         <target>Taille</target>
       </segment>
     </unit>
-    <unit id="8262971220218366882">
+    <unit id="340430316261570792">
       <notes>
-        <note category="location">src/app/components/columns-modify-dialog.component.ts:38,40</note>
+        <note category="location">src/app/services/default-config.service.ts:29</note>
       </notes>
       <segment state="initial">
-        <source> Generic Columns </source>
-        <target> Colonnes génériques </target>
+        <source>Finished</source>
+        <target>Terminée</target>
       </segment>
     </unit>
-    <unit id="3033971069746971952">
+    <unit id="8157372473189397040">
       <notes>
-        <note category="location">src/app/components/manage-generic-dialog.component.ts:16</note>
-        <note category="description">Dialog title</note>
+        <note category="location">src/app/services/default-config.service.ts:44</note>
       </notes>
       <segment state="initial">
-        <source>Generic Columns</source>
-        <target>Colonnes génériques</target>
+        <source>Errors</source>
+        <target>Erreurs</target>
       </segment>
     </unit>
-    <unit id="4124542718196605979">
+    <unit id="8502681472664231537">
       <notes>
-        <note category="location">src/app/components/manage-generic-dialog.component.ts:19,23</note>
-        <note category="description">Dialog description</note>
+        <note category="location">src/app/services/filters.service.ts:51</note>
       </notes>
       <segment state="initial">
-        <source> Enter the generic (options.options) field you want to add as a column. <ph id="0" equiv="LINE_BREAK" type="fmt" disp="&lt;br&gt;"/> The field is case sensitive and will not show any data if it is incorrect. </source>
-        <target> Renseignez le champ générique (options.options) que vous souhaitez rajouter. <ph id="0" equiv="LINE_BREAK" type="fmt" disp="&lt;br&gt;"/> Ce champ est sensible à la casse et n'affichera aucune valeur s'il est incorrect. </target>
+        <source>Shorter Than</source>
+        <target>Plus petit que</target>
       </segment>
     </unit>
-    <unit id="1715850505460606347">
+    <unit id="7990598712808060946">
       <notes>
-        <note category="location">src/app/components/manage-generic-dialog.component.ts:26</note>
+        <note category="location">src/app/services/filters.service.ts:52</note>
       </notes>
       <segment state="initial">
-        <source>Existing Generics</source>
-        <target>Génériques existants</target>
+        <source>Shorter or Equal</source>
+        <target>Plus petit ou égal que</target>
       </segment>
     </unit>
-    <unit id="5863981282365725678">
+    <unit id="4452217597446467081">
       <notes>
-        <note category="location">src/app/components/manage-generic-dialog.component.ts:35</note>
+        <note category="location">src/app/services/filters.service.ts:53</note>
       </notes>
       <segment state="initial">
-        <source>press enter to edit</source>
-        <target>Appuyez sur "entrée" pour sauvegarder la modification.</target>
+        <source>Longer Than</source>
+        <target>Plus long que</target>
       </segment>
     </unit>
-    <unit id="2167066890120100205">
+    <unit id="8398869997881958429">
       <notes>
-        <note category="location">src/app/components/manage-generic-dialog.component.ts:41</note>
+        <note category="location">src/app/services/filters.service.ts:54</note>
       </notes>
       <segment state="initial">
-        <source>New generic...</source>
-        <target>Nouveau générique...</target>
+        <source>Longer or Equal</source>
+        <target>Plus long ou égal</target>
       </segment>
     </unit>
-    <unit id="2159130950882492111">
+    <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/components/manage-generic-dialog.component.ts:51</note>
-        <note category="description">Dialog action</note>
+        <note category="location">src/app/sessions/components/table.component.ts:122</note>
       </notes>
       <segment state="initial">
-        <source>Cancel</source>
-        <target>Annuler</target>
+        <source>See related tasks</source>
+        <target>Voir les tâches liées</target>
       </segment>
     </unit>
     <unit id="2959131478862095599">
@@ -2734,6 +2873,34 @@
       <segment state="initial">
         <source> Manage Generic Column </source>
         <target> Gérer les colonnes génériques </target>
+      </segment>
+    </unit>
+    <unit id="8193912662253833654">
+      <notes>
+        <note category="location">src/app/settings/index.component.ts:109</note>
+        <note category="description">Form</note>
+      </notes>
+      <segment state="initial">
+        <source>Clear All</source>
+        <target>Tout réinitialiser</target>
+      </segment>
+    </unit>
+    <unit id="890160499914624979">
+      <notes>
+        <note category="location">src/app/tasks/components/table.component.ts:133</note>
+      </notes>
+      <segment state="initial">
+        <source> See related result </source>
+        <target> Voir les résultats liés </target>
+      </segment>
+    </unit>
+    <unit id="3867445261912406579">
+      <notes>
+        <note category="location">src/app/services/default-config.service.ts:22</note>
+      </notes>
+      <segment state="initial">
+        <source>Tasks by status</source>
+        <target>Statuts des tâches</target>
       </segment>
     </unit>
   </file>
