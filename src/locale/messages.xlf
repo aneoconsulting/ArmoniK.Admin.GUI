@@ -1371,7 +1371,7 @@
       <notes>
         <note category="location">src/app/applications/components/table.component.ts:40</note>
         <note category="location">src/app/partitions/components/table.component.ts:41</note>
-        <note category="location">src/app/sessions/index.component.ts:302</note>
+        <note category="location">src/app/sessions/components/table.component.ts:45</note>
       </notes>
       <segment>
         <source>Personalize Tasks Status</source>
