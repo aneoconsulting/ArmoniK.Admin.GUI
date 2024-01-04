@@ -22,7 +22,7 @@ import { GenericColumn } from '@app/types/data';
       The field is case sensitive and will not show any data if it is incorrect.
     </p>
 
-  <mat-form-field class="example-chip-list">
+  <mat-form-field>
     <mat-label i18n>Existing Generics</mat-label>
       <mat-chip-grid #chipGrid aria-label="Enter generic">
       <mat-chip-row 
@@ -30,12 +30,12 @@ import { GenericColumn } from '@app/types/data';
         (removed)="remove(column)"
         [editable]="true"
         (edited)="edit(column, $event)"
-        color="primary"
+        class="mat-primary mat-mdc-chip-selected"
         i18n-aria-description
         aria-description="press enter to edit">
         {{column}}
         <button matChipRemove [attr.aria-label]="'remove ' + column">
-          <mat-icon i18n>cancel</mat-icon>
+          <mat-icon>cancel</mat-icon>
         </button>
       </mat-chip-row>
       <input i18n-placeholder placeholder="New generic..."
@@ -52,6 +52,11 @@ import { GenericColumn } from '@app/types/data';
     <button mat-flat-button [mat-dialog-close]="existingColumnList" color="primary" i18n="Dialog action"> Confirm </button>
   </mat-dialog-actions>
   `,
+  styles: [`
+  mat-form-field {
+    width: 100%
+  }
+  `],
   imports: [
     MatDialogModule,
     MatFormFieldModule,
