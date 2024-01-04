@@ -138,33 +138,21 @@ describe('StorageService', () => {
         const result = mockItemData[key];
         if(result) {
           if(!parse) {
-            return {'12': 'sessions'};
+            return {'13': 'sessions'};
           } 
           else {
-            return JSON.stringify({'12': 'sessions'});
+            return JSON.stringify({'13': 'sessions'});
           }
         }
         else {
           return undefined;
         }
       });
-      
+      const expectedList = ['profile', 'divider', 'healthcheck', 'divider', 'dashboard', 'divider', 'applications', 'partitions', 'divider', 'sessions', 'tasks', 'results', 'divider', 'sessions'];
+      const expectedResult: {[key: number]: string} = {};
+      expectedList.forEach((value, index) => expectedResult[index] = value);
       expect(service.exportData()['navigation-sidebar'])
-        .toEqual({
-          '0': 'profile',
-          '1': 'divider',
-          '2': 'dashboard',
-          '3': 'divider',
-          '4': 'applications',
-          '5': 'partitions',
-          '6': 'divider',
-          '7': 'sessions',
-          '8': 'tasks',
-          '9': 'results',
-          '10': 'divider',
-          '11': 'divider',
-          '12': 'sessions'
-        });
+        .toEqual(expectedResult);
       expect(service.exportData()['applications-tasks-by-status'])
         .toEqual([
           { status: 4, color: '#4caf50' },

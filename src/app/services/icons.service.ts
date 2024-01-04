@@ -12,6 +12,7 @@ export class IconsService {
     'submitter': 'api',
     'dashboard': 'dashboard',
     'profile': 'account_circle',
+    'healthcheck': 'monitor_heart'
     // TODO: rename page to 'permissions' (or endpoint)
     // 'general': 'public',
     // 'events': 'send',
