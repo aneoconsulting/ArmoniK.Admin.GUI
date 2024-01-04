@@ -51,6 +51,7 @@ describe('LineComponent', () => {
       hideGroupsHeader: true,
       interval: 10,
       name: 'name',
+      type: 'Tasks',
       taskStatusesGroups: []
     };
     component.ngOnInit();
