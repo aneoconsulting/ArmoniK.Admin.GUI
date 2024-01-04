@@ -1,3 +1,4 @@
+import { TasksStatusesGroup } from '@app/dashboard/types';
 import { DefaultConfigService } from './default-config.service';
 
 describe('DefaultConfigService', () => {
@@ -83,6 +84,19 @@ describe('DefaultConfigService', () => {
     service.exportedDefaultConfig;
     expect(spyGetExportedDefaultConfig).toHaveBeenCalled();
   });
+
+  it('should call defaultLanguage getter', () => {
+    const spyGetDefaultLanguage = jest.spyOn(service, 'defaultLanguage', 'get');
+    service.defaultLanguage;
+    expect(spyGetDefaultLanguage).toHaveBeenCalled();
+  });
+
+  it('should call availableLanguages getter', () => {
+    const spyGetAvailableLanguage = jest.spyOn(service, 'availableLanguages', 'get');
+    service.availableLanguages;
+    expect(spyGetAvailableLanguage).toHaveBeenCalled();
+  });
+
   describe(' default dashboard configuration', () => {
     it('the dashboard lines configuration should display at least 1 line', () => {
       expect(service.defaultDashboardLines).toHaveLength(1);
@@ -95,7 +109,7 @@ describe('DefaultConfigService', () => {
     });
     it('the line by default should have finished, running, error, task statuses by default ', () => {
       const defaultDashboardLines = service.defaultDashboardLines;
-      const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups); 
+      const taskStatuses = defaultDashboardLines.map( line => line.taskStatusesGroups) as unknown as TasksStatusesGroup[][]; 
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Finished')).toBeTruthy(); 
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Running')).toBeTruthy();  
       expect(taskStatuses[0].map(taskStatus => taskStatus.name === 'Errors')).toBeTruthy();  

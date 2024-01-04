@@ -11,6 +11,10 @@ export const routes: Routes = [
     loadChildren: () => import('./profile/routes').then(mod => mod.PROFILE_ROUTES)
   },
   {
+    path: 'healthcheck',
+    loadChildren: () => import('./healthcheck/routes').then(mod => mod.HEALTHCHECK_ROUTES)
+  },
+  {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/routes').then(mod => mod.DASHBOARD_ROUTES)
   },

@@ -20,6 +20,7 @@ export class DefaultConfigService {
   readonly #defaultDashboardLines: Line[] = [
     {
       name: 'Tasks by status',
+      type: 'CountStatus',
       interval: 5,
       hideGroupsHeader: false,
       filters: [],
@@ -56,6 +57,8 @@ export class DefaultConfigService {
 
   readonly #defaultSidebar: Sidebar[] = [
     'profile',
+    'divider',
+    'healthcheck',
     'divider',
     'dashboard',
     'divider',
@@ -148,7 +151,7 @@ export class DefaultConfigService {
     interval: 10,
     lockColumns: false,
     columns: [
-      'name',
+      'resultId',
       'sessionId',
     ],
     options: {
@@ -181,6 +184,13 @@ export class DefaultConfigService {
     },
     filters: [],
   };
+
+  readonly #defaultHealthCheck = {
+    interval: 10,
+  };
+
+  readonly #availableLanguages = ['en', 'fr'];
+  readonly #defaultLanguage = this.#availableLanguages.includes(navigator.language) ? navigator.language : 'en';
 
   readonly #defaultTasksViewInLogs = {
     serviceName: null,
@@ -238,7 +248,20 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultTasksViewInLogs);
   }
 
+  get defaultLanguage() {
+    return structuredClone(this.#defaultLanguage);
+  }
+
+  get availableLanguages() {
+    return structuredClone(this.#availableLanguages);
+  }
+
+  get healthCheck() {
+    return structuredClone(this.#defaultHealthCheck);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
+    'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
     'navigation-theme': this.#defaultTheme,
     'navigation-external-services': this.#defaultExternalServices,
@@ -272,7 +295,8 @@ export class DefaultConfigService {
     'tasks-filters': this.#defaultTasks.filters,
     'tasks-interval': this.#defaultTasks.interval,
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
-    'tasks-lock-columns': this.#defaultTasks.lockColumns
+    'tasks-lock-columns': this.#defaultTasks.lockColumns,
+    'healthcheck-interval': this.#defaultHealthCheck.interval
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

@@ -22,6 +22,7 @@ export class ResultsFiltersService {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID]: $localize`Result ID`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS]: $localize`Status`,
+    [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE]: $localize`Size`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
   };
 
@@ -35,6 +36,11 @@ export class ResultsFiltersService {
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID,
       type: 'string',
+    },
+    {
+      for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
+      type: 'string'
     },
     {
       for: 'root',
@@ -56,6 +62,11 @@ export class ResultsFiltersService {
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
       type: 'date'
+    },
+    {
+      for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
+      type: 'number'
     }
   ];
 

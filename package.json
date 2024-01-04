@@ -1,6 +1,6 @@
 {
   "name": "armonik-admin-gui",
-  "version": "0.10.3",
+  "version": "0.10.6",
   "packageManager": "pnpm@8.7.5",
   "scripts": {
     "ng": "ng",
@@ -18,7 +18,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api.angular": "^3.13.1",
+    "@aneoconsultingfr/armonik.api.angular": "^3.15.1",
     "@angular-material-components/datetime-picker": "^16.0.1",
     "@angular/animations": "^16.2.8",
     "@angular/cdk": "16.2.7",
