@@ -102,7 +102,11 @@ export class TasksIndexService {
   }
 
   isNotSortableColumn(column: TaskSummaryColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isObjectColumn(column) || this.isSelectColumn(column);
+    return this.isActionsColumn(column) || this.isObjectColumn(column) || this.isSelectColumn(column) || this.isSpecifiedNotSortableColumn(column);
+  }
+
+  isSpecifiedNotSortableColumn(column: TaskSummaryColumnKey): boolean {
+    return column === 'countDataDependencies' || column === 'countParentTaskIds' || column === 'countExpectedOutputIds' || column === 'countRetryOfIds' || column === 'statusMessage';
   }
 
   isGenericColumn(column: TaskSummaryColumnKey): boolean {

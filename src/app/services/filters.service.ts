@@ -1,4 +1,4 @@
-import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { FilterOperators, FilterType } from '@app/types/filters';
 
@@ -45,6 +45,15 @@ export class FiltersService {
     [FilterStatusOperator.FILTER_STATUS_OPERATOR_NOT_EQUAL]: $localize`Not Equal`,
   };
 
+  readonly filterDurationOperators: Record<FilterDurationOperator, string> = {
+    [FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL]: $localize`Equal`,
+    [FilterDurationOperator.FILTER_DURATION_OPERATOR_NOT_EQUAL]: $localize`Not Equal`,
+    [FilterDurationOperator.FILTER_DURATION_OPERATOR_SHORTER_THAN]: $localize`Shorter Than`,
+    [FilterDurationOperator.FILTER_DURATION_OPERATOR_SHORTER_THAN_OR_EQUAL]: $localize`Shorter or Equal`,
+    [FilterDurationOperator.FILTER_DURATION_OPERATOR_LONGER_THAN]: $localize`Longer Than`,
+    [FilterDurationOperator.FILTER_DURATION_OPERATOR_LONGER_THAN_OR_EQUAL]: $localize`Longer or Equal`
+  };
+
   readonly filterOperators: Record<FilterType, Record<number, string>> = {
     'string': this.filterStringOperators,
     'number': this.filterNumberOperators,
@@ -52,6 +61,7 @@ export class FiltersService {
     'array': this.filterArrayOperators,
     'status': this.filterStatusOperators,
     'boolean': this.filterBooleanOperators,
+    'duration': this.filterDurationOperators,
   };
 
   findOperators(type: FilterType) {
