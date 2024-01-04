@@ -94,4 +94,34 @@ describe('FiltersDialogInputComponent', () => {
     };
     expect(component.trackBySelect(0, item)).toBe(item.value);
   });
+
+  it('should emit a duration in second', () => {
+    const inputEvent = {
+      target: {
+        value: '35'
+      }
+    } as unknown as Event;
+    component.onDurationChange(inputEvent, 0);
+    expect(valueChangeSpy).toHaveBeenCalledWith({type: 'duration', value: 126000});
+    (inputEvent.target as HTMLInputElement).value = '39';
+    component.onDurationChange(inputEvent, 1);
+    expect(valueChangeSpy).toHaveBeenLastCalledWith({type: 'duration', value: 128340});
+    component.onDurationChange(inputEvent, 2);
+    expect(valueChangeSpy).toHaveBeenLastCalledWith({type: 'duration', value: 128379});
+  });
+
+  describe('getDurationInputValue', () => {
+    beforeEach(() => {
+      component.input.value = 94350;
+    });
+    it('should get the hours from a duration in seconds', () => {
+      expect(component.getDurationInputValue('hours')).toEqual(26);
+    });
+    it('should get the minutes from a duration in seconds', () => {
+      expect(component.getDurationInputValue('minutes')).toEqual(12);
+    });
+    it('should get the seconds from a duration in seconds', () => {
+      expect(component.getDurationInputValue('seconds')).toEqual(30);
+    });
+  });
 });

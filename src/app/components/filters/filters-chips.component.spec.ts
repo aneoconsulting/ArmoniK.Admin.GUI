@@ -49,7 +49,12 @@ describe('FiltersChipsComponent', () => {
       field: 5,
       type: 'unknownType',
       for: 'root'
-    } as unknown as FilterDefinition<number, number>)
+    } as unknown as FilterDefinition<number, number>),
+    {
+      field: 1,
+      type: 'duration',
+      for: 'options'
+    }
   ];
 
   beforeEach(async () => {
@@ -149,5 +154,15 @@ describe('FiltersChipsComponent', () => {
     };
     
     expect(component.trackByFilter(0, filter)).toEqual('');
+  });
+
+  it('should show a duration appropriately', () => {
+    const filter: Filter<number, number> = {
+      field: 1,
+      for: 'options',
+      operator: 1,
+      value: 94350
+    };
+    expect(component.content(filter)).toEqual('other Not Equal 26h 12m 30s');
   });
 });
