@@ -208,9 +208,13 @@ export class IndexComponent implements OnInit {
     const dialogRef = this.#dialog.open<AddLineDialogComponent, AddLineDialogData, AddLineDialogResult>(AddLineDialogComponent);
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
+      if (!result) {
+        return;
+      }
+      else if (result.type === 'Tasks') {
         this.lines.push({
           name: result.name,
+          type: 'Tasks',
           interval: 5,
           hideGroupsHeader: false,
           filters: [],
@@ -242,6 +246,15 @@ export class IndexComponent implements OnInit {
         });
         this.onSaveChange();
       }
+      else {
+        this.lines.push({
+          name: result.name,
+          type: result.type,
+          interval: 5,
+          filters: []
+        });
+      }
+      this.onSaveChange();
     });
   }
 

@@ -15,6 +15,7 @@ describe('DashboardStorageService', () => {
   const lines: Line[] = [
     {
       name: 'line1',
+      type: 'Tasks',
       interval: 10,
       hideGroupsHeader: false,
       filters: [],
@@ -26,6 +27,7 @@ describe('DashboardStorageService', () => {
     },
     {
       name: 'line2',
+      type: 'Tasks',
       interval: 20,
       hideGroupsHeader: true,
       filters: [],

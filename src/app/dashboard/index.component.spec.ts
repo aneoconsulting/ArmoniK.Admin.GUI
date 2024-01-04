@@ -18,6 +18,7 @@ describe('IndexComponent', () => {
   const defaultLines: Line[] = [
     {
       name: 'line1',
+      type: 'Tasks',
       interval: 10,
       hideGroupsHeader: false,
       filters: [],
@@ -29,6 +30,7 @@ describe('IndexComponent', () => {
     },
     {
       name: 'line2',
+      type: 'Tasks',
       interval: 20,
       hideGroupsHeader: true,
       filters: [],
@@ -101,10 +103,11 @@ describe('IndexComponent', () => {
   });
 
   it('should add a line', () => {
-    dialogRef$ = of({name: 'New line'});
+    dialogRef$ = of({name: 'New line', type: 'Tasks'} as unknown as Line);
     const newLines = structuredClone(defaultLines);
     newLines.push({
       name: 'New line',
+      type: 'Tasks',
       interval: 5,
       hideGroupsHeader: false,
       filters: [],
@@ -155,6 +158,7 @@ describe('IndexComponent', () => {
     expect(component.lines).toEqual([
       {
         name: 'line2',
+        type: 'Tasks',
         interval: 20,
         hideGroupsHeader: true,
         filters: [],

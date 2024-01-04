@@ -67,7 +67,7 @@
     </unit>
     <unit id="1192194672397336872">
       <notes>
-        <note category="location">src/app/partitions/index.component.ts:138</note>
+        <note category="location">src/app/partitions/components/table.component.ts:89</note>
       </notes>
       <segment>
         <source>Select page of partitions</source>
@@ -111,7 +111,7 @@
     </unit>
     <unit id="2172333518062868885">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:54</note>
+        <note category="location">src/app/applications/index.component.ts:39</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -134,7 +134,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:69</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:27</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:40</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:42</note>
         <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:67</note>
         <note category="location">src/app/dashboard/components/reorganize-lines-dialog.component.ts:41</note>
@@ -157,7 +157,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:192</note>
+        <note category="location">src/app/sessions/components/table.component.ts:142</note>
       </notes>
       <segment>
         <source>Select page of sessions</source>
@@ -184,7 +184,7 @@
     </unit>
     <unit id="2914520322361316995">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:60</note>
+        <note category="location">src/app/sessions/index.component.ts:50</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -419,7 +419,7 @@
     </unit>
     <unit id="6036308268629413664">
       <notes>
-        <note category="location">src/app/results/index.component.ts:48</note>
+        <note category="location">src/app/results/index.component.ts:42</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -443,7 +443,7 @@
         <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:54</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:70</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:28</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:41</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:43</note>
         <note category="location">src/app/dashboard/components/manage-groups-dialog.component.ts:68</note>
         <note category="location">src/app/dashboard/components/reorganize-lines-dialog.component.ts:42</note>
@@ -569,7 +569,7 @@
     </unit>
     <unit id="8076376022845865451">
       <notes>
-        <note category="location">src/app/results/index.component.ts:136</note>
+        <note category="location">src/app/results/components/table.component.ts:91</note>
       </notes>
       <segment>
         <source>Select page of results</source>
@@ -650,7 +650,7 @@
     <unit id="8778616811237742446">
       <notes>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:17</note>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:17</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:20</note>
         <note category="location">src/app/dashboard/components/form-statuses-group.component.ts:19</note>
         <note category="description">Name of the external service</note>
       </notes>
@@ -804,7 +804,7 @@
     </unit>
     <unit id="3193976279273491157">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:113</note>
+        <note category="location">src/app/applications/components/table.component.ts:64</note>
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
@@ -1126,7 +1126,7 @@
     </unit>
     <unit id="2003528003863981175">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:162</note>
+        <note category="location">src/app/sessions/components/table.component.ts:112</note>
       </notes>
       <segment>
         <source>Copy Session ID</source>
@@ -1203,7 +1203,7 @@
     </unit>
     <unit id="43160648223881099">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:174</note>
+        <note category="location">src/app/sessions/components/table.component.ts:124</note>
       </notes>
       <segment>
         <source>Cancel session</source>
@@ -1211,7 +1211,7 @@
     </unit>
     <unit id="4471277768650583130">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:119</note>
+        <note category="location">src/app/applications/components/table.component.ts:70</note>
         <note category="location">src/app/components/show-actions.component.ts:22</note>
       </notes>
       <segment>
@@ -1369,9 +1369,9 @@
     </unit>
     <unit id="1822341529834994016">
       <notes>
-        <note category="location">src/app/applications/index.component.ts:236</note>
-        <note category="location">src/app/partitions/index.component.ts:243</note>
-        <note category="location">src/app/sessions/index.component.ts:302</note>
+        <note category="location">src/app/applications/components/table.component.ts:40</note>
+        <note category="location">src/app/partitions/components/table.component.ts:41</note>
+        <note category="location">src/app/sessions/components/table.component.ts:45</note>
       </notes>
       <segment>
         <source>Personalize Tasks Status</source>
@@ -1525,7 +1525,7 @@
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:47</note>
         <note category="location">src/app/components/show-actions.component.ts:52</note>
-        <note category="location">src/app/sessions/index.component.ts:170</note>
+        <note category="location">src/app/sessions/components/table.component.ts:120</note>
       </notes>
       <segment>
         <source>See results</source>
@@ -2046,7 +2046,7 @@
     </unit>
     <unit id="7649283649914601183">
       <notes>
-        <note category="location">src/app/dashboard/components/form-name-line.component.ts:18</note>
+        <note category="location">src/app/dashboard/components/form-name-line.component.ts:21</note>
         <note category="description">Placeholder</note>
       </notes>
       <segment>
@@ -2219,7 +2219,7 @@
     </unit>
     <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:166</note>
+        <note category="location">src/app/sessions/components/table.component.ts:116</note>
       </notes>
       <segment>
         <source>See related tasks</source>
