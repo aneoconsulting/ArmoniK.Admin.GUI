@@ -129,7 +129,7 @@
     <unit id="2330577642930707695">
       <notes>
         <note category="location">src/app/components/auto-refresh-dialog.component.ts:42</note>
-        <note category="location">src/app/components/columns-modify-dialog.component.ts:40</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:51</note>
         <note category="location">src/app/components/filters/filters-dialog.component.ts:45</note>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:45</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:53</note>
@@ -157,7 +157,7 @@
     </unit>
     <unit id="2595047188938413705">
       <notes>
-        <note category="location">src/app/sessions/components/table.component.ts:142</note>
+        <note category="location">src/app/sessions/components/table.component.ts:148</note>
       </notes>
       <segment>
         <source>Select page of sessions</source>
@@ -184,7 +184,7 @@
     </unit>
     <unit id="2914520322361316995">
       <notes>
-        <note category="location">src/app/sessions/index.component.ts:50</note>
+        <note category="location">src/app/sessions/index.component.ts:53</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -438,8 +438,9 @@
     <unit id="6249484391846924804">
       <notes>
         <note category="location">src/app/components/auto-refresh-dialog.component.ts:43</note>
-        <note category="location">src/app/components/columns-modify-dialog.component.ts:41</note>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:52</note>
         <note category="location">src/app/components/filters/filters-dialog.component.ts:46</note>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:52</note>
         <note category="location">src/app/components/navigation/form-external-service.component.ts:46</note>
         <note category="location">src/app/components/navigation/manage-external-services-dialog.component.ts:54</note>
         <note category="location">src/app/components/view-tasks-by-status-dialog.component.ts:70</note>
@@ -698,7 +699,7 @@
     <unit id="1519954996184640001">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:32</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:54</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:55</note>
         <note category="location">src/app/tasks/services/tasks-statuses.service.ts:17</note>
       </notes>
       <segment>
@@ -808,8 +809,8 @@
         <note category="location">src/app/applications/services/applications-index.service.ts:21</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:28</note>
         <note category="location">src/app/results/services/results-index.service.ts:24</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:25</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:25</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:26</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:26</note>
       </notes>
       <segment>
         <source>Actions</source>
@@ -827,7 +828,7 @@
       <notes>
         <note category="location">src/app/applications/services/applications-index.service.ts:20</note>
         <note category="location">src/app/partitions/services/partitions-index.service.ts:29</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:28</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:29</note>
       </notes>
       <segment>
         <source>Tasks by Status</source>
@@ -882,9 +883,9 @@
       <notes>
         <note category="location">src/app/results/services/results-filters.service.ts:19</note>
         <note category="location">src/app/results/services/results-index.service.ts:22</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:23</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:24</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:22</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:24</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:25</note>
       </notes>
       <segment>
         <source>Created at</source>
@@ -901,7 +902,7 @@
     </unit>
     <unit id="2262493601998522390">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:22</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:23</note>
       </notes>
       <segment>
         <source>Cancelled at</source>
@@ -910,7 +911,7 @@
     <unit id="1339831764151610299">
       <notes>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:27</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:27</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:28</note>
       </notes>
       <segment>
         <source>Partition Ids</source>
@@ -975,9 +976,9 @@
         <note category="location">src/app/results/services/results-filters.service.ts:24</note>
         <note category="location">src/app/results/services/results-index.service.ts:20</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:22</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:21</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:22</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:21</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:23</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:24</note>
         <note category="description">Label input</note>
       </notes>
       <segment>
@@ -1004,7 +1005,7 @@
     <unit id="7410432243549869948">
       <notes>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:25</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:26</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:27</note>
       </notes>
       <segment>
         <source>Duration</source>
@@ -1024,9 +1025,9 @@
         <note category="location">src/app/results/services/results-filters.service.ts:23</note>
         <note category="location">src/app/results/services/results-index.service.ts:23</note>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:21</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:20</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:21</note>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:18</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:36</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:37</note>
       </notes>
       <segment>
         <source>Session ID</source>
@@ -1035,8 +1036,8 @@
     <unit id="8432562579042371182">
       <notes>
         <note category="location">src/app/sessions/services/sessions-filters.service.ts:26</note>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:24</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:49</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:25</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:50</note>
       </notes>
       <segment>
         <source>Options</source>
@@ -1097,8 +1098,8 @@
     </unit>
     <unit id="1448398869601733950">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:31</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:27</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:32</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:28</note>
       </notes>
       <segment>
         <source>Options Application Namespace</source>
@@ -1106,8 +1107,8 @@
     </unit>
     <unit id="1629024450201012569">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:36</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:32</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:37</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:33</note>
       </notes>
       <segment>
         <source>Options Max Retries</source>
@@ -1126,7 +1127,7 @@
     </unit>
     <unit id="2003528003863981175">
       <notes>
-        <note category="location">src/app/sessions/components/table.component.ts:112</note>
+        <note category="location">src/app/sessions/components/table.component.ts:118</note>
       </notes>
       <segment>
         <source>Copy Session ID</source>
@@ -1185,8 +1186,8 @@
     </unit>
     <unit id="3196949978887191760">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:30</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:26</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:31</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:27</note>
       </notes>
       <segment>
         <source>Options Application Name</source>
@@ -1203,7 +1204,7 @@
     </unit>
     <unit id="43160648223881099">
       <notes>
-        <note category="location">src/app/sessions/components/table.component.ts:124</note>
+        <note category="location">src/app/sessions/components/table.component.ts:130</note>
       </notes>
       <segment>
         <source>Cancel session</source>
@@ -1290,8 +1291,8 @@
     </unit>
     <unit id="6055016131495209423">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:38</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:34</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:39</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:35</note>
       </notes>
       <segment>
         <source>Options Priority</source>
@@ -1299,8 +1300,8 @@
     </unit>
     <unit id="6482461637059874837">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:29</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:35</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:30</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:36</note>
       </notes>
       <segment>
         <source>Options Options</source>
@@ -1334,8 +1335,8 @@
     </unit>
     <unit id="6580224975592352227">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:37</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:33</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:38</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:34</note>
       </notes>
       <segment>
         <source>Options Partition ID</source>
@@ -1343,8 +1344,8 @@
     </unit>
     <unit id="6623695355571959944">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:34</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:30</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:35</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:31</note>
       </notes>
       <segment>
         <source>Options Engine Type</source>
@@ -1360,8 +1361,8 @@
     </unit>
     <unit id="6749810498938164699">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:35</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:31</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:36</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:32</note>
       </notes>
       <segment>
         <source>Options Max Duration</source>
@@ -1437,8 +1438,8 @@
     </unit>
     <unit id="857008330945080495">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:32</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:28</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:33</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:29</note>
       </notes>
       <segment>
         <source>Options Application Service</source>
@@ -1463,8 +1464,8 @@
     </unit>
     <unit id="8969900036143984252">
       <notes>
-        <note category="location">src/app/sessions/services/sessions-index.service.ts:33</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:29</note>
+        <note category="location">src/app/sessions/services/sessions-index.service.ts:34</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:30</note>
       </notes>
       <segment>
         <source>Options Application Version</source>
@@ -1481,7 +1482,7 @@
     <unit id="1061253263570604035">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:27</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:48</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:49</note>
       </notes>
       <segment>
         <source>Processing to End Duration</source>
@@ -1525,7 +1526,7 @@
       <notes>
         <note category="location">src/app/components/show-actions.component.ts:47</note>
         <note category="location">src/app/components/show-actions.component.ts:52</note>
-        <note category="location">src/app/sessions/components/table.component.ts:120</note>
+        <note category="location">src/app/sessions/components/table.component.ts:126</note>
       </notes>
       <segment>
         <source>See results</source>
@@ -1542,7 +1543,7 @@
     </unit>
     <unit id="1617807706088097497">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:366</note>
+        <note category="location">src/app/tasks/components/table.component.ts:376</note>
       </notes>
       <segment>
         <source>Select Task <ph id="0" equiv="PH" disp="row.id"/></source>
@@ -1560,7 +1561,7 @@
     <unit id="1857276125679236383">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:28</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:42</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:43</note>
       </notes>
       <segment>
         <source>Pod TTL</source>
@@ -1576,7 +1577,7 @@
     </unit>
     <unit id="2053193386661149821">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:123</note>
+        <note category="location">src/app/tasks/components/table.component.ts:129</note>
       </notes>
       <segment>
         <source>Copy Task ID</source>
@@ -1584,7 +1585,7 @@
     </unit>
     <unit id="2117223946238852869">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:45</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:46</note>
       </notes>
       <segment>
         <source>Status Message</source>
@@ -1609,7 +1610,7 @@
     </unit>
     <unit id="920308880438249076">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:52</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:53</note>
       </notes>
       <segment>
         <source>Count Parent Task Ids</source>
@@ -1625,7 +1626,7 @@
     </unit>
     <unit id="2497877733587308955">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:157</note>
+        <note category="location">src/app/tasks/components/table.component.ts:163</note>
       </notes>
       <segment>
         <source>Select page of tasks</source>
@@ -1634,7 +1635,7 @@
     <unit id="2701452847374103404">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:29</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:41</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:42</note>
       </notes>
       <segment>
         <source>Pod Hostname</source>
@@ -1652,7 +1653,7 @@
     <unit id="2903281248888675862">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:31</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:37</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:38</note>
       </notes>
       <segment>
         <source>Acquired at</source>
@@ -1661,7 +1662,7 @@
     <unit id="3028758082504855499">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:23</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:46</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:47</note>
       </notes>
       <segment>
         <source>Submitted at</source>
@@ -1678,7 +1679,7 @@
     <unit id="3326746497269057690">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:26</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:47</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:48</note>
       </notes>
       <segment>
         <source>Creation to End Duration</source>
@@ -1704,7 +1705,7 @@
     <unit id="37788114767831354">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:24</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:44</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:45</note>
       </notes>
       <segment>
         <source>Started at</source>
@@ -1712,7 +1713,7 @@
     </unit>
     <unit id="3797570084942068182">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:55</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:56</note>
       </notes>
       <segment>
         <source>Select</source>
@@ -1778,7 +1779,7 @@
     </unit>
     <unit id="4310249443741035479">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:50</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:51</note>
       </notes>
       <segment>
         <source>Count Data Dependencies</source>
@@ -1787,7 +1788,7 @@
     <unit id="4429145828633458850">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:30</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:43</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:44</note>
       </notes>
       <segment>
         <source>Received at</source>
@@ -1841,7 +1842,7 @@
     <unit id="4751452173606183750">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:25</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:38</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:39</note>
       </notes>
       <segment>
         <source>Ended at</source>
@@ -1858,7 +1859,7 @@
     </unit>
     <unit id="6990738933464485342">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:51</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:52</note>
       </notes>
       <segment>
         <source>Count Expected Output Ids</source>
@@ -1874,7 +1875,7 @@
     </unit>
     <unit id="5356677481738441703">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:43</note>
+        <note category="location">src/app/tasks/index.component.ts:45</note>
         <note category="description">Page title</note>
       </notes>
       <segment>
@@ -1892,7 +1893,7 @@
     </unit>
     <unit id="5618923336828241352">
       <notes>
-        <note category="location">src/app/tasks/index.component.ts:66</note>
+        <note category="location">src/app/tasks/index.component.ts:68</note>
       </notes>
       <segment>
         <source> Cancel Tasks </source>
@@ -1961,7 +1962,7 @@
     <unit id="6950534549804195606">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:19</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:40</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:41</note>
       </notes>
       <segment>
         <source>Owner Pod ID</source>
@@ -1969,7 +1970,7 @@
     </unit>
     <unit id="701865426370037180">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:360</note>
+        <note category="location">src/app/tasks/components/table.component.ts:370</note>
       </notes>
       <segment>
         <source><ph id="0" equiv="PH" disp="this.isAllSelected() ? &apos;deselect&apos; : &apos;select&apos;"/> all</source>
@@ -1985,7 +1986,7 @@
     </unit>
     <unit id="7096606594443117653">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:363</note>
+        <note category="location">src/app/tasks/components/table.component.ts:373</note>
       </notes>
       <segment>
         <source>Deselect Task <ph id="0" equiv="PH" disp="row.id"/></source>
@@ -2001,7 +2002,7 @@
     </unit>
     <unit id="7215101881367554791">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:116</note>
+        <note category="location">src/app/tasks/components/table.component.ts:122</note>
       </notes>
       <segment>
         <source>Show more</source>
@@ -2038,7 +2039,7 @@
     </unit>
     <unit id="1451163785538643540">
       <notes>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:53</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:54</note>
       </notes>
       <segment>
         <source>Count Retry Of Ids</source>
@@ -2055,7 +2056,7 @@
     </unit>
     <unit id="7754017504605840618">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:131</note>
+        <note category="location">src/app/tasks/components/table.component.ts:137</note>
       </notes>
       <segment>
         <source> See Retries </source>
@@ -2073,7 +2074,7 @@
     <unit id="7839508346035554208">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:17</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:22</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:23</note>
       </notes>
       <segment>
         <source>Task ID</source>
@@ -2108,7 +2109,7 @@
     <unit id="8500840478218589285">
       <notes>
         <note category="location">src/app/tasks/components/manage-view-in-logs-dialog.component.ts:14</note>
-        <note category="location">src/app/tasks/index.component.ts:72,74</note>
+        <note category="location">src/app/tasks/index.component.ts:74,76</note>
         <note category="description">Dialog title</note>
       </notes>
       <segment>
@@ -2126,7 +2127,7 @@
     </unit>
     <unit id="8519276135536398786">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:139</note>
+        <note category="location">src/app/tasks/components/table.component.ts:145</note>
       </notes>
       <segment>
         <source> View in <ph id="0" equiv="INTERPOLATION" disp="{{ serviceName }}"/> </source>
@@ -2134,7 +2135,7 @@
     </unit>
     <unit id="860465032145625679">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:135</note>
+        <note category="location">src/app/tasks/components/table.component.ts:141</note>
       </notes>
       <segment>
         <source> Cancel task </source>
@@ -2168,7 +2169,7 @@
     <unit id="8925219422630998687">
       <notes>
         <note category="location">src/app/tasks/services/tasks-filters.service.ts:20</note>
-        <note category="location">src/app/tasks/services/tasks-index.service.ts:39</note>
+        <note category="location">src/app/tasks/services/tasks-index.service.ts:40</note>
       </notes>
       <segment>
         <source>Initial Task ID</source>
@@ -2219,7 +2220,7 @@
     </unit>
     <unit id="4164391770539122685">
       <notes>
-        <note category="location">src/app/sessions/components/table.component.ts:116</note>
+        <note category="location">src/app/sessions/components/table.component.ts:122</note>
       </notes>
       <segment>
         <source>See related tasks</source>
@@ -2244,7 +2245,7 @@
     </unit>
     <unit id="890160499914624979">
       <notes>
-        <note category="location">src/app/tasks/components/table.component.ts:127</note>
+        <note category="location">src/app/tasks/components/table.component.ts:133</note>
       </notes>
       <segment>
         <source> See related result </source>
@@ -2388,6 +2389,74 @@
       </notes>
       <segment>
         <source>Service is Degraded</source>
+      </segment>
+    </unit>
+    <unit id="1715850505460606347">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:26</note>
+      </notes>
+      <segment>
+        <source>Existing Generics</source>
+      </segment>
+    </unit>
+    <unit id="2159130950882492111">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:51</note>
+        <note category="description">Dialog action</note>
+      </notes>
+      <segment>
+        <source>Cancel</source>
+      </segment>
+    </unit>
+    <unit id="2167066890120100205">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:41</note>
+      </notes>
+      <segment>
+        <source>New generic...</source>
+      </segment>
+    </unit>
+    <unit id="2959131478862095599">
+      <notes>
+        <note category="location">src/app/sessions/index.component.ts:76,78</note>
+        <note category="location">src/app/tasks/index.component.ts:80,82</note>
+      </notes>
+      <segment>
+        <source> Manage Generic Column </source>
+      </segment>
+    </unit>
+    <unit id="3033971069746971952">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:16</note>
+        <note category="description">Dialog title</note>
+      </notes>
+      <segment>
+        <source>Generic Columns</source>
+      </segment>
+    </unit>
+    <unit id="4124542718196605979">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:19,23</note>
+        <note category="description">Dialog description</note>
+      </notes>
+      <segment>
+        <source> Enter the generic (options.options) field you want to add as a column. <ph id="0" equiv="LINE_BREAK" type="fmt" disp="&lt;br&gt;"/> The field is case sensitive and will not show any data if it is incorrect. </source>
+      </segment>
+    </unit>
+    <unit id="5863981282365725678">
+      <notes>
+        <note category="location">src/app/components/manage-generic-dialog.component.ts:35</note>
+      </notes>
+      <segment>
+        <source>press enter to edit</source>
+      </segment>
+    </unit>
+    <unit id="8262971220218366882">
+      <notes>
+        <note category="location">src/app/components/columns-modify-dialog.component.ts:38,40</note>
+      </notes>
+      <segment>
+        <source> Generic Columns </source>
       </segment>
     </unit>
   </file>
