@@ -77,7 +77,7 @@ describe('FiltersService', () => {
 
     it('should return the correct string if a duration filter operator is provied', () => {
       expect(service.createQueryParamsKey(1, 'my_string', FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL, 7))
-        .toEqual('1-my_string_7-0');
+        .toEqual('1-my_string-7-0');
     });
   });
 });
