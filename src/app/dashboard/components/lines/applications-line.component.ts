@@ -6,7 +6,7 @@ import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap, tap } from 'rxjs';
 import { ApplicationsTableComponent } from '@app/applications/components/table.component';
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
@@ -158,7 +158,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   ngOnInit(): void {
     this.loadApplicationData = true;
-    this.options = this.line.options ?? this.#defaultConfigService.defaultApplications.options;
+    this.options = (this.line.options as ApplicationRawListOptions) ?? this.#defaultConfigService.defaultApplications.options;
     this.displayedColumns = this.line.displayedColumns as ApplicationRawColumnKey[] ?? this.#defaultConfigService.defaultApplications.columns;
     this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
     this.availableColumns = this.#applicationsIndexService.availableColumns;
@@ -182,11 +182,17 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
           this.#notificationService.error('Unable to fetch applications');
           return of(null);
         }));
+      }),
+      map(data => {
+        this.loadApplicationData = false;
+        this.total = data?.total ?? 0;
+
+        const partitions = data?.applications ?? [];
+
+        return partitions;
       })
     ).subscribe(data => {
-      this.data = data?.applications ?? [];
-      this.total = data?.applications?.length ?? 0;
-      this.loadApplicationData = false;
+      this.data = data;
     });
 
     this.subscriptions.add(mergeSubscription);
