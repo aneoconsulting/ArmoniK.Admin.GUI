@@ -79,7 +79,7 @@ export class SessionsGrpcService{
       } else if (isGeneric) {
         filterField = {
           taskOptionGenericField: {
-            field: field as unknown as string
+            field: field as string
           }
         };
       } else {

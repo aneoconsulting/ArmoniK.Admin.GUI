@@ -10,9 +10,9 @@ export type TaskSummaryColumnKey = ColumnKey<TaskSummary, TaskOptions> | 'select
 export type TaskSummaryFieldKey = FieldKey<TaskSummary>;
 export type TaskSummaryListOptions = ListOptions<TaskSummary>;
 
-export type TaskSummaryField = TaskSummaryEnumField | TaskOptionEnumField | TaskOptionGenericField;
+export type TaskSummaryField = TaskSummaryEnumField | TaskOptionEnumField | string;
 
-export type TaskFilterField = TaskSummaryEnumField | TaskOptionEnumField;
+export type TaskFilterField = TaskSummaryEnumField | TaskOptionEnumField | TaskOptionGenericField;
 export type TaskFilterDefinition = FilterDefinition<TaskSummaryEnumField, TaskOptionEnumField>;
 
 export type TaskFilterFor = FilterFor<TaskSummaryEnumField, TaskOptionEnumField>;

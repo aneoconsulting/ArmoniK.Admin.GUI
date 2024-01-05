@@ -106,7 +106,7 @@ export class TasksGrpcService {
       } else if (isGeneric) {
         filterField = {
           taskOptionGenericField: {
-            field: field as unknown as string
+            field: field as string
           }
         };
       } else {

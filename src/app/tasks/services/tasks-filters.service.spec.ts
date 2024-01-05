@@ -5,7 +5,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksStatusesService } from './tasks-statuses.service';
-import { TaskFilterDefinition, TaskSummaryFiltersOr } from '../types';
+import { TaskFilterDefinition, TaskFilterField, TaskSummaryFiltersOr } from '../types';
 
 
 describe('TasksFilterService', () => {
@@ -195,18 +195,18 @@ describe('TasksFilterService', () => {
   });
 
   test('the service must return the right label with filterFor root', () => {
-    const mockLabelFilterRoot = service.retrieveLabel(expectedFiltersDefinitions[2].for, expectedFiltersDefinitions[2].field);
+    const mockLabelFilterRoot = service.retrieveLabel(expectedFiltersDefinitions[2].for, (expectedFiltersDefinitions[2].field as TaskFilterField));
     expect(mockLabelFilterRoot).toEqual('Initial Task ID');
   });
 
   test('the service must return the right label with filterFor options', () => {
-    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[18].for, expectedFiltersDefinitions[18].field);
+    const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[18].for, (expectedFiltersDefinitions[18].field as TaskFilterField));
     expect(mockLabelFilterOptions).toEqual('Partition ID');
   });
 
   test('the service must throw an error ', () => {
     const mockFilterFor = {for: 'dummy for'} as never;
     const mockFilterField = expectedFiltersDefinitions[6].field; 
-    expect(() => {service.retrieveLabel(mockFilterFor , mockFilterField );}).toThrowError(`Unknown filter type: ${mockFilterFor} ${mockFilterField}`);
+    expect(() => {service.retrieveLabel(mockFilterFor , (mockFilterField as TaskFilterField) );}).toThrowError(`Unknown filter type: ${mockFilterFor} ${mockFilterField}`);
   });
 });
