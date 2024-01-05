@@ -1,4 +1,4 @@
-import { FilterStringOperator, SessionRaw, SessionStatus, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -94,7 +95,7 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
         <td mat-cell *matCellDef="let element" appNoWrap>
           <app-count-tasks-by-status
             [statuses]="tasksStatusesColored"
-            [queryParams]="createSessionIdQueryParams(element.sessionId)"
+            [queryParams]="createTasksByStatusQueryParams(element.sessionId)"
             [filters]="countTasksByStatusFilters(element.sessionId)"
           >
           </app-count-tasks-by-status>
@@ -313,6 +314,39 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return {
       [keySession]: sessionId,
     };
+  }
+
+  createTasksByStatusQueryParams(sessionId: string) {
+    if(this.filters.length === 0) {
+      const keySession = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+
+      return {
+        [keySession]: sessionId,
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+            const filterLabel = this.#createQueryParamFilterKey(filter, index);
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+      });
+      return params;
+    }
+  }
+
+  #createQueryParamFilterKey(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
+    if (filter.field !== null && filter.operator !== null) {
+      if (filter.for === 'root' && filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) {
+        return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+      } else if (filter.for === 'options') {
+        return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, filter.field as TaskOptionEnumField);
+      }
+    }
+    return null;
   }
 
   countTasksByStatusFilters(sessionId: string): TaskSummaryFiltersOr {
