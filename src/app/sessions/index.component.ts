@@ -355,8 +355,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.genericColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => this._sessionsIndexService.availableColumns.includes(column)
-        || (result as SessionRawColumnKey[]).includes(column));
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
+        this.availableColumns.push(...result);
         this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
         this.displayedColumns.push(...result);
         this._sessionsIndexService.saveColumns(this.displayedColumns);
