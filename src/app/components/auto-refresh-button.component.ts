@@ -38,7 +38,7 @@ export class AutoRefreshButtonComponent implements OnInit{
   constructor(private _dialog: MatDialog) { }
   
   ngOnInit(): void {
-    this.intervalDisplay = this.intervalValue == 0 ? 'Disabled' : (this.intervalValue + ' seconds');
+    this.intervalDisplay = this.intervalValue == 0 ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
   }
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
@@ -61,7 +61,7 @@ export class AutoRefreshButtonComponent implements OnInit{
         return;
       }   
       this.emit(value);
-      this.intervalDisplay = value == 0 ? 'Disabled' : (value + ' seconds');
+      this.intervalDisplay = value == 0 ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (value + $localize` seconds`);
     });  
   }
 

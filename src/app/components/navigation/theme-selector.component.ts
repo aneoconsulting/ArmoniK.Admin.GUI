@@ -12,7 +12,7 @@ import { StorageService } from '@services/storage.service';
 @Component({
   selector: 'app-theme-selector',
   template: `
-<button mat-button class="theme" [matMenuTriggerFor]="themeMenu" i18n-aria-label aria-label="Choose a theme" matTooltip="Select a theme">
+<button mat-button class="theme" [matMenuTriggerFor]="themeMenu" i18n-aria-label aria-label="Choose a theme" [matTooltip]="themeSelectionToolTip">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('format-color-fill')"></mat-icon>
 </button>
 <mat-menu #themeMenu="matMenu">
@@ -60,6 +60,8 @@ export class ThemeSelectorComponent implements OnInit {
     { name: 'pink-bluegrey', displayName: 'Pink & Blue-grey' },
     { name: 'purple-green', displayName: 'Purple & Green' },
   ];
+
+  themeSelectionToolTip = $localize`Select a theme`;
 
   ngOnInit(): void {
     const theme = this.#storageService.getItem<Theme>('navigation-theme') as Theme | null;

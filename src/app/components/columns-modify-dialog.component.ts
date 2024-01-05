@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ColumnKey, PrefixedOptions } from '@app/types/data';
+import { ColumnKey, GenericColumn, PrefixedOptions } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
@@ -34,7 +34,18 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
         </mat-checkbox>
     </ng-container>
   </div>
-</mat-dialog-content>
+
+  <h2 i18n *ngIf="availableGenericColumns().length">
+    Generic Columns
+  </h2>
+
+  <div class="columns" *ngIf="availableGenericColumns().length">
+    <ng-container *ngFor="let column of availableGenericColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="column" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ columnToLabel(column) }}
+        </mat-checkbox>
+    </ng-container>
+  </div>
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
@@ -78,7 +89,11 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   columnToLabel(column: ColumnKey<T, O>): string {
-    return this.columnsLabels[column] ?? column.toString();
+    return !this.isGenericColumn(column) ? this.columnsLabels[column] ?? column.toString() : column.toString().replace('generic.', '');
+  }
+
+  isGenericColumn(column: ColumnKey<T, O>): boolean {
+    return column.toString().startsWith('generic.');
   }
 
   /**
@@ -94,6 +109,11 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   availableOptionsColumns(): PrefixedOptions<O>[] {
     const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
 
+    return columns;
+  }
+
+  availableGenericColumns(): GenericColumn[] {
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('generic.')).sort((a, b) => a.toString().localeCompare(b.toString())) as GenericColumn[];
     return columns;
   }
 

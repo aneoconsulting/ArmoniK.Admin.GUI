@@ -62,6 +62,11 @@ export class ResultsFiltersService {
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
       type: 'date'
+    },
+    {
+      for: 'root',
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
+      type: 'number'
     }
   ];
 

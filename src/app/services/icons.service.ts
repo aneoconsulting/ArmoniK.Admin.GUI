@@ -12,6 +12,7 @@ export class IconsService {
     'submitter': 'api',
     'dashboard': 'dashboard',
     'profile': 'account_circle',
+    'healthcheck': 'monitor_heart'
     // TODO: rename page to 'permissions' (or endpoint)
     // 'general': 'public',
     // 'events': 'send',
@@ -52,7 +53,8 @@ export class IconsService {
     'find-logs': 'plagiarism',
     'lock': 'lock',
     'unlock': 'lock_open',
-    'language': 'language'
+    'language': 'language',
+    'manage-generics': 'splitscreen_vertical_add',
   };
 
   getIcon(name: string): string {

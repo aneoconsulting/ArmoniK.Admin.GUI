@@ -19,13 +19,14 @@ export class DefaultConfigService {
 
   readonly #defaultDashboardLines: Line[] = [
     {
-      name: 'Tasks by status',
+      name: $localize`Tasks by status`,
+      type: 'CountStatus',
       interval: 5,
       hideGroupsHeader: false,
       filters: [],
       taskStatusesGroups: [
         {
-          name: 'Finished',
+          name: $localize`Finished`,
           color: '#00ff00',
           statuses: [
             TaskStatus.TASK_STATUS_COMPLETED,
@@ -33,14 +34,14 @@ export class DefaultConfigService {
           ],
         },
         {
-          name: 'Running',
+          name: $localize`Running`,
           color: '#ffa500',
           statuses: [
             TaskStatus.TASK_STATUS_PROCESSING,
           ]
         },
         {
-          name: 'Errors',
+          name: $localize`Errors`,
           color: '#ff0000',
           statuses: [
             TaskStatus.TASK_STATUS_ERROR,
@@ -56,6 +57,8 @@ export class DefaultConfigService {
 
   readonly #defaultSidebar: Sidebar[] = [
     'profile',
+    'divider',
+    'healthcheck',
     'divider',
     'dashboard',
     'divider',
@@ -182,6 +185,10 @@ export class DefaultConfigService {
     filters: [],
   };
 
+  readonly #defaultHealthCheck = {
+    interval: 10,
+  };
+
   readonly #availableLanguages = ['en', 'fr'];
   readonly #defaultLanguage = this.#availableLanguages.includes(navigator.language) ? navigator.language : 'en';
 
@@ -249,6 +256,10 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
+  get healthCheck() {
+    return structuredClone(this.#defaultHealthCheck);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -284,7 +295,10 @@ export class DefaultConfigService {
     'tasks-filters': this.#defaultTasks.filters,
     'tasks-interval': this.#defaultTasks.interval,
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
-    'tasks-lock-columns': this.#defaultTasks.lockColumns
+    'tasks-lock-columns': this.#defaultTasks.lockColumns,
+    'healthcheck-interval': this.#defaultHealthCheck.interval,
+    'tasks-generic-columns': [],
+    'sessions-generic-columns': [],
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

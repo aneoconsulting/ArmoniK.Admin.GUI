@@ -1,12 +1,12 @@
-import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { FilterFor } from './filter-definition';
 
 export type MaybeNull<T> = T | null;
 
-export type FilterType = 'string' | 'number' | 'date' | 'array' | 'status' | 'boolean';
+export type FilterType = 'string' | 'number' | 'date' | 'array' | 'status' | 'boolean' | 'duration';
 export type FilterValueOptions = { key: string | number, value: string }[];
 
-export type FilterOperators = FilterStringOperator | FilterNumberOperator | FilterDateOperator | FilterArrayOperator | FilterStatusOperator | FilterBooleanOperator;
+export type FilterOperators = FilterStringOperator | FilterNumberOperator | FilterDateOperator | FilterArrayOperator | FilterStatusOperator | FilterBooleanOperator | FilterDurationOperator;
 
 /**
  * Used to define the filter FOR (a group of AND).
@@ -61,6 +61,7 @@ export type Filter<T extends number, U extends number | null = null> = {
 export type FilterInputValueString = MaybeNull<string>;
 export type FilterInputValueNumber = MaybeNull<number>;
 export type FilterInputValueDate = MaybeNull<Date>;
+export type FilterInputValueDuration = MaybeNull<number>;
 
 // Input for a filter input.
 export interface FilterInputString {
@@ -80,7 +81,12 @@ export interface FilterInputStatus {
   value: MaybeNull<string>;
   statuses: FilterValueOptions;
 }
-export type FilterInput = FilterInputString | FilterInputNumber | FilterInputDate | FilterInputStatus;
+
+export interface FilterInputDuration {
+  type: 'duration';
+  value: FilterInputValueDuration
+}
+export type FilterInput = FilterInputString | FilterInputNumber | FilterInputDate | FilterInputStatus | FilterInputDuration;
 
 export type FilterInputValue = FilterInput['value'];
 export type FilterInputType = FilterInput['type'];
@@ -103,4 +109,9 @@ export interface FilterInputOutputStatus {
   type: 'status';
   value: MaybeNull<string>;
 }
-export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputStatus;
+export interface FilterInputOutputDuration {
+  type: 'duration';
+  value: MaybeNull<number>
+}
+
+export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration | FilterInputOutputStatus;

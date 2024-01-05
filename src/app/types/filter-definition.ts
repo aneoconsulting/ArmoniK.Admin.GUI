@@ -73,10 +73,16 @@ type FilterDefinitionTaskOptionNumber<T extends number | null> = {
   type: 'number';
 };
 
+type FilterDefinitionTaskOptionDuration<T extends number | null> = {
+  for: 'options';
+  field: T;
+  type: 'duration'
+};
+
 
 type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
 
-export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T>;
+export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T> | FilterDefinitionTaskOptionDuration<T>;
 
 export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U>;
 

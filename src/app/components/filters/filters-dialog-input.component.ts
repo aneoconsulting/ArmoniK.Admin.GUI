@@ -17,17 +17,17 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
   template: `
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'string'">
   <mat-label i18n="Input label">Value</mat-label>
-  <input matInput [type]="getInputType()" placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
+  <input matInput [type]="getInputType()" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
 </mat-form-field>
 
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'number'">
   <mat-label i18n="Input label">Value</mat-label>
-  <input matInput type="number" placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
+  <input matInput type="number" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
 </mat-form-field>
 
 <mat-form-field class="dateForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Choose a date</mat-label>
-  <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="input.value" placeholder="Choose a date">
+  <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="input.value" i18n-placeholder placeholder="Choose a date">
    <ngx-mat-datepicker-toggle matSuffix [for]="picker"></ngx-mat-datepicker-toggle>
    <ngx-mat-datetime-picker #picker [startAt]="actualDate" [showSpinners]="true" [showSeconds]="true" >
     <ngx-mat-datepicker-actions>
@@ -44,6 +44,12 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
   <mat-autocomplete (optionSelected)="onStatusChange()" #autoStatus>
     <mat-option *ngFor="let option of (filteredStatuses | async)" [value]="option">{{ option }}</mat-option>
   </mat-autocomplete>
+</mat-form-field>
+
+<mat-form-field style="" id="durationForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'duration'">
+  <input matInput style="width: 25%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue('hours')" (change)="onDurationChange($event, 0)" placeholder="hh">:
+  <input matInput style="width: 30%; margin-right: 5px;" type="number" min="0" [value]="getDurationInputValue('minutes')" (change)="onDurationChange($event, 1)" placeholder="mm">:
+  <input matInput style="width: 25%;" type="number" min="0" [value]="getDurationInputValue('seconds')" (change)="onDurationChange($event, 2)" placeholder="ss">
 </mat-form-field>
   `,
   styles: [`
@@ -74,6 +80,7 @@ export class FiltersDialogInputComponent {
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
   actualDate = new Date();
+  duration: {[key: number]: string} = {};
 
   onStringChange(event: Event): void {
     this.valueChange.emit({
@@ -107,6 +114,21 @@ export class FiltersDialogInputComponent {
     });
   }
 
+  onDurationChange(event: Event, index: number) {
+    this.duration[index] = (event.target as HTMLInputElement).value;
+    const getHours = !isNaN(Number(this.duration[0])) ? Number(this.duration[0]) : this.getDurationInputValue('hours');
+    const getMinutes = !isNaN(Number(this.duration[1])) ? Number(this.duration[1]) : this.getDurationInputValue('minutes');
+    const getSeconds = !isNaN(Number(this.duration[2])) ? Number(this.duration[2]) : this.getDurationInputValue('seconds');
+
+    const durationSeconds = (getHours ?? 0) * 3600
+      + (getMinutes ?? 0) * 60 
+      + (getSeconds ?? 0);
+    this.valueChange.emit({
+      type: 'duration',
+      value: durationSeconds
+    });
+  }
+
   getInputType(): FilterInputType  {
     switch (this.input.type) {
     case 'string':
@@ -121,6 +143,19 @@ export class FiltersDialogInputComponent {
       return 'status';
     default:
       return 'string';
+    }
+  }
+
+  getDurationInputValue(searchItem: string): number | undefined {
+    switch (searchItem) {
+    case 'hours':
+      return !isNaN(Number(this.input.value)) ? Math.floor(Number(this.input.value)/3600) : undefined;
+    case 'minutes':
+      return !isNaN(Number(this.input.value)) ? Math.floor((Number(this.input.value)%3600)/60) : undefined;
+    case 'seconds':
+      return !isNaN(Number(this.input.value)) ? Math.floor(((Number(this.input.value))%3600)%60) : undefined;
+    default:
+      return undefined;
     }
   }
 

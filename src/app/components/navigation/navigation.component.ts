@@ -276,11 +276,11 @@ export class NavigationComponent implements OnInit{
     const username = this.#userService.user ? this.#userService.user.username : '';
     // TODO: localize with params
     if (hour < 12) {
-      return 'Good morning' + (username !== '' ? ', ' + username : '');
+      return $localize`Good morning` + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
-      return 'Good afternoon' + (username !== '' ? ', ' + username : '');
+      return $localize`Good afternoon` + (username !== '' ? ', ' + username : '');
     } else {
-      return 'Good evening' + (username !== '' ? ', ' + username : '');
+      return $localize`Good evening` + (username !== '' ? ', ' + username : '');
     }
   }
 

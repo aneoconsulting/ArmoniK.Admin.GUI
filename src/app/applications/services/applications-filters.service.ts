@@ -13,10 +13,10 @@ export class ApplicationsFiltersService {
   readonly #tableService = inject(TableService);
 
   readonly #rootField: Record<ApplicationRawEnumField, string> = {
-    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME]: 'Name',
-    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE]: 'Namespace',
-    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE]: 'Service',
-    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION]: 'Version',
+    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME]: $localize`Name`,
+    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE]: $localize`Namespace`,
+    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE]: $localize`Service`,
+    [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION]: $localize`Version`,
     [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_UNSPECIFIED]: 'Unspecified',
   };
 

@@ -106,7 +106,7 @@ import { StorageService } from '@services/storage.service';
 
         <div class="actions">
           <button mat-stroked-button type="reset" i18n="Form" [disabled]="keys.size === 0">Reset</button>
-          <button mat-stroked-button type="button" (click)="clearAll()" [disabled]="keys.size === 0">Clear All</button>
+          <button mat-stroked-button type="button" i18n="Form" (click)="clearAll()" [disabled]="keys.size === 0">Clear All</button>
           <button mat-flat-button color="warn" type="submit" i18n="Form" [disabled]="keys.size === 0">Clear</button>
         </div>
       </form>

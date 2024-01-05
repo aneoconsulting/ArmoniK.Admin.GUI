@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Observable, map, startWith } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueString, FilterValueOptions, MaybeNull } from '@app/types/filters';
+import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions, MaybeNull } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
@@ -226,6 +226,10 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       break;
     case 'status':
       this.filter.value = this.retrieveStatusKey(event.value);
+      break;
+    case 'duration':
+      this.filter.value = Number(event.value) || null;
+      break;
     }
   }
 
@@ -260,6 +264,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       return {
         type: 'date',
         value: filter.value ? new Date(Number(filter.value) * 1000) : null
+      };
+    case 'duration':
+      return {
+        type: 'duration',
+        value: filter.value as FilterInputValueDuration
       };
     default:
       throw new Error(`Unknown type ${type}`);
