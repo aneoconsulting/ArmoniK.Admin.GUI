@@ -106,7 +106,7 @@ export class FiltersDialogInputComponent {
   }
 
   onStatusChange(): void {
-    const formValue = this.statusFormControl.value?.toLowerCase();
+    const formValue = this.statusFormControl.value;
 
     this.valueChange.emit({
       type: 'status',
