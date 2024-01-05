@@ -94,21 +94,28 @@ export class TasksGrpcService {
   }
 
   #buildFilterField(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>) {
-    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean) => {
+    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean, isGeneric: boolean) => {
 
-
-      const filterField = (isForRoot ? 
-        {
+      let filterField: TaskFilterField.AsObject['field'];
+      if (isForRoot) {
+        filterField = {
           taskSummaryField: {
             field: field as TaskSummaryEnumField
           }
-        } :
-        {
+        };
+      } else if (isGeneric) {
+        filterField = {
+          taskOptionGenericField: {
+            field: field as unknown as string
+          }
+        };
+      } else {
+        filterField = {
           taskOptionField: {
             field: field as TaskOptionEnumField
           }
-        }
-      ) as TaskFilterField.AsObject['field'];
+        };
+      }
 
       switch (type) {
       case 'string':

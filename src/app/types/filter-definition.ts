@@ -79,12 +79,18 @@ type FilterDefinitionTaskOptionDuration<T extends number | null> = {
   type: 'duration'
 };
 
+type FilterDefinitionGeneric = {
+  for: 'generic';
+  field: string;
+  type: 'string';
+};
+
 
 type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
 
 export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T> | FilterDefinitionTaskOptionDuration<T>;
 
-export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U>;
+export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U> | FilterDefinitionGeneric;
 
 export type FilterFor<T extends number, U extends number | null = null> = FilterDefinition<T, U>['for'];
 
@@ -92,7 +98,7 @@ export type FilterFor<T extends number, U extends number | null = null> = Filter
 
 export abstract class DataFilterService {
   abstract retrieveFiltersDefinitions<T extends number, U extends number | null = null>(): FilterDefinition<T, U>[];
-  abstract retrieveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U): string;
+  abstract retrieveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U | string): string;
   abstract saveFilters<T extends number, U extends number | null = null>(filters: FiltersAnd<T, U>[]): void;
   abstract restoreFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
   abstract resetFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];

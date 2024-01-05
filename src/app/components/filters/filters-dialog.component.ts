@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { GenericColumn } from '@app/types/data';
 import { FiltersDialogData } from '@app/types/dialog';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -28,6 +29,7 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
           <app-filters-dialog-or
             [first]="index === 0"
             [filtersOr]="filtersOr"
+            [genericColumns]="genericColumns"
             (removeChange)="onRemoveOr($event)"
           ></app-filters-dialog-or>
         </ng-container>
@@ -78,6 +80,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
   #dialogRef = inject(MatDialogRef<FiltersDialogComponent<T, U>>);
 
   filtersOr: FiltersOr<T, U> = [];
+  genericColumns: GenericColumn[] | undefined;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FiltersDialogData<T, U>){}
 
@@ -87,6 +90,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
     } else {
       this.filtersOr = structuredClone(this.data.filtersOr);
     }
+    this.genericColumns = this.data.genericColumns;
   }
 
   onAdd() {
