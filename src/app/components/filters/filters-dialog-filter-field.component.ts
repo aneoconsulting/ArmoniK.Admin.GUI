@@ -162,7 +162,15 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   retrieveStatusLabel(status: MaybeNull<number>): string {
-    return status ? this.allStatuses[status as number].value : '';
+    if (this.allStatuses !== undefined) {
+      const foundStatus = status ? this.allStatuses[status as number] : undefined;
+      if (foundStatus !== undefined) {
+        return foundStatus.value;
+      } else {
+        return '';
+      }
+    }
+    return '';
   }
 
   retrieveOperatorKey(operator: string) {
@@ -175,7 +183,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     if (!status) {
       return null;
     }
-    const key = this.allStatuses.find(label => label.value.toLowerCase() === status)?.key;
+    const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
     return key !== undefined ? key : null;
   }
 
@@ -198,6 +206,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
       this.allOperators = this.findOperator(this.filter);
       this.operatorFormControl.setValue('');
+      this.filter.operator = null;
 
       this.allStatuses = this.findStatuses(this.filter);
       this.statusFormControl.setValue('');
