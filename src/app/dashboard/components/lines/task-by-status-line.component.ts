@@ -20,20 +20,20 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
-import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
-import { StatusesGroupCardComponent } from './statuses-group-card.component';
-import { ActionsToolbarGroupComponent } from '../../components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '../../components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '../../components/auto-refresh-button.component';
-import { PageSectionHeaderComponent } from '../../components/page-section-header.component';
-import { PageSectionComponent } from '../../components/page-section.component';
-import { RefreshButtonComponent } from '../../components/refresh-button.component';
-import { SpinnerComponent } from '../../components/spinner.component';
-import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types';
+import { ActionsToolbarGroupComponent } from '../../../components/actions-toolbar-group.component';
+import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
+import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
+import { PageSectionHeaderComponent } from '../../../components/page-section-header.component';
+import { PageSectionComponent } from '../../../components/page-section.component';
+import { RefreshButtonComponent } from '../../../components/refresh-button.component';
+import { SpinnerComponent } from '../../../components/spinner.component';
+import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
+import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
+import { ManageGroupsDialogComponent } from '../manage-groups-dialog.component';
+import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
 @Component({
-  selector: 'app-dashboard-line',
+  selector: 'app-dashboard-task-status-line',
   template: `
 <mat-toolbar>
   <mat-toolbar-row>
@@ -150,12 +150,11 @@ app-actions-toolbar {
     NgForOf
   ]
 })
-export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
+export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
   readonly #taskGrpcService = inject(TasksGrpcService);
-  readonly #tasksIndexService = inject(TasksIndexService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();

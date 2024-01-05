@@ -55,6 +55,8 @@ export class IconsService {
     'unlock': 'lock_open',
     'language': 'language',
     'manage-generics': 'splitscreen_vertical_add',
+    'task-by-status': 'wifi_tethering',
+    'default': 'radio_button_unchecked'
   };
 
   getIcon(name: string): string {
