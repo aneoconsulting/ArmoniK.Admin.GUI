@@ -107,12 +107,13 @@ describe('ApplicationsLineComponent', () => {
             name: 'application 2',
             namespace: 'namespace 2'
           }
-        ]
+        ],
+        total: 2
       } as ListApplicationsResponse;
       mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(receivedData));
       component.ngAfterViewInit();
       expect(component.data).toEqual(receivedData.applications);
-      expect(component.total).toEqual(receivedData.applications?.length);
+      expect(component.total).toEqual(receivedData.total);
     });
 
     it('should load default data', () => {
