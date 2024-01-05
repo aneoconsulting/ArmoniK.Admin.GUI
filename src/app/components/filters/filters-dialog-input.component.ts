@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
-import { Observable, Subject, delay, map, merge, startWith } from 'rxjs';
-import { FilterInput, FilterInputOutput, FilterInputStatus, FilterInputType, FilterValueOptions } from '@app/types/filters';
+import { Observable } from 'rxjs';
+import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
 
 
 
@@ -42,7 +42,7 @@ import { FilterInput, FilterInputOutput, FilterInputStatus, FilterInputType, Fil
   <mat-label i18n="Input label">Value</mat-label>
   <input matInput [matAutocomplete]="autoStatus" [formControl]="statusFormControl" (input)="onStatusChange()">
   <mat-autocomplete (optionSelected)="onStatusChange()" #autoStatus>
-    <mat-option *ngFor="let option of (filteredStatuses | async)" [value]="option.value">{{ option.value }}</mat-option>
+    <mat-option *ngFor="let option of (filteredStatuses | async)" [value]="option">{{ option }}</mat-option>
   </mat-autocomplete>
 </mat-form-field>
   `,
@@ -65,45 +65,15 @@ mat-form-field {
     ReactiveFormsModule
   ],
 })
-export class FiltersDialogInputComponent implements OnInit {
+export class FiltersDialogInputComponent {
   @Input({ required: true }) input: FilterInput;
-  @Input() inputStatus: Subject<void>;
+  @Input({ required: true }) statusFormControl: FormControl<string | null>;
+  @Input({ required: true }) filteredStatuses: Observable<string[]>;
 
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
   actualDate = new Date();
-
-  statusFormControl = new FormControl<string>('');
-  statuses: FilterValueOptions;
-  filteredStatuses: Observable<FilterValueOptions>;
-  dataLoaded = new Subject<void>();
-
-  ngOnInit(): void {
-    this.statuses = (this.input as FilterInputStatus).statuses ?? [];
-    
-    if(this.statuses.length !== 0) {
-      const key = ((this.input as FilterInputStatus).value as unknown as number);
-      const actualStatus: string | undefined = key ? this.statuses[key].value : undefined;
-      this.statusFormControl.setValue(actualStatus ? actualStatus : '');
-    }
-    
-    this.inputStatus.pipe(delay(500)).subscribe(() => {
-      this.statuses = (this.input as FilterInputStatus).statuses;
-      this.dataLoaded.next();
-    });
-
-    this.filteredStatuses = merge(this.statusFormControl.valueChanges, this.dataLoaded).pipe(
-      startWith(''),
-      map(value => this._filter(value || ''))
-    );
-  }
-
-  private _filter(value: string): FilterValueOptions {
-    const filterValue = value.toLowerCase();
-
-    return this.statuses.filter(status => status.value.toLowerCase().includes(filterValue));
-  }
 
   onStringChange(event: Event): void {
     this.valueChange.emit({
@@ -130,15 +100,11 @@ export class FiltersDialogInputComponent implements OnInit {
 
   onStatusChange(): void {
     const formValue = this.statusFormControl.value?.toLowerCase();
-    const key = this.statuses.find(status => status.value.toLowerCase() === formValue)?.key;
-    
-    if (key !== undefined) {
-      this.valueChange.emit({
-        type: 'string',
-        value: key.toString(),
-      });
-    }
-    
+
+    this.valueChange.emit({
+      type: 'status',
+      value: formValue ? formValue : null,
+    });
   }
 
   getInputType(): FilterInputType  {

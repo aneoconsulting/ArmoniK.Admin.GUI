@@ -98,4 +98,9 @@ export interface FilterInputOutputDate {
   type: 'date';
   value: MaybeNull<number>;
 }
-export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate;
+
+export interface FilterInputOutputStatus {
+  type: 'status';
+  value: MaybeNull<string>;
+}
+export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputStatus;
