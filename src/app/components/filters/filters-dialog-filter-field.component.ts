@@ -32,8 +32,8 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   <mat-label i18n="Label input">Generic</mat-label>
   <input type="text" matInput [matAutocomplete]="autoGeneric" [formControl]="genericFormControl" (input)="onGenericFieldChange()">
   <mat-autocomplete #autoGeneric (optionSelected)="onGenericFieldChange()">
-    <mat-option *ngFor="let column of filteredGenerics | async" [value]="retrieveGenericLabel(column)">
-      {{ retrieveGenericLabel(column) }}
+    <mat-option *ngFor="let column of filteredGenerics | async" [value]="column">
+      {{ column }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
@@ -86,14 +86,14 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   @Input() genericColumns: GenericColumn[] | undefined;
 
   genericFormControl: FormControl<string | null>;
-  filteredGenerics: Observable<GenericColumn[]>;
+  filteredGenerics: Observable<string[]>;
 
   #filtersService = inject(FiltersService);
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
   ngOnInit(): void {
     if (this.genericColumns) {
-      this.genericFormControl = new FormControl(this.genericLabelFromField(this.filter.field as MaybeNull<string>) || '');
+      this.genericFormControl = new FormControl(this.filter.field as string | null);
       this.filteredGenerics = this.genericFormControl.valueChanges.pipe(
         startWith(''),
         map(value => this._filterGenerics(value))
@@ -101,13 +101,13 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
   }
 
-  private _filterGenerics(value: MaybeNull<string>): GenericColumn[] {
+  private _filterGenerics(value: MaybeNull<string>): string[] {
     if (this.genericColumns) {
       if (value === null) {
         return this.genericColumns;
       } else {
         const formValue = value.toLowerCase();
-        return this.genericColumns.filter(generic => generic.replace('generic.','').toLowerCase().includes(formValue));
+        return this.genericColumns.map(generic => generic.replace('generic.','')).filter(generic => generic.toLowerCase().includes(formValue));
       }
     }
     return [];
@@ -115,14 +115,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   get filtersDefinitions() {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
-  }
-
-  retrieveGenericLabel(genericColumn: GenericColumn) {
-    return genericColumn.replace('generic.', '');
-  }
-
-  genericLabelFromField(genericField: MaybeNull<string>): string | undefined {
-    return genericField ? genericField.replace('generic.', '') : undefined;
   }
 
   retrieveLabel(filterDefinition: FilterDefinition<T, U>) {
@@ -139,7 +131,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     if (this.genericColumns) {
       const formValue = `generic.${this.genericFormControl.value}`;
       const value = this.genericColumns.find(column => column.toLowerCase() === formValue.toLowerCase());
-      this.filter.field = value !== undefined ? value : null;
+      this.filter.field = value !== undefined ? value.replace('generic.', '') : null;
     }
   }
 

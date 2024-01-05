@@ -60,7 +60,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
     if (filter.for !== 'generic') {
       label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
     } else {
-      label = (filter.field as string).replace('generic.', '');
+      label = (filter.field as string);
     }
 
     if (filter.value === null)

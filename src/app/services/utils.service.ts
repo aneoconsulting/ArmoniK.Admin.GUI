@@ -116,7 +116,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
       const filterDefinition = this.#recoverFilterDefinition(filter, filtersDefinitions);
       return filterDefinition.field;
     } else {
-      return (filter.field as string).replace('generic.', '');
+      return (filter.field as string);
     }
   }
 
