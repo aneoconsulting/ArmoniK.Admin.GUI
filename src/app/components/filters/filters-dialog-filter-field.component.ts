@@ -131,7 +131,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   private _filterOperators(value: MaybeNull<string>): string[] {
     const labelledOperators = Object.values(this.allOperators);
-    if (value === null ) {
+    if (value === null) {
       return labelledOperators;
     } else {
       const filterValue = value.toLowerCase();
@@ -167,7 +167,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   retrieveOperatorKey(operator: string) {
     const labelledOperators = Object.values(this.allOperators);
-    const value = labelledOperators.find(label => label.toLowerCase().localeCompare(operator.toLowerCase()));
+    const value = labelledOperators.find(label => label.toLowerCase() === operator.toLowerCase());
     return Object.keys(this.allOperators).filter(key => this.allOperators[Number(key)] === value);
   }
 
@@ -175,7 +175,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     if (!status) {
       return null;
     }
-    const key = this.allStatuses.find(label => label.value.toLowerCase().localeCompare(status))?.key;
+    const key = this.allStatuses.find(label => label.value.toLowerCase() === status)?.key;
     return key !== undefined ? key : null;
   }
 
