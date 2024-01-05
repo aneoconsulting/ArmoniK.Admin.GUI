@@ -36,7 +36,7 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
-import { LineComponent } from './components/line.component';
+import { PartitionsLineComponent } from './components/lines/partitions-line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
@@ -83,7 +83,9 @@ import { Line } from './types';
     <app-page-section-header icon="adjust">
       <span i18n="Section title">{{ line.name }}</span>
     </app-page-section-header>
-    <app-dashboard-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+    <ng-container *ngIf="line.type === 'Partitions'">
+      <app-dashboard-partitions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)" />
+    </ng-container>
   </app-page-section>
 </main>
   `,
@@ -171,7 +173,7 @@ import { Line } from './types';
     MatTooltipModule,
     MatProgressSpinnerModule,
     FiltersToolbarComponent,
-    LineComponent
+    PartitionsLineComponent
   ]
 })
 export class IndexComponent implements OnInit {
