@@ -105,9 +105,13 @@ export interface FilterInputOutputDate {
   value: MaybeNull<number>;
 }
 
+export interface FilterInputOutputStatus {
+  type: 'status';
+  value: MaybeNull<string>;
+}
 export interface FilterInputOutputDuration {
   type: 'duration';
   value: MaybeNull<number>
 }
 
-export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration;
+export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration | FilterInputOutputStatus;

@@ -15,7 +15,7 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRawColumnKey } from '../types';
+import { SessionRawColumnKey, SessionRawFiltersOr } from '../types';
 
 describe('ApplicationsTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -37,6 +37,48 @@ describe('ApplicationsTableComponent', () => {
 
   const displayedColumns: SessionRawColumnKey[] = ['sessionId', 'count', 'actions'];
 
+  const filters: SessionRawFiltersOr = [
+    [
+      {
+        field: 1,
+        for: 'root',
+        operator: 1,
+        value: 'session not equal'
+      },
+      {
+        field: 2,
+        for: 'root',
+        operator: 0,
+        value: 'not appearing in creatingTaskStatusFilter'
+      },
+      {
+        field: 1,
+        for: 'root',
+        operator: 0,
+        value: 'session equal' // should not appear in creatingTaskStatusFilter
+      }
+    ],
+    [
+      {
+        field: 1,
+        for: 'root',
+        operator: 3,
+        value: 'some value'
+      },
+      {
+        field: 1,
+        for: 'root',
+        operator: 0,
+        value: 'not taskStatus'
+      },
+      {
+        field: 5,
+        for: 'options',
+        operator: 0,
+        value: 'application name'
+      }
+    ]
+  ];
   
   const sort: MatSort = {
     active: 'sessionId',
@@ -109,6 +151,7 @@ describe('ApplicationsTableComponent', () => {
         direction: 'desc'
       }
     };
+    component.filters = [];
 
     component.ngOnInit();
     component.ngAfterViewInit();
@@ -248,6 +291,28 @@ describe('ApplicationsTableComponent', () => {
 
     it('should return null if there no options', () => {
       expect(component.extractData({} as unknown as SessionRaw, 'options.maxDuration')).toEqual(null);
+    });
+  });
+
+  describe('createTasksByStatusQueryParams', () => {
+
+    const sessionId = 'Session 1';
+
+    it('should create query params for the specified application', () => {
+      expect(component.createTasksByStatusQueryParams(sessionId)).toEqual({
+        '0-root-1-0': sessionId,
+      });
+    });
+
+    it('should create query params for the specified application and applied filters', () => {
+      component.filters = filters;
+      expect(component.createTasksByStatusQueryParams(sessionId)).toEqual({
+        '0-root-1-0': sessionId,
+        '0-root-1-1':'session not equal',
+        '1-root-1-0': sessionId,
+        '1-root-1-3': 'some value',
+        '1-options-5-0': 'application name',
+      });
     });
   });
 

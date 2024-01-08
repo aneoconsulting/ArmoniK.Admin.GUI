@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { GenericColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterInputOutput } from '@app/types/filters';
+import { Filter, FilterInputOutput, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field.component';
 
@@ -15,8 +15,32 @@ describe('FiltersDialogFilterFieldComponent', () => {
     retrieveFiltersDefinitions: jest.fn(() => {
       return filterDefinitions;
     }),
-    retrieveLabel: jest.fn()
+    retrieveLabel: jest.fn((value: string) => {
+      const labels = Object.values(propertiesLabel);
+      return labels.map(label => label.toLowerCase() === value.toLowerCase());
+    }),
+    retrieveField: jest.fn((value: string) => {
+      const values = Object.values(propertiesLabel);
+      return values.findIndex(label => label.toLowerCase() === value.toLowerCase());
+    })
   };
+  const allStatuses = [
+    {key: 0, value: 'Creation'},
+    {key: 1, value: 'Submitted'},
+    {key: 2, value: 'Ended'}
+  ];
+
+  const propertiesLabel: {[key: number]: string} = {
+    0: 'undefined',
+    1:'status',
+    2:'task id',
+    3:'children',
+    4:'size',
+    5:'-',
+    6:'Start to End duration',
+    7:'Created at',
+  }; 
+
   const filterDefinitions: FilterDefinition<number, number>[] = [
     {
       field: 4,
@@ -27,10 +51,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
       field: 1,
       type: 'status',
       for: 'root',
-      statuses: [
-        {key: 'status1', value: '2'},
-        {key: 'status2', value: '2'}
-      ]
+      statuses: allStatuses
     },
     {
       field: 2,
@@ -88,8 +109,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    describe('filteredProperties', () => {
-      it('should filter properly', () => {
+    describe('filteredGenerics', () => {
+      it('should filter generics', () => {
         component.filteredGenerics.subscribe(value => {
           expect(value).toEqual(['generic.test', 'generic.fastCompute']);
         });
@@ -105,6 +126,111 @@ describe('FiltersDialogFilterFieldComponent', () => {
         component.genericFormControl.updateValueAndValidity({emitEvent: true});
       });
     });
+    
+    describe('filteredProperties', () => {
+      it('should filter properly', () => {
+        component.filteredProperties.subscribe(value => {
+          expect(value).toEqual(['status', 'Start to End duration', 'Created at']);
+        });
+        component.propertyFormControl.setValue('at');
+        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      });
+
+      it('should return all the list in case of null value', () => {
+        component.filteredProperties.subscribe(value => {
+          expect(value).toEqual(Object.values(propertiesLabel));
+        });
+        component.propertyFormControl.setValue(null);
+        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      });
+    });
+
+    describe('filteredOperators', () => {
+      it('should filter properly', () => {
+        component.filteredOperators.subscribe(value => {
+          expect(value).toEqual(['equal', 'not equal']);
+        });
+        component.propertyFormControl.setValue('equal');
+        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      });
+
+      it('should return all the list in case of null value', () => {
+        component.filteredOperators.subscribe(value => {
+          expect(value).toEqual(['equal', 'not equal']);
+        });
+        component.propertyFormControl.setValue(null);
+        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      });
+    });
+
+    describe('filteredStatuses', () => {
+      it('should filter properly', () => {
+        component.filteredStatuses.subscribe(value => {
+          expect(value).toEqual(['sumbitted', 'Ended']);
+        });
+        component.propertyFormControl.setValue('ed');
+        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      });
+
+      it('should return all the list in case of null value', () => {
+        component.filteredStatuses.subscribe(value => {
+          expect(value).toEqual(Object.values(allStatuses));
+        });
+        component.propertyFormControl.setValue(null);
+        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      });
+    });
+  });
+
+  describe('retrieveStatusKey', () => {
+    it('should retrieve the key of the status', () => {
+      expect(component.retrieveStatusKey(allStatuses[0].value)).toEqual(0);
+    });
+
+    it('should return null if no label is provided', () => {
+      expect(component.retrieveStatusKey(null)).toEqual(null);
+    });
+
+    it('should return null if the label does not exists', () => {
+      expect(component.retrieveStatusKey('Unexisting')).toEqual(null);
+    });
+  });
+
+  describe('retrieveStatusLabel', () => {
+    it('should retrieve status label', () => {
+      expect(component.retrieveStatusLabel(1)).toEqual('Submitted');
+    });
+    it('should retrieve empty status label when no status is found', () => {
+      expect(component.retrieveStatusLabel(null)).toEqual('');
+    });
+    it('should return empty string if allStatus is undefined', () => {
+      component.allStatuses = undefined as unknown as FilterValueOptions;
+      expect(component.retrieveStatusLabel(1)).toEqual('');
+    });
+  });
+
+  describe('onPropertyChange', () => {
+    it('should update filter', () => {
+      component.propertyFormControl.setValue('Created at');
+      component.onPropertyChange();
+      expect(component.filter).toEqual({
+        for: 'root',
+        field: 7,
+        operator: null,
+        value: null
+      });
+    });
+
+    it('should not update anything if the field does not exists', () => {
+      component.propertyFormControl.setValue('Unexisting');
+      component.onPropertyChange();
+      expect(component.filter).toEqual({
+        field: 1,
+        for: 'root',
+        operator: 0,
+        value: 'someValue'
+      });
+    });
   });
 
   //TODO: security type check
@@ -117,20 +243,10 @@ describe('FiltersDialogFilterFieldComponent', () => {
   });
 
   //TODO: security type check
-  it('should change the component filter on field change', () => {
-    component.onFieldChange('options-2');
-    expect(component.filter).toEqual({
-      field: 2,
-      for: 'options',
-      operator: 0,
-      value: 'someValue'
-    });
-  });
-
-  //TODO: security type check
   it('should change the operator of the filter', () => {
-    component.onOperatorChange('3');
-    expect(component.filter.operator).toEqual(3);
+    component.operatorFormControl.setValue('Equal');
+    component.onOperatorChange();
+    expect(component.filter.operator).toEqual(0);
   });
 
   //TODO: security type check
@@ -178,6 +294,15 @@ describe('FiltersDialogFilterFieldComponent', () => {
       } as unknown as FilterInputOutput;
       component.onInputChange(inputEvent);
       expect(component.filter.value).toEqual(94350);
+    });
+
+    it('should change the filter value to status if one status is passed', () => {
+      const inputEvent: FilterInputOutput = {
+        type: 'status',
+        value: 'Submitted'
+      };
+      component.onInputChange(inputEvent);
+      expect(component.filter.value).toEqual(1);
     });
   });
 
@@ -284,10 +409,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         expect(component.findInput(statusFilter)).toEqual({
           type: 'status',
           value: 'myStatus',
-          statuses: [
-            {key: 'status1', value: '2'},
-            {key: 'status2', value: '2'}
-          ]
+          statuses: allStatuses
         });
       });
   
@@ -302,10 +424,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         expect(component.findInput(statusFilter)).toEqual({
           type: 'status',
           value: null,
-          statuses: [
-            {key: 'status1', value: '2'},
-            {key: 'status2', value: '2'}
-          ]
+          statuses: allStatuses
         });
       });
     });
@@ -432,10 +551,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'myStatus'
       };
-      expect(component.findStatuses(statusFilter)).toEqual([
-        {key: 'status1', value: '2'},
-        {key: 'status2', value: '2'}
-      ]);
+      expect(component.findStatuses(statusFilter)).toEqual(allStatuses);
     });
 
     it('should return an empty status list if the filter has no field', () => {
