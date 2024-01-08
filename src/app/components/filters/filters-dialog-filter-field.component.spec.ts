@@ -595,19 +595,6 @@ describe('FiltersDialogFilterFieldComponent', () => {
     expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
   });
 
-  it('should track by field', () => {
-    expect(component.trackByField(0, filterDefinitions[0])).toEqual('root4');
-  });
-
-  it('should track by operator', () => {
-    const operator: KeyValue<string, string> = {
-      key: 'greater than',
-      value: '0'
-    };
-
-    expect(component.trackByOperator(0, operator)).toBe(operator.key);
-  });
-
   it('should change generic filters', () => {
     component.genericFormControl.setValue('column');
     component.onGenericFieldChange();

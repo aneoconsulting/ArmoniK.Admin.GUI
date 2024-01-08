@@ -1,5 +1,5 @@
 import { FilterNumberOperator } from '@aneoconsultingfr/armonik.api.angular';
-import { AsyncPipe, KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Observable, map, startWith } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { GenericColumn } from '@app/types/data';
-import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
+import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions, MaybeNull } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
