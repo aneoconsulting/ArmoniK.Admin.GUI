@@ -1,11 +1,13 @@
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
+import { Observable } from 'rxjs';
 import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
 
 
@@ -38,9 +40,10 @@ import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filt
 
 <mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'status'">
   <mat-label i18n="Input label">Value</mat-label>
-  <mat-select [value]="input.value?.toString()" (valueChange)="onStatusChange($event)">
-    <mat-option *ngFor="let option of input.statuses; trackBy: trackBySelect" [value]="option.key">{{ option.value }}</mat-option>
-  </mat-select>
+  <input matInput [matAutocomplete]="autoStatus" [formControl]="statusFormControl" (input)="onStatusChange()">
+  <mat-autocomplete (optionSelected)="onStatusChange()" #autoStatus>
+    <mat-option *ngFor="let option of (filteredStatuses | async)" [value]="option">{{ option }}</mat-option>
+  </mat-autocomplete>
 </mat-form-field>
 
 <mat-form-field style="" id="durationForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'duration'">
@@ -60,14 +63,18 @@ mat-form-field {
     NgFor,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
+    AsyncPipe,
+    MatAutocompleteModule,
+    ReactiveFormsModule
   ],
 })
 export class FiltersDialogInputComponent {
   @Input({ required: true }) input: FilterInput;
+  @Input({ required: true }) statusFormControl: FormControl<string | null>;
+  @Input({ required: true }) filteredStatuses: Observable<string[]>;
 
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
@@ -98,10 +105,12 @@ export class FiltersDialogInputComponent {
     });
   }
 
-  onStatusChange(event: string): void {
+  onStatusChange(): void {
+    const formValue = this.statusFormControl.value;
+
     this.valueChange.emit({
-      type: 'string',
-      value: event,
+      type: 'status',
+      value: formValue ? formValue : null,
     });
   }
 
