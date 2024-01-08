@@ -1,4 +1,3 @@
-import { KeyValue } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
