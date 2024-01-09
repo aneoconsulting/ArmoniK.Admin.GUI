@@ -1,4 +1,6 @@
 // eslint-disable-next-line import/no-unresolved
+import { FormControl } from '@angular/forms';
+// eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
@@ -8,6 +10,7 @@ describe('FiltersDialogInputComponent', () => {
     type: 'string',
     value: 'someValue'
   };
+  component.statusFormControl = new FormControl();
   const valueChangeSpy = jest.spyOn(component.valueChange, 'emit');
 
   it('should run', () => {
@@ -67,10 +70,10 @@ describe('FiltersDialogInputComponent', () => {
 
   it('should emit on status change', () => {
     const event = 'newStatus';
-
-    component.onStatusChange(event);
+    component.statusFormControl.setValue(event);
+    component.onStatusChange();
     expect(valueChangeSpy).toHaveBeenCalledWith({
-      type: 'string',
+      type: 'status',
       value: event
     });
   });

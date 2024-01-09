@@ -125,6 +125,16 @@ describe('FiltersChipsComponent', () => {
     expect(component.content(filter)).toEqual('status Equal dispatched');
   });
 
+  it('should create the content of the component with a generic filter', () => {
+    const filter: Filter<number, number> = {
+      field: 'test',
+      operator: 0,
+      for: 'generic',
+      value: 'True'
+    };
+    expect(component.content(filter)).toEqual('test Equal True');
+  });
+
   it('should not create the content if there is no values', () => {
     const filter: Filter<number, number> = {
       field: 2,
