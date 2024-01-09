@@ -145,4 +145,9 @@ export class SessionsFiltersService {
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
     }
   }
+
+  retrieveField(filterField: string): SessionFilterField  {
+    const values = Object.values(this.#rootField);
+    return values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+  }
 }

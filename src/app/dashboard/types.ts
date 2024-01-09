@@ -1,5 +1,5 @@
 import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ApplicationRaw } from '@app/applications/types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
 import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
@@ -19,10 +19,10 @@ export type Line = {
   type: LineType
   interval: number,
   hideGroupsHeader?: boolean,
-  filters: FiltersOr<FiltersEnums, FiltersOptionsEnums>,
-  options?: ListOptions<Summary>;
+  filters: FiltersOr<FiltersEnums, FiltersOptionsEnums> | ApplicationRawFilter,
+  options?: ListOptions<Summary> | ApplicationRawListOptions;
   taskStatusesGroups?: TasksStatusesGroup[],
-  displayedColumns?: ColumnKey<Summary, SummaryOptions>,
+  displayedColumns?: ColumnKey<Summary, SummaryOptions> | ApplicationRawColumnKey[],
   lockColumns?: boolean;
 };
 

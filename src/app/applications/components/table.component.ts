@@ -216,7 +216,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
-      const taskField = this.#applicationsToTaskField(filter.field); // We transform it into an options filter for a task
+      const taskField = this.#applicationsToTaskField(filter.field as ApplicationRawEnumField); // We transform it into an options filter for a task
       if (!taskField) return null;
       return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 
     }

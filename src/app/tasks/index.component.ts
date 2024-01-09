@@ -86,7 +86,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+    <app-filters-toolbar [filters]="filters" [genericColumns]="genericColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -405,8 +405,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.genericColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => this.#tasksIndexService.availableColumns.includes(column)
-        || (result as TaskSummaryColumnKey[]).includes(column));
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
+        this.availableColumns.push(...result);
         this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
         this.displayedColumns.push(...result);
         this.#tasksIndexService.saveColumns(this.displayedColumns);

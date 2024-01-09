@@ -6,11 +6,11 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
-import { LineComponent } from './line.component';
-import { TasksStatusesGroup } from '../types';
+import { TaskByStatusLineComponent } from './task-by-status-line.component';
+import { TasksStatusesGroup } from '../../types';
 
-describe('LineComponent', () => {
-  let component: LineComponent;
+describe('TaskByStatusLineComponent', () => {
+  let component: TaskByStatusLineComponent;
 
   let dialogRefSubject: Observable<{name: string} | {groups: TasksStatusesGroup[]} | null>;
   const mockMatDialog = {
@@ -38,14 +38,14 @@ describe('LineComponent', () => {
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        LineComponent,
+        TaskByStatusLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         { provide: TasksIndexService, useValue: mockTasksIndexService }
       ]
-    }).inject(LineComponent);
+    }).inject(TaskByStatusLineComponent);
     component.line = {
       filters: [],
       hideGroupsHeader: true,

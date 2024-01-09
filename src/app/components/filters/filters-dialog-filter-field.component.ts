@@ -1,11 +1,16 @@
 import { FilterNumberOperator } from '@aneoconsultingfr/armonik.api.angular';
-import { KeyValue, KeyValuePipe, NgFor, NgIf } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { AsyncPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Observable, map, startWith } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions } from '@app/types/filters';
+import { GenericColumn } from '@app/types/data';
+import { FilterDefinition } from '@app/types/filter-definition';
+import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions, MaybeNull } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
@@ -14,25 +19,39 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   template: `
 <span *ngIf="first" i18n="Filter condition">Where</span>
 <span *ngIf="!first" i18n="Filter condition">And</span>
-<mat-form-field appearance="outline"  subscriptSizing="dynamic">
+<mat-form-field *ngIf="filter.for !== 'generic'" appearance="outline" subscriptSizing="dynamic">
   <mat-label i18n="Label input">Property</mat-label>
-  <mat-select (valueChange)="onFieldChange($event)" [value]="filter.for + '-' + filter.field?.toString()">
-    <mat-option *ngFor="let definition of filtersDefinitions; trackBy: trackByField" [value]="definition.for + '-' + definition.field">
-      {{ retrieveLabel(definition) }}
+  <input matInput [matAutocomplete]="autoProperty" [formControl]="propertyFormControl" (input)="onPropertyChange()">
+  <mat-autocomplete #autoProperty 
+    (optionSelected)="onPropertyChange()"
+    >
+    <mat-option *ngFor="let property of filteredProperties | async" [value]="property">
+      {{ property }}
     </mat-option>
-  </mat-select>
+  </mat-autocomplete>
 </mat-form-field>
 
-<mat-form-field appearance="outline"  subscriptSizing="dynamic">
+<mat-form-field *ngIf="filter.for === 'generic'" appearance="outline" subscriptSizing="dynamic">
+  <mat-label i18n="Label input">Generic</mat-label>
+  <input type="text" matInput [matAutocomplete]="autoGeneric" [formControl]="genericFormControl" (input)="onGenericFieldChange()">
+  <mat-autocomplete #autoGeneric (optionSelected)="onGenericFieldChange()">
+    <mat-option *ngFor="let column of filteredGenerics | async" [value]="column">
+      {{ column }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
   <mat-label i18n="Label input">Operator</mat-label>
-  <mat-select (valueChange)="onOperatorChange($event)" [value]="filter.operator?.toString()">
-    <mat-option *ngFor="let operator of findOperator(filter) | keyvalue; trackBy: trackByOperator" [value]="operator.key">
-      {{ operator.value }}
+  <input matInput [matAutocomplete]="autoOperators" [formControl]="operatorFormControl" (input)="onOperatorChange()">
+  <mat-autocomplete #autoOperators (optionSelected)="onOperatorChange()">
+    <mat-option *ngFor="let operator of filteredOperators | async" [value]="operator">
+      {{ operator }}
     </mat-option>
-  </mat-select>
+  </mat-autocomplete>
 </mat-form-field>
 
-<app-filters-dialog-input [input]="findInput(filter)" (valueChange)="onInputChange($event)"></app-filters-dialog-input>
+<app-filters-dialog-input [input]="findInput(filter)" [statusFormControl]="statusFormControl" [filteredStatuses]="filteredStatuses" (valueChange)="onInputChange($event)"></app-filters-dialog-input>
   `,
   styles: [`
 :host {
@@ -56,17 +75,119 @@ span {
     MatFormFieldModule,
     MatSelectModule,
     FiltersDialogInputComponent,
+    MatAutocompleteModule,
+    MatInputModule,
+    AsyncPipe,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     FiltersService,
   ],
 })
-export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> {
+export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> implements OnInit {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
+  @Input() genericColumns: GenericColumn[] | undefined;
+
+  genericFormControl: FormControl<string | null>;
+  filteredGenerics: Observable<string[]>;
+
+  allProperties: FilterDefinition<T, U>[];
+  propertyFormControl: FormControl<string | null>;
+  filteredProperties: Observable<string[]>;
+
+  allOperators: Record<number, string>;
+  operatorFormControl: FormControl<string | null>;
+  filteredOperators: Observable<string[]>;
+
+  allStatuses: FilterValueOptions;
+  statusFormControl: FormControl<string | null>;
+  filteredStatuses: Observable<string[]>;
 
   #filtersService = inject(FiltersService);
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
+
+  ngOnInit(): void {
+    // Generics form handling
+    if (this.genericColumns) {
+      this.genericFormControl = new FormControl(this.filter.field as string | null);
+      this.filteredGenerics = this.genericFormControl.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterGenerics(value))
+      );
+    }
+
+    // Property form handling
+    this.propertyFormControl = new FormControl(this.columnValue);
+    this.allProperties = this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
+    this.filteredProperties = this.propertyFormControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterProperties(value))
+    );
+
+    // Operator form handling
+    this.allOperators = this.findOperator(this.filter);
+    this.operatorFormControl = new FormControl(this.retrieveOperatorLabel(this.filter.operator));
+    this.filteredOperators = this.operatorFormControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterOperators(value))
+    );
+
+    // Statuses form handling
+    this.allStatuses = this.findStatuses(this.filter);
+    this.statusFormControl = new FormControl(this.retrieveStatusLabel(this.filter.value as MaybeNull<number>));
+    this.filteredStatuses = this.statusFormControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterStatuses(value))
+    );
+  }
+  
+  private _filterGenerics(value: MaybeNull<string>): string[] {
+    if (this.genericColumns) {
+      if (value === null) {
+        return this.genericColumns;
+      } else {
+        const formValue = value.toLowerCase();
+        return this.genericColumns.map(generic => generic.replace('generic.','')).filter(generic => generic.toLowerCase().includes(formValue));
+      }
+    }
+    return [];
+  }
+
+  private _filterProperties(value: MaybeNull<string>): string[] {
+    const labelledProperties = this.allProperties.map(property => this.retrieveLabel(property));
+    if (value === null) {
+      return labelledProperties;
+    } else {
+      const filterValue = value.toLowerCase();
+      return labelledProperties.filter(label => label.toLowerCase().includes(filterValue));
+    }
+  }
+
+  private _filterOperators(value: MaybeNull<string>): string[] {
+    const labelledOperators = Object.values(this.allOperators);
+    if (value === null) {
+      return labelledOperators;
+    } else {
+      const filterValue = value.toLowerCase();
+      return labelledOperators.filter(operator => operator.toLowerCase().includes(filterValue));
+    }
+  }
+
+  private _filterStatuses(value: MaybeNull<string>): string[] {
+    const labelledStatuses = Object.values(this.allStatuses).map(status => status.value);
+    if (value === null) {
+      return labelledStatuses;
+    } else {
+      const filterValue = value.toLowerCase();
+      return labelledStatuses.filter(status => status.toLowerCase().includes(filterValue));
+    }
+  }
+
+  get columnValue() {
+    return this.filter.field && this.filter.for ? this.#dataFiltersService.retrieveLabel(this.filter.for, this.filter.field) : '';
+  }
 
   get filtersDefinitions() {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
@@ -76,14 +197,77 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return this.#dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field);
   }
 
-  onFieldChange(event: string) {
-    const [for_, key] = event.split('-');
-    this.filter.for = for_ as FilterFor<T, U>;
-    this.filter.field = Number(key) as T | U;
+  retrieveOperatorLabel(operator: MaybeNull<number>): string {
+    return operator !== null ? this.allOperators[operator] : '';
   }
 
-  onOperatorChange(event: string) {
-    this.filter.operator = Number(event);
+  retrieveStatusLabel(status: MaybeNull<number>): string {
+    if (this.allStatuses !== undefined) {
+      const foundStatus = status ? this.allStatuses[status as number] : undefined;
+      if (foundStatus !== undefined) {
+        return foundStatus.value;
+      } else {
+        return '';
+      }
+    }
+    return '';
+  }
+
+  retrieveOperatorKey(operator: string) {
+    const labelledOperators = Object.values(this.allOperators);
+    const value = labelledOperators.find(label => label.toLowerCase() === operator.toLowerCase());
+    return Object.keys(this.allOperators).filter(key => this.allOperators[Number(key)] === value);
+  }
+
+  retrieveStatusKey(status: MaybeNull<string>) {
+    if (!status) {
+      return null;
+    }
+    const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
+    return key !== undefined ? key : null;
+  }
+
+  onPropertyChange() {
+    const formValue = this.propertyFormControl.value;
+    if (formValue) {
+      const field = this.#dataFiltersService.retrieveField(formValue);
+
+      if (field === -1) {
+        return;
+      }
+
+      const for_ = this.allProperties.find(value => value.field === field)?.for;
+      if (!for_) {
+        return;
+      }
+
+      this.filter.for = for_;
+      this.filter.field = field as T | U;
+
+      this.allOperators = this.findOperator(this.filter);
+      this.operatorFormControl.setValue('');
+      this.filter.operator = null;
+
+      this.allStatuses = this.findStatuses(this.filter);
+      this.statusFormControl.setValue('');
+      this.filter.value = null;
+    }
+  }
+    
+  onGenericFieldChange() {
+    if (this.genericColumns) {
+      const formValue = `generic.${this.genericFormControl.value}`;
+      const value = this.genericColumns.find(column => column.toLowerCase() === formValue.toLowerCase());
+      this.filter.field = value !== undefined ? value.replace('generic.', '') : null;
+    }
+  }
+
+  onOperatorChange() {
+    const formValue = this.operatorFormControl.value;
+    if (formValue) {
+      const key = this.retrieveOperatorKey(formValue);
+      this.filter.operator = key !== undefined ? Number(key) : null;
+    }
   }
 
   onInputChange(event: FilterInputOutput) {
@@ -97,12 +281,23 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'date':
       this.filter.value = event.value;
       break;
+    case 'status':
+      this.filter.value = this.retrieveStatusKey(event.value);
+      break;
     case 'duration':
       this.filter.value = Number(event.value) || null;
+      break;
     }
   }
 
   findInput(filter: Filter<T, U>): FilterInput {
+    if (filter.for === 'generic') {
+      return {
+        type: 'string',
+        value: filter.value as FilterInputValueString
+      };
+    }
+
     const type = this.findType(filter);
     const statuses = this.findStatuses(filter);
 
@@ -186,14 +381,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     const operators = this.#filtersService.findOperators(type);
 
     return operators;
-  }
-
-  trackByField(_: number, definition: FilterDefinition<T, U>) {
-    return definition.for + definition.field;
-  }
-
-  trackByOperator(_: number, operator: KeyValue<string, string>) {
-    return operator.key;
   }
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
