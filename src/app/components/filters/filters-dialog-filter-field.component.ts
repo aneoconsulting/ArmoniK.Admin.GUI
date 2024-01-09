@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, map, startWith } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { GenericColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions, MaybeNull } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -18,7 +19,7 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   template: `
 <span *ngIf="first" i18n="Filter condition">Where</span>
 <span *ngIf="!first" i18n="Filter condition">And</span>
-<mat-form-field appearance="outline"  subscriptSizing="dynamic">
+<mat-form-field *ngIf="filter.for !== 'generic'" appearance="outline" subscriptSizing="dynamic">
   <mat-label i18n="Label input">Property</mat-label>
   <input matInput [matAutocomplete]="autoProperty" [formControl]="propertyFormControl" (input)="onPropertyChange()">
   <mat-autocomplete #autoProperty 
@@ -26,6 +27,16 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
     >
     <mat-option *ngFor="let property of filteredProperties | async" [value]="property">
       {{ property }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<mat-form-field *ngIf="filter.for === 'generic'" appearance="outline" subscriptSizing="dynamic">
+  <mat-label i18n="Label input">Generic</mat-label>
+  <input type="text" matInput [matAutocomplete]="autoGeneric" [formControl]="genericFormControl" (input)="onGenericFieldChange()">
+  <mat-autocomplete #autoGeneric (optionSelected)="onGenericFieldChange()">
+    <mat-option *ngFor="let column of filteredGenerics | async" [value]="column">
+      {{ column }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
@@ -77,6 +88,10 @@ span {
 export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> implements OnInit {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
+  @Input() genericColumns: GenericColumn[] | undefined;
+
+  genericFormControl: FormControl<string | null>;
+  filteredGenerics: Observable<string[]>;
 
   allProperties: FilterDefinition<T, U>[];
   propertyFormControl: FormControl<string | null>;
@@ -94,6 +109,15 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
   ngOnInit(): void {
+    // Generics form handling
+    if (this.genericColumns) {
+      this.genericFormControl = new FormControl(this.filter.field as string | null);
+      this.filteredGenerics = this.genericFormControl.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterGenerics(value))
+      );
+    }
+
     // Property form handling
     this.propertyFormControl = new FormControl(this.columnValue);
     this.allProperties = this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
@@ -117,6 +141,18 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       startWith(''),
       map(value => this._filterStatuses(value))
     );
+  }
+  
+  private _filterGenerics(value: MaybeNull<string>): string[] {
+    if (this.genericColumns) {
+      if (value === null) {
+        return this.genericColumns;
+      } else {
+        const formValue = value.toLowerCase();
+        return this.genericColumns.map(generic => generic.replace('generic.','')).filter(generic => generic.toLowerCase().includes(formValue));
+      }
+    }
+    return [];
   }
 
   private _filterProperties(value: MaybeNull<string>): string[] {
@@ -151,6 +187,10 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   get columnValue() {
     return this.filter.field && this.filter.for ? this.#dataFiltersService.retrieveLabel(this.filter.for, this.filter.field) : '';
+  }
+
+  get filtersDefinitions() {
+    return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
   }
 
   retrieveLabel(filterDefinition: FilterDefinition<T, U>) {
@@ -213,6 +253,14 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       this.filter.value = null;
     }
   }
+    
+  onGenericFieldChange() {
+    if (this.genericColumns) {
+      const formValue = `generic.${this.genericFormControl.value}`;
+      const value = this.genericColumns.find(column => column.toLowerCase() === formValue.toLowerCase());
+      this.filter.field = value !== undefined ? value.replace('generic.', '') : null;
+    }
+  }
 
   onOperatorChange() {
     const formValue = this.operatorFormControl.value;
@@ -243,6 +291,13 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   findInput(filter: Filter<T, U>): FilterInput {
+    if (filter.for === 'generic') {
+      return {
+        type: 'string',
+        value: filter.value as FilterInputValueString
+      };
+    }
+
     const type = this.findType(filter);
     const statuses = this.findStatuses(filter);
 

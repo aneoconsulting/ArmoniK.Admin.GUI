@@ -160,7 +160,7 @@ export class StatusesGroupCardComponent {
 
   #createQueryParamFilterKey(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number): string | null {
     if (filter.field && filter.operator && filter.for) {
-      return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField | TaskOptionEnumField>(orGroup, filter.for, filter.operator, filter.field);
+      return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField | TaskOptionEnumField>(orGroup, filter.for, filter.operator, (filter.field as TaskSummaryEnumField | TaskOptionEnumField));
     }
     return null;
   }

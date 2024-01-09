@@ -198,7 +198,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
     const params: Record<string, string> = {};
     this.filters.forEach((filtersAnd, index) => {
       filtersAnd.filter(filter => this.#isTaskFilter(filter)).forEach((filter) => {
-        const taskField = this.#partitionToTaskFilter(filter.field);
+        const taskField = this.#partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
         if (taskField && filter.operator !== null && filter.value !== null) {
           const key = this.#filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
           params[key] = filter.value?.toString();

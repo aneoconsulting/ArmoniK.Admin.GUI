@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { GenericColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInputOutput, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -78,6 +79,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
     }
   ];
 
+  const genericList: GenericColumn[] = ['generic.test', 'generic.fastCompute', 'generic.column'];
+
   beforeEach(async () => {
     component = TestBed.configureTestingModule({
       imports: [ BrowserAnimationsModule ],
@@ -95,14 +98,34 @@ describe('FiltersDialogFilterFieldComponent', () => {
       value: 'someValue'
     };
     component.first = true;
+    component.genericColumns = genericList;
     component.ngOnInit();
   });
+
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
   describe('ngOnInit', () => {
+    describe('filteredGenerics', () => {
+      it('should filter generics', () => {
+        component.filteredGenerics.subscribe(value => {
+          expect(value).toEqual(['generic.test', 'generic.fastCompute']);
+        });
+        component.genericFormControl.setValue('te');
+        component.genericFormControl.updateValueAndValidity({emitEvent: true});
+      });
+
+      it('should return all the list in case of null value', () => {
+        component.filteredGenerics.subscribe(value => {
+          expect(value).toEqual(Object.values(genericList));
+        });
+        component.genericFormControl.setValue(null);
+        component.genericFormControl.updateValueAndValidity({emitEvent: true});
+      });
+    });
+    
     describe('filteredProperties', () => {
       it('should filter properly', () => {
         component.filteredProperties.subscribe(value => {
@@ -472,6 +495,19 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: null
       });
     });
+
+    it('should return a filter of type string for a generic', () => {
+      const genericFilter: Filter<number, number> = {
+        field: 'fastCompute',
+        for: 'generic',
+        operator: 0,
+        value: null
+      };
+      expect(component.findInput(genericFilter)).toEqual({
+        type: 'string',
+        value: null
+      });
+    });
   });
 
   describe('findType', () => {
@@ -556,5 +592,11 @@ describe('FiltersDialogFilterFieldComponent', () => {
       value: 'myStatus'
     };
     expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
+  });
+
+  it('should change generic filters', () => {
+    component.genericFormControl.setValue('column');
+    component.onGenericFieldChange();
+    expect(component.filter.field).toEqual('column');
   });
 });

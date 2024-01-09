@@ -55,8 +55,13 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
     if(!filter.for) {
       filter.for = 'root';
     }
-
-    const label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
+    
+    let label: string;
+    if (filter.for !== 'generic') {
+      label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
+    } else {
+      label = (filter.field as string);
+    }
 
     if (filter.value === null)
       return label + ' ' + $localize`has no value`;

@@ -7,21 +7,29 @@ describe('UtilsService', () => {
   const service = new UtilsService<number, number>();
   
   const cb = (filter: Filter<number, number>) => {
-    return (type: FilterType, field: number | null, isForRoot: boolean) => {
-      const filterfield = isForRoot ? 
-        {
-          taskField: {
+    return (type: FilterType, field: number | null | string, isForRoot: boolean, isGeneric: boolean) => {
+      let filterField;
+      if (isForRoot) {
+        filterField = {
+          taskSummaryField: {
             field: field as TaskSummaryEnumField
           }
-        } :
-        {
-          optionsTaskField: {
+        };
+      } else if (isGeneric) {
+        filterField = {
+          taskOptionGenericField: {
+            field: field as unknown as string
+          }
+        };
+      } else {
+        filterField = {
+          taskOptionField: {
             field: field as TaskOptionEnumField
           }
-        }
-      ;
+        };
+      }
       return {
-        field: filterfield,
+        field: filterField,
         filterString: {
           value: filter.value?.toString() ?? '',
           operator: filter.operator
@@ -98,7 +106,7 @@ describe('UtilsService', () => {
       or: [{and:
         [{
           field: {
-            taskField: {
+            taskSummaryField: {
               field: 16
             }
           },
@@ -109,7 +117,7 @@ describe('UtilsService', () => {
         },
         {
           field: {
-            taskField: {
+            taskSummaryField: {
               field: 1
             }
           },
@@ -123,7 +131,7 @@ describe('UtilsService', () => {
         [
           {
             field: {
-              taskField: {
+              taskSummaryField: {
                 field: 12
               }
             },
@@ -134,7 +142,7 @@ describe('UtilsService', () => {
           },
           {
             field: {
-              optionsTaskField: {
+              taskOptionField: {
                 field: 5
               }
             },

@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { GenericColumn } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogAndComponent } from './filters-dialog-and.component';
@@ -19,6 +20,7 @@ import { FiltersDialogAndComponent } from './filters-dialog-and.component';
       <app-filters-dialog-and
         [first]="index === 0"
         [filter]="filtersAnd"
+        [genericColumns]="genericColumns"
         (removeChange)="onRemoveAnd($event)"
       >
       </app-filters-dialog-and>
@@ -28,6 +30,10 @@ import { FiltersDialogAndComponent } from './filters-dialog-and.component';
       <button mat-button (click)="onAdd()">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
         <span i18n>Add an And Filter</span>
+      </button>
+      <button *ngIf="genericColumns" mat-button (click)="onAddGeneric()">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
+        <span i18n>Add a Generic Filter</span>
       </button>
     </div>
   </div>
@@ -87,6 +93,7 @@ span {
 export class FiltersDialogOrComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filtersOr: Filter<T, U>[];
+  @Input() genericColumns: GenericColumn[] | undefined;
 
   @Output() removeChange: EventEmitter<Filter<T, U>[]> = new EventEmitter<Filter<T, U>[]>();
 
@@ -114,5 +121,14 @@ export class FiltersDialogOrComponent<T extends number, U extends number | null 
 
   onRemoveOr() {
     this.removeChange.emit(this.filtersOr);
+  }
+
+  onAddGeneric() {
+    this.filtersOr.push({
+      for: 'generic',
+      field: null,
+      operator: null,
+      value: null
+    });
   }
 }
