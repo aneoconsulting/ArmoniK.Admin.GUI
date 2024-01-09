@@ -36,12 +36,13 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
-import { LineComponent } from './components/line.component';
+import { ApplicationsLineComponent } from './components/lines/applications-line.component';
+import { TaskByStatusLineComponent } from './components/lines/task-by-status-line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
-import { Line } from './types';
+import { Line, LineType } from './types';
 
 
 @Component({
@@ -80,10 +81,15 @@ import { Line } from './types';
 
 <main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
   <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
-    <app-page-section-header icon="adjust">
+    <app-page-section-header [icon]="getLineIcon(line.type)">
       <span i18n="Section title">{{ line.name }}</span>
     </app-page-section-header>
-    <app-dashboard-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-line>
+    <ng-container *ngIf="line.type === 'CountStatus'">
+      <app-dashboard-task-status-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-task-status-line>
+    </ng-container>
+    <ng-container *ngIf="line.type === 'Applications'">
+      <app-dashboard-applications-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-applications-line>
+    </ng-container>
   </app-page-section>
 </main>
   `,
@@ -171,7 +177,8 @@ import { Line } from './types';
     MatTooltipModule,
     MatProgressSpinnerModule,
     FiltersToolbarComponent,
-    LineComponent
+    TaskByStatusLineComponent,
+    ApplicationsLineComponent
   ]
 })
 export class IndexComponent implements OnInit {
@@ -200,6 +207,25 @@ export class IndexComponent implements OnInit {
     return this.#iconsService.getPageIcon(name);
   }
 
+  getLineIcon(name: LineType): string {
+    switch (name) {
+    case 'Tasks':
+      return this.#iconsService.getPageIcon('tasks');
+    case 'Applications':
+      return this.#iconsService.getPageIcon('applications');
+    case 'Partitions':
+      return this.#iconsService.getPageIcon('partitions');
+    case 'Results':
+      return this.#iconsService.getPageIcon('results');
+    case 'Sessions':
+      return this.#iconsService.getPageIcon('sessions');
+    case 'CountStatus':
+      return this.#iconsService.getIcon('task-by-status');
+    default:
+      return this.#iconsService.getIcon('default');
+    }
+  }
+
   openFab() {
     this.showFabActions = !this.showFabActions;
   }
@@ -211,10 +237,10 @@ export class IndexComponent implements OnInit {
       if (!result) {
         return;
       }
-      else if (result.type === 'Tasks') {
+      else if (result.type === 'CountStatus') {
         this.lines.push({
           name: result.name,
-          type: 'Tasks',
+          type: 'CountStatus',
           interval: 5,
           hideGroupsHeader: false,
           filters: [],
