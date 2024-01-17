@@ -10,49 +10,7 @@ import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/t
 
 @Component({
   selector: 'app-tasks-manage-view-in-logs-dialog',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title"> Manage View in Logs </h2>
-
-<form [formGroup]="viewInLogsForm" (ngSubmit)="onSubmit()">
-  <!-- TODO: ajouter les consignes %taskId pour l'usage -->
-  <mat-dialog-content>
-    <mat-form-field appearance="outline">
-      <mat-label for="serviceName" i18n> Service Name </mat-label>
-      <input matInput id="serviceName" type="text" formControlName="serviceName" i18n-placeholder="Placeholder" placeholder="Name of the service" required>
-       <mat-error *ngIf="viewInLogsForm.get('serviceName')?.hasError('required')" i18n="Input error">
-      Name is <strong>required</strong>
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label for="urlTemplate" i18n="URL Template"> URL Template </mat-label>
-      <input matInput id="urlTemplate" type="url" formControlName="urlTemplate" i18n-placeholder="Placeholder" placeholder="URL of the service" required>
-       <mat-error *ngIf="viewInLogsForm.get('urlTemplate')?.hasError('required')" i18n="Input error">
-      URL is <strong>required</strong>
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label for="serviceIcon" i18n> Service Icon </mat-label>
-      <input matInput id="serviceIcon" type="text" formControlName="serviceIcon" i18n-placeholder="Placeholder" placeholder="Icon of the service" required>
-       <mat-error *ngIf="viewInLogsForm.get('serviceIcon')?.hasError('required')" i18n="Input error">
-      Icon is <strong>required</strong>
-      </mat-error>
-      <!-- TODO: add a helper to tell to user how to choose the icon -->
-    </mat-form-field>
-
-    <div class="preview">
-      <span i18n> Icon preview: </span>
-      <mat-icon *ngIf="viewInLogsForm.get('serviceIcon')?.value" aria-hidden="true" [fontIcon]="viewInLogsForm.get('serviceIcon')?.value!"> </mat-icon>
-    </div>
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()" type="button" i18n="Dialog action"> Cancel </button>
-    <button mat-flat-button type="submit" color="primary" [disabled]="!viewInLogsForm.valid" i18n="Dialog action"> Confirm </button>
-  </mat-dialog-actions>
-</form>
-  `,
+  templateUrl: './manage-view-in-logs-dialog.component.html',
   styles: [`
 mat-dialog-content {
   padding-top: 0!important;

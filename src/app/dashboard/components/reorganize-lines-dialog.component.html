@@ -1,0 +1,27 @@
+<h2 mat-dialog-title i18n="Dialog title">Reorganize lines</h2>
+
+<mat-dialog-content>
+  <p i18n="Dialog description">Drag and drop lines to update the order</p>
+
+  <div class="lines" cdkDropList (cdkDropListDropped)="onDrop($event)">
+    <div class="line" *ngFor="let line of lines; let index = index" cdkDrag>
+      <div class="line-name">
+        <mat-icon mat-icon aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
+        <span class="line-name">{{ line.name }}</span>
+      </div>
+      <div clas="line-actions">
+        <button mat-icon-button (click)="onEditNameLine(line, index)" i18n-matTooltip matTooltip="Edit Line">
+          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
+        </button>
+        <button mat-icon-button (click)="onDeleteLine(line)" i18n-matTooltip matTooltip="Delete Line">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button [mat-dialog-close]="{ lines }" color="primary" i18n="Dialog action"> Confirm </button>
+</mat-dialog-actions>

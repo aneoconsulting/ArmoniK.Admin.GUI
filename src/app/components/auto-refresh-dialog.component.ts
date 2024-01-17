@@ -8,41 +8,7 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
 
 @Component({
   selector: 'app-auto-refresh-dialog',
-  template: `
-    <h2 mat-dialog-title i18n="Dialog title">Set up Auto Refresh</h2>
-
-    <mat-dialog-content>
-      <p i18n="Dialog description">
-        Enter the number of seconds between each refresh.
-        Use 0 or choose "Disabled" to disable.
-      </p>
-
-      <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label i18n="Label Input">Interval</mat-label>
-        <input type="text"
-        i18n-placeholder="Placeholder Input"
-        placeholder="Seconds"
-        aria-label="Number"
-        matInput
-        [value]="value"
-        [matAutocomplete]="auto"
-        (change)="onNumberChange($event)"
-        >
-
-        <mat-autocomplete autoActiveFirstOption  #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-          <mat-option *ngFor="let option of options" [value]="option">
-            {{ option }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-      <button mat-flat-button [mat-dialog-close]="value" color="primary" i18n="Dialog action"> Confirm </button>
-    </mat-dialog-actions>
-  `,
+  templateUrl: './auto-refresh-dialog.component.html',
   styles: [''],
   standalone: true,
   imports: [

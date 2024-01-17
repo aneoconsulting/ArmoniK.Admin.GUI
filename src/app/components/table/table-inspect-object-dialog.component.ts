@@ -10,17 +10,7 @@ export interface TableInspectObjectDialogData {
 
 @Component({
   selector: 'app-table-inspect-object-dialog',
-  template: `
-<h2 mat-dialog-title>{{ label }}</h2>
-
-<mat-dialog-content>
-  <app-show-card-content [data]="object" [statuses]="[]"></app-show-card-content>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-flat-button (click)="onNoClick()" color="primary" i18n="Dialog action"> Close </button>
-</mat-dialog-actions>
-  `,
+  templateUrl: './table-inspect-object-dialog.component.html',
   styles: [`
   `],
   standalone: true,

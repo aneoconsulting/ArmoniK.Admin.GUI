@@ -13,28 +13,7 @@ import { FiltersDialogComponent } from './filters-dialog.component';
 
 @Component({
   selector: 'app-filters-toolbar',
-  template: `
-<div class="filters-toolbar">
-  <ng-container *ngIf="showFilters()">
-    <ng-container *ngFor="let filtersAnd of filters; let first = first; trackBy: trackByFilter">
-      <div class="filters-toolbar-and">
-        <span class="filters-toolbar-text" *ngIf="first" i18n="Filter condition">
-          Where
-        </span>
-        <span class="filters-toolbar-text" *ngIf="!first" i18n="Filter condition">
-          Or
-        </span>
-        <app-filters-chips [filtersAnd]="filtersAnd"></app-filters-chips>
-      </div>
-    </ng-container>
-  </ng-container>
-
-  <button mat-button (click)="openFiltersDialog()" matTooltip="Add or Remove Filters" i18n-matTooltip>
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-    <span i18n="User will be able the create or delete filters">Manage filters</span>
-  </button>
-</div>
-  `,
+  templateUrl: './filters-toolbar.component.html',
   styles: [`
 .filters-toolbar {
   display: flex;
