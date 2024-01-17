@@ -16,14 +16,14 @@ import { SpinnerComponent } from './spinner.component';
 <app-spinner *ngIf="loading; else data"></app-spinner>
 
 <ng-template #data>
-  <ng-container *ngFor="let status of statuses; let index = index; trackBy:trackByCount">
+  <ng-container *ngFor="let task of tasks; let index = index; trackBy:trackByCount">
     <a mat-button
-      [matTooltip]="tooltip(status.status)"
+      [matTooltip]="task.tooltip"
       [routerLink]="['/tasks']"
-      [queryParams]="createQueryParams(status.status)"
-      [style]="'color: ' + status.color"
+      [queryParams]="task.queryParams"
+      [style]="'color: ' + task.color"
     >
-      {{ findStatusCount(status.status)?.count ?? 0 }}
+      {{ task.statusCount }}
     </a>
     <span *ngIf="index !== statuses.length - 1">|</span>
   </ng-container>
@@ -48,15 +48,15 @@ import { SpinnerComponent } from './spinner.component';
   ],
 })
 export class ViewTasksByStatusComponent {
+  tasks: Required<TaskStatusColored>[] = [];
+  readonly #tasksStatusesService = inject(TasksStatusesService);
+
   @Input({ required: true }) loading = true;
-  @Input({ required: true }) statusesCounts: StatusCount[] | null = null;
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input() defaultQueryParams: Record<string, string> = {};
 
-  readonly #tasksStatusesService = inject(TasksStatusesService);
-
-  findStatusCount(status: TaskStatus): StatusCount | undefined {
-    return this.statusesCounts?.find((statusCount) => statusCount.status === status);
+  @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {
+    this.buildTasks(entries);
   }
 
   createQueryParams(status: TaskStatus): Record<string, string> {
@@ -70,6 +70,29 @@ export class ViewTasksByStatusComponent {
     const statusLabel = this.#tasksStatusesService.statusToLabel(status);
 
     return statusLabel;
+  }
+
+  buildTasks(statusesCounts: StatusCount[] | null): void {
+    this.tasks = [];
+
+    this.statuses.forEach(status => {
+      const task: Required<TaskStatusColored> = {
+        status: status.status,
+        color: status.color,
+        tooltip: this.tooltip(status.status),
+        queryParams:  this.createQueryParams(status.status),
+        statusCount: 0
+      };
+
+      statusesCounts?.forEach(statusCount => {
+        if (statusCount.status === status.status) { 
+          task.statusCount = statusCount.count;
+          return;
+        }
+      });
+
+      this.tasks.push(task);
+    });
   }
 
   trackByCount(_: number, status: TaskStatusColored): TaskStatus {

@@ -4,7 +4,7 @@ import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
-export type PartitionRaw = GrpcPartitionRaw.AsObject;
+export type PartitionRaw = Omit<GrpcPartitionRaw.AsObject, 'queryParams' | 'filters'>;
 export type PartitionRawColumnKey = ColumnKey<PartitionRaw, never> | 'count';
 export type PartitionRawFieldKey = FieldKey<PartitionRaw>;
 export type PartitionRawListOptions = ListOptions<PartitionRaw>;

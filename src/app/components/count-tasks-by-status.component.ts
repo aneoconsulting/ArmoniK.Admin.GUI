@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, inject } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
@@ -28,10 +28,9 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
     ViewTasksByStatusComponent,
   ]
 })
-export class CountTasksByStatusComponent implements AfterViewInit, OnDestroy {
+export class CountTasksByStatusComponent implements OnDestroy {
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) queryParams: Record<string, string> = {};
-  @Input() filters: TaskSummaryFiltersOr;
 
   statusesCounts: StatusCount[] | null = null;
 
@@ -39,19 +38,24 @@ export class CountTasksByStatusComponent implements AfterViewInit, OnDestroy {
 
   #tasksGrpcService = inject(TasksGrpcService);
 
-  subscriptions = new Subscription();
+  subscription = new Subscription();
 
-  ngAfterViewInit(): void {
-    const subscription = this.#tasksGrpcService.countByStatu$(this.filters)
-      .subscribe((response) => {
+  private _filters: TaskSummaryFiltersOr;
+  get filters(): TaskSummaryFiltersOr {
+    return this._filters;
+  }
+
+  @Input({required: true}) set filters(entries: TaskSummaryFiltersOr) {
+    this._filters = entries;
+    this.subscription.add(
+      this.#tasksGrpcService.countByStatu$(this.filters).subscribe(response => {
         this.loading = false;
         this.statusesCounts = response.status ?? null;
-      });
-
-    this.subscriptions.add(subscription);
+      })
+    );
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.subscription.unsubscribe();
   }
 }

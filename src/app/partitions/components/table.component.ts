@@ -66,9 +66,9 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, Par
       <ng-container *ngIf="isCountColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <app-count-tasks-by-status
-            [statuses]="tasksStatusesColored"
-            [queryParams]="createTasksByStatusQueryParams(element.id)"
-            [filters]="countTasksByStatusFilters(element.id)"
+            [statuses]="tasksStatusesColored" 
+            [queryParams]="element.queryParams"
+            [filters]="element.filters"
           >
           </app-count-tasks-by-status>
         </td>
@@ -123,10 +123,23 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
 
   @Input({required: true}) displayedColumns: PartitionRawColumnKey[] = [];
   @Input({required: true}) options: PartitionRawListOptions;
-  @Input({required: true}) data: PartitionRaw.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) filters: PartitionRawFiltersOr;
   @Input() lockColumns = false;
+
+  private _data: PartitionRaw.AsObject[] = [];
+  get data(): PartitionRaw.AsObject[] {
+    return this._data;
+  }
+
+  @Input({required: true}) set data(entries: PartitionRaw.AsObject[]) {
+    entries.forEach(entry => {
+      entry.queryParams = this.createTasksByStatusQueryParams(entry.id);
+      entry.filters = this.countTasksByStatusFilters(entry.id);
+    });
+
+    this._data = entries;
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
 
