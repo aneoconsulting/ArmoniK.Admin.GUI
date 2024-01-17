@@ -15,56 +15,7 @@ import { SpinnerComponent } from './spinner.component';
 
 @Component({
   selector: 'app-table-actions-toolbar',
-  template: `
-<app-actions-toolbar>
-  <app-actions-toolbar-group>
-    <app-refresh-button [tooltip]="refreshTooltip" (refreshChange)="onRefresh()"> </app-refresh-button>
-    <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"> </app-auto-refresh-button>
-    <app-spinner *ngIf="loading"> </app-spinner>
-  </app-actions-toolbar-group>
-
-  <app-actions-toolbar-group>
-    <ng-content select="[extra-buttons-right]"></ng-content>
-
-    <app-columns-button
-      [columnsLabels]="columnsLabels"
-      [displayedColumns]="displayedColumns"
-      [availableColumns]="availableColumns"
-      (displayedColumnsChange)="onDisplayedColumnsChange($event)"
-      [disabled]="lockColumns"
-    >
-    </app-columns-button>
-
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onLockColumnsChange()">
-        <mat-icon aria-hidden="true" [fontIcon]="lockColumns ? getIcon('unlock') : getIcon('lock')"></mat-icon>
-        <span *ngIf="!lockColumns" i18n>
-          Lock columns
-        </span>
-        <span *ngIf="lockColumns" i18n>
-          Unlock columns
-        </span>
-      </button>
-      <button mat-menu-item (click)="onResetColumns()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('format-clear')"></mat-icon>
-        <span i18n>
-          Reset Columns
-        </span>
-      </button>
-      <button mat-menu-item (click)="onResetFilters()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('layers-clear')"></mat-icon>
-        <span i18n>
-          Reset Filters
-        </span>
-      </button>
-      <ng-content select="[extra-menu-items]"></ng-content>
-    </mat-menu>
-  </app-actions-toolbar-group>
-</app-actions-toolbar>
-  `,
+  templateUrl: './table-actions-toolbar.component.html',
   styles: [`
   `],
   standalone: true,

@@ -18,56 +18,7 @@ import { DashboardIndexService } from '../services/dashboard-index.service';
 import { DashboardStorageService } from '../services/dashboard-storage.service';
 
 @Component({
-  template: `
-<h2 mat-dialog-title i18n="Dialog title">Manage Groups</h2>
-
-<mat-dialog-content>
-  <mat-toolbar>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <button mat-stroked-button (click)="openAddStatusGroupModal()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-          <span i18n="Open a modal on click">Add a group</span>
-        </button>
-      </app-actions-toolbar-group>
-    </app-actions-toolbar>
-  </mat-toolbar>
-
-  <ul class="groups" cdkDropListGroup>
-    <li *ngFor="let group of groups">
-      <div class="group-header">
-        <h3 [style]="'color:' + group.color">
-          {{ group.name }}
-        </h3>
-        <div class="group-header-actions">
-          <button mat-icon-button (click)="openEditStatusGroupModal(group)">
-            <mat-icon  [fontIcon]="getIcon('edit')"></mat-icon>
-            <span class="sr-only" i18n="Edit the group">Edit {{ group.name }}</span>
-          </button>
-          <button mat-icon-button (click)="onDelete(group)">
-            <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
-            <span class="sr-only" i18n="Delete the group">Delete {{ group.name }}</span>
-          </button>
-        </div>
-      </div>
-      <ul cdkDropList
-          (cdkDropListDropped)="onDrop($event)"
-          [cdkDropListData]="group.statuses"
-        >
-        <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"></mat-icon>
-          <span>{{ statusToLabel(status) }}</span>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="{ groups }" color="primary" i18n="Dialog action"> Confirm </button>
-</mat-dialog-actions>
-  `,
+  templateUrl: './manage-groups-dialog.component.html',
   styles: [`
 ul {
   list-style: none;

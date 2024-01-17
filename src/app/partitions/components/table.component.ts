@@ -36,66 +36,7 @@ export interface Task {
 @Component({
   selector: 'app-partitions-table',
   standalone: true,
-  template: `
-<app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
-
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-      <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
-        {{ columnToLabel(column) }}
-        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-        </button>
-      </th>
-      <!-- Application Column -->
-      <ng-container *ngIf="isSimpleColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element.raw[column] | emptyCell }}
-        </td>
-      </ng-container>
-      <!-- ID -->
-      <ng-container *ngIf="isPartitionIdColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <a mat-button [routerLink]="['/partitions', element.raw.id]">
-            {{ element.raw[column] }}
-          </a>
-        </td>
-      </ng-container>
-      <!-- Object -->
-      <ng-container *ngIf="isObjectColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element.raw[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
-        </td>
-      </ng-container>
-      <!-- Partition's Tasks Count by Status -->
-      <ng-container *ngIf="isCountColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-count-tasks-by-status
-            [statuses]="tasksStatusesColored" 
-            [queryParams]="element.queryParams"
-            [filters]="element.filters"
-          >
-          </app-count-tasks-by-status>
-        </td>
-      </ng-container>
-    </ng-container>
-
-    <!-- Empty -->
-    <tr *matNoDataRow>
-      <td [attr.colspan]="displayedColumns.length">
-        <app-table-empty-data></app-table-empty-data>
-      </td>
-    </tr>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize"  [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of partitions" i18n-aria-label>
-    </mat-paginator>
-</app-table-container>
-  `,
+  templateUrl: './table.component.html',
   styles: [
 
   ],

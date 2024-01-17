@@ -1,0 +1,32 @@
+<app-page-header>
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon()"></mat-icon>
+    <span i18n="Page title" i18n>HealthChecks</span>
+  </app-page-header>
+  
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <app-actions-toolbar-group>
+        <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)" />
+        <app-refresh-button tooltip="Refresh data" (refreshChange)="onRefresh()" />
+        <app-spinner *ngIf="loading"/>
+      </app-actions-toolbar-group>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  <ng-container *ngIf="data;else noData">
+    <mat-card *ngFor="let service of data">
+      <mat-card-header>
+        <mat-card-title>
+          {{service.name}}
+          <span [style]="{'color':getColor(service.healthy)}" [matTooltip]="getToolTip(service.healthy)">&#10687;</span>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+      <p>Message: {{service.message ? service.message : '-'}}<p>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+  
+  <ng-template #noData>
+    <h2 *ngIf="!loading" i18n>No data to show</h2>
+  </ng-template>

@@ -9,14 +9,7 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
 
 @Component({
   selector: 'app-table-inspect-object',
-  template: `
-    <button mat-icon-button matTooltip="View" i18n-matTooltip (click)="onViewObject()" [disabled]="!isObjectUndefined" aria-label="view" i18n-aria-label>
-      <ng-container *ngIf="isObjectUndefined">
-        <mat-icon [fontIcon]="getIcon('view')"></mat-icon>
-      </ng-container>
-      <mat-icon *ngIf="!isObjectUndefined" [fontIcon]="getIcon('view-off')"></mat-icon>
-    </button>
-  `,
+  templateUrl: './table-inspect-object.component.html',
   styles: [`
   `],
   standalone: true,

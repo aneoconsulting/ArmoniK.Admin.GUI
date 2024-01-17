@@ -11,34 +11,7 @@ import { TasksStatusesGroup } from '../types';
 
 @Component({
   selector: 'app-statuses-group-card',
-  template: `
-<mat-card>
-  <mat-card-header *ngIf="!hideGroupHeaders">
-    <mat-card-title>
-      <a routerLink="/tasks" [queryParams]="createQueryParamManyStatuses()" [style]="'color:' + group.color + '; text-decoration: none'">
-        {{ group.name }}
-      </a>
-      <span>
-        {{ sumStatusCount(group.statuses) }}
-      </span>
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <ul>
-      <li *ngFor="let status of group.statuses">
-        <a routerLink="/tasks" [queryParams]="createQueryParam(status)">
-          <span>
-            {{ statusToLabel(status) }}
-          </span>
-          <span>
-            {{ updateCounter(status) }}
-          </span>
-        </a>
-      </li>
-    </ul>
-  </mat-card-content>
-</mat-card>
-  `,
+  templateUrl: './statuses-group-card.component.html',
   styles: [`
 mat-card {
   height: 100%;

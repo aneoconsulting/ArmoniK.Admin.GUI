@@ -39,75 +39,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
 
 @Component({
   selector: 'app-tasks-index',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
-  <span i18n="Page title"> Tasks </span>
-</app-page-header>
-
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="isLoading"
-      [refreshTooltip]="autoRefreshTooltip()"
-      [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
-      [availableColumns]="availableColumns"
-      [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
-      (intervalValueChange)="onIntervalValueChange($event)"
-      (displayedColumnsChange)="onColumnsChange($event)"
-      (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()"
-      (lockColumnsChange)="onLockColumnsChange()"
-      >
-        <ng-container extra-buttons-right>
-          <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.selected.length">
-            <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
-            <span i18n> Cancel Tasks </span>
-          </button>
-        </ng-container>
-        <ng-container extra-menu-items>
-        <button mat-menu-item (click)="manageViewInLogs()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
-          <span i18n appNoWrap>
-            Manage View in Logs
-          </span>
-        </button>
-        <button mat-menu-item (click)="addGenericColumn()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-generics')"></mat-icon>
-          <span i18n appNoWrap>
-            Manage Generic Column
-          </span>
-        </button>
-      </ng-container>
-    </app-table-actions-toolbar>
-  </mat-toolbar-row>
-
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" [genericColumns]="genericColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<app-tasks-table
-  [data]="data"
-  [displayedColumns]="displayedColumns"
-  [interval]="interval"
-  [intervalValue]="intervalValue"
-  [lockColumns]="lockColumns"
-  [options]="options"
-  [selection]="selection"
-  [stopInterval]="stopInterval"
-  [serviceName]="serviceName"
-  [serviceIcon]="serviceIcon"
-  [urlTemplate]="urlTemplate"
-  [total]="total"
-  (optionsChange)="onOptionsChange()"
-  (cancelTask)="onCancelTask($event)"
-  (retries)="onRetries($event)"
-></app-tasks-table>
-  `,
+  templateUrl: './index.component.html',
   styles: [`
 app-table-actions-toolbar {
   flex-grow: 1;

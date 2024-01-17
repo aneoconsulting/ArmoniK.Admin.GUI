@@ -4,13 +4,7 @@ import { ShareUrlComponent } from './share-url.component';
 
 @Component({
   selector: 'app-page-header',
-  template: `
-<div class="page-header">
-  <h1> <ng-content></ng-content> </h1>
-
-  <app-share-url *ngIf="sharableURL" [sharableURL]="sharableURL"> </app-share-url>
-</div>
-  `,
+  templateUrl:'./page-header.component.html',
   styles: [`
 .page-header {
   display: flex;

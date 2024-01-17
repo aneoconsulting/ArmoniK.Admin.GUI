@@ -1,0 +1,41 @@
+<h2 mat-dialog-title i18n="Dialog title">Modify Columns</h2>
+
+<mat-dialog-content>
+  <p i18n="Dialog description">Check box to add or remove a column</p>
+
+  <div class="columns">
+    <ng-container *ngFor="let column of availableColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ columnToLabel(column) }}
+        </mat-checkbox>
+    </ng-container>
+  </div>
+
+  <h2 i18n *ngIf="availableOptionsColumns().length">
+    Options
+  </h2>
+
+  <div class="columns" *ngIf="availableOptionsColumns().length">
+    <ng-container *ngFor="let column of availableOptionsColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="optionsColumnValue(column)" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ columnToLabel(column) }}
+        </mat-checkbox>
+    </ng-container>
+  </div>
+
+  <h2 i18n *ngIf="availableGenericColumns().length">
+    Generic Columns
+  </h2>
+
+  <div class="columns" *ngIf="availableGenericColumns().length">
+    <ng-container *ngFor="let column of availableGenericColumns(); let index = index; trackBy:trackByColumn">
+        <mat-checkbox [value]="column" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+          {{ columnToLabel(column) }}
+        </mat-checkbox>
+    </ng-container>
+  </div>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button [mat-dialog-close]="columns" color="primary" i18n="Dialog action"> Confirm </button>
+</mat-dialog-actions>

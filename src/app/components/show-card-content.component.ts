@@ -8,57 +8,7 @@ type Data = {
 
 @Component({
   selector: 'app-show-card-content',
-  template: `
-<ng-container *ngIf="!isArray(data) && keys.length > 0">
-  <div *ngFor="let key of keys; trackBy:trackByKey">
-
-    <p>
-      <!-- Key -->
-      <span class="key">{{ pretty(key) }}</span>
-
-      <span>: </span>
-
-      <!-- String -->
-      <span *ngIf="isString(findValue(key))">{{ findValue(key) }}</span>
-
-      <!-- Number -->
-      <span *ngIf="isNumber(findValue(key)) && !isStatus(key)">{{ findValue(key) }}</span>
-
-      <!-- Status -->
-      <span *ngIf="isStatus(key)">{{ statusToLabel(key) }}</span>
-
-      <!-- Timestamp -->
-      <span *ngIf="isTimestamp(findValue(key))">{{ toTimestamp(key) }}</span>
-
-      <!-- Duration -->
-      <span *ngIf="isDuration(findValue(key))">{{ toTime(key) }}</span>
-
-      <!-- Is null or undefined -->
-      <span *ngIf="findValue(key) === null || findValue(key) === undefined">-</span>
-    </p>
-
-    <!-- Array -->
-    <ul *ngIf="isArray(findValue(key))">
-      <li *ngFor="let item of findArray(key); trackBy:trackByItem">{{ item }}</li>
-    </ul>
-
-    <!-- Object -->
-    <app-show-card-content *ngIf="isObject(findValue(key))" [data]="findObject(key)" [statuses]="statuses"></app-show-card-content>
-
-  </div>
-</ng-container>
-<ng-container *ngIf="data && isArray(data) && hasLength(data)">
-  <ul class="array-list">
-    <li *ngFor="let item of toArray(data); trackBy:trackByItem">{{ item }}</li>
-  </ul>
-</ng-container>
-
-<ng-container *ngIf="(!isArray(data) && keys.length === 0) || (isArray(data) && !hasLength(data))">
-  <p>
-    <em>No data</em>
-  </p>
-</ng-container>
-  `,
+  template: './show-card-content.component.html',
   styles: [`
 app-show-card-content {
   display: block;
