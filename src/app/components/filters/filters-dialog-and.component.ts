@@ -9,29 +9,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 
 @Component({
   selector: 'app-filters-dialog-and',
-  template: `
-<app-filters-dialog-filter-field
-  [first]="first"
-  [filter]="filter"
-  [genericColumns]="genericColumns"
-  >
-</app-filters-dialog-filter-field>
-
-<button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
-</button>
-
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="onClear()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('clear')"></mat-icon>
-    <span i18n>Clear</span>
-  </button>
-  <button mat-menu-item (click)="onRemove()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-    <span i18n>Remove</span>
-  </button>
-</mat-menu>
-  `,
+  templateUrl: './filters-dialog-and.component.html',
   styles: [`
 :host {
   display: flex;

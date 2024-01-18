@@ -10,47 +10,7 @@ import { FiltersDialogAndComponent } from './filters-dialog-and.component';
 
 @Component({
   selector: 'app-filters-dialog-or',
-  template: `
-<span *ngIf="first" i18n="Filter condition">Where</span>
-<span *ngIf="!first" i18n="Filter condition">Or</span>
-
-<div class="filters">
-  <div class="filters-and">
-    <ng-container *ngFor="let filtersAnd of filtersOr; let index = index">
-      <app-filters-dialog-and
-        [first]="index === 0"
-        [filter]="filtersAnd"
-        [genericColumns]="genericColumns"
-        (removeChange)="onRemoveAnd($event)"
-      >
-      </app-filters-dialog-and>
-    </ng-container>
-
-    <div>
-      <button mat-button (click)="onAdd()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n>Add an And Filter</span>
-      </button>
-      <button *ngIf="genericColumns" mat-button (click)="onAddGeneric()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n>Add a Generic Filter</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
-</button>
-
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="onRemoveOr()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-    <span i18n>Remove</span>
-  </button>
-</mat-menu>
-<!-- TODO: add a button to remove this or group -->
-  `,
+  template: './filters-dialog-or.component.html',
   styles: [`
 :host {
   display: flex;

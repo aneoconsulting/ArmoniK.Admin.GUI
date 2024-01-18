@@ -36,46 +36,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFiltersOr, ResultRawListOptions
 
 @Component({
   selector: 'app-results-index',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-  <span i18n="Page title"> Results </span>
-</app-page-header>
-
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="isLoading"
-      [refreshTooltip]="autoRefreshTooltip()"
-      [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
-      [availableColumns]="availableColumns"
-      [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
-      (intervalValueChange)="onIntervalValueChange($event)"
-      (displayedColumnsChange)="onColumnsChange($event)"
-      (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()"
-      (lockColumnsChange)="onLockColumnsChange()"
-      >
-    </app-table-actions-toolbar>
-  </mat-toolbar-row>
-
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<app-results-table
-  [data]="data"
-  [displayedColumns]="displayedColumns"
-  [lockColumns]="lockColumns"
-  [options]="options"
-  [total]="total"
-  (optionsChange)="onOptionsChange()"
-  ></app-results-table>
-  `,
+  templateUrl: './index.component.html',
   styles: [`
 app-table-actions-toolbar {
   flex-grow: 1;
