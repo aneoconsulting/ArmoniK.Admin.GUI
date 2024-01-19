@@ -1,4 +1,4 @@
-import { FilterStringOperator, PartitionRaw, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, PartitionRaw, PartitionRawEnumField, SessionRaw, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -11,7 +11,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
-import { TaskStatusColored, ViewTasksByStatusDialogData,  } from '@app/types/dialog';
+import { TaskStatusColored, ViewTasksByStatusDialogData, } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -26,6 +26,12 @@ import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
 import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
+
+export interface Task {
+  raw: PartitionRaw.AsObject | SessionRaw.AsObject,
+  queryParams: Record<string, string>;
+  filters: TaskSummaryFiltersOr;
+}
 
 @Component({
   selector: 'app-partitions-table',
@@ -45,21 +51,21 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, Par
       <!-- Application Column -->
       <ng-container *ngIf="isSimpleColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element[column] | emptyCell }}
+          {{ element.raw[column] | emptyCell }}
         </td>
       </ng-container>
       <!-- ID -->
       <ng-container *ngIf="isPartitionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <a mat-button [routerLink]="['/partitions', element.id]">
-            {{ element[column] }}
+          <a mat-button [routerLink]="['/partitions', element.raw.id]">
+            {{ element.raw[column] }}
           </a>
         </td>
       </ng-container>
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+          <app-table-inspect-object [object]="element.raw[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Partition's Tasks Count by Status -->
@@ -91,7 +97,7 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, Par
 </app-table-container>
   `,
   styles: [
-    
+
   ],
   providers: [
     TasksByStatusService,
@@ -121,24 +127,27 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, Par
 })
 export class PartitionsTableComponent implements OnInit, AfterViewInit {
 
-  @Input({required: true}) displayedColumns: PartitionRawColumnKey[] = [];
-  @Input({required: true}) options: PartitionRawListOptions;
-  @Input({required: true}) total: number;
-  @Input({required: true}) filters: PartitionRawFiltersOr;
+  @Input({ required: true }) displayedColumns: PartitionRawColumnKey[] = [];
+  @Input({ required: true }) options: PartitionRawListOptions;
+  @Input({ required: true }) total: number;
+  @Input({ required: true }) filters: PartitionRawFiltersOr;
   @Input() lockColumns = false;
 
-  private _data: PartitionRaw.AsObject[] = [];
-  get data(): PartitionRaw.AsObject[] {
+  private _data: Task[] = [];
+  get data(): Task[] {
     return this._data;
   }
 
-  @Input({required: true}) set data(entries: PartitionRaw.AsObject[]) {
+  @Input({ required: true }) set data(entries: PartitionRaw.AsObject[]) {
+    this._data = [];
     entries.forEach(entry => {
-      entry.queryParams = this.createTasksByStatusQueryParams(entry.id);
-      entry.filters = this.countTasksByStatusFilters(entry.id);
+      const task: Task = {
+        raw: entry,
+        queryParams: this.createTasksByStatusQueryParams(entry.id),
+        filters: this.countTasksByStatusFilters(entry.id)
+      };
+      this._data.push(task);
     });
-
-    this._data = entries;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
@@ -146,7 +155,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   tasksStatusesColored: TaskStatusColored[] = [];
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
+
   readonly #partitionsIndexService = inject(PartitionsIndexService);
   readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #filtersService = inject(FiltersService);

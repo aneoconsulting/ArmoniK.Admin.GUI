@@ -12,6 +12,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Task } from '@app/partitions/components/table.component';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -50,30 +51,30 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
       <!-- Columns -->
       <ng-container *ngIf="isSimpleColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <span> {{ show(element, column) | emptyCell }} </span>
+          <span> {{ show(element.raw, column) | emptyCell }} </span>
         </td>
       </ng-container>
       <!-- ID -->
       <ng-container *ngIf="isSessionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
-            [routerLink]="['/sessions', element.sessionId]"
+            [routerLink]="['/sessions', element.raw.sessionId]"
           >
-            {{ element[column] }}
+            {{ element.raw[column] }}
           </a>
         </td>
       </ng-container>
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+          <app-table-inspect-object [object]="element.raw[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Date -->
       <ng-container *ngIf="isDateColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <ng-container *ngIf="element[column]; else noDate">
-            {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
+          <ng-container *ngIf="element.raw[column]; else noDate">
+            {{ columnToDate(element.raw[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
           </ng-container>
         </td>
       </ng-container>
@@ -81,13 +82,13 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
       <ng-container *ngIf="isDurationColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <!-- TODO: move this function to a service in order to reuse extraction logic -->
-          {{ extractData(element, column) | duration | emptyCell }}
+          {{ extractData(element.raw, column) | duration | emptyCell }}
         </td>
       </ng-container>
       <!-- Status -->
       <ng-container *ngIf="isStatusColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <span> {{ statusToLabel(element[column]) }} </span>
+          <span> {{ statusToLabel(element.raw[column]) }} </span>
         </td>
       </ng-container>
       <!-- Session's Tasks Count by Status -->
@@ -95,8 +96,8 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
         <td mat-cell *matCellDef="let element" appNoWrap>
           <app-count-tasks-by-status
             [statuses]="tasksStatusesColored"
-            [queryParams]="createTasksByStatusQueryParams(element.sessionId)"
-            [filters]="countTasksByStatusFilters(element.sessionId)"
+            [queryParams]="element.queryParams"
+            [filters]="element.filters"
           >
           </app-count-tasks-by-status>
         </td>
@@ -104,7 +105,7 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
       <!-- Generics -->
       <ng-container *ngIf="isGenericColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{handleGenericColumn(column, element)}}
+          {{handleGenericColumn(column, element.raw)}}
         </td>
       </ng-container>
       <!-- Actions -->
@@ -114,19 +115,19 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item [cdkCopyToClipboard]="element.sessionId" (cdkCopyToClipboardCopied)="onCopiedSessionId()">
+            <button mat-menu-item [cdkCopyToClipboard]="element.raw.sessionId" (cdkCopyToClipboardCopied)="onCopiedSessionId()">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
               <span i18n>Copy Session ID</span>
             </button>
-            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.sessionId)">
+            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.raw.sessionId)">
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
               <span i18n>See related tasks</span>
             </a>
-            <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.sessionId }">
+            <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.raw.sessionId }">
               <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
               <span i18n>See results</span>
             </a>
-            <button mat-menu-item (click)="onCancel(element.sessionId)">
+            <button mat-menu-item (click)="onCancel(element.raw.sessionId)">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
               <span i18n>Cancel session</span>
             </button>
@@ -192,10 +193,26 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
   @Input({required: true}) options: SessionRawListOptions;
-  @Input({required: true}) data: SessionRaw.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFiltersOr;
   @Input() lockColumns = false;
+
+  private _data: Task[] = [];
+  get data(): Task[] {
+    return this._data;
+  }
+
+  @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const task: Task = {
+        raw: entry,
+        queryParams: this.createTasksByStatusQueryParams(entry.sessionId),
+        filters: this.countTasksByStatusFilters(entry.sessionId)
+      };
+      this._data.push(task);
+    });
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
