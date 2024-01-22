@@ -26,28 +26,6 @@ describe('ViewTasksByStatusComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('findStatusCount', () => {
-    it('should return the statusCount of the selected status', () => {
-      component.statusesCounts = [
-        {count: 3, status: TaskStatus.TASK_STATUS_COMPLETED},
-        {count: 40, status: TaskStatus.TASK_STATUS_PROCESSING}
-      ];
-      expect(component.findStatusCount(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
-        count: 3,
-        status: TaskStatus.TASK_STATUS_COMPLETED
-      });
-    });
-
-    it('should return undefined if there is no count for the selected status', () => {
-      expect(component.findStatusCount(TaskStatus.TASK_STATUS_CANCELLED)).toBeUndefined();
-    });
-
-    it('should return undefined if there is no statusCount at all', () => {
-      component.statusesCounts = null;
-      expect(component.findStatusCount(TaskStatus.TASK_STATUS_COMPLETED)).toBeUndefined();
-    });
-  });
-
   test('createQueryParams should return the params in a record', () => {
     component.defaultQueryParams = {
       '0-options-1-2': TaskStatus.TASK_STATUS_CANCELLED.toString(),

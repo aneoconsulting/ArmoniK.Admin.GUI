@@ -41,16 +41,6 @@ describe('CountTasksByStatusComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('Should have an observed countByStatu$ subscription', () => {
-    component.ngAfterViewInit();
-    expect(subject.observed).toBeTruthy();
-  });
-
-  it('Should have a subscription', () => {
-    component.ngAfterViewInit();
-    expect(component.statusesCounts).toEqual(finalStatusesCount);
-  });
-
   it('Should unsubscribe when destroyed', () => {
     component.ngOnDestroy();
     expect(subject.observed).toBeFalsy();

@@ -26,6 +26,9 @@ export interface AutoRefreshDialogData {
 export type TaskStatusColored = {
   status: TaskStatus;
   color: string;
+  tooltip?: string;
+  queryParams?: Record<string, string>;
+  statusCount?: number;
 };
 
 export interface ViewTasksByStatusDialogData {

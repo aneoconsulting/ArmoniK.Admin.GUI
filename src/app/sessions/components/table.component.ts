@@ -12,6 +12,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Task } from '@app/partitions/components/table.component';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -74,10 +75,26 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
   @Input({required: true}) options: SessionRawListOptions;
-  @Input({required: true}) data: SessionRaw.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFiltersOr;
   @Input() lockColumns = false;
+
+  private _data: Task[] = [];
+  get data(): Task[] {
+    return this._data;
+  }
+
+  @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const task: Task = {
+        raw: entry,
+        queryParams: this.createTasksByStatusQueryParams(entry.sessionId),
+        filters: this.countTasksByStatusFilters(entry.sessionId)
+      };
+      this._data.push(task);
+    });
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
