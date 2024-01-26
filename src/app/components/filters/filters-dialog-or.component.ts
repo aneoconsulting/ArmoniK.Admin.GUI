@@ -10,7 +10,7 @@ import { FiltersDialogAndComponent } from './filters-dialog-and.component';
 
 @Component({
   selector: 'app-filters-dialog-or',
-  template: './filters-dialog-or.component.html',
+  templateUrl: './filters-dialog-or.component.html',
   styles: [`
 :host {
   display: flex;
