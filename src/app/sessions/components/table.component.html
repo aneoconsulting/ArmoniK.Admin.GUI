@@ -19,7 +19,7 @@
       <ng-container *ngIf="isSessionIdColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
           <a mat-button
-            [routerLink]="['/sessions', element.raw.sessionId]"
+            [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.raw.sessionId)"
           >
             {{ element.raw[column] }}
           </a>
@@ -80,9 +80,9 @@
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
               <span i18n>Copy Session ID</span>
             </button>
-            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.raw.sessionId)">
+            <a mat-menu-item [routerLink]="['/sessions', element.raw.sessionId]">
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
-              <span i18n>See related tasks</span>
+              <span i18n>See informations</span>
             </a>
             <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.raw.sessionId }">
               <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>

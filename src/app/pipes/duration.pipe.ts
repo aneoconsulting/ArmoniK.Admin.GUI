@@ -22,7 +22,7 @@ export class DurationPipe  implements PipeTransform {
     const hoursStr = hours > 0 ? `${hours}h ` : '';
     const minutesStr = minutes > 0 ? `${minutes}m ` : '';
     const secondsStr = secondsRemaining > 0 ? `${secondsRemaining}s ` : '';
-    const millisStr = millis > 0 ? `${millis}ms` : '';
+    const millisStr = millis > 0 ? `${Math.trunc(millis)}ms` : '';
 
     return `${hoursStr}${minutesStr}${secondsStr}${millisStr}`.trim();
   }
