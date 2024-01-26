@@ -8,7 +8,7 @@ type Data = {
 
 @Component({
   selector: 'app-show-card-content',
-  template: './show-card-content.component.html',
+  templateUrl: './show-card-content.component.html',
   styles: [`
 app-show-card-content {
   display: block;
