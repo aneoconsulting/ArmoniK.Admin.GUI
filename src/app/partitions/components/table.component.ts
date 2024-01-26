@@ -1,4 +1,4 @@
-import { FilterStringOperator, PartitionRaw, PartitionRawEnumField, SessionRaw, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRaw, FilterStringOperator, PartitionRaw, PartitionRawEnumField, SessionRaw, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -28,7 +28,7 @@ import { PartitionsIndexService } from '../services/partitions-index.service';
 import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
 
 export interface Task {
-  raw: PartitionRaw.AsObject | SessionRaw.AsObject,
+  raw: PartitionRaw.AsObject | SessionRaw.AsObject | ApplicationRaw.AsObject,
   queryParams: Record<string, string>;
   filters: TaskSummaryFiltersOr;
 }
