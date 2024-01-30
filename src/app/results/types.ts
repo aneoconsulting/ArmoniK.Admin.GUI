@@ -9,7 +9,7 @@ export type ResultRawColumnKey = ColumnKey<ResultRaw, never>;
 export type ResultRawFieldKey = FieldKey<ResultRaw>;
 export type ResultRawListOptions = ListOptions<ResultRaw>;
 
-export type ResultFilterField = ResultRawEnumField;
+export type ResultFilterField = ResultRawEnumField | { for: string, index: number };
 export type ResultsFiltersDefinition = FilterDefinition<ResultRawEnumField>;
 
 export type ResultFilterFor = FilterFor<ResultRawEnumField>;

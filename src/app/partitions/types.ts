@@ -9,7 +9,7 @@ export type PartitionRawColumnKey = ColumnKey<PartitionRaw, never> | 'count';
 export type PartitionRawFieldKey = FieldKey<PartitionRaw>;
 export type PartitionRawListOptions = ListOptions<PartitionRaw>;
 
-export type PartitionFilterField = PartitionRawEnumField;
+export type PartitionFilterField = PartitionRawEnumField | { for: string, index: number };
 export type PartitionsFiltersDefinition = FilterDefinition<PartitionRawEnumField>;
 
 export type PartitionFilterFor = FilterFor<PartitionRawEnumField>;

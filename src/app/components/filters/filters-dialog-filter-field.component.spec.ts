@@ -20,7 +20,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
     }),
     retrieveField: jest.fn((value: string) => {
       const values = Object.values(propertiesLabel);
-      return values.findIndex(label => label.toLowerCase() === value.toLowerCase());
+      const index = values.findIndex(label => label.toLowerCase() === value.toLowerCase());
+      return { for: 'root', index: index };
     })
   };
   const allStatuses = [

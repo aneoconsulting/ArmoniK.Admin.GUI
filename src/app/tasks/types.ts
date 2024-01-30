@@ -12,7 +12,7 @@ export type TaskSummaryListOptions = ListOptions<TaskSummary>;
 
 export type TaskSummaryField = TaskSummaryEnumField | TaskOptionEnumField | string;
 
-export type TaskFilterField = TaskSummaryEnumField | TaskOptionEnumField | TaskOptionGenericField;
+export type TaskFilterField = TaskSummaryEnumField | TaskOptionEnumField | TaskOptionGenericField | { for: string, index: number };
 export type TaskFilterDefinition = FilterDefinition<TaskSummaryEnumField, TaskOptionEnumField>;
 
 export type TaskFilterFor = FilterFor<TaskSummaryEnumField, TaskOptionEnumField>;

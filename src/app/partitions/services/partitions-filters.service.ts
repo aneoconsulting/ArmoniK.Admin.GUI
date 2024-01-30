@@ -89,6 +89,7 @@ export class PartitionsFiltersService {
 
   retrieveField(filterField: string): PartitionFilterField  {
     const values = Object.values(this.#rootField);
-    return values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    return { for: 'root', index: index };
   }
 }

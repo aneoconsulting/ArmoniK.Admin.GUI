@@ -73,7 +73,7 @@ export class SessionsFiltersService {
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
       type: 'date'
     },
-    {  
+    {
       for: 'options',
       field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
       type: 'string'
@@ -135,7 +135,7 @@ export class SessionsFiltersService {
     return this.#filtersDefinitions;
   }
 
-  retrieveLabel(filterFor: SessionFilterFor, filterField:  SessionFilterField): string {
+  retrieveLabel(filterFor: SessionFilterFor, filterField: SessionFilterField): string {
     switch (filterFor) {
     case 'root':
       return this.#rootField[filterField as SessionRawEnumField];
@@ -146,8 +146,16 @@ export class SessionsFiltersService {
     }
   }
 
-  retrieveField(filterField: string): SessionFilterField  {
-    const values = Object.values(this.#rootField);
-    return values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+  retrieveField(filterField: string): SessionFilterField {
+    const rootValues = Object.values(this.#rootField);
+    let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+
+    if (index >= 0) {
+      return { for: 'root', index: index };
+    }
+
+    const optionsValues = Object.values(this.#optionsField);
+    index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    return { for: 'options', index: index };
   }
 }

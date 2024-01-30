@@ -196,17 +196,17 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     if (formValue) {
       const field = this.#dataFiltersService.retrieveField(formValue);
 
-      if (field === -1) {
+      if (field.index === -1) {
         return;
       }
 
-      const for_ = this.allProperties.find(value => value.field === field)?.for;
+      const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
       if (!for_) {
         return;
       }
 
       this.filter.for = for_;
-      this.filter.field = field as T | U;
+      this.filter.field = field.index as T | U;
 
       this.allOperators = this.findOperator(this.filter);
       this.operatorFormControl.setValue('');
