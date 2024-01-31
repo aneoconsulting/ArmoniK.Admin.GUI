@@ -194,7 +194,15 @@ export class TasksFiltersService {
   }
 
   retrieveField(filterField: string): TaskFilterField  {
-    const values = Object.values(this.#rootField);
-    return values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    const rootValues = Object.values(this.#rootField);
+    let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+
+    if (index >= 0) {
+      return { for: 'root', index: index };
+    }
+
+    const optionsValues = Object.values(this.#optionsField);
+    index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    return { for: 'options', index: index };
   }
 }

@@ -12,7 +12,7 @@ export type SessionRawListOptions = ListOptions<SessionRaw>;
 
 export type SessionRawField = SessionRawEnumField | SessionTaskOptionEnumField | string;
 
-export type SessionFilterField = SessionRawEnumField | SessionTaskOptionEnumField;
+export type SessionFilterField = SessionRawEnumField | SessionTaskOptionEnumField | { for: string, index: number };
 export type SessionFilterDefinition = FilterDefinition<SessionRawEnumField, SessionTaskOptionEnumField>;
 
 export type SessionFilterFor = FilterFor<SessionRawEnumField, SessionTaskOptionEnumField>;
