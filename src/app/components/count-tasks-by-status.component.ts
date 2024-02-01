@@ -46,6 +46,7 @@ export class CountTasksByStatusComponent implements OnDestroy {
   }
 
   @Input({required: true}) set filters(entries: TaskSummaryFiltersOr) {
+    this.statusesCounts = null;
     this._filters = entries;
     this.subscription.add(
       this.#tasksGrpcService.countByStatu$(this.filters).subscribe(response => {
