@@ -32,8 +32,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedLanguage = this.getLanguageFromUrl() ?? this.#defaultConfigService.defaultLanguage;
-    console.log('selected: ', this.selectedLanguage);
-    this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language != this.selectedLanguage);
+    this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
   }
   
   getLanguageFromUrl(): string | undefined {
