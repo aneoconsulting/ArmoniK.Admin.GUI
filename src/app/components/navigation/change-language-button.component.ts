@@ -40,6 +40,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
     let urlLanguage: undefined | string = undefined; 
     this.#defaultConfigService.availableLanguages.forEach(language => {
       urlLanguage = location.find(path => path === language);
+      console.log(urlLanguage);
       if (urlLanguage) return false; // break loop
       return true;
     });
