@@ -36,7 +36,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
     const storedLanguage: string | null = this.#storageService.getItem('language');
     const urlLanguage = this.getLanguageFromUrl();
     if (storedLanguage && urlLanguage && storedLanguage !== urlLanguage) {
-      this.#router.navigateByUrl('/admin/' + storedLanguage + this.getRoute());
+      window.location.replace('/admin/' + storedLanguage + this.getRoute());
     }
     this.selectedLanguage = storedLanguage ?? urlLanguage ?? this.#defaultConfigService.defaultLanguage;
     this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
