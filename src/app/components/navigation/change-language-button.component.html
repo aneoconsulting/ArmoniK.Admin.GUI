@@ -4,6 +4,6 @@
 </button>
 <mat-menu #switchLanguage="matMenu">
   <ng-container *ngFor="let language of availableLanguages; trackBy:trackByLanguage">
-    <a mat-menu-item [href]="'/admin/' + language + getRoute()">{{language.toLocaleUpperCase()}}</a>
+    <a mat-menu-item [href]="'/admin/' + language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
   </ng-container>
 </mat-menu>

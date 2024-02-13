@@ -53,6 +53,10 @@ export class ChangeLanguageButtonComponent implements OnInit {
     return urlLanguage;
   }
 
+  setLanguage(language: string) {
+    this.#storageService.setItem('language', language);
+  }
+
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
   }
