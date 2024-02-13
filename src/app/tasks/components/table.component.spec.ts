@@ -6,6 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Duration , Timestamp} from '@ngx-grpc/well-known-types';
+import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
@@ -30,12 +31,12 @@ describe('TasksTableComponent', () => {
     page: new EventEmitter()
   } as unknown as MatPaginator;
 
-  const selection: SelectionModel<TaskSummary.AsObject> = {
-    selected: [] as TaskSummary[],
+  const selection: SelectionModel<string> = {
+    selected: [] as string[],
     clear: jest.fn(() => {selection.selected.forEach(() => selection.selected.pop());}),
     select: jest.fn(),
-    isSelected: jest.fn((row: TaskSummary) => row.id === 'selected1')
-  } as unknown as SelectionModel<TaskSummary.AsObject>;
+    isSelected: jest.fn((rowId: string) => rowId === 'selected1')
+  } as unknown as SelectionModel<string>;
 
   const mockTasksIndexService = {
     isActionsColumn: jest.fn(),
@@ -253,7 +254,7 @@ describe('TasksTableComponent', () => {
 
   it('should create the params to filter results', () => {
     const id = 'taskId';
-    expect(component.createTaskIdQueryParams(id)).toEqual({
+    expect(component.createResultsQueryParams(id)).toEqual({
       '1-root-3-0': id
     });
   });
@@ -289,7 +290,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should check if all rows are selected or not', () => {
-    selection.selected.push({id: 'task1'} as unknown as TaskSummary);
+    selection.selected.push('task1');
     expect(component.isAllSelected()).toBeFalsy();
   });
 
@@ -300,7 +301,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should clear all row', () => {
-      selection.selected.push(...data);
+      selection.selected.push(...data.map(row => row.id));
       component.toggleAllRows();
       expect(selection.clear).toHaveBeenCalled();
     });
@@ -308,24 +309,24 @@ describe('TasksTableComponent', () => {
 
   describe('checkBoxLabel', () => {
     it('should give the option to select all if they are not all selected', () => {
-      selection.selected.push({id: 'task1'} as unknown as TaskSummary);
+      selection.selected.push('task1');
       console.log('checkBox');
       expect(component.checkboxLabel()).toEqual('select all');
     });
 
     it('should give the option to deselect all if all are selected', () => {
-      selection.selected.push(...data);
+      selection.selected.push(...data.map(row => row.id));
       console.log('checkBox');
       expect(component.checkboxLabel()).toEqual('deselect all');
     });
 
     it('should get the label to deselect a task', () => {
-      const task = {id:'selected1'} as unknown as TaskSummary;
+      const task = {row: {id:'selected1'} as unknown as TaskSummary} as unknown as TaskData;
       expect(component.checkboxLabel(task)).toEqual('Deselect Task selected1');
     });
 
     it('should get the label to select one task', () => {
-      const task = {id:'selected2'} as unknown as TaskSummary;
+      const task = {row: {id:'selected2'} as unknown as TaskSummary} as unknown as TaskData;
       expect(component.checkboxLabel(task)).toEqual('Select Task selected2');
     });
   });
