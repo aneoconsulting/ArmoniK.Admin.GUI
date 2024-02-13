@@ -297,7 +297,7 @@ describe('TasksTableComponent', () => {
   describe('toggleAllRows', () => {
     it('should toggle all row to selected', () => {
       component.toggleAllRows();
-      expect(selection.select).toHaveBeenCalledWith(...component.data);
+      expect(selection.select).toHaveBeenCalledWith(...component.data.map(data => data.raw.id));
     });
 
     it('should clear all row', () => {
@@ -321,12 +321,12 @@ describe('TasksTableComponent', () => {
     });
 
     it('should get the label to deselect a task', () => {
-      const task = {row: {id:'selected1'} as unknown as TaskSummary} as unknown as TaskData;
+      const task = {raw: {id:'selected1'} as unknown as TaskSummary} as unknown as TaskData;
       expect(component.checkboxLabel(task)).toEqual('Deselect Task selected1');
     });
 
     it('should get the label to select one task', () => {
-      const task = {row: {id:'selected2'} as unknown as TaskSummary} as unknown as TaskData;
+      const task = {raw: {id:'selected2'} as unknown as TaskSummary} as unknown as TaskData;
       expect(component.checkboxLabel(task)).toEqual('Select Task selected2');
     });
   });
