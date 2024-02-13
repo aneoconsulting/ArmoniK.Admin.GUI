@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { StorageService } from '@services/storage.service';
 
 @Component({
   selector: 'app-change-language-button',
@@ -25,13 +26,19 @@ export class ChangeLanguageButtonComponent implements OnInit {
   #defaultConfigService = inject(DefaultConfigService);
   #router = inject(Router);
   #iconsService = inject(IconsService);
+  #storageService = inject(StorageService);
 
   selectedLanguage: string;
   availableLanguages: string[];
   languageButtonTip = $localize`Change language`;
 
   ngOnInit(): void {
-    this.selectedLanguage = this.getLanguageFromUrl() ?? this.#defaultConfigService.defaultLanguage;
+    const storedLanguage: string | null = this.#storageService.getItem('language');
+    const urlLanguage = this.getLanguageFromUrl();
+    if (storedLanguage && urlLanguage && storedLanguage !== urlLanguage) {
+      this.#router.navigateByUrl('/admin/' + storedLanguage + this.getRoute());
+    }
+    this.selectedLanguage = storedLanguage ?? urlLanguage ?? this.#defaultConfigService.defaultLanguage;
     this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
   }
   
