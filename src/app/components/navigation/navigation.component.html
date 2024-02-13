@@ -27,7 +27,7 @@
         <a mat-menu-item [href]="'/admin/' + language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
       </ng-container>
     </mat-menu>
-    <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
+    <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services" i18n-matTooltip>
       <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
       <span i18n="Button to view external services">
         External Services
