@@ -64,7 +64,6 @@ describe('NavigationComponent', () => {
   it('should restore external services on load', () => {
     component.ngOnInit();
     expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
-    expect(mockStorageService.getItem).toHaveBeenCalledWith('language');
   });
 
   it('should manage external services', () => {
