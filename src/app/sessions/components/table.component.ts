@@ -1,4 +1,4 @@
-import { FilterStringOperator, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -12,8 +12,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { Task } from '@app/partitions/components/table.component';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -79,22 +79,25 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) filters: SessionRawFiltersOr;
   @Input() lockColumns = false;
 
-  private _data: Task[] = [];
-  get data(): Task[] {
+  private _data: SessionData[] = [];
+  get data(): SessionData[] {
     return this._data;
   }
 
   @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
     this._data = [];
     entries.forEach(entry => {
-      const task: Task = {
+      const task: SessionData = {
         raw: entry,
-        queryParams: this.createTasksByStatusQueryParams(entry.sessionId),
+        queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+        resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
         filters: this.countTasksByStatusFilters(entry.sessionId)
       };
       this._data.push(task);
     });
   }
+
+  // resultFiltersQueryParams = this.createResultsQueryParams();
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
@@ -227,7 +230,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       this.filters.forEach((filterAnd, index) => {
         filterAnd.forEach(filter => {
           if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
-            const filterLabel = this.#createQueryParamFilterKey(filter, index);
+            const filterLabel = this.#createTaskByStatusLabel(filter, index);
             if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
           }
         });
@@ -237,7 +240,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  #createQueryParamFilterKey(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
+  #createTaskByStatusLabel(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
       if (filter.for === 'root' && filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) {
         return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
@@ -246,6 +249,28 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       }
     }
     return null;
+  }
+
+  createResultsQueryParams(sessionId: string) {
+    if(this.filters.length === 0) {
+      const keySession = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+
+      return {
+        [keySession]: sessionId
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL && filter.value !== null && filter.operator !== null) {
+            const filterLabel = this._filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+            if (filterLabel) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+      });
+      return params;
+    }
   }
 
   countTasksByStatusFilters(sessionId: string): TaskSummaryFiltersOr {
