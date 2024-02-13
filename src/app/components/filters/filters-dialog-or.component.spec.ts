@@ -8,11 +8,17 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
 describe('FiltersDialogOrComponent', () => {
   let component: FiltersDialogOrComponent<number, number>;
   let fixture: ComponentFixture<FiltersDialogOrComponent<number, number>>;
-  const defaultFilter: Filter<number, number> = {
+  const filter1: Filter<number, number> = {
     field: 1,
     for: 'root',
     operator: 1,
     value: 'someValue'
+  };
+  const filter2: Filter<number, number> = {
+    field: 1,
+    for: 'root',
+    operator: 2,
+    value: 'other'
   };
 
   beforeEach(async () => {
@@ -34,7 +40,7 @@ describe('FiltersDialogOrComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FiltersDialogOrComponent<number, number>);
     component = fixture.componentInstance;
-    component.filtersOr = [defaultFilter];
+    component.filtersOr = [filter1, filter2];
     fixture.detectChanges();
   });
 
@@ -50,7 +56,7 @@ describe('FiltersDialogOrComponent', () => {
 
   it('should push on add', () => {
     component.onAdd();
-    expect(component.filtersOr[1]).toEqual({
+    expect(component.filtersOr[2]).toEqual({
       for: null,
       field: null,
       operator: null,
@@ -58,9 +64,24 @@ describe('FiltersDialogOrComponent', () => {
     });
   });
 
-  it('should remove on removeAnd', () => {
-    component.onRemoveAnd(defaultFilter);
-    expect(component.filtersOr).toEqual([]);
+  describe('RemoveAnd', () => {
+    it('should remove on removeAnd', () => {
+      component.onRemoveAnd(filter1);
+      expect(component.filtersOr).toEqual([filter2]);
+    });
+  
+    it('should push a new empty filter if the group is empty', () => {
+      component.onRemoveAnd(component.filtersOr[0]);
+      component.onRemoveAnd(component.filtersOr[0]);
+      expect(component.filtersOr).toEqual([
+        {
+          for: null,
+          field: null,
+          operator: null,
+          value: null,
+        }
+      ]);
+    });
   });
 
   it('should emit on removeOr', () => {
