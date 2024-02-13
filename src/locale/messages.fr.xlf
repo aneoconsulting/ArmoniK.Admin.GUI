@@ -2693,7 +2693,7 @@
       </notes>
       <segment state="initial">
         <source>Cancel Task</source>
-        <target>Annuler les tâches</target>
+        <target>Annuler la tâche</target>
       </segment>
     </unit>
     <unit id="5213720747752417161">
