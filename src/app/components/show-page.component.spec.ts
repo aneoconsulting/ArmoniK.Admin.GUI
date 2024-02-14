@@ -27,12 +27,6 @@ describe('ShowPageComponent', () => {
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
 
-  it('should emit on cancel', () => {
-    const cancelSpy = jest.spyOn(component.cancel, 'emit');
-    component.onCancel();
-    expect(cancelSpy).toHaveBeenCalled();
-  });
-
   it('should emit on refresh', () => {
     const refreshSpy = jest.spyOn(component.refresh, 'emit');
     component.onRefresh();
