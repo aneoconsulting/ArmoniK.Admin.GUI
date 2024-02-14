@@ -33,12 +33,18 @@ type showActionTaskData = {
   taskStatus: TaskStatus;
 };
 
+export type showActionSessionData = {
+  partitionQueryParams: {[key: string]: string};
+  resultsQueryParams: {[key: string]: string};
+  tasksQueryParams: {[key: string]: string};
+};
+
 type showActionPartitionData = {
   sessionsQueryParams: {[key: string]: string};
   tasksQueryParams: {[key: string]: string};
 };
 
-type showActionData = showActionTaskData | showActionPartitionData;
+type showActionData = showActionTaskData | showActionPartitionData | showActionSessionData;
 
 export interface AppShowComponent<T extends object, E extends showActionData> {
   id: string;
@@ -66,17 +72,18 @@ export interface TaskShowComponent extends AppShowComponent<TaskRaw, showActionT
   get statuses(): Record<TaskStatus, string>;
 
   cancelTasks(): void;
-  canCancel(): void;
+  canCancel(): boolean;
   ownerSessionId(): void;
   resultTaskIdQueryParams(taskId: string): void;
 }
 
-export interface SessionShowComponent extends AppShowComponent<SessionRaw, showActionTaskData> {
+export interface SessionShowComponent extends AppShowComponent<SessionRaw, showActionSessionData> {
   _sessionsStatusesService: SessionsStatusesService;
 
   get statuses(): Record<SessionStatus, string>;
 
   cancelSessions(): void;
+  canCancel(): boolean;
 }
 
 export interface ResultShowComponent extends AppShowComponent<ResultRaw, showActionTaskData> {

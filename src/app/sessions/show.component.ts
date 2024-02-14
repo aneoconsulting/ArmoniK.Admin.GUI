@@ -1,10 +1,10 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, switchMap } from 'rxjs';
-import { SessionShowComponent, ShowActionButton } from '@app/types/components/show';
+import { SessionShowComponent, ShowActionButton, showActionSessionData } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
@@ -57,15 +57,46 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
   refresh: Subject<void> = new Subject<void>();
   id: string;
 
-  actionData: { sessionId: string; partitionId: string; resultsQueryParams: { [key: string]: string; }; taskStatus: TaskStatus; };
-  actionButtons: ShowActionButton[];
-
   _iconsService = inject(IconsService);
   _shareURLService = inject(ShareUrlService);
   _sessionsStatusesService = inject(SessionsStatusesService);
   _notificationService = inject(NotificationService);
   _grpcService = inject(SessionsGrpcService);
   _route = inject(ActivatedRoute);
+
+  actionData: showActionSessionData =  {
+    partitionQueryParams: {},
+    resultsQueryParams: {},
+    tasksQueryParams: {}
+  };
+
+  actionButtons: ShowActionButton[] = [
+    {
+      name: $localize`See tasks`,
+      icon: this._iconsService.getPageIcon('tasks'),
+      link: '/tasks',
+      queryParams: this.actionData.tasksQueryParams
+    },
+    {
+      name: $localize`See results`,
+      icon: this._iconsService.getPageIcon('results'),
+      link: '/results',
+      queryParams: this.actionData.resultsQueryParams
+    },
+    {
+      name: $localize`See partitions`,
+      icon: this._iconsService.getPageIcon('partitions'),
+      link: '/partitions',
+      queryParams: this.actionData.partitionQueryParams
+    },
+    {
+      name: $localize`Cancel Session`,
+      icon: this._iconsService.getIcon('cancel'),
+      action: this.cancelSessions,
+      disabled: this.canCancel(),
+      area: 'right'
+    }
+  ];
 
   ngOnInit(): void {
     this.sharableURL = this._shareURLService.generateSharableURL(null, null);
@@ -116,6 +147,10 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
         this._notificationService.error('Unable to cancel session');
       },
     });
+  }
+
+  canCancel(): boolean {
+    return this._sessionsStatusesService.sessionNotEnded(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
 
   onRefresh(): void {
