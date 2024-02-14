@@ -39,7 +39,7 @@ export type showActionSessionData = {
   tasksQueryParams: {[key: string]: string};
 };
 
-type showActionPartitionData = {
+export type showActionPartitionData = {
   sessionsQueryParams: {[key: string]: string};
   tasksQueryParams: {[key: string]: string};
 };
@@ -78,8 +78,6 @@ export interface TaskShowComponent extends AppShowComponent<TaskRaw, showActionT
 
   cancelTasks(): void;
   canCancel(): boolean;
-  ownerSessionId(): void;
-  resultTaskIdQueryParams(taskId: string): void;
 }
 
 export interface SessionShowComponent extends AppShowComponent<SessionRaw, showActionSessionData> {
@@ -90,9 +88,6 @@ export interface SessionShowComponent extends AppShowComponent<SessionRaw, showA
 
   cancelSessions(): void;
   canCancel(): boolean;
-  setPartitionQueryParams(): void;
-  setResultsQueryParams(): void;
-  setTasksQueryparams(): void;
 }
 
 export interface ResultShowComponent extends AppShowComponent<ResultRaw, showActionResultData> {
@@ -103,7 +98,4 @@ export interface ResultShowComponent extends AppShowComponent<ResultRaw, showAct
 
 export interface PartitionShowComponent extends AppShowComponent<PartitionRaw, showActionPartitionData> {
   _filtersService: FiltersService;
-
-  sessionsQueryParams(): void;
-  tasksQueryParams(): void;
 }

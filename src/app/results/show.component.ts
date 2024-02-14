@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, map, switchMap } from 'rxjs';
+import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { ResultShowComponent, ShowActionButton, showActionResultData } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
@@ -91,8 +91,19 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
       }),
       map((data) => {
         return data.result ?? null;
+      }),
+      catchError(error => {
+        this._notificationService.error($localize`Could not retrieve result.`);
+        console.error(error);
+        return of(null);
       })
-    ).subscribe((data) => this.data = data);
+    ).subscribe((data) => {
+      if (data) {
+        this.data = data;
+        this.actionData.ownerTaskId = data.ownerTaskId;
+        this.actionData.sessionId = data.sessionId;
+      }
+    });
 
     this._route.params.pipe(
       map(params => params['id']),

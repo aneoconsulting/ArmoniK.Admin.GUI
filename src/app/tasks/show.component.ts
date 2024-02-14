@@ -109,6 +109,33 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     this.sharableURL = this._shareURLService.generateSharableURL(null, null);
   }
 
+  ngAfterViewInit(): void {
+
+    this.refresh.pipe(
+      switchMap(() => {
+        return this._grpcService.get$(this.id);
+      }),
+      map((data) => {
+        return data.task ?? null;
+      })
+    ).subscribe((data) => {
+      if (data) {
+        this.data = data;
+        this.actionData.sessionId = data.sessionId;
+        this.setResultsQueryParams(data.id);
+        this.actionData.partitionId = data.options?.partitionId ?? '';
+        this.actionData.taskStatus = data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED;
+      }
+    });
+
+    this._route.params.pipe(
+      map(params => params['id']),
+    ).subscribe(id => {
+      this.id = id;
+      this.refresh.next();
+    });
+  }
+
   getPageIcon(name: Page): string {
     return this._iconsService.getPageIcon(name);
   }
@@ -125,37 +152,12 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     return this._tasksStatusesService.taskNotEnded(this.actionData.taskStatus);
   }
 
-  resultTaskIdQueryParams(taskId: string) {
-    const keyTask = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+  setResultsQueryParams(taskId: string) {
+    const keyResult = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
 
     this.actionData.resultsQueryParams = {
-      [keyTask]: taskId
+      [keyResult]: taskId
     };
-  }
-
-  ngAfterViewInit(): void {
-
-    this.refresh.pipe(
-      switchMap(() => {
-        return this._grpcService.get$(this.id);
-      }),
-      map((data) => {
-        return data.task ?? null;
-      })
-    ).subscribe((data) => {
-      this.data = data;
-      this.actionData.sessionId = data?.sessionId ?? '';
-      this.resultTaskIdQueryParams(data?.id ?? '');
-      this.actionData.partitionId = data?.options?.partitionId ?? '';
-      this.actionData.taskStatus = data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED;
-    });
-
-    this._route.params.pipe(
-      map(params => params['id']),
-    ).subscribe(id => {
-      this.id = id;
-      this.refresh.next();
-    });
   }
 
   get statuses() {

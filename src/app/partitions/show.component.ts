@@ -3,8 +3,8 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, map, switchMap } from 'rxjs';
-import { PartitionShowComponent, ShowActionButton } from '@app/types/components/show';
+import { Subject, catchError, map, of, switchMap } from 'rxjs';
+import { PartitionShowComponent, ShowActionButton, showActionPartitionData } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -64,7 +64,7 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
   _notificationService = inject(NotificationService);
   _filtersService = inject(FiltersService);
 
-  actionData = { 
+  actionData: showActionPartitionData = { 
     sessionsQueryParams: {},
     tasksQueryParams: {}
   };
@@ -97,8 +97,19 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
       }),
       map((data) => {
         return data.partition ?? null;
+      }),
+      catchError(error => {
+        this._notificationService.error($localize`Could not retrieve partition.`);
+        console.error(error);
+        return of(null);
       })
-    ).subscribe((data) => this.data = data);
+    ).subscribe((data) => {
+      if (data) {
+        this.data = data;
+        this.setTasksQueryParams();
+        this.setSessionsQueryParams();
+      }
+    });
 
     this._route.params.pipe(
       map(params => params['id']),
@@ -116,20 +127,14 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
     return this._iconsService.getIcon(name);
   }
 
-  sessionsQueryParams(): void {
-    const keyTask = this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
-
-    this.actionData.sessionsQueryParams = {
-      [keyTask]: this.id
-    };
+  setSessionsQueryParams(): void {
+    const keyPartition = this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
+    this.actionData.sessionsQueryParams[keyPartition] = this.id;
   }
 
-  tasksQueryParams(): void {
-    const keyTask = this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
-
-    this.actionData.tasksQueryParams = {
-      [keyTask]: this.id
-    };
+  setTasksQueryParams(): void {
+    const keyPartition = this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
+    this.actionData.tasksQueryParams[keyPartition] = this.id;
   }
 
   onRefresh() {

@@ -120,10 +120,12 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
         return of(null);
       })
     ).subscribe((data) => {
-      this.data = data;
-      this.setPartitionQueryParams();
-      this.setResultsQueryParams();
-      this.setTasksQueryparams();
+      if (data) {
+        this.data = data;
+        this.setPartitionQueryParams();
+        this.setResultsQueryParams();
+        this.setTasksQueryparams();
+      }
     });
 
     this._route.params.pipe(
