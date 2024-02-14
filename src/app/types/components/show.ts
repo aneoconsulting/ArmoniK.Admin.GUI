@@ -33,7 +33,12 @@ type showActionTaskData = {
   taskStatus: TaskStatus;
 };
 
-type showActionData = showActionTaskData;
+type showActionPartitionData = {
+  sessionsQueryParams: {[key: string]: string};
+  tasksQueryParams: {[key: string]: string};
+};
+
+type showActionData = showActionTaskData | showActionPartitionData;
 
 export interface AppShowComponent<T extends object, E extends showActionData> {
   id: string;
@@ -63,6 +68,7 @@ export interface TaskShowComponent extends AppShowComponent<TaskRaw, showActionT
   cancelTasks(): void;
   canCancel(): void;
   ownerSessionId(): void;
+  resultTaskIdQueryParams(taskId: string): void;
 }
 
 export interface SessionShowComponent extends AppShowComponent<SessionRaw, showActionTaskData> {
@@ -79,6 +85,9 @@ export interface ResultShowComponent extends AppShowComponent<ResultRaw, showAct
   get statuses(): Record<ResultStatus, string>;
 }
 
-export interface PartitionShowComponent extends AppShowComponent<PartitionRaw, showActionTaskData> {
+export interface PartitionShowComponent extends AppShowComponent<PartitionRaw, showActionPartitionData> {
+  _filtersService: FiltersService;
 
+  sessionsQueryParams(): void;
+  tasksQueryParams(): void;
 }
