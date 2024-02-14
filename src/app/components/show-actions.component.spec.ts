@@ -8,15 +8,19 @@ describe('ShowActionComponent', () => {
 
   const actionButtons: ShowActionButton[] = [
     {
+      id: 'tasks',
       name: $localize`See tasks`,
     },
     {
+      id: 'results',
       name: $localize`See results`,
     },
     {
+      id: 'partitions',
       name: $localize`See partitions`,
     },
     {
+      id: 'session',
       name: $localize`Cancel Session`,
       area: 'right'
     }
@@ -40,17 +44,21 @@ describe('ShowActionComponent', () => {
     component.ngOnInit();
     expect(component.leftActions).toEqual([
       {
+        id: 'tasks',
         name: $localize`See tasks`,
       },
       {
+        id: 'results',
         name: $localize`See results`,
       },
       {
+        id: 'partitions',
         name: $localize`See partitions`,
       },
     ]);
     expect(component.rightActions).toEqual([
       {
+        id: 'session',
         name: $localize`Cancel Session`,
         area: 'right'
       }
