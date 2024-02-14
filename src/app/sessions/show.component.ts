@@ -4,8 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { SessionShowComponent, ShowActionButton } from '@app/types/components/show';
-import { Page } from '@app/types/pages';
+import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -53,20 +52,16 @@ import { SessionRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent implements SessionShowComponent, OnInit, AfterViewInit {
-  sharableURL = '';
-  data: SessionRaw | null = null;
-  refresh: Subject<void> = new Subject<void>();
-  id: string;
+export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface {
   cancel$ = new Subject<void>();
 
-  _iconsService = inject(IconsService);
-  _shareURLService = inject(ShareUrlService);
-  _sessionsStatusesService = inject(SessionsStatusesService);
-  _notificationService = inject(NotificationService);
-  _grpcService = inject(SessionsGrpcService);
-  _route = inject(ActivatedRoute);
-  _filtersService = inject(FiltersService);
+  protected override _iconsService = inject(IconsService);
+  protected override _shareURLService = inject(ShareUrlService);
+  private _sessionsStatusesService = inject(SessionsStatusesService);
+  protected override _notificationService = inject(NotificationService);
+  protected override _grpcService = inject(SessionsGrpcService);
+  protected override _route = inject(ActivatedRoute);
+  private _filtersService = inject(FiltersService);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -143,14 +138,6 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
     return this._sessionsStatusesService.statuses;
   }
 
-  getPageIcon(page: Page) {
-    return this._iconsService.getPageIcon(page);
-  }
-
-  getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
-  }
-
   cancelSession(): void {
     if(!this.data?.sessionId) {
       return;
@@ -203,9 +190,5 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
 
   canCancel(): boolean {
     return this._sessionsStatusesService.sessionNotEnded(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  onRefresh(): void {
-    this.refresh.next();
   }
 }

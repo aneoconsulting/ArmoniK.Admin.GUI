@@ -2,9 +2,8 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { ResultShowComponent, ShowActionButton } from '@app/types/components/show';
-import { Page } from '@app/types/pages';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -50,18 +49,14 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
     MatIconModule,
   ]
 })
-export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit {
-  sharableURL = '';
-  data: ResultRaw | null = null;
-  refresh = new Subject<void>();
-  id: string;
+export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
 
-  _iconsService = inject(IconsService);
-  _grpcService = inject(ResultsGrpcService);
-  _shareURLService = inject(ShareUrlService);
-  _notificationService = inject(NotificationService);
-  _resultsStatusesService = inject(ResultsStatusesService);
-  _route = inject(ActivatedRoute);
+  protected override _iconsService = inject(IconsService);
+  protected override _grpcService = inject(ResultsGrpcService);
+  protected override _shareURLService = inject(ShareUrlService);
+  protected override _notificationService = inject(NotificationService);
+  private _resultsStatusesService = inject(ResultsStatusesService);
+  protected override _route = inject(ActivatedRoute);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -122,15 +117,5 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
     }
   }
 
-  getPageIcon(page: Page): string {
-    return this._iconsService.getPageIcon(page);
-  }
-
-  getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
+  
 }

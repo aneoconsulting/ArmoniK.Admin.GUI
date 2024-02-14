@@ -4,8 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, switchMap } from 'rxjs';
-import { ShowActionButton, TaskShowComponent } from '@app/types/components/show';
-import { Page } from '@app/types/pages';
+import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -54,21 +53,21 @@ import { TaskRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
-  data: TaskRaw | null = null;
-  sharableURL = '';
-  refresh: Subject<void> = new Subject<void>();
-  id: string; 
+export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface {
+  cancelSession(): void {
+    throw new Error('Method not implemented.');
+  }
+
   cancel$ = new Subject<void>();
 
-  _tasksStatusesService = inject(TasksStatusesService);
-  _filtersService = inject(FiltersService);
+  private _tasksStatusesService = inject(TasksStatusesService);
+  private _filtersService = inject(FiltersService);
 
-  _iconsService = inject(IconsService);
-  _grpcService = inject(TasksGrpcService);
-  _shareURLService = inject(ShareUrlService);
-  _notificationService = inject(NotificationService);
-  _route = inject(ActivatedRoute);
+  protected override _iconsService = inject(IconsService);
+  protected override _grpcService = inject(TasksGrpcService);
+  protected override _shareURLService = inject(ShareUrlService);
+  protected override _notificationService = inject(NotificationService);
+  protected override _route = inject(ActivatedRoute);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -134,16 +133,25 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     });
 
     this.cancel$.subscribe(() => this.cancelTask());
-  }
+  } 
+  
+  cancelTask(): void {
+    if(!this.data) {
+      return;
+    }
 
-  getPageIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
+    this._grpcService.cancel$([this.data.id]).subscribe({
+      complete: () => {
+        this._notificationService.success('Task canceled');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this._notificationService.error('Unable to cancel task');
+      },
+    });
   }
-
-  getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
-  }
-
+  
   canCancel() {
     return this._tasksStatusesService.taskNotEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
   }
@@ -172,26 +180,5 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
 
   get statuses() {
     return this._tasksStatusesService.statuses;
-  }
-
-  cancelTask(): void {
-    if(!this.data) {
-      return;
-    }
-
-    this._grpcService.cancel$([this.data.id]).subscribe({
-      complete: () => {
-        this._notificationService.success('Task canceled');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this._notificationService.error('Unable to cancel task');
-      },
-    });
-  }
-
-  onRefresh() {
-    this.refresh.next();
   }
 }

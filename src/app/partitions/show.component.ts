@@ -3,9 +3,8 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { PartitionShowComponent, ShowActionButton } from '@app/types/components/show';
-import { Page } from '@app/types/pages';
+import { catchError, map, of, switchMap } from 'rxjs';
+import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -51,18 +50,13 @@ import { PartitionRaw } from './types';
     MatIconModule
   ]
 })
-export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewInit {
-  sharableURL = '';
-  data: PartitionRaw | null = null;
-  refresh = new Subject<void>();
-  id: string;
-
-  _iconsService = inject(IconsService);
-  _shareURLService = inject(ShareUrlService);
-  _grpcService = inject(PartitionsGrpcService);
-  _route = inject(ActivatedRoute); 
-  _notificationService = inject(NotificationService);
-  _filtersService = inject(FiltersService);
+export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
+  protected override _iconsService = inject(IconsService);
+  protected override _shareURLService = inject(ShareUrlService);
+  protected override _grpcService = inject(PartitionsGrpcService);
+  protected override _route = inject(ActivatedRoute); 
+  protected override _notificationService = inject(NotificationService);
+  private _filtersService = inject(FiltersService);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -116,14 +110,6 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
     });
   }
 
-  getPageIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
-  }
-
-  getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
-  }
-
   get partitionsKey() {
     return this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
   }
@@ -141,9 +127,5 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
         action.queryParams = params;
       }
     }
-  }
-
-  onRefresh() {
-    this.refresh.next();
   }
 }
