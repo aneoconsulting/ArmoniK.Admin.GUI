@@ -18,15 +18,15 @@ import { ShowCardComponent } from './show-card.component';
   <ng-content> </ng-content>
   <span>{{ id }}</span> 
   <button mat-icon-button [cdkCopyToClipboard]="id ?? ''" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
-    <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
+    <mat-icon aria-hidden="true" fontIcon="content_copy" />
   </button>
 </app-page-header>
 
 <ng-container *ngIf="data">
-  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()" (refresh)="onRefresh()"></app-show-actions>
+  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()" (refresh)="onRefresh()" />
 </ng-container>
 
-<app-show-card [data]="data" [statuses]="statuses"></app-show-card>
+<app-show-card [data]="data" [statuses]="statuses" />
   `,
   styles: [`
 span {

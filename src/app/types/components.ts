@@ -61,7 +61,3 @@
 //   // Miscellaneous methods
 //   handleAutoRefreshStart(): void;
 // }
-
-export interface AppShowComponent<T extends object> {
-  data: T | null;
-}

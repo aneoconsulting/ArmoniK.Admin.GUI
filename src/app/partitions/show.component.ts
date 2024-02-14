@@ -1,11 +1,13 @@
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, switchMap } from 'rxjs';
-import { AppShowComponent } from '@app/types/components';
+import { PartitionShowComponent, ShowActionButton } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -44,31 +46,36 @@ import { PartitionRaw } from './types';
     MatIconModule
   ]
 })
-export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, AfterViewInit {
+export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewInit {
   sharableURL = '';
   data: PartitionRaw | null = null;
   refresh = new Subject<void>();
   id: string;
 
-  #iconsService = inject(IconsService);
-  #shareUrlService = inject(ShareUrlService);
-  #partitionsGrpcService = inject(PartitionsGrpcService);
-  #route = inject(ActivatedRoute); 
+  actionData: { sessionId: string; partitionId: string; resultsQueryParams: { [key: string]: string; }; taskStatus: TaskStatus; };
+  actionButtons: ShowActionButton[];
+
+  _iconsService = inject(IconsService);
+  _shareURLService = inject(ShareUrlService);
+  _grpcService = inject(PartitionsGrpcService);
+  _route = inject(ActivatedRoute); 
+  _notificationService = inject(NotificationService);
 
   ngOnInit(): void {
-    this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
+    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
   }
 
   ngAfterViewInit(): void {
     this.refresh.pipe(
       switchMap(() => {
-        return this.#partitionsGrpcService.get$(this.id);
+        return this._grpcService.get$(this.id);
       }),
       map((data) => {
         return data.partition ?? null;
       })
     ).subscribe((data) => this.data = data);
-    this.#route.params.pipe(
+
+    this._route.params.pipe(
       map(params => params['id']),
     ).subscribe(id => {
       this.id = id;
@@ -77,7 +84,11 @@ export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, Af
   }
 
   getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
+    return this._iconsService.getPageIcon(name);
+  }
+
+  getIcon(name: string): string {
+    return this._iconsService.getIcon(name);
   }
 
   onRefresh() {

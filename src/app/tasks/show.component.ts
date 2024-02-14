@@ -1,10 +1,13 @@
+import { FilterStringOperator, ResultRawEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, switchMap } from 'rxjs';
-import { AppShowComponent } from '@app/types/components';
+import { ShowActionButton, TaskShowComponent } from '@app/types/components/show';
+import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -23,7 +26,7 @@ import { TaskRaw } from './types';
   selector: 'app-tasks-show',
   template: `
 <app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="tasks" (cancel)="cancelTasks()" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="taskIcon"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
   `,
@@ -43,43 +46,111 @@ import { TaskRaw } from './types';
     TableURLService,
     TasksFiltersService,
     NotificationService,
-    MatSnackBar
+    MatSnackBar,
+    FiltersService,
   ],
   imports: [
     ShowPageComponent,
     MatIconModule,
   ]
 })
-export class ShowComponent implements AppShowComponent<TaskRaw>, OnInit, AfterViewInit {
-  sharableURL = '';
+export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
   data: TaskRaw | null = null;
+  sharableURL = '';
   refresh: Subject<void> = new Subject<void>();
-  id: string;
+  id: string; 
+  actionData = { 
+    sessionId: '',
+    partitionId: '',
+    resultsQueryParams: {},
+    taskStatus: TaskStatus.TASK_STATUS_UNSPECIFIED,
+  };
 
-  #shareURLService = inject(ShareUrlService);
-  #route = inject(ActivatedRoute);
-  #tasksGrpcService = inject(TasksGrpcService);
-  #tasksStatusesService = inject(TasksStatusesService);
-  #iconsService = inject(IconsService);
-  #notificationService = inject(NotificationService);
+  _tasksStatusesService = inject(TasksStatusesService);
+  _filtersService = inject(FiltersService);
+
+  _iconsService = inject(IconsService);
+  _grpcService = inject(TasksGrpcService);
+  _shareURLService = inject(ShareUrlService);
+  _notificationService = inject(NotificationService);
+  _route = inject(ActivatedRoute);
+
+  actionButtons: ShowActionButton[] = [
+    {
+      name: $localize`See session`,
+      icon: this.getPageIcon('sessions'),
+      area: 'left',
+      link: `/sessions/${this.actionData.sessionId}`,
+    },
+    {
+      name: $localize`See results`,
+      icon: this.getPageIcon('results'),
+      area: 'left',
+      link: '/results',
+      queryParams: this.actionData.resultsQueryParams
+    },
+    {
+      name: $localize`See partition`,
+      icon: this.getPageIcon('partitions'),
+      area: 'left',
+      link: `/partitions/${this.actionData.partitionId}`,
+    },
+    {
+      name: $localize`Cancel task`,
+      icon: this.getIcon('cancel'),
+      area: 'right',
+      action: this.cancelTasks,
+      disabled: this.canCancel()
+    }
+  ];
 
 
   ngOnInit(): void {
-    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
+    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
+  }
+
+  getPageIcon(name: Page): string {
+    return this._iconsService.getPageIcon(name);
+  }
+
+  getIcon(name: string): string {
+    return this._iconsService.getIcon(name);
+  }
+
+  ownerSessionId() {
+    return (this.data as TaskRaw).sessionId;
+  }
+
+  canCancel() {
+    return this._tasksStatusesService.taskNotEnded(this.actionData.taskStatus);
+  }
+
+  resultTaskIdQueryParams(taskId: string) {
+    const keyTask = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+
+    this.actionData.resultsQueryParams = {
+      [keyTask]: taskId
+    };
   }
 
   ngAfterViewInit(): void {
 
     this.refresh.pipe(
       switchMap(() => {
-        return this.#tasksGrpcService.get$(this.id);
+        return this._grpcService.get$(this.id);
       }),
       map((data) => {
         return data.task ?? null;
       })
-    ).subscribe((data) => this.data = data);
+    ).subscribe((data) => {
+      this.data = data;
+      this.actionData.sessionId = data?.sessionId ?? '';
+      this.resultTaskIdQueryParams(data?.id ?? '');
+      this.actionData.partitionId = data?.options?.partitionId ?? '';
+      this.actionData.taskStatus = data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED;
+    });
 
-    this.#route.params.pipe(
+    this._route.params.pipe(
       map(params => params['id']),
     ).subscribe(id => {
       this.id = id;
@@ -88,26 +159,22 @@ export class ShowComponent implements AppShowComponent<TaskRaw>, OnInit, AfterVi
   }
 
   get statuses() {
-    return this.#tasksStatusesService.statuses;
-  }
-
-  get taskIcon() {
-    return this.#iconsService.getPageIcon('tasks');
+    return this._tasksStatusesService.statuses;
   }
 
   cancelTasks(): void {
-    if(!this.data?.id) {
+    if(!this.data || !this.data.id) {
       return;
     }
 
-    this.#tasksGrpcService.cancel$([this.data.id]).subscribe({
+    this._grpcService.cancel$([this.data.id]).subscribe({
       complete: () => {
-        this.#notificationService.success('Task canceled');
+        this._notificationService.success('Task canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this.#notificationService.error('Unable to cancel task');
+        this._notificationService.error('Unable to cancel task');
       },
     });
   }

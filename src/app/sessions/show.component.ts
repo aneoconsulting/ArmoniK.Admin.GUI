@@ -1,9 +1,10 @@
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, switchMap } from 'rxjs';
-import { AppShowComponent } from '@app/types/components';
+import { SessionShowComponent, ShowActionButton } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
@@ -50,30 +51,30 @@ import { SessionRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, AfterViewInit {
+export class ShowComponent implements SessionShowComponent, OnInit, AfterViewInit {
   sharableURL = '';
   data: SessionRaw | null = null;
   refresh: Subject<void> = new Subject<void>();
   id: string;
 
-  #iconsService = inject(IconsService);
-  #shareURLService = inject(ShareUrlService);
-  #sessionsStatusesService = inject(SessionsStatusesService);
-  #notificationService = inject(NotificationService);
+  actionData: { sessionId: string; partitionId: string; resultsQueryParams: { [key: string]: string; }; taskStatus: TaskStatus; };
+  actionButtons: ShowActionButton[];
 
-  constructor(
-    private _route: ActivatedRoute,
-    private _sessionsGrpcService: SessionsGrpcService,
-  ) {}
+  _iconsService = inject(IconsService);
+  _shareURLService = inject(ShareUrlService);
+  _sessionsStatusesService = inject(SessionsStatusesService);
+  _notificationService = inject(NotificationService);
+  _grpcService = inject(SessionsGrpcService);
+  _route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
+    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
   }
 
   ngAfterViewInit(): void {
     this.refresh.pipe(
       switchMap(() => {
-        return this._sessionsGrpcService.get$(this.id);
+        return this._grpcService.get$(this.id);
       }),
       map((data) => {
         return data.session ?? null;
@@ -89,11 +90,15 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
   }
 
   get statuses() {
-    return this.#sessionsStatusesService.statuses;
+    return this._sessionsStatusesService.statuses;
   }
 
   getPageIcon(page: Page) {
-    return this.#iconsService.getPageIcon(page);
+    return this._iconsService.getPageIcon(page);
+  }
+
+  getIcon(name: string): string {
+    return this._iconsService.getIcon(name);
   }
 
   cancelSessions(): void {
@@ -101,15 +106,19 @@ export class ShowComponent implements AppShowComponent<SessionRaw>, OnInit, Afte
       return;
     }
 
-    this._sessionsGrpcService.cancel$(this.data.sessionId).subscribe({
+    this._grpcService.cancel$(this.data.sessionId).subscribe({
       complete: () => {
-        this.#notificationService.success('Session canceled');
+        this._notificationService.success('Session canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this.#notificationService.error('Unable to cancel session');
+        this._notificationService.error('Unable to cancel session');
       },
     });
+  }
+
+  onRefresh(): void {
+    this.refresh.next();
   }
 }
