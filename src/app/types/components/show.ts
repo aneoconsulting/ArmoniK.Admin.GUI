@@ -48,6 +48,7 @@ export interface AppShowComponent<T extends object> {
 export interface TaskShowComponent extends AppShowComponent<TaskRaw> {
   _tasksStatusesService: TasksStatusesService;
   _filtersService: FiltersService;
+  cancel$: Subject<void>;
 
   cancelTask(): void;
   canCancel(): boolean;
@@ -56,6 +57,7 @@ export interface TaskShowComponent extends AppShowComponent<TaskRaw> {
 export interface SessionShowComponent extends AppShowComponent<SessionRaw> {
   _sessionsStatusesService: SessionsStatusesService;
   _filtersService: FiltersService;
+  cancel$: Subject<void>;
 
   cancelSession(): void;
   canCancel(): boolean;
