@@ -1,12 +1,13 @@
-import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, PartitionRawEnumField, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, map, switchMap } from 'rxjs';
+import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { SessionShowComponent, ShowActionButton, showActionSessionData } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
+import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -44,7 +45,8 @@ import { SessionRaw } from './types';
     TableURLService,
     TableStorageService,
     NotificationService,
-    MatSnackBar
+    MatSnackBar,
+    FiltersService
   ],
   imports: [
     ShowPageComponent,
@@ -63,6 +65,7 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
   _notificationService = inject(NotificationService);
   _grpcService = inject(SessionsGrpcService);
   _route = inject(ActivatedRoute);
+  _filtersService = inject(FiltersService);
 
   actionData: showActionSessionData =  {
     partitionQueryParams: {},
@@ -94,6 +97,7 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
       icon: this._iconsService.getIcon('cancel'),
       action: this.cancelSessions,
       disabled: this.canCancel(),
+      color: 'accent',
       area: 'right'
     }
   ];
@@ -109,8 +113,18 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
       }),
       map((data) => {
         return data.session ?? null;
+      }),
+      catchError(error => {
+        this._notificationService.error($localize`Could not retrieve session.`);
+        console.error(error);
+        return of(null);
       })
-    ).subscribe((data) => this.data = data);
+    ).subscribe((data) => {
+      this.data = data;
+      this.setPartitionQueryParams();
+      this.setResultsQueryParams();
+      this.setTasksQueryparams();
+    });
 
     this._route.params.pipe(
       map(params => params['id']),
@@ -147,6 +161,29 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
         this._notificationService.error('Unable to cancel session');
       },
     });
+  }
+
+  setPartitionQueryParams() {
+    if (this.data) {
+      this.data.partitionIds.forEach((partitionId, index) => {
+        const keyPartition = this._filtersService.createQueryParamsKey<PartitionRawEnumField>(index, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID);
+        this.actionData.partitionQueryParams[keyPartition] = partitionId;
+      });
+    }
+  }
+
+  setResultsQueryParams() {
+    if (this.data) {
+      const keyResults = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+      this.actionData.resultsQueryParams[keyResults] = this.data.sessionId; 
+    }
+  }
+
+  setTasksQueryparams() {
+    if (this.data) {
+      const keyTask = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+      this.actionData.resultsQueryParams[keyTask] = this.data.sessionId; 
+    }
   }
 
   canCancel(): boolean {

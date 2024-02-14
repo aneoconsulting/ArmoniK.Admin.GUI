@@ -84,11 +84,15 @@ export interface TaskShowComponent extends AppShowComponent<TaskRaw, showActionT
 
 export interface SessionShowComponent extends AppShowComponent<SessionRaw, showActionSessionData> {
   _sessionsStatusesService: SessionsStatusesService;
+  _filtersService: FiltersService;
 
   get statuses(): Record<SessionStatus, string>;
 
   cancelSessions(): void;
   canCancel(): boolean;
+  setPartitionQueryParams(): void;
+  setResultsQueryParams(): void;
+  setTasksQueryparams(): void;
 }
 
 export interface ResultShowComponent extends AppShowComponent<ResultRaw, showActionResultData> {
