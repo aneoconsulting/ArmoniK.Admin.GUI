@@ -25,7 +25,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="id" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -122,8 +122,8 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
       if (data) {
         this.data = data;
         this.setPartitionQueryParams();
-        this.setResultsQueryParams();
-        this.setTasksQueryparams();
+        this.setQueryParams('results', this.resultsKey);
+        this.setQueryParams('tasks', this.tasksKey);
       }
     });
 
@@ -168,6 +168,14 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
     });
   }
 
+  get resultsKey() {
+    return this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+  }
+
+  get tasksKey() {
+    return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+  }
+
   setPartitionQueryParams() {
     if (this.data) {
       const action = this.actionButtons.find(element => element.id === 'partitions');
@@ -182,25 +190,12 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
     }
   }
 
-  setResultsQueryParams() {
-    if (this.data) {
-      const action = this.actionButtons.find(element => element.id === 'results');
+  setQueryParams(actionId: string, key: string) {
+    if(this.data) {
+      const action = this.actionButtons.find(element => element.id === actionId);
       if (action) {
         const params: {[key: string]: string} = {};
-        const keyResults = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
-        params[keyResults] = this.data.sessionId;
-        action.queryParams = params; 
-      }
-    }
-  }
-
-  setTasksQueryparams() { 
-    if (this.data) {
-      const action = this.actionButtons.find(element => element.id === 'tasks');
-      if (action) {
-        const params: {[key: string]: string} = {};
-        const keyTask = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-        params[keyTask] = this.data.sessionId;
+        params[key] = this.data.sessionId;
         action.queryParams = params;
       }
     }

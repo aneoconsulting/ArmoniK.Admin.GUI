@@ -25,7 +25,7 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="id" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
@@ -122,7 +122,7 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
         this.data = data;
         this.setLink('session', 'sessions', data.sessionId);
         if (data.options) this.setLink('partition', 'partitions', data.options.partitionId);
-        this.setResultQueryParams();
+        this.setQueryParams('results', this.resultsKey);
       }
     });
 
@@ -148,13 +148,16 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     return this._tasksStatusesService.taskNotEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
   }
 
-  setResultQueryParams() {
+  get resultsKey() {
+    return this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+  }
+
+  setQueryParams(actionId: string, key: string) {
     if(this.data) {
-      const action = this.actionButtons.find(element => element.id === 'results');
+      const action = this.actionButtons.find(element => element.id === actionId);
       if (action) {
-        const params: {[key: string]: string} = {};
-        const keyResult = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-        params[keyResult] = this.id;
+        const params: {[key: string]: string} = {}; 
+        params[key] = this.id;
         action.queryParams = params;
       }
     }
