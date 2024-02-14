@@ -25,7 +25,7 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="tasks" (cancel)="cancelTasks()" (refresh)="onRefresh()">
+<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
@@ -59,6 +59,7 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
   sharableURL = '';
   refresh: Subject<void> = new Subject<void>();
   id: string; 
+  cancel$ = new Subject<void>();
   actionData = { 
     sessionId: '',
     partitionId: '',
@@ -99,7 +100,7 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
       name: $localize`Cancel task`,
       icon: this.getIcon('cancel'),
       area: 'right',
-      action: this.cancelTasks,
+      action$: this.cancel$,
       disabled: this.canCancel()
     }
   ];
@@ -134,6 +135,8 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
       this.id = id;
       this.refresh.next();
     });
+
+    this.cancel$.subscribe(() => this.cancelTask());
   }
 
   getPageIcon(name: Page): string {
@@ -164,7 +167,7 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     return this._tasksStatusesService.statuses;
   }
 
-  cancelTasks(): void {
+  cancelTask(): void {
     if(!this.data || !this.data.id) {
       return;
     }

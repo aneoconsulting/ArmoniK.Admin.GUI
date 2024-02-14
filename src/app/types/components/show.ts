@@ -23,7 +23,7 @@ export type ShowActionButton = {
   color?: 'accent' | 'primary';
   queryParams?: { [x: string]: string; };
   area?: 'left' | 'right';
-  action?: () => void;
+  action$?: Subject<void>;
 };
 
 type showActionTaskData = {
@@ -76,7 +76,7 @@ export interface TaskShowComponent extends AppShowComponent<TaskRaw, showActionT
 
   get statuses(): Record<TaskStatus, string>;
 
-  cancelTasks(): void;
+  cancelTask(): void;
   canCancel(): boolean;
 }
 
@@ -86,7 +86,7 @@ export interface SessionShowComponent extends AppShowComponent<SessionRaw, showA
 
   get statuses(): Record<SessionStatus, string>;
 
-  cancelSessions(): void;
+  cancelSession(): void;
   canCancel(): boolean;
 }
 

@@ -4,8 +4,8 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ShowActionButton } from '@app/types/components/show';
 import { DataRaw } from '@app/types/data';
-import { Page } from '@app/types/pages';
 import { NotificationService } from '@services/notification.service';
 import { PageHeaderComponent } from './page-header.component';
 import { ShowActionsComponent } from './show-actions.component';
@@ -23,7 +23,7 @@ import { ShowCardComponent } from './show-card.component';
 </app-page-header>
 
 <ng-container *ngIf="data">
-  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()" (refresh)="onRefresh()" />
+  <app-show-actions [id]="id" [actionsButton]="actionsButton" [data]="data" (refresh)="onRefresh()" />
 </ng-container>
 
 <app-show-card [data]="data" [statuses]="statuses" />
@@ -54,7 +54,7 @@ export class ShowPageComponent {
   @Input({ required: true }) data: DataRaw | null = null;
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
-  @Input({ required: true }) type: Page;
+  @Input({ required: true }) actionsButton: ShowActionButton[];
   @Output() cancel = new EventEmitter<never>();
   @Output() refresh = new EventEmitter<never>();
 
@@ -62,10 +62,6 @@ export class ShowPageComponent {
 
   onCopiedTaskId() {
     this.#notificationService.success('Task ID copied to clipboard');
-  }
-
-  onCancel() {
-    this.cancel.emit();
   }
 
   onRefresh() {

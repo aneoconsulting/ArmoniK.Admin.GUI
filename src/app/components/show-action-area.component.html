@@ -1,0 +1,11 @@
+<ng-container *ngFor="let element of actions">
+  <a mat-button *ngIf="element.link && !element.action$" [routerLink]="element.link" [queryParams]="element.queryParams" [color]="element.color">
+    <mat-icon [fontIcon]="element.icon ?? ''" />
+    {{element.name}}
+  </a>
+
+  <button mat-flat-button *ngIf="element.action$ && !element.link" (click)="element.action$.next()" [disabled]="element.disabled" [color]="element.color" >
+    <mat-icon [fontIcon]="element.icon ?? ''" />
+    {{element.name}}
+  </button>
+</ng-container>

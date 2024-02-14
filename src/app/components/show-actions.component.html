@@ -1,65 +1,14 @@
 <mat-toolbar>
-  <a *ngIf="taskActions || resultActions" mat-button [routerLink]="['/sessions', ownerSessionId()]">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
-    <span i18n>See session</span>
-  </a>
-
-  <a *ngIf="partitionActions" mat-button [routerLink]="['/sessions']" [queryParams]="partitionSessionsQueryParam()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-    <span i18n>See sessions</span>
-  </a>
-
-  <a *ngIf="sessionActions" mat-button [routerLink]="['/tasks']" [queryParams]="sessionsTaskResultQueryParams()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
-    <span i18n>See tasks</span>
-  </a>
-
-  <a *ngIf="partitionActions" mat-button [routerLink]="['/tasks']" [queryParams]="partitionTasksQueryParam()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
-    <span i18n>See tasks</span>
-  </a>
-
-  <a *ngIf="resultActions" mat-button [routerLink]="['/tasks', resultTaskId()]" >
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
-    <span i18n>See task</span>
-  </a>
-
-  <a *ngIf="taskActions" mat-button [routerLink]="['/results']" [queryParams]="resultTaskIdQueryParams()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-    <span i18n>See results</span>
-  </a>
-
-  <a *ngIf="sessionActions" mat-button [routerLink]="['/results']" [queryParams]="sessionsTaskResultQueryParams()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-    <span i18n>See results</span>
-  </a>
-
-  <a *ngIf="sessionActions" mat-button [routerLink]="['/partitions']" [queryParams]="sessionPartitionsQueryParams()" [disabled]="!hasOptions()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-    <span i18n>See partitions</span>
-  </a>
-
-  <a *ngIf="taskActions" mat-button [routerLink]="['/partitions', taskPartition()]" [disabled]="!hasOptions()">
-  <mat-icon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-    <span i18n>See partition</span>
-  </a>
+  <app-show-action-area [actions]="leftActions" />
 
   <div class="spacer"></div>
 
-  <button *ngIf="taskActions" mat-flat-button color="accent" [disabled]="taskNotEnded()" (click)="onCancel()">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
-    <span i18n>Cancel Task</span>
-  </button>
-
-  <button *ngIf="sessionActions" mat-flat-button color="accent" [disabled]="sessionNotEnded()" (click)="onCancel()">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
-    <span i18n>Cancel Session</span>
-  </button>
+  <app-show-action-area [actions]="rightActions" />
 
   <div class="smallSpace"></div>
 
   <button mat-flat-button color="primary" (click)="onRefreshClick()" matTooltip="Refresh data">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('refresh')"></mat-icon>
+    <mat-icon aria-hidden="true" [fontIcon]="getRefreshIcon()"></mat-icon>
     <span i18n>Refresh</span>
   </button>
 

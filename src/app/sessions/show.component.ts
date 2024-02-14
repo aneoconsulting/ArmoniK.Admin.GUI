@@ -25,7 +25,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [type]="'sessions'" (cancel)="cancelSessions()">
+<app-show-page [id]="data?.sessionId ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -58,6 +58,7 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
   data: SessionRaw | null = null;
   refresh: Subject<void> = new Subject<void>();
   id: string;
+  cancel$ = new Subject<void>();
 
   _iconsService = inject(IconsService);
   _shareURLService = inject(ShareUrlService);
@@ -95,7 +96,7 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
     {
       name: $localize`Cancel Session`,
       icon: this._iconsService.getIcon('cancel'),
-      action: this.cancelSessions,
+      action$: this.cancel$,
       disabled: this.canCancel(),
       color: 'accent',
       area: 'right'
@@ -134,6 +135,10 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
       this.id = id;
       this.refresh.next();
     });
+
+    this.cancel$.subscribe(() => {
+      this.cancelSession();
+    });
   }
 
   get statuses() {
@@ -148,7 +153,7 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
     return this._iconsService.getIcon(name);
   }
 
-  cancelSessions(): void {
+  cancelSession(): void {
     if(!this.data?.sessionId) {
       return;
     }

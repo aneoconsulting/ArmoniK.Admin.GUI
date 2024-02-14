@@ -24,7 +24,7 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" type="partitions" (refresh)="onRefresh()">
+<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>

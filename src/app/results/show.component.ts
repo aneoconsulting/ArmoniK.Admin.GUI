@@ -23,7 +23,7 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="results" (refresh)="onRefresh()">
+<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
