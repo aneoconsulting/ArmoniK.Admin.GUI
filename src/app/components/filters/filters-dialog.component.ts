@@ -80,6 +80,9 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
     if (index > -1) {
       this.filtersOr.splice(index, 1);
     }
+    if (this.filtersOr.length === 0) {
+      this.onAdd();
+    }
   }
 
   onNoClick(): void {
