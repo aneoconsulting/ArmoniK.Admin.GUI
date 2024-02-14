@@ -55,7 +55,6 @@ export class ShowPageComponent {
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
   @Input({ required: true }) actionsButton: ShowActionButton[];
-  @Output() cancel = new EventEmitter<never>();
   @Output() refresh = new EventEmitter<never>();
 
   #notificationService = inject(NotificationService);

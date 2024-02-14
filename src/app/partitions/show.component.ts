@@ -1,10 +1,10 @@
-import { FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { PartitionShowComponent, ShowActionButton, showActionPartitionData } from '@app/types/components/show';
+import { PartitionShowComponent, ShowActionButton } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -64,24 +64,21 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
   _notificationService = inject(NotificationService);
   _filtersService = inject(FiltersService);
 
-  actionData: showActionPartitionData = { 
-    sessionsQueryParams: {},
-    tasksQueryParams: {}
-  };
-
   actionButtons: ShowActionButton[] = [
     {
+      id: 'sessions',
       name: $localize`See sessions`,
       icon: this.getPageIcon('sessions'),
       link: '/sessions',
-      queryParams: this.actionData.sessionsQueryParams,
+      queryParams: {},
       area: 'left'
     },
     {
+      id: 'tasks',
       name: $localize`See tasks`,
       icon: this.getPageIcon('tasks'),
       link: '/tasks',
-      queryParams: this.actionData.tasksQueryParams,
+      queryParams: {},
       area: 'left'
     }
   ];
@@ -106,8 +103,8 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        this.setTasksQueryParams();
         this.setSessionsQueryParams();
+        this.setTasksQueryParams();
       }
     });
 
@@ -127,14 +124,28 @@ export class ShowComponent implements PartitionShowComponent, OnInit, AfterViewI
     return this._iconsService.getIcon(name);
   }
 
-  setSessionsQueryParams(): void {
-    const keyPartition = this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
-    this.actionData.sessionsQueryParams[keyPartition] = this.id;
+  setSessionsQueryParams() {
+    if(this.data) {
+      const action = this.actionButtons.find(element => element.id === 'sessions');
+      if (action) {
+        const params: {[key: string]: string} = {};
+        const keyPartition = this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
+        params[keyPartition] = this.id;
+        action.queryParams = params;
+      }
+    }
   }
 
-  setTasksQueryParams(): void {
-    const keyPartition = this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
-    this.actionData.tasksQueryParams[keyPartition] = this.id;
+  setTasksQueryParams() {
+    if(this.data) {
+      const action = this.actionButtons.find(element => element.id === 'tasks');
+      if (action) {
+        const params: {[key: string]: string} = {};
+        const keyPartition = this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
+        params[keyPartition] = this.id;
+        action.queryParams = params;
+      }
+    }
   }
 
   onRefresh() {

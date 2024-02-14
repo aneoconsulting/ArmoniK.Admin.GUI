@@ -60,12 +60,6 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
   refresh: Subject<void> = new Subject<void>();
   id: string; 
   cancel$ = new Subject<void>();
-  actionData = { 
-    sessionId: '',
-    partitionId: '',
-    resultsQueryParams: {},
-    taskStatus: TaskStatus.TASK_STATUS_UNSPECIFIED,
-  };
 
   _tasksStatusesService = inject(TasksStatusesService);
   _filtersService = inject(FiltersService);
@@ -78,33 +72,37 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
 
   actionButtons: ShowActionButton[] = [
     {
+      id: 'session',
       name: $localize`See session`,
       icon: this.getPageIcon('sessions'),
       area: 'left',
-      link: `/sessions/${this.actionData.sessionId}`,
+      link: '/sessions',
     },
     {
+      id: 'results',
       name: $localize`See results`,
       icon: this.getPageIcon('results'),
       area: 'left',
       link: '/results',
-      queryParams: this.actionData.resultsQueryParams
+      queryParams: {}
     },
     {
+      id: 'partition',
       name: $localize`See partition`,
       icon: this.getPageIcon('partitions'),
       area: 'left',
-      link: `/partitions/${this.actionData.partitionId}`,
+      link: '/partitions',
     },
     {
+      id: 'cancel',
       name: $localize`Cancel task`,
       icon: this.getIcon('cancel'),
+      color: 'accent',
       area: 'right',
       action$: this.cancel$,
       disabled: this.canCancel()
     }
   ];
-
 
   ngOnInit(): void {
     this.sharableURL = this._shareURLService.generateSharableURL(null, null);
@@ -122,10 +120,9 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        this.actionData.sessionId = data.sessionId;
-        this.setResultsQueryParams(data.id);
-        this.actionData.partitionId = data.options?.partitionId ?? '';
-        this.actionData.taskStatus = data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED;
+        this.setLink('session', 'sessions', data.sessionId);
+        if (data.options) this.setLink('partition', 'partitions', data.options.partitionId);
+        this.setResultQueryParams();
       }
     });
 
@@ -147,20 +144,27 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
     return this._iconsService.getIcon(name);
   }
 
-  ownerSessionId() {
-    return (this.data as TaskRaw).sessionId;
-  }
-
   canCancel() {
-    return this._tasksStatusesService.taskNotEnded(this.actionData.taskStatus);
+    return this._tasksStatusesService.taskNotEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
   }
 
-  setResultsQueryParams(taskId: string) {
-    const keyResult = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+  setResultQueryParams() {
+    if(this.data) {
+      const action = this.actionButtons.find(element => element.id === 'results');
+      if (action) {
+        const params: {[key: string]: string} = {};
+        const keyResult = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+        params[keyResult] = this.id;
+        action.queryParams = params;
+      }
+    }
+  }
 
-    this.actionData.resultsQueryParams = {
-      [keyResult]: taskId
-    };
+  setLink(actionId: string, baseLink: string, id: string) {
+    const index = this.actionButtons.findIndex(element => element.id === actionId);
+    if (index !== -1) {
+      this.actionButtons[index].link = `/${baseLink}/${id}`;
+    }
   }
 
   get statuses() {

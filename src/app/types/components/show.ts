@@ -1,4 +1,3 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { PartitionRaw } from '@app/partitions/types';
@@ -16,6 +15,7 @@ import { Page } from '../pages';
 import { GrpcService } from '../services';
 
 export type ShowActionButton = {
+  id: string;
   name: string;
   icon?: string;
   disabled?: boolean;
@@ -26,37 +26,12 @@ export type ShowActionButton = {
   action$?: Subject<void>;
 };
 
-type showActionTaskData = {
-  sessionId: string;
-  partitionId: string;
-  resultsQueryParams: {[key: string]: string};
-  taskStatus: TaskStatus;
-};
 
-export type showActionSessionData = {
-  partitionQueryParams: {[key: string]: string};
-  resultsQueryParams: {[key: string]: string};
-  tasksQueryParams: {[key: string]: string};
-};
-
-export type showActionPartitionData = {
-  sessionsQueryParams: {[key: string]: string};
-  tasksQueryParams: {[key: string]: string};
-};
-
-export type showActionResultData = {
-  sessionId: string;
-  ownerTaskId: string;
-};
-
-type showActionData = showActionTaskData | showActionPartitionData | showActionSessionData | showActionResultData;
-
-export interface AppShowComponent<T extends object, E extends showActionData> {
+export interface AppShowComponent<T extends object> {
   id: string;
   sharableURL: string;
   refresh: Subject<void>
   data: T | null;
-  actionData: E;
   actionButtons: ShowActionButton[];
 
   _iconsService: IconsService;
@@ -70,32 +45,26 @@ export interface AppShowComponent<T extends object, E extends showActionData> {
   onRefresh(): void;
 }
 
-export interface TaskShowComponent extends AppShowComponent<TaskRaw, showActionTaskData> {
+export interface TaskShowComponent extends AppShowComponent<TaskRaw> {
   _tasksStatusesService: TasksStatusesService;
   _filtersService: FiltersService;
-
-  get statuses(): Record<TaskStatus, string>;
 
   cancelTask(): void;
   canCancel(): boolean;
 }
 
-export interface SessionShowComponent extends AppShowComponent<SessionRaw, showActionSessionData> {
+export interface SessionShowComponent extends AppShowComponent<SessionRaw> {
   _sessionsStatusesService: SessionsStatusesService;
   _filtersService: FiltersService;
-
-  get statuses(): Record<SessionStatus, string>;
 
   cancelSession(): void;
   canCancel(): boolean;
 }
 
-export interface ResultShowComponent extends AppShowComponent<ResultRaw, showActionResultData> {
+export interface ResultShowComponent extends AppShowComponent<ResultRaw> {
   _resultsStatusesService: ResultsStatusesService;
-
-  get statuses(): Record<ResultStatus, string>;
 }
 
-export interface PartitionShowComponent extends AppShowComponent<PartitionRaw, showActionPartitionData> {
+export interface PartitionShowComponent extends AppShowComponent<PartitionRaw> {
   _filtersService: FiltersService;
 }

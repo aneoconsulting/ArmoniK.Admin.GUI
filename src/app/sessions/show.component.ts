@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { SessionShowComponent, ShowActionButton, showActionSessionData } from '@app/types/components/show';
+import { SessionShowComponent, ShowActionButton } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -68,32 +68,30 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
   _route = inject(ActivatedRoute);
   _filtersService = inject(FiltersService);
 
-  actionData: showActionSessionData =  {
-    partitionQueryParams: {},
-    resultsQueryParams: {},
-    tasksQueryParams: {}
-  };
-
   actionButtons: ShowActionButton[] = [
     {
+      id: 'tasks',
       name: $localize`See tasks`,
       icon: this._iconsService.getPageIcon('tasks'),
       link: '/tasks',
-      queryParams: this.actionData.tasksQueryParams
+      queryParams: {},
     },
     {
+      id: 'results',
       name: $localize`See results`,
       icon: this._iconsService.getPageIcon('results'),
       link: '/results',
-      queryParams: this.actionData.resultsQueryParams
+      queryParams: {},
     },
     {
+      id: 'partitions',
       name: $localize`See partitions`,
       icon: this._iconsService.getPageIcon('partitions'),
       link: '/partitions',
-      queryParams: this.actionData.partitionQueryParams
+      queryParams: {},
     },
     {
+      id: 'cancel',
       name: $localize`Cancel Session`,
       icon: this._iconsService.getIcon('cancel'),
       action$: this.cancel$,
@@ -172,24 +170,39 @@ export class ShowComponent implements SessionShowComponent, OnInit, AfterViewIni
 
   setPartitionQueryParams() {
     if (this.data) {
-      this.data.partitionIds.forEach((partitionId, index) => {
-        const keyPartition = this._filtersService.createQueryParamsKey<PartitionRawEnumField>(index, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID);
-        this.actionData.partitionQueryParams[keyPartition] = partitionId;
-      });
+      const action = this.actionButtons.find(element => element.id === 'partitions');
+      if (action) {
+        const params: {[key: string]: string} = {};
+        this.data.partitionIds.forEach((partitionId, index) => {
+          const keyPartition = this._filtersService.createQueryParamsKey<PartitionRawEnumField>(index, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID);
+          params[keyPartition] = partitionId;
+        });
+        action.queryParams = params;
+      }
     }
   }
 
   setResultsQueryParams() {
     if (this.data) {
-      const keyResults = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
-      this.actionData.resultsQueryParams[keyResults] = this.data.sessionId; 
+      const action = this.actionButtons.find(element => element.id === 'results');
+      if (action) {
+        const params: {[key: string]: string} = {};
+        const keyResults = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+        params[keyResults] = this.data.sessionId;
+        action.queryParams = params; 
+      }
     }
   }
 
-  setTasksQueryparams() {
+  setTasksQueryparams() { 
     if (this.data) {
-      const keyTask = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-      this.actionData.resultsQueryParams[keyTask] = this.data.sessionId; 
+      const action = this.actionButtons.find(element => element.id === 'tasks');
+      if (action) {
+        const params: {[key: string]: string} = {};
+        const keyTask = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+        params[keyTask] = this.data.sessionId;
+        action.queryParams = params;
+      }
     }
   }
 

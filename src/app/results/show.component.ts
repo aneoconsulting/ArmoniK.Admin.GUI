@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { ResultShowComponent, ShowActionButton, showActionResultData } from '@app/types/components/show';
+import { ResultShowComponent, ShowActionButton } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
@@ -63,20 +63,18 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
   _resultsStatusesService = inject(ResultsStatusesService);
   _route = inject(ActivatedRoute);
 
-  actionData: showActionResultData = {
-    ownerTaskId: '',
-    sessionId: '',
-  };
   actionButtons: ShowActionButton[] = [
     {
+      id: 'session',
       name: $localize`See session`,
       icon: this.getPageIcon('sessions'),
-      link: `/sessions/${this.actionData.sessionId}`
+      link: '/sessions'
     },
     {
+      id: 'task',
       name: $localize`See task`,
       icon: this.getPageIcon('tasks'),
-      link: `/tasks/${this.actionData.ownerTaskId}`
+      link: '/tasks'
     }
   ];
 
@@ -100,8 +98,8 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        this.actionData.ownerTaskId = data.ownerTaskId;
-        this.actionData.sessionId = data.sessionId;
+        this.setLink('session', 'sessions', data.sessionId);
+        this.setLink('task', 'tasks', data.ownerTaskId);
       }
     });
 
@@ -115,6 +113,13 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
 
   get statuses() {
     return this._resultsStatusesService.statuses;
+  }
+
+  setLink(actionId: string, baseLink: string, id: string) {
+    const index = this.actionButtons.findIndex(element => element.id === actionId);
+    if (index !== -1) {
+      this.actionButtons[index].link = `/${baseLink}/${id}`;
+    }
   }
 
   getPageIcon(page: Page): string {
