@@ -172,7 +172,7 @@ export class ShowComponent implements TaskShowComponent, OnInit, AfterViewInit {
   }
 
   cancelTask(): void {
-    if(!this.data || !this.data.id) {
+    if(!this.data) {
       return;
     }
 
