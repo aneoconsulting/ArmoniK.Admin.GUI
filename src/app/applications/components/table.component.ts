@@ -10,8 +10,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { Task } from '@app/partitions/components/table.component';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { ApplicationData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -66,7 +66,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
          </button>
          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryParams">
+            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
               <span i18n>See session</span>
             </a>
@@ -127,17 +127,17 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) filters: ApplicationRawFilter;
   @Input() lockColumns = false;
 
-  private _data: Task[] = [];
-  get data(): Task[] {
+  private _data: ApplicationData[] = [];
+  get data(): ApplicationData[] {
     return this._data;
   }
 
   @Input({ required: true }) set data(entries: ApplicationRaw.AsObject[]) {
     this._data = [];
     entries.forEach(entry => {
-      const task: Task = {
+      const task: ApplicationData = {
         raw: entry,
-        queryParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
+        queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
         filters: this.countTasksByStatusFilters(entry.name, entry.version)
       };
       this._data.push(task);
