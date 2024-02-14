@@ -34,7 +34,8 @@ describe('ViewTasksByStatusComponent', () => {
     expect(component.createQueryParams(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
       '0-options-1-2': TaskStatus.TASK_STATUS_CANCELLED.toString(),
       '1-root-0-1': TaskStatus.TASK_STATUS_PROCESSING.toString(),
-      '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString()
+      '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
+      '1-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString()
     });
   });
 

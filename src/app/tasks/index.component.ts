@@ -104,7 +104,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   availableColumns: TaskSummaryColumnKey[] = [];
   lockColumns: boolean = false;
 
-  selection = new SelectionModel<TaskSummary>(true, []);
+  selection = new SelectionModel<string>(true, []);
   selectedRows: string[] = [];
 
   isLoading = true;
@@ -161,7 +161,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         startWith({}),
         switchMap(() => {
           this.isLoading = true;
-          this.selectedRows = this.selection.selected.map(task => task.id);
+          this.selectedRows = this.selection.selected;
           this.selection.clear();
 
           const filters = this.filters;
@@ -190,9 +190,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data = data;
         if (this.selectedRows.length > 0) {
           if (this.selectedRows.length === data.length) {
-            this.selection.select(...this.data);
+            this.selection.select(...this.data.map(task => task.id));
           } else {
-            this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))));
+            this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))).map(task => task.id));
           }
         }
       });
@@ -263,7 +263,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onCancelTasksSelection():void {
-    const tasksIds = this.selection.selected.map((task) => task.id);
+    const tasksIds = this.selection.selected;
     this.cancelTasks(tasksIds);
   }
   
