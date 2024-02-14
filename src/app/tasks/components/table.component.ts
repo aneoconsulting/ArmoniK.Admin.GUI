@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, TaskOptions, TaskStatus, TaskSummary } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummary, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -15,7 +15,9 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Duration , Timestamp} from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
+import { TaskData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -29,7 +31,7 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '../types';
+import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -72,16 +74,32 @@ export class TasksTableComponent implements AfterViewInit {
 
   @Input({required: true}) displayedColumns: TaskSummaryColumnKey[] = [];
   @Input({required: true}) options: TaskSummaryListOptions;
-  @Input({required: true}) data: TaskSummary.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) stopInterval: Subject<void>;
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
-  @Input({required: true}) selection: SelectionModel<TaskSummary.AsObject>;
+  @Input({required: true}) selection: SelectionModel<string>;
+  @Input() filters: TaskSummaryFiltersOr = [];
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
   @Input() lockColumns = false;
+
+  private _data: TaskData[] = [];
+  get data(): TaskData[] {
+    return this._data;
+  }
+
+  @Input({required: true}) set data(entries: TaskSummary.AsObject[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const lineData: TaskData = {
+        raw: entry,
+        resultsQueryParams: this.createResultsQueryParams(entry.id),
+      };
+      this._data.push(lineData);
+    });
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() retries = new EventEmitter<TaskSummary>();
@@ -192,12 +210,37 @@ export class TasksTableComponent implements AfterViewInit {
     return this.#tasksIndexService.columnToLabel(column);
   }
 
-  createTaskIdQueryParams(taskId: string) {
-    const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+  createResultsQueryParams(taskId: string) {
+    if (this.filters.length === 0) {
+      const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
 
-    return {
-      [keyTask]: taskId
-    };
+      return {
+        [keyTask]: taskId
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+            const filterLabel = this.#createResultFilterLabel(filter, index);
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
+      });
+      return params;
+    }
+  }
+
+  #createResultFilterLabel(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number) {
+    if (filter.field !== null && filter.operator !== null) {
+      if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID) {
+        return this.#filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+      } else if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID) {
+        return this.#filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+      }
+    }
+    return null;
   }
 
   onCopiedTaskId() {
@@ -229,18 +272,18 @@ export class TasksTableComponent implements AfterViewInit {
   toggleAllRows(): void {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.selection.select(...(this.data as TaskSummary[]));
+      this.selection.select(...(this.data.map(task => task.raw.id)));
   }
 
-  checkboxLabel(row?: TaskSummary): string {
+  checkboxLabel(row?: TaskData): string {
     if (!row) {
       return $localize`${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
-    else if (this.selection.isSelected(row)) {
-      return $localize`Deselect Task ${row.id}`;
+    else if (this.selection.isSelected(row.raw.id)) {
+      return $localize`Deselect Task ${row.raw.id}`;
     }
     else {
-      return $localize`Select Task ${row.id}`;
+      return $localize`Select Task ${row.raw.id}`;
     }
   }
 
