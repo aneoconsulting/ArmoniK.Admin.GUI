@@ -97,8 +97,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // resultFiltersQueryParams = this.createResultsQueryParams();
-
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
 
