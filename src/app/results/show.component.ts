@@ -1,9 +1,9 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, switchMap } from 'rxjs';
-import { ResultShowComponent, ShowActionButton } from '@app/types/components/show';
+import { ResultShowComponent, ShowActionButton, showActionResultData } from '@app/types/components/show';
 import { Page } from '@app/types/pages';
 import { ShowPageComponent } from '@components/show-page.component';
 import { IconsService } from '@services/icons.service';
@@ -42,6 +42,8 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
     TableStorageService,
     TableURLService,
     ResultsFiltersService,
+    NotificationService,
+    MatSnackBar
   ],
   imports: [
     ShowPageComponent,
@@ -53,8 +55,6 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
   data: ResultRaw | null = null;
   refresh = new Subject<void>();
   id: string;
-  actionData: { sessionId: string; partitionId: string; resultsQueryParams: { [key: string]: string; }; taskStatus: TaskStatus; };
-  actionButtons: ShowActionButton[];
 
   _iconsService = inject(IconsService);
   _grpcService = inject(ResultsGrpcService);
@@ -62,6 +62,23 @@ export class ShowComponent implements ResultShowComponent, OnInit, AfterViewInit
   _notificationService = inject(NotificationService);
   _resultsStatusesService = inject(ResultsStatusesService);
   _route = inject(ActivatedRoute);
+
+  actionData: showActionResultData = {
+    ownerTaskId: '',
+    sessionId: '',
+  };
+  actionButtons: ShowActionButton[] = [
+    {
+      name: $localize`See session`,
+      icon: this.getPageIcon('sessions'),
+      link: `/sessions/${this.actionData.sessionId}`
+    },
+    {
+      name: $localize`See task`,
+      icon: this.getPageIcon('tasks'),
+      link: `/tasks/${this.actionData.ownerTaskId}`
+    }
+  ];
 
   ngOnInit(): void {
     this.sharableURL = this._shareURLService.generateSharableURL(null, null);
