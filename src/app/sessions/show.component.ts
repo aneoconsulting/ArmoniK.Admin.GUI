@@ -2,12 +2,10 @@ import { FilterStringOperator, PartitionRawEnumField, ResultRawEnumField, Sessio
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { Subject, catchError, map, of, switchMap } from 'rxjs';
+import { Subject, catchError, map, switchMap } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -24,7 +22,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="id" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.sessionId ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -55,40 +53,36 @@ import { SessionRaw } from './types';
 export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface {
   cancel$ = new Subject<void>();
 
-  protected override _iconsService = inject(IconsService);
-  protected override _shareURLService = inject(ShareUrlService);
   private _sessionsStatusesService = inject(SessionsStatusesService);
-  protected override _notificationService = inject(NotificationService);
   protected override _grpcService = inject(SessionsGrpcService);
-  protected override _route = inject(ActivatedRoute);
   private _filtersService = inject(FiltersService);
 
   actionButtons: ShowActionButton[] = [
     {
       id: 'tasks',
       name: $localize`See tasks`,
-      icon: this._iconsService.getPageIcon('tasks'),
+      icon: this.getPageIcon('tasks'),
       link: '/tasks',
       queryParams: {},
     },
     {
       id: 'results',
       name: $localize`See results`,
-      icon: this._iconsService.getPageIcon('results'),
+      icon: this.getPageIcon('results'),
       link: '/results',
       queryParams: {},
     },
     {
       id: 'partitions',
       name: $localize`See partitions`,
-      icon: this._iconsService.getPageIcon('partitions'),
+      icon: this.getPageIcon('partitions'),
       link: '/partitions',
       queryParams: {},
     },
     {
       id: 'cancel',
       name: $localize`Cancel Session`,
-      icon: this._iconsService.getIcon('cancel'),
+      icon: this.getIcon('cancel'),
       action$: this.cancel$,
       disabled: this.canCancel(),
       color: 'accent',
@@ -97,7 +91,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   ];
 
   ngOnInit(): void {
-    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
+    this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
@@ -108,11 +102,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       map((data) => {
         return data.session ?? null;
       }),
-      catchError(error => {
-        this._notificationService.error($localize`Could not retrieve session.`);
-        console.error(error);
-        return of(null);
-      })
+      catchError(error => this.handleError(error))
     ).subscribe((data) => {
       if (data) {
         this.data = data;
@@ -122,15 +112,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       }
     });
 
-    this._route.params.pipe(
-      map(params => params['id']),
-    ).subscribe(id => {
-      this.id = id;
-      this.refresh.next();
-    });
-
+    this.getIdByRoute();
     this.cancel$.subscribe(() => {
-      this.cancelSession();
+      this.cancel();
     });
   }
 
@@ -138,19 +122,19 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     return this._sessionsStatusesService.statuses;
   }
 
-  cancelSession(): void {
+  cancel(): void {
     if(!this.data?.sessionId) {
       return;
     }
 
     this._grpcService.cancel$(this.data.sessionId).subscribe({
       complete: () => {
-        this._notificationService.success('Session canceled');
+        this.success('Session canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this._notificationService.error('Unable to cancel session');
+        this.error('Unable to cancel session');
       },
     });
   }

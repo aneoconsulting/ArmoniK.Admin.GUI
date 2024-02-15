@@ -2,8 +2,7 @@ import { FilterStringOperator, ResultRawEnumField, TaskStatus } from '@aneoconsu
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { Subject, map, switchMap } from 'rxjs';
+import { Subject, catchError, map, switchMap } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -24,7 +23,7 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="id" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.id ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
@@ -54,20 +53,12 @@ import { TaskRaw } from './types';
   ]
 })
 export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface {
-  cancelSession(): void {
-    throw new Error('Method not implemented.');
-  }
 
   cancel$ = new Subject<void>();
 
   private _tasksStatusesService = inject(TasksStatusesService);
   private _filtersService = inject(FiltersService);
-
-  protected override _iconsService = inject(IconsService);
   protected override _grpcService = inject(TasksGrpcService);
-  protected override _shareURLService = inject(ShareUrlService);
-  protected override _notificationService = inject(NotificationService);
-  protected override _route = inject(ActivatedRoute);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -104,18 +95,18 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   ];
 
   ngOnInit(): void {
-    this.sharableURL = this._shareURLService.generateSharableURL(null, null);
+    this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
-
     this.refresh.pipe(
       switchMap(() => {
         return this._grpcService.get$(this.id);
       }),
       map((data) => {
         return data.task ?? null;
-      })
+      }),
+      catchError(error => this.handleError(error))
     ).subscribe((data) => {
       if (data) {
         this.data = data;
@@ -125,29 +116,23 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
       }
     });
 
-    this._route.params.pipe(
-      map(params => params['id']),
-    ).subscribe(id => {
-      this.id = id;
-      this.refresh.next();
-    });
-
-    this.cancel$.subscribe(() => this.cancelTask());
+    this.getIdByRoute();
+    this.cancel$.subscribe(() => this.cancel());
   } 
   
-  cancelTask(): void {
+  cancel(): void {
     if(!this.data) {
       return;
     }
 
     this._grpcService.cancel$([this.data.id]).subscribe({
       complete: () => {
-        this._notificationService.success('Task canceled');
+        this.success('Task canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this._notificationService.error('Unable to cancel task');
+        this.error('Unable to cancel task');
       },
     });
   }
