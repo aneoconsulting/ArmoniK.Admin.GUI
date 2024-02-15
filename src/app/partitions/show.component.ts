@@ -87,8 +87,8 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpc
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        this.setQueryParams('sessions', this.partitionsKey);
-        this.setQueryParams('tasks', this.tasksKey);
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'sessions', this.partitionsKey, this.data.id);
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.id);
       }
     });
 
@@ -101,16 +101,5 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpc
 
   get tasksKey() {
     return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
-  }
-
-  setQueryParams(actionId: string, key: string) {
-    if(this.data) {
-      const action = this.actionButtons.find(element => element.id === actionId);
-      if (action) {
-        const params: {[key: string]: string} = {};
-        params[key] = this.id;
-        action.queryParams = params;
-      }
-    }
   }
 }

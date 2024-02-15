@@ -1,4 +1,4 @@
-import { FilterStringOperator, PartitionRawEnumField, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -106,9 +106,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        this.setPartitionQueryParams();
-        this.setQueryParams('results', this.resultsKey);
-        this.setQueryParams('tasks', this.tasksKey);
+        this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
       }
     });
 
@@ -145,31 +145,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
 
   get tasksKey() {
     return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-  }
-
-  setPartitionQueryParams() {
-    if (this.data) {
-      const action = this.actionButtons.find(element => element.id === 'partitions');
-      if (action) {
-        const params: {[key: string]: string} = {};
-        this.data.partitionIds.forEach((partitionId, index) => {
-          const keyPartition = this._filtersService.createQueryParamsKey<PartitionRawEnumField>(index, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID);
-          params[keyPartition] = partitionId;
-        });
-        action.queryParams = params;
-      }
-    }
-  }
-
-  setQueryParams(actionId: string, key: string) {
-    if(this.data) {
-      const action = this.actionButtons.find(element => element.id === actionId);
-      if (action) {
-        const params: {[key: string]: string} = {};
-        params[key] = this.data.sessionId;
-        action.queryParams = params;
-      }
-    }
   }
 
   canCancel(): boolean {

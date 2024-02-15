@@ -1,5 +1,6 @@
-import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
+import { ShowActionButton } from '@app/types/components/show';
 import { FilterOperators, FilterType } from '@app/types/filters';
 
 @Injectable()
@@ -70,5 +71,26 @@ export class FiltersService {
 
   createQueryParamsKey<T extends number>(or: number, for_: string, operator: FilterOperators, field: T) {
     return `${or}-${for_}-${field}-${operator.toString()}`;
+  }
+
+  createFilterQueryParams(actionButtons: ShowActionButton[], actionId: string, key: string, id: string) {
+    const action = actionButtons.find(element => element.id === actionId);
+    if (action) {
+      const params: {[key: string]: string} = {};
+      params[key] = id;
+      action.queryParams = params;
+    }
+  }
+
+  createFilterPartitionQueryParams(actionButtons: ShowActionButton[], partitionIds: string[]) {
+    const action = actionButtons.find(element => element.id === 'partitions');
+    if (action) {
+      const params: {[key: string]: string} = {};
+      partitionIds.forEach((partitionId, index) => {
+        const keyPartition = this.createQueryParamsKey<PartitionRawEnumField>(index, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID);
+        params[keyPartition] = partitionId;
+      });
+      action.queryParams = params;
+    }
   }
 }

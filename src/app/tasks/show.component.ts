@@ -112,7 +112,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
         this.data = data;
         this.setLink('session', 'sessions', data.sessionId);
         if (data.options) this.setLink('partition', 'partitions', data.options.partitionId);
-        this.setQueryParams('results', this.resultsKey);
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, data.id);
       }
     });
 
@@ -143,17 +143,6 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
 
   get resultsKey() {
     return this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-  }
-
-  setQueryParams(actionId: string, key: string) {
-    if(this.data) {
-      const action = this.actionButtons.find(element => element.id === actionId);
-      if (action) {
-        const params: {[key: string]: string} = {}; 
-        params[key] = this.id;
-        action.queryParams = params;
-      }
-    }
   }
 
   setLink(actionId: string, baseLink: string, id: string) {
