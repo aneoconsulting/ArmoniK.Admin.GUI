@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, TaskOptions, TaskStatus, TaskSummary } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummary, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -15,7 +15,9 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Duration , Timestamp} from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
+import { TaskData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -29,145 +31,12 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '../types';
+import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
   standalone: true,
-  template: `
-<app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
-
-    <ng-container *ngFor="let column of displayedColumns; trackBy:trackByColumn" [matColumnDef]="column">
-      <!-- Header -->
-      <ng-container *ngIf="!isSelectColumn(column)">
-        <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
-          {{ columnToLabel(column) }}
-        </th>
-      </ng-container>
-      <!-- Header for selection -->
-      <ng-container *ngIf="isSelectColumn(column)">
-        <th mat-header-cell *matHeaderCellDef cdkDrag appNoWrap>
-          <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()"
-                        [aria-label]="checkboxLabel()">
-          </mat-checkbox>
-        </th>
-      </ng-container>
-
-      <!-- Selection -->
-      <ng-container *ngIf="isSelectColumn(column)">
-       <td mat-cell *matCellDef="let element" appNoWrap>
-           <mat-checkbox (click)="$event.stopPropagation()"
-              (change)="$event ? selection.toggle(element) : null"
-              [checked]="selection.isSelected(element)"
-              [aria-label]="checkboxLabel(element)">
-            </mat-checkbox>
-        </td>
-      </ng-container>
-      <!-- Columns -->
-      <ng-container *ngIf="isSimpleColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <span> {{ show(element, column) | emptyCell }} </span>
-        </td>
-      </ng-container>
-      <!-- ID -->
-      <ng-container *ngIf="isTaskIdColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <a mat-button
-            [routerLink]="['/tasks/', element[column]]"
-          >
-            {{ element[column] }}
-          </a>
-        </td>
-      </ng-container>
-      <!-- Status -->
-      <ng-container *ngIf="isStatusColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <span> {{ statusToLabel(element[column]) }} </span>
-        </td>
-      </ng-container>
-      <!-- Date -->
-      <ng-container *ngIf="isDateColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <ng-container *ngIf="element[column]; else noDate">
-            {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
-          </ng-container>
-        </td>
-      </ng-container>
-      <!-- Duration -->
-      <ng-container *ngIf="isDurationColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <!-- TODO: move this function to a service in order to reuse extraction logic -->
-          {{ extractData(element, column) | duration | emptyCell }}
-        </td>
-      </ng-container>
-      <!-- Object -->
-      <ng-container *ngIf="isObjectColumn(column)">
-       <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="handleNestedKeys(column, element)" [label]="columnToLabel(column)"></app-table-inspect-object>
-        </td>
-      </ng-container>
-      <!-- Generics -->
-      <ng-container *ngIf="isGenericColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          {{handleGenericColumn(column, element)}}
-        </td>
-      </ng-container>
-      <!-- Actions -->
-      <ng-container *ngIf="isActionsColumn(column)">
-        <!-- TODO: use icons service -->
-        <td mat-cell *matCellDef="let element" appNoWrap>
-        <button mat-icon-button [matMenuTriggerFor]="menu" (menuOpened)="this.stopInterval.next()" (menuClosed)="this.interval.next(this.intervalValue)" aria-label="Show more" i18n-aria-label>
-
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item [cdkCopyToClipboard]="element.id" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
-              <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
-              <span i18n>Copy Task ID</span>
-            </button>
-            <a mat-menu-item [routerLink]="['/results']" [queryParams]="createTaskIdQueryParams(element.id)">
-              <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-              <span i18n> See related result </span>
-            </a>
-            <button *ngIf="isRetried(element)" mat-menu-item (click)="onRetries(element)">
-              <mat-icon aria-hidden="true" fontIcon="published_with_changes"></mat-icon>
-              <span i18n> See Retries </span>
-            </button>
-            <button mat-menu-item (click)="onCancelTask(element.id)">
-              <mat-icon aria-hidden="true" fontIcon="cancel"></mat-icon>
-              <span i18n> Cancel task </span>
-            </button>
-            <a mat-menu-item *ngIf="urlTemplate && serviceName && serviceIcon" [href]="generateViewInLogsUrl(element.id)" target="_blank">
-              <mat-icon aria-hidden="true" [fontIcon]="serviceIcon"></mat-icon>
-              <span i18n> View in {{ serviceName }} </span>
-            </a>
-            </mat-menu>
-          </td>
-      </ng-container>
-    </ng-container>
-
-    <!-- Empty -->
-    <tr *matNoDataRow>
-      <td [attr.colspan]="displayedColumns.length">
-        <app-table-empty-data></app-table-empty-data>
-      </td>
-    </tr>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of tasks" i18n-aria-label>
-    </mat-paginator>
-</app-table-container>
-
-<ng-template #noDate>
-  <span> - </span>
-</ng-template>
-  `,
+  templateUrl: './table.component.html', 
   styles: [
 
   ],
@@ -205,16 +74,32 @@ export class TasksTableComponent implements AfterViewInit {
 
   @Input({required: true}) displayedColumns: TaskSummaryColumnKey[] = [];
   @Input({required: true}) options: TaskSummaryListOptions;
-  @Input({required: true}) data: TaskSummary.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) stopInterval: Subject<void>;
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
-  @Input({required: true}) selection: SelectionModel<TaskSummary.AsObject>;
+  @Input({required: true}) selection: SelectionModel<string>;
+  @Input() filters: TaskSummaryFiltersOr = [];
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
   @Input() lockColumns = false;
+
+  private _data: TaskData[] = [];
+  get data(): TaskData[] {
+    return this._data;
+  }
+
+  @Input({required: true}) set data(entries: TaskSummary.AsObject[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const lineData: TaskData = {
+        raw: entry,
+        resultsQueryParams: this.createResultsQueryParams(entry.id),
+      };
+      this._data.push(lineData);
+    });
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() retries = new EventEmitter<TaskSummary>();
@@ -325,12 +210,37 @@ export class TasksTableComponent implements AfterViewInit {
     return this.#tasksIndexService.columnToLabel(column);
   }
 
-  createTaskIdQueryParams(taskId: string) {
-    const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+  createResultsQueryParams(taskId: string) {
+    if (this.filters.length === 0) {
+      const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
 
-    return {
-      [keyTask]: taskId
-    };
+      return {
+        [keyTask]: taskId
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+            const filterLabel = this.#createResultFilterLabel(filter, index);
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
+      });
+      return params;
+    }
+  }
+
+  #createResultFilterLabel(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number) {
+    if (filter.field !== null && filter.operator !== null) {
+      if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID) {
+        return this.#filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+      } else if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID) {
+        return this.#filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+      }
+    }
+    return null;
   }
 
   onCopiedTaskId() {
@@ -362,18 +272,18 @@ export class TasksTableComponent implements AfterViewInit {
   toggleAllRows(): void {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.selection.select(...(this.data as TaskSummary[]));
+      this.selection.select(...(this.data.map(task => task.raw.id)));
   }
 
-  checkboxLabel(row?: TaskSummary): string {
+  checkboxLabel(row?: TaskData): string {
     if (!row) {
       return $localize`${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
-    else if (this.selection.isSelected(row)) {
-      return $localize`Deselect Task ${row.id}`;
+    else if (this.selection.isSelected(row.raw.id)) {
+      return $localize`Deselect Task ${row.raw.id}`;
     }
     else {
-      return $localize`Select Task ${row.id}`;
+      return $localize`Select Task ${row.raw.id}`;
     }
   }
 

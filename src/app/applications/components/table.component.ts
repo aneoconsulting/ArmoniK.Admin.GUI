@@ -11,6 +11,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { ApplicationData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -44,7 +45,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
       <!-- Application Column -->
       <ng-container *ngIf="isSimpleColumn(column)">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element[column] | emptyCell }}
+          {{ element.raw[column] | emptyCell }}
         </td>
       </ng-container>
       <!-- Application's Tasks Count by Status -->
@@ -52,8 +53,8 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
         <td mat-cell *matCellDef="let element" appNoWrap>
         <app-count-tasks-by-status
           [statuses]="tasksStatusesColored"
-          [queryParams]="createTasksByStatusQueryParams(element.name, element.version)"
-          [filters]="countTasksByStatusFilters(element.name, element.version)"
+          [queryParams]="element.queryTasksParams"
+          [filters]="element.filters"
         ></app-count-tasks-by-status>
         </td>
       </ng-container>
@@ -65,7 +66,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
          </button>
          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="createViewSessionsQueryParams(element.name, element.version)">
+            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
               <span i18n>See session</span>
             </a>
@@ -122,10 +123,26 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Input({required: true}) displayedColumns: ApplicationRawColumnKey[] = [];
   @Input({required: true}) options: ApplicationRawListOptions;
-  @Input({required: true}) data: ApplicationRaw.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) filters: ApplicationRawFilter;
   @Input() lockColumns = false;
+
+  private _data: ApplicationData[] = [];
+  get data(): ApplicationData[] {
+    return this._data;
+  }
+
+  @Input({ required: true }) set data(entries: ApplicationRaw.AsObject[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const task: ApplicationData = {
+        raw: entry,
+        queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
+        filters: this.countTasksByStatusFilters(entry.name, entry.version)
+      };
+      this._data.push(task);
+    });
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
 
@@ -216,7 +233,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
-      const taskField = this.#applicationsToTaskField(filter.field); // We transform it into an options filter for a task
+      const taskField = this.#applicationsToTaskField(filter.field as ApplicationRawEnumField); // We transform it into an options filter for a task
       if (!taskField) return null;
       return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 
     }

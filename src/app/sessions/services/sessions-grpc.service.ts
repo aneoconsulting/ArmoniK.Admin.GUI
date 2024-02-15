@@ -67,20 +67,28 @@ export class SessionsGrpcService{
   }
 
   #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {
-    return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean) => {
-      const filterField = (
-        isForRoot ? 
-          {
-            sessionRawField: {
-              field: field as SessionRawEnumField
-            }
-          } :
-          {
-            taskOptionField: {
-              field: field as SessionTaskOptionEnumField
-            }
+    return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean, isGeneric: boolean) => {
+      let filterField: SessionFilterField.AsObject['field'];
+
+      if (isForRoot) {
+        filterField = {
+          sessionRawField: {
+            field: field as SessionRawEnumField
           }
-        ) satisfies SessionFilterField.AsObject['field'];
+        };
+      } else if (isGeneric) {
+        filterField = {
+          taskOptionGenericField: {
+            field: field as string
+          }
+        };
+      } else {
+        filterField = {
+          taskOptionField: {
+            field: field as SessionTaskOptionEnumField
+          }
+        };
+      }
 
       switch (type) {
       case 'string':

@@ -1,4 +1,4 @@
-import { FilterStringOperator, SessionRaw, SessionStatus, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -13,7 +13,9 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -34,125 +36,7 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
 @Component({
   selector: 'app-sessions-table',
   standalone: true,
-  template: `
-<app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear recycleRows [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
-
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
-      <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
-        {{ columnToLabel(column) }}
-        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-        </button>
-      </th>
-      <!-- Columns -->
-      <ng-container *ngIf="isSimpleColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <span> {{ show(element, column) | emptyCell }} </span>
-        </td>
-      </ng-container>
-      <!-- ID -->
-      <ng-container *ngIf="isSessionIdColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <a mat-button
-            [routerLink]="['/sessions', element.sessionId]"
-          >
-            {{ element[column] }}
-          </a>
-        </td>
-      </ng-container>
-      <!-- Object -->
-      <ng-container *ngIf="isObjectColumn(column)">
-       <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
-        </td>
-      </ng-container>
-      <!-- Date -->
-      <ng-container *ngIf="isDateColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <ng-container *ngIf="element[column]; else noDate">
-            {{ columnToDate(element[column]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
-          </ng-container>
-        </td>
-      </ng-container>
-      <!-- Duration -->
-      <ng-container *ngIf="isDurationColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <!-- TODO: move this function to a service in order to reuse extraction logic -->
-          {{ extractData(element, column) | duration | emptyCell }}
-        </td>
-      </ng-container>
-      <!-- Status -->
-      <ng-container *ngIf="isStatusColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <span> {{ statusToLabel(element[column]) }} </span>
-        </td>
-      </ng-container>
-      <!-- Session's Tasks Count by Status -->
-      <ng-container *ngIf="isCountColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-count-tasks-by-status
-            [statuses]="tasksStatusesColored"
-            [queryParams]="createSessionIdQueryParams(element.sessionId)"
-            [filters]="countTasksByStatusFilters(element.sessionId)"
-          >
-          </app-count-tasks-by-status>
-        </td>
-      </ng-container>
-      <!-- Generics -->
-      <ng-container *ngIf="isGenericColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          {{handleGenericColumn(column, element)}}
-        </td>
-      </ng-container>
-      <!-- Actions -->
-      <ng-container *ngIf="isActionsColumn(column)">
-        <td mat-cell *matCellDef="let element">
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
-            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item [cdkCopyToClipboard]="element.sessionId" (cdkCopyToClipboardCopied)="onCopiedSessionId()">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
-              <span i18n>Copy Session ID</span>
-            </button>
-            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="createSessionIdQueryParams(element.sessionId)">
-              <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
-              <span i18n>See related tasks</span>
-            </a>
-            <a mat-menu-item [routerLink]="['/results']" [queryParams]="{ sessionId: element.sessionId }">
-              <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
-              <span i18n>See results</span>
-            </a>
-            <button mat-menu-item (click)="onCancel(element.sessionId)">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
-              <span i18n>Cancel session</span>
-            </button>
-          </mat-menu>
-        </td>
-      </ng-container>
-    </ng-container>
-
-    <!-- Empty -->
-    <tr *matNoDataRow>
-      <td [attr.colspan]="displayedColumns.length">
-        <app-table-empty-data></app-table-empty-data>
-      </td>
-    </tr>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of sessions" i18n-aria-label>
-    </mat-paginator>
-</app-table-container>
-
-<ng-template #noDate>
-  <span> - </span>
-</ng-template>
-  `,
+  templateUrl: './table.component.html',
   styles: [
     
   ],
@@ -191,10 +75,27 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
   @Input({required: true}) options: SessionRawListOptions;
-  @Input({required: true}) data: SessionRaw.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFiltersOr;
   @Input() lockColumns = false;
+
+  private _data: SessionData[] = [];
+  get data(): SessionData[] {
+    return this._data;
+  }
+
+  @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const task: SessionData = {
+        raw: entry,
+        queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+        resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
+        filters: this.countTasksByStatusFilters(entry.sessionId)
+      };
+      this._data.push(task);
+    });
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
@@ -313,6 +214,61 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return {
       [keySession]: sessionId,
     };
+  }
+
+  createTasksByStatusQueryParams(sessionId: string) {
+    if(this.filters.length === 0) {
+      const keySession = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+
+      return {
+        [keySession]: sessionId,
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+            const filterLabel = this.#createTaskByStatusLabel(filter, index);
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+      });
+      return params;
+    }
+  }
+
+  #createTaskByStatusLabel(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
+    if (filter.field !== null && filter.operator !== null) {
+      if (filter.for === 'root' && filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) {
+        return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+      } else if (filter.for === 'options') {
+        return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, filter.field as TaskOptionEnumField);
+      }
+    }
+    return null;
+  }
+
+  createResultsQueryParams(sessionId: string) {
+    if(this.filters.length === 0) {
+      const keySession = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+
+      return {
+        [keySession]: sessionId
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL && filter.value !== null && filter.operator !== null) {
+            const filterLabel = this._filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+            if (filterLabel) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+      });
+      return params;
+    }
   }
 
   countTasksByStatusFilters(sessionId: string): TaskSummaryFiltersOr {

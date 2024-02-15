@@ -86,4 +86,10 @@ export class PartitionsFiltersService {
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
     }
   }
+
+  retrieveField(filterField: string): PartitionFilterField  {
+    const values = Object.values(this.#rootField);
+    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    return { for: 'root', index: index };
+  }
 }

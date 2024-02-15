@@ -8,20 +8,7 @@ import { UtilsService } from '@services/utils.service';
 
 @Component({
   selector: 'app-filters-chips',
-  template: `
-<mat-chip-listbox>
-   <ng-container *ngFor="let filter of filtersAnd; let last = last; trackBy:trackByFilter">
-    <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected">
-      <span *ngIf="filter.field;else noField"> {{ content(filter) }} </span>
-    </mat-chip>
-    <span class="text" *ngIf="!last">AND</span>
-  </ng-container>
-</mat-chip-listbox>
-
-<ng-template #noField>
-  <span i18n>No field</span>
-</ng-template>
-  `,
+  templateUrl: './filters-chips.component.html',
   styles: [`
 .text {
   font-size: 1rem;
@@ -55,8 +42,13 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
     if(!filter.for) {
       filter.for = 'root';
     }
-
-    const label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
+    
+    let label: string;
+    if (filter.for !== 'generic') {
+      label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
+    } else {
+      label = (filter.field as string);
+    }
 
     if (filter.value === null)
       return label + ' ' + $localize`has no value`;

@@ -7,12 +7,7 @@ import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-auto-refresh-button',
-  template: `
-<button mat-stroked-button [class]="isDisabled() ? 'auto-refresh-disabled' : ''" (click)="openAutoRefreshDialog()">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('auto-refresh')"></mat-icon>
-  <span i18n="Open a dialog on click">Set up Auto Refresh - {{intervalDisplay}}</span>
-</button>
-  `,
+  templateUrl:'./auto-refresh-button.component.html',
   styles: [`
     .auto-refresh-disabled {
       border: 0px;

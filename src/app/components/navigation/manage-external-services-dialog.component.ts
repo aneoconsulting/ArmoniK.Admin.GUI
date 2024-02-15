@@ -15,45 +15,7 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
 
 @Component({
   selector: 'app-manage-external-services',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title"> Manage External Services </h2>
-
-<mat-dialog-content>
-  <mat-toolbar>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <button mat-stroked-button (click)="addExternalService()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-          <span i18n="Add an external service">Add a service</span>
-        </button>
-      </app-actions-toolbar-group>
-    </app-actions-toolbar>
-  </mat-toolbar>
-
-  <ul class="external-services" cdkDropList (cdkDropListDropped)="onDrop($event)">
-    <li *ngFor="let externalService of externalServices; trackBy:trackByService" cdkDrag>
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')" cdkDragHandle></mat-icon>
-      <a mat-flat-button [href]="externalService.url" target="_blank" rel="noopener noreferrer" [matTooltip]="externalService.url" class="name">
-          <mat-icon *ngIf="externalService.icon" aria-hidden="true" [fontIcon]="externalService.icon"></mat-icon>
-          <span>{{ externalService.name }}</span>
-      </a>
-      <div class="actions">
-        <button mat-icon-button (click)="editExternalService(externalService)" [attr.aria-label]="'Edit the external service ' + externalService.name" [matTooltip]="'Edit ' + externalService.name">
-          <mat-icon [fontIcon]="getIcon('edit')"></mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="deleteExternalService(externalService)" [attr.aria-label]="'Delete the external service ' + externalService.name" [matTooltip]="'Delete ' + externalService.name">
-          <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
-        </button>
-      </div>
-    </li>
-  </ul>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="externalServices" color="primary" i18n="Dialog action"> Confirm </button>
-</mat-dialog-actions>
-  `,
+  templateUrl: './manage-external-services-dialog.component.html',
   styles: [`
 .external-services {
   margin-top: 1rem;

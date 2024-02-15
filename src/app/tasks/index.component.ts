@@ -39,75 +39,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
 
 @Component({
   selector: 'app-tasks-index',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
-  <span i18n="Page title"> Tasks </span>
-</app-page-header>
-
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="isLoading"
-      [refreshTooltip]="autoRefreshTooltip()"
-      [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
-      [availableColumns]="availableColumns"
-      [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
-      (intervalValueChange)="onIntervalValueChange($event)"
-      (displayedColumnsChange)="onColumnsChange($event)"
-      (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()"
-      (lockColumnsChange)="onLockColumnsChange()"
-      >
-        <ng-container extra-buttons-right>
-          <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.selected.length">
-            <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
-            <span i18n> Cancel Tasks </span>
-          </button>
-        </ng-container>
-        <ng-container extra-menu-items>
-        <button mat-menu-item (click)="manageViewInLogs()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
-          <span i18n appNoWrap>
-            Manage View in Logs
-          </span>
-        </button>
-        <button mat-menu-item (click)="addGenericColumn()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-generics')"></mat-icon>
-          <span i18n appNoWrap>
-            Manage Generic Column
-          </span>
-        </button>
-      </ng-container>
-    </app-table-actions-toolbar>
-  </mat-toolbar-row>
-
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<app-tasks-table
-  [data]="data"
-  [displayedColumns]="displayedColumns"
-  [interval]="interval"
-  [intervalValue]="intervalValue"
-  [lockColumns]="lockColumns"
-  [options]="options"
-  [selection]="selection"
-  [stopInterval]="stopInterval"
-  [serviceName]="serviceName"
-  [serviceIcon]="serviceIcon"
-  [urlTemplate]="urlTemplate"
-  [total]="total"
-  (optionsChange)="onOptionsChange()"
-  (cancelTask)="onCancelTask($event)"
-  (retries)="onRetries($event)"
-></app-tasks-table>
-  `,
+  templateUrl: './index.component.html',
   styles: [`
 app-table-actions-toolbar {
   flex-grow: 1;
@@ -172,7 +104,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   availableColumns: TaskSummaryColumnKey[] = [];
   lockColumns: boolean = false;
 
-  selection = new SelectionModel<TaskSummary>(true, []);
+  selection = new SelectionModel<string>(true, []);
   selectedRows: string[] = [];
 
   isLoading = true;
@@ -229,7 +161,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         startWith({}),
         switchMap(() => {
           this.isLoading = true;
-          this.selectedRows = this.selection.selected.map(task => task.id);
+          this.selectedRows = this.selection.selected;
           this.selection.clear();
 
           const filters = this.filters;
@@ -258,9 +190,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.data = data;
         if (this.selectedRows.length > 0) {
           if (this.selectedRows.length === data.length) {
-            this.selection.select(...this.data);
+            this.selection.select(...this.data.map(task => task.id));
           } else {
-            this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))));
+            this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))).map(task => task.id));
           }
         }
       });
@@ -331,7 +263,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onCancelTasksSelection():void {
-    const tasksIds = this.selection.selected.map((task) => task.id);
+    const tasksIds = this.selection.selected;
     this.cancelTasks(tasksIds);
   }
   
@@ -405,8 +337,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.genericColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => this.#tasksIndexService.availableColumns.includes(column)
-        || (result as TaskSummaryColumnKey[]).includes(column));
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
+        this.availableColumns.push(...result);
         this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
         this.displayedColumns.push(...result);
         this.#tasksIndexService.saveColumns(this.displayedColumns);

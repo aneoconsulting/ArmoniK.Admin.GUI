@@ -1,0 +1,31 @@
+<form [formGroup]="groupForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
+  
+      <mat-form-field subscriptSizing="dynamic" appearance="outline">
+        <mat-label for="name" i18n="Name of the statuses group"> Name </mat-label>
+        <input matInput id="name" type="text" formControlName="name" i18n-placeholder="Placeholder" placeholder="Name of your group" required i18n="Input error">
+         <mat-error *ngIf="groupForm.get('name')?.hasError('required')">
+        Name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+  
+      <mat-form-field subscriptSizing="dynamic" appearance="outline">
+        <mat-label for="color" i18n="Color of the statuses group"> Color </mat-label>
+        <input matInput id="color" type="color" formControlName="color" i18n-placeholder="Placeholder" placeholder="color of your group">
+      </mat-form-field>
+  
+      <div class="statuses">
+        <h3 i18n> Statuses </h3>
+        <div class="inputs">
+          <mat-checkbox *ngFor="let status of statuses;trackBy:trackByStatus" [value]="status.value" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
+            {{ status.name }}
+          </mat-checkbox>
+        </div>
+      </div>
+    </mat-dialog-content>
+  
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onCancel()" type="button" i18n="Dialog action"> Cancel </button>
+      <button mat-flat-button type="submit" color="primary" [disabled]="!groupForm.valid" i18n="Dialog action"> Confirm </button>
+    </mat-dialog-actions>
+  </form>

@@ -2,34 +2,14 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { GenericColumn } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field.component';
 
 @Component({
   selector: 'app-filters-dialog-and',
-  template: `
-<app-filters-dialog-filter-field
-  [first]="first"
-  [filter]="filter"
-  >
-</app-filters-dialog-filter-field>
-
-<button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
-</button>
-
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="onClear()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('clear')"></mat-icon>
-    <span i18n>Clear</span>
-  </button>
-  <button mat-menu-item (click)="onRemove()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-    <span i18n>Remove</span>
-  </button>
-</mat-menu>
-  `,
+  templateUrl: './filters-dialog-and.component.html',
   styles: [`
 :host {
   display: flex;
@@ -53,6 +33,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 export class FiltersDialogAndComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
+  @Input() genericColumns: GenericColumn[] | undefined;
 
   @Output() removeChange: EventEmitter<Filter<T, U>> = new EventEmitter<Filter<T, U>>();
 

@@ -1,0 +1,28 @@
+<h2 mat-dialog-title i18n="Dialog title">Filters</h2>
+
+    <mat-dialog-content>
+      <p i18n="Dialog description">Build your filters</p>
+
+      <div class="filters">
+        <ng-container *ngFor="let filtersOr of filtersOr; let index = index; trackBy: trackByFilter">
+          <app-filters-dialog-or
+            [first]="index === 0"
+            [filtersOr]="filtersOr"
+            [genericColumns]="genericColumns"
+            (removeChange)="onRemoveOr($event)"
+          ></app-filters-dialog-or>
+        </ng-container>
+
+        <div>
+          <button mat-button (click)="onAdd()">
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
+            <span i18n>Add an Or Group</span>
+          </button>
+        </div>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+      <button mat-flat-button [mat-dialog-close]="filtersOr" color="primary" i18n="Dialog action"> Confirm </button>
+    </mat-dialog-actions>

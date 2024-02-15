@@ -20,81 +20,21 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
-import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
-import { StatusesGroupCardComponent } from './statuses-group-card.component';
-import { ActionsToolbarGroupComponent } from '../../components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '../../components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '../../components/auto-refresh-button.component';
-import { PageSectionHeaderComponent } from '../../components/page-section-header.component';
-import { PageSectionComponent } from '../../components/page-section.component';
-import { RefreshButtonComponent } from '../../components/refresh-button.component';
-import { SpinnerComponent } from '../../components/spinner.component';
-import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../types';
+import { ActionsToolbarGroupComponent } from '../../../components/actions-toolbar-group.component';
+import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
+import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
+import { PageSectionHeaderComponent } from '../../../components/page-section-header.component';
+import { PageSectionComponent } from '../../../components/page-section.component';
+import { RefreshButtonComponent } from '../../../components/refresh-button.component';
+import { SpinnerComponent } from '../../../components/spinner.component';
+import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
+import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
+import { ManageGroupsDialogComponent } from '../manage-groups-dialog.component';
+import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
 @Component({
-  selector: 'app-dashboard-line',
-  template: `
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-        <app-spinner *ngIf="loadTasksStatus"></app-spinner>
-      </app-actions-toolbar-group>
-
-      <app-actions-toolbar-group>
-        <app-auto-refresh-button [intervalValue]="line.interval" (intervalValueChange)="onIntervalValueChange($event)"></app-auto-refresh-button>
-
-        <button  mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
-          <mat-icon class="add-button" aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
-        </button>
-
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onToggleGroupsHeader()">
-            <mat-icon aria-hidden="true" [fontIcon]="line.hideGroupsHeader ? getIcon('view') : getIcon('view-off')"></mat-icon>
-            <span i18n>
-              Toggle Groups Header
-            </span>
-          </button>
-          <button mat-menu-item (click)="onManageGroupsDialog()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-            <span i18n>
-              Manage Groups
-            </span>
-          </button>
-          <button mat-menu-item (click)="onEditNameLine(line.name)">
-            <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-              <span i18n>
-                Edit name line
-              </span>
-          </button>
-          <button mat-menu-item (click)="onDeleteLine(line)">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-              <span i18n>
-                Delete line
-              </span>
-          </button>
-        </mat-menu>
-        </app-actions-toolbar-group>
-    </app-actions-toolbar>
-  </mat-toolbar-row>
-
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="line.filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<div class="groups">
-  <app-statuses-group-card
-  *ngFor="let group of line.taskStatusesGroups"
-  [group]="group"
-  [data]="data"
-  [hideGroupHeaders]="line.hideGroupsHeader ?? false"
-  [filters]="taskByStatusFilters()"
-  ></app-statuses-group-card>
-</div>
-  `,
+  selector: 'app-dashboard-task-status-line',
+  templateUrl: './task-by-status-line.component.html',
   styles: [`
 app-actions-toolbar {
   flex-grow: 1;
@@ -150,12 +90,11 @@ app-actions-toolbar {
     NgForOf
   ]
 })
-export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
+export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
   readonly #taskGrpcService = inject(TasksGrpcService);
-  readonly #tasksIndexService = inject(TasksIndexService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
@@ -184,7 +123,6 @@ export class LineComponent implements OnInit, AfterViewInit,OnDestroy {
       if (data.status) {
         this.data = data.status;
         this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-  
         this.loadTasksStatus = false;
       }
     });

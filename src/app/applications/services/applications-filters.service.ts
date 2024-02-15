@@ -73,4 +73,10 @@ export class ApplicationsFiltersService {
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
     }
   }
+
+  retrieveField(filterField: string): ApplicationFilterField  {
+    const values = Object.values(this.#rootField);
+    const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
+    return { for: 'root', index: index };
+  }
 }

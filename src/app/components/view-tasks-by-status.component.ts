@@ -16,14 +16,14 @@ import { SpinnerComponent } from './spinner.component';
 <app-spinner *ngIf="loading; else data"></app-spinner>
 
 <ng-template #data>
-  <ng-container *ngFor="let status of statuses; let index = index; trackBy:trackByCount">
+  <ng-container *ngFor="let task of tasks; let index = index; trackBy:trackByCount">
     <a mat-button
-      [matTooltip]="tooltip(status.status)"
+      [matTooltip]="task.tooltip"
       [routerLink]="['/tasks']"
-      [queryParams]="createQueryParams(status.status)"
-      [style]="'color: ' + status.color"
+      [queryParams]="task.queryParams"
+      [style]="'color: ' + task.color"
     >
-      {{ findStatusCount(status.status)?.count ?? 0 }}
+      {{ task.statusCount }}
     </a>
     <span *ngIf="index !== statuses.length - 1">|</span>
   </ng-container>
@@ -48,28 +48,63 @@ import { SpinnerComponent } from './spinner.component';
   ],
 })
 export class ViewTasksByStatusComponent {
-  @Input({ required: true }) loading = true;
-  @Input({ required: true }) statusesCounts: StatusCount[] | null = null;
-  @Input({ required: true }) statuses: TaskStatusColored[] = [];
-  @Input() defaultQueryParams: Record<string, string> = {};
-
+  tasks: Required<TaskStatusColored>[] = [];
   readonly #tasksStatusesService = inject(TasksStatusesService);
 
-  findStatusCount(status: TaskStatus): StatusCount | undefined {
-    return this.statusesCounts?.find((statusCount) => statusCount.status === status);
+  @Input({ required: true }) loading = true;
+  @Input({ required: true }) statuses: TaskStatusColored[] = [];
+  @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
+
+  @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {
+    this.buildTasks(entries);
   }
 
   createQueryParams(status: TaskStatus): Record<string, string> {
+    const taskStatusQueryParams = this.#createQueryParamsStatusKey(status);
     return {
       ...this.defaultQueryParams,
-      [`0-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`]: status.toString(),
+      ...taskStatusQueryParams
     };
+  }
+
+  #createQueryParamsStatusKey(status: TaskStatus): Record<string, string> {
+    const filterGroup = Object.keys(this.defaultQueryParams).map(keys => keys[0]); // The first character of the key represents the filter "Or Group"
+
+    const taskStatusQueryParams: Record<string, string> = {};
+    filterGroup.forEach(groupId => {
+      taskStatusQueryParams[`${groupId}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`] = status.toString();
+    });
+
+    return taskStatusQueryParams;
   }
 
   tooltip(status: TaskStatus): string {
     const statusLabel = this.#tasksStatusesService.statusToLabel(status);
 
     return statusLabel;
+  }
+
+  buildTasks(statusesCounts: StatusCount[] | null): void {
+    this.tasks = [];
+
+    this.statuses.forEach(status => {
+      const task: Required<TaskStatusColored> = {
+        status: status.status,
+        color: status.color,
+        tooltip: this.tooltip(status.status),
+        queryParams:  this.createQueryParams(status.status),
+        statusCount: 0
+      };
+
+      statusesCounts?.forEach(statusCount => {
+        if (statusCount.status === status.status) { 
+          task.statusCount = statusCount.count;
+          return;
+        }
+      });
+
+      this.tasks.push(task);
+    });
   }
 
   trackByCount(_: number, status: TaskStatusColored): TaskStatus {

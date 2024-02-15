@@ -9,7 +9,7 @@ export type ApplicationRawColumnKey = ColumnKey<ApplicationRaw, never> | 'count'
 export type ApplicationRawFieldKey = FieldKey<ApplicationRaw>;
 export type ApplicationRawListOptions = ListOptions<ApplicationRaw>;
 
-export type ApplicationFilterField = ApplicationRawEnumField;
+export type ApplicationFilterField = ApplicationRawEnumField | { for: string, index: number };
 export type ApplicationsFiltersDefinition = FilterDefinition<ApplicationRawEnumField>;
 
 export type ApplicationFilterFor = FilterFor<ApplicationRawEnumField>;

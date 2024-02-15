@@ -5,11 +5,7 @@ import { FormExternalServiceComponent } from './form-external-service.component'
 
 @Component({
   selector: 'app-add-external-service',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title"> Add an external service </h2>
-
-<app-form-external-service (cancelChange)="onNoClick()" (submitChange)="onSubmit($event)"></app-form-external-service>
-  `,
+  templateUrl:'./add-external-service-dialog.component.html',
   styles: [`
   `],
   standalone: true,

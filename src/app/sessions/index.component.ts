@@ -47,55 +47,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOpt
 
 @Component({
   selector: 'app-sessions-index',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
-  <span i18n="Page title"> Sessions </span>
-</app-page-header>
-
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="isLoading"
-      [refreshTooltip]="autoRefreshTooltip()"
-      [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
-      [availableColumns]="availableColumns"
-      [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
-      (intervalValueChange)="onIntervalValueChange($event)"
-      (displayedColumnsChange)="onColumnsChange($event)"
-      (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()"
-      (lockColumnsChange)="onLockColumnsChange()"
-    >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="addGenericColumn()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-generics')"></mat-icon>
-          <span i18n appNoWrap>
-            Manage Generic Column
-          </span>
-        </button>
-      </ng-container>
-    </app-table-actions-toolbar>
-  </mat-toolbar-row>
-
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<app-sessions-table
-  [data]="data"
-  [filters]="filters"
-  [displayedColumns]="displayedColumns"
-  [lockColumns]="lockColumns"
-  [options]="options"
-  [total]="total"
-  (optionsChange)="onOptionsChange()"
-></app-sessions-table>
-  `,
+  templateUrl: './index.component.html',
   styles: [`
 app-table-actions-toolbar {
   flex-grow: 1;
@@ -355,8 +307,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.genericColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => this._sessionsIndexService.availableColumns.includes(column)
-        || (result as SessionRawColumnKey[]).includes(column));
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
+        this.availableColumns.push(...result);
         this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
         this.displayedColumns.push(...result);
         this._sessionsIndexService.saveColumns(this.displayedColumns);

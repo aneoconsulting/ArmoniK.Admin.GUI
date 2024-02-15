@@ -36,59 +36,19 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
+import { ApplicationsLineComponent } from './components/lines/applications-line.component';
 import { PartitionsLineComponent } from './components/lines/partitions-line.component';
+import { TaskByStatusLineComponent } from './components/lines/task-by-status-line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { DashboardStorageService } from './services/dashboard-storage.service';
-import { Line } from './types';
+import { Line, LineType } from './types';
 
 
 @Component({
   selector: 'app-dashboard-index',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('dashboard')"></mat-icon>
-  <span i18n="Page title"> Dashboard </span>
-</app-page-header>
-
-<div class="fab">
-  <button class="fab-activator" mat-fab color="primary" (click)="openFab()" matTooltip="Customize Dashboard">
-    <mat-icon [fontIcon]="getIcon('settings')"></mat-icon>
-  </button>
-  <!-- TODO: add an animtation, https://angular.io/guide/animations -->
-  <div class="fab-actions" *ngIf="showFabActions">
-    <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
-      <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
-    </button>
-    <button mat-mini-fab matTooltip="Reorganize Lines" i18n-matTooltip (click)="onReorganizeLinesDialog()">
-      <mat-icon [fontIcon]="getIcon('list')"></mat-icon>
-    </button>
-    <button mat-mini-fab matTooltip="Split Lines" i18n-matTooltip (click)="onSplitLinesDialog()">
-      <mat-icon [fontIcon]="getIcon('vertical-split')"></mat-icon>
-    </button>
-  </div>
-</div>
-
-<div *ngIf="lines.length === 0" class="no-line">
-    <em i18n>
-      Your dashboard is empty, add a line to start monitoring your tasks.
-    </em>
-
-    <button mat-raised-button color="primary" (click)="onAddLineDialog()">Add a line</button>
-</div>
-
-<main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
-  <app-page-section *ngFor="let line of lines; trackBy:trackByLine">
-    <app-page-section-header icon="adjust">
-      <span i18n="Section title">{{ line.name }}</span>
-    </app-page-section-header>
-    <ng-container *ngIf="line.type === 'Partitions'">
-      <app-dashboard-partitions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)" />
-    </ng-container>
-  </app-page-section>
-</main>
-  `,
+  templateUrl: './index.component.html',
   styles: [`
 .fab {
   position: fixed;
@@ -173,7 +133,9 @@ import { Line } from './types';
     MatTooltipModule,
     MatProgressSpinnerModule,
     FiltersToolbarComponent,
-    PartitionsLineComponent
+    PartitionsLineComponent,
+    TaskByStatusLineComponent,
+    ApplicationsLineComponent,
   ]
 })
 export class IndexComponent implements OnInit {
@@ -202,6 +164,25 @@ export class IndexComponent implements OnInit {
     return this.#iconsService.getPageIcon(name);
   }
 
+  getLineIcon(name: LineType): string {
+    switch (name) {
+    case 'Tasks':
+      return this.#iconsService.getPageIcon('tasks');
+    case 'Applications':
+      return this.#iconsService.getPageIcon('applications');
+    case 'Partitions':
+      return this.#iconsService.getPageIcon('partitions');
+    case 'Results':
+      return this.#iconsService.getPageIcon('results');
+    case 'Sessions':
+      return this.#iconsService.getPageIcon('sessions');
+    case 'CountStatus':
+      return this.#iconsService.getIcon('task-by-status');
+    default:
+      return this.#iconsService.getIcon('default');
+    }
+  }
+
   openFab() {
     this.showFabActions = !this.showFabActions;
   }
@@ -213,10 +194,10 @@ export class IndexComponent implements OnInit {
       if (!result) {
         return;
       }
-      else if (result.type === 'Tasks') {
+      else if (result.type === 'CountStatus') {
         this.lines.push({
           name: result.name,
-          type: 'Tasks',
+          type: 'CountStatus',
           interval: 5,
           hideGroupsHeader: false,
           filters: [],

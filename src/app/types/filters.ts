@@ -24,7 +24,7 @@ export type FiltersAnd<T extends number, U extends number | null> = Filter<T, U>
  */
 export type Filter<T extends number, U extends number | null = null> = {
   for: FilterFor<T, U> | null
-  field: T | U | null
+  field: T | U | string | null
   value: MaybeNull<FilterInputValue>
   operator: MaybeNull<number>
 };
@@ -105,9 +105,13 @@ export interface FilterInputOutputDate {
   value: MaybeNull<number>;
 }
 
+export interface FilterInputOutputStatus {
+  type: 'status';
+  value: MaybeNull<string>;
+}
 export interface FilterInputOutputDuration {
   type: 'duration';
   value: MaybeNull<number>
 }
 
-export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration;
+export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration | FilterInputOutputStatus;

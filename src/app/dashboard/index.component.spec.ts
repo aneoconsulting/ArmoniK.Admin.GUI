@@ -103,11 +103,11 @@ describe('IndexComponent', () => {
   });
 
   it('should add a line', () => {
-    dialogRef$ = of({name: 'New line', type: 'Tasks'} as unknown as Line);
+    dialogRef$ = of({name: 'New line', type: 'CountStatus'} as unknown as Line);
     const newLines = structuredClone(defaultLines);
     newLines.push({
       name: 'New line',
-      type: 'Tasks',
+      type: 'CountStatus',
       interval: 5,
       hideGroupsHeader: false,
       filters: [],
