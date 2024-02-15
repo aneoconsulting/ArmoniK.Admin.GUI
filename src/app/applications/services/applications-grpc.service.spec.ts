@@ -35,7 +35,7 @@ describe('ApplicationsGrpcService', () => {
     pageIndex: 0,
     pageSize: 10,
     sort: {
-      active: 'name',
+      active: 'version',
       direction: 'asc'
     }
   };
@@ -85,7 +85,7 @@ describe('ApplicationsGrpcService', () => {
         direction: 1,
         fields: [{
           applicationField: {
-            field: 1
+            field: 2
           }
         }]
       },
@@ -102,7 +102,7 @@ describe('ApplicationsGrpcService', () => {
         direction: 1,
         fields: [{
           applicationField: {
-            field: 1
+            field: 2
           }
         }]
       },
@@ -125,5 +125,30 @@ describe('ApplicationsGrpcService', () => {
 
   it('should throw error in case on unexpected type', () => {
     expect(() => {service.list$(options, uncorrectfilters);}).toThrowError('Type number not supported');
+  });
+
+  it('should create the appropriate application sorting field', () => {
+    options.sort.active = 'name';
+    const listResult = new ListApplicationsRequest({
+      page: 0,
+      pageSize: 10,
+      sort: {
+        direction: 1,
+        fields: [
+          {
+            applicationField: {
+              field: 1
+            }
+          },
+          {
+            applicationField: {
+              field: 2
+            }
+          }
+        ]
+      },
+      filters: {or: []}
+    });
+    expect(service.list$(options, [])).toEqual(listResult);
   });
 });
