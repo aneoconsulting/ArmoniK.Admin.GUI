@@ -53,7 +53,7 @@ export class ViewTasksByStatusComponent {
 
   @Input({ required: true }) loading = true;
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
-  @Input() defaultQueryParams: Record<string, string> = {};
+  @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
 
   @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {
     this.buildTasks(entries);
