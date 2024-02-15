@@ -53,7 +53,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, 
         <td mat-cell *matCellDef="let element" appNoWrap>
         <app-count-tasks-by-status
           [statuses]="tasksStatusesColored"
-          [queryParams]="element.queryParams"
+          [queryParams]="element.queryTasksParams"
           [filters]="element.filters"
         ></app-count-tasks-by-status>
         </td>
