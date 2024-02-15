@@ -34,54 +34,7 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
 @Component({
   selector: 'app-dashboard-partitions-line',
-  template: `
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="loadPartitionData"
-      [refreshTooltip]="autoRefreshTooltip()"
-      [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
-      [availableColumns]="availableColumns"
-      [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
-      (intervalValueChange)="onIntervalValueChange($event)"
-      (displayedColumnsChange)="onColumnsChange($event)"
-      (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()"
-      (lockColumnsChange)="onLockColumnsChange()"
-    >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="onEditNameLine(line.name)">
-          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-          <span i18n appNoWrap>
-            Edit name line
-          </span>
-        </button>
-        <button mat-menu-item (click)="onDeleteLine(line)">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-          <span i18n appNoWrap>
-            Delete line
-          </span>
-        </button>
-      </ng-container>
-    </app-table-actions-toolbar>
-  </mat-toolbar-row>
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-<app-partitions-table
-  [data]="data"
-  [filters]="filters"
-  [options]="options"
-  [total]="total"
-  [displayedColumns]="displayedColumns"
-  [lockColumns]="lockColumns"
-  (optionsChange)="onOptionsChange()"
-></app-partitions-table>
-  `,
+  templateUrl: 'partitions-line.component.html',
   styles: [`
 app-table-actions-toolbar {
   flex-grow: 1;
