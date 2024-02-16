@@ -87,7 +87,7 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
   }
 
   columnsLabels() {
-    return this.indexService.columnsLabels as Record<K, string> ;
+    return this.indexService.columnsLabels;
   }
 
   getIcon(name: string): string {
@@ -129,7 +129,7 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
   }
 
   onColumnsReset() {
-    this.displayedColumns = this.indexService.resetColumns() as K[];
+    this.displayedColumns = this.indexService.resetColumns();
   }
 
   onFiltersChange(filters: F) {

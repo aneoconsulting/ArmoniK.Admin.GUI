@@ -1,7 +1,7 @@
 import { TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TaskFilterDefinition } from '@app/tasks/types';
-import { FieldKey } from '@app/types/data';
+import { FieldKey, IndexListOptions } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { ListOptions } from '@app/types/options';
 import { StorageService } from './storage.service';
@@ -82,8 +82,9 @@ describe('TableService', () => {
   });
 
   it('saveOptions should call TableStorageService.save', () => {
-    service.saveOptions('applications-options', {pageIndex: 0, pageSize: 10, sort: {active: 'id', direction: 'asc'}});
-    expect(saveSpy).toHaveBeenCalledWith('applications-options', 1);
+    const options: IndexListOptions = {pageIndex: 0, pageSize: 10, sort: {active: 'id', direction: 'asc'}};
+    service.saveOptions('applications-options', options);
+    expect(saveSpy).toHaveBeenCalledWith('applications-options', options);
   });
 
   describe('restoreOptions', () => {
