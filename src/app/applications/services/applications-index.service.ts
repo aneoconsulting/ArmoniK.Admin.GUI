@@ -7,8 +7,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } fr
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
 export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
-  tableService = inject(TableService);
-  defaultConfigService = inject(DefaultConfigService);
+  readonly tableService = inject(TableService);
+  readonly defaultConfigService = inject(DefaultConfigService);
 
   readonly defaultColumns = this.defaultConfigService.defaultApplications.columns;
   readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
@@ -26,7 +26,7 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
   readonly defaultOptions: ApplicationRawListOptions = this.defaultConfigService.defaultApplications.options;
 
   readonly defaultIntervalValue = this.defaultConfigService.defaultApplications.interval;
-  readonly defaultLockColumnValue = this.defaultConfigService.defaultApplications.lockColumns;
+  readonly defaultLockColumns = this.defaultConfigService.defaultApplications.lockColumns;
 
   columnToLabel(column: ApplicationRawColumnKey): string {
     return this.columnsLabels[column];
@@ -72,7 +72,7 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
   }
 
   restoreLockColumns(): boolean {
-    return this.tableService.restoreLockColumns('applications-lock-columns') ?? this.defaultLockColumnValue;
+    return this.tableService.restoreLockColumns('applications-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**

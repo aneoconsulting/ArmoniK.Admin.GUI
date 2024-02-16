@@ -14,7 +14,7 @@ export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexLi
   readonly defaultOptions: O;
 
   readonly defaultIntervalValue: number;
-  readonly defaultLockColumnValue: boolean;
+  readonly defaultLockColumns: boolean;
 
   // Interval
   saveIntervalValue(value: number): void;

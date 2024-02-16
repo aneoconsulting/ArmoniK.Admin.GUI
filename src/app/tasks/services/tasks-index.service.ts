@@ -9,7 +9,6 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../ty
 export class TasksIndexService implements IndexServiceGenericInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
-  defaultLockColumnValue: boolean;
 
   readonly defaultColumns: TaskSummaryColumnKey[] = this.defaultConfigService.defaultTasks.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultTasks.lockColumns;

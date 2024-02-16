@@ -9,7 +9,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types
 export class SessionsIndexService implements IndexServiceGenericInterface<SessionRawColumnKey, SessionRawListOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
-  defaultLockColumnValue: boolean;
 
   readonly defaultColumns: SessionRawColumnKey[] = this.defaultConfigService.defaultSessions.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultSessions.lockColumns;

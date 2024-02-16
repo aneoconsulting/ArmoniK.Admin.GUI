@@ -7,9 +7,8 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '..
 @Injectable()
 // TODO: re-add app-index-service
 export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions> {
-  defaultConfigService = inject(DefaultConfigService);
-  tableService = inject(TableService);
-  defaultLockColumnValue: boolean;
+  readonly defaultConfigService = inject(DefaultConfigService);
+  readonly tableService = inject(TableService);
 
   readonly tableName: string = 'partitions';
 
