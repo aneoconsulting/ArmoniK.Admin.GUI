@@ -1,14 +1,16 @@
 import { Injectable, inject } from '@angular/core';
+import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
-export class ApplicationsIndexService {
-  #defaultConfigService = inject(DefaultConfigService);
+export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
+  tableService = inject(TableService);
+  defaultConfigService = inject(DefaultConfigService);
 
-  readonly defaultColumns: ApplicationRawColumnKey[] = this.#defaultConfigService.defaultApplications.columns;
+  readonly defaultColumns = this.defaultConfigService.defaultApplications.columns;
   readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
 
   // TODO: Add it to AppIndexService and to every index service
@@ -21,12 +23,10 @@ export class ApplicationsIndexService {
     actions: $localize`Actions`,
   };
 
-  readonly defaultOptions: ApplicationRawListOptions = this.#defaultConfigService.defaultApplications.options;
+  readonly defaultOptions: ApplicationRawListOptions = this.defaultConfigService.defaultApplications.options;
 
-  readonly defaultIntervalValue = this.#defaultConfigService.defaultApplications.interval;
-  readonly defaultLockColumnValue = this.#defaultConfigService.defaultApplications.lockColumns;
-
-  #tableService = inject(TableService);
+  readonly defaultIntervalValue = this.defaultConfigService.defaultApplications.interval;
+  readonly defaultLockColumnValue = this.defaultConfigService.defaultApplications.lockColumns;
 
   columnToLabel(column: ApplicationRawColumnKey): string {
     return this.columnsLabels[column];
@@ -56,11 +56,11 @@ export class ApplicationsIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue('applications-interval', value);
+    this.tableService.saveIntervalValue('applications-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue('applications-interval') ?? this.defaultIntervalValue;
+    return this.tableService.restoreIntervalValue('applications-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -68,11 +68,11 @@ export class ApplicationsIndexService {
    */
 
   saveLockColumns(value: boolean): void {
-    this.#tableService.saveLockColumns('applications-lock-columns', value);
+    this.tableService.saveLockColumns('applications-lock-columns', value);
   }
 
   restoreLockColumns(): boolean {
-    return this.#tableService.restoreLockColumns('applications-lock-columns') ?? this.defaultLockColumnValue;
+    return this.tableService.restoreLockColumns('applications-lock-columns') ?? this.defaultLockColumnValue;
   }
 
   /**
@@ -80,11 +80,11 @@ export class ApplicationsIndexService {
    */
 
   saveOptions(options: ApplicationRawListOptions): void {
-    this.#tableService.saveOptions('applications-options', options);
+    this.tableService.saveOptions('applications-options', options);
   }
 
   restoreOptions(): ApplicationRawListOptions {
-    const options = this.#tableService.restoreOptions<ApplicationRaw>('applications-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<ApplicationRaw>('applications-options', this.defaultOptions);
 
     return options;
   }
@@ -94,15 +94,15 @@ export class ApplicationsIndexService {
    */
 
   saveColumns(columns: ApplicationRawColumnKey[]): void {
-    this.#tableService.saveColumns('applications-columns', columns);
+    this.tableService.saveColumns('applications-columns', columns);
   }
 
   restoreColumns(): ApplicationRawColumnKey[] {
-    return this.#tableService.restoreColumns<ApplicationRawColumnKey[]>('applications-columns') ?? this.defaultColumns;
+    return this.tableService.restoreColumns<ApplicationRawColumnKey[]>('applications-columns') ?? this.defaultColumns;
   }
 
   resetColumns(): ApplicationRawColumnKey[] {
-    this.#tableService.resetColumns('applications-columns');
+    this.tableService.resetColumns('applications-columns');
 
     return Array.from(this.defaultColumns);
   }

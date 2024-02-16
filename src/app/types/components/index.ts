@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
-import { PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRawColumnKey, ResultRawFiltersOr, ResultRawListOptions } from '@app/results/types';
-import { SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOptions } from '@app/sessions/types';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '@app/tasks/types';
+import { ApplicationRawFilter } from '@app/applications/types';
+import { PartitionRawFiltersOr } from '@app/partitions/types';
+import { ResultRawFiltersOr } from '@app/results/types';
+import { SessionRawFiltersOr } from '@app/sessions/types';
+import { TaskSummary, TaskSummaryFiltersOr } from '@app/tasks/types';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -12,9 +12,10 @@ import { ShareUrlService } from '@services/share-url.service';
 import { DataRaw, IndexListFilters, IndexListOptions, RawColumnKey } from '../data';
 import { FiltersOr } from '../filters';
 import { Page } from '../pages';
-import { DataFiltersService, GrpcService, IndexService } from '../services';
+import { DataFiltersService, GrpcService } from '../services';
+import { IndexServiceInterface } from '../services/indexService';
 
-type AllOptions = TaskSummaryListOptions & SessionRawListOptions & PartitionRawListOptions & ApplicationRawListOptions & ResultRawListOptions;
+// TODO: Create an interface for filtersServices in order to avoid this kind of type.
 type AllFilters = SessionRawFiltersOr & TaskSummaryFiltersOr & PartitionRawFiltersOr & ApplicationRawFilter & ResultRawFiltersOr;
 
 export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends IndexListOptions, F extends IndexListFilters, D extends DataRaw | TaskSummary> {
@@ -25,7 +26,7 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
 
   protected filterService: DataFiltersService;
   protected grpcService: GrpcService;
-  protected indexService: IndexService;
+  protected indexService: IndexServiceInterface<K, O>;
 
   displayedColumns: K[] = [];
   availableColumns: K[] = [];
@@ -49,10 +50,10 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
   subscriptions: Subscription = new Subscription();
 
   restore(): void {
-    this.displayedColumns = this.indexService.restoreColumns() as K[];
-    this.availableColumns = this.indexService.availableColumns as K[];
+    this.displayedColumns = this.indexService.restoreColumns();
+    this.availableColumns = this.indexService.availableColumns;
     this.lockColumns = this.indexService.restoreLockColumns();
-    this.options = this.indexService.restoreOptions() as O;
+    this.options = this.indexService.restoreOptions();
 
     this.filters = this.filterService.restoreFilters() as F;
 
@@ -66,11 +67,11 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
   }
 
   saveOptions() {
-    this.indexService.saveOptions(this.options as AllOptions);
+    this.indexService.saveOptions(this.options);
   }
 
   saveColumns() {
-    this.indexService.saveColumns(this.displayedColumns as TaskSummaryColumnKey[] & SessionRawColumnKey[] & PartitionRawColumnKey[] & ApplicationRawColumnKey[] & ResultRawColumnKey[]);
+    this.indexService.saveColumns(this.displayedColumns);
   }
 
   saveLockColumns() {
