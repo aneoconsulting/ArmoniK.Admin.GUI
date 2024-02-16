@@ -49,7 +49,7 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
   subscriptions: Subscription = new Subscription();
 
   restore(): void {
-    this.displayedColumns = this.indexService.resetColumns() as K[];
+    this.displayedColumns = this.indexService.restoreColumns() as K[];
     this.availableColumns = this.indexService.availableColumns as K[];
     this.lockColumns = this.indexService.restoreLockColumns();
     this.options = this.indexService.restoreOptions() as O;

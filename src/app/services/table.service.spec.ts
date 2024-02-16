@@ -82,7 +82,7 @@ describe('TableService', () => {
   });
 
   it('saveOptions should call TableStorageService.save', () => {
-    service.saveOptions('applications-options', 1);
+    service.saveOptions('applications-options', {pageIndex: 0, pageSize: 10, sort: {active: 'id', direction: 'asc'}});
     expect(saveSpy).toHaveBeenCalledWith('applications-options', 1);
   });
 

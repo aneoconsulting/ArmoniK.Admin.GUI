@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DataFilterService } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
+import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
 import { ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from './types';
@@ -109,11 +110,12 @@ describe('Application component', () => {
         {provide: NotificationService, useValue: mockNotificationService },
         IconsService,
         DataFilterService,
-        { provide: DATA_FILTERS_SERVICE, useValue: mockApplicationsFilterService },
+        { provide: ApplicationsFiltersService, useValue: mockApplicationsFilterService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
         { provide: ApplicationsGrpcService, useValue: mockGrpcApplicationsService },
         { provide: AutoRefreshService, useValue: mockAutoRefreshService },
+        DefaultConfigService,
       ]
     }).inject(IndexComponent);
 
