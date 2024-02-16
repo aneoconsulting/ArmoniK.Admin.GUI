@@ -5,6 +5,12 @@
 // import { Filter, FiltersOr } from './filters';
 // import { ListOptions } from './options';
 
+import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
+import { PartitionsGrpcService } from '@app/partitions/services/partitions-grpc.service';
+import { ResultsGrpcService } from '@app/results/services/results-grpc.service';
+import { SessionsGrpcService } from '@app/sessions/services/sessions-grpc.service';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+
 // export interface AppGrpcService<T extends object> {
 //   readonly sortDirections: Record<SortDirection, ArmoniKSortDirection>
 //   readonly sortFields: Record<FieldKey<T>, number>
@@ -42,3 +48,5 @@
 //   restoreFilters(): FiltersOr<T>
 //   resetFilters(): void
 // }
+
+export type GrpcService = TasksGrpcService | SessionsGrpcService | ApplicationsGrpcService | PartitionsGrpcService | ResultsGrpcService;
