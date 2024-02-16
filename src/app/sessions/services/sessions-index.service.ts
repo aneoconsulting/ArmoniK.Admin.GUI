@@ -79,7 +79,7 @@ export class SessionsIndexService {
   }
 
   isSimpleColumn(column: SessionRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isSessionIdColumn(column) && !this.isStatusColumn(column) && !this.isCountColumn(column) && !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column);
+    return !this.isActionsColumn(column) && !this.isSessionIdColumn(column) && !this.isStatusColumn(column) && !this.isCountColumn(column) && !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column) && !this.isGenericColumn(column);
   }
 
   isNotSortableColumn(column: SessionRawColumnKey): boolean {
