@@ -9,15 +9,14 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { AbstractIndexComponent } from '@app/types/components';
 import { GenericColumn } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
@@ -112,64 +111,22 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFiltersOr, SessionRaw> implements OnInit, AfterViewInit, OnDestroy {
   readonly #tasksByStatusService = inject(TasksByStatusService);
-  readonly #notificationService = inject(NotificationService);
-  readonly #sessionsFiltersService = inject(SessionsFiltersService);
-  readonly _tasksByStatusService = inject(TasksByStatusService);
   readonly #dialog = inject(MatDialog);
 
-  displayedColumns: SessionRawColumnKey[] = [];
-  availableColumns: SessionRawColumnKey[] = [];
   genericColumns: GenericColumn[];
-  lockColumns: boolean = false;
 
-  isLoading = true;
-  data: SessionRaw[] = [];
-  total = 0;
-
-  options: SessionRawListOptions;
-
-  filters: SessionRawFiltersOr = [];
-
-  intervalValue = 0;
-  sharableURL = '';
-
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
-
-  tasksStatusesColored: TaskStatusColored[] = [];
-
-  subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _iconsService: IconsService,
-    private _shareURLService: ShareUrlService,
-    private _sessionsIndexService: SessionsIndexService,
-    private _sessionsGrpcService: SessionsGrpcService,
-    private _autoRefreshService: AutoRefreshService
-  ) {}
+  protected override filterService = inject(SessionsFiltersService);
+  protected override indexService = inject(SessionsIndexService);
+  protected override grpcService = inject(SessionsGrpcService);
 
   ngOnInit() {
-    this.displayedColumns = this._sessionsIndexService.restoreColumns();
-    this.availableColumns = this._sessionsIndexService.availableColumns;
-    this.lockColumns = this._sessionsIndexService.restoreLockColumns();
+    this.restore();
 
-    this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
+    // interface generics
+    this.genericColumns = this.indexService.restoreGenericColumns();
     this.availableColumns.push(...this.genericColumns);
-
-    this.options = this._sessionsIndexService.restoreOptions();
-
-    this.filters = this.#sessionsFiltersService.restoreFilters();
-
-    this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
-
-    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
-
-    this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses('sessions');
   }
 
   ngAfterViewInit(): void {
@@ -179,14 +136,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         switchMap(() => {
           this.isLoading = true;
 
-          const filters = this.filters;
+          this.sharableURL = this.generateUrl();
+          this.saveOptions();
 
-          this.sharableURL = this._shareURLService.generateSharableURL(this.options, filters);
-          this._sessionsIndexService.saveOptions(this.options);
-
-          return this._sessionsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
+          return this.grpcService.list$(this.options, this.filters).pipe(catchError((error) => {
             console.error(error);
-            this.#notificationService.error('Unable to fetch sessions');
+            this.error('Unable to fetch sessions');
             return of(null);
           }));
         }),
@@ -210,93 +165,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  columnsLabels(): Record<SessionRawColumnKey, string> {
-    return this._sessionsIndexService.columnsLabels;
-  }
-
-  getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
-  }
-
-  getPageIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this._sessionsIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(data: SessionRawColumnKey[]) {
-    this.displayedColumns = [...data];
-
-    this._sessionsIndexService.saveColumns(data);
-  }
-
-  onColumnsReset() {
-    this.displayedColumns = this._sessionsIndexService.resetColumns();
-  }
-
-  onFiltersChange(filters: unknown[]) {
-    this.filters = filters as SessionRawFiltersOr;
-
-    this.#sessionsFiltersService.saveFilters(filters as SessionRawFiltersOr);
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onFiltersReset() {
-    this.filters = this.#sessionsFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-  
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this._sessionsIndexService.saveLockColumns(this.lockColumns);
-  }
-
-  autoRefreshTooltip() {
-    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
   onCancel(sessionId: string) {
-    this._sessionsGrpcService.cancel$(sessionId).subscribe(
+    this.grpcService.cancel$(sessionId).subscribe(
       () => this.refresh.next(),
     );
-  }
-
-  handleAutoRefreshStart() {
-    if (this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
-  }
-
-  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
-    const keys = nestedKeys.split('.');
-    let resultObject: {[key: string]: object} = element;
-    keys.forEach(key => {
-      resultObject = resultObject[key] as unknown as {[key: string]: object};
-    });
-    return resultObject;
   }
 
   addGenericColumn(): void {
@@ -311,8 +183,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.availableColumns.push(...result);
         this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
         this.displayedColumns.push(...result);
-        this._sessionsIndexService.saveColumns(this.displayedColumns);
-        this._sessionsIndexService.saveGenericColumns(this.genericColumns);
+        this.indexService.saveColumns(this.displayedColumns);
+        this.indexService.saveGenericColumns(this.genericColumns);
       }
     });
   }

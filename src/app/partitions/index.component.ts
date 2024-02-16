@@ -9,13 +9,12 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TaskStatusColored } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
+import { AbstractIndexComponent } from '@app/types/components';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -147,70 +146,28 @@ app-table-actions-toolbar {
     PartitionsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #notificationService = inject(NotificationService);
-  readonly #iconsService = inject(IconsService);
-  readonly #shareURLService = inject(ShareUrlService);
-  readonly #partitionsIndexService = inject(PartitionsIndexService);
-  readonly #partitionsGrpcService = inject(PartitionsGrpcService);
-  readonly #autoRefreshService = inject(AutoRefreshService);
-  readonly #partitionsFiltersService = inject(PartitionsFiltersService);
-
-  displayedColumns: PartitionRawColumnKey[] = [];
-  availableColumns: PartitionRawColumnKey[] = [];
-  lockColumns: boolean;
-
-  isLoading = true;
-  data: PartitionRaw[] = [];
-  total = 0;
-
-  options: PartitionRawListOptions;
-
-  filters: PartitionRawFiltersOr = [];
-
-  intervalValue = 0;
-  sharableURL = '';
-
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
-
-  tasksStatusesColored: TaskStatusColored[] = [];
-
-  subscriptions: Subscription = new Subscription();
+export class IndexComponent extends AbstractIndexComponent<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFiltersOr, PartitionRaw> implements OnInit, AfterViewInit, OnDestroy {
+  protected override indexService = inject(PartitionsIndexService);
+  protected override grpcService = inject(PartitionsGrpcService);
+  protected override filterService = inject(PartitionsFiltersService);
 
   ngOnInit() {
-    this.displayedColumns = this.#partitionsIndexService.restoreColumns();
-    this.availableColumns = this.#partitionsIndexService.availableColumns;
-    this.lockColumns = this.#partitionsIndexService.restoreLockColumns();
-
-    this.options = this.#partitionsIndexService.restoreOptions();
-
-    this.filters = this.#partitionsFiltersService.restoreFilters();
-
-    this.intervalValue = this.#partitionsIndexService.restoreIntervalValue();
-
-    this.sharableURL = this.#shareURLService.generateSharableURL(this.options, this.filters);
-
+    this.restore();
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription =  merge(this.optionsChange, this.refresh, this.interval$)
+    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$)
       .pipe(
         startWith({}),
         switchMap(() => {
           this.isLoading = true;
 
-          const filters = this.filters;
+          this.sharableURL = this.generateUrl();
+          this.saveOptions();
 
-          this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
-          this.#partitionsIndexService.saveOptions(this.options);
-
-          return this.#partitionsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
+          return this.grpcService.list$(this.options, this.filters).pipe(catchError((error) => {
             console.error(error);
-            this.#notificationService.error('Unable to fetch partitions');
+            this.error('Unable to fetch partitions');
             return of(null);
           }));
         }),
@@ -233,74 +190,5 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  columnsLabels(): Record<PartitionRawColumnKey, string> {
-    return this.#partitionsIndexService.columnsLabels;
-  }
-
-  getPageIcon(page: Page): string {
-    return this.#iconsService.getPageIcon(page);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this.#partitionsIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(data: PartitionRawColumnKey[]) {
-    this.displayedColumns = [...data];
-    this.#partitionsIndexService.saveColumns(data);
-  }
-
-  onColumnsReset() {
-    this.displayedColumns = this.#partitionsIndexService.resetColumns();
-  }
-
-  onFiltersChange(filters: unknown[]) {
-    this.filters = filters as PartitionRawFiltersOr;
-
-    this.#partitionsFiltersService.saveFilters(filters as PartitionRawFiltersOr);
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onFiltersReset() {
-    this.filters = this.#partitionsFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-  
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this.#partitionsIndexService.saveLockColumns(this.lockColumns);
-  }
-
-  autoRefreshTooltip() {
-    return this.#autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  handleAutoRefreshStart() {
-    if (this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }

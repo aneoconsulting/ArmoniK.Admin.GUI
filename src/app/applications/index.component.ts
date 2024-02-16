@@ -4,12 +4,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { Page } from '@app/types/pages';
+import { AbstractIndexComponent } from '@app/types/components';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -123,53 +123,14 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #notificationService = inject(NotificationService);
-  readonly #iconsService = inject(IconsService);
-  readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
+export class IndexComponent extends AbstractIndexComponent<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter, ApplicationRaw> implements OnInit, AfterViewInit, OnDestroy {
 
-  displayedColumns: ApplicationRawColumnKey[] = [];
-  availableColumns: ApplicationRawColumnKey[] = [];
-  lockColumns: boolean = false;
-
-  isLoading = true;
-  data: ApplicationRaw[] = [];
-  total = 0;
-
-  options: ApplicationRawListOptions;
-
-  filters: ApplicationRawFilter = [];
-
-  intervalValue = 0;
-  sharableURL = '';
-
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
-
-  subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _shareURLService: ShareUrlService,
-    private _applicationsIndexService: ApplicationsIndexService,
-    private _applicationsGrpcService: ApplicationsGrpcService,
-    private _autoRefreshService: AutoRefreshService
-  ) {}
+  protected override indexService = inject(ApplicationsIndexService);
+  protected override grpcService = inject(ApplicationsGrpcService);
+  protected override filterService = inject(ApplicationsFiltersService);
 
   ngOnInit(): void {
-    this.displayedColumns = this._applicationsIndexService.restoreColumns();
-    this.availableColumns = this._applicationsIndexService.availableColumns;
-    this.lockColumns = this._applicationsIndexService.restoreLockColumns();
-
-    this.options = this._applicationsIndexService.restoreOptions();
-
-    this.filters = this.#applicationsFiltersService.restoreFilters();
-
-    this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
-
-    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
+    this.restore();
   }
 
   ngAfterViewInit(): void {
@@ -180,14 +141,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         switchMap(() => {
           this.isLoading = true;
 
-          const filters = this.filters;
+          this.sharableURL = this.generateUrl();
+          this.saveOptions();
 
-          this.sharableURL = this._shareURLService.generateSharableURL(this.options, filters);
-          this._applicationsIndexService.saveOptions(this.options);
-
-          return this._applicationsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
+          return this.grpcService.list$(this.options, this.filters).pipe(catchError((error) => {
             console.error(error);
-            this.#notificationService.error('Unable to fetch applications');
+            this.error('Unable to fetch applications');
             return of(null);
           }));
         }),
@@ -211,75 +170,5 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
-  }
-
-  columnsLabels(): Record<ApplicationRawColumnKey, string> {
-    return this._applicationsIndexService.columnsLabels;
-  }
-
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this._applicationsIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumns = data;
-
-    this._applicationsIndexService.saveColumns(data);
-  }
-
-  onColumnsReset() {
-    this.displayedColumns = this._applicationsIndexService.resetColumns();
-  }
-
-  onFiltersChange(filters: unknown[]) {
-    this.filters = filters as ApplicationRawFilter;
-
-    this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilter);
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onFiltersReset() {
-    this.filters = this.#applicationsFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this._applicationsIndexService.saveLockColumns(this.lockColumns);
-  }
-
-  autoRefreshTooltip() {
-    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  handleAutoRefreshStart() {
-    if (this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }

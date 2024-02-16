@@ -9,19 +9,18 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { AbstractIndexComponent } from '@app/types/components';
 import { GenericColumn } from '@app/types/data';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -90,66 +89,33 @@ app-table-actions-toolbar {
     FiltersService,
   ],
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFiltersOr, TaskSummary> implements OnInit, AfterViewInit, OnDestroy {
   readonly #dialog = inject(MatDialog);
-  readonly #iconsService = inject(IconsService);
-  readonly #shareURLService = inject(ShareUrlService);
-  readonly #autoRefreshService = inject(AutoRefreshService);
-  readonly #tasksIndexService = inject(TasksIndexService);
-  readonly #tasksGrpcService = inject(TasksGrpcService);
-  readonly #notificationService = inject(NotificationService);
-  readonly #tasksFiltersService = inject(TasksFiltersService);
-
-  displayedColumns: TaskSummaryColumnKey[] = [];
-  availableColumns: TaskSummaryColumnKey[] = [];
-  lockColumns: boolean = false;
+  protected override indexService = inject(TasksIndexService);
+  protected override grpcService = inject(TasksGrpcService);
+  protected override filterService = inject(TasksFiltersService);
 
   selection = new SelectionModel<string>(true, []);
   selectedRows: string[] = [];
 
-  isLoading = true;
-  data: TaskSummary[] = [];
-  total = 0;
-
   taskId: string;
 
-  options: TaskSummaryListOptions;
-
-  filters: TaskSummaryFiltersOr = [];
   genericColumns: GenericColumn[];
-
-  sharableURL = '';
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
   urlTemplate: string | null = null;
 
-  intervalValue = 0;
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  optionsChange: Subject<void> = new Subject<void>();
-  interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  subscriptions: Subscription = new Subscription();
-
   ngOnInit(): void {
-    this.displayedColumns = this.#tasksIndexService.restoreColumns();
-    this.availableColumns = this.#tasksIndexService.availableColumns;
-    this.lockColumns = this.#tasksIndexService.restoreLockColumns();
 
-    this.genericColumns = this.#tasksIndexService.restoreGenericColumns();
+    this.restore();
+
+    // interface Generics
+    this.genericColumns = this.indexService.restoreGenericColumns();
     this.availableColumns.push(...this.genericColumns);
 
-    this.options = this.#tasksIndexService.restoreOptions();
-
-    this.filters = this.#tasksFiltersService.restoreFilters();
-
-    this.intervalValue = this.#tasksIndexService.restoreIntervalValue();
-
-    this.sharableURL = this.#shareURLService.generateSharableURL(this.options, this.filters);
-
-    const viewInLogs = this.#tasksIndexService.restoreViewInLogs();
+    // Interface ViewInLogs
+    const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
     this.urlTemplate = viewInLogs.urlTemplate;
@@ -164,15 +130,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.selectedRows = this.selection.selected;
           this.selection.clear();
 
-          const filters = this.filters;
+          this.sharableURL = this.generateUrl();
+          this.saveOptions();
 
-          this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
-          this.#tasksIndexService.saveOptions(this.options);
-
-          return this.#tasksGrpcService.list$(this.options, filters).pipe(
+          return this.grpcService.list$(this.options, this.filters).pipe(
             catchError((error) => {
               console.error(error);
-              this.#notificationService.error('Unable to fetch tasks');
+              this.error('Unable to fetch tasks');
               return of(null);
             }),
           );
@@ -214,48 +178,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
     };
 
-    this.onFiltersChange([filter]);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if(value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this.#tasksIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(columns: TaskSummaryColumnKey[]) {
-    this.displayedColumns = [...columns];
-
-    this.#tasksIndexService.saveColumns(columns);
-  }
-
-  onColumnsReset() {
-    this.displayedColumns = this.#tasksIndexService.resetColumns();
-  }
-
-  onFiltersChange(value: unknown[]) {
-    this.filters = value as TaskSummaryFiltersOr;
-
-    this.#tasksFiltersService.saveFilters(this.filters);
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onFiltersReset(): void{
-    this.filters = this.#tasksFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.refresh.next();
+    this.onFiltersChange([[filter]]);
   }
 
   onCancelTask(taskId: string): void {
@@ -266,47 +189,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     const tasksIds = this.selection.selected;
     this.cancelTasks(tasksIds);
   }
-  
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this.#tasksIndexService.saveLockColumns(this.lockColumns);
-  }
 
   cancelTasks(tasksIds: string[]): void {
-    this.#tasksGrpcService.cancel$(tasksIds).subscribe({
+    this.grpcService.cancel$(tasksIds).subscribe({
       complete: () => {
-        this.#notificationService.success('Tasks canceled');
+        this.success('Tasks canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this.#notificationService.error('Unable to cancel tasks');
+        this.error('Unable to cancel tasks');
       },
     });
-  }
-
-  columnsLabels(): Record<TaskSummaryColumnKey, string> {
-    return this.#tasksIndexService.columnsLabels;
-  }
-
-  handleAutoRefreshStart(): void {
-    if(this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
-  }
-
-  autoRefreshTooltip(): string {
-    return this.#autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
-  getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
   }
 
   manageViewInLogs(): void {
@@ -325,7 +219,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.serviceName = result.serviceName;
       this.urlTemplate = result.urlTemplate;
 
-      this.#tasksIndexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
+      this.indexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
     });
   }
 
@@ -341,17 +235,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.availableColumns.push(...result);
         this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
         this.displayedColumns.push(...result);
-        this.#tasksIndexService.saveColumns(this.displayedColumns);
-        this.#tasksIndexService.saveGenericColumns(this.genericColumns);
+        this.indexService.saveColumns(this.displayedColumns);
+        this.indexService.saveGenericColumns(this.genericColumns);
       }
     });
   }
 
   idAssignment(taskId: string) {
     this.taskId = taskId;
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }
