@@ -1,16 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { GenericColumn } from '@app/types/data';
+import { IndexServiceGenericInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksIndexService {
-  #defaultConfigService = inject(DefaultConfigService);
-  #tableService = inject(TableService);
+export class TasksIndexService implements IndexServiceGenericInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
+  defaultConfigService = inject(DefaultConfigService);
+  tableService = inject(TableService);
 
-  readonly defaultColumns: TaskSummaryColumnKey[] = this.#defaultConfigService.defaultTasks.columns;
-  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultTasks.lockColumns;
+  readonly defaultColumns: TaskSummaryColumnKey[] = this.defaultConfigService.defaultTasks.columns;
+  readonly defaultLockColumns: boolean = this.defaultConfigService.defaultTasks.lockColumns;
   readonly availableColumns: TaskSummaryColumnKey[] = [
     'id', 'acquiredAt', 'actions', 'createdAt', 'creationToEndDuration', 'endedAt','initialTaskId', 'options', 'options.applicationName', 'options.maxDuration', 'options.applicationNamespace', 'options.options', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxRetries', 'options.partitionId', 'options.priority', 'ownerPodId', 'podHostname', 'podTtl', 'processingToEndDuration', 'receivedAt', 'sessionId', 'startedAt', 'status', 'statusMessage', 'submittedAt', 'countDataDependencies', 'countExpectedOutputIds', 'countParentTaskIds', 'countRetryOfIds', 'select'
   ];
@@ -56,11 +57,11 @@ export class TasksIndexService {
     select: $localize`Select`,
   };
 
-  readonly defaultOptions: TaskSummaryListOptions = this.#defaultConfigService.defaultTasks.options;
+  readonly defaultOptions: TaskSummaryListOptions = this.defaultConfigService.defaultTasks.options;
 
-  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultTasks.interval;
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultTasks.interval;
 
-  readonly defaultViewInLogs = this.#defaultConfigService.defaultTasksViewInLogs;
+  readonly defaultViewInLogs = this.defaultConfigService.defaultTasksViewInLogs;
 
   columnToLabel(column: TaskSummaryColumnKey): string {
     return !this.isGenericColumn(column) ? this.columnsLabels[column] : this.genericField(column);
@@ -122,11 +123,11 @@ export class TasksIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue('tasks-interval', value);
+    this.tableService.saveIntervalValue('tasks-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue('tasks-interval') ?? this.defaultIntervalValue;
+    return this.tableService.restoreIntervalValue('tasks-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -134,11 +135,11 @@ export class TasksIndexService {
    */
 
   saveLockColumns(value: boolean): void {
-    this.#tableService.saveLockColumns('tasks-lock-columns', value);
+    this.tableService.saveLockColumns('tasks-lock-columns', value);
   }
 
   restoreLockColumns(): boolean {
-    return this.#tableService.restoreLockColumns('tasks-lock-columns') ?? this.defaultLockColumns;
+    return this.tableService.restoreLockColumns('tasks-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**
@@ -146,11 +147,11 @@ export class TasksIndexService {
    */
 
   saveOptions(options: TaskSummaryListOptions): void {
-    this.#tableService.saveOptions('tasks-options', options);
+    this.tableService.saveOptions('tasks-options', options);
   }
 
   restoreOptions(): TaskSummaryListOptions {
-    const options = this.#tableService.restoreOptions<TaskSummary>('tasks-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<TaskSummary>('tasks-options', this.defaultOptions);
 
     return options;
   }
@@ -160,17 +161,17 @@ export class TasksIndexService {
    */
 
   saveColumns(columns: TaskSummaryColumnKey[]): void {
-    this.#tableService.saveColumns('tasks-columns', columns);
+    this.tableService.saveColumns('tasks-columns', columns);
   }
 
   restoreColumns(): TaskSummaryColumnKey[] {
-    const columns = this.#tableService.restoreColumns<TaskSummaryColumnKey[]>('tasks-columns') ?? this.defaultColumns;
+    const columns = this.tableService.restoreColumns<TaskSummaryColumnKey[]>('tasks-columns') ?? this.defaultColumns;
 
     return [...columns];
   }
 
   resetColumns(): TaskSummaryColumnKey[] {
-    this.#tableService.resetColumns('tasks-columns');
+    this.tableService.resetColumns('tasks-columns');
 
     return Array.from(this.defaultColumns);
   }
@@ -180,11 +181,11 @@ export class TasksIndexService {
    */
 
   saveGenericColumns(columns: GenericColumn[]): void {
-    this.#tableService.saveColumns('tasks-generic-columns', columns);
+    this.tableService.saveColumns('tasks-generic-columns', columns);
   }
 
   restoreGenericColumns(): GenericColumn[] {
-    const columns = this.#tableService.restoreColumns<GenericColumn[]>('tasks-generic-columns') ?? [];
+    const columns = this.tableService.restoreColumns<GenericColumn[]>('tasks-generic-columns') ?? [];
     return [...columns] ;
   }
 
@@ -192,10 +193,10 @@ export class TasksIndexService {
    * View in Logs
    */
   restoreViewInLogs() {
-    return this.#tableService.restoreViewInLogs('tasks-view-in-logs') ?? this.defaultViewInLogs;
+    return this.tableService.restoreViewInLogs('tasks-view-in-logs') ?? this.defaultViewInLogs;
   }
 
   saveViewInLogs(serviceIcon: string, serviceName: string, urlTemplate: string) {
-    this.#tableService.saveViewInLogs('tasks-view-in-logs', serviceIcon, serviceName, urlTemplate);
+    this.tableService.saveViewInLogs('tasks-view-in-logs', serviceIcon, serviceName, urlTemplate);
   }
 }
