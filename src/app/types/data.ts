@@ -1,8 +1,8 @@
-import { ApplicationRaw } from '@app/applications/types';
-import { PartitionRaw } from '@app/partitions/types';
-import { ResultRaw } from '@app/results/types';
-import { SessionRaw } from '@app/sessions/types';
-import { TaskRaw, TaskSummary, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '@app/applications/types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '@app/partitions/types';
+import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '@app/results/types';
+import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
+import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
@@ -36,3 +36,6 @@ export interface PartitionData extends ArmonikTaskByStatusData<PartitionRaw> {
 
 export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw> {
 }
+
+export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
+export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
