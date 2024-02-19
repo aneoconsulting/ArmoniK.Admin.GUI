@@ -191,7 +191,7 @@ describe('TasksFilterService', () => {
     expect(service.resetFilters()).toEqual(mockDefaultFilters);
   });
   test('the service must return #filtersDefinitions', () =>{
-    expect(service.retrieveFiltersDefinitions()).toEqual(expectedFiltersDefinitions);
+    expect(service.filtersDefinitions).toEqual(expectedFiltersDefinitions);
   });
 
   test('the service must return the right label with filterFor root', () => {

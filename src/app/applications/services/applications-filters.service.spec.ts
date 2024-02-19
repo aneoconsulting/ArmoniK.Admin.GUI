@@ -86,7 +86,7 @@ describe('ApplicationsFiltersService', () => {
   });
 
   it('should return filters definitions', () => {
-    expect(service.retrieveFiltersDefinitions()).toEqual(defaultFilterDefinition);
+    expect(service.filtersDefinitions).toEqual(defaultFilterDefinition);
   });
 
   it('should retrieve label', () => {
