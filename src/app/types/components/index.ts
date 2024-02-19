@@ -16,7 +16,7 @@ import { DataFiltersService, GrpcService } from '../services';
 import { IndexServiceInterface } from '../services/indexService';
 
 // TODO: Create an interface for filtersServices in order to avoid this kind of type.
-type AllFilters = SessionRawFiltersOr & TaskSummaryFiltersOr & PartitionRawFiltersOr & ApplicationRawFilter & ResultRawFiltersOr;
+type AllFilters = SessionRawFiltersOr & TaskSummaryFiltersOr & PartitionRawFiltersOr & ApplicationRawFilter & ResultRawFiltersOr & ResultRawFiltersOr;
 
 export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends IndexListOptions, F extends IndexListFilters, D extends DataRaw | TaskSummary> {
   private notificationService = inject(NotificationService);
