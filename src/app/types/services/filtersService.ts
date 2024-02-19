@@ -35,8 +35,8 @@ export interface FiltersServiceInterface<F extends RawFilters, I extends FilterF
   retrieveField(filterField: string): T;
 }
 
-export interface FiltersServiceOptionsInterface<F extends RawFilters, K extends FilterFor, O extends FilterField, D extends FilterDefinition, E extends FiltersEnums> extends FiltersServiceInterface<F, K, O, D, E> {
-  readonly optionsField: Record<FiltersOptionsEnums, string>;
+export interface FiltersServiceOptionsInterface<F extends RawFilters, I extends FilterFor, T extends FilterField, D extends FilterDefinition, E extends FiltersEnums, O extends FiltersOptionsEnums> extends FiltersServiceInterface<F, I, T, D, E> {
+  readonly optionsField: Record<O, string>;
 }
 
 export interface FiltersServiceStatusesInterface {

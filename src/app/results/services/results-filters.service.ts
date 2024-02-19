@@ -1,7 +1,7 @@
 import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersServiceInterface } from '@app/types/services/filtersService';
+import { FiltersServiceInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
@@ -10,8 +10,8 @@ import { ResultFilterField, ResultFilterFor, ResultRawFilters, ResultsFiltersDef
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField> {
-  readonly #resultsStatusesService = inject(ResultsStatusesService);
+export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField>, FiltersServiceStatusesInterface {
+  readonly statusService = inject(ResultsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
@@ -52,10 +52,10 @@ export class ResultsFiltersService implements FiltersServiceInterface<ResultRawF
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS,
       type: 'status',
-      statuses: Object.keys(this.#resultsStatusesService.statuses).map(status => {
+      statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.#resultsStatusesService.statuses[Number(status) as ResultStatus],
+          value: this.statusService.statuses[Number(status) as ResultStatus],
         };
       }),
     },

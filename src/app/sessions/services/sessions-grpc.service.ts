@@ -31,7 +31,7 @@ export class SessionsGrpcService{
 
   list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.filtersDefinitions, this.#buildFilterField);
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,
