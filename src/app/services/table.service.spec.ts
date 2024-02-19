@@ -1,7 +1,7 @@
 import { TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TaskFilterDefinition } from '@app/tasks/types';
-import { FieldKey } from '@app/types/data';
+import { DataRaw, FieldKey } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { ListOptions } from '@app/types/options';
 import { StorageService } from './storage.service';
@@ -95,7 +95,7 @@ describe('TableService', () => {
         active: 2,
         direction: 'desc'
       }
-    } as ListOptions<object>;
+    } as ListOptions<DataRaw>;
 
     beforeAll(() => {
       tableStorageMock.restore.mockImplementation((key: string) => {
@@ -126,7 +126,7 @@ describe('TableService', () => {
         switch(key) {
         case 'pageIndex': return '20';
         case 'pageSize': return '50';
-        case 'sortField': return 3 as FieldKey<object>;
+        case 'sortField': return 3 as FieldKey<DataRaw>;
         case 'sortDirection': return 'desc';
         default: return null;
         }

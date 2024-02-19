@@ -24,7 +24,7 @@ describe('TaskByStatusLineComponent', () => {
   };
 
   const mockTasksGrpcService = {
-    countByStatu$: jest.fn(() => of({
+    countByStatus$: jest.fn(() => of({
       status:[
         {status:TaskStatus.TASK_STATUS_CANCELLED, count: 3},
         {status: TaskStatus.TASK_STATUS_COMPLETED, count: 10},

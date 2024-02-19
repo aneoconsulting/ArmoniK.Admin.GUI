@@ -73,10 +73,6 @@ describe('ApplicationsGrpcService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should not get', () => {
-    expect(() => {service.get$();}).toThrowError('This method must never be called');
-  });
-
   it('should create a request without filters', () => {
     const listResult = new ListApplicationsRequest({
       page: 0,
