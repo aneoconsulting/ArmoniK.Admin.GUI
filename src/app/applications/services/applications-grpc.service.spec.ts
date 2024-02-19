@@ -4,7 +4,7 @@ import { FilterDefinitionRootString } from '@app/types/filter-definition';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationsGrpcService } from './applications-grpc.service';
-import { ApplicationRawFilter, ApplicationRawListOptions } from '../types';
+import { ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 describe('ApplicationsGrpcService', () => {
   let service: ApplicationsGrpcService;
@@ -40,7 +40,7 @@ describe('ApplicationsGrpcService', () => {
     }
   };
 
-  const correctfilters: ApplicationRawFilter = [[
+  const correctfilters: ApplicationRawFilters = [[
     {
       field: 1,
       for: 'root',
@@ -49,7 +49,7 @@ describe('ApplicationsGrpcService', () => {
     }
   ]];
 
-  const uncorrectfilters: ApplicationRawFilter = [[
+  const uncorrectfilters: ApplicationRawFilters = [[
     {
       field: 2,
       for: 'root',

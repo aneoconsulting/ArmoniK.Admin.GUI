@@ -5,12 +5,12 @@ import { FiltersServiceInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
-import { ResultFilterField, ResultFilterFor, ResultRawFiltersOr, ResultsFiltersDefinition } from '../types';
+import { ResultFilterField, ResultFilterFor, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFiltersOr, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField> {
+export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField> {
   readonly #resultsStatusesService = inject(ResultsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -71,17 +71,17 @@ export class ResultsFiltersService implements FiltersServiceInterface<ResultRawF
     }
   ];
 
-  readonly defaultFilters: ResultRawFiltersOr = this.defaultConfigService.defaultResults.filters;
+  readonly defaultFilters: ResultRawFilters = this.defaultConfigService.defaultResults.filters;
 
-  saveFilters(filters: ResultRawFiltersOr): void {
+  saveFilters(filters: ResultRawFilters): void {
     this.tableService.saveFilters('results-filters', filters);
   }
 
-  restoreFilters(): ResultRawFiltersOr {
+  restoreFilters(): ResultRawFilters {
     return this.tableService.restoreFilters<ResultRawEnumField, null>('results-filters', this.filtersDefinitions) ?? this.defaultFilters;
   }
 
-  resetFilters(): ResultRawFiltersOr {
+  resetFilters(): ResultRawFilters {
     this.tableService.resetFilters('results-filters');
 
     return this.defaultFilters;

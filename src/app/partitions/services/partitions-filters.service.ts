@@ -4,12 +4,12 @@ import { FilterFor } from '@app/types/filter-definition';
 import { FiltersServiceInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { PartitionFilterField, PartitionFilterFor, PartitionRawFiltersOr, PartitionsFiltersDefinition } from '../types';
+import { PartitionFilterField, PartitionFilterFor, PartitionRawFilters, PartitionsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawFiltersOr, PartitionFilterFor, PartitionFilterField, PartitionsFiltersDefinition, PartitionRawEnumField> {
+export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawFilters, PartitionFilterFor, PartitionFilterField, PartitionsFiltersDefinition, PartitionRawEnumField> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
@@ -57,17 +57,17 @@ export class PartitionsFiltersService implements FiltersServiceInterface<Partiti
     }
   ];
 
-  readonly defaultFilters: PartitionRawFiltersOr = this.defaultConfigService.defaultPartitions.filters;
+  readonly defaultFilters: PartitionRawFilters = this.defaultConfigService.defaultPartitions.filters;
 
-  saveFilters(filters: PartitionRawFiltersOr): void {
+  saveFilters(filters: PartitionRawFilters): void {
     this.tableService.saveFilters('partitions-filters', filters);
   }
 
-  restoreFilters(): PartitionRawFiltersOr {
+  restoreFilters(): PartitionRawFilters {
     return this.tableService.restoreFilters<PartitionRawEnumField, null>('partitions-filters', this.filtersDefinitions) ?? this.defaultFilters;
   }
 
-  resetFilters(): PartitionRawFiltersOr {
+  resetFilters(): PartitionRawFilters {
     this.tableService.resetFilters('partitions-filters');
 
     return this.defaultFilters;

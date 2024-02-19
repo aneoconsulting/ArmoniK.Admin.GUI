@@ -4,7 +4,7 @@ import { FilterDefinition } from '@app/types/filter-definition';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionFilterField, SessionFilterFor, SessionRawFiltersOr } from '../types';
+import { SessionFilterField, SessionFilterFor, SessionRawFilters } from '../types';
 // import { SessionFilterDefinition, SessionFilterField, SessionFilterFor } from '../types';
 
 export type SessionFilterDefinition = FilterDefinition<SessionRawEnumField, SessionTaskOptionEnumField>;
@@ -115,17 +115,17 @@ export class SessionsFiltersService {
     },
   ];
 
-  readonly #defaultFilters: SessionRawFiltersOr = this.#defaultConfigService.defaultSessions.filters;
+  readonly #defaultFilters: SessionRawFilters = this.#defaultConfigService.defaultSessions.filters;
 
-  saveFilters(filters: SessionRawFiltersOr): void {
+  saveFilters(filters: SessionRawFilters): void {
     this.#tableService.saveFilters('sessions-filters', filters);
   }
 
-  restoreFilters(): SessionRawFiltersOr {
+  restoreFilters(): SessionRawFilters {
     return this.#tableService.restoreFilters<SessionRawEnumField, SessionTaskOptionEnumField>('sessions-filters', this.#filtersDefinitions) ?? this.#defaultFilters;
   }
 
-  resetFilters(): SessionRawFiltersOr {
+  resetFilters(): SessionRawFilters {
     this.#tableService.resetFilters('sessions-filters');
 
     return this.#defaultFilters;

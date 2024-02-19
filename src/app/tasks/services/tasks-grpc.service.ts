@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
+import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
 export class TasksGrpcService {
@@ -44,9 +44,9 @@ export class TasksGrpcService {
     error: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
   };
 
-  list$(options: TaskSummaryListOptions, filters: TaskSummaryFiltersOr): Observable<ListTasksResponse> {
+  list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.filtersDefinitions, this.#buildFilterField);
 
     const listTasksRequest = new ListTasksRequest({
       page: options.pageIndex,
@@ -82,9 +82,9 @@ export class TasksGrpcService {
     return this.#tasksClient.cancelTasks(request);
   }
 
-  countByStatu$(filters: TaskSummaryFiltersOr): Observable<CountTasksByStatusResponse> {
+  countByStatu$(filters: TaskSummaryFilters): Observable<CountTasksByStatusResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.filtersDefinitions, this.#buildFilterField);
 
     const request = new CountTasksByStatusRequest({
       filters: requestFilters

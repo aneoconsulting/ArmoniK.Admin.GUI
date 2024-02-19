@@ -43,7 +43,7 @@ import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOptions } from './types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from './types';
 
 @Component({
   selector: 'app-sessions-index',
@@ -130,7 +130,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: SessionRawListOptions;
 
-  filters: SessionRawFiltersOr = [];
+  filters: SessionRawFilters = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -250,9 +250,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as SessionRawFiltersOr;
+    this.filters = filters as SessionRawFilters;
 
-    this.#sessionsFiltersService.saveFilters(filters as SessionRawFiltersOr);
+    this.#sessionsFiltersService.saveFilters(filters as SessionRawFilters);
     this.options.pageIndex = 0;
     this.refresh.next();
   }

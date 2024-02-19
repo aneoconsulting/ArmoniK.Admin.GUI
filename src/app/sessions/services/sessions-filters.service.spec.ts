@@ -4,7 +4,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionFilterDefinition, SessionRawFiltersOr } from '../types';
+import { SessionFilterDefinition, SessionRawFilters } from '../types';
 
 describe('SessionsFiltersService', () => {
   let service: SessionsFiltersService;
@@ -15,7 +15,7 @@ describe('SessionsFiltersService', () => {
     resetFilters: jest.fn()
   };
 
-  const testFiltersOr: SessionRawFiltersOr = [[
+  const testFiltersOr: SessionRawFilters = [[
     {
       field: 1,
       for: 'root',

@@ -12,7 +12,7 @@ import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawFilter } from '../types';
+import { ApplicationRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -62,7 +62,7 @@ describe('ApplicationTableComponent', () => {
     page: new EventEmitter()
   } as unknown as MatPaginator;
 
-  const filters: ApplicationRawFilter = [
+  const filters: ApplicationRawFilters = [
     [
       {
         field: 1,

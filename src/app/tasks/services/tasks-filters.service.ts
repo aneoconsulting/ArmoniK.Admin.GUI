@@ -4,12 +4,12 @@ import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from 
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksStatusesService } from './tasks-statuses.service';
-import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFiltersOr } from '../types';
+import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFiltersOr, TaskFilterFor, TaskFilterField, TaskFilterDefinition, TaskSummaryEnumField>, FiltersServiceStatusesInterface {
+export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFilters, TaskFilterFor, TaskFilterField, TaskFilterDefinition, TaskSummaryEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(TasksStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -163,17 +163,17 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     }
   ];
 
-  readonly defaultFilters: TaskSummaryFiltersOr = this.defaultConfigService.defaultTasks.filters;
+  readonly defaultFilters: TaskSummaryFilters = this.defaultConfigService.defaultTasks.filters;
 
-  saveFilters(filters: TaskSummaryFiltersOr): void {
+  saveFilters(filters: TaskSummaryFilters): void {
     this.tableService.saveFilters('tasks-filters', filters);
   }
 
-  restoreFilters(): TaskSummaryFiltersOr {
+  restoreFilters(): TaskSummaryFilters {
     return this.tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.filtersDefinitions) ?? this.defaultFilters;
   }
 
-  resetFilters(): TaskSummaryFiltersOr {
+  resetFilters(): TaskSummaryFilters {
     this.tableService.resetFilters('tasks-filters');
 
     return this.defaultFilters;

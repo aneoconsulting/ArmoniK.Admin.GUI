@@ -4,7 +4,7 @@ import { FilterFor } from '@app/types/filter-definition';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
-import { ApplicationRawFilter, ApplicationsFiltersDefinition } from '../types';
+import { ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
 
 describe('ApplicationsFiltersService', () => {
   let service: ApplicationsFiltersService;
@@ -37,7 +37,7 @@ describe('ApplicationsFiltersService', () => {
     }
   ];
 
-  const defaultFilters: ApplicationRawFilter = new DefaultConfigService().defaultApplications.filters;
+  const defaultFilters: ApplicationRawFilters = new DefaultConfigService().defaultApplications.filters;
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -54,7 +54,7 @@ describe('ApplicationsFiltersService', () => {
   });
 
   it('should save filters', () => {
-    const filters: ApplicationRawFilter = [[
+    const filters: ApplicationRawFilters = [[
       {
         field: 0,
         for: 'root',

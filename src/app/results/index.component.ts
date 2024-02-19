@@ -31,7 +31,7 @@ import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFiltersOr, ResultRawListOptions } from './types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
 
 
 @Component({
@@ -105,7 +105,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: ResultRawListOptions;
 
-  filters: ResultRawFiltersOr = [];
+  filters: ResultRawFilters = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -219,9 +219,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(value: unknown[]) {
-    this.filters = value as ResultRawFiltersOr;
+    this.filters = value as ResultRawFilters;
 
-    this.#resultsFiltersService.saveFilters(value as ResultRawFiltersOr);
+    this.#resultsFiltersService.saveFilters(value as ResultRawFilters);
     this.options.pageIndex = 0;
     this.refresh.next();
   }
