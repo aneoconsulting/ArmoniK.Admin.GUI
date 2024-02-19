@@ -39,7 +39,7 @@ export function buildStatusFilter(filterField: FilterField, filter: Filter<Filte
   return {
     field: filterField,
     filterStatus: {
-      value: Number(filter.value) ?? 0,
+      value: !Number.isNaN(filter.value) ? Number(filter.value) : 0,
       operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
     }
   };
