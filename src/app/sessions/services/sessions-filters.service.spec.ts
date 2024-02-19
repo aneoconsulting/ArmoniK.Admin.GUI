@@ -141,7 +141,7 @@ describe('SessionsFiltersService', () => {
   });
 
   it('should retrieve filtersDefinitions', () => {
-    expect(service.retrieveFiltersDefinitions()).toEqual(filtersDefinitions);
+    expect(service.filtersDefinitions).toEqual(filtersDefinitions);
   });
 
   it('should retrieve labels for a root filter', () => {

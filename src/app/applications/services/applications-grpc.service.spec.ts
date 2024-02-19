@@ -10,21 +10,18 @@ describe('ApplicationsGrpcService', () => {
   let service: ApplicationsGrpcService;
 
   const mockApplicationFiltersService = {
-    retrieveFiltersDefinitions: jest.fn().mockImplementation(() => {
-      const definitions: FilterDefinitionRootString<ApplicationRawEnumField>[] = [
-        {
-          for: 'root',
-          field: 1,
-          type: 'string'
-        },
-        {
-          for: 'root',
-          field: 2,
-          type: 'number'
-        } as unknown as FilterDefinitionRootString<ApplicationRawEnumField>
-      ];
-      return definitions;
-    })
+    filtersDefinitions: [
+      {
+        for: 'root',
+        field: 1,
+        type: 'string'
+      },
+      {
+        for: 'root',
+        field: 2,
+        type: 'number'
+      } as unknown as FilterDefinitionRootString<ApplicationRawEnumField>
+    ]
   };
   
   const mockApplicationsClient = {
