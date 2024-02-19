@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -66,13 +66,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       queryParams: {},
     },
     {
-      id: 'results',
-      name: $localize`See results`,
-      icon: this.getPageIcon('results'),
-      link: '/results',
-      queryParams: {},
-    },
-    {
       id: 'partitions',
       name: $localize`See partitions`,
       icon: this.getPageIcon('partitions'),
@@ -107,7 +100,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       if (data) {
         this.data = data;
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
       }
     });
@@ -137,10 +129,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
         this.error('Unable to cancel session');
       },
     });
-  }
-
-  get resultsKey() {
-    return this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
   }
 
   get tasksKey() {

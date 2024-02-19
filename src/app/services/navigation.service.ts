@@ -61,13 +61,6 @@ export class NavigationService {
       route: '/tasks',
     },
     {
-      type: 'link',
-      id: 'results',
-      display: $localize`Results`,
-      icon: 'workspace_premium',
-      route: '/results',
-    },
-    {
       type: 'divider',
       id: 'divider',
       display: $localize`Divider`,

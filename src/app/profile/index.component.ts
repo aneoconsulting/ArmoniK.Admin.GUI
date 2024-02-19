@@ -86,7 +86,9 @@ export class IndexComponent implements OnInit {
 
     for (const permission of permissions) {
       const [group, name] = permission.split(':');
-
+      if (group === 'Results') {
+        continue;
+      }
       const groupIndex = groups.findIndex(g => g.name === group.toLocaleLowerCase());
 
       if (groupIndex === -1) {

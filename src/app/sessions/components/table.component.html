@@ -84,10 +84,6 @@
               <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
               <span i18n>See Tasks</span>
             </a>
-            <a mat-menu-item [routerLink]="['/results']" [queryParams]="element.resultsQueryParams">
-              <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
-              <span i18n>See results</span>
-            </a>
             <button mat-menu-item (click)="onCancel(element.raw.sessionId)">
               <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
               <span i18n>Cancel session</span>

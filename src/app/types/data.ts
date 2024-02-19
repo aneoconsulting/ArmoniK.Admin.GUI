@@ -1,6 +1,5 @@
 import { ApplicationRaw } from '@app/applications/types';
 import { PartitionRaw } from '@app/partitions/types';
-import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskRaw, TaskSummary, TaskSummaryFiltersOr } from '@app/tasks/types';
 
@@ -10,7 +9,7 @@ export type ColumnKey<T extends object, O extends object = Record<string, never>
 
 export type FieldKey<T extends object> = keyof T;
 
-export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw;
+export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | TaskRaw;
 
 export type GenericColumn = `generic.${string}`;
 

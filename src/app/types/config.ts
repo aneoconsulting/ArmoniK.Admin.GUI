@@ -7,7 +7,7 @@ export type ScopeConfig<C, O, F> = {
 };
 
 export type GenericScope = 'sessions' | 'tasks';
-export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
+export type Scope = 'applications' | 'partitions' | 'sessions' | 'tasks';
 export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns';
 
 export type Key =

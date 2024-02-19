@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -69,14 +69,6 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
       link: '/sessions',
     },
     {
-      id: 'results',
-      name: $localize`See results`,
-      icon: this.getPageIcon('results'),
-      area: 'left',
-      link: '/results',
-      queryParams: {}
-    },
-    {
       id: 'partition',
       name: $localize`See partition`,
       icon: this.getPageIcon('partitions'),
@@ -112,7 +104,6 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
         this.data = data;
         this.setLink('session', 'sessions', data.sessionId);
         if (data.options) this.setLink('partition', 'partitions', data.options.partitionId);
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, data.id);
       }
     });
 
@@ -139,10 +130,6 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   
   canCancel() {
     return this._tasksStatusesService.taskNotEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
-  }
-
-  get resultsKey() {
-    return this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
   }
 
   setLink(actionId: string, baseLink: string, id: string) {

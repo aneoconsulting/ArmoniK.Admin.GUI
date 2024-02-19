@@ -170,8 +170,6 @@ export class IndexComponent implements OnInit {
       return this.#iconsService.getPageIcon('applications');
     case 'Partitions':
       return this.#iconsService.getPageIcon('partitions');
-    case 'Results':
-      return this.#iconsService.getPageIcon('results');
     case 'Sessions':
       return this.#iconsService.getPageIcon('sessions');
     case 'CountStatus':

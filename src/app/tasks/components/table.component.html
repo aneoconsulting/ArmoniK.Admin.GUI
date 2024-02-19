@@ -91,10 +91,6 @@
                 <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
                 <span i18n>Copy Task ID</span>
               </button>
-              <a mat-menu-item [routerLink]="['/results']" [queryParams]="element.resultsQueryParams">
-                <mat-icon aria-hidden="true" fontIcon="visibility"></mat-icon>
-                <span i18n> See related result </span>
-              </a>
               <button *ngIf="isRetried(element)" mat-menu-item (click)="onRetries(element)">
                 <mat-icon aria-hidden="true" fontIcon="published_with_changes"></mat-icon>
                 <span i18n> See Retries </span>

@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
 import { Line } from '@app/dashboard/types';
 import { PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRawColumnKey, ResultRawFiltersOr, ResultRawListOptions } from '@app/results/types';
 import { SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOptions } from '@app/sessions/types';
 import { TaskSummaryColumnKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
@@ -67,7 +66,6 @@ export class DefaultConfigService {
     'divider',
     'sessions',
     'tasks',
-    'results',
     'divider',
     'divider'
   ];
@@ -147,24 +145,6 @@ export class DefaultConfigService {
     filters: [],
   };
 
-  readonly #defaultResults: ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFiltersOr> = {
-    interval: 10,
-    lockColumns: false,
-    columns: [
-      'resultId',
-      'sessionId',
-    ],
-    options: {
-      pageIndex: 0,
-      pageSize: 10,
-      sort: {
-        active: 'name',
-        direction: 'asc'
-      },
-    },
-    filters: [],
-  };
-
   readonly #defaultTasks: ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFiltersOr> = {
     interval: 10,
     lockColumns: false,
@@ -236,10 +216,6 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultSessions);
   }
 
-  get defaultResults(): ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFiltersOr> {
-    return structuredClone(this.#defaultResults);
-  }
-
   get defaultTasks(): ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFiltersOr> {
     return structuredClone(this.#defaultTasks);
   }
@@ -285,11 +261,6 @@ export class DefaultConfigService {
     'sessions-filters': this.#defaultSessions.filters,
     'sessions-interval': this.#defaultSessions.interval,
     'sessions-lock-columns': this.#defaultSessions.lockColumns,
-    'results-columns': this.#defaultResults.columns,
-    'results-options': this.#defaultResults.options,
-    'results-filters': this.#defaultResults.filters,
-    'results-interval': this.#defaultResults.interval,
-    'results-lock-columns': this.#defaultResults.lockColumns,
     'tasks-columns': this.#defaultTasks.columns,
     'tasks-options': this.#defaultTasks.options,
     'tasks-filters': this.#defaultTasks.filters,

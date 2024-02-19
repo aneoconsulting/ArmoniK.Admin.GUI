@@ -8,7 +8,6 @@ export class IconsService {
     'partitions': 'donut_small',
     'sessions': 'workspaces',
     'tasks': 'adjust',
-    'results': 'workspace_premium',
     'submitter': 'api',
     'dashboard': 'dashboard',
     'profile': 'account_circle',

@@ -7,7 +7,6 @@
 
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { PartitionsGrpcService } from '@app/partitions/services/partitions-grpc.service';
-import { ResultsGrpcService } from '@app/results/services/results-grpc.service';
 import { SessionsGrpcService } from '@app/sessions/services/sessions-grpc.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 
@@ -49,4 +48,4 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 //   resetFilters(): void
 // }
 
-export type GrpcService = TasksGrpcService | SessionsGrpcService | ApplicationsGrpcService | PartitionsGrpcService | ResultsGrpcService;
+export type GrpcService = TasksGrpcService | SessionsGrpcService | ApplicationsGrpcService | PartitionsGrpcService;
