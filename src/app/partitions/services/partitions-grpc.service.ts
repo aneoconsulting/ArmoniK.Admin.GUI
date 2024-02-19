@@ -1,24 +1,19 @@
-import { SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterNumberOperator, FilterStringOperator, GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionFilterField, PartitionRawEnumField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionFilterField, PartitionRawEnumField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { FilterType } from '@app/types/filters';
+import { GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
+import { buildArrayFilter, buildNumberFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './partitions-filters.service';
 import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
 
 
 @Injectable()
-export class PartitionsGrpcService {
-  readonly #partitionsFiltersService = inject(PartitionsFiltersService);
-  readonly #partitionsClient = inject(PartitionsClient);
-  readonly #utilsService = inject(UtilsService<PartitionRawEnumField>);
-
-  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
-    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
-    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
-    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
-  };
+export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient, PartitionRawListOptions, PartitionRawFiltersOr, PartitionRawFieldKey, PartitionRawEnumField>, GrpcGetInterface<GetPartitionResponse> {
+  readonly filterService = inject(PartitionsFiltersService);
+  readonly grpcClient = inject(PartitionsClient);
+  readonly utilsService = inject(UtilsService<PartitionRawEnumField>);
 
   readonly sortFields: Record<PartitionRawFieldKey, PartitionRawEnumField> = {
     'id': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
@@ -31,13 +26,13 @@ export class PartitionsGrpcService {
   };
 
   list$(options: PartitionRawListOptions, filters: PartitionRawFiltersOr): Observable<ListPartitionsResponse> {
-    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listPartitionsRequest = new ListPartitionsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
-        direction: this.sortDirections[options.sort.direction],
+        direction: sortDirections[options.sort.direction],
         field: {
           partitionRawField: {
             field: this.sortFields[options.sort.active] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
@@ -47,7 +42,7 @@ export class PartitionsGrpcService {
       filters: requestFilters
     });
 
-    return this.#partitionsClient.listPartitions(listPartitionsRequest);
+    return this.grpcClient.listPartitions(listPartitionsRequest);
   }
 
   get$(id: string) :Observable<GetPartitionResponse> {
@@ -55,7 +50,7 @@ export class PartitionsGrpcService {
       id
     });
 
-    return this.#partitionsClient.getPartition(getPartitionRequest);
+    return this.grpcClient.getPartition(getPartitionRequest);
   }
 
   #buildFilterField(filter: PartitionRawFilter) {
@@ -69,29 +64,11 @@ export class PartitionsGrpcService {
 
       switch (type) {
       case 'string':
-        return {
-          field: filterField,
-          filterString: {
-            value: filter.value?.toString() || '',
-            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
-          }
-        } satisfies PartitionFilterField.AsObject;
+        return buildStringFilter(filterField, filter) as PartitionFilterField.AsObject;
       case 'number':
-        return {
-          field: filterField,
-          filterNumber: {
-            value: filter.value?.toString() || '',
-            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
-          }
-        } satisfies PartitionFilterField.AsObject;
+        return buildNumberFilter(filterField, filter) as PartitionFilterField.AsObject;
       case 'array':
-        return {
-          field: filterField,
-          filterArray: {
-            value: filter.value?.toString() || '',
-            operator: filter.operator ?? FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS
-          }
-        } satisfies PartitionFilterField.AsObject;
+        return buildArrayFilter(filterField, filter) as PartitionFilterField.AsObject;
       default: {
         throw new Error(`Type ${type} not supported`);
       }

@@ -1,23 +1,18 @@
-import { SortDirection as ArmoniKSortDirection, CancelSessionRequest, CancelSessionResponse, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
+import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
+import { buildArrayFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionRawField, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsGrpcService{
-  readonly #sessionsFiltersService = inject(SessionsFiltersService);
-  readonly #sessionsClient = inject(SessionsClient);
-  readonly #utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
-
-  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
-    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
-    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
-    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
-  };
+export class SessionsGrpcService implements GrpcListInterface<SessionsClient, SessionRawListOptions, SessionRawFiltersOr, SessionRawFieldKey, SessionRawEnumField, SessionTaskOptionEnumField>, GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
+  readonly filterService = inject(SessionsFiltersService);
+  readonly grpcClient = inject(SessionsClient);
+  readonly utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
 
   readonly sortFields: Record<SessionRawFieldKey, SessionRawEnumField> = {
     'sessionId': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
@@ -30,14 +25,13 @@ export class SessionsGrpcService{
   };
 
   list$(options: SessionRawListOptions, filters: SessionRawFiltersOr): Observable<ListSessionsResponse> {
-
-    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
-        direction: this.sortDirections[options.sort.direction],
+        direction: sortDirections[options.sort.direction],
         field: {
           sessionRawField: {
             field: this.sortFields[options.sort.active] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID
@@ -47,7 +41,7 @@ export class SessionsGrpcService{
       filters: requestFilters
     });
 
-    return this.#sessionsClient.listSessions(listSessionsRequest);
+    return this.grpcClient.listSessions(listSessionsRequest);
   }
 
   get$(sessionId: string): Observable<GetSessionResponse> {
@@ -55,7 +49,7 @@ export class SessionsGrpcService{
       sessionId
     });
 
-    return this.#sessionsClient.getSession(getSessionRequest);
+    return this.grpcClient.getSession(getSessionRequest);
   }
 
   cancel$(sessionId: string): Observable<CancelSessionResponse> {
@@ -63,7 +57,7 @@ export class SessionsGrpcService{
       sessionId
     });
 
-    return this.#sessionsClient.cancelSession(cancelSessionRequest);
+    return this.grpcClient.cancelSession(cancelSessionRequest);
   }
 
   #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {
@@ -92,48 +86,15 @@ export class SessionsGrpcService{
 
       switch (type) {
       case 'string':
-        return {
-          field: filterField,
-          filterString: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-          },
-        } satisfies SessionFilterField.AsObject;
+        return buildStringFilter(filterField, filter) as SessionFilterField.AsObject;
       case 'status':
-        return {
-          field: filterField,
-          filterStatus: {
-            value: Number(filter.value) ?? 0,
-            operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
-          }
-        } satisfies SessionFilterField.AsObject;
+        return buildStatusFilter(filterField, filter) as SessionFilterField.AsObject;
       case 'date':
-        return {
-          field: filterField,
-          filterDate: {
-            value: {
-              nanos: 0,
-              seconds: filter.value?.toString() ?? '0'
-            },
-            operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
-          }
-        } satisfies SessionFilterField.AsObject;
+        return buildDateFilter(filterField, filter) as SessionFilterField.AsObject;
       case 'number':
-        return {
-          field: filterField,
-          filterNumber: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL,
-          }
-        } satisfies SessionFilterField.AsObject;
+        return buildNumberFilter(filterField, filter) as SessionFilterField.AsObject;
       case 'array':
-        return {
-          field: filterField,
-          filterArray: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS
-          }
-        } satisfies SessionFilterField.AsObject;
+        return buildArrayFilter(filterField, filter) as SessionFilterField.AsObject;
       default:
         throw new Error(`Type ${type} not supported`);
       }

@@ -1,23 +1,18 @@
-import { SortDirection as ArmoniKSortDirection, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { FilterType } from '@app/types/filters';
+import { GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
+import { buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
-import {  ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
+import { ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsGrpcService {
-  readonly #resultsFiltersService = inject(ResultsFiltersService);
-  readonly #utilsService = inject(UtilsService<ResultRawEnumField>);
-  readonly #resultsClient = inject(ResultsClient);
-
-  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
-    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
-    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
-    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
-  };
+export class ResultsGrpcService implements GrpcListInterface<ResultsClient, ResultRawListOptions, ResultRawFiltersOr, ResultRawFieldKey, ResultRawEnumField>, GrpcGetInterface<GetResultResponse> {
+  readonly filterService = inject(ResultsFiltersService);
+  readonly utilsService = inject(UtilsService<ResultRawEnumField>);
+  readonly grpcClient = inject(ResultsClient);
 
   readonly sortFields: Record<ResultRawFieldKey, ResultRawEnumField> = {
     'sessionId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID,
@@ -30,16 +25,15 @@ export class ResultsGrpcService {
     'size': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
   };
 
-
   list$(options: ResultRawListOptions, filters: ResultRawFiltersOr): Observable<ListResultsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ResultFilterField.AsObject>(filters, this.#resultsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<ResultFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
 
     const listResultRequest = new ListResultsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
-        direction: this.sortDirections[options.sort.direction],
+        direction: sortDirections[options.sort.direction],
         field: {
           resultRawField: {
             field: this.sortFields[options.sort.active] ?? ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
@@ -49,7 +43,7 @@ export class ResultsGrpcService {
       filters: requestFilters
     });
 
-    return this.#resultsClient.listResults(listResultRequest);
+    return this.grpcClient.listResults(listResultRequest);
   }
 
   get$(resultId: string): Observable<GetResultResponse> {
@@ -57,7 +51,7 @@ export class ResultsGrpcService {
       resultId
     });
 
-    return this.#resultsClient.getResult(getResultRequest);
+    return this.grpcClient.getResult(getResultRequest);
   }
 
   #buildFilterField(filter: ResultRawFilter) {
@@ -71,40 +65,13 @@ export class ResultsGrpcService {
 
       switch (type) {
       case 'string':
-        return {
-          field: filterField,
-          filterString: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
-          }
-        } satisfies ResultFilterField.AsObject;
+        return buildStringFilter(filterField, filter) as ResultFilterField.AsObject;
       case 'date':
-        return {
-          field: filterField,
-          filterDate: {
-            value: {
-              nanos: 0,
-              seconds: filter.value?.toString() ?? ''
-            },
-            operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
-          }
-        } satisfies ResultFilterField.AsObject;
+        return buildDateFilter(filterField, filter) as ResultFilterField.AsObject;
       case 'status':
-        return {
-          field: filterField,
-          filterStatus: {
-            value: Number(filter.value) ?? 0,
-            operator: filter.operator ?? FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL
-          }
-        } satisfies ResultFilterField.AsObject;
+        return buildStatusFilter(filterField, filter) as ResultFilterField.AsObject;
       case 'number':
-        return {
-          field: filterField,
-          filterNumber: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
-          }
-        } satisfies ResultFilterField.AsObject;
+        return buildNumberFilter(filterField, filter) as ResultFilterField.AsObject;
       default: {
         throw new Error(`Type ${type} not supported`);
       }
