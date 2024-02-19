@@ -1,5 +1,6 @@
 import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
+import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksStatusesService } from './tasks-statuses.service';
@@ -8,12 +9,12 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService {
-  readonly #tasksStatusesService = inject(TasksStatusesService);
-  readonly #defaultConfigService = inject(DefaultConfigService);
-  readonly #tableService = inject(TableService);
+export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFiltersOr, TaskFilterFor, TaskFilterField, TaskFilterDefinition, TaskSummaryEnumField>, FiltersServiceStatusesInterface {
+  readonly statusService = inject(TasksStatusesService);
+  readonly defaultConfigService = inject(DefaultConfigService);
+  readonly tableService = inject(TableService);
 
-  readonly #rootField: Record<TaskSummaryEnumField, string> = {
+  readonly rootField: Record<TaskSummaryEnumField, string> = {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID]: $localize`Owner Pod ID`,
@@ -33,7 +34,7 @@ export class TasksFiltersService {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
   };
 
-  readonly #optionsField: Record<TaskOptionEnumField, string> = {
+  readonly optionsField: Record<TaskOptionEnumField, string> = {
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION]: $localize`Max Duration`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES]: $localize`Max Retries`,
@@ -47,7 +48,7 @@ export class TasksFiltersService {
   };
 
 
-  readonly #filtersDefinitions: TaskFilterDefinition[] = [
+  readonly filtersDefinitions: TaskFilterDefinition[] = [
     // Do not filter object fields
     {
       for: 'root',
@@ -68,10 +69,10 @@ export class TasksFiltersService {
       for: 'root',
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
       type: 'status',
-      statuses: Object.keys(this.#tasksStatusesService.statuses).map(status => {
+      statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.#tasksStatusesService.statuses[Number(status) as TaskStatus],
+          value: this.statusService.statuses[Number(status) as TaskStatus],
         };
       }),
     },
@@ -162,46 +163,42 @@ export class TasksFiltersService {
     }
   ];
 
-  readonly #defaultFilters: TaskSummaryFiltersOr = this.#defaultConfigService.defaultTasks.filters;
+  readonly defaultFilters: TaskSummaryFiltersOr = this.defaultConfigService.defaultTasks.filters;
 
   saveFilters(filters: TaskSummaryFiltersOr): void {
-    this.#tableService.saveFilters('tasks-filters', filters);
+    this.tableService.saveFilters('tasks-filters', filters);
   }
 
   restoreFilters(): TaskSummaryFiltersOr {
-    return this.#tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.#filtersDefinitions) ?? this.#defaultFilters;
+    return this.tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.filtersDefinitions) ?? this.defaultFilters;
   }
 
   resetFilters(): TaskSummaryFiltersOr {
-    this.#tableService.resetFilters('tasks-filters');
+    this.tableService.resetFilters('tasks-filters');
 
-    return this.#defaultFilters;
+    return this.defaultFilters;
   }
 
-  retrieveFiltersDefinitions() {
-    return this.#filtersDefinitions;
-  }
-
-  retrieveLabel(filterFor: TaskFilterFor, filterField:  TaskFilterField): string {
+  retrieveLabel(filterFor: TaskFilterFor, filterField: TaskFilterField): string {
     switch (filterFor) {
     case 'root':
-      return this.#rootField[filterField as TaskSummaryEnumField];
+      return this.rootField[filterField as TaskSummaryEnumField];
     case 'options':
-      return this.#optionsField[filterField as TaskOptionEnumField];
+      return this.optionsField[filterField as TaskOptionEnumField];
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
   }
 
   retrieveField(filterField: string): TaskFilterField  {
-    const rootValues = Object.values(this.#rootField);
+    const rootValues = Object.values(this.rootField);
     let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
 
     if (index >= 0) {
       return { for: 'root', index: index };
     }
 
-    const optionsValues = Object.values(this.#optionsField);
+    const optionsValues = Object.values(this.optionsField);
     index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
     return { for: 'options', index: index };
   }

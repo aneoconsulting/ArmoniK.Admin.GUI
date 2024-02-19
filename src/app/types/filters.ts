@@ -1,7 +1,14 @@
 import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawFilter } from '@app/applications/types';
+import { PartitionRawFiltersOr } from '@app/partitions/types';
+import { ResultRawFiltersOr } from '@app/results/types';
+import { SessionRawFiltersOr } from '@app/sessions/types';
+import { TaskSummaryFiltersOr } from '@app/tasks/types';
 import { FilterFor } from './filter-definition';
 
 export type MaybeNull<T> = T | null;
+
+export type AllFilters = SessionRawFiltersOr | TaskSummaryFiltersOr | PartitionRawFiltersOr | ApplicationRawFilter | ResultRawFiltersOr;
 
 export type FilterType = 'string' | 'number' | 'date' | 'array' | 'status' | 'boolean' | 'duration';
 export type FilterValueOptions = { key: string | number, value: string }[];
