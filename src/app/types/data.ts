@@ -2,7 +2,7 @@ import { ApplicationRaw } from '@app/applications/types';
 import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
-import { TaskRaw, TaskSummary, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskRaw, TaskSummary, TaskSummaryFilters } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
@@ -20,7 +20,7 @@ interface ArmonikData<T extends DataRaw | TaskSummary> {
 
 interface ArmonikTaskByStatusData<T extends DataRaw> extends ArmonikData<T>{
   queryTasksParams: Record<string, string>;
-  filters: TaskSummaryFiltersOr;
+  filters: TaskSummaryFilters;
 }
 
 export interface TaskData extends ArmonikData<TaskSummary> {
