@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FiltersEnums } from '@app/dashboard/types';
 import { FilterInputValueDate, FiltersOr, MaybeNull } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsOptions } from '@app/types/query-params';
@@ -16,7 +17,7 @@ export class QueryParamsService {
     return queryParamsOptions;
   }
 
-  createFilters<T extends number, U extends number | null = null>(filtersOr: FiltersOr<T, U>): Record<string, MaybeNull<string | number | FilterInputValueDate | null>> | null {
+  createFilters<T extends FiltersEnums, U extends number | null = null>(filtersOr: FiltersOr<T, U>): Record<string, MaybeNull<string | number | FilterInputValueDate | null>> | null {
     const queryParamsFilters: Record<string, MaybeNull<string | number | FilterInputValueDate | null>> = {};
 
     let i = 0;

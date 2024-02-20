@@ -12,16 +12,16 @@ import { TableService } from '@services/table.service';
 import { RawFilters } from '../filters';
 
 type StatusesService = TasksStatusesService | ResultsStatusesService | SessionsStatusesService;
-type FilterFor = TaskFilterFor | ResultFilterFor | SessionFilterFor | PartitionFilterFor | ApplicationFilterFor;
-type FilterField = TaskFilterField | ResultFilterField | SessionFilterField | PartitionFilterField | ApplicationFilterField;
-type FilterDefinition = TaskFilterDefinition | SessionFilterDefinition | ResultsFiltersDefinition | PartitionsFiltersDefinition | ApplicationsFiltersDefinition;
+export type FilterFor = TaskFilterFor | ResultFilterFor | SessionFilterFor | PartitionFilterFor | ApplicationFilterFor;
+export type FilterField = TaskFilterField | ResultFilterField | SessionFilterField | PartitionFilterField | ApplicationFilterField;
+export type FilterDefinition = TaskFilterDefinition | SessionFilterDefinition | ResultsFiltersDefinition | PartitionsFiltersDefinition | ApplicationsFiltersDefinition;
 
-export interface FiltersServiceInterface<F extends RawFilters, I extends FilterFor, T extends FilterField, D extends FilterDefinition, E extends FiltersEnums> {
+export interface FiltersServiceInterface<F extends RawFilters, E extends FiltersEnums> {
   defaultConfigService: DefaultConfigService;
   tableService: TableService;
 
   readonly rootField: Record<E, string>;
-  readonly filtersDefinitions: D[];
+  readonly filtersDefinitions: FilterDefinition[];
 
   defaultFilters: F;
 
@@ -30,12 +30,14 @@ export interface FiltersServiceInterface<F extends RawFilters, I extends FilterF
 
   resetFilters(): F;
 
-  retrieveLabel(filterFor: I, filterField: T): string;
+  retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
 
-  retrieveField(filterField: string): T;
+  retrieveFiltersDefinitions(): FilterDefinition[];
+
+  retrieveField(filterField: string): FilterField;
 }
 
-export interface FiltersServiceOptionsInterface<F extends RawFilters, I extends FilterFor, T extends FilterField, D extends FilterDefinition, E extends FiltersEnums, O extends FiltersOptionsEnums> extends FiltersServiceInterface<F, I, T, D, E> {
+export interface FiltersServiceOptionsInterface<F extends RawFilters, E extends FiltersEnums, O extends FiltersOptionsEnums> extends FiltersServiceInterface<F, E> {
   readonly optionsField: Record<O, string>;
 }
 

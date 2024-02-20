@@ -1,16 +1,16 @@
 import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersServiceInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
+import { FilterDefinition, FiltersServiceInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
-import { ResultFilterField, ResultFilterFor, ResultRawFilters, ResultsFiltersDefinition } from '../types';
+import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField>, FiltersServiceStatusesInterface {
+export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultRawEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(ResultsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -96,6 +96,10 @@ export class ResultsFiltersService implements FiltersServiceInterface<ResultRawF
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
     }
+  }
+
+  retrieveFiltersDefinitions(): FilterDefinition[] {
+    return this.filtersDefinitions;
   }
 
   retrieveField(filterField: string): ResultFilterField  {

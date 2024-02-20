@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { GenericScope, Scope } from '@app/types/config';
-import { FieldKey } from '@app/types/data';
+import { FieldKey, IndexListOptions } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
@@ -43,7 +43,7 @@ export class TableService {
   /**
    * Save options to the storage
    */
-  saveOptions<T>(key: `${Scope}-options`, options: T): void {
+  saveOptions<T extends IndexListOptions>(key: `${Scope}-options`, options: T): void {
     this._tableStorageService.save(key, options);
   }
 

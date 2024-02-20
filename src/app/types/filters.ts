@@ -1,5 +1,6 @@
 import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { ApplicationRawFilters } from '@app/applications/types';
+import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
 import { PartitionRawFilters } from '@app/partitions/types';
 import { ResultRawFilters } from '@app/results/types';
 import { SessionRawFilters } from '@app/sessions/types';
@@ -18,7 +19,7 @@ export type FilterOperators = FilterStringOperator | FilterNumberOperator | Filt
 /**
  * Used to define the filter FOR (a group of AND).
  */
-export type FiltersOr<T extends number, U extends number | null = null> = FiltersAnd<T, U>[];
+export type FiltersOr<T extends FiltersEnums, U extends FiltersOptionsEnums | null = null> = FiltersAnd<T, U>[];
 /**
  * Used to define the filter AND (a group of filters).
  */
