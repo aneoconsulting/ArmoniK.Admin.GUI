@@ -1,3 +1,4 @@
+import { SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
@@ -42,7 +43,7 @@ import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOptions } from './types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from './types';
 
 @Component({
   selector: 'app-sessions-index',
@@ -111,7 +112,7 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent extends AbstractIndexComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFiltersOr, SessionRaw> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters, SessionRaw, SessionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #dialog = inject(MatDialog);
 

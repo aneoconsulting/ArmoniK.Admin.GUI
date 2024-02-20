@@ -1,30 +1,25 @@
 import { inject } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { ApplicationRawFilter } from '@app/applications/types';
-import { PartitionRawFiltersOr } from '@app/partitions/types';
-import { ResultRawFiltersOr } from '@app/results/types';
-import { SessionRawFiltersOr } from '@app/sessions/types';
-import { TaskSummary, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { FiltersEnums } from '@app/dashboard/types';
+import { TaskSummary } from '@app/tasks/types';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { DataRaw, IndexListFilters, IndexListOptions, RawColumnKey } from '../data';
-import { FiltersOr } from '../filters';
+import { DataRaw, IndexListOptions, RawColumnKey } from '../data';
+import { FiltersOr, RawFilters } from '../filters';
 import { Page } from '../pages';
-import { DataFiltersService, GrpcService } from '../services';
+import { GrpcService } from '../services';
+import { FiltersServiceInterface } from '../services/filtersService';
 import { IndexServiceInterface } from '../services/indexService';
 
-// TODO: Create an interface for filtersServices in order to avoid this kind of type.
-type AllFilters = SessionRawFiltersOr & TaskSummaryFiltersOr & PartitionRawFiltersOr & ApplicationRawFilter & ResultRawFiltersOr & ResultRawFiltersOr;
-
-export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends IndexListOptions, F extends IndexListFilters, D extends DataRaw | TaskSummary> {
+export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters, D extends DataRaw | TaskSummary, E extends FiltersEnums> {
   private notificationService = inject(NotificationService);
   private iconsService = inject(IconsService);
   private shareUrlService = inject(ShareUrlService);
   private autoRefreshService = inject(AutoRefreshService);
 
-  protected filterService: DataFiltersService;
+  protected filterService: FiltersServiceInterface<F, E>;
   protected grpcService: GrpcService;
   protected indexService: IndexServiceInterface<K, O>;
 
@@ -83,7 +78,7 @@ export abstract class AbstractIndexComponent<K extends RawColumnKey, O extends I
   }
 
   saveFilters() {
-    this.filterService.saveFilters(this.filters as AllFilters);
+    this.filterService.saveFilters(this.filters);
   }
 
   columnsLabels() {

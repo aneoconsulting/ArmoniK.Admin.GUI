@@ -1,3 +1,4 @@
+import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,7 +30,7 @@ import { ApplicationsTableComponent } from './components/table.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from './types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -123,7 +124,7 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent extends AbstractIndexComponent<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilter, ApplicationRaw> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters, ApplicationRaw, ApplicationRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
 
   protected override indexService = inject(ApplicationsIndexService);
   protected override grpcService = inject(ApplicationsGrpcService);

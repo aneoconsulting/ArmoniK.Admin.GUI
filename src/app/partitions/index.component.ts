@@ -1,3 +1,4 @@
+import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,7 +40,7 @@ import { PartitionsTableComponent } from './components/table.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRawListOptions } from './types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -146,7 +147,7 @@ app-table-actions-toolbar {
     PartitionsTableComponent
   ]
 })
-export class IndexComponent extends AbstractIndexComponent<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFiltersOr, PartitionRaw> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters, PartitionRaw, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   protected override indexService = inject(PartitionsIndexService);
   protected override grpcService = inject(PartitionsGrpcService);
   protected override filterService = inject(PartitionsFiltersService);

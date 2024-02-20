@@ -1,4 +1,4 @@
-import { ResultRaw } from '@aneoconsultingfr/armonik.api.angular';
+import { ResultRaw, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +32,7 @@ import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
-import { ResultRawColumnKey, ResultRawFiltersOr, ResultRawListOptions } from './types';
+import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
 
 
 @Component({
@@ -91,7 +91,7 @@ app-table-actions-toolbar {
     ResultsTableComponent
   ]
 })
-export class IndexComponent extends AbstractIndexComponent<ResultRawColumnKey, ResultRawListOptions, ResultRawFiltersOr, ResultRaw> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters, ResultRaw, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   
   protected override filterService = inject(ResultsFiltersService);
   protected override grpcService = inject(ResultsGrpcService);

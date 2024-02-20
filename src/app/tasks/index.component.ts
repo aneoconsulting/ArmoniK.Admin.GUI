@@ -34,7 +34,7 @@ import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFiltersOr, TaskSummaryListOptions } from './types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilters, TaskSummaryListOptions } from './types';
 
 @Component({
   selector: 'app-tasks-index',
@@ -89,7 +89,7 @@ app-table-actions-toolbar {
     FiltersService,
   ],
 })
-export class IndexComponent extends AbstractIndexComponent<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFiltersOr, TaskSummary> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends AbstractIndexComponent<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters, TaskSummary, TaskSummaryEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly #dialog = inject(MatDialog);
   protected override indexService = inject(TasksIndexService);
   protected override grpcService = inject(TasksGrpcService);

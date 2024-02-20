@@ -15,7 +15,7 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFiltersOr } from '../types';
+import { SessionRawColumnKey, SessionRawFilters } from '../types';
 
 describe('ApplicationsTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -37,7 +37,7 @@ describe('ApplicationsTableComponent', () => {
 
   const displayedColumns: SessionRawColumnKey[] = ['sessionId', 'count', 'actions'];
 
-  const filters: SessionRawFiltersOr = [
+  const filters: SessionRawFilters = [
     [
       {
         field: 1,

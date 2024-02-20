@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './partitions-filters.service';
-import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
+import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
 
 @Injectable()
@@ -30,8 +30,8 @@ export class PartitionsGrpcService {
     'priority': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY,
   };
 
-  list$(options: PartitionRawListOptions, filters: PartitionRawFiltersOr): Observable<ListPartitionsResponse> {
-    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+  list$(options: PartitionRawListOptions, filters: PartitionRawFilters): Observable<ListPartitionsResponse> {
+    const requestFilters = this.#utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.#partitionsFiltersService.filtersDefinitions, this.#buildFilterField);
 
     const listPartitionsRequest = new ListPartitionsRequest({
       page: options.pageIndex,

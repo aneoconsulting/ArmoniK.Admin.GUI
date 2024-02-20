@@ -1,8 +1,8 @@
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRaw, ResultRawColumnKey, ResultRawFiltersOr, ResultRawListOptions } from '@app/results/types';
-import { SessionRaw, SessionRawColumnKey, SessionRawFiltersOr, SessionRawListOptions } from '@app/sessions/types';
-import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '@app/tasks/types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '@app/applications/types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '@app/partitions/types';
+import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '@app/results/types';
+import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
+import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
@@ -20,7 +20,7 @@ interface ArmonikData<T extends DataRaw | TaskSummary> {
 
 interface ArmonikTaskByStatusData<T extends DataRaw> extends ArmonikData<T>{
   queryTasksParams: Record<string, string>;
-  filters: TaskSummaryFiltersOr;
+  filters: TaskSummaryFilters;
 }
 
 export interface TaskData extends ArmonikData<TaskSummary> {
@@ -39,4 +39,3 @@ export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw>
 
 export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
-export type IndexListFilters = SessionRawFiltersOr | TaskSummaryFiltersOr | PartitionRawFiltersOr | ApplicationRawFilter | ResultRawFiltersOr;

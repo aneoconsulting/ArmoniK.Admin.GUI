@@ -16,5 +16,5 @@ export type SessionFilterField = SessionRawEnumField | SessionTaskOptionEnumFiel
 export type SessionFilterDefinition = FilterDefinition<SessionRawEnumField, SessionTaskOptionEnumField>;
 
 export type SessionFilterFor = FilterFor<SessionRawEnumField, SessionTaskOptionEnumField>;
-export type SessionRawFiltersOr = FiltersOr<SessionRawEnumField, SessionTaskOptionEnumField>;
+export type SessionRawFilters = FiltersOr<SessionRawEnumField, SessionTaskOptionEnumField>;
 export type SessionRawFilter = Filter<SessionRawEnumField, SessionTaskOptionEnumField>;

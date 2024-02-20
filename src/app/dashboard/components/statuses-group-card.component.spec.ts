@@ -1,14 +1,14 @@
 import { FilterDateOperator, FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskSummaryFilters } from '@app/tasks/types';
 import { FiltersService } from '@services/filters.service';
 import { StatusesGroupCardComponent } from './statuses-group-card.component';
 
 describe('StatusesGroupCardComponent', () => {
   let component: StatusesGroupCardComponent;
 
-  const filters: TaskSummaryFiltersOr = [
+  const filters: TaskSummaryFilters = [
     [
       {
         field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,

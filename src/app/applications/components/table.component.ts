@@ -10,7 +10,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskSummaryFilters } from '@app/tasks/types';
 import { ApplicationData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -25,7 +25,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
+import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
@@ -124,7 +124,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) displayedColumns: ApplicationRawColumnKey[] = [];
   @Input({required: true}) options: ApplicationRawListOptions;
   @Input({required: true}) total: number;
-  @Input({required: true}) filters: ApplicationRawFilter;
+  @Input({required: true}) filters: ApplicationRawFilters;
   @Input() lockColumns = false;
 
   private _data: ApplicationData[] = [];
@@ -272,7 +272,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
   }
 
-  countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskSummaryFiltersOr {
+  countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskSummaryFilters {
     return [
       [
         {

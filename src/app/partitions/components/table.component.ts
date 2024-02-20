@@ -10,7 +10,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskSummaryFilters } from '@app/tasks/types';
 import { PartitionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData, } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -26,7 +26,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
+import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-partitions-table',
@@ -66,7 +66,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) displayedColumns: PartitionRawColumnKey[] = [];
   @Input({ required: true }) options: PartitionRawListOptions;
   @Input({ required: true }) total: number;
-  @Input({ required: true }) filters: PartitionRawFiltersOr;
+  @Input({ required: true }) filters: PartitionRawFilters;
   @Input() lockColumns = false;
 
   private _data: PartitionData[] = [];
@@ -182,7 +182,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  countTasksByStatusFilters(partitionId: string): TaskSummaryFiltersOr {
+  countTasksByStatusFilters(partitionId: string): TaskSummaryFilters {
     return [
       [
         {
