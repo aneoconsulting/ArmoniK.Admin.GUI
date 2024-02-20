@@ -10,7 +10,7 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -118,7 +118,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
       tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this.#taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFiltersOr)),
+      switchMap(() => this.#taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
     ).subscribe((data) => {
       if (data.status) {
         this.data = data.status;
@@ -207,6 +207,6 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   taskByStatusFilters() {
-    return this.line.filters as TaskSummaryFiltersOr;
+    return this.line.filters as TaskSummaryFilters;
   }
 }

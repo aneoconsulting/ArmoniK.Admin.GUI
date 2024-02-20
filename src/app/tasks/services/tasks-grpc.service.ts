@@ -6,10 +6,10 @@ import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, 
 import { sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
+import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSummaryListOptions, TaskSummaryFiltersOr, TaskSummaryFieldKey, TaskSummaryEnumField, TaskOptionEnumField>, GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFiltersOr, TaskSummaryEnumField, TaskOptionEnumField> {
+export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryFieldKey, TaskSummaryEnumField, TaskOptionEnumField>, GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField> {
   readonly filterService = inject(TasksFiltersService);
   readonly utilsService = inject(UtilsService<TaskSummaryEnumField, TaskOptionEnumField>);
   readonly grpcClient = inject(TasksClient);
@@ -39,9 +39,9 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
     error: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
   };
 
-  list$(options: TaskSummaryListOptions, filters: TaskSummaryFiltersOr): Observable<ListTasksResponse> {
+  list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {
 
-    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const listTasksRequest = new ListTasksRequest({
       page: options.pageIndex,
@@ -77,9 +77,9 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
     return this.grpcClient.cancelTasks(request);
   }
 
-  countByStatus$(filters: TaskSummaryFiltersOr): Observable<CountTasksByStatusResponse> {
+  countByStatus$(filters: TaskSummaryFilters): Observable<CountTasksByStatusResponse> {
 
-    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const request = new CountTasksByStatusRequest({
       filters: requestFilters

@@ -11,7 +11,7 @@ import { ApplicationsTableComponent } from '@app/applications/components/table.c
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -94,7 +94,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   total: number;
   loadApplicationData = false;
   data: ApplicationRaw[] = [];
-  filters: ApplicationRawFilter;
+  filters: ApplicationRawFilters;
   options: ApplicationRawListOptions;
 
   displayedColumns: ApplicationRawColumnKey[] = [];
@@ -117,7 +117,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.availableColumns = this.#applicationsIndexService.availableColumns;
     this.intervalValue = this.line.interval;
 
-    this.filters = this.line.filters as ApplicationRawFilter;
+    this.filters = this.line.filters as ApplicationRawFilters;
     this.interval.next(this.line.interval);
   }
 

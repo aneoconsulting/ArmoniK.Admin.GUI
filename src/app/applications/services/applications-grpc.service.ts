@@ -6,10 +6,10 @@ import { GrpcListInterface } from '@app/types/services/grpcService';
 import { buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
-import { ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
+import { ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsClient, ApplicationRawListOptions, ApplicationRawFilter, ApplicationRawFieldKey, ApplicationRawEnumField> {
+export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsClient, ApplicationRawListOptions, ApplicationRawFilters, ApplicationRawFieldKey, ApplicationRawEnumField> {
   readonly filterService = inject(ApplicationsFiltersService);
   readonly grpcClient = inject(ApplicationsClient);
   readonly utilsService = inject(UtilsService<ApplicationRawEnumField>);
@@ -21,9 +21,9 @@ export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsCl
     'version': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
   };
 
-  list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter): Observable<ListApplicationsResponse> {
+  list$(options: ApplicationRawListOptions, filters: ApplicationRawFilters): Observable<ListApplicationsResponse> {
 
-    const requestFilters = this.utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const request = new ListApplicationsRequest({
       page: options.pageIndex,

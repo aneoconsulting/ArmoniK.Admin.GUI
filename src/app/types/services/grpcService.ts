@@ -7,6 +7,7 @@ import { ResultRawFieldKey } from '@app/results/types';
 import { SessionRawFieldKey } from '@app/sessions/types';
 import { TaskSummaryFieldKey } from '@app/tasks/types';
 import { UtilsService } from '@services/utils.service';
+import { FilterDefinition, FilterField, FilterFor, FiltersServiceInterface } from './filtersService';
 import { IndexListFilters, IndexListOptions } from '../data';
 import { RawFilters } from '../filters';
 
@@ -18,7 +19,7 @@ type CountByStatusResponse = CountTasksByStatusResponse;
 type DataFieldKey = SessionRawFieldKey | TaskSummaryFieldKey | ApplicationRawFieldKey | PartitionRawFieldKey | ResultRawFieldKey;
 
 export interface GrpcListInterface<C extends GrpcClient, L extends IndexListOptions, E extends IndexListFilters, K extends DataFieldKey, F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
-  // readonly filterService: DataFiltersService;  NEED TO USE THE FILTERSERVICE INTERFACE HERE
+  readonly filterService: FiltersServiceInterface<RawFilters, FilterFor, FilterField, FilterDefinition, F>; 
   readonly utilsService: UtilsService<F, O>;
   readonly grpcClient: C;
 

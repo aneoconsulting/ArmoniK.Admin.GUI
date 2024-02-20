@@ -6,10 +6,10 @@ import { GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcSer
 import { buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
-import { ResultRawFieldKey, ResultRawFilter, ResultRawFiltersOr, ResultRawListOptions } from '../types';
+import {  ResultRawFieldKey, ResultRawFilter, ResultRawFilters, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsGrpcService implements GrpcListInterface<ResultsClient, ResultRawListOptions, ResultRawFiltersOr, ResultRawFieldKey, ResultRawEnumField>, GrpcGetInterface<GetResultResponse> {
+export class ResultsGrpcService implements GrpcListInterface<ResultsClient, ResultRawListOptions, ResultRawFilters, ResultRawFieldKey, ResultRawEnumField>, GrpcGetInterface<GetResultResponse> {
   readonly filterService = inject(ResultsFiltersService);
   readonly utilsService = inject(UtilsService<ResultRawEnumField>);
   readonly grpcClient = inject(ResultsClient);
@@ -25,9 +25,9 @@ export class ResultsGrpcService implements GrpcListInterface<ResultsClient, Resu
     'size': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
   };
 
-  list$(options: ResultRawListOptions, filters: ResultRawFiltersOr): Observable<ListResultsResponse> {
+  list$(options: ResultRawListOptions, filters: ResultRawFilters): Observable<ListResultsResponse> {
 
-    const requestFilters = this.utilsService.createFilters<ResultFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<ResultFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const listResultRequest = new ListResultsRequest({
       page: options.pageIndex,

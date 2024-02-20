@@ -6,10 +6,10 @@ import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/t
 import { buildArrayFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionRawField, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from '../types';
+import { SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsGrpcService implements GrpcListInterface<SessionsClient, SessionRawListOptions, SessionRawFiltersOr, SessionRawFieldKey, SessionRawEnumField, SessionTaskOptionEnumField>, GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
+export class SessionsGrpcService implements GrpcListInterface<SessionsClient, SessionRawListOptions, SessionRawFilters, SessionRawFieldKey, SessionRawEnumField, SessionTaskOptionEnumField>, GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
   readonly filterService = inject(SessionsFiltersService);
   readonly grpcClient = inject(SessionsClient);
   readonly utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
@@ -24,8 +24,8 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
     'duration': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DURATION,
   };
 
-  list$(options: SessionRawListOptions, filters: SessionRawFiltersOr): Observable<ListSessionsResponse> {
-    const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
+  list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
+    const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,

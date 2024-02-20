@@ -6,11 +6,11 @@ import { GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcSer
 import { buildArrayFilter, buildNumberFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './partitions-filters.service';
-import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFiltersOr, PartitionRawListOptions } from '../types';
+import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
 
 @Injectable()
-export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient, PartitionRawListOptions, PartitionRawFiltersOr, PartitionRawFieldKey, PartitionRawEnumField>, GrpcGetInterface<GetPartitionResponse> {
+export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient, PartitionRawListOptions, PartitionRawFilters, PartitionRawFieldKey, PartitionRawEnumField>, GrpcGetInterface<GetPartitionResponse> {
   readonly filterService = inject(PartitionsFiltersService);
   readonly grpcClient = inject(PartitionsClient);
   readonly utilsService = inject(UtilsService<PartitionRawEnumField>);
@@ -25,8 +25,8 @@ export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient
     'priority': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY,
   };
 
-  list$(options: PartitionRawListOptions, filters: PartitionRawFiltersOr): Observable<ListPartitionsResponse> {
-    const requestFilters = this.utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.filterService.retrieveFiltersDefinitions(), this.#buildFilterField);
+  list$(options: PartitionRawListOptions, filters: PartitionRawFilters): Observable<ListPartitionsResponse> {
+    const requestFilters = this.utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const listPartitionsRequest = new ListPartitionsRequest({
       page: options.pageIndex,
