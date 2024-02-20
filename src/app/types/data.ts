@@ -2,7 +2,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } fr
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '@app/results/types';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
-import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '@app/tasks/types';
+import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
