@@ -29,7 +29,7 @@ import { ApplicationsTableComponent } from './components/table.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from './types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -138,7 +138,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: ApplicationRawListOptions;
 
-  filters: ApplicationRawFilter = [];
+  filters: ApplicationRawFilters = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -249,9 +249,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as ApplicationRawFilter;
+    this.filters = filters as ApplicationRawFilters;
 
-    this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilter);
+    this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilters);
     this.options.pageIndex = 0;
     this.refresh.next();
   }

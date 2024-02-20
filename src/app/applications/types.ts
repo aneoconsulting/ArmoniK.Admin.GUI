@@ -13,4 +13,4 @@ export type ApplicationFilterField = ApplicationRawEnumField | { for: string, in
 export type ApplicationsFiltersDefinition = FilterDefinition<ApplicationRawEnumField>;
 
 export type ApplicationFilterFor = FilterFor<ApplicationRawEnumField>;
-export type ApplicationRawFilter = FiltersOr<ApplicationRawEnumField>;
+export type ApplicationRawFilters = FiltersOr<ApplicationRawEnumField>;

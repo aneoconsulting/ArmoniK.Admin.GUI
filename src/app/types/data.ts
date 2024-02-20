@@ -20,7 +20,7 @@ interface ArmonikData<T extends DataRaw | TaskSummary> {
 
 interface ArmonikTaskByStatusData<T extends DataRaw> extends ArmonikData<T>{
   queryTasksParams: Record<string, string>;
-  filters: TaskSummaryFiltersOr;
+  filters: TaskSummaryFilters;
 }
 
 export interface TaskData extends ArmonikData<TaskSummary> {

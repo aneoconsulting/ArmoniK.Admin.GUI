@@ -10,7 +10,7 @@ import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRawFiltersOr } from '../types';
+import { PartitionRawFilters } from '../types';
 
 describe('PartitionsTableComponent', () => {
   let component: PartitionsTableComponent;
@@ -42,7 +42,7 @@ describe('PartitionsTableComponent', () => {
     page: new EventEmitter()
   } as unknown as MatPaginator;
 
-  const filters: PartitionRawFiltersOr = [
+  const filters: PartitionRawFilters = [
     [
       {
         field: 1, 

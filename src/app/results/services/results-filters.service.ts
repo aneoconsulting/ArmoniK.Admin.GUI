@@ -1,20 +1,21 @@
 import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { FilterFor } from '@app/types/filter-definition';
+import { FiltersServiceInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
-import { ResultFilterField, ResultRawFiltersOr, ResultsFiltersDefinition } from '../types';
+import { ResultFilterField, ResultFilterFor, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService {
-  readonly #resultsStatusesService = inject(ResultsStatusesService);
-  readonly #defaultConfigService = inject(DefaultConfigService);
-  readonly #tableService = inject(TableService);
+export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField>, FiltersServiceStatusesInterface {
+  readonly statusService = inject(ResultsStatusesService);
+  readonly defaultConfigService = inject(DefaultConfigService);
+  readonly tableService = inject(TableService);
 
-  readonly #rootField: Record<ResultRawEnumField, string> = {
+  readonly rootField: Record<ResultRawEnumField, string> = {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT]: $localize`Completed at`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT]: $localize`Created at`,
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_NAME]: $localize`Name`,
@@ -26,7 +27,7 @@ export class ResultsFiltersService {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
   };
 
-  readonly #filtersDefinitions: ResultsFiltersDefinition[] = [
+  readonly filtersDefinitions: ResultsFiltersDefinition[] = [
     {
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_NAME,
@@ -51,10 +52,10 @@ export class ResultsFiltersService {
       for: 'root',
       field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS,
       type: 'status',
-      statuses: Object.keys(this.#resultsStatusesService.statuses).map(status => {
+      statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.#resultsStatusesService.statuses[Number(status) as ResultStatus],
+          value: this.statusService.statuses[Number(status) as ResultStatus],
         };
       }),
     },
@@ -70,30 +71,26 @@ export class ResultsFiltersService {
     }
   ];
 
-  readonly #defaultFilters: ResultRawFiltersOr = this.#defaultConfigService.defaultResults.filters;
+  readonly defaultFilters: ResultRawFilters = this.defaultConfigService.defaultResults.filters;
 
-  saveFilters(filters: ResultRawFiltersOr): void {
-    this.#tableService.saveFilters('results-filters', filters);
+  saveFilters(filters: ResultRawFilters): void {
+    this.tableService.saveFilters('results-filters', filters);
   }
 
-  restoreFilters(): ResultRawFiltersOr {
-    return this.#tableService.restoreFilters<ResultRawEnumField, null>('results-filters', this.#filtersDefinitions) ?? this.#defaultFilters;
+  restoreFilters(): ResultRawFilters {
+    return this.tableService.restoreFilters<ResultRawEnumField, null>('results-filters', this.filtersDefinitions) ?? this.defaultFilters;
   }
 
-  resetFilters(): ResultRawFiltersOr {
-    this.#tableService.resetFilters('results-filters');
+  resetFilters(): ResultRawFilters {
+    this.tableService.resetFilters('results-filters');
 
-    return this.#defaultFilters;
-  }
-
-  retrieveFiltersDefinitions() {
-    return this.#filtersDefinitions;
+    return this.defaultFilters;
   }
 
   retrieveLabel(filterFor: FilterFor<ResultRawEnumField, null>, filterField:  ResultFilterField): string {
     switch (filterFor) {
     case 'root':
-      return this.#rootField[filterField as ResultRawEnumField];
+      return this.rootField[filterField as ResultRawEnumField];
     case 'options':
       throw new Error('Impossible case');
     default:
@@ -102,7 +99,7 @@ export class ResultsFiltersService {
   }
 
   retrieveField(filterField: string): ResultFilterField  {
-    const values = Object.values(this.#rootField);
+    const values = Object.values(this.rootField);
     const index = values.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
     return { for: 'root', index: index };
   }
