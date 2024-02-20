@@ -1,17 +1,19 @@
 import { Injectable, inject } from '@angular/core';
+import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '../types';
 
 @Injectable()
 // TODO: re-add app-index-service
-export class PartitionsIndexService {
-  #defaultConfigService = inject(DefaultConfigService);
+export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions> {
+  readonly defaultConfigService = inject(DefaultConfigService);
+  readonly tableService = inject(TableService);
 
   readonly tableName: string = 'partitions';
 
-  readonly defaultColumns: PartitionRawColumnKey[] = this.#defaultConfigService.defaultPartitions.columns;
-  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultPartitions.lockColumns;
+  readonly defaultColumns: PartitionRawColumnKey[] = this.defaultConfigService.defaultPartitions.columns;
+  readonly defaultLockColumns: boolean = this.defaultConfigService.defaultPartitions.lockColumns;
   readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'count'];
 
   // TODO: We could use a custom type to know which columns are objects
@@ -29,11 +31,9 @@ export class PartitionsIndexService {
     count: $localize`Tasks by Status`,
   };
 
-  readonly defaultOptions: PartitionRawListOptions = this.#defaultConfigService.defaultPartitions.options;
+  readonly defaultOptions: PartitionRawListOptions = this.defaultConfigService.defaultPartitions.options;
 
-  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultPartitions.interval;
-
-  #tableService = inject(TableService);
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultPartitions.interval;
 
   columnToLabel(column: PartitionRawColumnKey): string {
     return this.columnsLabels[column];
@@ -68,11 +68,11 @@ export class PartitionsIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue('partitions-interval', value);
+    this.tableService.saveIntervalValue('partitions-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue('partitions-interval') ?? this.defaultIntervalValue;
+    return this.tableService.restoreIntervalValue('partitions-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -80,11 +80,11 @@ export class PartitionsIndexService {
    */
 
   saveLockColumns(value: boolean): void {
-    this.#tableService.saveLockColumns('partitions-lock-columns', value);
+    this.tableService.saveLockColumns('partitions-lock-columns', value);
   }
 
   restoreLockColumns(): boolean {
-    return this.#tableService.restoreLockColumns('partitions-lock-columns') ?? this.defaultLockColumns;
+    return this.tableService.restoreLockColumns('partitions-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**
@@ -92,11 +92,11 @@ export class PartitionsIndexService {
    */
 
   saveOptions(options: PartitionRawListOptions): void {
-    this.#tableService.saveOptions('partitions-options', options);
+    this.tableService.saveOptions('partitions-options', options);
   }
 
   restoreOptions(): PartitionRawListOptions {
-    const options = this.#tableService.restoreOptions<PartitionRaw>('partitions-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<PartitionRaw>('partitions-options', this.defaultOptions);
 
     return options;
   }
@@ -106,15 +106,15 @@ export class PartitionsIndexService {
    */
 
   saveColumns(columns: PartitionRawColumnKey[]): void {
-    this.#tableService.saveColumns('partitions-columns', columns);
+    this.tableService.saveColumns('partitions-columns', columns);
   }
 
   restoreColumns(): PartitionRawColumnKey[] {
-    return this.#tableService.restoreColumns<PartitionRawColumnKey[]>('partitions-columns') ?? this.defaultColumns;
+    return this.tableService.restoreColumns<PartitionRawColumnKey[]>('partitions-columns') ?? this.defaultColumns;
   }
 
   resetColumns(): PartitionRawColumnKey[] {
-    this.#tableService.resetColumns('partitions-columns');
+    this.tableService.resetColumns('partitions-columns');
 
     return Array.from(this.defaultColumns);
   }

@@ -10,7 +10,7 @@ import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from './types';
+import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 describe('Application component', () => {
 
@@ -235,7 +235,7 @@ describe('Application component', () => {
   });
 
   it('should update filters', () => {
-    const newFilterOr: ApplicationRawFilter = [[{
+    const newFilterOr: ApplicationRawFilters = [[{
       field: 3,
       for: 'root',
       operator: 4,

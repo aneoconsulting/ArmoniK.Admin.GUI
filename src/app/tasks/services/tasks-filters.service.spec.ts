@@ -5,7 +5,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksStatusesService } from './tasks-statuses.service';
-import { TaskFilterDefinition, TaskFilterField, TaskSummaryFiltersOr } from '../types';
+import { TaskFilterDefinition, TaskFilterField, TaskSummaryFilters } from '../types';
 
 
 describe('TasksFilterService', () => {
@@ -151,7 +151,7 @@ describe('TasksFilterService', () => {
     operator: 1,
     value: 'Dummy'
   }];
-  const mockTaskSummaryfilterOr: TaskSummaryFiltersOr = [
+  const mockTaskSummaryfilterOr: TaskSummaryFilters = [
     filterAnd
   ];
 
@@ -191,7 +191,7 @@ describe('TasksFilterService', () => {
     expect(service.resetFilters()).toEqual(mockDefaultFilters);
   });
   test('the service must return #filtersDefinitions', () =>{
-    expect(service.retrieveFiltersDefinitions()).toEqual(expectedFiltersDefinitions);
+    expect(service.filtersDefinitions).toEqual(expectedFiltersDefinitions);
   });
 
   test('the service must return the right label with filterFor root', () => {
