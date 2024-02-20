@@ -9,7 +9,7 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFilters, TaskFilterFor, TaskFilterField, TaskFilterDefinition, TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(TasksStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -188,6 +188,10 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
+  }
+
+  retrieveFiltersDefinitions(): TaskFilterDefinition[] {
+    return this.filtersDefinitions;
   }
 
   retrieveField(filterField: string): TaskFilterField  {
