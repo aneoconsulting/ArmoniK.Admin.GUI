@@ -143,6 +143,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateDisplayedColumns();
     this.availableColumns = this.#tasksIndexService.availableColumns;
     this.lockColumns = this.#tasksIndexService.restoreLockColumns();
+    this.#tasksIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
 
     this.genericColumns = this.#tasksIndexService.restoreGenericColumns();
     this.availableColumns.push(...this.genericColumns);
