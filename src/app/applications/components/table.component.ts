@@ -31,7 +31,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '
 @Component({
   selector: 'app-application-table',
   standalone: true,
-  templateUrl: '../../components/table/table.component.html',
+  templateUrl: './table.component.html',
   providers: [
     ApplicationsIndexService,
     TasksByStatusService,

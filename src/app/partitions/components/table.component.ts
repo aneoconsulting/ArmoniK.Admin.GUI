@@ -30,7 +30,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../typ
 @Component({
   selector: 'app-partitions-table',
   standalone: true,
-  templateUrl: '../../components/table/table.component.html',
+  templateUrl: './table.component.html',
   styles: [],
   providers: [
     TasksByStatusService,
@@ -55,7 +55,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../typ
     DragDropModule,
     MatButtonModule,
     TableInspectObjectComponent,
-    MatDialogModule
+    MatDialogModule,
   ]
 })
 export class PartitionsTableComponent extends AbstractTableComponent<PartitionRawColumnKey, PartitionRaw, PartitionRawFilters> {

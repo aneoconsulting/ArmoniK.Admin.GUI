@@ -1,28 +1,14 @@
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ArmonikData, DataRaw, IndexListOptions, RawColumnKey, RawListFilters } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData, } from '@app/types/dialog';
 import { ListSortOptions } from '@app/types/options';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
-import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TableService } from '@services/table.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -31,33 +17,7 @@ import { TableColumn } from './column.type';
 @Component({
   selector: 'app-partitions-table',
   standalone: true,
-  templateUrl: './table.component.html',
-  styles: [],
-  providers: [
-    TasksByStatusService,
-    IconsService,
-    FiltersService
-  ],
-  imports: [
-    TableActionsToolbarComponent,
-    FiltersToolbarComponent,
-    TableContainerComponent,
-    MatPaginatorModule,
-    TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
-    MatSortModule,
-    NgFor,
-    NgIf,
-    MatTableModule,
-    MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
-    DragDropModule,
-    MatButtonModule,
-    TableInspectObjectComponent,
-    MatDialogModule
-  ]
+  template: '',
 })
 export abstract class AbstractTableComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> implements OnInit, AfterViewInit {
   abstract tableScope: Scope;
@@ -80,9 +40,9 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   readonly tableService = inject(TableService);
-  readonly #tasksByStatusService = inject(TasksByStatusService);
-  readonly #dialog = inject(MatDialog);
-  readonly #iconsService = inject(IconsService);
+  readonly tasksByStatusService = inject(TasksByStatusService);
+  readonly dialog = inject(MatDialog);
+  readonly iconsService = inject(IconsService);
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
@@ -115,18 +75,18 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
 
   restoreStatus() {
     if (this.isTableWithCount()) {
-      this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses(this.tableScope as TableTasksByStatus);
+      this.tasksStatusesColored = this.tasksByStatusService.restoreStatuses(this.tableScope as TableTasksByStatus);
     }
   }
 
   saveStatus(statuses: TaskStatusColored[]) {
     if (this.isTableWithCount()) {
-      this.#tasksByStatusService.saveStatuses(this.tableScope as TableTasksByStatus, statuses);
+      this.tasksByStatusService.saveStatuses(this.tableScope as TableTasksByStatus, statuses);
     }
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   abstract countTasksByStatusFilters(...id: string[]): TaskSummaryFilters;
@@ -138,7 +98,7 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
   }
 
   personalizeTasksByStatus() {
-    const dialogRef = this.#dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
+    const dialogRef = this.dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
       data: {
         statusesCounts: this.tasksStatusesColored,
       }
