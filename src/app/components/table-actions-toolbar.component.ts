@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ColumnKey } from '@app/types/data';
+import { ColumnKey, RawColumnKey } from '@app/types/data';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { IconsService } from '@services/icons.service';
 import { ActionsToolbarGroupComponent } from './actions-toolbar-group.component';
@@ -41,8 +41,8 @@ export class TableActionsToolbarComponent<T extends object, O extends object> {
   @Input({ required: true }) refreshTooltip = '';
   @Input({ required: true }) intervalValue = 0;
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
-  @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
-  @Input({ required: true }) availableColumns: ColumnKey<T, O>[] = [];
+  @Input({ required: true }) displayedColumns: RawColumnKey[] = [];
+  @Input({ required: true }) availableColumns: RawColumnKey[] = [];
   @Input({ required: true }) lockColumns = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();

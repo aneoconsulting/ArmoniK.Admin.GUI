@@ -41,6 +41,4 @@ export interface IndexServiceGenericInterface<K extends RawColumnKey, O extends 
   restoreGenericColumns(): GenericColumn[];
 
   isGenericColumn(column: K): boolean;
-
-  genericField(column: K): string;
 }

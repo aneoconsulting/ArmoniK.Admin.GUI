@@ -38,7 +38,7 @@ export interface PartitionData extends ArmonikTaskByStatusData<PartitionRaw> {
 export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw> {
 }
 
-export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
+export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey | `custom.${string}`;
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
 export type RawListFilters = SessionRawFilters | TaskSummaryFilters | PartitionRawFilters | ApplicationRawFilters | ResultRawFilters;
 

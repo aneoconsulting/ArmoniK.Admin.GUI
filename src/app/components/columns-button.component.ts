@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ColumnKey } from '@app/types/data';
+import { ColumnKey, RawColumnKey } from '@app/types/data';
 import { ColumnsModifyDialogData, ColumnsModifyDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
@@ -29,8 +29,8 @@ export class ColumnsButtonComponent<T extends object, O extends object> {
   #iconsService = inject(IconsService);
 
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
-  @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
-  @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
+  @Input({ required: true }) displayedColumns: RawColumnKey[] = [];
+  @Input({ required: true }) availableColumns: RawColumnKey[];
   @Input({ required: true}) disabled: boolean = false;
 
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();

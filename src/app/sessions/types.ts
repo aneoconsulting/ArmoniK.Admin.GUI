@@ -6,7 +6,7 @@ import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 
 export type SessionRaw = GrpcSessionRaw.AsObject;
-export type SessionRawColumnKey = ColumnKey<SessionRaw, TaskOptions> | 'count';
+export type SessionRawColumnKey = ColumnKey<SessionRaw, TaskOptions> | 'count' | `options.options.${string}`;
 export type SessionRawFieldKey = FieldKey<SessionRaw>;
 export type SessionRawListOptions = ListOptions<SessionRaw>;
 

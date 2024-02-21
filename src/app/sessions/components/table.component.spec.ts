@@ -191,66 +191,6 @@ describe('ApplicationsTableComponent', () => {
     expect(component.getIcon('more')).toEqual('more_vert');
   });
 
-  it('should get column label', () => {
-    const column: SessionRawColumnKey = 'sessionId';
-    component.columnToLabel(column);
-    expect(mockSessionsIndexService.columnToLabel).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is not sortable', () => {
-    const column: SessionRawColumnKey = 'count';
-    component.isNotSortableColumn(column);
-    expect(mockSessionsIndexService.isNotSortableColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is simple', () => {
-    const column: SessionRawColumnKey = 'partitionIds';
-    component.isSimpleColumn(column);
-    expect(mockSessionsIndexService.isSimpleColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is "session Id"', () => {
-    const column: SessionRawColumnKey = 'sessionId';
-    component.isSessionIdColumn(column);
-    expect(mockSessionsIndexService.isSessionIdColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is an object', () => {
-    const column: SessionRawColumnKey = 'options';
-    component.isObjectColumn(column);
-    expect(mockSessionsIndexService.isObjectColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is a date', () => {
-    const column: SessionRawColumnKey = 'cancelledAt';
-    component.isDateColumn(column);
-    expect(mockSessionsIndexService.isDateColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is a duration', () => {
-    const column: SessionRawColumnKey = 'duration';
-    component.isDurationColumn(column);
-    expect(mockSessionsIndexService.isDurationColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is a status', () => {
-    const column: SessionRawColumnKey = 'status';
-    component.isStatusColumn(column);
-    expect(mockSessionsIndexService.isStatusColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is counting', () => {
-    const column: SessionRawColumnKey = 'count';
-    component.isCountColumn(column);
-    expect(mockSessionsIndexService.isCountColumn).toHaveBeenCalledWith(column);
-  });
-
-  it('should check if the column is actions', () => {
-    const column: SessionRawColumnKey = 'actions';
-    component.isActionsColumn(column);
-    expect(mockSessionsIndexService.isActionsColumn).toHaveBeenCalledWith(column);
-  });
-
   it('should change column order', () => {
     const event = {
       previousIndex: 0,

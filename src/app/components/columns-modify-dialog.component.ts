@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ColumnKey, GenericColumn, PrefixedOptions } from '@app/types/data';
+import { ColumnKey, GenericColumn, PrefixedOptions, RawColumnKey } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
@@ -31,7 +31,7 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
   ]
 })
 export class ColumnsModifyDialogComponent<T extends object,O extends object> implements OnInit {
-  columns: ColumnKey<T, O>[] = [];
+  columns: RawColumnKey[] = [];
   columnsLabels: Record<ColumnKey<T, O>, string>;
 
   constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T, O>){}
@@ -65,13 +65,13 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   availableOptionsColumns(): PrefixedOptions<O>[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as unknown as PrefixedOptions<O>[];
 
     return columns;
   }
 
   availableGenericColumns(): GenericColumn[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('generic.')).sort((a, b) => a.toString().localeCompare(b.toString())) as GenericColumn[];
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('generic.')).sort((a, b) => a.toString().localeCompare(b.toString())) as unknown as GenericColumn[];
     return columns;
   }
 
@@ -80,7 +80,8 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
    * checked: add the column.
    * Unchecked: remove it
    */
-  updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T, O>): void {
+  updateColumn({ checked }: MatCheckboxChange, col: ColumnKey<T, O>): void {
+    const column = col as RawColumnKey;
     if (checked) {
       if (!this.columns.includes(column) && this.data.availableColumns.includes(column)) {
         this.columns.push(column);
@@ -94,7 +95,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
    * Check if a column is selected
    */
   isSelected(column: ColumnKey<T, O>): boolean {
-    return this.data.currentColumns.includes(column);
+    return this.data.currentColumns.includes(column as RawColumnKey);
   }
 
   onNoClick(): void {

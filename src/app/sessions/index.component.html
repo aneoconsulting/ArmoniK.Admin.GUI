@@ -10,7 +10,7 @@
         [refreshTooltip]="autoRefreshTooltip()"
         [intervalValue]="intervalValue"
         [columnsLabels]="columnsLabels()"
-        [displayedColumns]="displayedColumns"
+        [displayedColumns]="displayedColumnsKeys"
         [availableColumns]="availableColumns"
         [lockColumns]="lockColumns"
         (refresh)="onRefresh()"
@@ -37,7 +37,7 @@
   </mat-toolbar>
   
   <app-sessions-table
-    [data]="data"
+    [inputData]="data"
     [filters]="filters"
     [displayedColumns]="displayedColumns"
     [lockColumns]="lockColumns"

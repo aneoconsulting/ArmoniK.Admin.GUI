@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { GenericColumn } from '@app/types/data';
 import { IndexServiceGenericInterface } from '@app/types/services/indexService';
+import { TableColumn } from '@components/table/column.type';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
@@ -14,9 +15,122 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultSessions.lockColumns;
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
-  readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
-  readonly durationColumns: SessionRawColumnKey[] = ['duration', 'options.maxDuration'];
-  readonly objectColumns: SessionRawColumnKey[] = ['options', 'options.options', 'partitionIds'];
+  readonly availableTableColumns: TableColumn<SessionRawColumnKey>[] = [
+    {
+      name: $localize`Session ID`,
+      key: 'sessionId',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Status`,
+      key: 'status',
+      type: 'status',
+      sortable: true,
+    },
+    {
+      name: $localize`Cancelled at`,
+      key: 'cancelledAt',
+      type: 'date',
+      sortable: true
+    },
+    {
+      name: $localize`Created at`,
+      key: 'createdAt',
+      type: 'date',
+      sortable: true
+    },
+    {
+      name: $localize`Options`,
+      key: 'options',
+      type: 'object',
+      sortable: false,
+    },
+    {
+      name: $localize`Actions`,
+      key: 'actions',
+      type: 'actions',
+      sortable: false,
+    },
+    {
+      name: $localize`Duration`,
+      key: 'duration',
+      type: 'duration',
+      sortable: true
+    },
+    {
+      name: $localize`Partition Ids`,
+      key: 'partitionIds',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Tasks by Status`,
+      key: 'count',
+      type: 'count',
+      sortable: false
+    },
+    {
+      name: $localize`Options Options`,
+      key: 'options.options',
+      type: 'object',
+      sortable: false
+    },
+    {
+      name: $localize`Options Application Name`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Application Namespace`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Application Service`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Application Version`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options  Engine Type`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Max Duration`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Max Retries`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Partition ID`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Options Priority`,
+      key: 'options.applicationName',
+      type: 'simple',
+      sortable: true,
+    },
+  ];
 
   readonly columnsLabels: Record<SessionRawColumnKey, string> = {
     sessionId: $localize`Session ID`,
@@ -45,55 +159,11 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultSessions.interval;
 
   columnToLabel(column: SessionRawColumnKey): string {
-    return !this.isGenericColumn(column) ? this.columnsLabels[column] : this.genericField(column);
-  }
-
-  /**
-   * Table
-   */
-  isActionsColumn(column: SessionRawColumnKey): boolean {
-    return column === 'actions';
-  }
-
-  isSessionIdColumn(column: SessionRawColumnKey): boolean {
-    return column === 'sessionId';
-  }
-
-  isStatusColumn(column: SessionRawColumnKey): boolean {
-    return column === 'status';
-  }
-
-  isCountColumn(column: SessionRawColumnKey): boolean {
-    return column === 'count';
-  }
-
-  isDateColumn(column: SessionRawColumnKey): boolean {
-    return this.dateColumns.includes(column);
-  }
-
-  isDurationColumn(column: SessionRawColumnKey): boolean {
-    return this.durationColumns.includes(column);
-  }
-
-  isObjectColumn(column: SessionRawColumnKey): boolean {
-    return this.objectColumns.includes(column);
-  }
-
-  isSimpleColumn(column: SessionRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isSessionIdColumn(column) && !this.isStatusColumn(column) && !this.isCountColumn(column) && !this.isDateColumn(column) && !this.isDurationColumn(column) && !this.isObjectColumn(column);
-  }
-
-  isNotSortableColumn(column: SessionRawColumnKey): boolean {
-    // FIXME: Not implemented yet in Core (for duration, once implemented, it will be sortable)
-    return this.isActionsColumn(column) || this.isCountColumn(column) || this.isObjectColumn(column) || this.isDurationColumn(column);
+    return this.columnsLabels[column] ?? column;
   }
 
   isGenericColumn(column: SessionRawColumnKey): boolean {
     return column.startsWith('generic.');
-  }
-
-  genericField(column: SessionRawColumnKey) {
-    return column.replace('generic.', '');
   }
 
   /**

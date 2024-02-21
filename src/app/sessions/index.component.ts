@@ -22,6 +22,7 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableColumn } from '@components/table/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -119,8 +120,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly _tasksByStatusService = inject(TasksByStatusService);
   readonly #dialog = inject(MatDialog);
 
-  displayedColumns: SessionRawColumnKey[] = [];
+  displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
+  allColumns: TableColumn<SessionRawColumnKey>[] = [];
   availableColumns: SessionRawColumnKey[] = [];
+  displayedColumnsKeys: SessionRawColumnKey[] = [];
   genericColumns: GenericColumn[];
   lockColumns: boolean = false;
 
@@ -154,12 +157,23 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.displayedColumns = this._sessionsIndexService.restoreColumns();
-    this.availableColumns = this._sessionsIndexService.availableColumns;
+    this.displayedColumnsKeys = this._sessionsIndexService.restoreColumns();
+    this.allColumns = this._sessionsIndexService.availableTableColumns;
+    this.availableColumns = this._sessionsIndexService.availableTableColumns.map(c => c.key);
+    this.displayedColumns = this.allColumns.filter(c => this.displayedColumnsKeys.includes(c.key));
     this.lockColumns = this._sessionsIndexService.restoreLockColumns();
 
     this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
     this.availableColumns.push(...this.genericColumns);
+    this.genericColumns.forEach(g => {
+      const name = g.replace('generic.', '');
+      this.displayedColumns.push({
+        name,
+        type: 'custom',
+        key: `options.options.${name}`,
+        sortable: true,
+      });
+    });
 
     this.options = this._sessionsIndexService.restoreOptions();
 
@@ -240,13 +254,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: SessionRawColumnKey[]) {
-    this.displayedColumns = [...data];
-
+    this.displayedColumnsKeys = data;
+    const newCols = this.allColumns.filter(c => data.includes(c.key));
+    this.displayedColumns = [...newCols];
     this._sessionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this._sessionsIndexService.resetColumns();
+    this.displayedColumnsKeys = this._sessionsIndexService.resetColumns();
   }
 
   onFiltersChange(filters: unknown[]) {
@@ -290,15 +305,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.optionsChange.next();
   }
 
-  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
-    const keys = nestedKeys.split('.');
-    let resultObject: {[key: string]: object} = element;
-    keys.forEach(key => {
-      resultObject = resultObject[key] as unknown as {[key: string]: object};
-    });
-    return resultObject;
-  }
-
   addGenericColumn(): void {
     const dialogRef = this.#dialog.open<ManageGenericColumnDialogComponent, GenericColumn[], GenericColumn[]>(ManageGenericColumnDialogComponent, {
       data: this.genericColumns
@@ -309,9 +315,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.genericColumns = result;
         this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
         this.availableColumns.push(...result);
-        this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
-        this.displayedColumns.push(...result);
-        this._sessionsIndexService.saveColumns(this.displayedColumns);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('generic.'));
+        this.displayedColumnsKeys.push(...result);
+        this._sessionsIndexService.saveColumns(this.displayedColumnsKeys);
         this._sessionsIndexService.saveGenericColumns(this.genericColumns);
       }
     });
