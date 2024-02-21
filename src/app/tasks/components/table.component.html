@@ -69,7 +69,7 @@
         <!-- Object -->
         <ng-container *ngIf="column.type === 'object'">
          <td mat-cell *matCellDef="let element" appNoWrap>
-            <app-table-inspect-object [object]="handleNestedKeys(column.key, element)" [label]="columnToLabel(column.key)"></app-table-inspect-object>
+            <app-table-inspect-object [object]="handleNestedKeys(column.key, element)" [label]="column.name"></app-table-inspect-object>
           </td>
         </ng-container>
         <!-- Generics -->

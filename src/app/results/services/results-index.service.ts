@@ -12,9 +12,8 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
 
   readonly defaultColumns: ResultRawColumnKey[] = this.defaultConfigService.defaultResults.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultResults.lockColumns;
-  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'resultId', 'size'];
-
-  readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
+  readonly defaultOptions: ResultRawListOptions = this.defaultConfigService.defaultResults.options;
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultResults.interval;
 
   readonly availableTableColumns: TableColumn<ResultRawColumnKey>[] = [
     {
@@ -60,50 +59,6 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
       sortable: true
     }
   ];
-
-  readonly columnsLabels: Record<ResultRawColumnKey, string> = {
-    name: $localize`Name`,
-    status: $localize`Status`,
-    ownerTaskId: $localize`Owner Task ID`,
-    createdAt: $localize`Created at`,
-    sessionId: $localize`Session ID`,
-    actions: $localize`Actions`,
-    completedAt: $localize`Completed at`,
-    resultId: $localize`Result ID`,
-    size: $localize`Size`
-  };
-
-  readonly defaultOptions: ResultRawListOptions = this.defaultConfigService.defaultResults.options;
-  readonly defaultIntervalValue: number = this.defaultConfigService.defaultResults.interval;
-
-  columnToLabel(column: ResultRawColumnKey): string {
-    return this.columnsLabels[column];
-  }
-
-  /**
-   * Table
-   */
-
-  isResultIdColumn(column: ResultRawColumnKey): boolean {
-    return column === 'resultId';
-  }
-
-  isSessionIdColumn(column: ResultRawColumnKey): boolean {
-    return column === 'sessionId';
-  }
-
-  isStatusColumn(column: ResultRawColumnKey): boolean {
-    return column === 'status';
-  }
-
-  isDateColumn(column: ResultRawColumnKey): boolean {
-    return this.dateColumns.includes(column);
-  }
-
-
-  isSimpleColumn(column: ResultRawColumnKey): boolean {
-    return !this.isStatusColumn(column) && !this.isDateColumn(column) && !this.isSessionIdColumn(column);
-  }
 
   /**
    * Interval

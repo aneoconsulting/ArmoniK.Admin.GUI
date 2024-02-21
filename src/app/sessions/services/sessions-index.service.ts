@@ -14,7 +14,8 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
 
   readonly defaultColumns: SessionRawColumnKey[] = this.defaultConfigService.defaultSessions.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultSessions.lockColumns;
-  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
+  readonly defaultOptions: SessionRawListOptions = this.defaultConfigService.defaultSessions.options;
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultSessions.interval;
 
   readonly availableTableColumns: TableColumn<SessionRawColumnKey>[] = [
     {
@@ -132,18 +133,6 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
       sortable: true,
     },
   ];
-
-  readonly defaultOptions: SessionRawListOptions = this.defaultConfigService.defaultSessions.options;
-
-  readonly defaultIntervalValue: number = this.defaultConfigService.defaultSessions.interval;
-
-  columnToLabel(column: SessionRawColumnKey): string {
-    return column;
-  }
-
-  isGenericColumn(column: SessionRawColumnKey): boolean {
-    return column.startsWith('generic.');
-  }
 
   /**
    * Interval

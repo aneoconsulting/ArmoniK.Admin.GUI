@@ -143,10 +143,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
     return this.#tasksStatusesService.statusToLabel(status);
   }
 
-  columnToLabel(column: TaskSummaryColumnKey): string {
-    return this.#tasksIndexService.columnToLabel(column);
-  }
-
   createResultsQueryParams(taskId: string) {
     if (this.filters.length === 0) {
       const keyTask = this.#filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);

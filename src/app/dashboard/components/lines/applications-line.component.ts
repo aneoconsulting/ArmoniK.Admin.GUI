@@ -106,6 +106,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   availableColumns: ApplicationRawColumnKey[] = [];
   lockColumns: boolean = false;
   intervalValue: number;
+  columnsLabels: Record<ApplicationRawColumnKey, string> = {} as Record<ApplicationRawColumnKey, string>;
 
   refresh: Subject<void> = new Subject<void>();
   optionsChange: Subject<void> = new Subject<void>();
@@ -118,7 +119,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.loadApplicationData = true;
     this.options = (this.line.options as ApplicationRawListOptions) ?? this.#defaultConfigService.defaultApplications.options;
     this.displayedColumnsKeys = this.line.displayedColumns as ApplicationRawColumnKey[] ?? this.#defaultConfigService.defaultApplications.columns;
-    this.allColumns = this.#applicationsIndexService.availableTableColumns;
+    this.#applicationsIndexService.availableTableColumns.forEach(c => this.columnsLabels[c.key] = c.name);
     this.displayedColumns = this.allColumns.filter(c => this.displayedColumnsKeys.includes(c.key));
     this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
     this.intervalValue = this.line.interval;
@@ -127,9 +128,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.interval.next(this.line.interval);
   }
 
-  columnsLabels(): Record<ApplicationRawColumnKey, string> {
-    return this.#applicationsIndexService.columnsLabels;
-  }
 
   ngAfterViewInit() {
     const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).pipe(

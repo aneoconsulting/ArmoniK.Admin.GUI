@@ -12,11 +12,11 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
-  readonly tableName: string = 'partitions';
-
   readonly defaultColumns: PartitionRawColumnKey[] = this.defaultConfigService.defaultPartitions.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultPartitions.lockColumns;
-  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'count'];
+  readonly defaultOptions: PartitionRawListOptions = this.defaultConfigService.defaultPartitions.options;
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultPartitions.interval;
+
   readonly availableTableColumns: TableColumn<PartitionRawColumnKey>[] = [
     {
       name: $localize`ID`,
@@ -68,10 +68,6 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
       sortable: false
     }
   ];
-
-  readonly defaultOptions: PartitionRawListOptions = this.defaultConfigService.defaultPartitions.options;
-
-  readonly defaultIntervalValue: number = this.defaultConfigService.defaultPartitions.interval;
 
   /**
    * Interval

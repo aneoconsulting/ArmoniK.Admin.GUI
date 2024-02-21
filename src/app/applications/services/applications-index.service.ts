@@ -12,7 +12,9 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
   readonly defaultConfigService = inject(DefaultConfigService);
 
   readonly defaultColumns = this.defaultConfigService.defaultApplications.columns;
-  readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
+  readonly defaultOptions: ApplicationRawListOptions = this.defaultConfigService.defaultApplications.options;
+  readonly defaultIntervalValue = this.defaultConfigService.defaultApplications.interval;
+  readonly defaultLockColumns = this.defaultConfigService.defaultApplications.lockColumns;
 
   readonly availableTableColumns: TableColumn<ApplicationRawColumnKey>[] = [
     {
@@ -52,44 +54,6 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
       sortable: false
     }
   ];
-
-  // TODO: Add it to AppIndexService and to every index service
-  readonly columnsLabels: Record<ApplicationRawColumnKey, string> = {
-    name: $localize`Name`,
-    namespace: $localize`Namespace`,
-    service: $localize`Service`,
-    version: $localize`Version`,
-    count: $localize`Tasks by Status`,
-    actions: $localize`Actions`,
-  };
-
-  readonly defaultOptions: ApplicationRawListOptions = this.defaultConfigService.defaultApplications.options;
-
-  readonly defaultIntervalValue = this.defaultConfigService.defaultApplications.interval;
-  readonly defaultLockColumns = this.defaultConfigService.defaultApplications.lockColumns;
-
-  columnToLabel(column: ApplicationRawColumnKey): string {
-    return this.columnsLabels[column];
-  }
-
-  /**
-   * Table
-   */
-  isActionsColumn(column: ApplicationRawColumnKey): boolean {
-    return column === 'actions';
-  }
-
-  isCountColumn(column: ApplicationRawColumnKey): boolean {
-    return column === 'count';
-  }
-
-  isSimpleColumn(column: ApplicationRawColumnKey): boolean {
-    return !this.isActionsColumn(column) && !this.isCountColumn(column);
-  }
-
-  isNotSortableColumn(column: ApplicationRawColumnKey): boolean {
-    return this.isActionsColumn(column) || this.isCountColumn(column);
-  }
 
   /**
    * Interval

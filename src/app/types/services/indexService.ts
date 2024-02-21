@@ -8,9 +8,7 @@ export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexLi
   readonly tableService: TableService;
 
   readonly defaultColumns: K[];
-  readonly availableColumns: K[];
-
-  readonly columnsLabels: Record<K, string>;
+  readonly availableTableColumns: TableColumn<K>[];
 
   readonly defaultOptions: O;
 
@@ -39,6 +37,4 @@ export interface IndexServiceGenericInterface<K extends RawColumnKey, O extends 
   saveGenericColumns(columns: GenericColumn[]): void;
 
   restoreGenericColumns(): GenericColumn[];
-
-  isGenericColumn(column: K): boolean;
 }
