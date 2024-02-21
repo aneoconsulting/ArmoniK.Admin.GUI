@@ -8,6 +8,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types
 
 @Injectable()
 export class SessionsIndexService implements IndexServiceGenericInterface<SessionRawColumnKey, SessionRawListOptions> {
+  columnsLabels: Record<SessionRawColumnKey, string>;
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -71,95 +72,73 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
       sortable: false
     },
     {
-      name: $localize`Options Options`,
+      name: $localize`Options`,
       key: 'options.options',
       type: 'object',
       sortable: false
     },
     {
-      name: $localize`Options Application Name`,
+      name: $localize`Application Name`,
       key: 'options.applicationName',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Application Namespace`,
-      key: 'options.applicationName',
+      name: $localize`Application Namespace`,
+      key: 'options.applicationNamespace',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Application Service`,
-      key: 'options.applicationName',
+      name: $localize`Application Service`,
+      key: 'options.applicationService',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Application Version`,
-      key: 'options.applicationName',
+      name: $localize`Application Version`,
+      key: 'options.applicationVersion',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options  Engine Type`,
-      key: 'options.applicationName',
+      name: $localize`Engine Type`,
+      key: 'options.engineType',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Max Duration`,
-      key: 'options.applicationName',
+      name: $localize`Max Duration`,
+      key: 'options.maxDuration',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Max Retries`,
-      key: 'options.applicationName',
+      name: $localize`Max Retries`,
+      key: 'options.maxRetries',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Partition ID`,
-      key: 'options.applicationName',
+      name: $localize`Partition ID`,
+      key: 'options.partitionId',
       type: 'simple',
       sortable: true,
     },
     {
-      name: $localize`Options Priority`,
-      key: 'options.applicationName',
+      name: $localize`Priority`,
+      key: 'options.priority',
       type: 'simple',
       sortable: true,
     },
   ];
-
-  readonly columnsLabels: Record<SessionRawColumnKey, string> = {
-    sessionId: $localize`Session ID`,
-    status: $localize`Status`,
-    cancelledAt: $localize`Cancelled at`,
-    createdAt: $localize`Created at`,
-    options: $localize`Options`,
-    actions: $localize`Actions`,
-    duration: $localize`Duration`,
-    partitionIds: $localize`Partition Ids`,
-    count: $localize`Tasks by Status`,
-    'options.options': $localize`Options Options`,
-    'options.applicationName': $localize`Options Application Name`,
-    'options.applicationNamespace': $localize`Options Application Namespace`,
-    'options.applicationService': $localize`Options Application Service`,
-    'options.applicationVersion': $localize`Options Application Version`,
-    'options.engineType': $localize`Options Engine Type`,
-    'options.maxDuration': $localize`Options Max Duration`,
-    'options.maxRetries': $localize`Options Max Retries`,
-    'options.partitionId': $localize`Options Partition ID`,
-    'options.priority': $localize`Options Priority`,
-  };
 
   readonly defaultOptions: SessionRawListOptions = this.defaultConfigService.defaultSessions.options;
 
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultSessions.interval;
 
   columnToLabel(column: SessionRawColumnKey): string {
-    return this.columnsLabels[column] ?? column;
+    return column;
   }
 
   isGenericColumn(column: SessionRawColumnKey): boolean {

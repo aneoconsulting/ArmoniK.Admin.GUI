@@ -121,11 +121,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #dialog = inject(MatDialog);
 
   displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
-  allColumns: TableColumn<SessionRawColumnKey>[] = [];
   availableColumns: SessionRawColumnKey[] = [];
   displayedColumnsKeys: SessionRawColumnKey[] = [];
   genericColumns: GenericColumn[];
   lockColumns: boolean = false;
+
+  columnsLabels: Record<SessionRawColumnKey, string> = {} as unknown as Record<SessionRawColumnKey, string>;
 
   isLoading = true;
   data: SessionRaw[] = [];
@@ -158,10 +159,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.displayedColumnsKeys = this._sessionsIndexService.restoreColumns();
-    this.allColumns = this._sessionsIndexService.availableTableColumns;
-    this.availableColumns = this._sessionsIndexService.availableTableColumns.map(c => c.key);
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.allColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<SessionRawColumnKey>[];
+    this.availableColumns = this._sessionsIndexService.availableColumns;
+    this.updateDisplayedColumns();
     this.lockColumns = this._sessionsIndexService.restoreLockColumns();
+
+    this._sessionsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
 
     this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
     this.availableColumns.push(...this.genericColumns);
@@ -220,12 +224,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(mergeSubscription);
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this._sessionsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<SessionRawColumnKey>[];
   }
 
-  columnsLabels(): Record<SessionRawColumnKey, string> {
-    return this._sessionsIndexService.columnsLabels;
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   getIcon(name: string): string {
@@ -255,13 +259,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onColumnsChange(data: SessionRawColumnKey[]) {
     this.displayedColumnsKeys = data;
-    const newCols = this.allColumns.filter(c => data.includes(c.key));
-    this.displayedColumns = [...newCols];
+    this.updateDisplayedColumns();
     this._sessionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
     this.displayedColumnsKeys = this._sessionsIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(filters: unknown[]) {
