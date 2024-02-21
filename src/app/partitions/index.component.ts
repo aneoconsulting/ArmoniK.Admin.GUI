@@ -158,12 +158,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #partitionsFiltersService = inject(PartitionsFiltersService);
 
   displayedColumns: TableColumn<PartitionRawColumnKey>[] = [];
-  allColumns: TableColumn<PartitionRawColumnKey>[] = [];
   availableColumns: PartitionRawColumnKey[] = [];
   displayedColumnsKeys: PartitionRawColumnKey[] = [];
   lockColumns: boolean;
 
-  columnsLabels = this.#partitionsIndexService.columnsLabels;
+  columnsLabels: Record<PartitionRawColumnKey, string> = {} as unknown as Record<PartitionRawColumnKey, string>;
 
   isLoading = true;
   data: PartitionRaw[] = [];
@@ -188,11 +187,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.displayedColumnsKeys = this.#partitionsIndexService.restoreColumns();
-    console.log(this.displayedColumnsKeys);
-    this.allColumns = this.#partitionsIndexService.availableTableColumns;
-    this.availableColumns = this.#partitionsIndexService.availableTableColumns.map(c => c.key);
-
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.allColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<PartitionRawColumnKey>[];
+    this.availableColumns = this.#partitionsIndexService.availableColumns;
+    this.updateDisplayedColumns();
+    this.#partitionsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
 
     this.lockColumns = this.#partitionsIndexService.restoreLockColumns();
 
@@ -241,6 +240,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(mergeSubscription);
   }
 
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.#partitionsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<PartitionRawColumnKey>[];
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
@@ -268,13 +271,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onColumnsChange(data: PartitionRawColumnKey[]) {
     this.displayedColumnsKeys = data;
-    const newCols = this.allColumns.filter(c => data.includes(c.key));
-    this.displayedColumns = [...newCols];
+    this.updateDisplayedColumns();
     this.#partitionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this.#partitionsIndexService.resetColumns();
+    this.displayedColumnsKeys = this.#partitionsIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(filters: unknown[]) {

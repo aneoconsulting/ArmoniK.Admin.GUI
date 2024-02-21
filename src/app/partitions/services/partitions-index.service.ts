@@ -8,6 +8,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '..
 @Injectable()
 // TODO: re-add app-index-service
 export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions> {
+  columnsLabels: Record<PartitionRawColumnKey, string>;
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
@@ -33,13 +34,13 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
     {
       name: $localize`Parent Partition Ids`,
       key: 'parentPartitionIds',
-      type: 'simple',
+      type: 'object',
       sortable: true
     },
     {
       name: $localize`Pod Configuration`,
       key: 'podConfiguration',
-      type: 'simple',
+      type: 'object',
       sortable: true,
     },
     {
@@ -67,21 +68,6 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
       sortable: false
     }
   ];
-  
-  // TODO: We could use a custom type to know which columns are objects
-  readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
-
-  readonly columnsLabels: Record<PartitionRawColumnKey, string> = {
-    id: $localize`ID`,
-    priority: $localize`Priority`,
-    parentPartitionIds: $localize`Parent Partition Ids`,
-    podConfiguration: $localize`Pod Configuration`,
-    podMax: $localize`Pod Max`,
-    podReserved: $localize`Pod Reserved`,
-    preemptionPercentage: $localize`Preemption Percentage`,
-    actions: $localize`Actions`,
-    count: $localize`Tasks by Status`,
-  };
 
   readonly defaultOptions: PartitionRawListOptions = this.defaultConfigService.defaultPartitions.options;
 
@@ -121,7 +107,6 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
 
   restoreOptions(): PartitionRawListOptions {
     const options = this.tableService.restoreOptions<PartitionRaw>('partitions-options', this.defaultOptions);
-
     return options;
   }
 
@@ -137,9 +122,9 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
     return this.tableService.restoreColumns<PartitionRawColumnKey[]>('partitions-columns') ?? this.defaultColumns;
   }
 
-  resetColumns(): TableColumn<PartitionRawColumnKey>[] {
+  resetColumns(): PartitionRawColumnKey[] {
     this.tableService.resetColumns('partitions-columns');
 
-    return Array.from(this.availableTableColumns);
+    return Array.from(this.defaultColumns);
   }
 }
