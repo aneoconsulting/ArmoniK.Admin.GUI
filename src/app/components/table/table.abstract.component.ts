@@ -26,7 +26,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TableService } from '@services/table.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
-import { ActionTableColumn, TableColumn } from './column.type';
+import { TableColumn } from './column.type';
 
 @Component({
   selector: 'app-partitions-table',
@@ -62,7 +62,6 @@ import { ActionTableColumn, TableColumn } from './column.type';
 export abstract class AbstractTableComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> implements OnInit, AfterViewInit {
   abstract tableScope: Scope;
   @Input({ required: true }) displayedColumns: TableColumn<K>[] = [];
-  @Input() actions: ActionTableColumn[] = [];
 
   @Input({ required: true }) options: IndexListOptions;
   @Input({ required: true }) total: number;

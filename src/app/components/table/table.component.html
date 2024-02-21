@@ -39,6 +39,10 @@
           </app-count-tasks-by-status>
         </td>
       </ng-container>
+      <!-- Actions -->
+    <ng-container *ngIf="column.type === 'actions'">
+      <ng-content></ng-content>
+    </ng-container>
     </ng-container>
 
     <!-- Empty -->
