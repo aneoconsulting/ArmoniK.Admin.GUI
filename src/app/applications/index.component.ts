@@ -180,7 +180,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.displayedColumnsKeys = this._applicationsIndexService.restoreColumns();
     this.allColumns = this._applicationsIndexService.availableTableColumns;
     this.availableColumns = this._applicationsIndexService.availableTableColumns.map(c => c.key);
-    this.displayedColumns = this.allColumns.filter(c => this.displayedColumnsKeys.includes(c.key));
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.allColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<ApplicationRawColumnKey>[];
     this.availableColumns = this._applicationsIndexService.availableColumns;
     this.lockColumns = this._applicationsIndexService.restoreLockColumns();
 

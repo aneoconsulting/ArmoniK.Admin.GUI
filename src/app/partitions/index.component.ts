@@ -188,11 +188,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.displayedColumnsKeys = this.#partitionsIndexService.restoreColumns();
-
+    console.log(this.displayedColumnsKeys);
     this.allColumns = this.#partitionsIndexService.availableTableColumns;
     this.availableColumns = this.#partitionsIndexService.availableTableColumns.map(c => c.key);
 
-    this.displayedColumns = this.allColumns.filter(col => this.displayedColumnsKeys.includes(col.key));
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.allColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<PartitionRawColumnKey>[];
 
     this.lockColumns = this.#partitionsIndexService.restoreLockColumns();
 

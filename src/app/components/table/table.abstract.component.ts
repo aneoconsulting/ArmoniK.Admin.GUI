@@ -93,7 +93,6 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
 
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-
     this.tableService.saveColumns(`${this.tableScope}-columns`, this.displayedColumns.map(col => col.key));
   }
 
