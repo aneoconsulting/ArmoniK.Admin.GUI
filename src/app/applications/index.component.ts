@@ -178,7 +178,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.availableColumns = this._applicationsIndexService.availableColumns;
+    this.availableColumns = this._applicationsIndexService.availableTableColumns.map(c => c.key);
     this.displayedColumnsKeys = this._applicationsIndexService.restoreColumns();
     this.updateDisplayedColumns();
     this._applicationsIndexService.availableTableColumns.forEach(column => {

@@ -187,7 +187,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.displayedColumnsKeys = this.#partitionsIndexService.restoreColumns();
-    this.availableColumns = this.#partitionsIndexService.availableColumns;
+    this.availableColumns = this.#partitionsIndexService.availableTableColumns.map(c => c.key);
     this.updateDisplayedColumns();
     this.#partitionsIndexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
