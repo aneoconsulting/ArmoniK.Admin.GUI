@@ -12,6 +12,7 @@ import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableColumn } from '@components/table/column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -32,7 +33,6 @@ import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
-
 
 @Component({
   selector: 'app-results-index',
@@ -95,9 +95,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #iconsService = inject(IconsService);
   readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
 
-  displayedColumns: ResultRawColumnKey[] = [];
+  displayedColumns: TableColumn<ResultRawColumnKey>[] = [];
+  displayedColumnsKeys: ResultRawColumnKey[] = [];
   availableColumns: ResultRawColumnKey[] = [];
   lockColumns: boolean = false;
+
+  columnsLabels: Record<ResultRawColumnKey, string> = {} as Record<ResultRawColumnKey, string>;
 
   isLoading = true;
   data: ResultRaw[] = [];
@@ -126,8 +129,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.displayedColumns = this._resultsIndexService.restoreColumns();
+    this.displayedColumnsKeys = this._resultsIndexService.restoreColumns();
+    this.updateDisplayedColumns();
     this.availableColumns = this._resultsIndexService.availableColumns;
+    this._resultsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
+
     this.lockColumns = this._resultsIndexService.restoreLockColumns();
 
     this.options = this._resultsIndexService.restoreOptions();
@@ -175,12 +183,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(mergeSubscription);
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+  updateDisplayedColumns(): void {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this._resultsIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<ResultRawColumnKey>);
   }
 
-  columnsLabels(): Record<ResultRawColumnKey, string> {
-    return this._resultsIndexService.columnsLabels;
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   getPageIcon(name: Page): string {
@@ -209,13 +217,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: ResultRawColumnKey[]) {
-    this.displayedColumns = [...data];
-
+    this.displayedColumnsKeys = [...data];
+    this.updateDisplayedColumns();
     this._resultsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this._resultsIndexService.resetColumns();
+    this.displayedColumnsKeys = this._resultsIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(value: unknown[]) {

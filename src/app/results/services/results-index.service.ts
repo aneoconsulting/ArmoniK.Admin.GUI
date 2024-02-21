@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { IndexServiceInterface } from '@app/types/services/indexService';
+import { TableColumn } from '@components/table/column.type';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
@@ -14,6 +15,51 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'resultId', 'size'];
 
   readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
+
+  readonly availableTableColumns: TableColumn<ResultRawColumnKey>[] = [
+    {
+      name: $localize`Name`,
+      key: 'name',
+      type: 'simple',
+      sortable: true
+    },
+    {
+      name: $localize`Status`,
+      key: 'status',
+      type: 'status',
+      sortable: true
+    },
+    {
+      name: $localize`Owner Task ID`,
+      key: 'ownerTaskId',
+      type: 'simple',
+      sortable: true
+    },
+    {
+      name: $localize`Created at`,
+      key: 'createdAt',
+      type: 'date',
+      sortable: true
+    },
+    {
+      name: $localize`Session ID`,
+      key: 'sessionId',
+      type: 'simple',
+      sortable: true
+    },
+    {
+      name: $localize`Result ID`,
+      key: 'resultId',
+      type: 'simple',
+      sortable: true
+    },
+    {
+      name: $localize`Size`,
+      key: 'size',
+      type: 'simple',
+      sortable: true
+    }
+  ];
 
   readonly columnsLabels: Record<ResultRawColumnKey, string> = {
     name: $localize`Name`,
