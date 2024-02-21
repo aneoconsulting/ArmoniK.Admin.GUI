@@ -5,7 +5,7 @@
         [refreshTooltip]="autoRefreshTooltip()"
         [intervalValue]="intervalValue"
         [columnsLabels]="columnsLabels()"
-        [displayedColumns]="displayedColumns"
+        [displayedColumns]="displayedColumnsKeys"
         [availableColumns]="availableColumns"
         [lockColumns]="lockColumns"
         (refresh)="onRefresh()"
@@ -36,11 +36,24 @@
     </mat-toolbar-row>
   </mat-toolbar>
   <app-application-table
-    [data]="data"
+    [inputData]="data"
     [filters]="filters"
     [options]="options"
     [total]="total"
     [displayedColumns]="displayedColumns"
     [lockColumns]="lockColumns"
     (optionsChange)="onOptionsChange()"
-  ></app-application-table>
+  >
+  <td mat-cell *matCellDef="let element" appNoWrap>
+    <button mat-icon-button [matMenuTriggerFor]="menu"
+     aria-label="Actions" i18n-aria-label>
+       <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+       <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
+         <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
+         <span i18n>See session</span>
+       </a>
+    </mat-menu>
+  </td>
+</app-application-table>

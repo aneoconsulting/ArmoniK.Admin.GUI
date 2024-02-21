@@ -6,6 +6,7 @@ import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterModule } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap, tap } from 'rxjs';
 import { ApplicationsTableComponent } from '@app/applications/components/table.component';
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
@@ -15,6 +16,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableColumn } from '@components/table/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -75,7 +77,8 @@ app-table-actions-toolbar {
     NgIf,
     NgForOf,
     ApplicationsTableComponent,
-    TableActionsToolbarComponent
+    TableActionsToolbarComponent,
+    RouterModule,
   ]
 })
 export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestroy {
@@ -97,7 +100,9 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   filters: ApplicationRawFilters;
   options: ApplicationRawListOptions;
 
-  displayedColumns: ApplicationRawColumnKey[] = [];
+  displayedColumnsKeys: ApplicationRawColumnKey[] = [];
+  allColumns: TableColumn<ApplicationRawColumnKey>[] = [];
+  displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
   lockColumns: boolean = false;
   intervalValue: number;
@@ -112,9 +117,10 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   ngOnInit(): void {
     this.loadApplicationData = true;
     this.options = (this.line.options as ApplicationRawListOptions) ?? this.#defaultConfigService.defaultApplications.options;
-    this.displayedColumns = this.line.displayedColumns as ApplicationRawColumnKey[] ?? this.#defaultConfigService.defaultApplications.columns;
+    this.displayedColumnsKeys = this.line.displayedColumns as ApplicationRawColumnKey[] ?? this.#defaultConfigService.defaultApplications.columns;
+    this.allColumns = this.#applicationsIndexService.availableTableColumns;
+    this.displayedColumns = this.allColumns.filter(c => this.displayedColumnsKeys.includes(c.key));
     this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
-    this.availableColumns = this.#applicationsIndexService.availableColumns;
     this.intervalValue = this.line.interval;
 
     this.filters = this.line.filters as ApplicationRawFilters;
@@ -214,14 +220,16 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumns = data;
+    this.displayedColumnsKeys = data;
     this.line.displayedColumns = data;
+    const newCols = this.allColumns.filter(c => data.includes(c.key));
+    this.displayedColumns = [...newCols];
     this.lineChange.emit();
   }
 
   onColumnsReset() {
-    this.displayedColumns = this.#applicationsIndexService.resetColumns();
-    this.line.displayedColumns = this.displayedColumns;
+    this.displayedColumnsKeys = this.#applicationsIndexService.resetColumns();
+    this.line.displayedColumns = this.displayedColumnsKeys;
     this.lineChange.emit();
   }
 

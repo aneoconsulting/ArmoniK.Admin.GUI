@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterModule } from '@angular/router';
 import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
@@ -13,6 +14,7 @@ import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableColumn } from '@components/table/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -46,7 +48,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
+      [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
       (refresh)="onRefresh()"
@@ -65,14 +67,27 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
 </mat-toolbar>
 
 <app-application-table 
-  [data]="data"
+  [inputData]="data"
   [filters]="filters"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
   [total]="total"
   (optionsChange)="onOptionsChange()"
-></app-application-table>
+>
+<td mat-cell *matCellDef="let element" appNoWrap>
+  <button mat-icon-button [matMenuTriggerFor]="menu"
+    aria-label="Actions" i18n-aria-label>
+      <mat-icon fontIcon="more"></mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+      <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
+        <mat-icon aria-hidden="true" [fontIcon]="'view'"></mat-icon>
+        <span i18n>See session</span>
+      </a>
+  </mat-menu>
+</td>
+</app-application-table>
   `,
   styles: [`
 app-table-actions-toolbar {
@@ -120,7 +135,8 @@ app-table-actions-toolbar {
     MatIconModule,
     MatSnackBarModule,
     MatMenuModule,
-    ApplicationsTableComponent
+    ApplicationsTableComponent,
+    RouterModule,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -128,7 +144,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #iconsService = inject(IconsService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
 
-  displayedColumns: ApplicationRawColumnKey[] = [];
+  displayedColumnsKeys: ApplicationRawColumnKey[] = [];
+  allColumns: TableColumn<ApplicationRawColumnKey>[] = [];
+  displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
   lockColumns: boolean = false;
 
@@ -159,7 +177,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.displayedColumns = this._applicationsIndexService.restoreColumns();
+    this.displayedColumnsKeys = this._applicationsIndexService.restoreColumns();
+    this.allColumns = this._applicationsIndexService.availableTableColumns;
+    this.availableColumns = this._applicationsIndexService.availableTableColumns.map(c => c.key);
+    this.displayedColumns = this.allColumns.filter(c => this.displayedColumnsKeys.includes(c.key));
     this.availableColumns = this._applicationsIndexService.availableColumns;
     this.lockColumns = this._applicationsIndexService.restoreLockColumns();
 
@@ -239,13 +260,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumns = data;
-
+    this.displayedColumnsKeys = data;
+    const newCols = this.allColumns.filter(c => data.includes(c.key));
+    this.displayedColumns = [...newCols];
     this._applicationsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this._applicationsIndexService.resetColumns();
+    this.displayedColumnsKeys = this._applicationsIndexService.resetColumns();
   }
 
   onFiltersChange(filters: unknown[]) {

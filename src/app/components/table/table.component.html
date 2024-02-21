@@ -2,7 +2,7 @@
   <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="true" *matHeaderCellDef cdkDrag appNoWrap>
+      <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
         {{ column.name }}
         <button mat-icon-button *ngIf="column.type === 'count'" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
@@ -40,9 +40,9 @@
         </td>
       </ng-container>
       <!-- Actions -->
-    <ng-container *ngIf="column.type === 'actions'">
-      <ng-content></ng-content>
-    </ng-container>
+      <ng-container *ngIf="column.type === 'actions'">
+        <ng-content mat-cell *matCellDef="let element"></ng-content>
+      </ng-container>
     </ng-container>
 
     <!-- Empty -->

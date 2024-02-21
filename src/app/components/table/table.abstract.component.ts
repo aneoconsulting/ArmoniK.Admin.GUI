@@ -129,7 +129,7 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
     return this.#iconsService.getIcon(name);
   }
 
-  abstract countTasksByStatusFilters(partitionId: string): TaskSummaryFilters;
+  abstract countTasksByStatusFilters(...id: string[]): TaskSummaryFilters;
 
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
