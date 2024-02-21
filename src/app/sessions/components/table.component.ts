@@ -20,7 +20,7 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { AbstractTableComponent } from '@components/table/table.abstract.component';
+import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -69,7 +69,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
     MatDialogModule
   ]
 })
-export class ApplicationsTableComponent extends AbstractTableComponent<SessionRawColumnKey, SessionRaw, SessionRawFilters> {
+export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<SessionRawColumnKey, SessionRaw, SessionRawFilters> {
   override tableScope: Scope = 'sessions';
   _data: SessionData[] = [];
   get data(): SessionData[] {

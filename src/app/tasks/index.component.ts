@@ -18,6 +18,7 @@ import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { TableColumn } from '@components/table/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -100,9 +101,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #tasksFiltersService = inject(TasksFiltersService);
 
-  displayedColumns: TaskSummaryColumnKey[] = [];
+  displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [];
+  displayedColumnsKeys: TaskSummaryColumnKey[] = [];
+  genericColumns: GenericColumn[];
   availableColumns: TaskSummaryColumnKey[] = [];
   lockColumns: boolean = false;
+
+  columnsLabels: Record<TaskSummaryColumnKey, string> = {} as unknown as Record<TaskSummaryColumnKey, string>;
 
   selection = new SelectionModel<string>(true, []);
   selectedRows: string[] = [];
@@ -116,7 +121,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   options: TaskSummaryListOptions;
 
   filters: TaskSummaryFilters = [];
-  genericColumns: GenericColumn[];
+  
 
   sharableURL = '';
 
@@ -134,7 +139,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription = new Subscription();
 
   ngOnInit(): void {
-    this.displayedColumns = this.#tasksIndexService.restoreColumns();
+    this.displayedColumnsKeys = this.#tasksIndexService.restoreColumns();
+    this.updateDisplayedColumns();
     this.availableColumns = this.#tasksIndexService.availableColumns;
     this.lockColumns = this.#tasksIndexService.restoreLockColumns();
 
@@ -202,6 +208,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(mergeSubscription);
   }
 
+  updateDisplayedColumns(): void {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.#tasksIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<TaskSummaryColumnKey>);
+  }
+
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
@@ -235,13 +245,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(columns: TaskSummaryColumnKey[]) {
-    this.displayedColumns = [...columns];
-
+    this.displayedColumnsKeys = [...columns];
+    this.updateDisplayedColumns();
     this.#tasksIndexService.saveColumns(columns);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this.#tasksIndexService.resetColumns();
+    this.displayedColumnsKeys = this.#tasksIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(value: unknown[]) {
@@ -283,10 +294,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.#notificationService.error('Unable to cancel tasks');
       },
     });
-  }
-
-  columnsLabels(): Record<TaskSummaryColumnKey, string> {
-    return this.#tasksIndexService.columnsLabels;
   }
 
   handleAutoRefreshStart(): void {
@@ -339,9 +346,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.genericColumns = result;
         this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
         this.availableColumns.push(...result);
-        this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
-        this.displayedColumns.push(...result);
-        this.#tasksIndexService.saveColumns(this.displayedColumns);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('generic.'));
+        this.displayedColumnsKeys.push(...result);
+        this.updateDisplayedColumns();
+        this.#tasksIndexService.saveColumns(this.displayedColumnsKeys);
         this.#tasksIndexService.saveGenericColumns(this.genericColumns);
       }
     });

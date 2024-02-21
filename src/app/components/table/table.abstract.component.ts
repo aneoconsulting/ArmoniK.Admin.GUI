@@ -19,7 +19,7 @@ import { TableColumn } from './column.type';
   standalone: true,
   template: '',
 })
-export abstract class AbstractTableComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> implements OnInit, AfterViewInit {
+export abstract class AbstractTableComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> implements AfterViewInit {
   abstract tableScope: Scope;
   @Input({ required: true }) displayedColumns: TableColumn<K>[] = [];
 
@@ -35,7 +35,6 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
 
   @Output() optionsChange = new EventEmitter<never>();
 
-  tasksStatusesColored: TaskStatusColored[] = [];
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -46,10 +45,6 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
-  }
-
-  ngOnInit() {
-    this.restoreStatus();
   }
 
   ngAfterViewInit(): void {
@@ -69,6 +64,30 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
     });
   }
 
+  getIcon(name: string): string {
+    return this.iconsService.getIcon(name);
+  }
+
+  onDrop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
+    this.tableService.saveColumns(`${this.tableScope}-columns`, this.displayedColumns.map(col => col.key));
+  }
+}
+
+@Component({
+  selector: 'app-partitions-table',
+  standalone: true,
+  template: '',
+})
+export abstract class AbstractTableTaskByStatusComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> extends AbstractTableComponent<K, D, F> implements OnInit{
+  tasksStatusesColored: TaskStatusColored[] = [];
+
+  ngOnInit() {
+    this.restoreStatus();
+  }
+
+  abstract countTasksByStatusFilters(...id: string[]): TaskSummaryFilters;
+
   isTableWithCount(): boolean {
     return this.tableScope === 'applications' || this.tableScope === 'sessions' || this.tableScope === 'partitions';
   }
@@ -83,17 +102,6 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
     if (this.isTableWithCount()) {
       this.tasksByStatusService.saveStatuses(this.tableScope as TableTasksByStatus, statuses);
     }
-  }
-
-  getIcon(name: string): string {
-    return this.iconsService.getIcon(name);
-  }
-
-  abstract countTasksByStatusFilters(...id: string[]): TaskSummaryFilters;
-
-  onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-    this.tableService.saveColumns(`${this.tableScope}-columns`, this.displayedColumns.map(col => col.key));
   }
 
   personalizeTasksByStatus() {

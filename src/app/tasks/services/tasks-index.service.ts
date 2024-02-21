@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { GenericColumn } from '@app/types/data';
 import { IndexServiceGenericInterface } from '@app/types/services/indexService';
+import { TableColumn } from '@components/table/column.type';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
@@ -19,6 +20,153 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
   readonly dateColumns: TaskSummaryColumnKey[] = ['podTtl','acquiredAt', 'createdAt', 'endedAt', 'receivedAt', 'startedAt', 'submittedAt'];
   readonly durationColumns: TaskSummaryColumnKey[] = ['creationToEndDuration', 'processingToEndDuration', 'options.maxDuration'];
   readonly objectColumns: TaskSummaryColumnKey[] = ['options', 'options.options'];
+
+  readonly availableTableColumns: TableColumn<TaskSummaryColumnKey>[] = [
+    {
+      name: $localize`Task ID`,
+      key: 'id',
+      type: 'link',
+      sortable: true,
+    },
+    {
+      name: $localize`Status`,
+      key: 'status',
+      type: 'status',
+      sortable: true,
+    },
+    {
+      name: $localize`Created at`,
+      key: 'createdAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Actions`,
+      key: 'actions',
+      type: 'actions',
+      sortable: false,
+    },
+    {
+      name: $localize`Session ID`,
+      key: 'sessionId',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Acquired at`,
+      key: 'acquiredAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Ended at`,
+      key: 'endedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Initial Task ID`,
+      key: 'initialTaskId',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Owner Pod ID`,
+      key: 'ownerPodId',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Pod Hostname`,
+      key: 'podHostname',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Pod TTL`,
+      key: 'podTtl',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Received at`,
+      key: 'receivedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Started at`,
+      key: 'startedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Status Message`,
+      key: 'statusMessage',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Submitted at`,
+      key: 'submittedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Creation to End Duration`,
+      key: 'creationToEndDuration',
+      type: 'duration',
+      sortable: true,
+    },
+    {
+      name: $localize`Processing to End Duration`,
+      key: 'processingToEndDuration',
+      type: 'duration',
+      sortable: true,
+    },
+    {
+      name: $localize`Options`,
+      key: 'options',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Count Data Dependencies`,
+      key: 'countDataDependencies',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Count Expected Output Ids`,
+      key: 'countExpectedOutputIds',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Count Parent Task Ids`,
+      key: 'countParentTaskIds',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Count Retry Of Ids`,
+      key: 'countRetryOfIds',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Error`,
+      key: 'error',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    }
+  ];
 
   readonly columnsLabels: Record<TaskSummaryColumnKey, string> = {
     id: $localize`Task ID`,

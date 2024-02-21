@@ -18,7 +18,7 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { AbstractTableComponent } from '@components/table/table.abstract.component';
+import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
@@ -59,7 +59,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '
     TableInspectObjectComponent
   ]
 })
-export class ApplicationsTableComponent extends AbstractTableComponent<ApplicationRawColumnKey, ApplicationRaw, ApplicationRawFilters> {
+export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<ApplicationRawColumnKey, ApplicationRaw, ApplicationRawFilters> {
   override tableScope: Scope = 'applications';
   _data: ApplicationData[] = [];
   get data(): ApplicationData[] {

@@ -18,7 +18,7 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { AbstractTableComponent } from '@components/table/table.abstract.component';
+import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
@@ -58,7 +58,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../typ
     MatDialogModule,
   ]
 })
-export class PartitionsTableComponent extends AbstractTableComponent<PartitionRawColumnKey, PartitionRaw, PartitionRawFilters> {
+export class PartitionsTableComponent extends AbstractTableTaskByStatusComponent<PartitionRawColumnKey, PartitionRaw, PartitionRawFilters> {
   tableScope: Scope = 'partitions';
   readonly #filtersService = inject(FiltersService);
 
