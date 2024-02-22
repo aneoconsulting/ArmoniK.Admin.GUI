@@ -18,15 +18,21 @@ export type ActionTable<T extends ArmonikData<DataRaw>> = {
   selector: 'app-table-actions',
   standalone: true,
   template: `
-    <ng-container *ngFor="let action of actions">
-      <button mat-menu-item
-        *ngIf="action.condition ? action.condition(element) : true"   
-        (click)="action.action$.next(element)"
-      >
-        <mat-icon>{{ action.icon }}</mat-icon>
-        <p>{{ action.label }}</p>
-      </button>
-    </ng-container>
+    <button mat-icon-button [matMenuTriggerFor]="menu"
+      aria-label="Actions" i18n-aria-label>
+      <mat-icon fontIcon="more_vert" />
+    </button>
+    <mat-menu #menu="matMenu">
+      <ng-container *ngFor="let action of actions">
+        <button mat-menu-item
+          *ngIf="action.condition ? action.condition(element) : true"   
+          (click)="action.action$.next(element)"
+        >
+          <mat-icon>{{ action.icon }}</mat-icon>
+          <p>{{ action.label }}</p>
+        </button>
+      </ng-container>
+    </mat-menu>
   `,
   imports: [
     MatButtonModule,
