@@ -13,11 +13,11 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import { TableColumn } from '@app/types/column.type';
 import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableColumn } from '@app/types/column.type';
 import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
@@ -64,7 +64,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types'
     TableColumnComponent,
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColumnKey, TaskSummary, TaskSummaryFilters, TaskData>{
+export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColumnKey, TaskSummary, TaskSummaryFilters, TaskData> {
   tableScope: Scope = 'tasks';
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
@@ -106,6 +106,9 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
   cancelTask$ = new Subject<TaskData>();
   cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
 
+  openViewInLogs$ = new Subject<TaskData>();
+  openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
+
   actions: ActionTable<TaskData>[] = [
     {
       label: $localize`Copy Task ID`,
@@ -129,7 +132,14 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
       action$: this.cancelTask$,
       condition: (element: TaskData) => this.canCancelTask(element.raw),
     },
+    {
+      label: $localize`View in logs`,
+      icon: this.serviceIcon ?? 'description',
+      action$: this.openViewInLogs$,
+      condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
+    }
   ];
+
 
   isRetried(task: TaskSummary): boolean {
     return this._tasksStatusesService.isRetried(task.status);
