@@ -17,6 +17,7 @@ import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ActionTable } from '@components/table/table-actions.component';
+import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
@@ -57,6 +58,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../typ
     MatButtonModule,
     TableInspectObjectComponent,
     MatDialogModule,
+    TableColumnComponent,
   ]
 })
 export class PartitionsTableComponent extends AbstractTableTaskByStatusComponent<PartitionRawColumnKey, PartitionRaw, PartitionRawFilters, PartitionData> {

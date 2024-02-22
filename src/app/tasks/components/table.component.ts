@@ -1,7 +1,7 @@
 import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Clipboard, ClipboardModule} from '@angular/cdk/clipboard';
+import { Clipboard} from '@angular/cdk/clipboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -11,23 +11,21 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Duration } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableColumn } from '@components/table/column.type';
 import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
+import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { DurationPipe } from '@pipes/duration.pipe';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -57,23 +55,17 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types'
     MatPaginatorModule,
     TableEmptyDataComponent,
     MatMenuModule,
-    CountTasksByStatusComponent,
     MatSortModule,
     NgFor,
     NgIf,
     MatTableModule,
     MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    DatePipe,
-    RouterLink,
-    DurationPipe,
     TableInspectObjectComponent,
-    ClipboardModule,
     MatCheckboxModule,
     TableActionsComponent,
+    TableColumnComponent,
   ]
 })
 export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColumnKey, TaskSummary, TaskSummaryFilters, TaskData>{
@@ -141,7 +133,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
   @Output() cancelTask = new EventEmitter<string>();
 
   readonly #tasksIndexService = inject(TasksIndexService);
-  readonly #tasksStatusesService = inject(TasksStatusesService);
+  readonly _tasksStatusesService = inject(TasksStatusesService);
   readonly #filtersService = inject(FiltersService);
   readonly #notificationService = inject(NotificationService);
 
@@ -165,15 +157,15 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
   }
 
   isRetried(task: TaskSummary): boolean {
-    return this.#tasksStatusesService.isRetried(task.status);
+    return this._tasksStatusesService.isRetried(task.status);
   }
 
   canCancelTask(task: TaskSummary): boolean {
-    return !this.#tasksStatusesService.taskNotEnded(task.status);
+    return !this._tasksStatusesService.taskNotEnded(task.status);
   }
 
   statusToLabel(status: TaskStatus): string {
-    return this.#tasksStatusesService.statusToLabel(status);
+    return this._tasksStatusesService.statusToLabel(status);
   }
 
   createResultsQueryParams(taskId: string) {

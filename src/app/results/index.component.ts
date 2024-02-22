@@ -96,6 +96,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly _shareURLService = inject(ShareUrlService);
+  readonly _resultsIndexService = inject(ResultsIndexService);
+  readonly _resultsGrpcService = inject(ResultsGrpcService);
+  readonly _autoRefreshService = inject(AutoRefreshService);
 
   displayedColumns: TableColumn<ResultRawColumnKey>[] = [];
   displayedColumnsKeys: ResultRawColumnKey[] = [];
@@ -122,13 +126,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   optionsChange: Subject<void> = new Subject<void>();
 
   subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _shareURLService: ShareUrlService,
-    private _resultsIndexService: ResultsIndexService,
-    private _resultsGrpcService: ResultsGrpcService,
-    private _autoRefreshService: AutoRefreshService,
-  ) { }
 
   ngOnInit(): void {
     this.displayedColumnsKeys = this._resultsIndexService.restoreColumns();

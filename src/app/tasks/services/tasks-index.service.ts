@@ -20,6 +20,7 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
       key: 'id',
       type: 'link',
       sortable: true,
+      link: '/tasks',
     },
     {
       name: $localize`Status`,

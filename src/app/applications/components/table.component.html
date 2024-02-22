@@ -9,22 +9,13 @@
         </button>
       </th>
       <!-- Application Column -->
-      <ng-container *ngIf="column.type === 'simple'">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element.raw[column.key] | emptyCell }}
-        </td>
-      </ng-container>
-      <!-- Application's Tasks Count by Status -->
-      <ng-container *ngIf="column.type === 'count'">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-count-tasks-by-status
-            [statuses]="tasksStatusesColored" 
-            [queryParams]="element.queryTasksParams"
-            [filters]="element.filters"
-          >
-          </app-count-tasks-by-status>
-        </td>
-      </ng-container>
+      <td mat-cell *matCellDef="let element" appNoWrap>
+        <app-table-column 
+          [column]="column"
+          [element]="element"
+          [tasksStatusesColored]="tasksStatusesColored"
+        />
+      </td>
       <!-- Action -->
       <ng-container *ngIf="column.type === 'actions'">
         <td mat-cell *matCellDef="let element" appNoWrap>

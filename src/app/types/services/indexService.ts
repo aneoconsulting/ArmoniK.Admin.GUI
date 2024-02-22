@@ -30,7 +30,7 @@ export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexLi
   // Columns
   saveColumns(columns: K[]): void;
   restoreColumns(): K[];
-  resetColumns(): (TableColumn<K> | K)[];
+  resetColumns(): K[];
 }
 
 export interface IndexServiceGenericInterface<K extends RawColumnKey, O extends IndexListOptions> extends IndexServiceInterface<K, O> {

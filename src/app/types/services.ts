@@ -8,45 +8,19 @@
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { PartitionsGrpcService } from '@app/partitions/services/partitions-grpc.service';
 import { ResultsGrpcService } from '@app/results/services/results-grpc.service';
+import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { SessionsGrpcService } from '@app/sessions/services/sessions-grpc.service';
+import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { Status } from './data';
 
-// export interface AppGrpcService<T extends object> {
-//   readonly sortDirections: Record<SortDirection, ArmoniKSortDirection>
-//   readonly sortFields: Record<FieldKey<T>, number>
+export interface StatusesServiceI<S extends Status> {
+  readonly statuses: Record<S, string>;
+  statusToLabel(status: S): string;
+  // notEnded(taskStatus: S): boolean;
+  // isRetried(taskStatus: S): boolean;
+}
 
-//   list$(options: ListOptions<T>, filters: FiltersOr<T>): Observable<unknown>
-//   get$(id: string): Observable<unknown>
-// }
-
-// export interface AppIndexService<T extends object> {
-//   readonly defaultColumns: ColumnKey<T>[]
-//   readonly availableColumns: ColumnKey<T>[]
-
-//   readonly defaultIntervalValue: number
-
-//   readonly defaultOptions: ListOptions<T>
-
-//   readonly defaultFilters: FiltersOr<T>
-//   readonly filtersDefinitions: FiltersDefinition<T>[]
-//   // TODO: add on AppGrpcService (or create a shared class for both)
-//   // readonly sortDirections: SortDirection
-//   // readonly sortFields: Record<Column<T>, number>
-
-//   // Interval
-//   saveIntervalValue(value: number): void
-//   restoreIntervalValue(): number
-//   // Columns
-//   saveColumns(columns: ColumnKey<T>[]): void
-//   restoreColumns(): ColumnKey<T>[]
-//   resetColumns(): void
-//   // Options
-//   saveOptions(options: ListOptions<T>): void
-//   restoreOptions(): ListOptions<T>
-//   // Filters
-//   saveFilters(filters: FiltersOr<T>): void
-//   restoreFilters(): FiltersOr<T>
-//   resetFilters(): void
-// }
-
+export type StatusesService = SessionsStatusesService | TasksStatusesService | ResultsStatusesService;
 export type GrpcService = TasksGrpcService | SessionsGrpcService | ApplicationsGrpcService | PartitionsGrpcService | ResultsGrpcService;
