@@ -14,9 +14,9 @@ import { ApplicationsGrpcService } from '@app/applications/services/applications
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableColumn } from '@app/types/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -118,16 +118,16 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   ngOnInit(): void {
     this.loadApplicationData = true;
     this.options = (this.line.options as ApplicationRawListOptions) ?? this.#defaultConfigService.defaultApplications.options;
+    this.availableColumns = this.#applicationsIndexService.availableTableColumns.map(c => c.key);
     this.displayedColumnsKeys = this.line.displayedColumns as ApplicationRawColumnKey[] ?? this.#defaultConfigService.defaultApplications.columns;
     this.#applicationsIndexService.availableTableColumns.forEach(c => this.columnsLabels[c.key] = c.name);
-    this.displayedColumns = this.allColumns.filter(c => this.displayedColumnsKeys.includes(c.key));
+    this.updateDisplayedColumns();
     this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
     this.intervalValue = this.line.interval;
 
     this.filters = this.line.filters as ApplicationRawFilters;
     this.interval.next(this.line.interval);
   }
-
 
   ngAfterViewInit() {
     const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).pipe(
@@ -153,6 +153,10 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     });
 
     this.subscriptions.add(mergeSubscription);
+  }
+
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.#applicationsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<ApplicationRawColumnKey>[];
   }
 
   ngOnDestroy() {

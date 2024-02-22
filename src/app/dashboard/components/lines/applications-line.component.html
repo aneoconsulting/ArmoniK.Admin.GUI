@@ -1,62 +1,49 @@
 <mat-toolbar>
-    <mat-toolbar-row>
-      <app-table-actions-toolbar
-        [loading]="loadApplicationData"
-        [refreshTooltip]="autoRefreshTooltip()"
-        [intervalValue]="intervalValue"
-        [columnsLabels]="columnsLabels"
-        [displayedColumns]="displayedColumnsKeys"
-        [availableColumns]="availableColumns"
-        [lockColumns]="lockColumns"
-        (refresh)="onRefresh()"
-        (intervalValueChange)="onIntervalValueChange($event)"
-        (displayedColumnsChange)="onColumnsChange($event)"
-        (resetColumns)="onColumnsReset()"
-        (resetFilters)="onFiltersReset()"
-        (lockColumnsChange)="onLockColumnsChange()"
-      >
-        <ng-container extra-menu-items>
-          <button mat-menu-item (click)="onEditNameLine(line.name)">
-            <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-            <span i18n appNoWrap>
-              Edit name line
-            </span>
-          </button>
-          <button mat-menu-item (click)="onDeleteLine(line)">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-            <span i18n appNoWrap>
-              Delete line
-            </span>
-          </button>
-        </ng-container>
-      </app-table-actions-toolbar>
-    </mat-toolbar-row>
-    <mat-toolbar-row class="filters">
-      <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  <app-application-table
-    [inputData]="data"
-    [filters]="filters"
-    [options]="options"
-    [total]="total"
-    [displayedColumns]="displayedColumns"
-    [lockColumns]="lockColumns"
-    [stopInterval]="stopInterval"
-    [interval]="interval"
-    [intervalValue]="intervalValue"
-    (optionsChange)="onOptionsChange()"
-  >
-  <td mat-cell *matCellDef="let element" appNoWrap>
-    <button mat-icon-button [matMenuTriggerFor]="menu"
-     aria-label="Actions" i18n-aria-label>
-       <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-       <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
-         <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-         <span i18n>See session</span>
-       </a>
-    </mat-menu>
-  </td>
-</app-application-table>
+  <mat-toolbar-row>
+    <app-table-actions-toolbar
+      [loading]="loadApplicationData"
+      [refreshTooltip]="autoRefreshTooltip()"
+      [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels"
+      [displayedColumns]="displayedColumnsKeys"
+      [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
+      (refresh)="onRefresh()"
+      (intervalValueChange)="onIntervalValueChange($event)"
+      (displayedColumnsChange)="onColumnsChange($event)"
+      (resetColumns)="onColumnsReset()"
+      (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
+    >
+      <ng-container extra-menu-items>
+        <button mat-menu-item (click)="onEditNameLine(line.name)">
+          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
+          <span i18n appNoWrap>
+            Edit name line
+          </span>
+        </button>
+        <button mat-menu-item (click)="onDeleteLine(line)">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
+          <span i18n appNoWrap>
+            Delete line
+          </span>
+        </button>
+      </ng-container>
+    </app-table-actions-toolbar>
+  </mat-toolbar-row>
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+  </mat-toolbar-row>
+</mat-toolbar>
+<app-application-table
+  [inputData]="data"
+  [filters]="filters"
+  [options]="options"
+  [total]="total"
+  [displayedColumns]="displayedColumns"
+  [lockColumns]="lockColumns"
+  [stopInterval]="stopInterval"
+  [interval]="interval"
+  [intervalValue]="intervalValue"
+  (optionsChange)="onOptionsChange()"
+/>
