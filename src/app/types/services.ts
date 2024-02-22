@@ -18,8 +18,10 @@ import { Status } from './data';
 export interface StatusesServiceI<S extends Status> {
   readonly statuses: Record<S, string>;
   statusToLabel(status: S): string;
-  // notEnded(taskStatus: S): boolean;
-  // isRetried(taskStatus: S): boolean;
+}
+
+export interface CancelStatusesServiceI<S extends Status> extends StatusesServiceI<S> {
+  notEnded(taskStatus: S): boolean;
 }
 
 export type StatusesService = SessionsStatusesService | TasksStatusesService | ResultsStatusesService;

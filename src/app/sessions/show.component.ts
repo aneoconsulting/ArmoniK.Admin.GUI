@@ -148,6 +148,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   }
 
   canCancel(): boolean {
-    return this._sessionsStatusesService.sessionNotEnded(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+    return this._sessionsStatusesService.notEnded(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
 }

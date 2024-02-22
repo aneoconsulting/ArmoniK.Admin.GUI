@@ -136,7 +136,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
   }
 
   canCancelTask(task: TaskSummary): boolean {
-    return !this._tasksStatusesService.taskNotEnded(task.status);
+    return !this._tasksStatusesService.notEnded(task.status);
   }
 
   statusToLabel(status: TaskStatus): string {

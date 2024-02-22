@@ -1,9 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
+import { StatusesServiceI } from '@app/types/services';
 
 
 @Injectable()
-export class TasksStatusesService {
+export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
   readonly statuses: Record<TaskStatus, string> = {
     [TaskStatus.TASK_STATUS_UNSPECIFIED]: $localize`Unspecified`,
     [TaskStatus.TASK_STATUS_DISPATCHED]: $localize`Dispatched`,
@@ -36,7 +37,7 @@ export class TasksStatusesService {
     return status === TaskStatus.TASK_STATUS_RETRIED;
   }
 
-  taskNotEnded(taskStatus: TaskStatus) {
+  notEnded(taskStatus: TaskStatus) {
     return taskStatus !== TaskStatus.TASK_STATUS_SUBMITTED && taskStatus !== TaskStatus.TASK_STATUS_CREATING
     && taskStatus !== TaskStatus.TASK_STATUS_DISPATCHED && taskStatus !== TaskStatus.TASK_STATUS_PROCESSING 
     && taskStatus !== TaskStatus.TASK_STATUS_PROCESSED && taskStatus !== TaskStatus.TASK_STATUS_RETRIED 

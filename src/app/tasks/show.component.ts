@@ -138,7 +138,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   }
   
   canCancel() {
-    return this._tasksStatusesService.taskNotEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
+    return this._tasksStatusesService.notEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
   }
 
   get resultsKey() {
