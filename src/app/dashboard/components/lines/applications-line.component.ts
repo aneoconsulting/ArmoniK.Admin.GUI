@@ -16,7 +16,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableColumn } from '@components/table/column.type';
+import { TableColumn } from '@app/types/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';

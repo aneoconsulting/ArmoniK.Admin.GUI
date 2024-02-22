@@ -15,6 +15,7 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { GenericColumn } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -22,7 +23,6 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ManageGenericColumnDialogComponent } from '@components/manage-generic-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
-import { TableColumn } from '@components/table/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';

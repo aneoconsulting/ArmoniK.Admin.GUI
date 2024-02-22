@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { IndexServiceInterface } from '@app/types/services/indexService';
-import { TableColumn } from '@components/table/column.type';
+import { TableColumn } from '@app/types/column.type';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';

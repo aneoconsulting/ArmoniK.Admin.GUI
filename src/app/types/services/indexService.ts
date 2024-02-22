@@ -1,6 +1,6 @@
-import { TableColumn } from '@components/table/column.type';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
+import { TableColumn } from '../column.type';
 import { GenericColumn, IndexListOptions, RawColumnKey } from '../data';
 
 export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexListOptions> {

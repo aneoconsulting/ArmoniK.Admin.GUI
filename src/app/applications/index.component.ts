@@ -10,11 +10,11 @@ import { DashboardStorageService } from '@app/dashboard/services/dashboard-stora
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
-import { TableColumn } from '@components/table/column.type';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';

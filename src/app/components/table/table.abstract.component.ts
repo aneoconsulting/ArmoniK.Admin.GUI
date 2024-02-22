@@ -7,6 +7,7 @@ import { MatSort } from '@angular/material/sort';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
+import { TableColumn } from '@app/types/column.type';
 import { Scope } from '@app/types/config';
 import { ArmonikData, DataRaw, IndexListOptions, RawColumnKey, RawListFilters } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData, } from '@app/types/dialog';
@@ -16,7 +17,6 @@ import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-stat
 import { IconsService } from '@services/icons.service';
 import { TableService } from '@services/table.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
-import { TableColumn } from './column.type';
 import { ActionTable } from './table-actions.component';
 
 @Component({

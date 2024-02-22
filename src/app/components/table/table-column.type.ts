@@ -4,13 +4,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterModule } from '@angular/router';
 import { Duration , Timestamp } from '@ngx-grpc/well-known-types';
+import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, RawColumnKey, SessionData, Status } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { StatusesServiceI } from '@app/types/services';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
-import { TableColumn } from './column.type';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({

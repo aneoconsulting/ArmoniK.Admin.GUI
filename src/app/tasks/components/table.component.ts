@@ -17,7 +17,7 @@ import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableColumn } from '@components/table/column.type';
+import { TableColumn } from '@app/types/column.type';
 import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
+import { TableColumn } from '@app/types/column.type';
 import { GenericColumn } from '@app/types/data';
 import { IndexServiceGenericInterface } from '@app/types/services/indexService';
-import { TableColumn } from '@components/table/column.type';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
