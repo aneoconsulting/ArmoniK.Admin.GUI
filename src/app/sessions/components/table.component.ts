@@ -126,7 +126,7 @@ export class ApplicationsTableComponent extends AbstractTableTaskByStatusCompone
   ];
 
   onCopiedSessionId(data: SessionData) {
-    this.copy$.next(data);
+    this._copyService.copy(data.raw.sessionId);
     this._notificationService.success('Session ID copied to clipboard');
   }
 
