@@ -31,8 +31,9 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
     {
       name: $localize`Owner Task ID`,
       key: 'ownerTaskId',
-      type: 'simple',
-      sortable: true
+      type: 'link',
+      sortable: true,
+      link: '/tasks',
     },
     {
       name: $localize`Created at`,
@@ -43,14 +44,16 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
     {
       name: $localize`Session ID`,
       key: 'sessionId',
-      type: 'simple',
-      sortable: true
+      type: 'link',
+      sortable: true,
+      link: '/sessions',
     },
     {
       name: $localize`Result ID`,
       key: 'resultId',
-      type: 'simple',
-      sortable: true
+      type: 'link',
+      sortable: true,
+      link: '/results',
     },
     {
       name: $localize`Size`,

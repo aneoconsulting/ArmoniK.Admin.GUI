@@ -6,43 +6,33 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef cdkDrag appNoWrap>
           {{ column.name }}
         </th>
-        <!-- Result ID -->
-        <ng-container *ngIf="column.type === 'simple' && column.key === 'resultId'">
-          <td mat-cell *matCellDef="let element" appNoWrap>
-            <a mat-button
-              [routerLink]="['/results', element.resultId]"
-            >
-              {{ element[column.key] | emptyCell }}
-            </a>
-          </td>
-        </ng-container>
         <!-- Columns -->
         <ng-container *ngIf="column.type === 'simple'">
           <td mat-cell *matCellDef="let element" appNoWrap>
-              {{ element[column.key] | emptyCell }}
+              {{ element.raw[column.key] | emptyCell }}
           </td>
         </ng-container>
         <!-- Session ID -->
-        <ng-container *ngIf="column.type === 'simple' && column.key === 'sessionId'">
+        <ng-container *ngIf="column.type === 'link'">
           <td mat-cell *matCellDef="let element" appNoWrap>
             <a mat-button
-              [routerLink]="['/sessions']"
-              [queryParams]="createSessionIdQueryParams(element.sessionId)"
+              [routerLink]="[column.link, element.raw[column.key]]"
+              [queryParams]="createSessionIdQueryParams(element.raw.sessionId)"
             >
-              {{ element[column.key] }}
+              {{ element.raw[column.key] }}
             </a>
           </td>
         </ng-container>
         <!-- Date -->
         <ng-container *ngIf="column.type === 'date'">
           <td mat-cell *matCellDef="let element" appNoWrap>
-            {{ prettyDate(element[column.key]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
+            {{ prettyDate(element.raw[column.key]) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss.SSS' }}
           </td>
         </ng-container>
         <!-- Status -->
         <ng-container *ngIf="column.type === 'status'">
           <td mat-cell *matCellDef="let element" appNoWrap>
-            <span> {{ statusToLabel(element[column.key]) }} </span>
+            <span> {{ statusToLabel(element.raw[column.key]) }} </span>
           </td>
         </ng-container>
       </ng-container>

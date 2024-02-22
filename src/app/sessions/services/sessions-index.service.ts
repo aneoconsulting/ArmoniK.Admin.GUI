@@ -21,8 +21,9 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     {
       name: $localize`Session ID`,
       key: 'sessionId',
-      type: 'simple',
+      type: 'link',
       sortable: true,
+      link: '/sessions',
     },
     {
       name: $localize`Status`,

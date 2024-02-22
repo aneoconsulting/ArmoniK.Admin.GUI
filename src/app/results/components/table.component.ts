@@ -69,12 +69,14 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRawColum
 
   @Input({required: true}) override set inputData(entries: ResultRaw[]) {
     this._data = [];
+    console.log(entries);
     entries.forEach((entry) => {
       const lineData: ResultData = {
         raw: entry,
       };
       this._data.push(lineData);
     });
+    console.log('data', this._data);
   }
 
   actions: ActionTable<ResultData>[];
