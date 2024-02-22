@@ -34,6 +34,5 @@
     <tr mat-header-row *matHeaderRowDef="columnKeys"></tr>
     <tr mat-row *matRowDef="let row; columns: columnKeys"></tr>
   </table>
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of applications">
-  </mat-paginator>
+  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of applications"/>
 </app-table-container>

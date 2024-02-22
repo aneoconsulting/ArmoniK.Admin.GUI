@@ -1,5 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Clipboard , ClipboardModule} from '@angular/cdk/clipboard';
+import { Clipboard} from '@angular/cdk/clipboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
@@ -10,13 +10,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableColumnComponent } from '@components/table/table-column.type';
@@ -24,7 +23,6 @@ import { TableEmptyDataComponent } from '@components/table/table-empty-data.comp
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -51,24 +49,20 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
     MatPaginatorModule,
     TableEmptyDataComponent,
     MatMenuModule,
-    CountTasksByStatusComponent,
     MatSortModule,
     NgFor,
     NgIf,
     MatTableModule,
     MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    ClipboardModule,
     MatDialogModule,
     TableActionsComponent,
     TableColumnComponent,
   ]
 })
 export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<SessionRawColumnKey, SessionRaw, SessionRawFilters, SessionData> {
-  override tableScope: Scope = 'sessions';
+  tableScope: Scope = 'sessions';
 
   readonly _sessionsStatusesService = inject(SessionsStatusesService);
   readonly _filtersService = inject(FiltersService);

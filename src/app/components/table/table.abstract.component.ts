@@ -48,7 +48,6 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   readonly tableService = inject(TableService);
-  readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
   readonly iconsService = inject(IconsService);
 
@@ -111,6 +110,7 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
 })
 export abstract class AbstractTableTaskByStatusComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters, T extends ArmonikData<DataRaw>> extends AbstractTableComponent<K, D, F, T> implements OnInit{
   tasksStatusesColored: TaskStatusColored[] = [];
+  readonly tasksByStatusService = inject(TasksByStatusService);
 
   ngOnInit() {
     this.restoreStatus();

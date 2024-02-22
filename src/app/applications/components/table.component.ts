@@ -5,26 +5,22 @@ import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
@@ -48,29 +44,22 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '
     TableContainerComponent,
     MatPaginatorModule,
     TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
     MatSortModule,
     NgFor,
     NgIf,
     MatTableModule,
     MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    TableInspectObjectComponent,
     TableActionsComponent,
     TableColumnComponent
   ]
 })
 export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<ApplicationRawColumnKey, ApplicationRaw, ApplicationRawFilters, ApplicationData> {
-  
-  readonly _applicationsIndexService = inject(ApplicationsIndexService);
   readonly _filtersService = inject(FiltersService);
   readonly _router = inject(Router);
   
-  override tableScope: Scope = 'applications';
+  tableScope: Scope = 'applications';
 
   get data(): ApplicationData[] {
     return this._data;
@@ -153,7 +142,7 @@ export class ApplicationsTableComponent extends AbstractTableTaskByStatusCompone
     }
   }
 
-  override countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskSummaryFilters {
+  countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskSummaryFilters {
     return [
       [
         {

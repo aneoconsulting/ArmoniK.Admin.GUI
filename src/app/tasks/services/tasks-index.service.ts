@@ -121,7 +121,7 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Options`,
       key: 'options',
-      type: 'simple',
+      type: 'object',
       sortable: true,
     },
     {

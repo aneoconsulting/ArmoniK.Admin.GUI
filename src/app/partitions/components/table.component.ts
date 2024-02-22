@@ -9,21 +9,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { PartitionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ActionTable } from '@components/table/table-actions.component';
 import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
@@ -46,17 +42,13 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../typ
     MatPaginatorModule,
     TableEmptyDataComponent,
     MatMenuModule,
-    CountTasksByStatusComponent,
     MatSortModule,
     NgFor,
     NgIf,
     MatTableModule,
     MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    TableInspectObjectComponent,
     MatDialogModule,
     TableColumnComponent,
   ]

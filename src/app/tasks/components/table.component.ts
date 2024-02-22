@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
@@ -12,7 +12,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { Duration } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
@@ -22,7 +21,6 @@ import { TableColumn } from '@components/table/column.type';
 import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableColumnComponent } from '@components/table/table-column.type';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -30,7 +28,6 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types';
 
@@ -62,18 +59,34 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types'
     MatIconModule,
     DragDropModule,
     MatButtonModule,
-    TableInspectObjectComponent,
     MatCheckboxModule,
     TableActionsComponent,
     TableColumnComponent,
   ]
 })
 export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColumnKey, TaskSummary, TaskSummaryFilters, TaskData>{
-  override tableScope: Scope = 'tasks';
+  tableScope: Scope = 'tasks';
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
 
+  @Input({required: true}) set inputData(entries: TaskSummary[]) {
+    this._data = [];
+    entries.forEach(entry => {
+      const lineData: TaskData = {
+        raw: entry,
+        resultsQueryParams: this.createResultsQueryParams(entry.id),
+      };
+      this._data.push(lineData);
+    });
+  }
+
+  @Output() retries = new EventEmitter<TaskSummary>();
+  @Output() cancelTask = new EventEmitter<string>();
+
+  readonly _tasksStatusesService = inject(TasksStatusesService);
+  readonly #filtersService = inject(FiltersService);
+  readonly #notificationService = inject(NotificationService);
   #copyService = inject(Clipboard);
   #router = inject(Router);
 
@@ -117,44 +130,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
       condition: (element: TaskData) => this.canCancelTask(element.raw),
     },
   ];
-
-  @Input({required: true}) set inputData(entries: TaskSummary[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const lineData: TaskData = {
-        raw: entry,
-        resultsQueryParams: this.createResultsQueryParams(entry.id),
-      };
-      this._data.push(lineData);
-    });
-  }
-
-  @Output() retries = new EventEmitter<TaskSummary>();
-  @Output() cancelTask = new EventEmitter<string>();
-
-  readonly #tasksIndexService = inject(TasksIndexService);
-  readonly _tasksStatusesService = inject(TasksStatusesService);
-  readonly #filtersService = inject(FiltersService);
-  readonly #notificationService = inject(NotificationService);
-
-  show(column: TaskSummaryColumnKey, element: TaskSummary) {
-    if (column.startsWith('options.')) {
-      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = element['options'] as TaskOptions | undefined;
-
-      if (!options) {
-        return null;
-      }
-
-      return options[optionColumn];
-    }
-
-    return element[column as keyof TaskSummary];
-  }
-
-  extractData(column: TaskSummaryColumnKey, task: TaskSummary): Duration | null {
-    return (this.show(column, task) as Duration) ?? null;
-  }
 
   isRetried(task: TaskSummary): boolean {
     return this._tasksStatusesService.isRetried(task.status);
@@ -218,7 +193,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
     if (!this.urlTemplate) {
       return '';
     }
-
     return this.urlTemplate.replaceAll('%taskId', taskId);
   }
 
@@ -234,24 +208,11 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
       this.selection.select(...(this.data.map(task => task.raw.id)));
   }
 
-  checkboxLabel(row?: TaskData): string {
-    if (!row) {
-      return $localize`${this.isAllSelected() ? 'deselect' : 'select'} all`;
-    }
-    else if (this.selection.isSelected(row.raw.id)) {
-      return $localize`Deselect Task ${row.raw.id}`;
-    }
-    else {
-      return $localize`Select Task ${row.raw.id}`;
-    }
+  checkboxLabel(): string {
+    return $localize`${this.isAllSelected() ? 'deselect' : 'select'} all`;
   }
 
   trackByColumn(index: number, item: TableColumn<TaskSummaryColumnKey>): string {
     return item.key;
-  }
-
-  handleGenericColumn(column: TaskSummaryColumnKey, element: TaskSummary) {
-    const field = this.#tasksIndexService.genericField(column);
-    return element.options?.options[field];
   }
 }

@@ -77,20 +77,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
   [interval]="interval"
   [intervalValue]="intervalValue"
   (optionsChange)="onOptionsChange()"
->
-<td mat-cell *matCellDef="let element" appNoWrap>
-  <button mat-icon-button [matMenuTriggerFor]="menu"
-    aria-label="Actions" i18n-aria-label>
-      <mat-icon fontIcon="more"></mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-      <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
-        <mat-icon aria-hidden="true" [fontIcon]="'view'"></mat-icon>
-        <span i18n>See session</span>
-      </a>
-  </mat-menu>
-</td>
-</app-application-table>
+/>
   `,
   styles: [`
 app-table-actions-toolbar {
