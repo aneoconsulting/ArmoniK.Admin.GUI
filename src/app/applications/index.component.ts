@@ -73,6 +73,9 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
   [lockColumns]="lockColumns"
   [options]="options"
   [total]="total"
+  [stopInterval]="stopInterval"
+  [interval]="interval"
+  [intervalValue]="intervalValue"
   (optionsChange)="onOptionsChange()"
 >
 <td mat-cell *matCellDef="let element" appNoWrap>

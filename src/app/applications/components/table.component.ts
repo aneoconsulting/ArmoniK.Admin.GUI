@@ -9,13 +9,15 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
@@ -56,15 +58,32 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '
     EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    TableInspectObjectComponent
+    TableInspectObjectComponent,
+    TableActionsComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<ApplicationRawColumnKey, ApplicationRaw, ApplicationRawFilters> {
+export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<ApplicationRawColumnKey, ApplicationRaw, ApplicationRawFilters, ApplicationData> {
+  
+  readonly _applicationsIndexService = inject(ApplicationsIndexService);
+  readonly _filtersService = inject(FiltersService);
+  readonly _router = inject(Router);
+  
   override tableScope: Scope = 'applications';
-  _data: ApplicationData[] = [];
+
   get data(): ApplicationData[] {
     return this._data;
   }
+
+  seeSessions$ = new Subject<ApplicationData>();
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(data.raw.name, data.raw.version) }));
+
+  actions: ActionTable<ApplicationData>[] = [
+    {
+      label: $localize`See session`,
+      icon: this.getPageIcon('sessions'),
+      action$: this.seeSessions$
+    },
+  ];
 
   @Input({ required: true }) set inputData(entries: ApplicationRaw[]) {
     this._data = [];
@@ -77,9 +96,6 @@ export class ApplicationsTableComponent extends AbstractTableTaskByStatusCompone
       this._data.push(task);
     });
   }
-  
-  readonly _applicationsIndexService = inject(ApplicationsIndexService);
-  readonly _filtersService = inject(FiltersService);
 
   createViewSessionsQueryParams(name: string, version: string) {
     return {

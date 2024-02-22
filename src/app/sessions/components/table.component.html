@@ -76,22 +76,7 @@
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item [cdkCopyToClipboard]="element.raw.sessionId" (cdkCopyToClipboardCopied)="onCopiedSessionId()">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')"></mat-icon>
-              <span i18n>Copy Session ID</span>
-            </button>
-            <a mat-menu-item [routerLink]="['/tasks']" [queryParams]="element.queryTasksParams">
-              <mat-icon aria-hidden="true" fontIcon="adjust"></mat-icon>
-              <span i18n>See Tasks</span>
-            </a>
-            <a mat-menu-item [routerLink]="['/results']" [queryParams]="element.resultsQueryParams">
-              <mat-icon aria-hidden="true" fontIcon="workspace_premium"></mat-icon>
-              <span i18n>See results</span>
-            </a>
-            <button mat-menu-item (click)="onCancel(element.raw.sessionId)">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('cancel')"></mat-icon>
-              <span i18n>Cancel session</span>
-            </button>
+            <app-table-actions [actions]="actions" [element]="element" />
           </mat-menu>
         </td>
       </ng-container>

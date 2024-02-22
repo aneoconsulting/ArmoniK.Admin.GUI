@@ -33,10 +33,7 @@
             <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
          </button>
          <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n>See session</span>
-            </a>
+          <app-table-actions [actions]="actions" [element]="element" />
          </mat-menu>
         </td>
       </ng-container>

@@ -83,6 +83,9 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
   [lockColumns]="lockColumns"
   [options]="options"
   [total]="total"
+  [stopInterval]="stopInterval"
+  [interval]="interval"
+  [intervalValue]="intervalValue"
   (optionsChange)="onOptionsChange()"
 >
 </app-partitions-table>

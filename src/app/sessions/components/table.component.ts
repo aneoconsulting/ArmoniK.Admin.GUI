@@ -1,5 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ClipboardModule } from '@angular/cdk/clipboard';
+import { Clipboard , ClipboardModule} from '@angular/cdk/clipboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
@@ -10,14 +10,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Router, RouterModule } from '@angular/router';
+import { Duration } from '@ngx-grpc/well-known-types';
+import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
@@ -42,7 +44,8 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
     TasksByStatusService,
     MatDialog,
     IconsService,
-    FiltersService
+    FiltersService,
+    Clipboard,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -66,12 +69,20 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
     DurationPipe,
     EmptyCellPipe,
     TableInspectObjectComponent,
-    MatDialogModule
+    MatDialogModule,
+    TableActionsComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<SessionRawColumnKey, SessionRaw, SessionRawFilters> {
+export class ApplicationsTableComponent extends AbstractTableTaskByStatusComponent<SessionRawColumnKey, SessionRaw, SessionRawFilters, SessionData> {
   override tableScope: Scope = 'sessions';
-  _data: SessionData[] = [];
+
+  readonly _sessionsStatusesService = inject(SessionsStatusesService);
+  readonly _filtersService = inject(FiltersService);
+  readonly _sessionsIndexService = inject(SessionsIndexService);
+  readonly _notificationService = inject(NotificationService);
+  readonly _copyService = inject(Clipboard);
+  readonly _router = inject(Router);
+
   get data(): SessionData[] {
     return this._data;
   }
@@ -90,29 +101,53 @@ export class ApplicationsTableComponent extends AbstractTableTaskByStatusCompone
   }
 
   @Output() cancelSession = new EventEmitter<string>();
-  readonly _sessionsStatusesService = inject(SessionsStatusesService);
-  readonly _filtersService = inject(FiltersService);
-  readonly _sessionsIndexService = inject(SessionsIndexService);
-  readonly _notificationService = inject(NotificationService);
+
+  copy$ = new Subject<SessionData>();
+  copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
+
+  seeTasks$ = new Subject<SessionData>();
+  seeTasksSubscription = this.seeTasks$.subscribe(data => this._router.navigate(['/tasks'], { queryParams: data.queryTasksParams }));
+
+  seeResults$ = new Subject<SessionData>();
+  seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+
+  cancelSession$ = new Subject<SessionData>();
+  cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
+
+  actions: ActionTable<SessionData>[] = [
+    {
+      label: 'Copy session ID',
+      icon: this.getIcon('copy'),
+      action$: this.copy$, 
+    },
+    {
+      label: 'See tasks',
+      icon: this.getPageIcon('tasks'),
+      action$: this.seeTasks$,
+    },
+    {
+      label: 'See results',
+      icon: this.getPageIcon('results'),
+      action$: this.seeResults$,
+    },
+    {
+      label: 'Cancel session',
+      icon: this.getIcon('cancel'),
+      action$: this.cancelSession$, 
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+    }
+  ];
 
   extractData(element: SessionRaw, column: SessionRawColumnKey): Duration | null {
     return this.show(element, column) as Duration | null;
-  }
-
-  // TODO: move to a service for date and time
-  columnToDate(element: Timestamp | undefined): Date | null {
-    if (!element) {
-      return null;
-    }
-
-    return element.toDate();
   }
 
   statusToLabel(status: SessionStatus): string {
     return this._sessionsStatusesService.statusToLabel(status);
   }
 
-  onCopiedSessionId() {
+  onCopiedSessionId(data: SessionData) {
+    this.copy$.next(data);
     this._notificationService.success('Session ID copied to clipboard');
   }
 
@@ -214,14 +249,5 @@ export class ApplicationsTableComponent extends AbstractTableTaskByStatusCompone
   handleGenericColumn(column: SessionRawColumnKey, element: SessionData) {
     const field = column.replace('options.options.', '');
     return element.raw.options?.options[field];
-  }
-
-  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
-    const keys = nestedKeys.split('.');
-    let resultObject: {[key: string]: object} = element;
-    keys.forEach(key => {
-      resultObject = resultObject[key] as unknown as {[key: string]: object};
-    });
-    return resultObject;
   }
 }

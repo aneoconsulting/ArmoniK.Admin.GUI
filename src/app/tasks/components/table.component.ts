@@ -1,6 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ClipboardModule } from '@angular/cdk/clipboard';
-import { SelectionModel } from '@angular/cdk/collections';
+import { Clipboard, ClipboardModule} from '@angular/cdk/clipboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
@@ -12,8 +11,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink, RouterModule } from '@angular/router';
-import { Duration , Timestamp} from '@ngx-grpc/well-known-types';
+import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Duration } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
@@ -21,6 +20,7 @@ import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableColumn } from '@components/table/column.type';
+import { ActionTable, TableActionsComponent } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableComponent } from '@components/table/table.abstract.component';
@@ -48,6 +48,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types'
     IconsService,
     FiltersService,
     TasksByStatusService,
+    Clipboard,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -71,23 +72,59 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types'
     DurationPipe,
     TableInspectObjectComponent,
     ClipboardModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    TableActionsComponent,
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColumnKey, TaskSummary, TaskSummaryFilters>{
+export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColumnKey, TaskSummary, TaskSummaryFilters, TaskData>{
   override tableScope: Scope = 'tasks';
-  @Input({required: true}) stopInterval: Subject<void>;
-  @Input({required: true}) interval: Subject<number>;
-  @Input({required: true}) intervalValue: number;
-  @Input({required: true}) selection: SelectionModel<string>;
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
 
-  _data: TaskData[] = [];
+  #copyService = inject(Clipboard);
+  #router = inject(Router);
+
   get data(): TaskData[] {
     return this._data;
   }
+
+  copy$ = new Subject<TaskData>();
+  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data as TaskData));
+
+  seeResult$ = new Subject<TaskData>();
+  resultSubscription = this.seeResult$.subscribe((data) => this.#router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+
+  retries$ = new Subject<TaskData>();
+  retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
+
+  cancelTask$ = new Subject<TaskData>();
+  cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
+
+  actions: ActionTable<TaskData>[] = [
+    {
+      label: $localize`Copy Task ID`,
+      icon: 'content_copy',
+      action$: this.copy$,
+    },
+    {
+      label: $localize`See related result`,
+      icon: 'visibility',
+      action$: this.seeResult$,
+    },
+    {
+      label: $localize`Retries`,
+      icon: 'published_with_changes',
+      action$: this.retries$,
+      condition: (element: TaskData) => this.isRetried(element.raw),
+    },
+    {
+      label: $localize`Cancel task`,
+      icon: 'cancel',
+      action$: this.cancelTask$,
+      condition: (element: TaskData) => this.canCancelTask(element.raw),
+    },
+  ];
 
   @Input({required: true}) set inputData(entries: TaskSummary[]) {
     this._data = [];
@@ -108,10 +145,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
   readonly #filtersService = inject(FiltersService);
   readonly #notificationService = inject(NotificationService);
 
-  show(task: TaskSummary, column: TaskSummaryColumnKey) {
+  show(column: TaskSummaryColumnKey, element: TaskSummary) {
     if (column.startsWith('options.')) {
       const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = task['options'] as TaskOptions | undefined;
+      const options = element['options'] as TaskOptions | undefined;
 
       if (!options) {
         return null;
@@ -120,23 +157,19 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
       return options[optionColumn];
     }
 
-    return task[column as keyof TaskSummary];
+    return element[column as keyof TaskSummary];
   }
 
-  extractData(task: TaskSummary, column: TaskSummaryColumnKey): Duration | null {
-    return (this.show(task, column) as Duration) ?? null;
+  extractData(column: TaskSummaryColumnKey, task: TaskSummary): Duration | null {
+    return (this.show(column, task) as Duration) ?? null;
   }
 
   isRetried(task: TaskSummary): boolean {
     return this.#tasksStatusesService.isRetried(task.status);
   }
 
-  columnToDate(element: Timestamp | undefined): Date | null {
-    if (!element) {
-      return null;
-    }
-
-    return element.toDate();
+  canCancelTask(task: TaskSummary): boolean {
+    return !this.#tasksStatusesService.taskNotEnded(task.status);
   }
 
   statusToLabel(status: TaskStatus): string {
@@ -176,7 +209,8 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
     return null;
   }
 
-  onCopiedTaskId() {
+  onCopiedTaskId(data: TaskData) {
+    this.#copyService.copy(data.raw.id);
     this.#notificationService.success('Task ID copied to clipboard');
   }
 
@@ -222,15 +256,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummaryColum
 
   trackByColumn(index: number, item: TableColumn<TaskSummaryColumnKey>): string {
     return item.key;
-  }
-
-  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
-    const keys = nestedKeys.split('.');
-    let resultObject: {[key: string]: object} = element;
-    keys.forEach(key => {
-      resultObject = resultObject[key] as unknown as {[key: string]: object};
-    });
-    return resultObject;
   }
 
   handleGenericColumn(column: TaskSummaryColumnKey, element: TaskSummary) {

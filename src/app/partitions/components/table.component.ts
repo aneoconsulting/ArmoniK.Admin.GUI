@@ -16,6 +16,7 @@ import { PartitionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ActionTable } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { AbstractTableTaskByStatusComponent } from '@components/table/table.abstract.component';
@@ -58,11 +59,9 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../typ
     MatDialogModule,
   ]
 })
-export class PartitionsTableComponent extends AbstractTableTaskByStatusComponent<PartitionRawColumnKey, PartitionRaw, PartitionRawFilters> {
+export class PartitionsTableComponent extends AbstractTableTaskByStatusComponent<PartitionRawColumnKey, PartitionRaw, PartitionRawFilters, PartitionData> {
   tableScope: Scope = 'partitions';
   readonly #filtersService = inject(FiltersService);
-
-  _data: PartitionData[] = [];
 
   get data() {
     return this._data;
@@ -79,6 +78,8 @@ export class PartitionsTableComponent extends AbstractTableTaskByStatusComponent
       this._data.push(task);
     });
   }
+
+  actions: ActionTable<PartitionData>[] = [];
 
   createTasksByStatusQueryParams(partition: string) {
     if (this.filters.length === 0) {

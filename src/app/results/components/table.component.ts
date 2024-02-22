@@ -15,6 +15,7 @@ import { Scope } from '@app/types/config';
 import { ResultData } from '@app/types/data';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ActionTable } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { AbstractTableComponent } from '@components/table/table.abstract.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -59,9 +60,8 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFilters } from '../types';
     RouterLink,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRawColumnKey, ResultRaw, ResultRawFilters> {
+export class ResultsTableComponent extends AbstractTableComponent<ResultRawColumnKey, ResultRaw, ResultRawFilters, ResultData> {
   override tableScope: Scope = 'results';
-  _data: ResultData[];
 
   get data(): ResultData[] {
     return this._data;
@@ -76,6 +76,8 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRawColum
       this._data.push(lineData);
     });
   }
+
+  actions: ActionTable<ResultData>[];
   
   readonly #resultsIndexService = inject(ResultsIndexService);
   readonly #resultsStatusesService = inject(ResultsStatusesService);

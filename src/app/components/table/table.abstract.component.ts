@@ -1,35 +1,44 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ArmonikData, DataRaw, IndexListOptions, RawColumnKey, RawListFilters } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData, } from '@app/types/dialog';
 import { ListSortOptions } from '@app/types/options';
+import { Page } from '@app/types/pages';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { IconsService } from '@services/icons.service';
 import { TableService } from '@services/table.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { TableColumn } from './column.type';
+import { ActionTable } from './table-actions.component';
 
 @Component({
   selector: 'app-partitions-table',
   standalone: true,
   template: '',
 })
-export abstract class AbstractTableComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> implements AfterViewInit {
+export abstract class AbstractTableComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters, T extends ArmonikData<DataRaw>> implements AfterViewInit {
   abstract tableScope: Scope;
   @Input({ required: true }) displayedColumns: TableColumn<K>[] = [];
-
+  abstract actions: ActionTable<T>[];
+  @Input({required: true}) stopInterval: Subject<void>;
+  @Input({required: true}) interval: Subject<number>;
+  @Input({required: true}) intervalValue: number;
   @Input({ required: true }) options: IndexListOptions;
   @Input({ required: true }) total: number;
   @Input({ required: true }) filters: F;
+  @Input({required: false}) selection: SelectionModel<string>;
   @Input() lockColumns = false;
 
-  abstract _data: ArmonikData<D>[];
-  abstract get data(): ArmonikData<D>[];
+  _data: T[];
+  abstract get data(): T[];
 
   abstract set inputData(entries: D[]);
 
@@ -68,9 +77,30 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
     return this.iconsService.getIcon(name);
   }
 
+  getPageIcon(name: Page): string {
+    return this.iconsService.getPageIcon(name);
+  }
+
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
     this.tableService.saveColumns(`${this.tableScope}-columns`, this.displayedColumns.map(col => col.key));
+  }
+
+  columnToDate(element: Timestamp | undefined): Date | null {
+    if (!element) {
+      return null;
+    }
+
+    return element.toDate();
+  }
+
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
   }
 }
 
@@ -79,7 +109,7 @@ export abstract class AbstractTableComponent<K extends RawColumnKey, D extends D
   standalone: true,
   template: '',
 })
-export abstract class AbstractTableTaskByStatusComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters> extends AbstractTableComponent<K, D, F> implements OnInit{
+export abstract class AbstractTableTaskByStatusComponent<K extends RawColumnKey, D extends DataRaw, F extends RawListFilters, T extends ArmonikData<DataRaw>> extends AbstractTableComponent<K, D, F, T> implements OnInit{
   tasksStatusesColored: TaskStatusColored[] = [];
 
   ngOnInit() {

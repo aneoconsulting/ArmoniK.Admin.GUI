@@ -26,6 +26,7 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
+import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsTableComponent } from './components/table.component';
 import { ResultsFiltersService } from './services/results-filters.service';
@@ -68,7 +69,8 @@ app-table-actions-toolbar {
       useExisting: ResultsFiltersService,
     },
     ResultsStatusesService,
-    TableStorageService
+    TableStorageService,
+    TasksByStatusService,
   ],
   imports: [
     NoWrapDirective,
@@ -87,7 +89,7 @@ app-table-actions-toolbar {
     MatSnackBarModule,
     MatMenuModule,
     TableEmptyDataComponent,
-    ResultsTableComponent
+    ResultsTableComponent,
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
