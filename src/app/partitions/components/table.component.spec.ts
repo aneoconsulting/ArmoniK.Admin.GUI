@@ -5,15 +5,38 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { of } from 'rxjs';
+import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRawFilters } from '../types';
+import { PartitionRawColumnKey, PartitionRawFilters } from '../types';
 
 describe('PartitionsTableComponent', () => {
   let component: PartitionsTableComponent;
+
+  const displayedColumns: TableColumn<PartitionRawColumnKey>[] = [
+    {
+      name: 'Count',
+      key: 'count',
+      type: 'count',
+      sortable: true
+    },
+    {
+      name: 'Pod Reserved',
+      key: 'podReserved',
+      type: 'link',
+      sortable: true,
+      link: '/partitions',
+    },
+    {
+      name: 'Actions',
+      key: 'actions',
+      type: 'actions',
+      sortable: false
+    }
+  ];
 
   const mockPartitionsIndexService = {
     isPartitionIdColumn: jest.fn(),
@@ -102,7 +125,7 @@ describe('PartitionsTableComponent', () => {
       ]
     }).inject(PartitionsTableComponent);
 
-    component.displayedColumns = ['id', 'count', 'actions'];
+    component.displayedColumns = displayedColumns;
     component.filters = [];
     component.options = {
       pageIndex: 0,
@@ -147,44 +170,14 @@ describe('PartitionsTableComponent', () => {
     });
   });
 
-  it('should return the label of a column', () => {
-    component.columnToLabel('id');
-    expect(mockPartitionsIndexService.columnToLabel).toHaveBeenCalledWith('id');
-  });
-
-  it('should check if a column is a partition Id column', () => {
-    component.isPartitionIdColumn('id');
-    expect(mockPartitionsIndexService.isPartitionIdColumn).toHaveBeenCalledWith('id');
-  });
-
-  it('should check if a column is a count column', () => {
-    component.isCountColumn('count');
-    expect(mockPartitionsIndexService.isCountColumn).toHaveBeenCalledWith('count');
-  });
-
-  it('should check if a column is a simple column', () => {
-    component.isSimpleColumn('podMax');
-    expect(mockPartitionsIndexService.isSimpleColumn).toHaveBeenCalledWith('podMax');
-  });
-
-  it('should check if a column is a sortable column', () => {
-    component.isNotSortableColumn('actions');
-    expect(mockPartitionsIndexService.isNotSortableColumn).toHaveBeenCalledWith('actions');
-  });
-
-  it('should check if a column is an object column', () => {
-    component.isObjectColumn('podConfiguration');
-    expect(mockPartitionsIndexService.isObjectColumn).toHaveBeenCalledWith('podConfiguration');
-  });
-
   it('should change column order', () => {
     const event = {
       previousIndex: 0,
       currentIndex: 1
     } as unknown as CdkDragDrop<string[]>;
     component.onDrop(event);
-    expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(component.displayedColumns);
-    expect(component.displayedColumns).toEqual(['count', 'id', 'actions']);
+    expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
+    expect(component.displayedColumns).toEqual(displayedColumns);
   });
 
   it('should count tasks by status of the filters', () => {

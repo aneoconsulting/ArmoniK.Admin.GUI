@@ -1,17 +1,37 @@
-import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Timestamp } from '@ngx-grpc/well-known-types';
+import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
 import { ResultsTableComponent } from './table.component';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
+import { ResultRawColumnKey } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ResultsTableComponent;
+
+  const displayedColumns: TableColumn<ResultRawColumnKey>[] = [
+    {
+      name: 'Completed at',
+      key: 'completedAt',
+      type: 'date',
+      sortable: true
+    },
+    {
+      name: 'Name',
+      key: 'name',
+      sortable: true
+    },
+    {
+      name: 'Actions',
+      key: 'actions',
+      type: 'actions',
+      sortable: false
+    }
+  ];
 
   const mockResultsIndexService = {
     columnToLabel: jest.fn(),
@@ -45,7 +65,7 @@ describe('ApplicationTableComponent', () => {
       ]
     }).inject(ResultsTableComponent);
 
-    component.displayedColumns = ['name', 'completedAt', 'actions'];
+    component.displayedColumns = displayedColumns;
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -84,70 +104,14 @@ describe('ApplicationTableComponent', () => {
     });
   });
 
-  it('should return the label of a column', () => {
-    component.columnToLabel('name');
-    expect(mockResultsIndexService.columnToLabel).toHaveBeenCalledWith('name');
-  });
-
-  it('should check if a column is a resultId column', () => {
-    component.isResultIdColumn('resultId');
-    expect(mockResultsIndexService.isResultIdColumn).toHaveBeenCalledWith('resultId');
-  });
-
-  it('should check if a column is sessionId', () => {
-    component.isSessionIdColumn('sessionId');
-    expect(mockResultsIndexService.isSessionIdColumn).toHaveBeenCalledWith('sessionId');
-  });
-
-  it('should check if a column is a date column', () => {
-    component.isDateColumn('createdAt');
-    expect(mockResultsIndexService.isDateColumn).toHaveBeenCalledWith('createdAt');
-  });
-
-  it('should check if a column is a simple column', () => {
-    component.isSimpleColumn('name');
-    expect(mockResultsIndexService.isSimpleColumn).toHaveBeenCalledWith('name');
-  });
-
-  it('should check if a column is a status column', () => {
-    component.isStatusColumn('status');
-    expect(mockResultsIndexService.isStatusColumn).toHaveBeenCalledWith('status');
-  });
-
   it('should change column order', () => {
     const event = {
       previousIndex: 0,
       currentIndex: 1
     } as unknown as CdkDragDrop<string[]>;
     component.onDrop(event);
-    expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(component.displayedColumns);
-    expect(component.displayedColumns).toEqual(['completedAt', 'name', 'actions']);
-  });
-
-  describe('prettyDate', () => {
-    it('should turn a timestamp to a date', () => {
-      const time = {
-        toDate: jest.fn()
-      } as unknown as Timestamp;
-
-      component.prettyDate(time);
-      expect(time.toDate).toHaveBeenCalled();
-    });
-
-    it('should return the date', () => {
-      const time = {
-        toDate: () => 'mocked date'
-      } as unknown as Timestamp;
-      expect(component.prettyDate(time)).toEqual('mocked date');
-    });
-
-    it('should return null if there is no date', () => {
-      expect(component.prettyDate(undefined)).toEqual(null);
-    });
-  });
-
-  it('should get status label', () => {
-    expect(component.statusToLabel(ResultStatus.RESULT_STATUS_COMPLETED)).toEqual('Completed');
+    expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(component.displayedColumns.map(column => column.key));
+    expect(component.displayedColumns).toEqual(displayedColumns);
   });
 
   it('should get the session filter for a result', () => {

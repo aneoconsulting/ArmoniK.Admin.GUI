@@ -6,16 +6,52 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject } from 'rxjs';
+import { TableColumn } from '@app/types/column.type';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawFilters } from '../types';
+import { ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ApplicationsTableComponent;
+
+  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+    {
+      name: 'Name',
+      key: 'name',
+      sortable: true
+    },
+    {
+      name: 'Namespace',
+      key: 'namespace',
+      sortable: true
+    },
+    {
+      name: 'Service',
+      key: 'service',
+      sortable: true
+    },
+    {
+      name: 'Version',
+      key: 'version',
+      sortable: true
+    },
+    {
+      name: 'Actions',
+      key: 'actions',
+      type: 'actions',
+      sortable: false
+    },
+    {
+      name: 'Tasks by Status',
+      key: 'count',
+      type: 'count',
+      sortable: true
+    }
+  ];
 
   const mockApplicationIndexService = {
     availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count'],
@@ -121,7 +157,7 @@ describe('ApplicationTableComponent', () => {
       ]
     }).inject(ApplicationsTableComponent);
 
-    component.displayedColumns = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
+    component.displayedColumns = displayedColumns;
     component.filters = [];
     component.options = {
       pageIndex: 0,
@@ -166,31 +202,6 @@ describe('ApplicationTableComponent', () => {
     });
   });
 
-  it('should return the label of a column', () => {
-    component.columnToLabel('name');
-    expect(mockApplicationIndexService.columnToLabel).toHaveBeenCalledWith('name');
-  });
-
-  it('should check if a column is an action', () => {
-    component.isActionsColumn('actions');
-    expect(mockApplicationIndexService.isActionsColumn).toHaveBeenCalledWith('actions');
-  });
-
-  it('should check if a column is a count column', () => {
-    component.isCountColumn('count');
-    expect(mockApplicationIndexService.isCountColumn).toHaveBeenCalledWith('count');
-  });
-
-  it('should check if a column is a simple column', () => {
-    component.isSimpleColumn('name');
-    expect(mockApplicationIndexService.isSimpleColumn).toHaveBeenCalledWith('name');
-  });
-
-  it('should check if a column is a sortable column', () => {
-    component.isNotSortableColumn('actions');
-    expect(mockApplicationIndexService.isNotSortableColumn).toHaveBeenCalledWith('actions');
-  });
-
   it('should get required icons', () => {
     expect(component.getIcon('tune')).toEqual('tune');
     expect(component.getIcon('more')).toEqual('more_vert');
@@ -203,8 +214,8 @@ describe('ApplicationTableComponent', () => {
       currentIndex: 1
     } as unknown as CdkDragDrop<string[]>;
     component.onDrop(event);
-    expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(component.displayedColumns);
-    expect(component.displayedColumns).toEqual(['namespace', 'name', 'service', 'version', 'actions', 'count']);
+    expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
+    expect(component.displayedColumns).toEqual(displayedColumns);
   });
 
   it('should count tasks by status of the filters', () => {
