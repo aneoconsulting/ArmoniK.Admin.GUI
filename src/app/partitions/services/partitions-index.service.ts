@@ -27,8 +27,7 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
     {
       name: $localize`Priority`,
       key: 'priority',
-      type: 'simple',
-      sortable: true,
+            sortable: true,
     },
     {
       name: $localize`Parent Partition Ids`,
@@ -45,20 +44,17 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
     {
       name: $localize`Pod Max`,
       key: 'podMax',
-      type: 'simple',
-      sortable: true, 
+            sortable: true, 
     },
     {
       name: $localize`Pod Reserved`,
       key: 'podReserved',
-      type: 'simple',
-      sortable: true,
+            sortable: true,
     },
     {
       name: $localize`Preemption Percentage`,
       key: 'preemptionPercentage',
-      type: 'simple',
-      sortable: true,
+            sortable: true,
     },
     {
       name: $localize`Tasks by Status`,

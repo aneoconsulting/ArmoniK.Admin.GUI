@@ -63,7 +63,6 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     {
       name: $localize`Partition Ids`,
       key: 'partitionIds',
-      type: 'simple',
       sortable: true,
     },
     {
@@ -81,55 +80,46 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     {
       name: $localize`Application Name`,
       key: 'options.applicationName',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Application Namespace`,
       key: 'options.applicationNamespace',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Application Service`,
       key: 'options.applicationService',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Application Version`,
       key: 'options.applicationVersion',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Engine Type`,
       key: 'options.engineType',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Max Duration`,
       key: 'options.maxDuration',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Max Retries`,
       key: 'options.maxRetries',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Partition ID`,
       key: 'options.partitionId',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Priority`,
       key: 'options.priority',
-      type: 'simple',
       sortable: true,
     },
   ];

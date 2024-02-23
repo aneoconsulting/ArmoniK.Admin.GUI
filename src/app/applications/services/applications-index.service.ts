@@ -20,25 +20,21 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
     {
       name: $localize`Name`,
       key: 'name',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Namespace`,
       key: 'namespace',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Service`,
       key: 'service',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Version`,
       key: 'version',
-      type: 'simple',
       sortable: true,
     },
     {

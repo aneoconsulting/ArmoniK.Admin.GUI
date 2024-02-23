@@ -46,7 +46,6 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Session ID`,
       key: 'sessionId',
-      type: 'simple',
       sortable: true,
     },
     {
@@ -64,25 +63,21 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Initial Task ID`,
       key: 'initialTaskId',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Owner Pod ID`,
       key: 'ownerPodId',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Pod Hostname`,
       key: 'podHostname',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Pod TTL`,
       key: 'podTtl',
-      type: 'simple',
       sortable: true,
     },
     {
@@ -100,7 +95,6 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Status Message`,
       key: 'statusMessage',
-      type: 'simple',
       sortable: true,
     },
     {
@@ -130,31 +124,26 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Count Data Dependencies`,
       key: 'countDataDependencies',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Count Expected Output Ids`,
       key: 'countExpectedOutputIds',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Count Parent Task Ids`,
       key: 'countParentTaskIds',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Count Retry Of Ids`,
       key: 'countRetryOfIds',
-      type: 'simple',
       sortable: true,
     },
     {
       name: $localize`Error`,
       key: 'error',
-      type: 'simple',
       sortable: true,
     },
     {

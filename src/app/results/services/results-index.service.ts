@@ -19,7 +19,6 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
     {
       name: $localize`Name`,
       key: 'name',
-      type: 'simple',
       sortable: true
     },
     {
@@ -58,7 +57,6 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
     {
       name: $localize`Size`,
       key: 'size',
-      type: 'simple',
       sortable: true
     }
   ];

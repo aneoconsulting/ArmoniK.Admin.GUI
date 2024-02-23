@@ -1,5 +1,5 @@
 <!-- Simple and Customs -->
-<ng-container *ngIf="column.type === 'simple' || column.type === 'custom'">
+<ng-container *ngIf="column.type === undefined || column.type === 'custom'">
   {{ value | emptyCell }}
 </ng-container>
 <!-- Object -->
