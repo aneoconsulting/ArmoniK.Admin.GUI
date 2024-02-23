@@ -20,11 +20,11 @@
 </ng-container>
 <!-- Date -->
 <ng-container *ngIf="column.type === 'date'">
-  {{ columnToDate() | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
+  {{ dateValue | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
 </ng-container>
 <!-- Status -->
 <ng-container *ngIf="column.type === 'status'">
-  {{ statusToLabel(statusValue) }}
+  {{ statusLabel() }}
 </ng-container>
 <!-- Count Tasks by Status -->
 <ng-container *ngIf="column.type === 'count'">

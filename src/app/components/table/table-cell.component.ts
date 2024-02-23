@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterModule } from '@angular/router';
-import { Duration , Timestamp } from '@ngx-grpc/well-known-types';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, RawColumnKey, SessionData, Status } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -61,6 +61,10 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     return this._value as S;
   }
 
+  get dateValue(): Date | null {
+    return (this.value as Timestamp).toDate();
+  }
+
   get link() {
     return this.column.link ? `${this.column.link}/${this.element.raw[this.column.key as keyof DataRaw]}` : '';
   }
@@ -82,10 +86,6 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     return resultObject;
   }
 
-  columnToDate(): Date | null {
-    return (this.value as Timestamp).toDate();
-  }
-
   onSelectionChange() {
     this.changeSelection.emit();
   }
@@ -99,7 +99,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     }
   }
 
-  statusToLabel(status: S): string {
-    return this.statusesService.statusToLabel(status);
+  statusLabel(): string {
+    return this.statusesService.statusToLabel(this.statusValue);
   }
 }
