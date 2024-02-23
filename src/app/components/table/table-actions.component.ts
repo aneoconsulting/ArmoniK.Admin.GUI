@@ -11,6 +11,11 @@ import { ActionTable } from '@app/types/table';
   selector: 'app-table-actions',
   standalone: true,
   templateUrl: './table-actions.component.html',
+  styles: [`
+    p {
+      margin: 0;
+    }
+  `],
   imports: [
     MatButtonModule,
     MatIconModule,
