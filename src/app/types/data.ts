@@ -10,11 +10,11 @@ export type ColumnKey<T extends object, O extends object = Record<string, never>
 
 export type FieldKey<T extends object> = keyof T;
 
-export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw;
+export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary;
 
 export type GenericColumn = `generic.${string}`;
 
-interface ArmonikData<T extends DataRaw | TaskSummary> {
+export interface ArmonikData<T extends DataRaw | TaskSummary> {
   raw: T,
 }
 

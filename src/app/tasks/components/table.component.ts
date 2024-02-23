@@ -1,5 +1,5 @@
-import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummary, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ClipboardModule } from '@angular/cdk/clipboard';
+import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard , ClipboardModule} from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -12,14 +12,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { Duration , Timestamp} from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { TaskData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
+import { ActionTable } from '@app/types/table';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableActionsComponent } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -31,7 +33,7 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -44,6 +46,7 @@ import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSumm
     MatDialog,
     IconsService,
     FiltersService,
+    Clipboard,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -67,7 +70,8 @@ import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSumm
     DurationPipe,
     TableInspectObjectComponent,
     ClipboardModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    TableActionsComponent,
   ]
 })
 export class TasksTableComponent implements AfterViewInit {
@@ -90,7 +94,7 @@ export class TasksTableComponent implements AfterViewInit {
     return this._data;
   }
 
-  @Input({required: true}) set data(entries: TaskSummary.AsObject[]) {
+  @Input({required: true}) set data(entries: TaskSummary[]) {
     this._data = [];
     entries.forEach(entry => {
       const lineData: TaskData = {
@@ -110,9 +114,57 @@ export class TasksTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   readonly #tasksIndexService = inject(TasksIndexService );
-  readonly #tasksStatusesService = inject(TasksStatusesService);
   readonly #filtersService = inject(FiltersService);
   readonly #notificationService = inject(NotificationService);
+  readonly _router = inject(Router);
+  readonly _clipboard = inject(Clipboard);
+  readonly _tasksStatusesService = inject(TasksStatusesService);
+
+  copy$ = new Subject<TaskData>();
+  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data as TaskData));
+
+  seeResult$ = new Subject<TaskData>();
+  resultSubscription = this.seeResult$.subscribe((data) => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+
+  retries$ = new Subject<TaskData>();
+  retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
+
+  cancelTask$ = new Subject<TaskData>();
+  cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
+
+  openViewInLogs$ = new Subject<TaskData>();
+  openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
+
+  actions: ActionTable<TaskData>[] = [
+    {
+      label: $localize`Copy Task ID`,
+      icon: 'content_copy',
+      action$: this.copy$,
+    },
+    {
+      label: $localize`See related result`,
+      icon: 'visibility',
+      action$: this.seeResult$,
+    },
+    {
+      label: $localize`Retries`,
+      icon: 'published_with_changes',
+      action$: this.retries$,
+      condition: (element: TaskData) => this.isRetried(element.raw),
+    },
+    {
+      label: $localize`Cancel task`,
+      icon: 'cancel',
+      action$: this.cancelTask$,
+      condition: (element: TaskData) => this.canCancelTask(element.raw),
+    },
+    {
+      label: $localize`View in logs`,
+      icon: this.serviceIcon ?? 'description',
+      action$: this.openViewInLogs$,
+      condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
+    }
+  ];
 
   ngAfterViewInit(): void {
     this.sort.sortChange.subscribe(() => {
@@ -148,6 +200,10 @@ export class TasksTableComponent implements AfterViewInit {
 
   extractData(task: TaskSummary, column: TaskSummaryColumnKey): Duration | null {
     return (this.show(task, column) as Duration) ?? null;
+  }
+
+  canCancelTask(task: TaskSummary): boolean {
+    return !this._tasksStatusesService.taskNotEnded(task.status);
   }
 
   isGenericColumn(column: TaskSummaryColumnKey): boolean {
@@ -191,7 +247,7 @@ export class TasksTableComponent implements AfterViewInit {
   }
 
   isRetried(task: TaskSummary): boolean {
-    return this.#tasksStatusesService.isRetried(task.status);
+    return this._tasksStatusesService.isRetried(task.status);
   }
 
   columnToDate(element: Timestamp | undefined): Date | null {
@@ -203,7 +259,7 @@ export class TasksTableComponent implements AfterViewInit {
   }
 
   statusToLabel(status: TaskStatus): string {
-    return this.#tasksStatusesService.statusToLabel(status);
+    return this._tasksStatusesService.statusToLabel(status);
   }
 
   columnToLabel(column: TaskSummaryColumnKey): string {
@@ -243,7 +299,8 @@ export class TasksTableComponent implements AfterViewInit {
     return null;
   }
 
-  onCopiedTaskId() {
+  onCopiedTaskId(element: TaskData) {
+    this._clipboard.copy(element.raw.id);
     this.#notificationService.success('Task ID copied to clipboard');
   }
 

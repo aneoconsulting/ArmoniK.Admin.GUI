@@ -7,6 +7,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { of } from 'rxjs';
+import { SessionData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -115,6 +116,10 @@ describe('ApplicationsTableComponent', () => {
     success: jest.fn()
   };
 
+  const mockClipBoard = {
+    copy: jest.fn()
+  };
+
   const dialogResult = 'color';
   const mockMatDialog = {
     open: () => {
@@ -136,7 +141,8 @@ describe('ApplicationsTableComponent', () => {
         FiltersService,
         {provide: NotificationService, useValue: mockNotificationService},
         SessionsStatusesService,
-        {provide: MatDialog, useValue: mockMatDialog}
+        {provide: MatDialog, useValue: mockMatDialog},
+        {provide: Clipboard, useValue: mockClipBoard}
       ]
     }).inject(ApplicationsTableComponent);
 
@@ -336,7 +342,11 @@ describe('ApplicationsTableComponent', () => {
   });
 
   it('should notify user on copy', () => {
-    component.onCopiedSessionId();
+    component.onCopiedSessionId({
+      raw: {
+        sessionId: 'session-id-1'
+      }
+    } as unknown as SessionData);
     expect(mockNotificationService.success).toHaveBeenCalledWith('Session ID copied to clipboard');
   });
 
