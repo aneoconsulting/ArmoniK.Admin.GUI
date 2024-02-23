@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { TableColumn } from '@app/types/column.type';
 import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
@@ -7,12 +8,49 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } fr
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
 export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
+  availableColumns: ApplicationRawColumnKey[];
   readonly tableService = inject(TableService);
   readonly defaultConfigService = inject(DefaultConfigService);
 
   readonly defaultColumns = this.defaultConfigService.defaultApplications.columns;
-  readonly availableColumns: ApplicationRawColumnKey[] = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
-
+  readonly availableTableColumns: TableColumn<ApplicationRawColumnKey>[] = [
+    {
+      name: $localize`Name`,
+      key: 'name',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Namespace`,
+      key: 'namespace',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Service`,
+      key: 'service',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Version`,
+      key: 'version',
+      type: 'simple',
+      sortable: true,
+    },
+    {
+      name: $localize`Tasks by Status`,
+      key: 'count',
+      type: 'count',
+      sortable: false
+    },
+    {
+      name: $localize`Actions`,
+      key: 'actions',
+      type: 'actions',
+      sortable: false
+    }
+  ];
   // TODO: Add it to AppIndexService and to every index service
   readonly columnsLabels: Record<ApplicationRawColumnKey, string> = {
     name: $localize`Name`,
