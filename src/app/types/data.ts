@@ -1,3 +1,4 @@
+import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '@app/applications/types';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '@app/results/types';
@@ -14,7 +15,7 @@ export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | T
 
 export type GenericColumn = `generic.${string}`;
 
-interface ArmonikData<T extends DataRaw | TaskSummary> {
+export interface ArmonikData<T extends DataRaw | TaskSummary> {
   raw: T,
 }
 
@@ -39,3 +40,5 @@ export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw>
 
 export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
+
+export type Status = TaskStatus | SessionStatus | ResultStatus;
