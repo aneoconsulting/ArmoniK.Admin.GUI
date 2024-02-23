@@ -40,7 +40,7 @@ import { PartitionsTableComponent } from './components/table.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRawListOptions } from './types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -166,7 +166,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: PartitionRawListOptions;
 
-  filters: PartitionRawFiltersOr = [];
+  filters: PartitionRawFilters = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -270,9 +270,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as PartitionRawFiltersOr;
+    this.filters = filters as PartitionRawFilters;
 
-    this.#partitionsFiltersService.saveFilters(filters as PartitionRawFiltersOr);
+    this.#partitionsFiltersService.saveFilters(filters as PartitionRawFilters);
     this.options.pageIndex = 0;
     this.refresh.next();
   }

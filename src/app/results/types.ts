@@ -13,5 +13,5 @@ export type ResultFilterField = ResultRawEnumField | { for: string, index: numbe
 export type ResultsFiltersDefinition = FilterDefinition<ResultRawEnumField>;
 
 export type ResultFilterFor = FilterFor<ResultRawEnumField>;
-export type ResultRawFiltersOr = FiltersOr<ResultRawEnumField>;
+export type ResultRawFilters = FiltersOr<ResultRawEnumField>;
 export type ResultRawFilter = Filter<ResultRawEnumField>;
