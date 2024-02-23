@@ -1,5 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskOptions, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Clipboard , ClipboardModule} from '@angular/cdk/clipboard';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -69,7 +69,6 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
     RouterLink,
     DurationPipe,
     TableInspectObjectComponent,
-    ClipboardModule,
     MatCheckboxModule,
     TableActionsComponent,
   ]

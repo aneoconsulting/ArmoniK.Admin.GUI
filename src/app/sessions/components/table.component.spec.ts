@@ -1,4 +1,5 @@
 import { SessionRaw, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -142,7 +143,7 @@ describe('ApplicationsTableComponent', () => {
         {provide: NotificationService, useValue: mockNotificationService},
         SessionsStatusesService,
         {provide: MatDialog, useValue: mockMatDialog},
-        {provide: Clipboard, useValue: mockClipBoard}
+        {provide: Clipboard, useValue: mockClipBoard},
       ]
     }).inject(ApplicationsTableComponent);
 
@@ -347,6 +348,7 @@ describe('ApplicationsTableComponent', () => {
         sessionId: 'session-id-1'
       }
     } as unknown as SessionData);
+    expect(mockClipBoard.copy).toHaveBeenCalledWith('session-id-1');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Session ID copied to clipboard');
   });
 
