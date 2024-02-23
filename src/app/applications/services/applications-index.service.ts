@@ -8,7 +8,6 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } fr
 @Injectable()
 // export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
 export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
-  availableColumns: ApplicationRawColumnKey[];
   readonly tableService = inject(TableService);
   readonly defaultConfigService = inject(DefaultConfigService);
 
