@@ -14,7 +14,7 @@ import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
-  selector: 'app-table-column',
+  selector: 'app-table-cell',
   standalone: true,
   templateUrl: './table-cell.component.html',
   imports: [
@@ -29,7 +29,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableColumnComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> {  
+export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> {  
   @Input({ required: true }) column: TableColumn<K>;
   @Input({ required: true }) set element(entry: T) {
     this._element = entry;
