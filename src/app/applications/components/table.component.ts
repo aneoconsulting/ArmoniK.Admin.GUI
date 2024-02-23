@@ -47,7 +47,11 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
       <!-- Columns -->
       <ng-container *ngIf="column.type !== 'actions'">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-cell [column]="column" [element]="element"/>
+          <app-table-cell 
+            [column]="column"
+            [element]="element"
+            [tasksStatusesColored]="tasksStatusesColored"
+          />
         </td>
       </ng-container>
       <!-- Action -->
