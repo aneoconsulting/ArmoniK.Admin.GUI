@@ -9,6 +9,7 @@ import { DashboardStorageService } from '@app/dashboard/services/dashboard-stora
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -45,8 +46,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
       [loading]="isLoading"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
+      [columnsLabels]="columnsLabels"
+      [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
       (refresh)="onRefresh()"
@@ -128,9 +129,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #iconsService = inject(IconsService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
 
-  displayedColumns: ApplicationRawColumnKey[] = [];
+  displayedColumnsKeys: ApplicationRawColumnKey[] = [];
+  displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
   lockColumns: boolean = false;
+  columnsLabels: Record<ApplicationRawColumnKey, string> = {} as unknown as Record<ApplicationRawColumnKey, string>;
 
   isLoading = true;
   data: ApplicationRaw[] = [];
@@ -159,8 +162,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.displayedColumns = this._applicationsIndexService.restoreColumns();
-    this.availableColumns = this._applicationsIndexService.availableColumns;
+    this.availableColumns = this._applicationsIndexService.availableTableColumns.map(c => c.key);
+    this.displayedColumnsKeys = this._applicationsIndexService.restoreColumns();
+    this.updateDisplayedColumns();
+    this._applicationsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
     this.lockColumns = this._applicationsIndexService.restoreLockColumns();
 
     this.options = this._applicationsIndexService.restoreOptions();
@@ -213,8 +220,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  columnsLabels(): Record<ApplicationRawColumnKey, string> {
-    return this._applicationsIndexService.columnsLabels;
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this._applicationsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<ApplicationRawColumnKey>[];
   }
 
   getPageIcon(name: Page): string {
@@ -239,13 +246,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumns = data;
-
+    this.displayedColumnsKeys = data;
+    this.updateDisplayedColumns();
     this._applicationsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this._applicationsIndexService.resetColumns();
+    this.displayedColumnsKeys = this._applicationsIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(filters: unknown[]) {
