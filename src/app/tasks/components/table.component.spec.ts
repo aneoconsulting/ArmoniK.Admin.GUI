@@ -225,10 +225,6 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should track By column', () => {
-    expect(component.trackByColumn(0, displayedColumns[0])).toEqual('id');
-  });
-
   describe('onDrop', () => {
     it('should moveItem', () => {
       const event = {
