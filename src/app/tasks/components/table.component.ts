@@ -218,10 +218,6 @@ export class TasksTableComponent implements AfterViewInit {
     }
   }
 
-  trackByColumn(index: number, item: TableColumn<TaskSummaryColumnKey>): string {
-    return item.key;
-  }
-
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 

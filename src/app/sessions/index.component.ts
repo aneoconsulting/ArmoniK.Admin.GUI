@@ -158,15 +158,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.displayedColumnsKeys = this._sessionsIndexService.restoreColumns();
-    this.updateDisplayedColumns();
     this.availableColumns = this._sessionsIndexService.availableTableColumns.map(column => column.key);
+    this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
+    this.availableColumns.push(...this.genericColumns);
     this.lockColumns = this._sessionsIndexService.restoreLockColumns();
     this._sessionsIndexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
     });
-
-    this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
-    this.availableColumns.push(...this.genericColumns);
+    this.updateDisplayedColumns();
 
     this.options = this._sessionsIndexService.restoreOptions();
 
@@ -217,8 +216,19 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  updateDisplayedColumns() {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this._sessionsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<SessionRawColumnKey>[];
+  updateDisplayedColumns(): void {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => {
+      if (key.includes('generic.')) {
+        const customColumn = key.replaceAll('generic.', '');
+        return {
+          key: `options.options.${customColumn}`,
+          name: customColumn,
+          sortable: true,
+        };
+      } else {
+        return this._sessionsIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<SessionRawColumnKey>;
+      }
+    });
   }
 
   getIcon(name: string): string {

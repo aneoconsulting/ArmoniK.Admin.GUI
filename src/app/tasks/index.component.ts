@@ -138,15 +138,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.displayedColumnsKeys = this.#tasksIndexService.restoreColumns();
-    this.updateDisplayedColumns();
     this.availableColumns = this.#tasksIndexService.availableTableColumns.map(column => column.key);
+    this.genericColumns = this.#tasksIndexService.restoreGenericColumns();
+    this.availableColumns.push(...this.genericColumns);
     this.lockColumns = this.#tasksIndexService.restoreLockColumns();
     this.#tasksIndexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
     });
-
-    this.genericColumns = this.#tasksIndexService.restoreGenericColumns();
-    this.availableColumns.push(...this.genericColumns);
+    this.updateDisplayedColumns();
 
     this.options = this.#tasksIndexService.restoreOptions();
 
@@ -214,7 +213,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.#tasksIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<TaskSummaryColumnKey>);
+    this.displayedColumns = this.displayedColumnsKeys.map(key => {
+      if (key.includes('generic.')) {
+        const customColumn = key.replaceAll('generic.', '');
+        return {
+          key: `options.options.${customColumn}`,
+          name: customColumn,
+          sortable: true,
+        };
+      } else {
+        return this.#tasksIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<TaskSummaryColumnKey>;
+      }
+    });
   }
 
   onRetries(task: TaskSummary): void {
@@ -246,6 +256,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(columns: TaskSummaryColumnKey[]) {
+    console.log(columns);
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
     this.#tasksIndexService.saveColumns(columns);

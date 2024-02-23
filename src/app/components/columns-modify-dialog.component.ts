@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ColumnKey, GenericColumn, PrefixedOptions } from '@app/types/data';
+import { ColumnKey, GenericColumn, PrefixedOptions, RawColumnKey } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
@@ -31,7 +31,7 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
   ]
 })
 export class ColumnsModifyDialogComponent<T extends object,O extends object> implements OnInit {
-  columns: ColumnKey<T, O>[] = [];
+  columns: RawColumnKey[] = [];
   columnsLabels: Record<ColumnKey<T, O>, string>;
 
   constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T, O>){}
@@ -82,10 +82,10 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
    */
   updateColumn({ checked }: MatCheckboxChange, column: ColumnKey<T, O>): void {
     if (checked) {
-      if (!this.columns.includes(column) && this.data.availableColumns.includes(column)) {
-        this.columns.push(column);
+      if (!this.columns.includes(column as RawColumnKey) && this.data.availableColumns.includes(column as RawColumnKey)) {
+        this.columns.push(column as RawColumnKey);
       }
-    } else if(this.columns.includes(column)) {
+    } else if(this.columns.includes(column as RawColumnKey)) {
       this.columns = this.columns.filter(currentColumn => currentColumn !== column);
     }
   }
@@ -94,7 +94,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
    * Check if a column is selected
    */
   isSelected(column: ColumnKey<T, O>): boolean {
-    return this.data.currentColumns.includes(column);
+    return this.data.currentColumns.includes(column as RawColumnKey);
   }
 
   onNoClick(): void {

@@ -1,12 +1,12 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Line, LineType } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, GenericColumn } from './data';
+import { ColumnKey, GenericColumn, RawColumnKey } from './data';
 import { FiltersOr } from './filters';
 
 export interface ColumnsModifyDialogData<T extends object, O extends object> {
-  currentColumns: ColumnKey<T, O>[]
-  availableColumns: ColumnKey<T, O>[]
+  currentColumns: RawColumnKey[]
+  availableColumns: RawColumnKey[]
   columnsLabels: Record<ColumnKey<T, O>, string>
 }
 

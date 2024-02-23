@@ -1,7 +1,7 @@
 <app-table-container>
     <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
   
-      <ng-container *ngFor="let column of displayedColumns; trackBy:trackByColumn" [matColumnDef]="column.key">
+      <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
         <!-- Header -->
         <ng-container *ngIf="column.type !== 'select'">
           <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
