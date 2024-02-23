@@ -158,6 +158,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.displayedColumnsKeys = this._sessionsIndexService.restoreColumns();
+    this.updateDisplayedColumns();
     this.availableColumns = this._sessionsIndexService.availableTableColumns.map(column => column.key);
     this.lockColumns = this._sessionsIndexService.restoreLockColumns();
     this._sessionsIndexService.availableTableColumns.forEach(column => {

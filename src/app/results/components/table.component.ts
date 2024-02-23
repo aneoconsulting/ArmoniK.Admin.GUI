@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRaw, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
@@ -11,6 +11,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterModule } from '@angular/router';
 import { TableColumn } from '@app/types/column.type';
+import { ResultData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -23,7 +24,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '../types';
 
 @Component({
   selector: 'app-results-table',
@@ -63,9 +64,24 @@ export class ResultsTableComponent implements AfterViewInit {
 
   @Input({required: true}) displayedColumns: TableColumn<ResultRawColumnKey>[] = [];
   @Input({required: true}) options: ResultRawListOptions;
-  @Input({required: true}) data: ResultRaw.AsObject[] = [];
   @Input({required: true}) total: number;
   @Input() lockColumns = false;
+  
+  private _data: ResultData[] = [];
+
+  @Input({required: true}) set data(entries: ResultRaw[]) {
+    this._data = [];
+    entries.forEach((entry) => {
+      const lineData: ResultData = {
+        raw: entry,
+      };
+      this._data.push(lineData);
+    });
+  }
+
+  get data(): ResultData[] {
+    return this._data;
+  }
 
   @Output() optionsChange = new EventEmitter<never>();
 

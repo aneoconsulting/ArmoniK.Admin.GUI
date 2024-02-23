@@ -40,7 +40,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
         {{ column.name }}
-        <button mat-icon-button *ngIf="column.type === 'actions'" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
+        <button mat-icon-button *ngIf="column.type === 'count'" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
         </button>
       </th>
