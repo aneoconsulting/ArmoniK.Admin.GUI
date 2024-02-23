@@ -67,12 +67,12 @@
       <!-- Empty -->
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <app-table-empty-data></app-table-empty-data>
+          <app-table-empty-data/>
         </td>
       </tr>
   
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="columnKeys"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnKeys;"></tr>
     </table>
   
     <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of tasks" i18n-aria-label>

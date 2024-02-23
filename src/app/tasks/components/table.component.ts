@@ -92,6 +92,10 @@ export class TasksTableComponent implements AfterViewInit {
     return this._data;
   }
 
+  get columnKeys() {
+    return this.displayedColumns.map(c => c.key);
+  }
+
   @Input({required: true}) set data(entries: TaskSummary.AsObject[]) {
     this._data = [];
     entries.forEach(entry => {

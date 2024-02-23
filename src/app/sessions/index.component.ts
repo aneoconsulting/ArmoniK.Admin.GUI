@@ -15,6 +15,7 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { GenericColumn } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -119,10 +120,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly _tasksByStatusService = inject(TasksByStatusService);
   readonly #dialog = inject(MatDialog);
 
-  displayedColumns: SessionRawColumnKey[] = [];
+  displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
   availableColumns: SessionRawColumnKey[] = [];
+  displayedColumnsKeys: SessionRawColumnKey[] = [];
   genericColumns: GenericColumn[];
   lockColumns: boolean = false;
+  columnsLabels: Record<SessionRawColumnKey, string> = {} as unknown as Record<SessionRawColumnKey, string>;
 
   isLoading = true;
   data: SessionRaw[] = [];
@@ -154,9 +157,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.displayedColumns = this._sessionsIndexService.restoreColumns();
-    this.availableColumns = this._sessionsIndexService.availableColumns;
+    this.displayedColumnsKeys = this._sessionsIndexService.restoreColumns();
+    this.availableColumns = this._sessionsIndexService.availableTableColumns.map(column => column.key);
     this.lockColumns = this._sessionsIndexService.restoreLockColumns();
+    this._sessionsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
 
     this.genericColumns = this._sessionsIndexService.restoreGenericColumns();
     this.availableColumns.push(...this.genericColumns);
@@ -210,8 +216,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  columnsLabels(): Record<SessionRawColumnKey, string> {
-    return this._sessionsIndexService.columnsLabels;
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this._sessionsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<SessionRawColumnKey>[];
   }
 
   getIcon(name: string): string {
@@ -240,13 +246,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: SessionRawColumnKey[]) {
-    this.displayedColumns = [...data];
-
+    this.displayedColumnsKeys = data;
+    this.updateDisplayedColumns();
     this._sessionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this._sessionsIndexService.resetColumns();
+    this.displayedColumnsKeys = this._sessionsIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(filters: unknown[]) {
@@ -290,14 +297,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.optionsChange.next();
   }
 
-  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
-    const keys = nestedKeys.split('.');
-    let resultObject: {[key: string]: object} = element;
-    keys.forEach(key => {
-      resultObject = resultObject[key] as unknown as {[key: string]: object};
-    });
-    return resultObject;
-  }
 
   addGenericColumn(): void {
     const dialogRef = this.#dialog.open<ManageGenericColumnDialogComponent, GenericColumn[], GenericColumn[]>(ManageGenericColumnDialogComponent, {
@@ -309,9 +308,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.genericColumns = result;
         this.availableColumns = this.availableColumns.filter(column => !column.startsWith('generic.'));
         this.availableColumns.push(...result);
-        this.displayedColumns = this.displayedColumns.filter(column => !column.startsWith('generic.'));
-        this.displayedColumns.push(...result);
-        this._sessionsIndexService.saveColumns(this.displayedColumns);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('generic.'));
+        this.displayedColumnsKeys.push(...result);
+        this.updateDisplayedColumns();
+        this._sessionsIndexService.saveColumns(this.displayedColumnsKeys);
         this._sessionsIndexService.saveGenericColumns(this.genericColumns);
       }
     });

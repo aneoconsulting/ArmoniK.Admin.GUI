@@ -13,11 +13,13 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskSummaryFilters } from '@app/tasks/types';
+import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -68,12 +70,13 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     DurationPipe,
     EmptyCellPipe,
     TableInspectObjectComponent,
-    MatDialogModule
+    MatDialogModule,
+    TableCellComponent,
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
-  @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
+  @Input({required: true}) displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
   @Input({required: true}) options: SessionRawListOptions;
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFilters;
@@ -82,6 +85,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   private _data: SessionData[] = [];
   get data(): SessionData[] {
     return this._data;
+  }
+
+  get columnKeys() {
+    return this.displayedColumns.map(c => c.key);
   }
 
   @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
@@ -137,54 +144,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this._iconsService.getIcon(name);
   }
 
-  columnToLabel(column: SessionRawColumnKey): string {
-    return this._sessionsIndexService.columnToLabel(column);
-  }
-
-  isGenericColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isGenericColumn(column);
-  }
-
-  isNotSortableColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isNotSortableColumn(column);
-  }
-
-  isSimpleColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isSimpleColumn(column);
-  }
-
-  isSessionIdColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isSessionIdColumn(column);
-  }
-
-  isObjectColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isObjectColumn(column);
-  }
-
-  isDateColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isDateColumn(column);
-  }
-
-  isDurationColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isDurationColumn(column);
-  }
-
-  isStatusColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isStatusColumn(column);
-  }
-
-  isCountColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isCountColumn(column);
-  }
-
-  isActionsColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isActionsColumn(column);
-  }
-
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
-    this._sessionsIndexService.saveColumns(this.displayedColumns);
+    this._sessionsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 
   extractData(element: SessionRaw, column: SessionRawColumnKey): Duration | null {
