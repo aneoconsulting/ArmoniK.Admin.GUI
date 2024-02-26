@@ -1,18 +1,15 @@
 import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionFilterField, SessionFilterFor, SessionRawFilters } from '../types';
-
-export type SessionFilterDefinition = FilterDefinition<SessionRawEnumField, SessionTaskOptionEnumField>;
+import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionRawFilters } from '../types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawFilters, SessionFilterFor, SessionFilterField, SessionFilterDefinition, SessionRawEnumField, SessionTaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawFilters, SessionRawEnumField, SessionTaskOptionEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(SessionsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -140,6 +137,10 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}}`);
     }
+  }
+
+  retrieveFiltersDefinitions(): SessionFilterDefinition[] {
+    return this.filtersDefinitions;
   }
 
   retrieveField(filterField: string): SessionFilterField {
