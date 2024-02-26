@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionRawField, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from '../types';
+import { SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsGrpcService{
@@ -29,9 +29,9 @@ export class SessionsGrpcService{
     'duration': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DURATION,
   };
 
-  list$(options: SessionRawListOptions, filters: SessionRawFiltersOr): Observable<ListSessionsResponse> {
+  list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<SessionFilterField.AsObject>(filters, this.#sessionsFiltersService.filtersDefinitions, this.#buildFilterField);
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,

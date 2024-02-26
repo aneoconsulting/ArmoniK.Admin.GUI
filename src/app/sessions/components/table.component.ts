@@ -12,7 +12,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { TaskSummaryFilters } from '@app/tasks/types';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -31,7 +31,7 @@ import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from '../types';
+import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -76,7 +76,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
   @Input({required: true}) options: SessionRawListOptions;
   @Input({required: true}) total: number;
-  @Input({required: true}) filters: SessionRawFiltersOr;
+  @Input({required: true}) filters: SessionRawFilters;
   @Input() lockColumns = false;
 
   private _data: SessionData[] = [];
@@ -271,7 +271,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  countTasksByStatusFilters(sessionId: string): TaskSummaryFiltersOr {
+  countTasksByStatusFilters(sessionId: string): TaskSummaryFilters {
     return [
       [
         {

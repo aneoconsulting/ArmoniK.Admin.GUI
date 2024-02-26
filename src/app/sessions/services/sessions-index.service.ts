@@ -1,16 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { GenericColumn } from '@app/types/data';
+import { IndexServiceGenericInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsIndexService {
-  #defaultConfigService = inject(DefaultConfigService);
-  #tableService = inject(TableService);
+export class SessionsIndexService implements IndexServiceGenericInterface<SessionRawColumnKey, SessionRawListOptions> {
+  defaultConfigService = inject(DefaultConfigService);
+  tableService = inject(TableService);
 
-  readonly defaultColumns: SessionRawColumnKey[] = this.#defaultConfigService.defaultSessions.columns;
-  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultSessions.lockColumns;
+  readonly defaultColumns: SessionRawColumnKey[] = this.defaultConfigService.defaultSessions.columns;
+  readonly defaultLockColumns: boolean = this.defaultConfigService.defaultSessions.lockColumns;
   readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
@@ -39,9 +40,9 @@ export class SessionsIndexService {
     'options.priority': $localize`Options Priority`,
   };
 
-  readonly defaultOptions: SessionRawListOptions = this.#defaultConfigService.defaultSessions.options;
+  readonly defaultOptions: SessionRawListOptions = this.defaultConfigService.defaultSessions.options;
 
-  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultSessions.interval;
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultSessions.interval;
 
   columnToLabel(column: SessionRawColumnKey): string {
     return !this.isGenericColumn(column) ? this.columnsLabels[column] : this.genericField(column);
@@ -100,11 +101,11 @@ export class SessionsIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue('sessions-interval', value);
+    this.tableService.saveIntervalValue('sessions-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue('sessions-interval') ?? this.defaultIntervalValue;
+    return this.tableService.restoreIntervalValue('sessions-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -112,11 +113,11 @@ export class SessionsIndexService {
    */
 
   saveLockColumns(value: boolean): void {
-    this.#tableService.saveLockColumns('sessions-lock-columns', value);
+    this.tableService.saveLockColumns('sessions-lock-columns', value);
   }
 
   restoreLockColumns(): boolean {
-    return this.#tableService.restoreLockColumns('sessions-lock-columns') ?? this.defaultLockColumns;
+    return this.tableService.restoreLockColumns('sessions-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**
@@ -124,11 +125,11 @@ export class SessionsIndexService {
    */
 
   saveOptions(options: SessionRawListOptions): void {
-    this.#tableService.saveOptions('sessions-options', options);
+    this.tableService.saveOptions('sessions-options', options);
   }
 
   restoreOptions(): SessionRawListOptions {
-    const options = this.#tableService.restoreOptions<SessionRaw>('sessions-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<SessionRaw>('sessions-options', this.defaultOptions);
 
     return options;
   }
@@ -138,11 +139,11 @@ export class SessionsIndexService {
    */
 
   saveColumns(columns: SessionRawColumnKey[]): void {
-    this.#tableService.saveColumns('sessions-columns', columns);
+    this.tableService.saveColumns('sessions-columns', columns);
   }
 
   restoreColumns(): SessionRawColumnKey[] {
-    const columns = this.#tableService.restoreColumns<SessionRawColumnKey[]>('sessions-columns') ?? this.defaultColumns;
+    const columns = this.tableService.restoreColumns<SessionRawColumnKey[]>('sessions-columns') ?? this.defaultColumns;
 
     return [...columns];
   }
@@ -152,16 +153,16 @@ export class SessionsIndexService {
    */
 
   saveGenericColumns(columns: GenericColumn[]): void {
-    this.#tableService.saveColumns('sessions-generic-columns', columns);
+    this.tableService.saveColumns('sessions-generic-columns', columns);
   }
   
   restoreGenericColumns(): GenericColumn[] {
-    const columns = this.#tableService.restoreColumns<GenericColumn[]>('sessions-generic-columns') ?? [];
+    const columns = this.tableService.restoreColumns<GenericColumn[]>('sessions-generic-columns') ?? [];
     return [...columns] ;
   }
 
   resetColumns(): SessionRawColumnKey[] {
-    this.#tableService.resetColumns('sessions-columns');
+    this.tableService.resetColumns('sessions-columns');
 
     return Array.from(this.defaultColumns);
   }

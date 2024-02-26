@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
-import { ApplicationRawFieldKey, ApplicationRawFilter, ApplicationRawListOptions } from '../types';
+import { ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Injectable()
 export class ApplicationsGrpcService {
@@ -26,9 +26,9 @@ export class ApplicationsGrpcService {
     'version': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
   };
 
-  list$(options: ApplicationRawListOptions, filters: ApplicationRawFilter): Observable<ListApplicationsResponse> {
+  list$(options: ApplicationRawListOptions, filters: ApplicationRawFilters): Observable<ListApplicationsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.filtersDefinitions, this.#buildFilterField);
 
     const request = new ListApplicationsRequest({
       page: options.pageIndex,

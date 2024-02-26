@@ -35,4 +35,11 @@ export class TasksStatusesService {
   isRetried(status: TaskStatus): boolean {
     return status === TaskStatus.TASK_STATUS_RETRIED;
   }
+
+  taskNotEnded(taskStatus: TaskStatus) {
+    return taskStatus !== TaskStatus.TASK_STATUS_SUBMITTED && taskStatus !== TaskStatus.TASK_STATUS_CREATING
+    && taskStatus !== TaskStatus.TASK_STATUS_DISPATCHED && taskStatus !== TaskStatus.TASK_STATUS_PROCESSING 
+    && taskStatus !== TaskStatus.TASK_STATUS_PROCESSED && taskStatus !== TaskStatus.TASK_STATUS_RETRIED 
+    && taskStatus !== TaskStatus.TASK_STATUS_UNSPECIFIED;
+  }
 }

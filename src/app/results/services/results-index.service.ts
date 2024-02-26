@@ -1,16 +1,16 @@
 import { Injectable, inject } from '@angular/core';
+import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { ResultsStatusesService } from './results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsIndexService {
-  #defaultConfigService = inject(DefaultConfigService);
-  #resultsStatusesService = inject(ResultsStatusesService);
+export class ResultsIndexService implements IndexServiceInterface<ResultRawColumnKey, ResultRawListOptions> {
+  defaultConfigService = inject(DefaultConfigService);
+  tableService = inject(TableService);
 
-  readonly defaultColumns: ResultRawColumnKey[] = this.#defaultConfigService.defaultResults.columns;
-  readonly defaultLockColumns: boolean = this.#defaultConfigService.defaultResults.lockColumns;
+  readonly defaultColumns: ResultRawColumnKey[] = this.defaultConfigService.defaultResults.columns;
+  readonly defaultLockColumns: boolean = this.defaultConfigService.defaultResults.lockColumns;
   readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'resultId', 'size'];
 
   readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
@@ -27,11 +27,8 @@ export class ResultsIndexService {
     size: $localize`Size`
   };
 
-  readonly defaultOptions: ResultRawListOptions = this.#defaultConfigService.defaultResults.options;
-
-  readonly defaultIntervalValue: number = this.#defaultConfigService.defaultResults.interval;
-
-  #tableService = inject(TableService);
+  readonly defaultOptions: ResultRawListOptions = this.defaultConfigService.defaultResults.options;
+  readonly defaultIntervalValue: number = this.defaultConfigService.defaultResults.interval;
 
   columnToLabel(column: ResultRawColumnKey): string {
     return this.columnsLabels[column];
@@ -67,11 +64,11 @@ export class ResultsIndexService {
    */
 
   saveIntervalValue(value: number): void {
-    this.#tableService.saveIntervalValue('results-interval', value);
+    this.tableService.saveIntervalValue('results-interval', value);
   }
 
   restoreIntervalValue(): number {
-    return this.#tableService.restoreIntervalValue('results-interval') ?? this.defaultIntervalValue;
+    return this.tableService.restoreIntervalValue('results-interval') ?? this.defaultIntervalValue;
   }
 
   /**
@@ -79,11 +76,11 @@ export class ResultsIndexService {
    */
 
   saveLockColumns(value: boolean): void {
-    this.#tableService.saveLockColumns('results-lock-columns', value);
+    this.tableService.saveLockColumns('results-lock-columns', value);
   }
 
   restoreLockColumns(): boolean {
-    return this.#tableService.restoreLockColumns('results-lock-columns') ?? this.defaultLockColumns;
+    return this.tableService.restoreLockColumns('results-lock-columns') ?? this.defaultLockColumns;
   }
 
   /**
@@ -91,11 +88,11 @@ export class ResultsIndexService {
    */
 
   saveOptions(options: ResultRawListOptions): void {
-    this.#tableService.saveOptions('results-options', options);
+    this.tableService.saveOptions('results-options', options);
   }
 
   restoreOptions(): ResultRawListOptions {
-    const options = this.#tableService.restoreOptions<ResultRaw>('results-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<ResultRaw>('results-options', this.defaultOptions);
 
     return options;
   }
@@ -105,15 +102,15 @@ export class ResultsIndexService {
    */
 
   saveColumns(columns: ResultRawColumnKey[]): void {
-    this.#tableService.saveColumns('results-columns', columns);
+    this.tableService.saveColumns('results-columns', columns);
   }
 
   restoreColumns(): ResultRawColumnKey[] {
-    return this.#tableService.restoreColumns<ResultRawColumnKey[]>('results-columns') ?? this.defaultColumns;
+    return this.tableService.restoreColumns<ResultRawColumnKey[]>('results-columns') ?? this.defaultColumns;
   }
 
   resetColumns(): ResultRawColumnKey[] {
-    this.#tableService.resetColumns('results-columns');
+    this.tableService.resetColumns('results-columns');
 
     return Array.from(this.defaultColumns);
   }

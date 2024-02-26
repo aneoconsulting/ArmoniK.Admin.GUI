@@ -31,7 +31,7 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
+import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -79,7 +79,7 @@ export class TasksTableComponent implements AfterViewInit {
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
   @Input({required: true}) selection: SelectionModel<string>;
-  @Input() filters: TaskSummaryFiltersOr = [];
+  @Input() filters: TaskSummaryFilters = [];
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
