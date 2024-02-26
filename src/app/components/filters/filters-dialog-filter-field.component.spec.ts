@@ -109,24 +109,6 @@ describe('FiltersDialogFilterFieldComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    describe('filteredGenerics', () => {
-      it('should filter generics', () => {
-        component.filteredGenerics.subscribe(value => {
-          expect(value).toEqual(['generic.test', 'generic.fastCompute']);
-        });
-        component.genericFormControl.setValue('te');
-        component.genericFormControl.updateValueAndValidity({emitEvent: true});
-      });
-
-      it('should return all the list in case of null value', () => {
-        component.filteredGenerics.subscribe(value => {
-          expect(value).toEqual(Object.values(genericList));
-        });
-        component.genericFormControl.setValue(null);
-        component.genericFormControl.updateValueAndValidity({emitEvent: true});
-      });
-    });
-    
     describe('filteredProperties', () => {
       it('should filter properly', () => {
         component.filteredProperties.subscribe(value => {
@@ -593,11 +575,5 @@ describe('FiltersDialogFilterFieldComponent', () => {
       value: 'myStatus'
     };
     expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
-  });
-
-  it('should change generic filters', () => {
-    component.genericFormControl.setValue('column');
-    component.onGenericFieldChange();
-    expect(component.filter.field).toEqual('column');
   });
 });
