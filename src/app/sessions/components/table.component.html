@@ -28,7 +28,7 @@
       <!-- Object -->
       <ng-container *ngIf="isObjectColumn(column)">
        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-inspect-object [object]="element.raw[column]" [label]="columnToLabel(column)"></app-table-inspect-object>
+          <app-table-inspect-object [object]="handleNestedKeys(column, element.raw)" [label]="columnToLabel(column)"></app-table-inspect-object>
         </td>
       </ng-container>
       <!-- Date -->

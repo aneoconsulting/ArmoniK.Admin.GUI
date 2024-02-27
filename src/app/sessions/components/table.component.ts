@@ -366,6 +366,15 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
   }
 
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
+  }
+
   handleGenericColumn(column: SessionRawColumnKey, element: SessionRaw) {
     const field = this._sessionsIndexService.genericField(column);
     return element.options?.options[field];

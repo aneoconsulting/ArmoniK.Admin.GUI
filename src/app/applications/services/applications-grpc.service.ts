@@ -1,4 +1,4 @@
-import { ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, SortDirection as ArmoniKSortDirection, FilterStringOperator, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationField, ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, SortDirection as ArmoniKSortDirection, FilterStringOperator, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
@@ -35,11 +35,7 @@ export class ApplicationsGrpcService {
       pageSize: options.pageSize,
       sort: {
         direction: this.sortDirections[options.sort.direction],
-        fields: [{
-          applicationField: {
-            field: this.sortFields[options.sort.active]
-          }
-        }]
+        fields: this.#getSortFieldsArray(this.sortFields[options.sort.active])
       },
       filters: requestFilters
     });
@@ -74,5 +70,29 @@ export class ApplicationsGrpcService {
       }
       }
     };
+  }
+
+  #getSortFieldsArray(field: ApplicationRawEnumField): ApplicationField.AsObject[] {
+    switch (field) {
+    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME:
+      return [
+        {
+          applicationField: {
+            field: field
+          }
+        },
+        {
+          applicationField: {
+            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+          }
+        }
+      ];
+    default:
+      return [{
+        applicationField: {
+          field: field
+        }
+      }];
+    }
   }
 }
