@@ -1,5 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ClipboardModule } from '@angular/cdk/clipboard';
+import { Clipboard} from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -10,14 +10,18 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
+import { Page } from '@app/types/pages';
+import { ActionTable } from '@app/types/table';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableActionsComponent } from '@components/table/table-actions.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -44,7 +48,8 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     TasksByStatusService,
     MatDialog,
     IconsService,
-    FiltersService
+    FiltersService,
+    Clipboard,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -63,12 +68,12 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    ClipboardModule,
     DatePipe,
     DurationPipe,
     EmptyCellPipe,
     TableInspectObjectComponent,
-    MatDialogModule
+    MatDialogModule,
+    TableActionsComponent,
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
@@ -111,6 +116,44 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   readonly _notificationService = inject(NotificationService);
   readonly _sessionsStatusesService = inject(SessionsStatusesService);
   readonly _dialog = inject(MatDialog);
+  readonly _router = inject(Router);
+  readonly _copyService = inject(Clipboard);
+
+  copy$ = new Subject<SessionData>();
+  copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
+
+  seeTasks$ = new Subject<SessionData>();
+  seeTasksSubscription = this.seeTasks$.subscribe(data => this._router.navigate(['/tasks'], { queryParams: data.queryTasksParams }));
+
+  seeResults$ = new Subject<SessionData>();
+  seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+
+  cancelSession$ = new Subject<SessionData>();
+  cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
+
+  actions: ActionTable<SessionData>[] = [
+    {
+      label: 'Copy session ID',
+      icon: this.getIcon('copy'),
+      action$: this.copy$, 
+    },
+    {
+      label: 'See tasks',
+      icon: this.getPageIcon('tasks'),
+      action$: this.seeTasks$,
+    },
+    {
+      label: 'See results',
+      icon: this.getPageIcon('results'),
+      action$: this.seeResults$,
+    },
+    {
+      label: 'Cancel session',
+      icon: this.getIcon('cancel'),
+      action$: this.cancelSession$, 
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+    }
+  ];
 
   ngOnInit(): void {
     this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('sessions');
@@ -135,6 +178,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   getIcon(name: string): string {
     return this._iconsService.getIcon(name);
+  }
+
+  getPageIcon(page: Page): string {
+    return this._iconsService.getPageIcon(page);
   }
 
   columnToLabel(column: SessionRawColumnKey): string {
@@ -204,7 +251,8 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this._sessionsStatusesService.statusToLabel(status);
   }
 
-  onCopiedSessionId() {
+  onCopiedSessionId(data: SessionData) {
+    this._copyService.copy(data.raw.sessionId);
     this._notificationService.success('Session ID copied to clipboard');
   }
 
@@ -316,6 +364,15 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         this._tasksByStatusService.saveStatuses('sessions', result);
       }
     });
+  }
+
+  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
+    const keys = nestedKeys.split('.');
+    let resultObject: {[key: string]: object} = element;
+    keys.forEach(key => {
+      resultObject = resultObject[key] as unknown as {[key: string]: object};
+    });
+    return resultObject;
   }
 
   handleGenericColumn(column: SessionRawColumnKey, element: SessionRaw) {

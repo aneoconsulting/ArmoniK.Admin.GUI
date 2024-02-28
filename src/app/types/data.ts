@@ -15,7 +15,7 @@ export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | T
 
 export type GenericColumn = `generic.${string}`;
 
-interface ArmonikData<T extends DataRaw | TaskSummary> {
+export interface ArmonikData<T extends DataRaw | TaskSummary> {
   raw: T,
 }
 

@@ -4,12 +4,12 @@ import { FilterFor } from '@app/types/filter-definition';
 import { FiltersServiceInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { ApplicationFilterField, ApplicationFilterFor, ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
+import { ApplicationFilterField, ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApplicationsFiltersService implements FiltersServiceInterface<ApplicationRawFilters, ApplicationFilterFor, ApplicationFilterField, ApplicationsFiltersDefinition, ApplicationRawEnumField> {
+export class ApplicationsFiltersService implements FiltersServiceInterface<ApplicationRawFilters, ApplicationRawEnumField> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 

@@ -85,13 +85,4 @@ export class FiltersDialogOrComponent<T extends number, U extends number | null 
   onRemoveOr() {
     this.removeChange.emit(this.filtersOr);
   }
-
-  onAddGeneric() {
-    this.filtersOr.push({
-      for: 'generic',
-      field: null,
-      operator: null,
-      value: null
-    });
-  }
 }

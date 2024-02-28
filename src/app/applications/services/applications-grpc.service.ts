@@ -60,4 +60,28 @@ export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsCl
       }
     };
   }
+
+  #getSortFieldsArray(field: ApplicationRawEnumField): ApplicationField.AsObject[] {
+    switch (field) {
+    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME:
+      return [
+        {
+          applicationField: {
+            field: field
+          }
+        },
+        {
+          applicationField: {
+            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+          }
+        }
+      ];
+    default:
+      return [{
+        applicationField: {
+          field: field
+        }
+      }];
+    }
+  }
 }

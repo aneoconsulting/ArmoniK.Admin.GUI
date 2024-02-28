@@ -5,12 +5,12 @@ import { FiltersServiceInterface, FiltersServiceStatusesInterface } from '@app/t
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsStatusesService } from './results-statuses.service';
-import { ResultFilterField, ResultFilterFor, ResultRawFilters, ResultsFiltersDefinition } from '../types';
+import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultFilterFor, ResultFilterField, ResultsFiltersDefinition, ResultRawEnumField>, FiltersServiceStatusesInterface {
+export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultRawEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(ResultsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);

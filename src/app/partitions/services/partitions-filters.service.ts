@@ -4,12 +4,12 @@ import { FilterFor } from '@app/types/filter-definition';
 import { FiltersServiceInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { PartitionFilterField, PartitionFilterFor, PartitionRawFilters, PartitionsFiltersDefinition } from '../types';
+import { PartitionFilterField, PartitionRawFilters, PartitionsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawFilters, PartitionFilterFor, PartitionFilterField, PartitionsFiltersDefinition, PartitionRawEnumField> {
+export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawFilters, PartitionRawEnumField> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
