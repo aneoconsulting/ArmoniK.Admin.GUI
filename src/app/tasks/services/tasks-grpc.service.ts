@@ -37,6 +37,9 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
     countParentTaskIds: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
     countRetryOfIds: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
     error: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
+    receivedToEndDuration: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION,
+    fetchedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
+    processedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
   };
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {

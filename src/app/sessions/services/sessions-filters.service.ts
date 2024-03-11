@@ -23,6 +23,9 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_OPTIONS]: $localize`Options`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS]: $localize`Partition Ids`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
+    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT]: $localize`Closed at`,
+    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT]: $localize`Deleted at`,
+    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT]: $localize`Purged at`,
   };
 
   readonly optionsField: Record<SessionTaskOptionEnumField, string> = {

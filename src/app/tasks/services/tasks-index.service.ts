@@ -13,7 +13,7 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
   readonly defaultColumns: TaskSummaryColumnKey[] = this.defaultConfigService.defaultTasks.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultTasks.lockColumns;
   readonly availableColumns: TaskSummaryColumnKey[] = [
-    'id', 'acquiredAt', 'actions', 'createdAt', 'creationToEndDuration', 'endedAt','initialTaskId', 'options', 'options.applicationName', 'options.maxDuration', 'options.applicationNamespace', 'options.options', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxRetries', 'options.partitionId', 'options.priority', 'ownerPodId', 'podHostname', 'podTtl', 'processingToEndDuration', 'receivedAt', 'sessionId', 'startedAt', 'status', 'statusMessage', 'submittedAt', 'countDataDependencies', 'countExpectedOutputIds', 'countParentTaskIds', 'countRetryOfIds', 'select'
+    'id', 'acquiredAt', 'actions', 'createdAt', 'creationToEndDuration', 'endedAt','initialTaskId', 'fetchedAt', 'processedAt', 'receivedToEndDuration', 'options', 'options.applicationName', 'options.maxDuration', 'options.applicationNamespace', 'options.options', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxRetries', 'options.partitionId', 'options.priority', 'ownerPodId', 'podHostname', 'podTtl', 'processingToEndDuration', 'receivedAt', 'sessionId', 'startedAt', 'status', 'statusMessage', 'submittedAt', 'countDataDependencies', 'countExpectedOutputIds', 'countParentTaskIds', 'countRetryOfIds', 'select'
   ];
 
   readonly dateColumns: TaskSummaryColumnKey[] = ['podTtl','acquiredAt', 'createdAt', 'endedAt', 'receivedAt', 'startedAt', 'submittedAt'];
@@ -55,6 +55,9 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     countRetryOfIds: $localize`Count Retry Of Ids`,
     error: $localize`Error`,
     select: $localize`Select`,
+    fetchedAt: $localize`Fetched at`,
+    processedAt: $localize`Processed at`,
+    receivedToEndDuration: $localize`Received to End Duration`,
   };
 
   readonly defaultOptions: TaskSummaryListOptions = this.defaultConfigService.defaultTasks.options;
