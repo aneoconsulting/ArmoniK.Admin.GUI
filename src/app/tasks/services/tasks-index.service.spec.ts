@@ -43,6 +43,9 @@ describe('TasksIndexService', () => {
     countRetryOfIds: 'Count Retry Of Ids',
     error: 'Error',
     select: 'Select',
+    fetchedAt: 'Fetched at',
+    processedAt: 'Processed at',
+    receivedToEndDuration: 'Received to End Duration',
   };
 
   const expectDefaultOptions :TaskSummaryListOptions = {

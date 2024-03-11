@@ -103,6 +103,16 @@ describe('TasksFilterService', () => {
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
       type: 'date'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
+      type: 'date'
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -201,7 +211,7 @@ describe('TasksFilterService', () => {
 
   test('the service must return the right label with filterFor options', () => {
     const mockLabelFilterOptions = service.retrieveLabel(expectedFiltersDefinitions[18].for, (expectedFiltersDefinitions[18].field as TaskFilterField));
-    expect(mockLabelFilterOptions).toEqual('Partition ID');
+    expect(mockLabelFilterOptions).toEqual('Application Version');
   });
 
   test('the service must throw an error ', () => {

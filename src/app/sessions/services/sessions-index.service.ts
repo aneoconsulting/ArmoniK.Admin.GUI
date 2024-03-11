@@ -12,7 +12,7 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
 
   readonly defaultColumns: SessionRawColumnKey[] = this.defaultConfigService.defaultSessions.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultSessions.lockColumns;
-  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
+  readonly availableColumns: SessionRawColumnKey[] = ['sessionId', 'status', 'cancelledAt', 'createdAt', 'options', 'actions', 'duration', 'partitionIds', 'clientSubmission', 'workerSubmission', 'deletedAt', 'purgedAt', 'closedAt', 'count', 'options.options', 'options.applicationName', 'options.applicationNamespace', 'options.applicationService', 'options.applicationVersion', 'options.engineType', 'options.maxDuration', 'options.maxRetries', 'options.partitionId', 'options.priority'];
 
   readonly dateColumns: SessionRawColumnKey[] = ['cancelledAt', 'createdAt'];
   readonly durationColumns: SessionRawColumnKey[] = ['duration', 'options.maxDuration'];
@@ -28,6 +28,11 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     duration: $localize`Duration`,
     partitionIds: $localize`Partition Ids`,
     count: $localize`Tasks by Status`,
+    clientSubmission: $localize`Client Submission`,
+    workerSubmission: $localize`Worker Submission`,
+    deletedAt: $localize`Deleted at`,
+    purgedAt: $localize`Purged at`,
+    closedAt: $localize`Closed at`,
     'options.options': $localize`Options Options`,
     'options.applicationName': $localize`Options Application Name`,
     'options.applicationNamespace': $localize`Options Application Namespace`,

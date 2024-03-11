@@ -22,7 +22,10 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
     'options': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_OPTIONS,
     'partitionIds': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS,
     'duration': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DURATION,
-  };
+    'closedAt': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT,
+    'deletedAt': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT,
+    'purgedAt': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
+  } as unknown as Record<SessionRawFieldKey, SessionRawEnumField>;
 
   list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
     const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
