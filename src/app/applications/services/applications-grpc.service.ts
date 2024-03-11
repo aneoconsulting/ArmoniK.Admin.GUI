@@ -30,11 +30,7 @@ export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsCl
       pageSize: options.pageSize,
       sort: {
         direction: sortDirections[options.sort.direction],
-        fields: [{
-          applicationField: {
-            field: this.sortFields[options.sort.active]
-          }
-        }]
+        fields: this.#getSortFieldsArray(options.sort.active)
       },
       filters: requestFilters
     });
@@ -61,13 +57,13 @@ export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsCl
     };
   }
 
-  #getSortFieldsArray(field: ApplicationRawEnumField): ApplicationField.AsObject[] {
+  #getSortFieldsArray(field: string): ApplicationField.AsObject[] {
     switch (field) {
-    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME:
+    case 'name':
       return [
         {
           applicationField: {
-            field: field
+            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
           }
         },
         {
@@ -76,12 +72,26 @@ export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsCl
           }
         }
       ];
-    default:
+    case 'namespace':
       return [{
         applicationField: {
-          field: field
+          field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE
         }
       }];
+    case 'service':
+      return [{
+        applicationField: {
+          field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE
+        }
+      }];
+    case 'version':
+      return [{
+        applicationField: {
+          field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+        }
+      }];
+    default:
+      throw new Error(`Sort field "${field}" not supported`);
     }
   }
 }
