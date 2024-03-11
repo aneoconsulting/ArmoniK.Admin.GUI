@@ -1,4 +1,4 @@
-import { ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRaw, ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FilterDefinitionRootString } from '@app/types/filter-definition';
 import { UtilsService } from '@services/utils.service';
@@ -70,10 +70,6 @@ describe('ApplicationsGrpcService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should not get', () => {
-    expect(() => {service.get$();}).toThrowError('This method must never be called');
-  });
-
   it('should create a request without filters', () => {
     const listResult = new ListApplicationsRequest({
       page: 0,
@@ -122,6 +118,11 @@ describe('ApplicationsGrpcService', () => {
 
   it('should throw error in case on unexpected type', () => {
     expect(() => {service.list$(options, uncorrectfilters);}).toThrowError('Type number not supported');
+  });
+
+  it('should throw error in case on unexpected sort field', () => {
+    options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw.AsObject;
+    expect(() => {service.list$(options, []);}).toThrowError('Sort field "unexpected" not supported');
   });
 
   it('should create the appropriate application sorting field', () => {

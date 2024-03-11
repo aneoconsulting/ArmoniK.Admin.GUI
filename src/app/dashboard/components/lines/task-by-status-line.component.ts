@@ -118,7 +118,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
       tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this.#taskGrpcService.countByStatu$(this.line.filters as TaskSummaryFilters)),
+      switchMap(() => this.#taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
     ).subscribe((data) => {
       if (data.status) {
         this.data = data.status;

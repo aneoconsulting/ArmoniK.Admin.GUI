@@ -31,13 +31,9 @@ export interface FiltersServiceInterface<F extends RawFilters, E extends Filters
   resetFilters(): F;
 
   retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
-
-  retrieveFiltersDefinitions(): FilterDefinition[];
-
-  retrieveField(filterField: string): FilterField;
 }
 
-export interface FiltersServiceOptionsInterface<F extends RawFilters, E extends FiltersEnums, O extends FiltersOptionsEnums> extends FiltersServiceInterface<F, E> {
+export interface FiltersServiceOptionsInterface<F extends RawFilters, E extends FiltersEnums, O extends NonNullable<FiltersOptionsEnums>> extends FiltersServiceInterface<F, E> {
   readonly optionsField: Record<O, string>;
 }
 

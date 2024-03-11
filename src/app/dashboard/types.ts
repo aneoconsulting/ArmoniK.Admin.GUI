@@ -12,7 +12,7 @@ export type LineType = 'Applications' | 'Tasks' | 'Sessions' | 'Partitions' | 'R
 export type Summary = TaskSummary | ApplicationRaw | PartitionRaw | SessionRaw | ResultRaw;
 export type SummaryOptions = TaskOptions;
 export type FiltersEnums = ApplicationRawEnumField | PartitionRawEnumField | SessionRawEnumField | TaskSummaryEnumField | ResultRawEnumField;
-export type FiltersOptionsEnums = TaskOptionEnumField;
+export type FiltersOptionsEnums = TaskOptionEnumField | null;
 
 export type Line = {
   name: string,

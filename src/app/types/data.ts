@@ -1,15 +1,15 @@
-import { ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '@app/applications/types';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '@app/results/types';
-import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
+import { ApplicationFilterField, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters , PartitionRawListOptions} from '@app/partitions/types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters , ResultRawListOptions} from '@app/results/types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilters , SessionRawListOptions} from '@app/sessions/types';
 import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
 export type ColumnKey<T extends object, O extends object = Record<string, never>> = keyof T | 'actions' | PrefixedOptions<O> | GenericColumn;
 
-export type FieldKey<T extends object> = keyof T;
+export type FieldKey<T extends DataRaw> = keyof T;
 
 export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary;
 
@@ -45,3 +45,6 @@ export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | Applicat
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
 
 export type Status = TaskStatus | SessionStatus | ResultStatus;
+export type IndexListFilters = SessionRawFilters | TaskSummaryFilters | PartitionRawFilters | ApplicationRawFilters | ResultRawFilters;
+
+export type DataFilterField = ApplicationFilterField.AsObject | SessionFilterField.AsObject | ResultFilterField.AsObject | PartitionFilterField.AsObject | TaskFilterField.AsObject;

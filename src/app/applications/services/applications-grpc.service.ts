@@ -1,23 +1,18 @@
-import { ApplicationField, ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, SortDirection as ArmoniKSortDirection, FilterStringOperator, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationField, ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
+import { GrpcListInterface } from '@app/types/services/grpcService';
+import { buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsGrpcService {
-  readonly #applicationsFiltersService = inject(ApplicationsFiltersService);
-  readonly #applicationsClient = inject(ApplicationsClient);
-  readonly #utilsService = inject(UtilsService<ApplicationRawEnumField>);
-
-  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
-    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
-    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
-    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
-  };
+export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsClient, ApplicationRawListOptions, ApplicationRawFilters, ApplicationRawFieldKey, ApplicationRawEnumField> {
+  readonly filterService = inject(ApplicationsFiltersService);
+  readonly grpcClient = inject(ApplicationsClient);
+  readonly utilsService = inject(UtilsService<ApplicationRawEnumField>);
 
   readonly sortFields: Record<ApplicationRawFieldKey, ApplicationRawEnumField> = {
     'name': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
@@ -28,23 +23,19 @@ export class ApplicationsGrpcService {
 
   list$(options: ApplicationRawListOptions, filters: ApplicationRawFilters): Observable<ListApplicationsResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.#applicationsFiltersService.filtersDefinitions, this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<ApplicationFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const request = new ListApplicationsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
-        direction: this.sortDirections[options.sort.direction],
-        fields: this.#getSortFieldsArray(this.sortFields[options.sort.active])
+        direction: sortDirections[options.sort.direction],
+        fields: this.#getSortFieldsArray(options.sort.active)
       },
       filters: requestFilters
     });
 
-    return this.#applicationsClient.listApplications(request);
-  }
-
-  get$(): Observable<never> {
-    throw new Error('This method must never be called.');
+    return this.grpcClient.listApplications(request);
   }
 
   #buildFilterField(filter: Filter<ApplicationRawEnumField>) {
@@ -58,13 +49,7 @@ export class ApplicationsGrpcService {
 
       switch (type) {
       case 'string':
-        return {
-          field: filterField,
-          filterString: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
-          }
-        } satisfies ApplicationFilterField.AsObject;
+        return buildStringFilter(filterField, filter) as ApplicationFilterField.AsObject;
       default: {
         throw new Error(`Type ${type} not supported`);
       }
@@ -72,13 +57,13 @@ export class ApplicationsGrpcService {
     };
   }
 
-  #getSortFieldsArray(field: ApplicationRawEnumField): ApplicationField.AsObject[] {
+  #getSortFieldsArray(field: string): ApplicationField.AsObject[] {
     switch (field) {
-    case ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME:
+    case 'name':
       return [
         {
           applicationField: {
-            field: field
+            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
           }
         },
         {
@@ -87,12 +72,26 @@ export class ApplicationsGrpcService {
           }
         }
       ];
-    default:
+    case 'namespace':
       return [{
         applicationField: {
-          field: field
+          field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE
         }
       }];
+    case 'service':
+      return [{
+        applicationField: {
+          field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE
+        }
+      }];
+    case 'version':
+      return [{
+        applicationField: {
+          field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+        }
+      }];
+    default:
+      throw new Error(`Sort field "${field}" not supported`);
     }
   }
 }
