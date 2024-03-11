@@ -1,4 +1,4 @@
-import { SessionRaw, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
@@ -6,7 +6,6 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
@@ -229,39 +228,6 @@ describe('ApplicationsTableComponent', () => {
     expect(component.displayedColumns).toEqual(displayedColumns);
   });
 
-  describe('show', () => {
-    const element = {
-      options: {
-        maxDuration: {
-          seconds: '93450',
-          nanos: 0
-        },
-      },
-      duration: {
-        seconds: '83490',
-        nanos: 0
-      }
-    } as unknown as SessionRaw;
-
-    it('should extract from duration column', () => {
-      expect(component.extractData(element, 'duration')).toEqual({
-        seconds: '83490',
-        nanos: 0
-      });
-    });
-
-    it('should extract data from options duration', () => {
-      expect(component.extractData(element, 'options.maxDuration')).toEqual({
-        seconds: '93450',
-        nanos: 0
-      } as unknown as Duration);
-    });
-
-    it('should return null if there no options', () => {
-      expect(component.extractData({} as unknown as SessionRaw, 'options.maxDuration')).toEqual(null);
-    });
-  });
-
   describe('createTasksByStatusQueryParams', () => {
 
     const sessionId = 'Session 1';
@@ -282,25 +248,6 @@ describe('ApplicationsTableComponent', () => {
         '1-options-5-0': 'application name',
       });
     });
-  });
-
-  describe('columnToDate', () => {
-    it('should turn a column to a date', () => {
-      const timestamp = {
-        toDate: jest.fn()
-      } as unknown as Timestamp;
-  
-      component.columnToDate(timestamp);
-      expect(timestamp.toDate).toHaveBeenCalled();
-    });
-  
-    it('should return null if there is no element', () => {
-      expect(component.columnToDate(undefined)).toEqual(null);
-    });
-  });
-
-  it('should get the label of a session status', () => {
-    expect(component.statusToLabel(SessionStatus.SESSION_STATUS_RUNNING)).toEqual('Running');
   });
 
   it('should notify user on copy', () => {
