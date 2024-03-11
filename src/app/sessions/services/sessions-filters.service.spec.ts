@@ -51,6 +51,22 @@ describe('SessionsFiltersService', () => {
         {
           key: '2',
           value: 'Cancelled'
+        },
+        {
+          key: '3',
+          value: 'Paused'
+        },
+        {
+          key: '4',
+          value: 'Closed'
+        },
+        {
+          key: '5',
+          value: 'Purged'
+        },
+        {
+          key: '6',
+          value: 'Deleted'
         }
       ],
     },
