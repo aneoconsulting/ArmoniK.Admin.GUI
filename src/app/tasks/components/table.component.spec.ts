@@ -1,4 +1,5 @@
 import { TaskStatus, TaskSummary } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
@@ -84,6 +85,10 @@ describe('TasksTableComponent', () => {
     success: jest.fn()
   };
 
+  const mockClipBoard = {
+    copy: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -91,7 +96,8 @@ describe('TasksTableComponent', () => {
         {provide: TasksIndexService, useValue: mockTasksIndexService},
         TasksStatusesService,
         FiltersService,
-        {provide: NotificationService, useValue: mockNotificationService}
+        {provide: NotificationService, useValue: mockNotificationService},
+        {provide: Clipboard, useValue: mockClipBoard},
       ]
     }).inject(TasksTableComponent);
 
@@ -154,7 +160,12 @@ describe('TasksTableComponent', () => {
   });
 
   it('should send a notification on copy', () => {
-    component.onCopiedTaskId();
+    component.onCopiedTaskId({
+      raw: {
+        id: 'taskId'
+      }
+    } as unknown as TaskData);
+    expect(mockClipBoard.copy).toHaveBeenCalledWith('taskId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
 

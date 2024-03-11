@@ -9,14 +9,18 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
+import { Page } from '@app/types/pages';
+import { ActionTable } from '@app/types/table';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableActionsComponent } from '@components/table/table-actions.component';
 import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -57,16 +61,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
       <!-- Action -->
       <ng-container *ngIf="column.type === 'actions'">
         <td mat-cell *matCellDef="let element" appNoWrap>
-         <button mat-icon-button [matMenuTriggerFor]="menu"
-          aria-label="Actions" i18n-aria-label>
-            <mat-icon [fontIcon]="getIcon('more')"></mat-icon>
-         </button>
-         <mat-menu #menu="matMenu">
-            <a mat-menu-item [routerLink]="['/sessions']" [queryParams]="element.queryTasksParams">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('view')"></mat-icon>
-              <span i18n>See session</span>
-            </a>
-         </mat-menu>
+         <app-table-actions [actions]="actions" [element]="element" />
         </td>
       </ng-container>
     </ng-container>
@@ -114,6 +109,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
     DragDropModule,
     MatButtonModule,
     TableCellComponent,
+    TableActionsComponent
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
@@ -156,6 +152,18 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   readonly _dialog = inject(MatDialog);
   readonly _iconsService = inject(IconsService);
   readonly _filtersService = inject(FiltersService);
+  readonly _router = inject(Router);
+
+  seeSessions$ = new Subject<ApplicationData>();
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(data.raw.name, data.raw.version) }));
+
+  actions: ActionTable<ApplicationData>[] = [
+    {
+      label: $localize`See session`,
+      icon: this.getPageIcon('sessions'),
+      action$: this.seeSessions$
+    },
+  ];
 
   ngOnInit(): void {
     this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('applications');
@@ -180,6 +188,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   getIcon(name: string): string {
     return this._iconsService.getIcon(name);
+  }
+
+  getPageIcon(name: Page): string {
+    return this._iconsService.getPageIcon(name);
   }
 
   createViewSessionsQueryParams(name: string, version: string) {
