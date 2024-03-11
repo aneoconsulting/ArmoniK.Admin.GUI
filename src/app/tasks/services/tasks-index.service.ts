@@ -151,7 +151,25 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
       key: 'select',
       type: 'select',
       sortable: false,
-    }
+    },
+    {
+      name: $localize`Fetched at`,
+      key: 'fetchedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Processed at`,
+      key: 'processedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Received to End Duration`,
+      key: 'receivedToEndDuration',
+      type: 'duration',
+      sortable: true,
+    },
   ];
 
   genericField(column: TaskSummaryColumnKey) {

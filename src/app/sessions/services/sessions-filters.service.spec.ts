@@ -51,6 +51,22 @@ describe('SessionsFiltersService', () => {
         {
           key: '2',
           value: 'Cancelled'
+        },
+        {
+          key: '3',
+          value: 'Paused'
+        },
+        {
+          key: '4',
+          value: 'Closed'
+        },
+        {
+          key: '5',
+          value: 'Purged'
+        },
+        {
+          key: '6',
+          value: 'Deleted'
         }
       ],
     },
@@ -62,6 +78,21 @@ describe('SessionsFiltersService', () => {
     {
       for: 'root',
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
       type: 'date'
     },
     {  

@@ -83,6 +83,24 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
       sortable: true,
     },
     {
+      name: $localize`Deleted at`,
+      key: 'deletedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Purged at`,
+      key: 'purgedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: $localize`Closed at`,
+      key: 'closedAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
       name: $localize`Application Namespace`,
       key: 'options.applicationNamespace',
       sortable: true,

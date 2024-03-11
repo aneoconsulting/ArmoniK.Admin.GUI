@@ -8,6 +8,10 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
     [SessionStatus.SESSION_STATUS_UNSPECIFIED]: $localize`Unspecified`,
     [SessionStatus.SESSION_STATUS_RUNNING]: $localize`Running`,
     [SessionStatus.SESSION_STATUS_CANCELLED]: $localize`Cancelled`,
+    [SessionStatus.SESSION_STATUS_CLOSED]: $localize`Closed`,
+    [SessionStatus.SESSION_STATUS_DELETED]: $localize`Deleted`,
+    [SessionStatus.SESSION_STATUS_PURGED]: $localize`Purged`,
+    [SessionStatus.SESSION_STATUS_PAUSED]: $localize`Paused`,
   };
 
   statusToLabel(status: SessionStatus): string {
