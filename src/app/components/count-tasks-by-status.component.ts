@@ -49,7 +49,7 @@ export class CountTasksByStatusComponent implements OnDestroy {
     this.statusesCounts = null;
     this._filters = entries;
     this.subscription.add(
-      this.#tasksGrpcService.countByStatu$(this.filters).subscribe(response => {
+      this.#tasksGrpcService.countByStatus$(this.filters).subscribe(response => {
         this.loading = false;
         this.statusesCounts = response.status ?? null;
       })

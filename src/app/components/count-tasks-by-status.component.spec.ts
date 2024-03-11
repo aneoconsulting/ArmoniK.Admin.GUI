@@ -21,7 +21,7 @@ describe('CountTasksByStatusComponent', () => {
       providers: [
         CountTasksByStatusComponent,
         { provide: TasksGrpcService, useValue: {
-          countByStatu$: () => {
+          countByStatus$: () => {
             return subject as unknown as CountTasksByStatusResponse;
           }
         }},
