@@ -124,6 +124,16 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
       type: 'date'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
+      type: 'date'
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
