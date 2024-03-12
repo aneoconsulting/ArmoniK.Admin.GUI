@@ -33,6 +33,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
+import { SessionDurationComponent } from './special-columns/duration.component';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
@@ -73,6 +74,8 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     MatDialogModule,
     TableCellComponent,
     TableActionsComponent,
+    SessionDurationComponent,
+    NgIf,
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
@@ -95,24 +98,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
     this._data = [];
     entries.forEach(entry => {
-      if (!entry.duration) {
-        const nextDuration = new Subject<string>();
-        nextDuration.subscribe(sessionId => {
-          this.getTaskData$(sessionId, 'endedAt', 'desc').subscribe(last => {
-            this.getTaskData$(sessionId, 'createdAt', 'asc').subscribe(first => {
-              const lastDuration = last.tasks?.at(0)?.endedAt;
-              const firstDuration = first.tasks?.at(0)?.createdAt;
-              if (firstDuration && lastDuration) {
-                entry.duration = {
-                  seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
-                  nanos: lastDuration.nanos - firstDuration.nanos                
-                };
-              }
-            });
-          });
-        });
-        nextDuration.next(entry.sessionId);
-      }
       const task: SessionData = {
         raw: entry,
         queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
@@ -333,5 +318,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         this._tasksByStatusService.saveStatuses('sessions', result);
       }
     });
+  }
+
+  isSpecialSelected(column: TableColumn<SessionRawColumnKey>) {
+    return this.displayedColumns.includes(column);
   }
 }

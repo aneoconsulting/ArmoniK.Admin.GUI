@@ -43,3 +43,7 @@
     [aria-label]="checkboxLabel()"
   />
 </ng-container>
+<!-- Special Data columns -->
+<ng-container *ngIf="column.type === 'special'">
+  <ng-content></ng-content>
+</ng-container>

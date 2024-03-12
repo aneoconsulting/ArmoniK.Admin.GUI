@@ -9,7 +9,7 @@ import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 
 @Component({
-  selector: 'app-duration',
+  selector: 'app-session-duration',
   standalone: true,
   template: `
     <span>{{ (duration | async) | duration | emptyCell }}</span>
@@ -23,7 +23,7 @@ import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
     TasksGrpcService
   ]
 })
-export class DurationComponent {
+export class SessionDurationComponent {
   duration: Subject<Duration> = new Subject<Duration>();
   
   readonly _tasksGrpcService = inject(TasksGrpcService);
@@ -44,7 +44,7 @@ export class DurationComponent {
     });
   });
 
-  @Input() set sessionId(entry: string) {
+  @Input({required: true}) set sessionId(entry: string) {
     this.nextDuration.next(entry);
   }
 
