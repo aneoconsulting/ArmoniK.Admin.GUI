@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { buildArrayFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
+import { buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
@@ -100,6 +100,8 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
         return buildNumberFilter(filterField, filter) as SessionFilterField.AsObject;
       case 'array':
         return buildArrayFilter(filterField, filter) as SessionFilterField.AsObject;
+      case 'boolean':
+        return buildBooleanFilter(filterField, filter) as SessionFilterField.AsObject;
       default:
         throw new Error(`Type ${type} not supported`);
       }

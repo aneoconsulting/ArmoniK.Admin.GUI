@@ -22,7 +22,6 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   display: flex;
   flex-direction: row;
   align-items: center;
-
   gap: 1rem;
 }
 
@@ -80,7 +79,8 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
     // Operator form handling
     this.allOperators = this.findOperator(this.filter);
-    this.operatorFormControl = new FormControl(this.retrieveOperatorLabel(this.filter.operator));
+    this.operatorFormControl = new FormControl();
+    this.handleOperatorState(true);
     this.filteredOperators = this.operatorFormControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filterOperators(value))
@@ -137,6 +137,10 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       }
     }
     return '';
+  }
+
+  get hasOneOperator() {
+    return Object.keys(this.allOperators).length === 1;
   }
 
   get filtersDefinitions() {
@@ -201,8 +205,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       this.filter.field = field.index as T | U;
 
       this.allOperators = this.findOperator(this.filter);
-      this.operatorFormControl.setValue('');
-      this.filter.operator = null;
+      this.handleOperatorState();
 
       this.allStatuses = this.findStatuses(this.filter);
       this.statusFormControl.setValue('');
@@ -234,6 +237,9 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       break;
     case 'duration':
       this.filter.value = Number(event.value) || null;
+      break;
+    case 'boolean':
+      this.filter.value = event.value;
       break;
     }
   }
@@ -282,6 +288,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
         type: 'duration',
         value: filter.value as FilterInputValueDuration
       };
+    case 'boolean':
+      return {
+        type: 'boolean',
+        value: filter.value as boolean
+      };
     default:
       throw new Error(`Unknown type ${type}`);
     }
@@ -327,11 +338,31 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
 
     const operators = this.#filtersService.findOperators(type);
-
     return operators;
   }
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+  }
+
+  handleOperatorState(keepOperator?: boolean) {
+    if (this.hasOneOperator) {
+      this.disableOperator();
+    } else {
+      this.enableOperator(keepOperator);
+    }
+    this.operatorFormControl.setValue(this.retrieveOperatorLabel(this.filter.operator));
+  }
+
+  disableOperator() {
+    this.filter.operator = Number(Object.keys(this.allOperators)[0]);
+    this.operatorFormControl.disable();
+  }
+
+  enableOperator(keepOperator?: boolean) {
+    if (!keepOperator) {
+      this.filter.operator = null;
+    }
+    this.operatorFormControl.enable();
   }
 }

@@ -64,3 +64,13 @@ export function buildArrayFilter(filterField: FilterField, filter: Filter<Filter
     }
   };
 }
+
+export function buildBooleanFilter(filterField: FilterField, filter: Filter<FiltersEnums, FiltersOptionsEnums>) {
+  return {
+    field: filterField,
+    filterBoolean: {
+      value: filter.value === true ? true : false,
+      operator: filter.operator ?? 0,
+    }
+  };
+}

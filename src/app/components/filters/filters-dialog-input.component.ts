@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
-import { Observable } from 'rxjs';
-import { FilterInput, FilterInputOutput, FilterInputType } from '@app/types/filters';
+import { Observable, map, startWith } from 'rxjs';
+import { FilterInput, FilterInputOutput, FilterInputType, MaybeNull } from '@app/types/filters';
 
 
 
@@ -34,16 +34,27 @@ mat-form-field {
     ReactiveFormsModule
   ],
 })
-export class FiltersDialogInputComponent {
+export class FiltersDialogInputComponent implements OnInit {
   @Input({ required: true }) input: FilterInput;
   @Input({ required: true }) statusFormControl: FormControl<string | null>;
   @Input({ required: true }) filteredStatuses: Observable<string[]>;
+
+  booleanFormControl: FormControl<string | null>;
+  filteredBooleans: Observable<string[]>;
 
   // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
   // Créer des types en fonction du type de champ
   @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
   actualDate = new Date();
   duration: {[key: number]: string} = {};
+
+  ngOnInit(): void {
+    this.booleanFormControl = new FormControl<string | null>(this.input.value as unknown as string);
+    this.filteredBooleans = this.booleanFormControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterBoolean(value))
+    );
+  }
 
   onStringChange(event: Event): void {
     this.valueChange.emit({
@@ -65,6 +76,14 @@ export class FiltersDialogInputComponent {
     this.valueChange.emit({
       type: 'date',
       value: event.value?.getTime() ? (event.value?.getTime() / 1000) : null,
+    });
+  }
+
+  onBooleanChange(): void {
+    const value = this.booleanFormControl.value;
+    this.valueChange.emit({
+      type: 'boolean',
+      value: value?.toLowerCase() === 'true',
     });
   }
 
@@ -119,6 +138,15 @@ export class FiltersDialogInputComponent {
       return !isNaN(Number(this.input.value)) ? Math.floor(((Number(this.input.value))%3600)%60) : undefined;
     default:
       return undefined;
+    }
+  }
+
+  private _filterBoolean(value: MaybeNull<string>): string[] {
+    const booleans = ['true', 'false'];
+    if (value === null) {
+      return booleans;
+    } else {
+      return booleans.filter(bool => bool.toLowerCase().includes(value.toLowerCase()));
     }
   }
 

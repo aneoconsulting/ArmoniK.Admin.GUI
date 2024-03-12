@@ -81,7 +81,7 @@ export class StatusesGroupCardComponent {
   }
 
   createQueryParamManyStatuses() {
-    const params: { [key: string]: string | number | Date | null} = {};
+    const params: { [key: string]: string | number | Date | boolean | null} = {};
     let orGroup = 0;
     
     if (this.filters.length !== 0) {
@@ -109,7 +109,7 @@ export class StatusesGroupCardComponent {
       };
     }
     else {
-      const params: { [key: string]: string | number | Date | null} = {};
+      const params: { [key: string]: string | number | Date | boolean | null} = {};
 
       this.filters.forEach((filterAnd, index) => {
         params[this.#createQueryParamKeyOr(index)] = status;
