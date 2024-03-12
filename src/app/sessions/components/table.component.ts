@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummary, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -8,10 +8,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule, SortDirection } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
@@ -28,8 +29,6 @@ import { TableInspectObjectComponent } from '@components/table/table-inspect-obj
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
-import { DurationPipe } from '@pipes/duration.pipe';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -51,6 +50,7 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     IconsService,
     FiltersService,
     Clipboard,
+    TasksGrpcService,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -66,12 +66,9 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     MatTableModule,
     MatIconModule,
     RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
     DatePipe,
-    DurationPipe,
-    EmptyCellPipe,
     TableInspectObjectComponent,
     MatDialogModule,
     TableCellComponent,
@@ -98,6 +95,24 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
     this._data = [];
     entries.forEach(entry => {
+      if (!entry.duration) {
+        const nextDuration = new Subject<string>();
+        nextDuration.subscribe(sessionId => {
+          this.getTaskData$(sessionId, 'endedAt', 'desc').subscribe(last => {
+            this.getTaskData$(sessionId, 'createdAt', 'asc').subscribe(first => {
+              const lastDuration = last.tasks?.at(0)?.endedAt;
+              const firstDuration = first.tasks?.at(0)?.createdAt;
+              if (firstDuration && lastDuration) {
+                entry.duration = {
+                  seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
+                  nanos: lastDuration.nanos - firstDuration.nanos                
+                };
+              }
+            });
+          });
+        });
+        nextDuration.next(entry.sessionId);
+      }
       const task: SessionData = {
         raw: entry,
         queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
@@ -124,6 +139,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   readonly _dialog = inject(MatDialog);
   readonly _router = inject(Router);
   readonly _copyService = inject(Clipboard);
+  readonly _tasksGrpcService = inject(TasksGrpcService);
 
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
@@ -188,6 +204,29 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   getPageIcon(page: Page): string {
     return this._iconsService.getPageIcon(page);
+  }
+
+  getTaskData$(sessionId: string, activeField: keyof TaskSummary.AsObject, direction: SortDirection) {
+    return this._tasksGrpcService.list$(
+      {
+        pageIndex: 0,
+        pageSize: 1,
+        sort: {
+          active: activeField,
+          direction
+        }
+      },
+      [
+        [
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: sessionId
+          }
+        ]
+      ]
+    );
   }
 
   onDrop(event: CdkDragDrop<string[]>) {
