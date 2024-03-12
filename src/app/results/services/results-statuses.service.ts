@@ -1,8 +1,9 @@
 import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
+import { StatusesServiceI } from '@app/types/services';
 
 @Injectable()
-export class ResultsStatusesService {
+export class ResultsStatusesService implements StatusesServiceI<ResultStatus> {
   readonly statuses: Record<ResultStatus, string> = {
     [ResultStatus.RESULT_STATUS_UNSPECIFIED]: $localize`Unspecified`,
     [ResultStatus.RESULT_STATUS_ABORTED]: $localize`Aborted`,

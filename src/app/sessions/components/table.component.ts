@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -11,9 +11,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
+import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -22,6 +22,7 @@ import { ActionTable } from '@app/types/table';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsComponent } from '@components/table/table-actions.component';
+import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -73,12 +74,13 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawL
     EmptyCellPipe,
     TableInspectObjectComponent,
     MatDialogModule,
+    TableCellComponent,
     TableActionsComponent,
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
-  @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
+  @Input({required: true}) displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
   @Input({required: true}) options: SessionRawListOptions;
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFilters;
@@ -87,6 +89,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   private _data: SessionData[] = [];
   get data(): SessionData[] {
     return this._data;
+  }
+
+  get columnKeys() {
+    return this.displayedColumns.map(c => c.key);
   }
 
   @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
@@ -184,71 +190,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this._iconsService.getPageIcon(page);
   }
 
-  columnToLabel(column: SessionRawColumnKey): string {
-    return this._sessionsIndexService.columnToLabel(column);
-  }
-
-  isGenericColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isGenericColumn(column);
-  }
-
-  isNotSortableColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isNotSortableColumn(column);
-  }
-
-  isSimpleColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isSimpleColumn(column);
-  }
-
-  isSessionIdColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isSessionIdColumn(column);
-  }
-
-  isObjectColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isObjectColumn(column);
-  }
-
-  isDateColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isDateColumn(column);
-  }
-
-  isDurationColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isDurationColumn(column);
-  }
-
-  isStatusColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isStatusColumn(column);
-  }
-
-  isCountColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isCountColumn(column);
-  }
-
-  isActionsColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isActionsColumn(column);
-  }
-
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
-    this._sessionsIndexService.saveColumns(this.displayedColumns);
-  }
-
-  extractData(element: SessionRaw, column: SessionRawColumnKey): Duration | null {
-    return this.show(element, column) as Duration | null;
-  }
-
-  // TODO: move to a service for date and time
-  columnToDate(element: Timestamp | undefined): Date | null {
-    if (!element) {
-      return null;
-    }
-
-    return element.toDate();
-  }
-
-  statusToLabel(status: SessionStatus): string {
-    return this._sessionsStatusesService.statusToLabel(status);
+    this._sessionsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 
   onCopiedSessionId(data: SessionData) {
@@ -336,21 +281,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     this.cancelSession.emit(sessionId);
   }
 
-  show(session: SessionRaw, column: SessionRawColumnKey) {
-    if (column.startsWith('options.')) {
-      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = session['options'] as TaskOptions | undefined;
-
-      if (!options) {
-        return null;
-      }
-
-      return options[optionColumn];
-    }
-
-    return session[column as keyof SessionRaw];
-  }
-
   personalizeTasksByStatus() {
     const dialogRef = this._dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
       data: {
@@ -364,19 +294,5 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         this._tasksByStatusService.saveStatuses('sessions', result);
       }
     });
-  }
-
-  handleNestedKeys(nestedKeys: string, element: {[key: string]: object}) {
-    const keys = nestedKeys.split('.');
-    let resultObject: {[key: string]: object} = element;
-    keys.forEach(key => {
-      resultObject = resultObject[key] as unknown as {[key: string]: object};
-    });
-    return resultObject;
-  }
-
-  handleGenericColumn(column: SessionRawColumnKey, element: SessionRaw) {
-    const field = this._sessionsIndexService.genericField(column);
-    return element.options?.options[field];
   }
 }

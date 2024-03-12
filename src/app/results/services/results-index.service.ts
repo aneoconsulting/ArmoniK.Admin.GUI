@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { TableColumn } from '@app/types/column.type';
 import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
@@ -11,53 +12,54 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRawColum
 
   readonly defaultColumns: ResultRawColumnKey[] = this.defaultConfigService.defaultResults.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultResults.lockColumns;
-  readonly availableColumns: ResultRawColumnKey[] = ['name', 'status', 'ownerTaskId', 'createdAt', 'sessionId', 'resultId', 'size'];
-
-  readonly dateColumns: ResultRawColumnKey[] = ['createdAt'];
-
-  readonly columnsLabels: Record<ResultRawColumnKey, string> = {
-    name: $localize`Name`,
-    status: $localize`Status`,
-    ownerTaskId: $localize`Owner Task ID`,
-    createdAt: $localize`Created at`,
-    sessionId: $localize`Session ID`,
-    actions: $localize`Actions`,
-    completedAt: $localize`Completed at`,
-    resultId: $localize`Result ID`,
-    size: $localize`Size`
-  };
-
   readonly defaultOptions: ResultRawListOptions = this.defaultConfigService.defaultResults.options;
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultResults.interval;
 
-  columnToLabel(column: ResultRawColumnKey): string {
-    return this.columnsLabels[column];
-  }
-
-  /**
-   * Table
-   */
-
-  isResultIdColumn(column: ResultRawColumnKey): boolean {
-    return column === 'resultId';
-  }
-
-  isSessionIdColumn(column: ResultRawColumnKey): boolean {
-    return column === 'sessionId';
-  }
-
-  isStatusColumn(column: ResultRawColumnKey): boolean {
-    return column === 'status';
-  }
-
-  isDateColumn(column: ResultRawColumnKey): boolean {
-    return this.dateColumns.includes(column);
-  }
-
-
-  isSimpleColumn(column: ResultRawColumnKey): boolean {
-    return !this.isStatusColumn(column) && !this.isDateColumn(column) && !this.isSessionIdColumn(column);
-  }
+  readonly availableTableColumns: TableColumn<ResultRawColumnKey>[] = [
+    {
+      name: $localize`Name`,
+      key: 'name',
+      sortable: true
+    },
+    {
+      name: $localize`Status`,
+      key: 'status',
+      type: 'status',
+      sortable: true
+    },
+    {
+      name: $localize`Owner Task ID`,
+      key: 'ownerTaskId',
+      type: 'link',
+      sortable: true,
+      link: '/tasks',
+    },
+    {
+      name: $localize`Created at`,
+      key: 'createdAt',
+      type: 'date',
+      sortable: true
+    },
+    {
+      name: $localize`Session ID`,
+      key: 'sessionId',
+      type: 'link',
+      sortable: true,
+      link: '/sessions',
+    },
+    {
+      name: $localize`Result ID`,
+      key: 'resultId',
+      type: 'link',
+      sortable: true,
+      link: '/results',
+    },
+    {
+      name: $localize`Size`,
+      key: 'size',
+      sortable: true
+    }
+  ];
 
   /**
    * Interval

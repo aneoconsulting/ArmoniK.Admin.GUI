@@ -6,7 +6,7 @@ import { ListOptions } from '@app/types/options';
 
 export type TaskRaw = GrpcTaskRaw.AsObject;
 export type TaskSummary = GrpcTaskSummary.AsObject;
-export type TaskSummaryColumnKey = ColumnKey<TaskSummary, TaskOptions> | 'select';
+export type TaskSummaryColumnKey = ColumnKey<TaskSummary, TaskOptions> | 'select' | `options.options.${string}`;
 export type TaskSummaryFieldKey = FieldKey<TaskSummary>;
 export type TaskSummaryListOptions = ListOptions<TaskSummary>;
 

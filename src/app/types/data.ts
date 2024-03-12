@@ -1,8 +1,8 @@
-import { ApplicationFilterField, PartitionFilterField, ResultFilterField, SessionFilterField, TaskFilterField } from '@aneoconsultingfr/armonik.api.angular';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from '@app/results/types';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
+import { ApplicationFilterField, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters , PartitionRawListOptions} from '@app/partitions/types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters , ResultRawListOptions} from '@app/results/types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilters , SessionRawListOptions} from '@app/sessions/types';
 import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
@@ -38,8 +38,13 @@ export interface PartitionData extends ArmonikTaskByStatusData<PartitionRaw> {
 export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw> {
 }
 
+export interface ResultData extends ArmonikData<ResultRaw> {
+}
+
 export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
+
+export type Status = TaskStatus | SessionStatus | ResultStatus;
 export type IndexListFilters = SessionRawFilters | TaskSummaryFilters | PartitionRawFilters | ApplicationRawFilters | ResultRawFilters;
 
 export type DataFilterField = ApplicationFilterField.AsObject | SessionFilterField.AsObject | ResultFilterField.AsObject | PartitionFilterField.AsObject | TaskFilterField.AsObject;

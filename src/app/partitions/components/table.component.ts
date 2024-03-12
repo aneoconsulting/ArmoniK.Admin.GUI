@@ -11,11 +11,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { TaskSummaryFilters } from '@app/tasks/types';
+import { TableColumn } from '@app/types/column.type';
 import { PartitionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData, } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -58,12 +60,13 @@ import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFilters, Parti
     DragDropModule,
     MatButtonModule,
     TableInspectObjectComponent,
-    MatDialogModule
+    MatDialogModule,
+    TableCellComponent,
   ]
 })
 export class PartitionsTableComponent implements OnInit, AfterViewInit {
 
-  @Input({ required: true }) displayedColumns: PartitionRawColumnKey[] = [];
+  @Input({ required: true }) displayedColumns: TableColumn<PartitionRawColumnKey>[] = [];
   @Input({ required: true }) options: PartitionRawListOptions;
   @Input({ required: true }) total: number;
   @Input({ required: true }) filters: PartitionRawFilters;
@@ -72,6 +75,10 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   private _data: PartitionData[] = [];
   get data(): PartitionData[] {
     return this._data;
+  }
+
+  get columnKeys(): PartitionRawColumnKey[] {
+    return this.displayedColumns.map(column => column.key);
   }
 
   @Input({ required: true }) set data(entries: PartitionRaw.AsObject[]) {
@@ -121,30 +128,6 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
-  }
-
-  columnToLabel(column: PartitionRawColumnKey): string {
-    return this.#partitionsIndexService.columnToLabel(column);
-  }
-
-  isPartitionIdColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isPartitionIdColumn(column);
-  }
-
-  isObjectColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isObjectColumn(column);
-  }
-
-  isCountColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isCountColumn(column);
-  }
-
-  isNotSortableColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isNotSortableColumn(column);
-  }
-
-  isSimpleColumn(column: PartitionRawColumnKey): boolean {
-    return this.#partitionsIndexService.isSimpleColumn(column);
   }
 
   createTasksByStatusQueryParams(partition: string) {
@@ -198,7 +181,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
-    this.#partitionsIndexService.saveColumns(this.displayedColumns);
+    this.#partitionsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 
   personalizeTasksByStatus() {

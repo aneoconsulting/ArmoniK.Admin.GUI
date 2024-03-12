@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
+import { TableColumn } from '@app/types/column.type';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -14,6 +15,41 @@ import { Line } from '../../types';
 
 describe('ApplicationsLineComponent', () => {
   let component: ApplicationsLineComponent;
+
+  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+    {
+      name: 'Name',
+      key: 'name',
+      sortable: true
+    },
+    {
+      name: 'Namespace',
+      key: 'namespace',
+      sortable: true
+    },
+    {
+      name: 'Service',
+      key: 'service',
+      sortable: true
+    },
+    {
+      name: 'Version',
+      key: 'version',
+      sortable: true
+    },
+    {
+      name: 'Actions',
+      key: 'actions',
+      type: 'actions',
+      sortable: false
+    },
+    {
+      name: 'Tasks by Status',
+      key: 'count',
+      type: 'count',
+      sortable: true
+    }
+  ];
 
   const options: ApplicationRawListOptions = {
     pageIndex: 0,
@@ -52,13 +88,10 @@ describe('ApplicationsLineComponent', () => {
   const mockNotificationService = {
     error: jest.fn()
   };
-
-  const columnsLabels = ['Name', 'Namespace', 'Service', 'Version', 'Actions', 'Count'];
-
   const mockApplicationsIndexService = {
-    availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count'],
-    columnsLabels: columnsLabels,
-    resetColumns: jest.fn()
+    availableTableColumns: displayedColumns,
+    resetColumns: jest.fn(() => new DefaultConfigService().defaultApplications.columns),
+    restoreColumns: jest.fn(() => ['name', 'count']),
   };
 
   beforeEach(() => {
@@ -143,10 +176,6 @@ describe('ApplicationsLineComponent', () => {
     const refreshSpy = jest.spyOn(component.refresh, 'next');
     component.onRefresh();
     expect(refreshSpy).toHaveBeenCalled();
-  });
-
-  it('should get columns labels', () => {
-    expect(component.columnsLabels()).toBe(columnsLabels);
   });
 
   describe('onIntervalValueChange', () => {
@@ -249,13 +278,13 @@ describe('ApplicationsLineComponent', () => {
     const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
 
     beforeEach(() => {
-      component.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['namespace', 'service'];
       component.line.displayedColumns = ['namespace', 'service'];
     });
 
     it('should change displayedColumns', () => {
       component.onColumnsChange(newColumns);
-      expect(component.displayedColumns).toEqual(newColumns);
+      expect(component.displayedColumnsKeys).toEqual(newColumns);
     });
 
     it('should change line displayedColumns', () => {
@@ -275,13 +304,13 @@ describe('ApplicationsLineComponent', () => {
     mockApplicationsIndexService.resetColumns.mockImplementation(() => defaultColumns);
 
     beforeEach(() => {
-      component.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['namespace', 'service'];
       component.line.displayedColumns = ['namespace', 'service'];
     });
 
     it('should reset to default columns', () => {
       component.onColumnsReset();
-      expect(component.displayedColumns).toEqual(defaultColumns);
+      expect(component.displayedColumnsKeys).toEqual(defaultColumns);
     });
 
     it('should reset line displayedColumns', () => {
