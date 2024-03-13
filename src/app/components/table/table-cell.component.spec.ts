@@ -88,6 +88,11 @@ describe('TableCellComponent', () => {
     });
   });
 
+  test('undefined element should return undefined value', () => {
+    component.element = undefined as unknown as ArmonikData<DataRaw>;
+    expect(component.value).toBeUndefined();
+  });
+
   describe('link value', () => {
     beforeEach(() => {
       component.column.link = '/tasks';
@@ -141,6 +146,11 @@ describe('TableCellComponent', () => {
 
     it('should set dateValue', () => {
       expect(component.dateValue).toEqual(new Date(1343540 * 1000));
+    });
+
+    it('should return null if value is undefined', () => {
+      component.element = {} as unknown as ArmonikData<DataRaw>;
+      expect(component.dateValue).toBeNull();
     });
   });
 

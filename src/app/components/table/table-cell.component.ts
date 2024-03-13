@@ -62,7 +62,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   get dateValue(): Date | null {
-    return (this.value as Timestamp).toDate();
+    return (this.value as Timestamp)?.toDate() ?? null;
   }
 
   get link() {
@@ -78,6 +78,9 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   handleNestedKeys(element: T) {
+    if (element === undefined || element.raw === undefined) {
+      return undefined;
+    }
     const keys = `${this.column.key}`.split('.') as unknown as K[];
     let resultObject: {[key: string]: object} = element.raw as unknown as {[key: string]: object};
     keys.forEach(key => {
