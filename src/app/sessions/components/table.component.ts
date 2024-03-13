@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
@@ -36,7 +36,7 @@ import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -95,23 +95,30 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this.displayedColumns.map(c => c.key);
   }
 
-  @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const task: SessionData = {
-        raw: entry,
-        queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
-        resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
-        filters: this.countTasksByStatusFilters(entry.sessionId)
-      };
-      this._data.push(task);
+  @Input({ required: true }) set data(entries: SessionRaw[]) {
+    entries.forEach((entry, index) => {
+      const session = this._data[index];
+      if (session && session.raw.sessionId === entry.sessionId) {
+        this._data[index].value$?.next(entry);
+      } else {
+        const session: SessionData = {
+          raw: entry,
+          queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+          resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
+          filters: this.countTasksByStatusFilters(entry.sessionId),
+          value$: new Subject<SessionRaw>(),
+        };
+        this._data.splice(index, 1, session);
+      }
     });
+    this.dataSource.data = this._data;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<SessionData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
@@ -176,6 +183,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();

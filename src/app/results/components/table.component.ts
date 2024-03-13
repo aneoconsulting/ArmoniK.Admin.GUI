@@ -8,8 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { ResultData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -70,13 +71,19 @@ export class ResultsTableComponent implements AfterViewInit {
   private _data: ResultData[] = [];
 
   @Input({required: true}) set data(entries: ResultRaw[]) {
-    this._data = [];
-    entries.forEach((entry) => {
-      const lineData: ResultData = {
-        raw: entry,
-      };
-      this._data.push(lineData);
+    entries.forEach((entry, index) => {
+      const result = this._data[index];
+      if (result && result.raw.resultId === entry.resultId) {
+        this._data[index].value$?.next(entry);
+      } else {
+        const lineData: ResultData = {
+          raw: entry,
+          value$: new Subject<ResultRaw>(),
+        };
+        this._data.splice(index, 1, lineData);
+      }
     });
+    this.dataSource.data = this._data;
   }
 
   get data(): ResultData[] {
@@ -86,6 +93,7 @@ export class ResultsTableComponent implements AfterViewInit {
   @Output() optionsChange = new EventEmitter<never>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<ResultData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
@@ -108,6 +116,7 @@ export class ResultsTableComponent implements AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();

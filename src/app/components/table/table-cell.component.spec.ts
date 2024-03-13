@@ -1,6 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Subject } from 'rxjs';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskSummaryColumnKey, TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
@@ -188,6 +189,26 @@ describe('TableCellComponent', () => {
     it('should tip to select if it is unselected', () => {
       component.isSelected = false;
       expect(component.checkboxLabel()).toEqual('Select Task task-id');
+    });
+  });
+
+  describe('Update values', () => {
+    beforeEach(() => {
+      component.value$ = new Subject<DataRaw>();
+      component.ngOnInit();
+    });
+
+    const newValue = {id: 'new-id'} as unknown as DataRaw;
+
+    it('should update value', () => {
+      component.value$.next(newValue);
+      expect(component.element.raw).toEqual(newValue);
+    });
+
+    it('should handle nested keys', () => {
+      const spy = jest.spyOn(component, 'handleNestedKeys');
+      component.value$.next(newValue);
+      expect(spy).toHaveBeenCalled();
     });
   });
 });
