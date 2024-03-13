@@ -99,16 +99,14 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     entries.forEach((entry, index) => {
       const session = this._data[index];
       if (session && session.raw.sessionId === entry.sessionId) {
-        const differences = this.dataComparator(session.raw, entry);
-        differences.forEach(key => {
-          this._data[index].raw[key] = entry[key] as never;
-        });
+        this._data[index].value$?.next(entry);
       } else {
         const session: SessionData = {
           raw: entry,
           queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
           resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
-          filters: this.countTasksByStatusFilters(entry.sessionId)
+          filters: this.countTasksByStatusFilters(entry.sessionId),
+          value$: new Subject<SessionRaw>(),
         };
         this._data.splice(index, 1, session);
       }
@@ -185,21 +183,11 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
     });
-  }
-
-  dataComparator(first: SessionRaw, second: SessionRaw): (keyof SessionRaw)[]{
-    const keys = Object.keys(first) as (keyof SessionRaw)[];
-    const differences = [] as (keyof SessionRaw)[];
-    keys.forEach(key => {
-      if (first[key]?.toString() !== second[key]?.toString()) {
-        differences.push(key);
-      }
-    });
-    return differences;
   }
 
   getIcon(name: string): string {

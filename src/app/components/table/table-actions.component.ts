@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ArmonikData, DataRaw } from '@app/types/data';
+import { ApplicationData, PartitionData, ResultData, SessionData, TaskData } from '@app/types/data';
 import { ActionTable } from '@app/types/table';
 
 @Component({
@@ -25,7 +25,7 @@ import { ActionTable } from '@app/types/table';
     MatMenuModule
   ]
 })
-export class TableActionsComponent<T extends ArmonikData<DataRaw>> {
+export class TableActionsComponent<T extends ApplicationData | SessionData | PartitionData | TaskData | ResultData> {
   @Input() actions: ActionTable<T>[] = [];
   @Input() element: T;
 }
