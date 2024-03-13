@@ -58,7 +58,7 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
       name: $localize`Duration`,
       key: 'duration',
       type: 'special',
-      sortable: true
+      sortable: false
     },
     {
       name: $localize`Partition Ids`,
