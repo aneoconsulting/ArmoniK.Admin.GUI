@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterLink , RouterModule} from '@angular/router';
 import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
@@ -98,14 +98,20 @@ export class TasksTableComponent implements AfterViewInit {
   }
 
   @Input({required: true}) set data(entries: TaskSummary[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const lineData: TaskData = {
-        raw: entry,
-        resultsQueryParams: this.createResultsQueryParams(entry.id),
-      };
-      this._data.push(lineData);
+    entries.forEach((entry, index) => {
+      const task = this._data[index];
+      if (task && task.raw.id === entry.id) {
+        this._data[index].value$?.next(entry);
+      } else {
+        const lineData: TaskData = {
+          raw: entry,
+          resultsQueryParams: this.createResultsQueryParams(entry.id),
+          value$: new Subject<TaskSummary>(),
+        };
+        this._data.splice(index, 1, lineData);
+      }
     });
+    this.dataSource.data = this._data;
   }
 
   get columnKeys() {
@@ -117,6 +123,7 @@ export class TasksTableComponent implements AfterViewInit {
   @Output() cancelTask = new EventEmitter<string>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<TaskData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 

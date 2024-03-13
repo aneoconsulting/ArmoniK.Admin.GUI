@@ -1,5 +1,5 @@
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear recycleRows [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" matSortDisableClear recycleRows [matSortDirection]="options.sort.direction" [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <!-- Header -->
@@ -15,6 +15,7 @@
           <app-table-cell
             [column]="column"
             [element]="element"
+            [value$]="element.value$"
             [statusesService]="_sessionsStatusesService"
             [tasksStatusesColored]="tasksStatusesColored"
           >

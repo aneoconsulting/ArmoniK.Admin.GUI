@@ -1,4 +1,4 @@
-import { FilterStringOperator, PartitionRaw, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -8,8 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { PartitionData } from '@app/types/data';
@@ -28,7 +29,7 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-partitions-table',
@@ -81,21 +82,28 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
     return this.displayedColumns.map(column => column.key);
   }
 
-  @Input({ required: true }) set data(entries: PartitionRaw.AsObject[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const task: PartitionData = {
-        raw: entry,
-        queryTasksParams: this.createTasksByStatusQueryParams(entry.id),
-        filters: this.countTasksByStatusFilters(entry.id)
-      };
-      this._data.push(task);
+  @Input({ required: true }) set data(entries: PartitionRaw[]) {
+    entries.forEach((entry, index) => {
+      const partition = this._data[index];
+      if (partition && partition.raw.id === entry.id) {
+        this._data[index].value$?.next(entry);
+      } else {
+        const lineData: PartitionData = {
+          raw: entry,
+          queryTasksParams: this.createTasksByStatusQueryParams(entry.id),
+          filters: this.countTasksByStatusFilters(entry.id),
+          value$: new Subject<PartitionRaw>()
+        };
+        this._data.splice(index, 1, lineData);
+      }
     });
+    this.dataSource.data = this._data;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<PartitionData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -120,6 +128,7 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();

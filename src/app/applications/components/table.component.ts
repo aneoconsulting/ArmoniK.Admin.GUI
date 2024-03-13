@@ -1,4 +1,4 @@
-import { ApplicationRaw, ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
@@ -31,14 +31,14 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
   standalone: true,
   template: `
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <!-- Header -->
@@ -54,6 +54,7 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
           <app-table-cell 
             [column]="column"
             [element]="element"
+            [value$]="element.value$"
             [tasksStatusesColored]="tasksStatusesColored"
           />
         </td>
@@ -129,21 +130,28 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this.displayedColumns.map(column => column.key);
   }
 
-  @Input({ required: true }) set data(entries: ApplicationRaw.AsObject[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const task: ApplicationData = {
-        raw: entry,
-        queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
-        filters: this.countTasksByStatusFilters(entry.name, entry.version)
-      };
-      this._data.push(task);
+  @Input({ required: true }) set data(entries: ApplicationRaw[]) {
+    entries.forEach((entry, index) => {
+      const application = this._data[index];
+      if (application && application.raw.name === entry.name && application.raw.version === entry.version) {
+        this._data[index].value$?.next(entry);
+      } else {
+        const lineData: ApplicationData = {
+          raw: entry,
+          queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
+          filters: this.countTasksByStatusFilters(entry.name, entry.version),
+          value$: new Subject<ApplicationRaw>()
+        };
+        this._data.splice(index, 1, lineData);
+      }
     });
+    this.dataSource.data = this._data;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<ApplicationData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
@@ -180,6 +188,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();

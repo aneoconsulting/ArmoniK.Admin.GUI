@@ -1,9 +1,10 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, RawColumnKey, SessionData, Status } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -29,8 +30,9 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> {  
+export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> implements OnInit{  
   @Input({ required: true }) column: TableColumn<K>;
+  @Input({ required: true }) value$: Subject<DataRaw>;
   @Input({ required: true }) set element(entry: T) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
@@ -44,6 +46,13 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   private _value: unknown;
   private _element: T;
+
+  ngOnInit(): void {
+    this.value$.subscribe((entry: DataRaw) => {
+      this._element.raw = entry;
+      this._value = this.handleNestedKeys(this._element);
+    });
+  }
 
   get element() {
     return this._element;
@@ -62,7 +71,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   get dateValue(): Date | null {
-    return (this.value as Timestamp).toDate();
+    return (this.value as Timestamp)?.toDate() ?? null;
   }
 
   get link() {
@@ -78,6 +87,9 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   handleNestedKeys(element: T) {
+    if (element === undefined || element.raw === undefined) {
+      return undefined;
+    }
     const keys = `${this.column.key}`.split('.') as unknown as K[];
     let resultObject: {[key: string]: object} = element.raw as unknown as {[key: string]: object};
     keys.forEach(key => {
