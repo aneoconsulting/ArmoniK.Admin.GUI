@@ -12,7 +12,7 @@ import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
   selector: 'app-session-duration',
   standalone: true,
   template: `
-    <span>{{ (duration | async) | duration | emptyCell }}</span>
+    <span>{{ duration | async | duration | emptyCell }}</span>
   `,
   imports: [
     AsyncPipe,
@@ -24,7 +24,7 @@ import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
   ]
 })
 export class SessionDurationComponent {
-  duration: Subject<Duration> = new Subject<Duration>();
+  duration = new Subject<Duration>();
   
   readonly _tasksGrpcService = inject(TasksGrpcService);
   readonly nextDuration = new Subject<string>();
