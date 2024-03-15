@@ -1,3 +1,4 @@
+import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
@@ -6,12 +7,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SortDirection } from '@angular/material/sort';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Observable, Subject, Subscription, catchError, map, merge, mergeAll, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
@@ -87,7 +91,8 @@ app-table-actions-toolbar {
       useExisting: SessionsFiltersService
     },
     SessionsStatusesService,
-    MatDialog
+    MatDialog,
+    TasksGrpcService,
   ],
   imports: [
     DurationPipe,
@@ -118,6 +123,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
   readonly _tasksByStatusService = inject(TasksByStatusService);
+  readonly _tasksGrpcService = inject(TasksGrpcService);
   readonly #dialog = inject(MatDialog);
 
   displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
@@ -138,11 +144,20 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   intervalValue = 0;
   sharableURL = '';
 
+  isDurationSorted: boolean = false;
+
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
   optionsChange: Subject<void> = new Subject<void>();
+
+  sessionEndedDates: {sessionId: string, date: Timestamp | undefined}[] = [];
+  sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
+  nextDuration$ = new Subject<string>();
+  computeDuration$ = new Subject<void>();
+
+  data$ = new Subject<SessionRaw[]>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
 
@@ -186,27 +201,81 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.isLoading = true;
 
           const filters = this.filters;
+          const options = structuredClone(this.options);
 
           this.sharableURL = this._shareURLService.generateSharableURL(this.options, filters);
           this._sessionsIndexService.saveOptions(this.options);
 
-          return this._sessionsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
-            console.error(error);
-            this.#notificationService.error('Unable to fetch sessions');
-            return of(null);
-          }));
+          if(this.isDurationDisplayed() && this.options.sort.active === 'duration') {
+            options.sort.active = 'createdAt';
+            this.isDurationSorted = true;
+          } else {
+            this.isDurationSorted = false;
+          }
+
+          return this._sessionsGrpcService.list$(options, filters).pipe(
+            catchError((error) => {
+              console.error(error);
+              this.#notificationService.error('Unable to fetch sessions');
+              return of(null);
+            }),
+          );
         }),
         map(data => {
-          this.isLoading = false;
           this.total = data?.total ?? 0;
-
           const sessions = data?.sessions ?? [];
           return sessions;
         })
       )
       .subscribe(data => {
         this.data = data;
+        if (this.isDurationDisplayed()) {
+          data.forEach(session => {
+            this.nextDuration$.next(session.sessionId);
+          });
+        } else {
+          this.isLoading = false;
+          this.data$.next(data);
+        }
       });
+
+    this.computeDuration$.subscribe(() => {
+      if (this.data.length === this.sessionEndedDates.length && this.data.length === this.sessionCreationDates.length) {
+        const keys: string[] = this.sessionEndedDates.map(duration => duration.sessionId);
+        keys.forEach(key => {
+          const sessionIndex = this.data.findIndex(session => session.sessionId === key);
+          if (sessionIndex !== -1) {
+            const lastDuration = this.sessionEndedDates.find(duration => duration.sessionId === key)?.date;
+            const firstDuration = this.sessionCreationDates.find(duration => duration.sessionId === key)?.date;
+            if (firstDuration && lastDuration) {
+              this.data[sessionIndex].duration = {
+                seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
+                nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
+              } as Duration;
+            } else {
+              this.#notificationService.warning('Error while computing duration for session: ' + key);
+            }
+          }
+        });
+        if (this.isDurationSorted) {
+          this.orderByDuration();
+        }
+        this.sessionEndedDates = [];
+        this.sessionCreationDates = [];
+        this.data$.next(this.data);
+        this.isLoading = false;
+      }
+    });
+    
+    this.nextDuration$.pipe(
+      map(sessionId => this.getTaskData$(sessionId, 'createdAt', 'asc')),
+      mergeAll(),
+    ).subscribe(task => this.durationSubscription(task, 'created'));
+
+    this.nextDuration$.pipe(
+      map(sessionId => this.getTaskData$(sessionId, 'endedAt', 'desc')),
+      mergeAll(),
+    ).subscribe(task => this.durationSubscription(task, 'ended'));
 
     this.handleAutoRefreshStart();
     this.subscriptions.add(mergeSubscription);
@@ -326,5 +395,49 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this._sessionsIndexService.saveGenericColumns(this.genericColumns);
       }
     });
+  }
+
+  isDurationDisplayed(): boolean {
+    return this.displayedColumnsKeys.includes('duration');
+  }
+
+  getTaskData$(sessionId: string, active: 'createdAt' | 'endedAt', direction: SortDirection) {
+    return this._tasksGrpcService.list$(
+      {
+        pageIndex: 0,
+        pageSize: 1,
+        sort: { active, direction }
+      },
+      [[{
+        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+        value: sessionId
+      }]]
+    ).pipe(map(taskData => {
+      return {
+        date: active === 'endedAt' ? taskData.tasks?.at(0)?.endedAt : taskData.tasks?.at(0)?.createdAt,
+        sessionId: sessionId
+      };
+    }));
+  }
+
+  orderByDuration() {
+    this.data = this.data.sort((a, b) => {
+      if (this.options.sort.direction === 'asc') {
+        return Number(a.duration?.seconds) - Number(b.duration?.seconds);
+      } else {
+        return Number(b.duration?.seconds) - Number(a.duration?.seconds);
+      }
+    });
+  }
+
+  durationSubscription(data: {sessionId: string, date: Timestamp | undefined}, type: 'ended' | 'created') {
+    if (type === 'ended') {
+      this.sessionEndedDates.push({sessionId: data.sessionId, date: data.date});
+    } else {
+      this.sessionCreationDates.push({sessionId: data.sessionId, date: data.date});
+    }
+    this.computeDuration$.next();
   }
 }

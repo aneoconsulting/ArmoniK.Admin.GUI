@@ -12,7 +12,6 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
-import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
@@ -33,7 +32,6 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { SessionDurationComponent } from './special-columns/duration.component';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
@@ -51,7 +49,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters,
     IconsService,
     FiltersService,
     Clipboard,
-    TasksGrpcService,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -74,7 +71,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters,
     MatDialogModule,
     TableCellComponent,
     TableActionsComponent,
-    SessionDurationComponent,
     NgIf,
   ]
 })
@@ -84,6 +80,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) options: SessionRawListOptions;
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFilters;
+  @Input({ required: true}) data$: Subject<SessionRaw[]>;
   @Input() lockColumns = false;
 
   private _data: SessionData[] = [];
@@ -93,25 +90,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
-  }
-
-  @Input({ required: true }) set data(entries: SessionRaw[]) {
-    entries.forEach((entry, index) => {
-      const session = this._data[index];
-      if (session && session.raw.sessionId === entry.sessionId) {
-        this._data[index].value$?.next(entry);
-      } else {
-        const session: SessionData = {
-          raw: entry,
-          queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
-          resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
-          filters: this.countTasksByStatusFilters(entry.sessionId),
-          value$: new Subject<SessionRaw>(),
-        };
-        this._data.splice(index, 1, session);
-      }
-    });
-    this.dataSource.data = this._data;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
@@ -131,7 +109,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   readonly _dialog = inject(MatDialog);
   readonly _router = inject(Router);
   readonly _copyService = inject(Clipboard);
-  readonly _tasksGrpcService = inject(TasksGrpcService);
 
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
@@ -189,6 +166,44 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
     });
+
+    this.data$.subscribe(entries => {
+      entries.forEach((entry, index) => {
+        const session = this._data[index];
+        if (session && session.raw.sessionId === entry.sessionId) {
+          if (this.hasDifference(session.raw, entry)) {
+            console.log(entry['duration']);
+            session.raw = entry;
+            this._data.splice(index, 1, session);
+            this._data[index].value$.next(entry);
+          }
+        } else {
+          const session: SessionData = {
+            raw: entry,
+            queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+            resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
+            filters: this.countTasksByStatusFilters(entry.sessionId),
+            value$: new Subject<SessionRaw>(),
+          };
+          console.log(session.raw.sessionId, session);
+          this._data.splice(index, 1, session);
+        }
+      });
+      this.dataSource.data = this._data;
+    });
+  }
+
+  hasDifference(first: SessionRaw, second: SessionRaw): boolean{
+    const keys = Object.keys(first);
+    for(const key of keys) {
+      if (first[key as keyof SessionRaw]?.toString() !== second[key as keyof SessionRaw]?.toString()) {
+        if (key === '_duration') {
+          console.log(first[key as keyof SessionRaw]?.toString(), second[key as keyof SessionRaw]?.toString(), second.sessionId);
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   getIcon(name: string): string {
@@ -306,6 +321,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   }
 
   isSpecialSelected(column: TableColumn<SessionRawColumnKey>) {
-    return this.displayedColumns.includes(column);
+    return this.displayedColumns.includes(column) && column.type === 'special';
   }
 }

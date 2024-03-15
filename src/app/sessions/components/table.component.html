@@ -18,9 +18,7 @@
             [value$]="element.value$"
             [statusesService]="_sessionsStatusesService"
             [tasksStatusesColored]="tasksStatusesColored"
-          >
-            <app-session-duration *ngIf="isSpecialSelected(column)" [sessionId]="element.raw.sessionId" />
-          </app-table-cell>
+          />
         </td>
       </ng-container>
       <!-- Actions -->

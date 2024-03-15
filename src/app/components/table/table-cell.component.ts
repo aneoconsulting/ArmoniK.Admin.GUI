@@ -1,5 +1,5 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterModule } from '@angular/router';
@@ -30,7 +30,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> implements OnInit{  
+export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> implements OnInit, OnDestroy{  
   @Input({ required: true }) column: TableColumn<K>;
   @Input({ required: true }) value$: Subject<DataRaw>;
   @Input({ required: true }) set element(entry: T) {
@@ -49,9 +49,15 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   ngOnInit(): void {
     this.value$.subscribe((entry: DataRaw) => {
+      console.log('updating line', entry['sessionId' as keyof DataRaw]);
       this._element.raw = entry;
+      // console.log(entry['sessionId' as keyof DataRaw], entry, this.element.raw);
       this._value = this.handleNestedKeys(this._element);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.value$.unsubscribe();
   }
 
   get element() {
