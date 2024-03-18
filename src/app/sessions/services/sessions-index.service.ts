@@ -20,9 +20,10 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     {
       name: $localize`Session ID`,
       key: 'sessionId',
-      type: 'link',
+      type: 'outer-link',
       sortable: true,
-      link: '/sessions',
+      link: '/tasks',
+      queryParams: '0-root-1-0'
     },
     {
       name: $localize`Status`,

@@ -40,6 +40,8 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
       this._element.raw = entry;
       this._value = this.handleNestedKeys(this._element);
     });
+    this._link = this.column.link ? `${this.column.link}/${this.element.raw[this.column.key as keyof DataRaw]}` : '';
+    this._outerLink = this.column.link ?? '';
   }
 
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
@@ -50,6 +52,9 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   private _value: unknown;
   private _element: T;
+
+  private _link: string;
+  private _outerLink: string;
 
   ngOnDestroy(): void {
     this.value$.unsubscribe();
@@ -76,7 +81,11 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   get link() {
-    return this.column.link ? `${this.column.link}/${this.element.raw[this.column.key as keyof DataRaw]}` : '';
+    return this._link;
+  }
+
+  get outerLink() {
+    return this._outerLink;
   }
 
   get queryTasksParams() {

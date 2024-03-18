@@ -113,8 +113,8 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
 
-  seeTasks$ = new Subject<SessionData>();
-  seeTasksSubscription = this.seeTasks$.subscribe(data => this._router.navigate(['/tasks'], { queryParams: data.queryTasksParams }));
+  seeSessions$ = new Subject<SessionData>();
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions', data.raw.sessionId]));
 
   seeResults$ = new Subject<SessionData>();
   seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
@@ -129,9 +129,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       action$: this.copy$, 
     },
     {
-      label: 'See tasks',
-      icon: this.getPageIcon('tasks'),
-      action$: this.seeTasks$,
+      label: 'See session',
+      icon: this.getPageIcon('sessions'),
+      action$: this.seeSessions$,
     },
     {
       label: 'See results',
