@@ -2,7 +2,11 @@ import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnu
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject, catchError, map, switchMap } from 'rxjs';
+import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -43,7 +47,10 @@ import { SessionRaw } from './types';
     TableStorageService,
     NotificationService,
     MatSnackBar,
-    FiltersService
+    FiltersService,
+    TasksGrpcService,
+    TasksFiltersService,
+    TasksStatusesService,
   ],
   imports: [
     ShowPageComponent,
@@ -52,6 +59,11 @@ import { SessionRaw } from './types';
 })
 export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface {
   cancel$ = new Subject<void>();
+  duration$ = new Subject<void>();
+  computeDuration$ = new Subject<void>();
+
+  lowerDate: Timestamp | undefined;
+  upperDate: Timestamp | undefined;
 
   private _sessionsStatusesService = inject(SessionsStatusesService);
   protected override _grpcService = inject(SessionsGrpcService);
@@ -106,6 +118,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     ).subscribe((data) => {
       if (data) {
         this.data = data;
+        this.duration$.next();
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
@@ -115,6 +128,33 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     this.getIdByRoute();
     this.cancel$.subscribe(() => {
       this.cancel();
+    });
+
+    this.duration$.pipe(
+      switchMap(() => {
+        return this._grpcService.getTaskData$(this.id, 'createdAt', 'asc').pipe(map(d => d.date));
+      })
+    ).subscribe((data) => {
+      this.lowerDate = data;
+      this.computeDuration$.next();
+    });
+
+    this.duration$.pipe(
+      switchMap(() => {
+        return this._grpcService.getTaskData$(this.id, 'endedAt', 'desc').pipe(map(d => d.date));
+      })
+    ).subscribe((data) => {
+      this.upperDate = data;
+      this.computeDuration$.next();
+    });
+
+    this.computeDuration$.subscribe(() => {
+      if (this.data && this.lowerDate && this.upperDate) {
+        this.data.duration = {
+          seconds: (Number(this.upperDate.seconds) - Number(this.lowerDate.seconds)).toString(),
+          nanos: Math.abs(this.upperDate.nanos - this.lowerDate.nanos)
+        };
+      }
     });
   }
 

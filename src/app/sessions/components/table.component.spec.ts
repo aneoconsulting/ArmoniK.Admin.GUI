@@ -6,7 +6,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -169,6 +169,7 @@ describe('ApplicationsTableComponent', () => {
 
     component.sort = sort;
     component.paginator = paginator;
+    component.data$ = new Subject<SessionRaw[]>();
 
     component.options = {
       pageIndex: 0,
