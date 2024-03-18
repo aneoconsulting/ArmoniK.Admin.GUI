@@ -28,8 +28,6 @@ import { TableInspectObjectComponent } from '@components/table/table-inspect-obj
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
-import { DurationPipe } from '@pipes/duration.pipe';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -66,16 +64,14 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters,
     MatTableModule,
     MatIconModule,
     RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
     DatePipe,
-    DurationPipe,
-    EmptyCellPipe,
     TableInspectObjectComponent,
     MatDialogModule,
     TableCellComponent,
     TableActionsComponent,
+    NgIf,
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
@@ -84,6 +80,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   @Input({required: true}) options: SessionRawListOptions;
   @Input({required: true}) total: number;
   @Input({required: true}) filters: SessionRawFilters;
+  @Input({ required: true}) data$: Subject<SessionRaw[]>;
   @Input() lockColumns = false;
 
   private _data: SessionData[] = [];
@@ -93,25 +90,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
-  }
-
-  @Input({ required: true }) set data(entries: SessionRaw[]) {
-    entries.forEach((entry, index) => {
-      const session = this._data[index];
-      if (session && session.raw.sessionId === entry.sessionId) {
-        this._data[index].value$?.next(entry);
-      } else {
-        const session: SessionData = {
-          raw: entry,
-          queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
-          resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
-          filters: this.countTasksByStatusFilters(entry.sessionId),
-          value$: new Subject<SessionRaw>(),
-        };
-        this._data.splice(index, 1, session);
-      }
-    });
-    this.dataSource.data = this._data;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
@@ -198,6 +176,39 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
     });
+
+    this.data$.subscribe(entries => {
+      entries.forEach((entry, index) => {
+        const session = this._data[index];
+        if (session && session.raw.sessionId === entry.sessionId) {
+          if (this.hasDifference(session.raw, entry)) {
+            session.raw = entry;
+            this._data.splice(index, 1, session);
+            this._data[index].value$.next(entry);
+          }
+        } else {
+          const session: SessionData = {
+            raw: entry,
+            queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+            resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
+            filters: this.countTasksByStatusFilters(entry.sessionId),
+            value$: new Subject<SessionRaw>(),
+          };
+          this._data.splice(index, 1, session);
+        }
+      });
+      this.dataSource.data = this._data;
+    });
+  }
+
+  hasDifference(first: SessionRaw, second: SessionRaw): boolean{
+    const keys = Object.keys(first);
+    for(const key of keys) {
+      if (JSON.stringify(first[key as keyof SessionRaw]) !== JSON.stringify(second[key as keyof SessionRaw])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getIcon(name: string): string {
