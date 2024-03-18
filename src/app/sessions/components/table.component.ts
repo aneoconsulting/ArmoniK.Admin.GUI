@@ -299,6 +299,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(sessionId: string) {
+    this._data = this._data.filter(session => session.raw.sessionId !== sessionId);
     this.deleteSession.emit(sessionId);
   }
 
