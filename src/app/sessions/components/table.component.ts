@@ -314,8 +314,4 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
-  isSpecialSelected(column: TableColumn<SessionRawColumnKey>) {
-    return this.displayedColumns.includes(column) && column.type === 'special';
-  }
 }
