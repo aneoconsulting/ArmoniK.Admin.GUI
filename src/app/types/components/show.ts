@@ -26,6 +26,13 @@ export interface ShowCancellableInterface {
   canCancel(): boolean;
 }
 
+export interface ShowClosableInterface {
+  close$: Subject<void>;
+
+  close(): void;
+  canClose(): boolean;
+}
+
 export interface ShowActionInterface {
   actionButtons: ShowActionButton[];
 }
