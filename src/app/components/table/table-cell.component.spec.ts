@@ -59,6 +59,7 @@ describe('TableCellComponent', () => {
         TableCellComponent
       ]
     }).inject(TableCellComponent);
+    component.value$ = new Subject<DataRaw>();
     component.column = column;
     component.element = element as unknown as ArmonikData<DataRaw>;
   });
@@ -193,11 +194,6 @@ describe('TableCellComponent', () => {
   });
 
   describe('Update values', () => {
-    beforeEach(() => {
-      component.value$ = new Subject<DataRaw>();
-      component.ngOnInit();
-    });
-
     const newValue = {id: 'new-id'} as unknown as DataRaw;
 
     it('should update value', () => {
