@@ -1,4 +1,4 @@
-import { CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, DeleteSessionRequest, DeleteSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
@@ -61,6 +61,14 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
     });
 
     return this.grpcClient.cancelSession(cancelSessionRequest);
+  }
+
+  delete$(sessionId: string): Observable<DeleteSessionResponse> {
+    const deleteSessionRequest = new DeleteSessionRequest({
+      sessionId
+    });
+
+    return this.grpcClient.deleteSession(deleteSessionRequest);
   }
 
   #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {

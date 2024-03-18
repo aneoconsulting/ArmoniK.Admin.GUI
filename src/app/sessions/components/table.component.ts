@@ -116,6 +116,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
+  @Output() deleteSession = new EventEmitter<string>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
   dataSource = new MatTableDataSource<SessionData>(this._data);
@@ -144,6 +145,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   cancelSession$ = new Subject<SessionData>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
+  deleteSession$ = new Subject<SessionData>();
+  deleteSessionSubscription = this.deleteSession$.subscribe(data => this.onDelete(data.raw.sessionId));
+
   actions: ActionTable<SessionData>[] = [
     {
       label: 'Copy session ID',
@@ -165,6 +169,11 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       icon: this.getIcon('cancel'),
       action$: this.cancelSession$, 
       condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+    },
+    {
+      label: 'Delete session',
+      icon: this.getIcon('delete'),
+      action$: this.deleteSession$,
     }
   ];
 
@@ -287,6 +296,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   onCancel(sessionId: string) {
     this.cancelSession.emit(sessionId);
+  }
+
+  onDelete(sessionId: string) {
+    this.deleteSession.emit(sessionId);
   }
 
   personalizeTasksByStatus() {
