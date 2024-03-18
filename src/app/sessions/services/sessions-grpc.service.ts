@@ -1,6 +1,8 @@
-import { CancelSessionRequest, CancelSessionResponse, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { SortDirection } from '@angular/material/sort';
+import { Observable, map } from 'rxjs';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
 import { buildArrayFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
@@ -12,6 +14,7 @@ import { SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListO
 export class SessionsGrpcService implements GrpcListInterface<SessionsClient, SessionRawListOptions, SessionRawFilters, SessionRawFieldKey, SessionRawEnumField, SessionTaskOptionEnumField>, GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
   readonly filterService = inject(SessionsFiltersService);
   readonly grpcClient = inject(SessionsClient);
+  readonly tasksGrpcService = inject(TasksGrpcService);
   readonly utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
 
   readonly sortFields: Record<SessionRawFieldKey, SessionRawEnumField> = {
@@ -102,5 +105,26 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
         throw new Error(`Type ${type} not supported`);
       }
     };
+  }
+
+  getTaskData$(sessionId: string, active: 'createdAt' | 'endedAt', direction: SortDirection) {
+    return this.tasksGrpcService.list$(
+      {
+        pageIndex: 0,
+        pageSize: 1,
+        sort: { active, direction }
+      },
+      [[{
+        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+        value: sessionId
+      }]]
+    ).pipe(map(taskData => {
+      return {
+        date: active === 'endedAt' ? taskData.tasks?.at(0)?.endedAt : taskData.tasks?.at(0)?.createdAt,
+        sessionId: sessionId
+      };
+    }));
   }
 }

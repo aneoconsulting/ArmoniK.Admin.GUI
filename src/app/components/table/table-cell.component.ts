@@ -1,5 +1,5 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterModule } from '@angular/router';
@@ -30,12 +30,16 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> implements OnInit{  
+export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> implements OnDestroy{  
   @Input({ required: true }) column: TableColumn<K>;
   @Input({ required: true }) value$: Subject<DataRaw>;
   @Input({ required: true }) set element(entry: T) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
+    this.value$.subscribe((entry: DataRaw) => {
+      this._element.raw = entry;
+      this._value = this.handleNestedKeys(this._element);
+    });
   }
 
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
@@ -47,11 +51,8 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   private _value: unknown;
   private _element: T;
 
-  ngOnInit(): void {
-    this.value$.subscribe((entry: DataRaw) => {
-      this._element.raw = entry;
-      this._value = this.handleNestedKeys(this._element);
-    });
+  ngOnDestroy(): void {
+    this.value$.unsubscribe();
   }
 
   get element() {
