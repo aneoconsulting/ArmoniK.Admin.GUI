@@ -17,7 +17,7 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFilters } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
 
 describe('ApplicationsTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -286,5 +286,19 @@ describe('ApplicationsTableComponent', () => {
   it('should personalize tasks by status', () => {
     component.personalizeTasksByStatus();
     expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith('sessions', dialogResult);
+  });
+
+  describe('on delete', () => {
+    it('should delete the specified line', () => {
+      component.data = [{sessionId: '1'}, {sessionId: '2'}, {sessionId: '3'}] as unknown as SessionRaw[];
+      component.onDelete('2');
+      expect(component.data.map(session => session.raw.sessionId)).toEqual(['1', '3']);
+    });
+
+    it('should emit', () => {
+      const spy = jest.spyOn(component.deleteSession, 'emit');
+      component.onDelete('2');
+      expect(spy).toHaveBeenCalledWith('2');
+    });
   });
 });
