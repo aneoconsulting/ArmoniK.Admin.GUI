@@ -291,7 +291,7 @@ describe('ApplicationsTableComponent', () => {
 
   describe('on delete', () => {
     it('should delete the specified line', () => {
-      component.data = [{sessionId: '1'}, {sessionId: '2'}, {sessionId: '3'}] as unknown as SessionRaw[];
+      component.data$.next([{sessionId: '1'}, {sessionId: '2'}, {sessionId: '3'}] as unknown as SessionRaw[]);
       component.onDelete('2');
       expect(component.data.map(session => session.raw.sessionId)).toEqual(['1', '3']);
     });
