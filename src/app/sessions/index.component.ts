@@ -423,7 +423,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   orderByDuration() {
-    this.data = this.data.sort((a, b) => {
+    this.data.sort((a, b) => {
       if (this.options.sort.direction === 'asc') {
         return Number(a.duration?.seconds) - Number(b.duration?.seconds);
       } else {
