@@ -1,4 +1,4 @@
-import { FilterDateOperator, FilterStringOperator, SessionRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
@@ -7,7 +7,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SortDirection } from '@angular/material/sort';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
@@ -123,7 +122,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #notificationService = inject(NotificationService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
   readonly _tasksByStatusService = inject(TasksByStatusService);
-  readonly _tasksGrpcService = inject(TasksGrpcService);
   readonly #dialog = inject(MatDialog);
 
   displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
@@ -279,12 +277,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     
     this.nextDuration$.pipe(
-      map(sessionId => this.getTaskData$(sessionId, 'createdAt', 'asc')),
+      map(sessionId => this._sessionsGrpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'created'));
 
     this.nextDuration$.pipe(
-      map(sessionId => this.getTaskData$(sessionId, 'endedAt', 'desc')),
+      map(sessionId => this._sessionsGrpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'ended'));
 
@@ -420,27 +418,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isDurationDisplayed(): boolean {
     return this.displayedColumnsKeys.includes('duration');
-  }
-
-  getTaskData$(sessionId: string, active: 'createdAt' | 'endedAt', direction: SortDirection) {
-    return this._tasksGrpcService.list$(
-      {
-        pageIndex: 0,
-        pageSize: 1,
-        sort: { active, direction }
-      },
-      [[{
-        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
-        for: 'root',
-        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-        value: sessionId
-      }]]
-    ).pipe(map(taskData => {
-      return {
-        date: active === 'endedAt' ? taskData.tasks?.at(0)?.endedAt : taskData.tasks?.at(0)?.createdAt,
-        sessionId: sessionId
-      };
-    }));
   }
 
   orderByDuration() {
