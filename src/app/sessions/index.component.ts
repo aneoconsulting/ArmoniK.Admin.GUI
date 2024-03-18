@@ -1,4 +1,4 @@
-import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, SessionRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
@@ -200,7 +200,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         switchMap(() => {
           this.isLoading = true;
 
-          const filters = this.filters;
+          const filters = structuredClone(this.filters);
           const options = structuredClone(this.options);
 
           this.sharableURL = this._shareURLService.generateSharableURL(this.options, filters);
@@ -209,6 +209,17 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           if(this.isDurationDisplayed() && this.options.sort.active === 'duration') {
             options.sort.active = 'createdAt';
             this.isDurationSorted = true;
+            if(!this.filterHasCreatedAt(filters)) {
+              options.pageSize = 100;
+              const date = new Date();
+              date.setDate(date.getDate() - 3);
+              filters.push([{
+                field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+                for: 'root',
+                operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
+                value: Math.floor(date.getTime()/1000)
+              }]);
+            }
           } else {
             this.isDurationSorted = false;
           }
@@ -310,6 +321,16 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onRefresh() {
     this.refresh.next();
+  }
+
+  filterHasCreatedAt(filters: SessionRawFilters) {
+    for (const filterAnd of filters) {
+      const result = filterAnd.some(filter => filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT);
+      if (result) {
+        return true;
+      }
+    }
+    return false;
   }
 
   onIntervalValueChange(value: number) {
@@ -429,7 +450,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         return Number(b.duration?.seconds) - Number(a.duration?.seconds);
       }
-    });
+    }).slice(0, this.options.pageSize);
   }
 
   durationSubscription(data: {sessionId: string, date: Timestamp | undefined}, type: 'ended' | 'created') {

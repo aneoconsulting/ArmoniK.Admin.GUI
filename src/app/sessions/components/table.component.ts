@@ -194,7 +194,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   hasDifference(first: SessionRaw, second: SessionRaw): boolean{
     const keys = Object.keys(first);
     for(const key of keys) {
-      if (first[key as keyof SessionRaw]?.toString() !== second[key as keyof SessionRaw]?.toString()) {
+      if (JSON.stringify(first[key as keyof SessionRaw]) !== JSON.stringify(second[key as keyof SessionRaw])) {
         return true;
       }
     }
