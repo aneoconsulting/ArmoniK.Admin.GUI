@@ -2,6 +2,7 @@ import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnu
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject, catchError, map, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
@@ -59,6 +60,7 @@ import { SessionRaw } from './types';
 })
 export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface {
   cancel$ = new Subject<void>();
+  delete$ = new Subject<void>();
   duration$ = new Subject<void>();
   computeDuration$ = new Subject<void>();
 
@@ -68,6 +70,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   private _sessionsStatusesService = inject(SessionsStatusesService);
   protected override _grpcService = inject(SessionsGrpcService);
   private _filtersService = inject(FiltersService);
+  private router = inject(Router);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -99,6 +102,14 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       disabled: this.canCancel(),
       color: 'accent',
       area: 'right'
+    },
+    {
+      id: 'delete',
+      name: $localize`Delete Session`,
+      icon: this.getIcon('delete'),
+      action$: this.delete$,
+      color: 'accent',
+      area: 'right'
     }
   ];
 
@@ -128,6 +139,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     this.getIdByRoute();
     this.cancel$.subscribe(() => {
       this.cancel();
+    });
+
+    this.delete$.subscribe(() => {
+      this.delete();
     });
 
     this.duration$.pipe(
@@ -175,6 +190,23 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       error: (error) => {
         console.error(error);
         this.error('Unable to cancel session');
+      },
+    });
+  }
+
+  delete(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._grpcService.delete$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session deleted');
+        this.router.navigate(['/sessions']);
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to delete session');
       },
     });
   }
