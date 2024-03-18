@@ -172,7 +172,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         const session = this._data[index];
         if (session && session.raw.sessionId === entry.sessionId) {
           if (this.hasDifference(session.raw, entry)) {
-            console.log(entry['duration']);
             session.raw = entry;
             this._data.splice(index, 1, session);
             this._data[index].value$.next(entry);
@@ -185,7 +184,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
             filters: this.countTasksByStatusFilters(entry.sessionId),
             value$: new Subject<SessionRaw>(),
           };
-          console.log(session.raw.sessionId, session);
           this._data.splice(index, 1, session);
         }
       });
@@ -197,9 +195,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     const keys = Object.keys(first);
     for(const key of keys) {
       if (first[key as keyof SessionRaw]?.toString() !== second[key as keyof SessionRaw]?.toString()) {
-        if (key === '_duration') {
-          console.log(first[key as keyof SessionRaw]?.toString(), second[key as keyof SessionRaw]?.toString(), second.sessionId);
-        }
         return true;
       }
     }
