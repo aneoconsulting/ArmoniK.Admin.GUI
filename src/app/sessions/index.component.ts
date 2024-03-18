@@ -229,7 +229,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe(data => {
         this.data = data;
-        if (this.isDurationDisplayed()) {
+        if (this.data.length !== 0 && this.isDurationDisplayed()) {
           data.forEach(session => {
             this.nextDuration$.next(session.sessionId);
           });
