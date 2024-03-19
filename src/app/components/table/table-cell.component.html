@@ -8,20 +8,9 @@
  </ng-container>
 <!-- link -->
 <ng-container *ngIf="column.type === 'link'">
-  <a mat-button
-    [routerLink]="[link]"
-  >
+  <button mat-button (click)="navigate()">
     {{ value | emptyCell }}
-  </a>
-</ng-container>
-<!-- Outside page Link -->
-<ng-container *ngIf="column.type === 'outer-link'">
-  <a mat-button
-    [routerLink]="[outerLink]"
-    [queryParams]="[value]"
-  >
-    {{ value | emptyCell }}
-  </a>
+  </button>
 </ng-container>
 <!-- Duration -->
 <ng-container *ngIf="column.type === 'duration'">

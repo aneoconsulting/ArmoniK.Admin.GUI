@@ -1,8 +1,8 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { RouterModule } from '@angular/router';
+import { NavigationExtras, Params, Router, RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
@@ -18,6 +18,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
   selector: 'app-table-cell',
   standalone: true,
   templateUrl: './table-cell.component.html',
+
   imports: [
     EmptyCellPipe,
     RouterModule,
@@ -40,8 +41,8 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
       this._element.raw = entry;
       this._value = this.handleNestedKeys(this._element);
     });
-    this._link = this.column.link ? `${this.column.link}/${this.element.raw[this.column.key as keyof DataRaw]}` : '';
-    this._outerLink = this.column.link ?? '';
+    this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
+    this.createLink();
   }
 
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
@@ -50,11 +51,13 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   @Output() changeSelection = new EventEmitter<void>();
 
+  private router = inject(Router);
+
   private _value: unknown;
   private _element: T;
 
   private _link: string;
-  private _outerLink: string;
+  private _queryParams: Params | undefined;
 
   ngOnDestroy(): void {
     this.value$.unsubscribe();
@@ -84,8 +87,8 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     return this._link;
   }
 
-  get outerLink() {
-    return this._outerLink;
+  get queryParams() {
+    return this._queryParams;
   }
 
   get queryTasksParams() {
@@ -94,6 +97,27 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   get countFilters() {
     return (this._element as unknown as SessionData | ApplicationData | PartitionData).filters;
+  }
+
+  createLink() {
+    if (this.column.link) {
+      if (this._queryParams) {
+        this._link = this.column.link;
+      } else {
+        this._link = `${this.column.link}/${this.element.raw[this.column.key as keyof DataRaw]}`;
+      }
+    } else {
+      this._link = '';
+    }
+  }
+
+  navigate() {
+    if (this._link) {
+      const extras: NavigationExtras = {
+        queryParams: this._queryParams,
+      };
+      this.router.navigate([this._link], extras);
+    }
   }
 
   handleNestedKeys(element: T) {
