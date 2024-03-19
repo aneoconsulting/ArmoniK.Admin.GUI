@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@aneoconsultingfr/armonik.api.angular':
-    specifier: ^3.16.1
-    version: 3.16.1(@angular/common@16.2.8)(@angular/core@16.2.8)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1)
+    specifier: 3.16.2
+    version: 3.16.2(@angular/common@16.2.12)(@angular/core@16.2.12)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1)
   '@angular-material-components/datetime-picker':
     specifier: ^16.0.1
     version: 16.0.1(@angular/cdk@16.2.14)(@angular/common@16.2.12)(@angular/core@16.2.12)(@angular/forms@16.2.12)(@angular/material@16.2.14)(@angular/platform-browser@16.2.12)
@@ -176,8 +176,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
-  /@aneoconsultingfr/armonik.api.angular@3.16.1(@angular/common@16.2.8)(@angular/core@16.2.8)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1):
-    resolution: {integrity: sha512-ydfxBdCBR6axlpTr6ptDtPk8zkz7cn/frhJ7bqmAELMxEYYLycAtLBNpWu26SB4U9tGiYaaLSYoqw6a80RUDaw==}
+  /@aneoconsultingfr/armonik.api.angular@3.16.2(@angular/common@16.2.12)(@angular/core@16.2.12)(@ngx-grpc/common@3.1.2)(@ngx-grpc/core@3.1.2)(@ngx-grpc/well-known-types@3.1.2)(google-protobuf@3.21.2)(rxjs@7.8.1):
+    resolution: {integrity: sha512-zgnmGkWYj/5GPb7rLV9d1W8lrwsuDuAp7BaM8opcFN1FHc8P6GasUKgxWPT74PTlQyT8fHGQ9y1zokXCEUCBDw==}
     peerDependencies:
       '@angular/common': ^16.2.1
       '@angular/core': ^16.2.1
@@ -1082,6 +1082,7 @@ packages:
 
   /@babel/helper-module-transforms@7.23.3(@babel/core@7.23.2):
     resolution: {integrity: sha512-7bBs4ED9OmswdfDzpz4MpWgSrV7FXlc3zIagvLFjS5H+Mk7Snr21vQ6QwrsoCGMfNC4e4LQPdoULEt4ykz0SRQ==}
+    engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
