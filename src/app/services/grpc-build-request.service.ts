@@ -69,7 +69,7 @@ export function buildBooleanFilter(filterField: FilterField, filter: Filter<Filt
   return {
     field: filterField,
     filterBoolean: {
-      value: filter.value === true ? true : false,
+      value: filter.value ?? false,
       operator: filter.operator ?? 0,
     }
   };
