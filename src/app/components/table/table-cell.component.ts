@@ -37,12 +37,14 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   @Input({ required: true }) set element(entry: T) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
-    this.value$.subscribe((entry: DataRaw) => {
-      this._element.raw = entry;
-      this._value = this.handleNestedKeys(this._element);
-    });
-    this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
-    this.createLink();
+    if (entry) {
+      this.value$.subscribe((entry: DataRaw) => {
+        this._element.raw = entry;
+        this._value = this.handleNestedKeys(this._element);
+      });
+      this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
+      this.createLink();
+    }
   }
 
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
