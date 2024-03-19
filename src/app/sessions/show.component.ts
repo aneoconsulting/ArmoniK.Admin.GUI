@@ -8,7 +8,7 @@ import { Subject, catchError, map, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
+import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -58,8 +58,9 @@ import { SessionRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface {
+export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
   cancel$ = new Subject<void>();
+  close$ = new Subject<void>();
   delete$ = new Subject<void>();
   duration$ = new Subject<void>();
   computeDuration$ = new Subject<void>();
@@ -194,11 +195,28 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     });
   }
 
-  delete(): void {
+  close(): void {
     if(!this.data?.sessionId) {
       return;
     }
 
+    this._grpcService.close$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session closed');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to close session');
+      },
+    });
+  }
+
+  delete(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+  
     this._grpcService.delete$(this.data.sessionId).subscribe({
       complete: () => {
         this.success('Session deleted');
@@ -220,6 +238,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   }
 
   canCancel(): boolean {
-    return this._sessionsStatusesService.sessionNotEnded(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+    return this._sessionsStatusesService.canCancel(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+  }
+
+  canClose(): boolean {
+    return this._sessionsStatusesService.canClose(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
 }

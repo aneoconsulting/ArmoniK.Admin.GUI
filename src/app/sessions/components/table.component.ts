@@ -94,6 +94,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
+  @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
@@ -123,6 +124,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   cancelSession$ = new Subject<SessionData>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
+  closeSession$ = new Subject<SessionData>();
+  closeSessionSubscription = this.closeSession$.subscribe(data => this.onClose(data.raw.sessionId));
+
   deleteSession$ = new Subject<SessionData>();
   deleteSessionSubscription = this.deleteSession$.subscribe(data => this.onDelete(data.raw.sessionId));
 
@@ -146,6 +150,12 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       label: 'Cancel session',
       icon: this.getIcon('cancel'),
       action$: this.cancelSession$, 
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+    },
+    {
+      label: 'Close session',
+      icon: this.getIcon('close'),
+      action$: this.closeSession$,
       condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
     },
     {
@@ -307,6 +317,10 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   onCancel(sessionId: string) {
     this.cancelSession.emit(sessionId);
+  }
+
+  onClose(sessionId: string) {
+    this.closeSession.emit(sessionId);
   }
 
   onDelete(sessionId: string) {

@@ -384,6 +384,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  onClose(sessionId: string) {
+    this._sessionsGrpcService.close$(sessionId).subscribe(
+      () => this.refresh.next(),
+    );
+  }
   onDelete(sessionId: string) {
     this._sessionsGrpcService.delete$(sessionId).subscribe(
       () => this.refresh.next(),
