@@ -77,6 +77,11 @@ describe('FiltersDialogFilterFieldComponent', () => {
       field: 7,
       type: 'date',
       for: 'root'
+    },
+    {
+      field: 8,
+      type: 'boolean',
+      for: 'root'
     }
   ];
 
@@ -286,6 +291,15 @@ describe('FiltersDialogFilterFieldComponent', () => {
       component.onInputChange(inputEvent);
       expect(component.filter.value).toEqual(1);
     });
+
+    it('should change the filter value to boolean if one boolean is passed', () => {
+      const inputEvent: FilterInputOutput = {
+        type: 'boolean',
+        value: true
+      };
+      component.onInputChange(inputEvent);
+      expect(component.filter.value).toEqual(true);
+    });
   });
 
   describe('findInput', () => {
@@ -375,6 +389,20 @@ describe('FiltersDialogFilterFieldComponent', () => {
         expect(component.findInput(arrayFilter)).toEqual({
           type: 'string',
           value: null
+        });
+      });
+
+      it('should return a boolean filteValue', () => {
+        const booleanFilter: Filter<number, number> = {
+          field: 8,
+          for: 'root',
+          operator: 1,
+          value: true
+        };
+
+        expect(component.findInput(booleanFilter)).toEqual({
+          type: 'boolean',
+          value: true
         });
       });
     });
@@ -575,5 +603,87 @@ describe('FiltersDialogFilterFieldComponent', () => {
       value: 'myStatus'
     };
     expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
+  });
+
+  describe('hasOneOperator', () => {
+    it('should be false if the filter has more than one operator', () => {
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      expect(component.hasOneOperator).toBeFalsy();
+    });
+
+    it('should be true if the filter has only one operator', () => {
+      component.allOperators = {
+        0: 'is'
+      };
+      expect(component.hasOneOperator).toBeTruthy();
+    });
+  });
+
+  describe('disableOperator', () => {
+    it('should set the first filter operator as the operator', () => {
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      component.disableOperator();
+      expect(component.filter.operator).toEqual(0);
+    });
+
+    it('should disable operator form control', () => {
+      component.disableOperator();
+      expect(component.operatorFormControl.disabled).toBeTruthy();
+    });
+  });
+
+  describe('enableOperator', () => {
+    it('should enable operator form control', () => {
+      component.enableOperator();
+      expect(component.operatorFormControl.enabled).toBeTruthy();
+    });
+
+    it('should set filter operator to null if it is not kept', () => {
+      component.enableOperator();
+      expect(component.filter.operator).toBeNull();
+    });
+
+    it('should does not modify the filter operator if it is kept', () => {
+      component.filter.operator = 1;
+      component.enableOperator(true);
+      expect(component.filter.operator).toEqual(1);
+    });
+  });
+
+  describe('handleOperatorState', () => {
+    it('should enable operator if there is more than one operator', () => {
+      const spy = jest.spyOn(component, 'enableOperator');
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      component.handleOperatorState(false);
+      expect(spy).toHaveBeenCalledWith(false);
+    });
+
+    it('should disable operator if there is only one operator', () => {
+      const spy = jest.spyOn(component, 'disableOperator');
+      component.allOperators = {
+        0: 'equal',
+      };
+      component.handleOperatorState();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should set the label of the selected operator', () => {
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      component.filter.operator = 0;
+      component.handleOperatorState(true);
+      expect(component.operatorFormControl.value).toEqual('equal');
+    });
   });
 });

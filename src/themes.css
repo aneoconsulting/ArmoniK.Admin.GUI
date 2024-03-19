@@ -56,8 +56,48 @@
 }
 
 ngx-mat-datepicker-content {
+  opacity: 1;
+}
+
+.purple-green ngx-mat-datepicker-content, .pink-bluegrey ngx-mat-datepicker-content {
+  background-color: #424242 !important;
+  color: white;
+}
+
+.indigo-pink ngx-mat-datepicker-content, .deeppurple-amber ngx-mat-datepicker-content {
   background-color: white !important;
-  border: solid 1px black;
+}
+
+.indigo-pink .mat-calendar-arrow, .pink-bluegrey .mat-calendar-arrow {
+  fill: white;
+}
+
+.purple-green .mat-calendar-body-cell-content, .pink-bluegrey .mat-calendar-body-cell-content  {
+  color: white;
+}
+
+.purple-green .mat-calendar-body-cell-content:hover {
+  background-color: #673ab7;
+}
+
+.pink-bluegrey .mat-calendar-body-cell-content:hover {
+  background-color: #607d8b;
+}
+
+.purple-green .mat-calendar-body-selected {
+  background-color: #9c27b0;
+}
+
+.pink-bluegrey .mat-calendar-body-selected {
+  background-color: #e91e63;
+}
+
+.deeppurple-amber .mat-calendar-body-cell-content:hover {
+  background-color: #ffc107;
+}
+
+.deeppurple-amber .mat-calendar-body-selected {
+  background-color: #673ab7;
 }
 
 .mat-calendar-body-selected{
