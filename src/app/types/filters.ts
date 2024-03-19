@@ -69,6 +69,7 @@ export type FilterInputValueString = MaybeNull<string>;
 export type FilterInputValueNumber = MaybeNull<number>;
 export type FilterInputValueDate = MaybeNull<Date>;
 export type FilterInputValueDuration = MaybeNull<number>;
+export type FilterInputValueBoolean = MaybeNull<boolean>;
 
 // Input for a filter input.
 export interface FilterInputString {
@@ -88,12 +89,16 @@ export interface FilterInputStatus {
   value: MaybeNull<string>;
   statuses: FilterValueOptions;
 }
+export interface FilterInputBoolean {
+  type: 'boolean';
+  value: FilterInputValueBoolean;
+}
 
 export interface FilterInputDuration {
   type: 'duration';
   value: FilterInputValueDuration
 }
-export type FilterInput = FilterInputString | FilterInputNumber | FilterInputDate | FilterInputStatus | FilterInputDuration;
+export type FilterInput = FilterInputString | FilterInputNumber | FilterInputDate | FilterInputStatus | FilterInputDuration | FilterInputBoolean;
 
 export type FilterInputValue = FilterInput['value'];
 export type FilterInputType = FilterInput['type'];
@@ -120,5 +125,9 @@ export interface FilterInputOutputDuration {
   type: 'duration';
   value: MaybeNull<number>
 }
+export interface FilterInputOutputBoolean {
+  type: 'boolean';
+  value: MaybeNull<boolean>;
+}
 
-export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration | FilterInputOutputStatus;
+export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration | FilterInputOutputStatus | FilterInputOutputBoolean;

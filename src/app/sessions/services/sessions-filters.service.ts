@@ -26,6 +26,8 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT]: $localize`Closed at`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT]: $localize`Deleted at`,
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT]: $localize`Purged at`,
+    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION]: $localize`Client Submission`,
+    [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION]: $localize`Worker Submission`,
   };
 
   readonly optionsField: Record<SessionTaskOptionEnumField, string> = {
@@ -87,6 +89,16 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
       for: 'root',
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
       type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+      type: 'boolean'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
+      type: 'boolean'
     },
     {
       for: 'options',

@@ -5,7 +5,7 @@ import { Observable, map } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { buildArrayFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
+import { buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
@@ -28,7 +28,9 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
     'closedAt': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT,
     'deletedAt': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT,
     'purgedAt': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
-  } as unknown as Record<SessionRawFieldKey, SessionRawEnumField>;
+    'clientSubmission': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+    'workerSubmission': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
+  };
 
   list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
     const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
@@ -109,6 +111,8 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
         return buildNumberFilter(filterField, filter) as SessionFilterField.AsObject;
       case 'array':
         return buildArrayFilter(filterField, filter) as SessionFilterField.AsObject;
+      case 'boolean':
+        return buildBooleanFilter(filterField, filter) as SessionFilterField.AsObject;
       default:
         throw new Error(`Type ${type} not supported`);
       }

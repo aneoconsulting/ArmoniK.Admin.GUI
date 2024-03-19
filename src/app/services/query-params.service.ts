@@ -17,8 +17,8 @@ export class QueryParamsService {
     return queryParamsOptions;
   }
 
-  createFilters<T extends number, U extends number | null = null>(filtersOr: FiltersOr<T, U>): Record<string, MaybeNull<string | number | FilterInputValueDate | null>> | null {
-    const queryParamsFilters: Record<string, MaybeNull<string | number | FilterInputValueDate | null>> = {};
+  createFilters<T extends number, U extends number | null = null>(filtersOr: FiltersOr<T, U>): Record<string, MaybeNull<string | number | FilterInputValueDate | boolean | null>> | null {
+    const queryParamsFilters: Record<string, MaybeNull<string | number | FilterInputValueDate | boolean | null>> = {};
 
     let i = 0;
     for (const filtesrsAnd of filtersOr) {
