@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { TableColumn } from '@app/types/column.type';
 import { IndexServiceInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
@@ -10,58 +11,58 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
-  readonly tableName: string = 'partitions';
-
   readonly defaultColumns: PartitionRawColumnKey[] = this.defaultConfigService.defaultPartitions.columns;
   readonly defaultLockColumns: boolean = this.defaultConfigService.defaultPartitions.lockColumns;
-  readonly availableColumns: PartitionRawColumnKey[] = ['id', 'priority', 'parentPartitionIds', 'podConfiguration', 'podMax', 'podReserved', 'preemptionPercentage', 'count'];
-
-  // TODO: We could use a custom type to know which columns are objects
-  readonly objectColumns: PartitionRawColumnKey[] = ['podConfiguration', 'parentPartitionIds'];
-
-  readonly columnsLabels: Record<PartitionRawColumnKey, string> = {
-    id: $localize`ID`,
-    priority: $localize`Priority`,
-    parentPartitionIds: $localize`Parent Partition Ids`,
-    podConfiguration: $localize`Pod Configuration`,
-    podMax: $localize`Pod Max`,
-    podReserved: $localize`Pod Reserved`,
-    preemptionPercentage: $localize`Preemption Percentage`,
-    actions: $localize`Actions`,
-    count: $localize`Tasks by Status`,
-  };
-
   readonly defaultOptions: PartitionRawListOptions = this.defaultConfigService.defaultPartitions.options;
-
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultPartitions.interval;
 
-  columnToLabel(column: PartitionRawColumnKey): string {
-    return this.columnsLabels[column];
-  }
-
-  /**
-   * Table
-   */
-  isPartitionIdColumn(column: PartitionRawColumnKey): boolean {
-    return column === 'id';
-  }
-
-
-  isNotSortableColumn(column: PartitionRawColumnKey): boolean {
-    return this.isObjectColumn(column) || this.isCountColumn(column);
-  }
-
-  isObjectColumn(column: PartitionRawColumnKey): boolean {
-    return this.objectColumns.includes(column);
-  }
-
-  isCountColumn(column: PartitionRawColumnKey): boolean {
-    return column === 'count';
-  }
-
-  isSimpleColumn(column: PartitionRawColumnKey): boolean {
-    return !this.isPartitionIdColumn(column) && !this.isObjectColumn(column) && !this.isCountColumn(column);
-  }
+  readonly availableTableColumns: TableColumn<PartitionRawColumnKey>[] = [
+    {
+      name: $localize`ID`,
+      key: 'id',
+      type: 'link',
+      sortable: true,
+      link: '/partitions',
+    },
+    {
+      name: $localize`Priority`,
+      key: 'priority',
+      sortable: true,
+    },
+    {
+      name: $localize`Parent Partition Ids`,
+      key: 'parentPartitionIds',
+      type: 'object',
+      sortable: true
+    },
+    {
+      name: $localize`Pod Configuration`,
+      key: 'podConfiguration',
+      type: 'object',
+      sortable: true,
+    },
+    {
+      name: $localize`Pod Max`,
+      key: 'podMax',
+      sortable: true, 
+    },
+    {
+      name: $localize`Pod Reserved`,
+      key: 'podReserved',
+      sortable: true,
+    },
+    {
+      name: $localize`Preemption Percentage`,
+      key: 'preemptionPercentage',
+      sortable: true,
+    },
+    {
+      name: $localize`Tasks by Status`,
+      key: 'count',
+      type: 'count',
+      sortable: false
+    }
+  ];
 
   /**
    * Interval

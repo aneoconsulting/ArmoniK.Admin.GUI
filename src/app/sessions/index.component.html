@@ -9,8 +9,8 @@
         [loading]="isLoading"
         [refreshTooltip]="autoRefreshTooltip()"
         [intervalValue]="intervalValue"
-        [columnsLabels]="columnsLabels()"
-        [displayedColumns]="displayedColumns"
+        [columnsLabels]="columnsLabels"
+        [displayedColumns]="displayedColumnsKeys"
         [availableColumns]="availableColumns"
         [lockColumns]="lockColumns"
         (refresh)="onRefresh()"
@@ -37,7 +37,7 @@
   </mat-toolbar>
   
   <app-sessions-table
-    [data]="data"
+    [data$]="data$"
     [filters]="filters"
     [displayedColumns]="displayedColumns"
     [lockColumns]="lockColumns"
@@ -45,4 +45,5 @@
     [total]="total"
     (optionsChange)="onOptionsChange()"
     (cancelSession)="onCancel($event)"
+    (deleteSession)="onDelete($event)"
   ></app-sessions-table>

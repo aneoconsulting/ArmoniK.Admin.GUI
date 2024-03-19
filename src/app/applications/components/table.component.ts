@@ -1,4 +1,4 @@
-import { ApplicationRaw, ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -8,10 +8,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
+import { TableColumn } from '@app/types/column.type';
 import { ApplicationData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -20,6 +21,7 @@ import { ActionTable } from '@app/types/table';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsComponent } from '@components/table/table-actions.component';
+import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -29,41 +31,36 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
   standalone: true,
   template: `
 <app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="data" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
+  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)">
 
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="isNotSortableColumn(column)" *matHeaderCellDef cdkDrag appNoWrap>
-        {{ columnToLabel(column) }}
-        <button mat-icon-button *ngIf="isCountColumn(column)" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
+      <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
+        {{ column.name }}
+        <button mat-icon-button *ngIf="column.type === 'count'" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
         </button>
       </th>
-      <!-- Application Column -->
-      <ng-container *ngIf="isSimpleColumn(column)">
+      <!-- Columns -->
+      <ng-container *ngIf="column.type !== 'actions'">
         <td mat-cell *matCellDef="let element" appNoWrap>
-          {{ element.raw[column] | emptyCell }}
-        </td>
-      </ng-container>
-      <!-- Application's Tasks Count by Status -->
-      <ng-container *ngIf="isCountColumn(column)">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-        <app-count-tasks-by-status
-          [statuses]="tasksStatusesColored"
-          [queryParams]="element.queryTasksParams"
-          [filters]="element.filters"
-        ></app-count-tasks-by-status>
+          <app-table-cell 
+            [value$]="element.value$"
+            [column]="column"
+            [element]="element"
+            [tasksStatusesColored]="tasksStatusesColored"
+          />
         </td>
       </ng-container>
       <!-- Action -->
-      <ng-container *ngIf="isActionsColumn(column)">
+      <ng-container *ngIf="column.type === 'actions'">
         <td mat-cell *matCellDef="let element" appNoWrap>
          <app-table-actions [actions]="actions" [element]="element" />
         </td>
@@ -73,12 +70,12 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
     <!-- Empty -->
     <tr *matNoDataRow>
       <td [attr.colspan]="displayedColumns.length">
-        <app-table-empty-data></app-table-empty-data>
+        <app-table-empty-data/>
       </td>
     </tr>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-header-row *matHeaderRowDef="columnKeys"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnKeys;"></tr>
   </table>
 
   <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of applications">
@@ -112,12 +109,13 @@ import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters,
     EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
+    TableCellComponent,
     TableActionsComponent
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
-  @Input({required: true}) displayedColumns: ApplicationRawColumnKey[] = [];
+  @Input({required: true}) displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
   @Input({required: true}) options: ApplicationRawListOptions;
   @Input({required: true}) total: number;
   @Input({required: true}) filters: ApplicationRawFilters;
@@ -128,21 +126,32 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this._data;
   }
 
-  @Input({ required: true }) set data(entries: ApplicationRaw.AsObject[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const task: ApplicationData = {
-        raw: entry,
-        queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
-        filters: this.countTasksByStatusFilters(entry.name, entry.version)
-      };
-      this._data.push(task);
+  get columnKeys(): ApplicationRawColumnKey[] {
+    return this.displayedColumns.map(column => column.key);
+  }
+
+  @Input({ required: true }) set data(entries: ApplicationRaw[]) {
+    entries.forEach((entry, index) => {
+      const application = this._data[index];
+      if (application && application.raw.name === entry.name && application.raw.version === entry.version) {
+        this._data[index].value$?.next(entry);
+      } else {
+        const lineData: ApplicationData = {
+          raw: entry,
+          queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
+          filters: this.countTasksByStatusFilters(entry.name, entry.version),
+          value$: new Subject<ApplicationRaw>()
+        };
+        this._data.splice(index, 1, lineData);
+      }
     });
+    this.dataSource.data = this._data;
   }
 
   @Output() optionsChange = new EventEmitter<never>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<ApplicationData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
@@ -179,6 +188,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
@@ -191,26 +201,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   getPageIcon(name: Page): string {
     return this._iconsService.getPageIcon(name);
-  }
-
-  columnToLabel(column: ApplicationRawColumnKey): string {
-    return this._applicationsIndexService.columnToLabel(column);
-  }
-
-  isActionsColumn(column: ApplicationRawColumnKey): boolean {
-    return this._applicationsIndexService.isActionsColumn(column);
-  }
-
-  isCountColumn(column: ApplicationRawColumnKey): boolean {
-    return this._applicationsIndexService.isCountColumn(column);
-  }
-
-  isSimpleColumn(column: ApplicationRawColumnKey): boolean {
-    return this._applicationsIndexService.isSimpleColumn(column);
-  }
-
-  isNotSortableColumn(column: ApplicationRawColumnKey): boolean {
-    return this._applicationsIndexService.isNotSortableColumn(column);
   }
 
   createViewSessionsQueryParams(name: string, version: string) {
@@ -306,6 +296,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
-    this._applicationsIndexService.saveColumns(this.displayedColumns);
+    this._applicationsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 }
