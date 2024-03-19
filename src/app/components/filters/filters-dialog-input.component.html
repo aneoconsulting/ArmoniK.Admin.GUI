@@ -11,11 +11,11 @@
 <mat-form-field class="dateForm" appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'date'">
   <mat-label i18n="Input label">Choose a date</mat-label>
   <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="input.value" i18n-placeholder placeholder="Choose a date">
-    <ngx-mat-datepicker-toggle matSuffix [for]="picker"></ngx-mat-datepicker-toggle>
-    <ngx-mat-datetime-picker #picker [startAt]="actualDate" [showSpinners]="true" [showSeconds]="true" >
+   <ngx-mat-datepicker-toggle matSuffix [for]="picker"/>
+   <ngx-mat-datetime-picker #picker [startAt]="actualDate" [showSpinners]="true" [showSeconds]="true" >
     <ngx-mat-datepicker-actions>
-      <button mat-flat-button color="accent" ngxMatDatepickerApply>
-      <span i18n>Apply</span>
+      <button mat-flat-button color="primary" ngxMatDatepickerApply>
+        <span i18n>Apply</span>
       </button>
     </ngx-mat-datepicker-actions>
   </ngx-mat-datetime-picker>
