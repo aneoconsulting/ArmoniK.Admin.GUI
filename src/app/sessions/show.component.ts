@@ -2,12 +2,13 @@ import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnu
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject, catchError, map, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
+import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -57,8 +58,10 @@ import { SessionRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface {
+export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
   cancel$ = new Subject<void>();
+  close$ = new Subject<void>();
+  delete$ = new Subject<void>();
   duration$ = new Subject<void>();
   computeDuration$ = new Subject<void>();
 
@@ -68,6 +71,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   private _sessionsStatusesService = inject(SessionsStatusesService);
   protected override _grpcService = inject(SessionsGrpcService);
   private _filtersService = inject(FiltersService);
+  private router = inject(Router);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -99,6 +103,14 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       disabled: this.canCancel(),
       color: 'accent',
       area: 'right'
+    },
+    {
+      id: 'delete',
+      name: $localize`Delete Session`,
+      icon: this.getIcon('delete'),
+      action$: this.delete$,
+      color: 'accent',
+      area: 'right'
     }
   ];
 
@@ -128,6 +140,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     this.getIdByRoute();
     this.cancel$.subscribe(() => {
       this.cancel();
+    });
+
+    this.delete$.subscribe(() => {
+      this.delete();
     });
 
     this.duration$.pipe(
@@ -179,6 +195,40 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     });
   }
 
+  close(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._grpcService.close$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session closed');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to close session');
+      },
+    });
+  }
+
+  delete(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+  
+    this._grpcService.delete$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session deleted');
+        this.router.navigate(['/sessions']);
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to delete session');
+      },
+    });
+  }
+
   get resultsKey() {
     return this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
   }
@@ -188,6 +238,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   }
 
   canCancel(): boolean {
-    return this._sessionsStatusesService.sessionNotEnded(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+    return this._sessionsStatusesService.canCancel(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+  }
+
+  canClose(): boolean {
+    return this._sessionsStatusesService.canClose(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
 }

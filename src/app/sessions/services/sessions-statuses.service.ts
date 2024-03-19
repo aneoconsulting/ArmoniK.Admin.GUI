@@ -18,7 +18,11 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
     return this.statuses[status];
   }
 
-  sessionNotEnded(status: SessionStatus) {
+  canCancel(status: SessionStatus) {
     return status !== SessionStatus.SESSION_STATUS_RUNNING;
+  }
+
+  canClose(status: SessionStatus) {
+    return status === SessionStatus.SESSION_STATUS_RUNNING;
   }
 }
