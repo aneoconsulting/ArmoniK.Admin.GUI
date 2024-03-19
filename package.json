@@ -18,7 +18,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api.angular": "3.16.2",
+    "@aneoconsultingfr/armonik.api.angular": "^3.16.2",
     "@angular-material-components/datetime-picker": "^16.0.1",
     "@angular/animations": "^16.2.12",
     "@angular/cdk": "16.2.14",
