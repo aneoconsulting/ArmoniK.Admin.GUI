@@ -170,6 +170,58 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
       type: 'duration',
       sortable: true,
     },
+    {
+      name: $localize`Application Name`,
+      key: 'options.applicationName',
+      sortable: true,
+    },
+    {
+      name: $localize`Application Version`,
+      key: 'options.applicationVersion',
+      sortable: true,
+    },
+    {
+      name: $localize`Application Namespace`,
+      key: 'options.applicationNamespace',
+      sortable: true,
+    },
+    {
+      name: $localize`Application Service`,
+      key: 'options.applicationService',
+      sortable: true,
+    },
+    {
+      name: $localize`Engine Type`,
+      key: 'options.engineType',
+      sortable: true,
+    },
+    {
+      name: $localize`Max Duration`,
+      key: 'options.maxDuration',
+      type: 'duration',
+      sortable: true,
+    },
+    {
+      name: $localize`Max Retries`,
+      key: 'options.maxRetries',
+      sortable: true,
+    },
+    {
+      name: $localize`Custom Data`,
+      key: 'options.options',
+      type: 'object',
+      sortable: true,
+    },
+    {
+      name: $localize`Priority`,
+      key: 'options.priority',
+      sortable: true,
+    },
+    {
+      name: $localize`Parition Id`,
+      key: 'options.partitionId',
+      sortable: true,
+    }
   ];
 
   genericField(column: TaskSummaryColumnKey) {
