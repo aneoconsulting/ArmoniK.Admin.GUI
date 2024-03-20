@@ -2,7 +2,6 @@ import { AuthenticationClient, GetCurrentUserResponse } from '@aneoconsultingfr/
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { UserGrpcService } from './user-grpc.service';
-TestBed;
 
 describe('VersionsGrpcService', () => {
   let service: UserGrpcService;
