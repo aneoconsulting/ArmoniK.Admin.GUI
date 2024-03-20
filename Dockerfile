@@ -1,4 +1,4 @@
-FROM node:lts-alpine as build
+FROM node:lts-alpine AS build
 
 WORKDIR /usr/src/app
 
@@ -16,7 +16,7 @@ COPY angular.json ./
 
 RUN nr build --base-href=/admin/
 
-FROM nginx:stable as production
+FROM nginx:stable AS production
 
 WORKDIR /usr/share/nginx/html
 
