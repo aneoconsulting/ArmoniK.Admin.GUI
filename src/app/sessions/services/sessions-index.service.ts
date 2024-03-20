@@ -72,7 +72,7 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
       sortable: false
     },
     {
-      name: $localize`Options`,
+      name: $localize`Custom Data`,
       key: 'options.options',
       type: 'object',
       sortable: false
