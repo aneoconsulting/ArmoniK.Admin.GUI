@@ -1,4 +1,5 @@
 import { ApplicationFilterField, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters , PartitionRawListOptions} from '@app/partitions/types';
@@ -8,17 +9,18 @@ import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSum
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
-export type ColumnKey<T extends object, O extends object = Record<string, never>> = keyof T | 'actions' | PrefixedOptions<O> | GenericColumn;
+export type ColumnKey<T extends object, O extends object = Record<string, never>> = keyof T | 'actions' | PrefixedOptions<O> | CustomColumn;
 
 export type FieldKey<T extends DataRaw> = keyof T;
 
 export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary;
 
-export type GenericColumn = `generic.${string}`;
+export type CustomColumn = `custom.${string}`;
 
 export interface ArmonikData<T extends DataRaw> {
   raw: T,
   value$: Subject<T>;
+  queryParams?: Map<ColumnKey<T>, Params>;
 }
 
 interface ArmonikTaskByStatusData<T extends DataRaw> extends ArmonikData<T>{

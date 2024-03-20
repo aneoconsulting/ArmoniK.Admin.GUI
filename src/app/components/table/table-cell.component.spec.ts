@@ -147,11 +147,13 @@ describe('TableCellComponent', () => {
     });
 
     it('should set dateValue', () => {
-      expect(component.dateValue).toEqual(new Date(1343540 * 1000));
+      expect(component.dateValue).toEqual(new Date(1343540000));
     });
 
     it('should return null if value is undefined', () => {
-      component.element = {} as unknown as ArmonikData<DataRaw>;
+      component.element = {
+        raw: {}
+      } as unknown as ArmonikData<DataRaw>;
       expect(component.dateValue).toBeNull();
     });
   });
