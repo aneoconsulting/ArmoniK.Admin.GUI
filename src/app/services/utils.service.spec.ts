@@ -7,7 +7,7 @@ describe('UtilsService', () => {
   const service = new UtilsService<number, number>();
   
   const cb = (filter: Filter<number, number>) => {
-    return (type: FilterType, field: number | null | string, isForRoot: boolean, isGeneric: boolean) => {
+    return (type: FilterType, field: number | null | string, isForRoot: boolean, isCustom: boolean) => {
       let filterField;
       if (isForRoot) {
         filterField = {
@@ -15,9 +15,9 @@ describe('UtilsService', () => {
             field: field as TaskSummaryEnumField
           }
         };
-      } else if (isGeneric) {
+      } else if (isCustom) {
         filterField = {
-          taskOptionGenericField: {
+          taskOptionCustomField: {
             field: field as unknown as string
           }
         };

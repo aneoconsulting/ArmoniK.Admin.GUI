@@ -92,7 +92,7 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
   }
 
   #buildFilterField(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>) {
-    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean, isGeneric: boolean) => {
+    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean, isCustom: boolean) => {
 
       let filterField: TaskFilterField.AsObject['field'];
       if (isForRoot) {
@@ -101,7 +101,7 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
             field: field as TaskSummaryEnumField
           }
         };
-      } else if (isGeneric) {
+      } else if (isCustom) {
         filterField = {
           taskOptionGenericField: {
             field: field as string
