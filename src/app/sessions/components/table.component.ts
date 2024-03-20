@@ -10,11 +10,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { Params, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { SessionData } from '@app/types/data';
+import { ColumnKey, SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
@@ -115,8 +115,8 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
 
-  seeTasks$ = new Subject<SessionData>();
-  seeTasksSubscription = this.seeTasks$.subscribe(data => this._router.navigate(['/tasks'], { queryParams: data.queryTasksParams }));
+  seeSessions$ = new Subject<SessionData>();
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions', data.raw.sessionId]));
 
   seeResults$ = new Subject<SessionData>();
   seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
@@ -137,9 +137,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       action$: this.copy$, 
     },
     {
-      label: 'See tasks',
-      icon: this.getPageIcon('tasks'),
-      action$: this.seeTasks$,
+      label: 'See session',
+      icon: this.getPageIcon('sessions'),
+      action$: this.seeSessions$,
     },
     {
       label: 'See results',
@@ -194,8 +194,11 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
           this._data.splice(index, 1, session);
           this._data[index].value$.next(entry);
         } else {
+          const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
+          queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
           const session: SessionData = {
             raw: entry,
+            queryParams,
             queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
             resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
             filters: this.countTasksByStatusFilters(entry.sessionId),
