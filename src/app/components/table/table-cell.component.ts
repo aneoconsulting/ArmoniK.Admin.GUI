@@ -39,6 +39,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     this.value$.subscribe((entry: DataRaw) => {
       this._element.raw = entry;
       this._value = this.handleNestedKeys(this._element);
+      this.refreshStatuses.next();
     });
   }
 
@@ -50,6 +51,8 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   private _value: unknown;
   private _element: T;
+
+  refreshStatuses = new Subject<void>();
 
   ngOnDestroy(): void {
     this.value$.unsubscribe();
