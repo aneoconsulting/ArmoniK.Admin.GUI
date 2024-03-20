@@ -1,5 +1,5 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavigationExtras, Params, Router, RouterModule } from '@angular/router';
@@ -31,7 +31,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status> implements OnDestroy{  
+export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status>{  
   @Input({ required: true }) column: TableColumn<K>;
   @Input({ required: true }) value$: Subject<DataRaw>;
   @Input({ required: true }) set element(entry: T) {
@@ -62,10 +62,6 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   private _link: string;
   private _queryParams: Params | undefined;
   refreshStatuses = new Subject<void>();
-
-  ngOnDestroy(): void {
-    this.value$.unsubscribe();
-  }
 
   get element() {
     return this._element;
