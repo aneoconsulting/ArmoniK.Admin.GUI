@@ -78,6 +78,7 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Pod TTL`,
       key: 'podTtl',
+      type: 'duration',
       sortable: true,
     },
     {
