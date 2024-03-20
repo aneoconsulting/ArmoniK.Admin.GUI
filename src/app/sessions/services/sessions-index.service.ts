@@ -20,9 +20,9 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
     {
       name: $localize`Session ID`,
       key: 'sessionId',
-      type: 'link',
       sortable: true,
-      link: '/sessions',
+      link: '/tasks',
+      type: 'link',
     },
     {
       name: $localize`Status`,
@@ -123,6 +123,7 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
     {
       name: $localize`Max Duration`,
       key: 'options.maxDuration',
+      type: 'duration',
       sortable: true,
     },
     {
