@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { TableColumn } from '@app/types/column.type';
-import { GenericColumn } from '@app/types/data';
-import { IndexServiceGenericInterface } from '@app/types/services/indexService';
+import { CustomColumn } from '@app/types/data';
+import { IndexServiceCustomInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksIndexService implements IndexServiceGenericInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
+export class TasksIndexService implements IndexServiceCustomInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -78,6 +78,7 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     {
       name: $localize`Pod TTL`,
       key: 'podTtl',
+      type: 'duration',
       sortable: true,
     },
     {
@@ -224,8 +225,8 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
     }
   ];
 
-  genericField(column: TaskSummaryColumnKey) {
-    return column.replace('generic.', '');
+  customField(column: TaskSummaryColumnKey) {
+    return column.replace('custom.', '');
   }
 
   /**
@@ -287,15 +288,15 @@ export class TasksIndexService implements IndexServiceGenericInterface<TaskSumma
   }
 
   /**
-   * Generic Columns
+   * Custom Columns
    */
 
-  saveGenericColumns(columns: GenericColumn[]): void {
-    this.tableService.saveColumns('tasks-generic-columns', columns);
+  saveCustomColumns(columns: CustomColumn[]): void {
+    this.tableService.saveColumns('tasks-custom-columns', columns);
   }
 
-  restoreGenericColumns(): GenericColumn[] {
-    const columns = this.tableService.restoreColumns<GenericColumn[]>('tasks-generic-columns') ?? [];
+  restoreCustomColumns(): CustomColumn[] {
+    const columns = this.tableService.restoreColumns<CustomColumn[]>('tasks-custom-columns') ?? [];
     return [...columns] ;
   }
 

@@ -6,5 +6,5 @@ export type TableColumn<K extends RawColumnKey> = {
   type?: 'link' | 'count' | 'object' | 'actions' | 'date' | 'duration' | 'status' | 'select';
   sortable: boolean;
   link?: string;
-  queryParams?: Record<string, string>;
+  queryParams?: string;
 };
