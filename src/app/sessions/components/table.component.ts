@@ -187,38 +187,34 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.data$.subscribe(entries => {
-      entries.forEach((entry, index) => {
-        const session = this._data[index];
-        if (session && session.raw.sessionId === entry.sessionId) {
-          session.raw = entry;
-          this._data.splice(index, 1, session);
-          this._data[index].value$.next(entry);
-        } else {
-          const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
-          queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
-          const session: SessionData = {
-            raw: entry,
-            queryParams,
-            queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
-            resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
-            filters: this.countTasksByStatusFilters(entry.sessionId),
-            value$: new Subject<SessionRaw>(),
-          };
-          this._data.splice(index, 1, session);
-        }
-      });
-      this.dataSource.data = this._data;
-    });
-  }
-
-  hasDifference(first: SessionRaw, second: SessionRaw): boolean{
-    const keys = Object.keys(first);
-    for(const key of keys) {
-      if (JSON.stringify(first[key as keyof SessionRaw]) !== JSON.stringify(second[key as keyof SessionRaw])) {
-        return true;
+      if (entries.length !== 0) {
+        this._data = this.data.filter(d => entries.find(entry => entry.sessionId === d.raw.sessionId));
+        entries.forEach((entry, index) => {
+          const session = this._data[index];
+          if (session && session.raw.sessionId === entry.sessionId) {
+            session.raw = entry;
+            this._data.splice(index, 1, session);
+            this._data[index].value$.next(entry);
+          } else {
+            const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
+            queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
+            const session: SessionData = {
+              raw: entry,
+              queryParams,
+              queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+              resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
+              filters: this.countTasksByStatusFilters(entry.sessionId),
+              value$: new Subject<SessionRaw>(),
+            };
+            this._data.splice(index, 1, session);
+          }
+        });
+        this.dataSource.data = this._data;
+      } else {
+        this._data = [];
+        this.dataSource.data = this._data;
       }
-    }
-    return false;
+    });
   }
 
   getIcon(name: string): string {
