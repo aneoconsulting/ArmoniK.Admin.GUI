@@ -1,7 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Line, LineType } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, GenericColumn, RawColumnKey } from './data';
+import { ColumnKey, CustomColumn, RawColumnKey } from './data';
 import { FiltersOr } from './filters';
 
 export interface ColumnsModifyDialogData<T extends object, O extends object> {
@@ -14,7 +14,7 @@ export type ColumnsModifyDialogResult<T extends object, O extends object> = Colu
 
 export interface FiltersDialogData<T extends number, U extends number | null = null> {
   filtersOr: FiltersOr<T, U>,
-  genericColumns?: GenericColumn[]
+  customColumns?: CustomColumn[]
 }
 
 export type FiltersDialogResult<T extends number, U extends number | null = null> = FiltersOr<T, U>;

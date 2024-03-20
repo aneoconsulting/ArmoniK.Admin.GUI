@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { TableColumn } from '@app/types/column.type';
-import { GenericColumn } from '@app/types/data';
-import { IndexServiceGenericInterface } from '@app/types/services/indexService';
+import { CustomColumn } from '@app/types/data';
+import { IndexServiceCustomInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsIndexService implements IndexServiceGenericInterface<SessionRawColumnKey, SessionRawListOptions> {
+export class SessionsIndexService implements IndexServiceCustomInterface<SessionRawColumnKey, SessionRawListOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -142,8 +142,8 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     },
   ];
 
-  genericField(column: SessionRawColumnKey) {
-    return column.replace('generic.', '');
+  customField(column: SessionRawColumnKey) {
+    return column.replace('custom.', '');
   }
 
   /**
@@ -199,15 +199,15 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
   }
 
   /**
-   * Generic Columns
+   * Custom Columns
    */
 
-  saveGenericColumns(columns: GenericColumn[]): void {
-    this.tableService.saveColumns('sessions-generic-columns', columns);
+  saveCustomColumns(columns: CustomColumn[]): void {
+    this.tableService.saveColumns('sessions-custom-columns', columns);
   }
   
-  restoreGenericColumns(): GenericColumn[] {
-    const columns = this.tableService.restoreColumns<GenericColumn[]>('sessions-generic-columns') ?? [];
+  restoreCustomColumns(): CustomColumn[] {
+    const columns = this.tableService.restoreColumns<CustomColumn[]>('sessions-custom-columns') ?? [];
     return [...columns] ;
   }
 
