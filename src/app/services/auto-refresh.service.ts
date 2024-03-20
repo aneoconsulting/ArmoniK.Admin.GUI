@@ -11,7 +11,7 @@ export class AutoRefreshService {
    */
   createInterval(intervalSubject: Subject<number>, stopIntervalSubject: Subject<void>): Observable<number> {
     return merge(intervalSubject).pipe(
-      map(value => !value || value < 0 ? value = 0 : value),
+      map(value => !value || value < 0 ? 0 : value),
       switchMap((value) => {
         return interval((value as number) * 1000).pipe(takeUntil(stopIntervalSubject));
       })

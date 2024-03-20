@@ -94,7 +94,7 @@ export class FiltersDialogInputComponent implements OnInit {
 
     this.valueChange.emit({
       type: 'status',
-      value: formValue ? formValue : null,
+      value: formValue,
     });
   }
 
