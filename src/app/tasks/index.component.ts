@@ -256,7 +256,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(columns: TaskSummaryColumnKey[]) {
-    console.log(columns);
+    if (columns.includes('select')) {
+      const selectIndex = columns.indexOf('select');
+      columns.splice(selectIndex, 1);
+      columns.unshift('select');
+    }
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
     this.#tasksIndexService.saveColumns(columns);
