@@ -74,7 +74,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       </td>
     </tr>
 
-    <tr mat-header-row *matHeaderRowDef="columnKeys"></tr>
+    <tr mat-header-row *matHeaderRowDef="columnKeys; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: columnKeys;"></tr>
   </table>
 
@@ -131,21 +131,27 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   }
 
   @Input({ required: true }) set data(entries: ApplicationRaw[]) {
-    entries.forEach((entry, index) => {
-      const application = this._data[index];
-      if (application && application.raw.name === entry.name && application.raw.version === entry.version) {
-        this._data[index].value$?.next(entry);
-      } else {
-        const lineData: ApplicationData = {
-          raw: entry,
-          queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
-          filters: this.countTasksByStatusFilters(entry.name, entry.version),
-          value$: new Subject<ApplicationRaw>()
-        };
-        this._data.splice(index, 1, lineData);
-      }
-    });
-    this.dataSource.data = this._data;
+    if (entries.length !== 0) {
+      this._data = this.data.filter(d => entries.find(entry => entry.name === d.raw.namespace && entry.version === d.raw.version));
+      entries.forEach((entry, index) => {
+        const application = this._data[index];
+        if (application && application.raw.name === entry.name && application.raw.version === entry.version) {
+          this._data[index].value$?.next(entry);
+        } else {
+          const lineData: ApplicationData = {
+            raw: entry,
+            queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
+            filters: this.countTasksByStatusFilters(entry.name, entry.version),
+            value$: new Subject<ApplicationRaw>()
+          };
+          this._data.splice(index, 1, lineData);
+        }
+      });
+      this.dataSource.data = this._data;
+    } else {
+      this._data = [];
+      this.dataSource.data = this._data;
+    }
   }
 
   @Output() optionsChange = new EventEmitter<never>();

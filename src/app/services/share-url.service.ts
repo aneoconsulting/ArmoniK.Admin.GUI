@@ -37,7 +37,6 @@ export class ShareUrlService {
 
     return keys.reduce((acc, key) => {
       const value = object[key];
-      // const encodedValue = encodeURIComponent(JSON.stringify(value));
 
       if (!value)
         return acc;

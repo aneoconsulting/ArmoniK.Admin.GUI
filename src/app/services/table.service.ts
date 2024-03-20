@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { GenericScope, Scope } from '@app/types/config';
+import { CustomScope, Scope } from '@app/types/config';
 import { DataRaw, FieldKey } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
@@ -110,14 +110,14 @@ export class TableService {
   /**
    * Save columns to the local storage
    */
-  saveColumns(key: `${Scope}-columns` | `${GenericScope}-generic-columns`, columns: string[]): void {
+  saveColumns(key: `${Scope}-columns` | `${CustomScope}-custom-columns`, columns: string[]): void {
     this._tableStorageService.save(key, columns);
   }
 
   /**
    * Restore columns from the local storage
    */
-  restoreColumns<T>(key: `${Scope}-columns` | `${GenericScope}-generic-columns`): T | null {
+  restoreColumns<T>(key: `${Scope}-columns` | `${CustomScope}-custom-columns`): T | null {
     return this._tableStorageService.restore<T>(key) as T;
   }
 
