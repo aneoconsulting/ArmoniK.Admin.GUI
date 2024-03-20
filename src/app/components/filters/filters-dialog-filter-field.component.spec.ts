@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { GenericColumn } from '@app/types/data';
+import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInputOutput, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -85,7 +85,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
     }
   ];
 
-  const genericList: GenericColumn[] = ['generic.test', 'generic.fastCompute', 'generic.column'];
+  const customList: CustomColumn[] = ['custom.test', 'custom.fastCompute', 'custom.column'];
 
   beforeEach(async () => {
     component = TestBed.configureTestingModule({
@@ -104,7 +104,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
       value: 'someValue'
     };
     component.first = true;
-    component.genericColumns = genericList;
+    component.customColumns = customList;
     component.ngOnInit();
   });
 
@@ -507,14 +507,14 @@ describe('FiltersDialogFilterFieldComponent', () => {
       });
     });
 
-    it('should return a filter of type string for a generic', () => {
-      const genericFilter: Filter<number, number> = {
+    it('should return a filter of type string for a custom', () => {
+      const customFilter: Filter<number, number> = {
         field: 'fastCompute',
-        for: 'generic',
+        for: 'custom',
         operator: 0,
         value: null
       };
-      expect(component.findInput(genericFilter)).toEqual({
+      expect(component.findInput(customFilter)).toEqual({
         type: 'string',
         value: null
       });

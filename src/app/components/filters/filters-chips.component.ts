@@ -44,7 +44,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
     }
     
     let label: string;
-    if (filter.for !== 'generic') {
+    if (filter.for !== 'custom') {
       label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
     } else {
       label = (filter.field as string);

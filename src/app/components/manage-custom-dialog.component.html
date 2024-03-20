@@ -1,15 +1,15 @@
-<h2 mat-dialog-title i18n="Dialog title" i18n>Generic Columns</h2>
+<h2 mat-dialog-title i18n="Dialog title" i18n>Custom Columns</h2>
 
   <mat-dialog-content>
     <p i18n="Dialog description">
-      Enter the generic (options.options) field you want to add as a column.
+      Enter the custom field field you want to add as a column.
       <br>
       The field is case sensitive and will not show any data if it is incorrect.
     </p>
 
   <mat-form-field>
-    <mat-label i18n>Existing Generics</mat-label>
-      <mat-chip-grid #chipGrid aria-label="Enter generic">
+    <mat-label i18n>Existing Customs columns</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Enter custom column">
       <mat-chip-row 
         *ngFor="let column of existingColumnList"
         (removed)="remove(column)"
@@ -23,7 +23,7 @@
           <mat-icon>cancel</mat-icon>
         </button>
       </mat-chip-row>
-      <input i18n-placeholder placeholder="New generic..."
+      <input i18n-placeholder placeholder="New custom column..."
             [matChipInputFor]="chipGrid"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             [matChipInputAddOnBlur]="true"

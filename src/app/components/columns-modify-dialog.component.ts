@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ColumnKey, GenericColumn, PrefixedOptions, RawColumnKey } from '@app/types/data';
+import { ColumnKey, CustomColumn, PrefixedOptions, RawColumnKey } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
@@ -47,11 +47,11 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   columnToLabel(column: ColumnKey<T, O>): string {
-    return !this.isGenericColumn(column) ? this.columnsLabels[column] ?? column.toString() : column.toString().replace('generic.', '');
+    return !this.isCustomColumn(column) ? this.columnsLabels[column] ?? column.toString() : column.toString().replace('custom.', '');
   }
 
-  isGenericColumn(column: ColumnKey<T, O>): boolean {
-    return column.toString().startsWith('generic.');
+  isCustomColumn(column: ColumnKey<T, O>): boolean {
+    return column.toString().startsWith('custom.');
   }
 
   /**
@@ -70,8 +70,8 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
     return columns;
   }
 
-  availableGenericColumns(): GenericColumn[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('generic.')).sort((a, b) => a.toString().localeCompare(b.toString())) as GenericColumn[];
+  availableCustomColumns(): CustomColumn[] {
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('custom.')).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
     return columns;
   }
 
