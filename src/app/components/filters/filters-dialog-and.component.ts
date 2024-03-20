@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { GenericColumn } from '@app/types/data';
+import { CustomColumn } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field.component';
@@ -33,7 +33,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 export class FiltersDialogAndComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
-  @Input() genericColumns: GenericColumn[] | undefined;
+  @Input() customColumns: CustomColumn[] | undefined;
 
   @Output() removeChange: EventEmitter<Filter<T, U>> = new EventEmitter<Filter<T, U>>();
 

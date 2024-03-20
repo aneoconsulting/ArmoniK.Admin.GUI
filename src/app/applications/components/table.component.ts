@@ -74,7 +74,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
       </td>
     </tr>
 
-    <tr mat-header-row *matHeaderRowDef="columnKeys"></tr>
+    <tr mat-header-row *matHeaderRowDef="columnKeys; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: columnKeys;"></tr>
   </table>
 

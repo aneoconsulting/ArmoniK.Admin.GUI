@@ -91,7 +91,7 @@ main {
   ]
 })
 export class NavigationComponent implements OnInit{
-  version = pkg.version;
+  version = process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
   externalServices: ExternalService[];
 
   #breakpointObserver = inject(BreakpointObserver);
