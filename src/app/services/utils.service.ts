@@ -6,7 +6,7 @@ import { Filter, FilterType, FilterValueOptions, FiltersAnd, FiltersOr } from '@
 // Need to generalize SessionRawEnumField
 export class UtilsService<T extends number, U extends number | null = null> {
 
-  createFilters<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | string | null, isForRoot: boolean, isGeneric: boolean) => F) {
+  createFilters<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | string | null, isForRoot: boolean, isCustom: boolean) => F) {
     const or = this.#createFiltersOr<F>(filters, filtersDefinitions, cb);
 
     return or;
@@ -15,7 +15,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
   /**
    * Used to create a group of lines (OR).
    */
-  #createFiltersOr<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | string | null, isForRoot: boolean, isGeneric: boolean) => F) {
+  #createFiltersOr<F>(filters: FiltersOr<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | string | null, isForRoot: boolean, isCustom: boolean) => F) {
     const filtersOr = [];
 
     for (const filter of filters) {
@@ -34,7 +34,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
   /**
    * Used to create a line of filters (AND).
    */
-  #createFiltersAnd<F>(filters: FiltersAnd<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | string | null, isForRoot: boolean, isGeneric: boolean) => F) {
+  #createFiltersAnd<F>(filters: FiltersAnd<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (filter: Filter<T, U>) => (type: FilterType, field: T | U | string | null, isForRoot: boolean, isCustom: boolean) => F) {
     const filtersAnd = [];
 
     for (const filter of filters) {
@@ -53,7 +53,7 @@ export class UtilsService<T extends number, U extends number | null = null> {
   /**
    * Used to define a filter field.
    */
-  #createFilterField<F>(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (type: FilterType, field: T | U | string | null, isForRoot: boolean, isGeneric: boolean) => F): F | null {
+  #createFilterField<F>(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[], cb: (type: FilterType, field: T | U | string | null, isForRoot: boolean, isCustom: boolean) => F): F | null {
     if (filter.field === null || filter.value === null || filter.operator === null) {
       return null;
     }
@@ -61,14 +61,14 @@ export class UtilsService<T extends number, U extends number | null = null> {
     const type = this.recoverType(filter, filtersDefinitions);
     const field = this.#recoverField(filter, filtersDefinitions);
 
-    return cb(type, field, this.#isForRoot(filter, filtersDefinitions), this.#isGeneric(filter));
+    return cb(type, field, this.#isForRoot(filter, filtersDefinitions), this.#isCustom(filter));
   }
 
   /**
    * Recover the type of a filter definition using the filter.
    */
   recoverType(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): FilterType  {
-    if (filter.for === 'generic') {
+    if (filter.for === 'custom') {
       return 'string';
     }
     const filterDefinition = this.#recoverFilterDefinition(filter, filtersDefinitions);
@@ -96,23 +96,23 @@ export class UtilsService<T extends number, U extends number | null = null> {
    * @returns true if root, false otherwise
    */
   #isForRoot(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): boolean {
-    return !this.#isGeneric(filter) && this.#recoverFilterDefinition(filter, filtersDefinitions).for === 'root';
+    return !this.#isCustom(filter) && this.#recoverFilterDefinition(filter, filtersDefinitions).for === 'root';
   }
 
   /**
-   * Check if a filter is used for a generic column of the table.
+   * Check if a filter is used for a custom column of the table.
    * @param filter
-   * @returns true if generic, false otherwise
+   * @returns true if custom, false otherwise
    */
-  #isGeneric(filter: Filter<T, U>): boolean {
-    return filter.for === 'generic';
+  #isCustom(filter: Filter<T, U>): boolean {
+    return filter.for === 'custom';
   }
 
   /**
    * Recover the field of a filter definition using the filter.
    */
   #recoverField(filter: Filter<T, U>, filtersDefinitions: FilterDefinition<T, U>[]): T | U | string {
-    if(filter.for !== 'generic') {
+    if(filter.for !== 'custom') {
       const filterDefinition = this.#recoverFilterDefinition(filter, filtersDefinitions);
       return filterDefinition.field;
     } else {

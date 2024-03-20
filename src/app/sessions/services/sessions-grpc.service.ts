@@ -85,7 +85,7 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
   }
 
   #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {
-    return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean, isGeneric: boolean) => {
+    return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean, isCustom: boolean) => {
       let filterField: SessionFilterField.AsObject['field'];
 
       if (isForRoot) {
@@ -94,7 +94,7 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
             field: field as SessionRawEnumField
           }
         };
-      } else if (isGeneric) {
+      } else if (isCustom) {
         filterField = {
           taskOptionGenericField: {
             field: field as string
