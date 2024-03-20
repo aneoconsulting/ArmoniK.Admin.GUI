@@ -6,7 +6,6 @@ import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-// export class ApplicationsIndexService implements AppIndexService<ApplicationRaw> {
 export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
   readonly tableService = inject(TableService);
   readonly defaultConfigService = inject(DefaultConfigService);
