@@ -71,19 +71,25 @@ export class ResultsTableComponent implements AfterViewInit {
   private _data: ResultData[] = [];
 
   @Input({required: true}) set data(entries: ResultRaw[]) {
-    entries.forEach((entry, index) => {
-      const result = this._data[index];
-      if (result && result.raw.resultId === entry.resultId) {
-        this._data[index].value$?.next(entry);
-      } else {
-        const lineData: ResultData = {
-          raw: entry,
-          value$: new Subject<ResultRaw>(),
-        };
-        this._data.splice(index, 1, lineData);
-      }
-    });
-    this.dataSource.data = this._data;
+    if (entries.length !== 0) {
+      this._data = this.data.filter(d => entries.find(entry => entry.resultId === d.raw.resultId));
+      entries.forEach((entry, index) => {
+        const result = this._data[index];
+        if (result && result.raw.resultId === entry.resultId) {
+          this._data[index].value$?.next(entry);
+        } else {
+          const lineData: ResultData = {
+            raw: entry,
+            value$: new Subject<ResultRaw>(),
+          };
+          this._data.splice(index, 1, lineData);
+        }
+      });
+      this.dataSource.data = this._data;
+    } else {
+      this._data = [];
+      this.dataSource.data = this._data;
+    }
   }
 
   get data(): ResultData[] {
