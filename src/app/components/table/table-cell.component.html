@@ -8,11 +8,9 @@
  </ng-container>
 <!-- link -->
 <ng-container *ngIf="column.type === 'link'">
-  <a mat-button
-    [routerLink]="[link]"
-  >
+  <button mat-button (click)="navigate()">
     {{ value | emptyCell }}
-  </a>
+  </button>
 </ng-container>
 <!-- Duration -->
 <ng-container *ngIf="column.type === 'duration'">
