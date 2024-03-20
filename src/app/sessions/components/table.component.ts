@@ -190,11 +190,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       entries.forEach((entry, index) => {
         const session = this._data[index];
         if (session && session.raw.sessionId === entry.sessionId) {
-          if (this.hasDifference(session.raw, entry)) {
-            session.raw = entry;
-            this._data.splice(index, 1, session);
-            this._data[index].value$.next(entry);
-          }
+          session.raw = entry;
+          this._data.splice(index, 1, session);
+          this._data[index].value$.next(entry);
         } else {
           const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
           queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 

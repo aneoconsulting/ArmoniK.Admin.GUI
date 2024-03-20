@@ -87,7 +87,6 @@ export class TableService {
     const queryParams = this._tableURLService.getQueryParamsFilters<T, U>(filtersDefinitions);
 
     if (queryParams.length) {
-      this.saveFilters(key, queryParams);
       return queryParams;
     }
 

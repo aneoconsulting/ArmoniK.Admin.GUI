@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, inject } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
@@ -31,6 +31,7 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
 export class CountTasksByStatusComponent implements OnDestroy {
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) queryParams: Record<string, string> = {};
+  @Input({ required: true }) refresh: Subject<void>;
 
   statusesCounts: StatusCount[] | null = null;
 
@@ -48,15 +49,16 @@ export class CountTasksByStatusComponent implements OnDestroy {
   @Input({required: true}) set filters(entries: TaskSummaryFilters) {
     this.statusesCounts = null;
     this._filters = entries;
-    this.subscription.add(
-      this.#tasksGrpcService.countByStatus$(this.filters).subscribe(response => {
-        this.loading = false;
-        this.statusesCounts = response.status ?? null;
-      })
-    );
+    this.refresh.pipe(
+      switchMap(() => this.#tasksGrpcService.countByStatus$(this.filters))
+    ).subscribe(response => {
+      this.loading = false;
+      this.statusesCounts = response.status ?? null;
+    });
+    this.refresh.next();
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.refresh.unsubscribe();
   }
 }
