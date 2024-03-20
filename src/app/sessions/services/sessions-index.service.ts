@@ -123,6 +123,7 @@ export class SessionsIndexService implements IndexServiceGenericInterface<Sessio
     {
       name: $localize`Max Duration`,
       key: 'options.maxDuration',
+      type: 'duration',
       sortable: true,
     },
     {
