@@ -43,7 +43,7 @@ export class ApplicationsGrpcService implements GrpcListInterface<ApplicationsCl
 
       const filterField = {
         applicationField: {
-          field: field as ApplicationRawEnumField
+          field: field
         }
       } satisfies ApplicationFilterField.AsObject['field'];
 
