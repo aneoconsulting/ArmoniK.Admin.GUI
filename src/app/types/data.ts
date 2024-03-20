@@ -1,4 +1,5 @@
 import { ApplicationFilterField, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters , PartitionRawListOptions} from '@app/partitions/types';
@@ -19,6 +20,7 @@ export type GenericColumn = `generic.${string}`;
 export interface ArmonikData<T extends DataRaw> {
   raw: T,
   value$: Subject<T>;
+  queryParams?: Map<ColumnKey<T>, Params>;
 }
 
 interface ArmonikTaskByStatusData<T extends DataRaw> extends ArmonikData<T>{
