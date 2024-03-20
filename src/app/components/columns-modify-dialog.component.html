@@ -23,12 +23,12 @@
     </ng-container>
   </div>
 
-  <h2 i18n *ngIf="availableGenericColumns().length">
-    Generic Columns
+  <h2 i18n *ngIf="availableCustomColumns().length">
+    Custom Columns
   </h2>
 
-  <div class="columns" *ngIf="availableGenericColumns().length">
-    <ng-container *ngFor="let column of availableGenericColumns(); let index = index; trackBy:trackByColumn">
+  <div class="columns" *ngIf="availableCustomColumns().length">
+    <ng-container *ngFor="let column of availableCustomColumns(); let index = index; trackBy:trackByColumn">
         <mat-checkbox [value]="column" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
           {{ columnToLabel(column) }}
         </mat-checkbox>

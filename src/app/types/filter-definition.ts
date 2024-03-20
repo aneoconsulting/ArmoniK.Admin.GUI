@@ -85,8 +85,8 @@ type FilterDefinitionTaskOptionDuration<T extends number | null> = {
   type: 'duration'
 };
 
-type FilterDefinitionGeneric = {
-  for: 'generic';
+type FilterDefinitionCustom = {
+  for: 'custom';
   field: string;
   type: 'string';
 };
@@ -96,7 +96,7 @@ type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | Fi
 
 export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T> | FilterDefinitionTaskOptionDuration<T>;
 
-export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U> | FilterDefinitionGeneric;
+export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U> | FilterDefinitionCustom;
 
 export type FilterFor<T extends number, U extends number | null = null> = FilterDefinition<T, U>['for'];
 
