@@ -297,8 +297,8 @@ export class DefaultConfigService {
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
     'tasks-lock-columns': this.#defaultTasks.lockColumns,
     'healthcheck-interval': this.#defaultHealthCheck.interval,
-    'tasks-generic-columns': [],
-    'sessions-generic-columns': [],
+    'tasks-custom-columns': [],
+    'sessions-custom-columns': [],
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {
