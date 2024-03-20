@@ -7,12 +7,12 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { GenericColumn } from '@app/types/data';
+import { CustomColumn } from '@app/types/data';
 
 @Component({
-  selector: 'app-add-generic-col-dialog',
+  selector: 'app-add-custom-col-dialog',
   standalone: true,
-  templateUrl: './manage-generic-dialog.component.html',
+  templateUrl: './manage-custom-dialog.component.html',
   styles: [`
   mat-form-field {
     width: 100%
@@ -29,12 +29,12 @@ import { GenericColumn } from '@app/types/data';
     MatIconModule
   ]
 })
-export class ManageGenericColumnDialogComponent implements OnInit {
+export class ManageCustomColumnDialogComponent implements OnInit {
 
-  existingColumnList: GenericColumn[];
+  existingColumnList: CustomColumn[];
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
-  constructor(public dialogRef: MatDialogRef<ManageGenericColumnDialogComponent, GenericColumn[]>, @Inject(MAT_DIALOG_DATA) public data: GenericColumn[]) {}
+  constructor(public dialogRef: MatDialogRef<ManageCustomColumnDialogComponent, CustomColumn[]>, @Inject(MAT_DIALOG_DATA) public data: CustomColumn[]) {}
 
   ngOnInit() {
     this.existingColumnList = this.data;
@@ -44,13 +44,13 @@ export class ManageGenericColumnDialogComponent implements OnInit {
     const value = (event.value || '').trim();
 
     if (value) {
-      this.existingColumnList.push(`generic.${value}`);
+      this.existingColumnList.push(`custom.${value}`);
     }
 
     event.chipInput!.clear();
   }
 
-  remove(column: GenericColumn): void {
+  remove(column: CustomColumn): void {
     const index = this.existingColumnList.indexOf(column);
 
     if (index >= 0) {
@@ -58,8 +58,8 @@ export class ManageGenericColumnDialogComponent implements OnInit {
     }
   }
 
-  edit(column: GenericColumn, event: MatChipEditedEvent) {
-    const value = event.value.trim().replace('generic.', '');
+  edit(column: CustomColumn, event: MatChipEditedEvent) {
+    const value = event.value.trim().replace('custom.', '');
 
     if (!value) {
       this.remove(column);
@@ -68,7 +68,7 @@ export class ManageGenericColumnDialogComponent implements OnInit {
 
     const index = this.existingColumnList.indexOf(column);
     if (index >= 0) {
-      this.existingColumnList[index] = `generic.${value}`;
+      this.existingColumnList[index] = `custom.${value}`;
     }
   }
 
