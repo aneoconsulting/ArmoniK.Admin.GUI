@@ -128,7 +128,7 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
         return {
           field: filterField,
           filterStatus: {
-            value: Number(filter.value) ?? 0,
+            value: filter.value ? Number(filter.value) : 0,
             operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
           },
         } satisfies TaskFilterField.AsObject;
@@ -136,7 +136,7 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
         return {
           field: filterField,
           filterStatus: {
-            value: Number(filter.value) ?? 0,
+            value: filter.value ? Number(filter.value) : 0,
             operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
           },
         } satisfies TaskFilterField.AsObject;
