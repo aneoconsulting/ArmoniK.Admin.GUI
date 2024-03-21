@@ -36,34 +36,6 @@ export type Filter<T extends number, U extends number | null = null> = {
   operator: MaybeNull<number>
 };
 
-
-// // Used to define filters available for the query builder.
-// type FilterDefinitionBase<T, U = null> = {
-//   // The couple key/field is used to know which field use for the filter. In fact, the key is the column name and the field, the id of the field.
-//   key: T
-//   field?: U
-//   type: FilterType
-// };
-
-// export interface FiltersDefinitionString<T extends number, U> extends FilterDefinitionBase<T, U> {
-//   type: 'string'
-// }
-// export interface FiltersDefinitionNumber<T, U> extends FilterDefinitionBase<T, U> {
-//   type: 'number'
-// }
-// export interface FiltersDefinitionDate<T, U> extends FilterDefinitionBase<T, U> {
-//   type: 'date'
-// }
-// export interface FiltersDefinitionStatus<T, U> extends FilterDefinitionBase<T, U> {
-//   type: 'status'
-//   statuses: FilterValueOptions;
-// }
-// export interface FiltersDefinitionArray<T, U> extends FilterDefinitionBase<T, U> {
-//   type: 'array'
-// }
-// // Filters used to create the query builder.
-// export type FiltersDefinition<T extends number, U = null> = FiltersDefinitionString<T, U> | FiltersDefinitionNumber<T, U> | FiltersDefinitionDate<T, U> | FiltersDefinitionStatus<T, U> | FiltersDefinitionArray<T, U>;
-
 // Value of a filter input.
 export type FilterInputValueString = MaybeNull<string>;
 export type FilterInputValueNumber = MaybeNull<number>;

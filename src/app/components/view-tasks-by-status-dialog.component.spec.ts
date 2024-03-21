@@ -152,12 +152,6 @@ describe('ViewTasksByStatusDialogComponent', () => {
         { status: TaskStatus.TASK_STATUS_CREATING, color: 'dark-red'}
       ]);
     });
-
-    // it('should not remove anythin if the list is null', () => {
-    //   component.statusesCounts = null;
-    //   component.onRemove(0);
-    //   expect(component.statusesCounts).toBen
-    // })
   });
 
   describe('onAdd', () => {
@@ -170,8 +164,6 @@ describe('ViewTasksByStatusDialogComponent', () => {
         { status: TaskStatus.TASK_STATUS_UNSPECIFIED, color: '#000000'}
       ]);
     });
-
-    // it('should not add a default ')
   });
 
   it('should call MatDialogRef.close on close', () => {

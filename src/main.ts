@@ -13,7 +13,7 @@ bootstrapApplication(AppComponent, appConfig)
     loading.style.display = 'none';
     error.style.display = 'block';
 
-    if (err && err.statusMessage) {
+    if (err?.statusMessage) {
       errorMessage.textContent = err.statusMessage;
       return;
     }

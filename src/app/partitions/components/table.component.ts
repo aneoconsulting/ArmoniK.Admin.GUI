@@ -83,21 +83,27 @@ export class PartitionsTableComponent implements OnInit, AfterViewInit {
   }
 
   @Input({ required: true }) set data(entries: PartitionRaw[]) {
-    entries.forEach((entry, index) => {
-      const partition = this._data[index];
-      if (partition && partition.raw.id === entry.id) {
-        this._data[index].value$?.next(entry);
-      } else {
-        const lineData: PartitionData = {
-          raw: entry,
-          queryTasksParams: this.createTasksByStatusQueryParams(entry.id),
-          filters: this.countTasksByStatusFilters(entry.id),
-          value$: new Subject<PartitionRaw>()
-        };
-        this._data.splice(index, 1, lineData);
-      }
-    });
-    this.dataSource.data = this._data;
+    if (entries.length !== 0) {
+      this._data = this.data.filter(d => entries.find(entry => entry.id === d.raw.id));
+      entries.forEach((entry, index) => {
+        const partition = this._data[index];
+        if (partition && partition.raw.id === entry.id) {
+          this._data[index].value$?.next(entry);
+        } else {
+          const lineData: PartitionData = {
+            raw: entry,
+            queryTasksParams: this.createTasksByStatusQueryParams(entry.id),
+            filters: this.countTasksByStatusFilters(entry.id),
+            value$: new Subject<PartitionRaw>()
+          };
+          this._data.splice(index, 1, lineData);
+        }
+      });
+      this.dataSource.data = this._data;
+    } else {
+      this._data = [];
+      this.dataSource.data = this._data;
+    }
   }
 
   @Output() optionsChange = new EventEmitter<never>();
