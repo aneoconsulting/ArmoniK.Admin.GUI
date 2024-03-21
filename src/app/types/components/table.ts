@@ -1,3 +1,4 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,6 +15,13 @@ import { TableColumn } from '../column.type';
 import { ArmonikData, DataRaw, IndexListOptions, RawColumnKey } from '../data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '../dialog';
 import { IndexServiceInterface } from '../services/indexService';
+
+export interface SelectableTable<D extends DataRaw> {
+  selection: SelectionModel<string>;
+  isAllSelected(): boolean;
+  toggleAllRows(): void;
+  checkboxLabel(row?: ArmonikData<D>): string;
+}
 
 @Component({
   selector: 'app-results-table',

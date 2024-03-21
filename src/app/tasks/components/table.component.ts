@@ -14,7 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { Router, RouterLink , RouterModule} from '@angular/router';
 import { Subject } from 'rxjs';
-import { AbstractTableComponent } from '@app/types/components/table';
+import { AbstractTableComponent, SelectableTable } from '@app/types/components/table';
 import { TaskData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -77,7 +77,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableActionsComponent,
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions>{
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> implements SelectableTable<TaskSummary>{
   @Input({required: true}) stopInterval: Subject<void>;
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
@@ -148,7 +148,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return value.id === entry.id;
   }
 
-  override createNewLine(entry: TaskSummary): TaskData {
+  createNewLine(entry: TaskSummary): TaskData {
     return {
       raw: entry,
       resultsQueryParams: this.createResultsQueryParams(entry.id),
