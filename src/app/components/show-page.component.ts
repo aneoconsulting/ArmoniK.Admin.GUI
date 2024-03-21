@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
 import { ShowActionButton } from '@app/types/components/show';
 import { DataRaw } from '@app/types/data';
 import { NotificationService } from '@services/notification.service';
@@ -15,18 +16,16 @@ import { ShowCardComponent } from './show-card.component';
   selector: 'app-show-page',
   template: `
 <app-page-header [sharableURL]="sharableURL">
-  <ng-content> </ng-content>
+  <ng-content></ng-content>
   <span>{{ id }}</span> 
   <button mat-icon-button [cdkCopyToClipboard]="id ?? ''" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
     <mat-icon aria-hidden="true" fontIcon="content_copy" />
   </button>
 </app-page-header>
 
-<ng-container *ngIf="data">
-  <app-show-actions [id]="id" [actionsButton]="actionsButton" [data]="data" (refresh)="onRefresh()" />
-</ng-container>
+<app-show-actions [actionsButton]="actionsButton" (refresh)="onRefresh()" />
 
-<app-show-card [data]="data" [statuses]="statuses" />
+<app-show-card [data$]="data$" [statuses]="statuses" />
   `,
   styles: [`
 span {
@@ -49,9 +48,9 @@ span {
     MatButtonModule
   ]
 })
-export class ShowPageComponent {
+export class ShowPageComponent<T extends DataRaw>{
   @Input({ required: true }) id: string | null = null;
-  @Input({ required: true }) data: DataRaw | null = null;
+  @Input({ required: true }) data$: Subject<T>;
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
   @Input({ required: true }) actionsButton: ShowActionButton[];

@@ -20,7 +20,7 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data?.resultId ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.resultId ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
@@ -85,6 +85,7 @@ export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcServic
         this.data = data;
         this.setLink('session', 'sessions', data.sessionId);
         this.setLink('task', 'tasks', data.ownerTaskId);
+        this.data$.next(data);
       }
     });
 

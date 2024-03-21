@@ -8,6 +8,11 @@ import { ShowActionButton } from '@app/types/components/show';
 @Component({
   selector: 'app-show-action-area',
   templateUrl: './show-action-area.component.html',
+  styles: [`
+  button {
+    margin-right: 3px;
+  }
+  `],
   standalone: true,
   imports: [
     NgIf,
@@ -18,5 +23,24 @@ import { ShowActionButton } from '@app/types/components/show';
   ]
 })
 export class ShowActionAreaComponent {
-  @Input({required: true}) actions: ShowActionButton[];
+  
+  private _actions: ShowActionButton[] = [];
+  private _isDisabled: { [x: string]: boolean } = {};
+
+  get actions() {
+    return this._actions;
+  }
+
+  get isDisabled() {
+    return this._isDisabled;
+  }
+  
+  @Input({required: true}) set actions(entries : ShowActionButton[]) {
+    entries.filter(entry => entry.disabled !== undefined).forEach(entry => {
+      if (entry.disabled) {
+        entry.disabled.subscribe(value => this._isDisabled[entry.id] = value);
+      }
+    });
+    this._actions = entries;
+  }
 }
