@@ -98,20 +98,26 @@ export class TasksTableComponent implements AfterViewInit {
   }
 
   @Input({required: true}) set data(entries: TaskSummary[]) {
-    entries.forEach((entry, index) => {
-      const task = this._data[index];
-      if (task && task.raw.id === entry.id) {
-        this._data[index].value$?.next(entry);
-      } else {
-        const lineData: TaskData = {
-          raw: entry,
-          resultsQueryParams: this.createResultsQueryParams(entry.id),
-          value$: new Subject<TaskSummary>(),
-        };
-        this._data.splice(index, 1, lineData);
-      }
-    });
-    this.dataSource.data = this._data;
+    if (entries.length !== 0) {
+      this._data = this.data.filter(d => entries.find(entry => entry.id === d.raw.id));
+      entries.forEach((entry, index) => {
+        const task = this._data[index];
+        if (task && task.raw.id === entry.id) {
+          this._data[index].value$?.next(entry);
+        } else {
+          const lineData: TaskData = {
+            raw: entry,
+            resultsQueryParams: this.createResultsQueryParams(entry.id),
+            value$: new Subject<TaskSummary>(),
+          };
+          this._data.splice(index, 1, lineData);
+        }
+      });
+      this.dataSource.data = this._data;
+    } else {
+      this._data = [];
+      this.dataSource.data = this._data;
+    }
   }
 
   get columnKeys() {
