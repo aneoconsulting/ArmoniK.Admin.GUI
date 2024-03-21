@@ -1,4 +1,4 @@
-import { TaskStatus, TaskSummary } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -6,6 +6,7 @@ import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
@@ -13,7 +14,7 @@ import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummaryColumnKey } from '../types';
+import { TaskSummary, TaskSummaryColumnKey } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
@@ -113,15 +114,22 @@ describe('TasksTableComponent', () => {
         direction: 'desc'
       }
     };
+    const data$ = new Subject<TaskSummary[]>();
     component.sort = sort;
     component.paginator = paginator;
-    component.data = data;
-
+    component.data$ = data$;
     component.ngAfterViewInit();
+    data$.next(data);
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update data on next', () => {
+    const newData = [{id: '1'}, {id: '2'}] as unknown as TaskSummary[];
+    component.data$.next(newData);
+    expect(component.data.map(d => d.raw)).toEqual(newData);
   });
 
   it('should update options sort on sort change', () => {

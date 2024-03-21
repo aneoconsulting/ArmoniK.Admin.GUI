@@ -102,7 +102,7 @@ export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C ex
   abstract table: TableTasksByStatus;
 
   ngOnInit(): void {
-    this.tasksStatusesColored = this.tasksByStatusService.restoreStatuses('sessions');
+    this.tasksStatusesColored = this.tasksByStatusService.restoreStatuses(this.table);
   }
 
   personalizeTasksByStatus() {
