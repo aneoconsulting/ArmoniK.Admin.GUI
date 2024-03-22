@@ -58,6 +58,9 @@ export class IconsService {
     'task-by-status': 'wifi_tethering',
     'default': 'radio_button_unchecked',
     'close': 'do_not_disturb_on',
+    'icon': 'palette',
+    'publish': 'published_with_changes',
+    'description': 'description',
   };
 
   getIcon(name: string): string {
@@ -72,5 +75,9 @@ export class IconsService {
 
   getPageIcon(name: Page) {
     return this.pageIcons[name];
+  }
+
+  getAllIcons() {
+    return Object.keys(this.icons);
   }
 }
