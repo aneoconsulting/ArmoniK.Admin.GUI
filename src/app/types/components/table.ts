@@ -69,23 +69,25 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
       this.optionsChange.emit();
     });
 
-    this.data$.subscribe(entries => {
-      if (entries.length !== 0) {
-        this._data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
-        entries.forEach((entry, index) => {
-          const value = this._data[index];
-          if (value && this.isDataRawEqual(value.raw, entry)) {
-            this._data[index].value$?.next(entry);
-          } else {
-            this._data.splice(index, 1, this.createNewLine(entry));
-          }
-        });
-        this.dataSource.data = this._data;
-      } else {
-        this._data = [];
-        this.dataSource.data = this._data;
-      }
-    });
+    this.data$.subscribe(entries => this.newData(entries));
+  }
+
+  private newData(entries: R[]) {
+    if (entries.length !== 0) {
+      this._data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
+      entries.forEach((entry, index) => {
+        const value = this._data[index];
+        if (value && this.isDataRawEqual(value.raw, entry)) {
+          this._data[index].value$?.next(entry);
+        } else {
+          this._data.splice(index, 1, this.createNewLine(entry));
+        }
+      });
+      this.dataSource.data = this._data;
+    } else {
+      this._data = [];
+      this.dataSource.data = this._data;
+    }
   }
 
   onDrop(event: CdkDragDrop<string[]>) {
