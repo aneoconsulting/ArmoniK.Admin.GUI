@@ -1,7 +1,7 @@
-<button mat-icon-button [matMenuTriggerFor]="menu">
+<button mat-icon-button (click)="$event.preventDefault();" [matMenuTriggerFor]="menu">
   <mat-icon [fontIcon]="getIcon(selectedIcon)" />
 </button>
-<mat-menu #menu="matMenu">
+<mat-menu #menu="matMenu" yPosition="below">
   <mat-form-field style="width: 100%;" subscriptSizing="dynamic" (click)="$event.stopPropagation();">
     <mat-label i18n="Input label">Icon</mat-label>
     <input matInput [formControl]="iconFormControl" placeholder="Search icon" />

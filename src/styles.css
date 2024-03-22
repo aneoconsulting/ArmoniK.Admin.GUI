@@ -44,3 +44,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .table-container {
   max-height: 60vh;
 }
+
+.mat-mdc-menu-content {
+  padding-top: 0px !important;
+}
