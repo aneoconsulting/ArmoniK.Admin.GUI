@@ -8,7 +8,7 @@ export type ScopeConfig<C, O, F> = {
 
 export type CustomScope = 'sessions' | 'tasks';
 export type Scope = 'applications' | 'partitions' | 'sessions' | 'results' | 'tasks';
-export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns';
+export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-columns' |'data';
 
 export type Key =
   'language' |

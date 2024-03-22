@@ -80,7 +80,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   get dateValue(): Date | null {
-    return (this.value as Timestamp)?.toDate() ?? null;
+    return new Timestamp(this.value as Timestamp).toDate() ?? null;
   }
 
   get link() {

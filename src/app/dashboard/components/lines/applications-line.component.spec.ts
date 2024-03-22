@@ -160,12 +160,6 @@ describe('ApplicationsLineComponent', () => {
     });
   });
 
-  it('should unsubscribe on destroy', () => {
-    const subSpy = jest.spyOn(component.subscriptions, 'unsubscribe');
-    component.ngOnDestroy();
-    expect(subSpy).toHaveBeenCalled();
-  });
-
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
   });

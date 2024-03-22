@@ -6,7 +6,7 @@ import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
+export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRaw> {
   readonly tableService = inject(TableService);
   readonly defaultConfigService = inject(DefaultConfigService);
 
@@ -104,5 +104,17 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
     this.tableService.resetColumns('applications-columns');
 
     return Array.from(this.defaultColumns);
+  }
+
+  /**
+   * Data
+   */
+
+  cacheData(data: ApplicationRaw[]): void {
+    this.tableService.cacheData('applications-data', data);
+  }
+
+  restoreData(): ApplicationRaw[] {
+    return this.tableService.restoreData<ApplicationRaw>('applications-data') ?? [];
   }
 }

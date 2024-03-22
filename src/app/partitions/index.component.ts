@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -148,7 +148,7 @@ app-table-actions-toolbar {
     PartitionsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent implements OnInit, AfterViewInit {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #shareURLService = inject(ShareUrlService);
@@ -232,16 +232,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe(data => {
         this.data$.next(data);
+        this.#partitionsIndexService.cacheData(data);
       });
 
     this.handleAutoRefreshStart();
     this.subscriptions.add(mergeSubscription);
   }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
   updateDisplayedColumns() {
     this.displayedColumns = this.displayedColumnsKeys.map(key => this.#partitionsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<PartitionRawColumnKey>[];
   }

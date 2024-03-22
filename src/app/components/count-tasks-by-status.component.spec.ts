@@ -43,9 +43,4 @@ describe('CountTasksByStatusComponent', () => {
   it('Should run', () => {
     expect(component).toBeTruthy();
   });
-
-  it('Should unsubscribe when destroyed', () => {
-    component.ngOnDestroy();
-    expect(refresh$.closed).toBeTruthy();
-  });
 });

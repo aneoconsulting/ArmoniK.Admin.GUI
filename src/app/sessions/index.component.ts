@@ -1,7 +1,7 @@
 import { FilterDateOperator, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -117,7 +117,7 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent implements OnInit, AfterViewInit {
   readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #notificationService = inject(NotificationService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
@@ -246,6 +246,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           this.isLoading = false;
           this.data$.next(data);
         }
+        this._sessionsIndexService.cacheData(this.data);
       });
 
     this.computeDuration$.subscribe(() => {
@@ -288,10 +289,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.handleAutoRefreshStart();
     this.subscriptions.add(mergeSubscription);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   updateDisplayedColumns(): void {

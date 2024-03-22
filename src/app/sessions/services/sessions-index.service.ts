@@ -7,7 +7,7 @@ import { TableService } from '@services/table.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsIndexService implements IndexServiceCustomInterface<SessionRawColumnKey, SessionRawListOptions> {
+export class SessionsIndexService implements IndexServiceCustomInterface<SessionRawColumnKey, SessionRawListOptions, SessionRaw> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -216,5 +216,16 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
     this.tableService.resetColumns('sessions-columns');
 
     return Array.from(this.defaultColumns);
+  }
+
+  /**
+   * Data
+   */
+  cacheData(data: SessionRaw[]): void {
+    this.tableService.cacheData<SessionRaw>('sessions-data', data);
+  }
+
+  restoreData(): SessionRaw[] {
+    return this.tableService.restoreData<SessionRaw>('sessions-data') ?? [];
   }
 }
