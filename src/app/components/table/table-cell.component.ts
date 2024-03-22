@@ -45,6 +45,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
       });
       this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
       this.createLink();
+      this.createDateValue();
     }
   }
 
@@ -59,6 +60,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   private _value: unknown;
   private _element: T;
 
+  private _date: Date | null;
   private _link: string;
   private _queryParams: Params | undefined;
   refreshStatuses = new Subject<void>();
@@ -80,7 +82,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   }
 
   get dateValue(): Date | null {
-    return new Timestamp(this.value as Timestamp).toDate() ?? null;
+    return this._date;
   }
 
   get link() {
@@ -97,6 +99,15 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   get countFilters() {
     return (this._element as unknown as SessionData | ApplicationData | PartitionData).filters;
+  }
+
+  createDateValue() {
+    const v = (this._value as Timestamp);
+    if (v !== undefined && v.nanos !== undefined && v.seconds !== undefined) {
+      this._date = new Timestamp(this.value as Timestamp).toDate();
+    } else {
+      this._date = null;
+    }
   }
 
   createLink() {
