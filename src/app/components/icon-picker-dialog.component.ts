@@ -8,11 +8,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subject } from 'rxjs';
+import { Page } from '@app/types/pages';
 import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-icon-picker',
   templateUrl: './icon-picker-dialog.component.html',
+  styles: [`
+article {
+  max-height: 300px;
+  overflow-y: auto;
+  display: grid;
+}
+  `],
   standalone: true,
   providers: [
     IconsService
@@ -44,7 +52,11 @@ export class IconPickerDialogComponent implements OnInit {
   }
 
   getIcon(icon: string): string {
-    return this.iconsService.getIcon(icon);
+    try {
+      return this.iconsService.getIcon(icon);
+    } catch (error) {
+      return this.iconsService.getPageIcon(icon as Page);
+    }
   }
 
   selectIcon(icon: string): void {
