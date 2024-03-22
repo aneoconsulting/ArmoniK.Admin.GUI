@@ -15,7 +15,6 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
-import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw } from './types';
 
 @Component({
@@ -34,7 +33,6 @@ import { PartitionRaw } from './types';
     ShareUrlService,
     QueryParamsService,
     PartitionsGrpcService,
-    PartitionsIndexService,
     PartitionsFiltersService,
     TableService,
     TableURLService,

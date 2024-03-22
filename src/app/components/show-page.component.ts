@@ -14,19 +14,7 @@ import { ShowCardComponent } from './show-card.component';
 
 @Component({
   selector: 'app-show-page',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <ng-content></ng-content>
-  <span>{{ id }}</span> 
-  <button mat-icon-button [cdkCopyToClipboard]="id ?? ''" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
-    <mat-icon aria-hidden="true" fontIcon="content_copy" />
-  </button>
-</app-page-header>
-
-<app-show-actions [actionsButton]="actionsButton" (refresh)="onRefresh()" />
-
-<app-show-card [data$]="data$" [statuses]="statuses" />
-  `,
+  templateUrl: './show-page.component.html',
   styles: [`
 span {
   font-style: italic;

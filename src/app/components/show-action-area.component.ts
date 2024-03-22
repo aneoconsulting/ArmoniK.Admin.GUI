@@ -24,21 +24,19 @@ import { ShowActionButton } from '@app/types/components/show';
 })
 export class ShowActionAreaComponent {
   
+  isDisabled: { [x: string]: boolean } = {};
+
   private _actions: ShowActionButton[] = [];
-  private _isDisabled: { [x: string]: boolean } = {};
 
   get actions() {
     return this._actions;
-  }
-
-  get isDisabled() {
-    return this._isDisabled;
   }
   
   @Input({required: true}) set actions(entries : ShowActionButton[]) {
     entries.filter(entry => entry.disabled !== undefined).forEach(entry => {
       if (entry.disabled) {
-        entry.disabled.subscribe(value => this._isDisabled[entry.id] = value);
+        this.isDisabled[entry.id] = false;
+        entry.disabled.subscribe(value => this.isDisabled[entry.id] = value);
       }
     });
     this._actions = entries;

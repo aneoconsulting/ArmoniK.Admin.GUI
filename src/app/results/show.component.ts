@@ -13,7 +13,6 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
-import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';import { ResultRaw } from './types';
 
 
@@ -34,7 +33,6 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
     QueryParamsService,
     ResultsGrpcService,
     ResultsStatusesService,
-    ResultsIndexService,
     TableService,
     TableStorageService,
     TableURLService,

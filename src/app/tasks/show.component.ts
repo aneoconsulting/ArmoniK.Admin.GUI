@@ -16,7 +16,6 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
-import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
 import { TaskRaw } from './types';
 
@@ -38,7 +37,6 @@ import { TaskRaw } from './types';
     QueryParamsService,
     TasksGrpcService,
     TasksStatusesService,
-    TasksIndexService,
     TableService,
     TableStorageService,
     TableURLService,

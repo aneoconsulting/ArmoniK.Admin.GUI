@@ -8,24 +8,13 @@ import { ShowCardContentComponent } from './show-card-content.component';
 
 @Component({
   selector: 'app-show-card',
-  template: `
-<mat-card>
-  <mat-card-content>
-    <mat-spinner *ngIf="!data" strokeWidth="4" diameter="40"/>
-    <ng-container *ngIf="data">
-      <app-show-card-content [data]="data" [statuses]="statuses"/>
-    </ng-container>
-  </mat-card-content>
-</mat-card>
-  `,
+  templateUrl: 'show-card.component.html',
   styles: [`
 pre {
   margin-top: 0;
 }
   `],
   standalone: true,
-  providers: [
-  ],
   imports: [
     NgIf,
     NgFor,
