@@ -22,8 +22,8 @@ mat-dialog-content {
 }
 
 .preview {
+  margin-top: 1rem;
   display: flex;
-  align-items: center;
   justify-content: flex-start;
   gap: 1rem;
 }
