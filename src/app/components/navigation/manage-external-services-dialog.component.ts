@@ -45,6 +45,21 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
   padding-left: 1rem;
 }
 
+.empty {
+  text-align: center;
+  opacity: 80%;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+
+  & div {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
 [cdkDragHandle] {
   cursor: move;
 }
