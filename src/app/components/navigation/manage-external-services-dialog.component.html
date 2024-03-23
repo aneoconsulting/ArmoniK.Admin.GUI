@@ -1,10 +1,9 @@
 <h2 mat-dialog-title i18n="Dialog title"> Manage External Services </h2>
 
-<mat-dialog-content i18n="Dialog description">
-  Bookmark your favorite external services to access them quickly from the navigation bar.
-</mat-dialog-content>
-
 <mat-dialog-content>
+  <p i18n="Dialog description">
+    Bookmark your favorite external services to access them quickly from the navigation bar.
+  </p>
   <ul *ngIf="externalServices.length" class="external-services" cdkDropList (cdkDropListDropped)="onDrop($event)">
     <li *ngFor="let externalService of externalServices; trackBy:trackByService" cdkDrag>
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')" cdkDragHandle></mat-icon>
@@ -35,6 +34,6 @@
 
   <div>
     <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-    <button mat-flat-button [mat-dialog-close]="externalServices" color="primary" i18n="Dialog action"> Close </button>
+    <button mat-flat-button [mat-dialog-close]="externalServices" color="primary" i18n="Dialog action"> Valider </button>
   </div>
 </mat-dialog-actions>

@@ -136,7 +136,9 @@ export class ManageExternalServicesDialogComponent implements OnInit {
   }
 
   addExternalService(): void {
-    const dialogRef = this.#dialog.open(AddExternalServiceDialogComponent, {});
+    const dialogRef = this.#dialog.open(AddExternalServiceDialogComponent, {
+       maxWidth: '60vw',
+    });
 
     dialogRef.afterClosed().subscribe((externalService: ExternalService) => {
       if (externalService) {
@@ -150,6 +152,7 @@ export class ManageExternalServicesDialogComponent implements OnInit {
       data: {
         externalService
       },
+      maxWidth: '60vw',
     });
 
     dialogRef.afterClosed().subscribe((editedExternalService: ExternalService) => {
