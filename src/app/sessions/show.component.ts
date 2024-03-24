@@ -74,7 +74,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   protected override _grpcService = inject(SessionsGrpcService);
   private _filtersService = inject(FiltersService);
   private router = inject(Router);
-  #cdf = inject(ChangeDetectorRef);
 
   actionButtons: ShowActionButton[] = [];
 
@@ -267,64 +266,64 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
 
   assignActions(): ShowActionButton[] {
     return [
-    {
-      id: 'tasks',
-      name: $localize`See tasks`,
-      icon: this.getPageIcon('tasks'),
-      link: '/tasks',
-      queryParams: {},
-    },
-    {
-      id: 'results',
-      name: $localize`See results`,
-      icon: this.getPageIcon('results'),
-      link: '/results',
-      queryParams: {},
-    },
-    {
-      id: 'partitions',
-      name: $localize`See partitions`,
-      icon: this.getPageIcon('partitions'),
-      link: '/partitions',
-      queryParams: {},
-    },
-    {
-      id: 'pause',
-      name: $localize`Pause Session`,
-      icon: this.getIcon('pause'),
-      action$: this.pause$,
-      show: this.canPause(),
-      color: 'accent',
-      area: 'right'
-    },
-    {
-      id: 'resume',
-      name: $localize`Resume Session`,
-      icon: this.getIcon('play'),
-      action$: this.resume$,
-      show: this.canResume(),
-      color: 'accent',
-      area: 'right'
-    },
-    {
-      id: 'cancel',
-      name: $localize`Cancel Session`,
-      icon: this.getIcon('cancel'),
-      action$: this.cancel$,
-      show: this.canCancel(),
-      color: 'accent',
-      area: 'right'
-    },
-    // TODO: Add missing close button in another PR.
-    {
-      id: 'delete',
-      name: $localize`Delete Session`,
-      icon: this.getIcon('delete'),
-      show: this.canDelete(),
-      action$: this.delete$,
-      color: 'accent',
-      area: 'right'
-    }
-  ];
-}
+      {
+        id: 'tasks',
+        name: $localize`See tasks`,
+        icon: this.getPageIcon('tasks'),
+        link: '/tasks',
+        queryParams: {},
+      },
+      {
+        id: 'results',
+        name: $localize`See results`,
+        icon: this.getPageIcon('results'),
+        link: '/results',
+        queryParams: {},
+      },
+      {
+        id: 'partitions',
+        name: $localize`See partitions`,
+        icon: this.getPageIcon('partitions'),
+        link: '/partitions',
+        queryParams: {},
+      },
+      {
+        id: 'pause',
+        name: $localize`Pause Session`,
+        icon: this.getIcon('pause'),
+        action$: this.pause$,
+        show: this.canPause(),
+        color: 'accent',
+        area: 'right'
+      },
+      {
+        id: 'resume',
+        name: $localize`Resume Session`,
+        icon: this.getIcon('play'),
+        action$: this.resume$,
+        show: this.canResume(),
+        color: 'accent',
+        area: 'right'
+      },
+      {
+        id: 'cancel',
+        name: $localize`Cancel Session`,
+        icon: this.getIcon('cancel'),
+        action$: this.cancel$,
+        show: this.canCancel(),
+        color: 'accent',
+        area: 'right'
+      },
+      // TODO: Add missing close button in another PR.
+      {
+        id: 'delete',
+        name: $localize`Delete Session`,
+        icon: this.getIcon('delete'),
+        show: this.canDelete(),
+        action$: this.delete$,
+        color: 'accent',
+        area: 'right'
+      }
+    ];
+  }
 }

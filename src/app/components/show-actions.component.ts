@@ -48,13 +48,13 @@ export class ShowActionsComponent implements OnInit, OnChanges {
   _iconsService = inject(IconsService);
 
   ngOnInit(): void {
-    this.#splitActions()
+    this.#splitActions();
   }
 
   /** Observe actions button to split them. Actions button can change when another one is clicked. */
   ngOnChanges(changes: SimpleChanges): void {
     if( 'actionsButton' in changes ) {
-    this.#splitActions()
+      this.#splitActions();
     }
 
   }
@@ -68,7 +68,7 @@ export class ShowActionsComponent implements OnInit, OnChanges {
   }
 
   #splitActions(): void {
-     this.leftActions = this.actionsButton.filter(action => action.area !== 'right');
-      this.rightActions = this.actionsButton.filter(action => action.area === 'right');
+    this.leftActions = this.actionsButton.filter(action => action.area !== 'right');
+    this.rightActions = this.actionsButton.filter(action => action.area === 'right');
   }
 }

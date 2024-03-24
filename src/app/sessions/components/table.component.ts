@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
