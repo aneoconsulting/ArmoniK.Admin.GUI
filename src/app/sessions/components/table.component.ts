@@ -41,7 +41,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters,
   standalone: true,
   templateUrl: './table.component.html',
   styles: [
-    
+
   ],
   providers: [
     TasksByStatusService,
@@ -93,6 +93,8 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   }
 
   @Output() optionsChange = new EventEmitter<never>();
+  @Output() pauseSession = new EventEmitter<string>();
+  @Output() resumeSession = new EventEmitter<string>();
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
@@ -101,7 +103,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<SessionData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
+
   readonly _sessionsIndexService = inject(SessionsIndexService);
   readonly _tasksByStatusService = inject(TasksByStatusService);
   readonly _iconsService = inject(IconsService);
@@ -121,6 +123,12 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   seeResults$ = new Subject<SessionData>();
   seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
 
+  pauseSession$ = new Subject<SessionData>();
+  pauseSessionSubscription = this.pauseSession$.subscribe(data => this.onPause(data.raw.sessionId));
+
+  resumeSession$ = new Subject<SessionData>();
+  resumeSessionSubscription = this.resumeSession$.subscribe(data => this.onResume(data.raw.sessionId));
+
   cancelSession$ = new Subject<SessionData>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
@@ -134,7 +142,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     {
       label: 'Copy session ID',
       icon: this.getIcon('copy'),
-      action$: this.copy$, 
+      action$: this.copy$,
     },
     {
       label: 'See session',
@@ -147,16 +155,28 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       action$: this.seeResults$,
     },
     {
+      label: 'Pause session',
+      icon: this.getIcon('pause'),
+      action$: this.pauseSession$,
+      condition: (element: SessionData) => element.raw.status !== SessionStatus.SESSION_STATUS_PAUSED && element.raw.status !== SessionStatus.SESSION_STATUS_CANCELLED && element.raw.status !== SessionStatus.SESSION_STATUS_CLOSED
+    },
+    {
+      label: 'Resume session',
+      icon: this.getIcon('play'),
+      action$: this.resumeSession$,
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_PAUSED
+    },
+    {
       label: 'Cancel session',
       icon: this.getIcon('cancel'),
-      action$: this.cancelSession$, 
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+      action$: this.cancelSession$,
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING || element.raw.status === SessionStatus.SESSION_STATUS_PAUSED
     },
     {
       label: 'Close session',
       icon: this.getIcon('close'),
       action$: this.closeSession$,
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING || element.raw.status === SessionStatus.SESSION_STATUS_PAUSED
     },
     {
       label: 'Delete session',
@@ -197,7 +217,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
             this._data[index].value$.next(entry);
           } else {
             const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
-            queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
+            queryParams.set('sessionId', { '0-root-1-0': entry.sessionId });
             const session: SessionData = {
               raw: entry,
               queryParams,
@@ -310,6 +330,14 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         }
       ]
     ];
+  }
+
+  onPause(sessionId: string) {
+    this.pauseSession.emit(sessionId);
+  }
+
+  onResume(sessionId: string) {
+    this.resumeSession.emit(sessionId);
   }
 
   onCancel(sessionId: string) {
