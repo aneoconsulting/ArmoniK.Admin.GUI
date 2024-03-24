@@ -158,30 +158,31 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       label: 'Pause session',
       icon: this.getIcon('pause'),
       action$: this.pauseSession$,
-      condition: (element: SessionData) => element.raw.status !== SessionStatus.SESSION_STATUS_PAUSED && element.raw.status !== SessionStatus.SESSION_STATUS_CANCELLED && element.raw.status !== SessionStatus.SESSION_STATUS_CLOSED
+      condition: (element: SessionData) => this._sessionsStatusesService.canPause(element.raw.status)
     },
     {
       label: 'Resume session',
       icon: this.getIcon('play'),
       action$: this.resumeSession$,
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_PAUSED
+      condition: (element: SessionData) => this._sessionsStatusesService.canResume(element.raw.status)
     },
     {
       label: 'Cancel session',
       icon: this.getIcon('cancel'),
       action$: this.cancelSession$,
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING || element.raw.status === SessionStatus.SESSION_STATUS_PAUSED
+      condition: (element: SessionData) => this._sessionsStatusesService.canCancel(element.raw.status)
     },
     {
       label: 'Close session',
       icon: this.getIcon('close'),
       action$: this.closeSession$,
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING || element.raw.status === SessionStatus.SESSION_STATUS_PAUSED
+      condition: (element: SessionData) => this._sessionsStatusesService.canClose(element.raw.status)
     },
     {
       label: 'Delete session',
       icon: this.getIcon('delete'),
       action$: this.deleteSession$,
+      condition: (element: SessionData) => this._sessionsStatusesService.canDelete(element.raw.status)
     }
   ];
 
