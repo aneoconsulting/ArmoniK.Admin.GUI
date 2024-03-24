@@ -1,5 +1,5 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -36,7 +36,7 @@ import { ShowActionAreaComponent } from './show-action-area.component';
     IconsService
   ]
 })
-export class ShowActionsComponent implements OnInit {
+export class ShowActionsComponent implements OnInit, OnChanges {
   @Input({ required: true }) actionsButton: ShowActionButton[];
   @Input({ required: true }) data: DataRaw = {} as DataRaw;
   @Input() id: string | null = null;
@@ -48,8 +48,15 @@ export class ShowActionsComponent implements OnInit {
   _iconsService = inject(IconsService);
 
   ngOnInit(): void {
-    this.leftActions = this.actionsButton.filter(action => action.area !== 'right');
-    this.rightActions = this.actionsButton.filter(action => action.area === 'right');
+    this.#splitActions()
+  }
+
+  /** Observe actions button to split them. Actions button can change when another one is clicked. */
+  ngOnChanges(changes: SimpleChanges): void {
+    if( 'actionsButton' in changes ) {
+    this.#splitActions()
+    }
+
   }
 
   onRefreshClick() {
@@ -58,5 +65,10 @@ export class ShowActionsComponent implements OnInit {
 
   getRefreshIcon() {
     return this._iconsService.getIcon('refresh');
+  }
+
+  #splitActions(): void {
+     this.leftActions = this.actionsButton.filter(action => action.area !== 'right');
+      this.rightActions = this.actionsButton.filter(action => action.area === 'right');
   }
 }

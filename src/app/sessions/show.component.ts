@@ -1,5 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -60,6 +60,8 @@ import { SessionRaw } from './types';
 })
 export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
   cancel$ = new Subject<void>();
+  pause$ = new Subject<void>();
+  resume$ = new Subject<void>();
   close$ = new Subject<void>();
   delete$ = new Subject<void>();
   duration$ = new Subject<void>();
@@ -72,47 +74,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   protected override _grpcService = inject(SessionsGrpcService);
   private _filtersService = inject(FiltersService);
   private router = inject(Router);
+  #cdf = inject(ChangeDetectorRef);
 
-  actionButtons: ShowActionButton[] = [
-    {
-      id: 'tasks',
-      name: $localize`See tasks`,
-      icon: this.getPageIcon('tasks'),
-      link: '/tasks',
-      queryParams: {},
-    },
-    {
-      id: 'results',
-      name: $localize`See results`,
-      icon: this.getPageIcon('results'),
-      link: '/results',
-      queryParams: {},
-    },
-    {
-      id: 'partitions',
-      name: $localize`See partitions`,
-      icon: this.getPageIcon('partitions'),
-      link: '/partitions',
-      queryParams: {},
-    },
-    {
-      id: 'cancel',
-      name: $localize`Cancel Session`,
-      icon: this.getIcon('cancel'),
-      action$: this.cancel$,
-      disabled: this.canCancel(),
-      color: 'accent',
-      area: 'right'
-    },
-    {
-      id: 'delete',
-      name: $localize`Delete Session`,
-      icon: this.getIcon('delete'),
-      action$: this.delete$,
-      color: 'accent',
-      area: 'right'
-    }
-  ];
+  actionButtons: ShowActionButton[] = [];
 
   ngOnInit(): void {
     this.sharableURL = this.getSharableUrl();
@@ -130,6 +94,8 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     ).subscribe((data) => {
       if (data) {
         this.data = data;
+        /** We need to wait for the data before knowing available actions */
+        this.actionButtons = this.assignActions();
         this.duration$.next();
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
@@ -140,6 +106,14 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     this.getIdByRoute();
     this.cancel$.subscribe(() => {
       this.cancel();
+    });
+
+    this.pause$.subscribe(() => {
+      this.pause();
+    });
+
+    this.resume$.subscribe(() => {
+      this.resume();
     });
 
     this.delete$.subscribe(() => {
@@ -195,6 +169,40 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     });
   }
 
+  pause(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._grpcService.pause$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session paused');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to pause session');
+      },
+    });
+  }
+
+  resume(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._grpcService.resume$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session resumed');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to resume session');
+      },
+    });
+  }
+
   close(): void {
     if(!this.data?.sessionId) {
       return;
@@ -216,7 +224,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     if(!this.data?.sessionId) {
       return;
     }
-  
+
     this._grpcService.delete$(this.data.sessionId).subscribe({
       complete: () => {
         this.success('Session deleted');
@@ -241,7 +249,82 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     return this._sessionsStatusesService.canCancel(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
 
+  canPause(): boolean {
+    return this._sessionsStatusesService.canPause(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+  }
+
+  canResume(): boolean {
+    return this._sessionsStatusesService.canResume(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+  }
+
   canClose(): boolean {
     return this._sessionsStatusesService.canClose(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
+
+  canDelete(): boolean {
+    return this._sessionsStatusesService.canDelete(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
+  }
+
+  assignActions(): ShowActionButton[] {
+    return [
+    {
+      id: 'tasks',
+      name: $localize`See tasks`,
+      icon: this.getPageIcon('tasks'),
+      link: '/tasks',
+      queryParams: {},
+    },
+    {
+      id: 'results',
+      name: $localize`See results`,
+      icon: this.getPageIcon('results'),
+      link: '/results',
+      queryParams: {},
+    },
+    {
+      id: 'partitions',
+      name: $localize`See partitions`,
+      icon: this.getPageIcon('partitions'),
+      link: '/partitions',
+      queryParams: {},
+    },
+    {
+      id: 'pause',
+      name: $localize`Pause Session`,
+      icon: this.getIcon('pause'),
+      action$: this.pause$,
+      show: this.canPause(),
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'resume',
+      name: $localize`Resume Session`,
+      icon: this.getIcon('play'),
+      action$: this.resume$,
+      show: this.canResume(),
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'cancel',
+      name: $localize`Cancel Session`,
+      icon: this.getIcon('cancel'),
+      action$: this.cancel$,
+      show: this.canCancel(),
+      color: 'accent',
+      area: 'right'
+    },
+    // TODO: Add missing close button in another PR.
+    {
+      id: 'delete',
+      name: $localize`Delete Session`,
+      icon: this.getIcon('delete'),
+      show: this.canDelete(),
+      action$: this.delete$,
+      color: 'accent',
+      area: 'right'
+    }
+  ];
+}
 }
