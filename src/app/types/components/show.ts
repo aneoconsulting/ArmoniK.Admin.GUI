@@ -12,6 +12,8 @@ export type ShowActionButton = {
   name: string;
   icon?: string;
   disabled?: boolean;
+  // TODO: Remove `disabled` in favor of `show` in another PR to avoid too many items in the interface. This behavior is similar in the table.
+  show?: boolean;
   link?: string;
   color?: 'accent' | 'primary';
   queryParams?: { [x: string]: string; };
@@ -42,7 +44,7 @@ export abstract class AppShowComponent<T extends object, E extends GrpcService> 
   sharableURL: string = '';
   refresh = new Subject<void>();
   data: T | null;
-  
+
   private _iconsService = inject(IconsService);
   protected _grpcService: E;
   private _shareURLService = inject(ShareUrlService);

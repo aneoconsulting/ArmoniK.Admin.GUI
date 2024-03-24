@@ -37,6 +37,8 @@ export class IconsService {
     'storage': 'storage',
     'download': 'file_download',
     'upload': 'file_upload',
+    'pause': 'pause',
+    'play': 'play_arrow',
     'cancel': 'cancel',
     'copy': 'content_copy',
     'hub': 'hub',

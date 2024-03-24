@@ -1,4 +1,4 @@
-import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, map } from 'rxjs';
@@ -66,6 +66,22 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
     });
 
     return this.grpcClient.cancelSession(cancelSessionRequest);
+  }
+
+  pause$(sessionId: string): Observable<PauseSessionResponse> {
+    const pauseSessionRequest = new PauseSessionRequest({
+      sessionId
+    });
+
+    return this.grpcClient.pauseSession(pauseSessionRequest);
+  }
+
+  resume$(sessionId: string): Observable<ResumeSessionResponse> {
+    const resumeSessionRequest = new ResumeSessionRequest({
+      sessionId
+    });
+
+    return this.grpcClient.resumeSession(resumeSessionRequest);
   }
 
   close$(sessionId: string): Observable<CloseSessionResponse> {

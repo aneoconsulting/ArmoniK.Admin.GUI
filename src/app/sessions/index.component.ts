@@ -275,7 +275,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isLoading = false;
       }
     });
-    
+
     this.nextDuration$.pipe(
       map(sessionId => this._sessionsGrpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
       mergeAll(),
@@ -368,7 +368,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options.pageIndex = 0;
     this.refresh.next();
   }
-  
+
   onLockColumnsChange() {
     this.lockColumns = !this.lockColumns;
     this._sessionsIndexService.saveLockColumns(this.lockColumns);
@@ -376,6 +376,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   autoRefreshTooltip() {
     return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
+  }
+
+  onPause(sessionId: string) {
+    this._sessionsGrpcService.pause$(sessionId).subscribe(
+      () => this.refresh.next(),
+    );
+  }
+
+  onResume(sessionId: string) {
+    this._sessionsGrpcService.resume$(sessionId).subscribe(
+      () => this.refresh.next(),
+    );
   }
 
   onCancel(sessionId: string) {

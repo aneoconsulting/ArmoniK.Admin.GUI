@@ -4,7 +4,7 @@
     {{element.name}}
   </a>
 
-  <button mat-flat-button *ngIf="element.action$ && !element.link" (click)="element.action$.next()" [disabled]="element.disabled" [color]="element.color" >
+  <button mat-flat-button *ngIf="element.action$ && !element.link && element.show" (click)="element.action$.next()" [disabled]="element.disabled" [color]="element.color" >
     <mat-icon [fontIcon]="element.icon ?? ''" />
     {{element.name}}
   </button>
