@@ -79,6 +79,19 @@ export class StorageService implements Storage {
     return this.#defu()(data, this.#defaultConfigService.exportedDefaultConfig);
   }
 
+  importConfigurationFromURL(data: object) {
+    const keys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
+    const record: Record<string, unknown> = {...Object.keys(data), ...Object.values(data)};
+    for (const key of keys) {
+      if (this.getItem(key) !== undefined && record[key]) {
+        console.log('setting', key, record[key]);
+        this.setItem(key, record[key]);
+      } else {
+        console.log('skipping', key, record[key]);
+      }
+    }
+  }
+
   /**
    * Stores the provided JSON data in the local storage of the application.
    * Prints warning in case of invalid data.

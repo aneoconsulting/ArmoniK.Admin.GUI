@@ -16,7 +16,7 @@ import { VersionsGrpcService } from '@services/versions-grpc.service';
 import { VersionsService } from '@services/versions.service';
 import { routes } from './app.routes';
 
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService) {
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
       tap((data) => {
@@ -52,7 +52,17 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
       catchError((err) => {
         throw err;
       }),
-    )
+    ),
+    httpClient.get<Partial<object>>('/static/environment.json').pipe(
+      tap((data) => {
+        if (data) {
+          storageService.importConfigurationFromURL(data);
+        }
+      }),
+      catchError((err) => {
+        throw err;
+      })
+    ),
   );
 }
 
@@ -78,7 +88,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
-      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, EnvironmentService],
+      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, EnvironmentService, StorageService],
       multi: true
     },
     provideRouter(routes),
