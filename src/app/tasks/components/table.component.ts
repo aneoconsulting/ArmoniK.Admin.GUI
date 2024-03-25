@@ -88,6 +88,7 @@ export class TasksTableComponent implements AfterViewInit {
   @Input({required: true}) selection: SelectionModel<string>;
   @Input() filters: TaskSummaryFilters = [];
   @Input({required: true}) serviceIcon$: Subject<string | null>;
+  @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
   @Input() lockColumns = false;
@@ -178,12 +179,6 @@ export class TasksTableComponent implements AfterViewInit {
       action$: this.cancelTask$,
       condition: (element: TaskData) => this.canCancelTask(element.raw),
     },
-    {
-      label: $localize`View in logs`,
-      icon: 'description',
-      action$: this.openViewInLogs$,
-      condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
-    }
   ];
 
   ngAfterViewInit(): void {
@@ -200,6 +195,29 @@ export class TasksTableComponent implements AfterViewInit {
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
+    });
+
+    if (this.urlTemplate && this.serviceName) {
+      this.actions.push({
+        label: $localize`View in logs`,
+        icon: this.serviceIcon ?? 'description',
+        action$: this.openViewInLogs$,
+      });
+    }
+
+    this.serviceIcon$.subscribe(icon => {
+      if (icon) {
+        const index = this.actions.findIndex(action => action.label === $localize`View in logs`);
+        if (index !== -1) {
+          this.actions[index].icon = icon;
+        } else {
+          this.actions.push({
+            label: $localize`View in logs`,
+            icon,
+            action$: this.openViewInLogs$,
+          });
+        }
+      }
     });
   }
 
