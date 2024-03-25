@@ -123,6 +123,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sharableURL = '';
 
+  serviceIcon$ = new Subject<string | null>();
   serviceIcon: string | null = null;
   serviceName: string | null = null;
   urlTemplate: string | null = null;
@@ -159,6 +160,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
     this.urlTemplate = viewInLogs.urlTemplate;
+    this.serviceIcon$.next(this.serviceIcon);
   }
 
   ngAfterViewInit(): void {
@@ -347,6 +349,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.serviceIcon = result.serviceIcon;
       this.serviceName = result.serviceName;
       this.urlTemplate = result.urlTemplate;
+      this.serviceIcon$.next(this.serviceIcon);
 
       this.#tasksIndexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
     });

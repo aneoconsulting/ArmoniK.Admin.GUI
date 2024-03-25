@@ -87,7 +87,7 @@ export class TasksTableComponent implements AfterViewInit {
   @Input({required: true}) intervalValue: number;
   @Input({required: true}) selection: SelectionModel<string>;
   @Input() filters: TaskSummaryFilters = [];
-  @Input() serviceIcon: string | null = null;
+  @Input({required: true}) serviceIcon$: Subject<string | null>;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
   @Input() lockColumns = false;
@@ -158,12 +158,12 @@ export class TasksTableComponent implements AfterViewInit {
   actions: ActionTable<TaskData>[] = [
     {
       label: $localize`Copy Task ID`,
-      icon: 'content_copy',
+      icon: 'copy',
       action$: this.copy$,
     },
     {
       label: $localize`See related result`,
-      icon: 'visibility',
+      icon: 'view',
       action$: this.seeResult$,
     },
     {
@@ -180,7 +180,7 @@ export class TasksTableComponent implements AfterViewInit {
     },
     {
       label: $localize`View in logs`,
-      icon: this.serviceIcon ?? 'description',
+      icon: 'description',
       action$: this.openViewInLogs$,
       condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
     }

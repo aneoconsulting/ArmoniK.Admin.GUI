@@ -133,34 +133,34 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   actions: ActionTable<SessionData>[] = [
     {
       label: 'Copy session ID',
-      icon: this.getIcon('copy'),
+      icon: 'copy',
       action$: this.copy$, 
     },
     {
       label: 'See session',
-      icon: this.getPageIcon('sessions'),
+      icon: 'sessions',
       action$: this.seeSessions$,
     },
     {
       label: 'See results',
-      icon: this.getPageIcon('results'),
+      icon: 'results',
       action$: this.seeResults$,
     },
     {
       label: 'Cancel session',
-      icon: this.getIcon('cancel'),
+      icon: 'cancel',
       action$: this.cancelSession$, 
       condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
     },
     {
       label: 'Close session',
-      icon: this.getIcon('close'),
+      icon: 'close',
       action$: this.closeSession$,
       condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
     },
     {
       label: 'Delete session',
-      icon: this.getIcon('delete'),
+      icon: 'delete',
       action$: this.deleteSession$,
     }
   ];

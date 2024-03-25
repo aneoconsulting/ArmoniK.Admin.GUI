@@ -78,6 +78,6 @@ export class IconsService {
   }
 
   getAllIcons() {
-    return Object.keys(this.icons);
+    return Object.keys(this.icons).concat(Object.keys(this.pageIcons));
   }
 }
