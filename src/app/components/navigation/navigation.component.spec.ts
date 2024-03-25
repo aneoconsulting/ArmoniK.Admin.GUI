@@ -64,7 +64,6 @@ describe('NavigationComponent', () => {
   it('should restore external services on load', () => {
     component.ngOnInit();
     expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
-    expect(mockStorageService.getItem).toHaveBeenCalledWith('language');
   });
 
   it('should manage external services', () => {
@@ -124,10 +123,4 @@ describe('NavigationComponent', () => {
     } as ExternalService;
     expect(component.trackByService(0, externalService)).toEqual('serviceurl');
   });
-  
-  it('setLanguage should store the current language on change', () => {
-    component.setLanguage('fr');
-    expect(mockStorageService.setItem).toHaveBeenCalledWith('language', 'fr');
-  });
-
 });

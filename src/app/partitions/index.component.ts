@@ -14,6 +14,7 @@ import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
@@ -40,7 +41,7 @@ import { PartitionsTableComponent } from './components/table.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRawListOptions } from './types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -56,8 +57,8 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFiltersOr, PartitionRa
       [loading]="isLoading"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels()"
-      [displayedColumns]="displayedColumns"
+      [columnsLabels]="columnsLabels"
+      [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
       (refresh)="onRefresh()"
@@ -156,9 +157,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #partitionsFiltersService = inject(PartitionsFiltersService);
 
-  displayedColumns: PartitionRawColumnKey[] = [];
+  displayedColumns: TableColumn<PartitionRawColumnKey>[] = [];
   availableColumns: PartitionRawColumnKey[] = [];
+  displayedColumnsKeys: PartitionRawColumnKey[] = [];
   lockColumns: boolean;
+  columnsLabels: Record<PartitionRawColumnKey, string> = {} as unknown as Record<PartitionRawColumnKey, string>;
 
   isLoading = true;
   data: PartitionRaw[] = [];
@@ -166,7 +169,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   options: PartitionRawListOptions;
 
-  filters: PartitionRawFiltersOr = [];
+  filters: PartitionRawFilters = [];
 
   intervalValue = 0;
   sharableURL = '';
@@ -182,8 +185,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   subscriptions: Subscription = new Subscription();
 
   ngOnInit() {
-    this.displayedColumns = this.#partitionsIndexService.restoreColumns();
-    this.availableColumns = this.#partitionsIndexService.availableColumns;
+    this.displayedColumnsKeys = this.#partitionsIndexService.restoreColumns();
+    this.availableColumns = this.#partitionsIndexService.availableTableColumns.map(c => c.key);
+    this.updateDisplayedColumns();
+    this.#partitionsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
     this.lockColumns = this.#partitionsIndexService.restoreLockColumns();
 
     this.options = this.#partitionsIndexService.restoreOptions();
@@ -235,8 +242,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  columnsLabels(): Record<PartitionRawColumnKey, string> {
-    return this.#partitionsIndexService.columnsLabels;
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.#partitionsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<PartitionRawColumnKey>[];
   }
 
   getPageIcon(page: Page): string {
@@ -261,18 +268,20 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onColumnsChange(data: PartitionRawColumnKey[]) {
-    this.displayedColumns = [...data];
+    this.displayedColumnsKeys = data;
+    this.updateDisplayedColumns();
     this.#partitionsIndexService.saveColumns(data);
   }
 
   onColumnsReset() {
-    this.displayedColumns = this.#partitionsIndexService.resetColumns();
+    this.displayedColumnsKeys = this.#partitionsIndexService.resetColumns();
+    this.updateDisplayedColumns();
   }
 
   onFiltersChange(filters: unknown[]) {
-    this.filters = filters as PartitionRawFiltersOr;
+    this.filters = filters as PartitionRawFilters;
 
-    this.#partitionsFiltersService.saveFilters(filters as PartitionRawFiltersOr);
+    this.#partitionsFiltersService.saveFilters(filters as PartitionRawFilters);
     this.options.pageIndex = 0;
     this.refresh.next();
   }

@@ -1,11 +1,13 @@
 import { TaskStatus, TaskSummary } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Duration , Timestamp} from '@ngx-grpc/well-known-types';
+import { TableColumn } from '@app/types/column.type';
+import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
@@ -17,6 +19,34 @@ describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
 
   const data = [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}] as unknown as TaskSummary[];
+
+  const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
+    {
+      name: 'Task ID',
+      key: 'id',
+      type: 'link',
+      sortable: true,
+      link: '/tasks',
+    },
+    {
+      name: 'Status',
+      key: 'status',
+      type: 'status',
+      sortable: true,
+    },
+    {
+      name: 'Created at',
+      key: 'createdAt',
+      type: 'date',
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      key: 'actions',
+      type: 'actions',
+      sortable: false,
+    }
+  ];
 
   const sort: MatSort = {
     active: 'createdAt',
@@ -30,12 +60,12 @@ describe('TasksTableComponent', () => {
     page: new EventEmitter()
   } as unknown as MatPaginator;
 
-  const selection: SelectionModel<TaskSummary.AsObject> = {
-    selected: [] as TaskSummary[],
+  const selection: SelectionModel<string> = {
+    selected: [] as string[],
     clear: jest.fn(() => {selection.selected.forEach(() => selection.selected.pop());}),
     select: jest.fn(),
-    isSelected: jest.fn((row: TaskSummary) => row.id === 'selected1')
-  } as unknown as SelectionModel<TaskSummary.AsObject>;
+    isSelected: jest.fn((rowId: string) => rowId === 'selected1')
+  } as unknown as SelectionModel<string>;
 
   const mockTasksIndexService = {
     isActionsColumn: jest.fn(),
@@ -55,6 +85,10 @@ describe('TasksTableComponent', () => {
     success: jest.fn()
   };
 
+  const mockClipBoard = {
+    copy: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -62,13 +96,14 @@ describe('TasksTableComponent', () => {
         {provide: TasksIndexService, useValue: mockTasksIndexService},
         TasksStatusesService,
         FiltersService,
-        {provide: NotificationService, useValue: mockNotificationService}
+        {provide: NotificationService, useValue: mockNotificationService},
+        {provide: Clipboard, useValue: mockClipBoard},
       ]
     }).inject(TasksTableComponent);
 
     selection.clear();
 
-    component.displayedColumns = ['id', 'createdAt', 'select'];
+    component.displayedColumns = displayedColumns;
     component.selection = selection;
     component.options = {
       pageIndex: 0,
@@ -109,117 +144,6 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  describe('show', () => {
-    it('should show data from any non-options column', () => {
-      const task = {
-        id: '1234'
-      } as unknown as TaskSummary;
-      expect(component.show(task, 'id')).toEqual('1234');
-    });
-
-    it('should show any data from column options', () => {
-      const task = {
-        options: {
-          applicationName: 'name'
-        }
-      } as unknown as TaskSummary;
-      expect(component.show(task, 'options.applicationName')).toEqual('name');
-    });
-
-    it('should return null if options is null', () => {
-      const task = {} as unknown as TaskSummary;
-      expect(component.show(task, 'options.applicationName')).toEqual(null);
-    });
-  });
-
-  describe('extractData', () => {
-    it('should get the duration of the task', () => {
-      const task = {
-        creationToEndDuration: {
-          seconds: '94350',
-          nanos: 0
-        }
-      } as unknown as TaskSummary;
-      expect(component.extractData(task, 'creationToEndDuration')).toEqual({
-        seconds: '94350',
-        nanos: 0
-      } as Duration);
-    });
-
-    it('should get the duration of an option of the task', () => {
-      const task = {
-        options: {
-          maxDuration: {
-            seconds: '84370',
-            nanos: 0
-          }
-        }
-      } as unknown as TaskSummary;
-      expect(component.extractData(task, 'options.maxDuration')).toEqual({
-        seconds: '84370',
-        nanos: 0
-      });
-    });
-
-    it('should return null if there is no options', () => {
-      expect(component.extractData({} as unknown as TaskSummary, 'options.maxDuration')).toEqual(null);
-    });
-  });
-
-  it('should check if the column is action', () => {
-    const column: TaskSummaryColumnKey = 'actions';
-    component.isActionsColumn(column);
-    expect(mockTasksIndexService.isActionsColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is "task id"', () => {
-    const column: TaskSummaryColumnKey = 'id';
-    component.isTaskIdColumn(column);
-    expect(mockTasksIndexService.isTaskIdColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is status', () => {
-    const column: TaskSummaryColumnKey = 'status';
-    component.isStatusColumn(column);
-    expect(mockTasksIndexService.isStatusColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is date', () => {
-    const column: TaskSummaryColumnKey = 'createdAt';
-    component.isDateColumn(column);
-    expect(mockTasksIndexService.isDateColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is duration', () => {
-    const column: TaskSummaryColumnKey = 'creationToEndDuration';
-    component.isDurationColumn(column);
-    expect(mockTasksIndexService.isDurationColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is object', () => {
-    const column: TaskSummaryColumnKey = 'options';
-    component.isObjectColumn(column);
-    expect(mockTasksIndexService.isObjectColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is select', () => {
-    const column: TaskSummaryColumnKey = 'select';
-    component.isSelectColumn(column);
-    expect(mockTasksIndexService.isSelectColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is simple', () => {
-    const column: TaskSummaryColumnKey = 'statusMessage';
-    component.isSimpleColumn(column);
-    expect(mockTasksIndexService.isSimpleColumn).toHaveBeenCalledWith(column); 
-  });
-
-  it('should check if the column is not sortable', () => {
-    const column: TaskSummaryColumnKey = 'options';
-    component.isNotSortableColumn(column);
-    expect(mockTasksIndexService.isNotSortableColumn).toHaveBeenCalledWith(column); 
-  });
-
   it('should check if the task is retried', () => {
     const task: TaskSummary = {
       status: TaskStatus.TASK_STATUS_RETRIED
@@ -227,39 +151,21 @@ describe('TasksTableComponent', () => {
     expect(component.isRetried(task)).toBeTruthy(); 
   });
 
-  describe('columnToDate', () => {
-    it('should turn a date to a string', () => {
-      const time = {
-        toDate: jest.fn()
-      } as unknown as Timestamp;
-      component.columnToDate(time);
-      expect(time.toDate).toHaveBeenCalled();
-    });
-
-    it('should return null if the object is undefined',() => {
-      const time = undefined as unknown as Timestamp;
-      expect(component.columnToDate(time)).toEqual(null);
-    });
-  });
-
-  it('should get statuses labels', () => {
-    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
-  });
-
-  it('should get the columns labels', () => {
-    component.columnToLabel('id');
-    expect(mockTasksIndexService.columnToLabel).toHaveBeenCalledWith('id');
-  });
 
   it('should create the params to filter results', () => {
     const id = 'taskId';
-    expect(component.createTaskIdQueryParams(id)).toEqual({
+    expect(component.createResultsQueryParams(id)).toEqual({
       '1-root-3-0': id
     });
   });
 
   it('should send a notification on copy', () => {
-    component.onCopiedTaskId();
+    component.onCopiedTaskId({
+      raw: {
+        id: 'taskId'
+      }
+    } as unknown as TaskData);
+    expect(mockClipBoard.copy).toHaveBeenCalledWith('taskId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
 
@@ -289,18 +195,18 @@ describe('TasksTableComponent', () => {
   });
 
   it('should check if all rows are selected or not', () => {
-    selection.selected.push({id: 'task1'} as unknown as TaskSummary);
+    selection.selected.push('task1');
     expect(component.isAllSelected()).toBeFalsy();
   });
 
   describe('toggleAllRows', () => {
     it('should toggle all row to selected', () => {
       component.toggleAllRows();
-      expect(selection.select).toHaveBeenCalledWith(...component.data);
+      expect(selection.select).toHaveBeenCalledWith(...component.data.map(data => data.raw.id));
     });
 
     it('should clear all row', () => {
-      selection.selected.push(...data);
+      selection.selected.push(...data.map(row => row.id));
       component.toggleAllRows();
       expect(selection.clear).toHaveBeenCalled();
     });
@@ -308,30 +214,26 @@ describe('TasksTableComponent', () => {
 
   describe('checkBoxLabel', () => {
     it('should give the option to select all if they are not all selected', () => {
-      selection.selected.push({id: 'task1'} as unknown as TaskSummary);
+      selection.selected.push('task1');
       console.log('checkBox');
       expect(component.checkboxLabel()).toEqual('select all');
     });
 
     it('should give the option to deselect all if all are selected', () => {
-      selection.selected.push(...data);
+      selection.selected.push(...data.map(row => row.id));
       console.log('checkBox');
       expect(component.checkboxLabel()).toEqual('deselect all');
     });
 
     it('should get the label to deselect a task', () => {
-      const task = {id:'selected1'} as unknown as TaskSummary;
+      const task = {raw: {id:'selected1'} as unknown as TaskSummary} as unknown as TaskData;
       expect(component.checkboxLabel(task)).toEqual('Deselect Task selected1');
     });
 
     it('should get the label to select one task', () => {
-      const task = {id:'selected2'} as unknown as TaskSummary;
+      const task = {raw: {id:'selected2'} as unknown as TaskSummary} as unknown as TaskData;
       expect(component.checkboxLabel(task)).toEqual('Select Task selected2');
     });
-  });
-
-  it('should track By column', () => {
-    expect(component.trackByColumn(0, 'id')).toEqual('id');
   });
 
   describe('onDrop', () => {
@@ -341,7 +243,7 @@ describe('TasksTableComponent', () => {
         currentIndex: 1
       } as unknown as CdkDragDrop<string[]>;
       component.onDrop(event);
-      expect(component.displayedColumns).toEqual(['createdAt', 'id', 'select']);
+      expect(component.displayedColumns).toEqual(displayedColumns);
     });
 
     it('should call tasksIndexService', () => {
@@ -350,18 +252,7 @@ describe('TasksTableComponent', () => {
         currentIndex: 1
       } as unknown as CdkDragDrop<string[]>;
       component.onDrop(event);
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(['createdAt', 'id', 'select']);
+      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
     });
-  });
-
-  it('should handle nested keys for options.options', () => {
-    const element = {
-      options: {
-        options: {
-          key: 'Hey'
-        }
-      }
-    } as unknown as {[key: string]: object};
-    expect(component.handleNestedKeys('options.options.key', element)).toEqual('Hey');
   });
 });

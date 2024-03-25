@@ -1,7 +1,7 @@
 import { SortDirection as MatSortDirection } from '@angular/material/sort';
-import { FieldKey } from './data';
+import { DataRaw, FieldKey } from './data';
 
-export type ListOptions<T extends object> = {
+export type ListOptions<T extends DataRaw> = {
   pageIndex: number
   pageSize: number
   sort: {

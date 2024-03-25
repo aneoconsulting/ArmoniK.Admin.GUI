@@ -25,7 +25,7 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
 })
 export class TableInspectObjectComponent
 {
-  @Input({ required: true }) object: Record<string, unknown>;
+  @Input({ required: true }) object: Record<string, unknown> | undefined;
   @Input({ required: true }) label: string;
 
   #iconsService = inject(IconsService);
@@ -36,12 +36,14 @@ export class TableInspectObjectComponent
   }
 
   onViewObject(): void {
-    this.#dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
-      data: {
-        label: this.label,
-        object: this.object,
-      },
-    });
+    if (this.object) {
+      this.#dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
+        data: {
+          label: this.label,
+          object: this.object,
+        },
+      });
+    }
   }
 
   get isObjectUndefined(): boolean {

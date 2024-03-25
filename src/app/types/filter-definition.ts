@@ -55,6 +55,12 @@ export type FilterDefinitionRootDate<T extends number> = {
   type: 'date';
 };
 
+export type FilterDefinitionRootBoolean<T extends number> = {
+  for: 'root';
+  field: T;
+  type: 'boolean';
+};
+
 export type FilterDefinitionTaskOptionString<T extends number | null> = {
   /**
    * Used to know which field comes from since it's just a number from an enum.
@@ -79,18 +85,18 @@ type FilterDefinitionTaskOptionDuration<T extends number | null> = {
   type: 'duration'
 };
 
-type FilterDefinitionGeneric = {
-  for: 'generic';
+type FilterDefinitionCustom = {
+  for: 'custom';
   field: string;
   type: 'string';
 };
 
 
-type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T>;
+type FilterDefinitionRoot<T extends number> = FilterDefinitionRootString<T> | FilterDefinitionRootNumber<T> | FilterDefinitionRootArray<T> | FilterDefinitionRootStatus<T> | FilterDefinitionRootDate<T> | FilterDefinitionRootBoolean<T>;
 
 export type FilterDefinitionTaskOption<T extends number | null> = FilterDefinitionTaskOptionString<T> | FilterDefinitionTaskOptionNumber<T> | FilterDefinitionTaskOptionDuration<T>;
 
-export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U> | FilterDefinitionGeneric;
+export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U> | FilterDefinitionCustom;
 
 export type FilterFor<T extends number, U extends number | null = null> = FilterDefinition<T, U>['for'];
 

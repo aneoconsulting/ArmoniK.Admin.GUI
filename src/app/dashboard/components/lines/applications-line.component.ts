@@ -11,8 +11,9 @@ import { ApplicationsTableComponent } from '@app/applications/components/table.c
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -84,7 +85,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   readonly #iconsService = inject(IconsService);
   readonly #applicationGrpcService = inject(ApplicationsGrpcService);
   readonly #notificationService = inject(NotificationService);
-  readonly #applicationsIndexService = inject(ApplicationsIndexService);
+  readonly _applicationsIndexService = inject(ApplicationsIndexService);
   readonly #defaultConfigService = inject(DefaultConfigService);
 
   @Input({ required: true }) line: Line;
@@ -94,12 +95,15 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   total: number;
   loadApplicationData = false;
   data: ApplicationRaw[] = [];
-  filters: ApplicationRawFilter;
+  filters: ApplicationRawFilters;
   options: ApplicationRawListOptions;
 
-  displayedColumns: ApplicationRawColumnKey[] = [];
+  displayedColumnsKeys: ApplicationRawColumnKey[] = [];
+  displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
   availableColumns: ApplicationRawColumnKey[] = [];
   lockColumns: boolean = false;
+  columnsLabels: Record<ApplicationRawColumnKey, string> = {} as unknown as Record<ApplicationRawColumnKey, string>;
+
   intervalValue: number;
 
   refresh: Subject<void> = new Subject<void>();
@@ -112,17 +116,17 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   ngOnInit(): void {
     this.loadApplicationData = true;
     this.options = (this.line.options as ApplicationRawListOptions) ?? this.#defaultConfigService.defaultApplications.options;
-    this.displayedColumns = this.line.displayedColumns as ApplicationRawColumnKey[] ?? this.#defaultConfigService.defaultApplications.columns;
+    this.availableColumns = this._applicationsIndexService.availableTableColumns.map(c => c.key);
+    this.displayedColumnsKeys = this._applicationsIndexService.restoreColumns();
+    this.updateDisplayedColumns();
+    this._applicationsIndexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
     this.lockColumns = this.line.lockColumns ?? this.#defaultConfigService.defaultApplications.lockColumns;
-    this.availableColumns = this.#applicationsIndexService.availableColumns;
     this.intervalValue = this.line.interval;
 
-    this.filters = this.line.filters as ApplicationRawFilter;
+    this.filters = this.line.filters as ApplicationRawFilters;
     this.interval.next(this.line.interval);
-  }
-
-  columnsLabels(): Record<ApplicationRawColumnKey, string> {
-    return this.#applicationsIndexService.columnsLabels;
   }
 
   ngAfterViewInit() {
@@ -153,6 +157,10 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  updateDisplayedColumns() {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this._applicationsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<ApplicationRawColumnKey>[];
   }
 
   getIcon(name: string): string {
@@ -214,14 +222,16 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumns = data;
+    this.displayedColumnsKeys = data;
+    this.updateDisplayedColumns();
     this.line.displayedColumns = data;
     this.lineChange.emit();
   }
 
   onColumnsReset() {
-    this.displayedColumns = this.#applicationsIndexService.resetColumns();
-    this.line.displayedColumns = this.displayedColumns;
+    this.displayedColumnsKeys = this._applicationsIndexService.resetColumns();
+    this.line.displayedColumns = this.displayedColumnsKeys;
+    this.updateDisplayedColumns();
     this.lineChange.emit();
   }
 

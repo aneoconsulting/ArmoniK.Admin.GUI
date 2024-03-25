@@ -1,11 +1,10 @@
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
-import { Subject, map, switchMap } from 'rxjs';
-import { AppShowComponent } from '@app/types/components';
-import { Page } from '@app/types/pages';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { catchError, map, switchMap } from 'rxjs';
+import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
-import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -15,13 +14,13 @@ import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
-import { ResultsStatusesService } from './services/results-statuses.service';
-import { ResultRaw } from './types';
+import { ResultsStatusesService } from './services/results-statuses.service';import { ResultRaw } from './types';
+
 
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data?.name ?? null" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" type="results" (refresh)="onRefresh()">
+<app-show-page [id]="data?.resultId ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
@@ -40,58 +39,66 @@ import { ResultRaw } from './types';
     TableStorageService,
     TableURLService,
     ResultsFiltersService,
+    NotificationService,
+    MatSnackBar
   ],
   imports: [
     ShowPageComponent,
     MatIconModule,
   ]
 })
-export class ShowComponent implements AppShowComponent<ResultRaw>, OnInit, AfterViewInit {
-  sharableURL = '';
-  data: ResultRaw | null = null;
-  refresh = new Subject<void>();
-  id: string;
+export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
 
-  #iconsService = inject(IconsService);
-  #shareURLService = inject(ShareUrlService);
-  #resultsStatusesService = inject(ResultsStatusesService);
+  protected override _grpcService = inject(ResultsGrpcService);
+  private _resultsStatusesService = inject(ResultsStatusesService);
 
-  constructor(
-    private _route: ActivatedRoute,
-    private _resultsGrpcService: ResultsGrpcService,
-  ) {}
+  actionButtons: ShowActionButton[] = [
+    {
+      id: 'session',
+      name: $localize`See session`,
+      icon: this.getPageIcon('sessions'),
+      link: '/sessions'
+    },
+    {
+      id: 'task',
+      name: $localize`See task`,
+      icon: this.getPageIcon('tasks'),
+      link: '/tasks'
+    }
+  ];
 
   ngOnInit(): void {
-    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
+    this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
     this.refresh.pipe(
       switchMap(() => {
-        return this._resultsGrpcService.get$(this.id);
+        return this._grpcService.get$(this.id);
       }),
       map((data) => {
         return data.result ?? null;
-      })
-    ).subscribe((data) => this.data = data);
-
-    this._route.params.pipe(
-      map(params => params['id']),
-    ).subscribe(id => {
-      this.id = id;
-      this.refresh.next();
+      }),
+      catchError(error => this.handleError(error))
+    ).subscribe((data) => {
+      if (data) {
+        this.data = data;
+        this.setLink('session', 'sessions', data.sessionId);
+        this.setLink('task', 'tasks', data.ownerTaskId);
+      }
     });
+
+    this.getIdByRoute();
   }
 
   get statuses() {
-    return this.#resultsStatusesService.statuses;
+    return this._resultsStatusesService.statuses;
   }
 
-  getPageIcon(page: Page): string {
-    return this.#iconsService.getPageIcon(page);
-  }
-
-  onRefresh() {
-    this.refresh.next();
+  setLink(actionId: string, baseLink: string, id: string) {
+    const index = this.actionButtons.findIndex(element => element.id === actionId);
+    if (index !== -1) {
+      this.actionButtons[index].link = `/${baseLink}/${id}`;
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
-import { GenericScope, Scope } from '@app/types/config';
-import { FieldKey } from '@app/types/data';
+import { CustomScope, Scope } from '@app/types/config';
+import { DataRaw, FieldKey } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
@@ -50,7 +50,7 @@ export class TableService {
   /**
    * Restore options from the storage
    */
-  restoreOptions<T extends object>(key: `${Scope}-options`, defaultOptions: ListOptions<T>): ListOptions<T> {
+  restoreOptions<T extends DataRaw>(key: `${Scope}-options`, defaultOptions: ListOptions<T>): ListOptions<T> {
     const storageData = this._tableStorageService.restore<T>(key) as ListOptions<T> | null;
 
     function convertValueToNumber(value: string | null): number | null {
@@ -87,7 +87,6 @@ export class TableService {
     const queryParams = this._tableURLService.getQueryParamsFilters<T, U>(filtersDefinitions);
 
     if (queryParams.length) {
-      this.saveFilters(key, queryParams);
       return queryParams;
     }
 
@@ -111,14 +110,14 @@ export class TableService {
   /**
    * Save columns to the local storage
    */
-  saveColumns(key: `${Scope}-columns` | `${GenericScope}-generic-columns`, columns: string[]): void {
+  saveColumns(key: `${Scope}-columns` | `${CustomScope}-custom-columns`, columns: string[]): void {
     this._tableStorageService.save(key, columns);
   }
 
   /**
    * Restore columns from the local storage
    */
-  restoreColumns<T>(key: `${Scope}-columns` | `${GenericScope}-generic-columns`): T | null {
+  restoreColumns<T>(key: `${Scope}-columns` | `${CustomScope}-custom-columns`): T | null {
     return this._tableStorageService.restore<T>(key) as T;
   }
 

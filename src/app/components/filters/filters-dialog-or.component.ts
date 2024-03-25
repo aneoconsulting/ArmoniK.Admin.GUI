@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { GenericColumn } from '@app/types/data';
+import { CustomColumn } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogAndComponent } from './filters-dialog-and.component';
@@ -53,7 +53,7 @@ span {
 export class FiltersDialogOrComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filtersOr: Filter<T, U>[];
-  @Input() genericColumns: GenericColumn[] | undefined;
+  @Input() customColumns: CustomColumn[] | undefined;
 
   @Output() removeChange: EventEmitter<Filter<T, U>[]> = new EventEmitter<Filter<T, U>[]>();
 
@@ -77,18 +77,12 @@ export class FiltersDialogOrComponent<T extends number, U extends number | null 
     if (index > -1) {
       this.filtersOr.splice(index, 1);
     }
+    if (this.filtersOr.length === 0) {
+      this.onAdd();
+    }
   }
 
   onRemoveOr() {
     this.removeChange.emit(this.filtersOr);
-  }
-
-  onAddGeneric() {
-    this.filtersOr.push({
-      for: 'generic',
-      field: null,
-      operator: null,
-      value: null
-    });
   }
 }

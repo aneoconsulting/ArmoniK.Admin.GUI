@@ -4,8 +4,8 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ShowActionButton } from '@app/types/components/show';
 import { DataRaw } from '@app/types/data';
-import { Page } from '@app/types/pages';
 import { NotificationService } from '@services/notification.service';
 import { PageHeaderComponent } from './page-header.component';
 import { ShowActionsComponent } from './show-actions.component';
@@ -18,15 +18,15 @@ import { ShowCardComponent } from './show-card.component';
   <ng-content> </ng-content>
   <span>{{ id }}</span> 
   <button mat-icon-button [cdkCopyToClipboard]="id ?? ''" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
-    <mat-icon aria-hidden="true" fontIcon="content_copy"></mat-icon>
+    <mat-icon aria-hidden="true" fontIcon="content_copy" />
   </button>
 </app-page-header>
 
 <ng-container *ngIf="data">
-  <app-show-actions [type]="type" [data]="data" (cancel)="onCancel()" (refresh)="onRefresh()"></app-show-actions>
+  <app-show-actions [id]="id" [actionsButton]="actionsButton" [data]="data" (refresh)="onRefresh()" />
 </ng-container>
 
-<app-show-card [data]="data" [statuses]="statuses"></app-show-card>
+<app-show-card [data]="data" [statuses]="statuses" />
   `,
   styles: [`
 span {
@@ -54,18 +54,13 @@ export class ShowPageComponent {
   @Input({ required: true }) data: DataRaw | null = null;
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
-  @Input({ required: true }) type: Page;
-  @Output() cancel = new EventEmitter<never>();
+  @Input({ required: true }) actionsButton: ShowActionButton[];
   @Output() refresh = new EventEmitter<never>();
 
   #notificationService = inject(NotificationService);
 
   onCopiedTaskId() {
     this.#notificationService.success('Task ID copied to clipboard');
-  }
-
-  onCancel() {
-    this.cancel.emit();
   }
 
   onRefresh() {

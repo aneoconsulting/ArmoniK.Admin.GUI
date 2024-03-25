@@ -2,20 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ApplicationsIndexService } from './applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
+import { ApplicationRawListOptions } from '../types';
 
 
 describe('TasksIndexService', () => {
   let service: ApplicationsIndexService; 
-
-  const expectedColumnLabels: Record<ApplicationRawColumnKey, string> = {
-    name: $localize`Name`,
-    namespace: $localize`Namespace`,
-    service: $localize`Service`,
-    version: $localize`Version`,
-    count: $localize`Tasks by Status`,
-    actions: $localize`Actions`,
-  };
 
   const expectDefaultOptions :ApplicationRawListOptions = {
     pageIndex: 0,
@@ -53,45 +44,6 @@ describe('TasksIndexService', () => {
 
   test('Create ApplicationsIndexService', ()=> {
     expect(service).toBeTruthy();
-  });
-
-
-  describe('Columns', ()=> {
-    test('the service should label the right column among available columns labels',() => { 
-      for(const [key] of Object.entries(expectedColumnLabels)) {
-        expect(service.columnToLabel(key as ApplicationRawColumnKey)).toEqual(service.columnsLabels[`${key}` as ApplicationRawColumnKey]);
-      }
-    });
-  });
-
-  describe('Table', () => {
-    it('should return true if the column is actions', () =>{
-      expect(service.isActionsColumn('actions')).toEqual(true);
-    });
-    it('should return false if the column is not actions', () =>{
-      expect(service.isActionsColumn('name')).toEqual(false);
-    }); 
-
-    it('should return true if the column is id', () =>{
-      expect(service.isCountColumn('count')).toEqual(true);
-    });
-    it('should return false if the column is not id', () =>{
-      expect(service.isCountColumn('name')).toEqual(false);
-    });
-
-    it('should return true if the column is a simple column', () =>{
-      expect(service.isSimpleColumn('name')).toEqual(true);
-    });
-    it('should return false if the column is not a simple column', () =>{
-      expect(service.isSimpleColumn('actions')).toEqual(false);
-    });
-
-    it('should return true if the column is not sortable', () =>{
-      expect(service.isNotSortableColumn('count')).toEqual(true);
-    });
-    it('should return false if the column is sortable', () =>{
-      expect(service.isNotSortableColumn('name')).toEqual(false);
-    });
   });
 
   describe('Interval', ()=>{

@@ -1,23 +1,18 @@
-import { SortDirection as ArmoniKSortDirection, CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterNumberOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterNumberOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { SortDirection } from '@angular/material/sort';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
+import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
+import { sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFiltersOr, TaskSummaryListOptions } from '../types';
+import { TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksGrpcService {
-  readonly #tasksFiltersService = inject(TasksFiltersService);
-  readonly #utilsService = inject(UtilsService<TaskSummaryEnumField, TaskOptionEnumField>);
-  readonly #tasksClient = inject(TasksClient);
-
-  readonly sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
-    'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
-    'desc': ArmoniKSortDirection.SORT_DIRECTION_DESC,
-    '': ArmoniKSortDirection.SORT_DIRECTION_UNSPECIFIED
-  };
+export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryFieldKey, TaskSummaryEnumField, TaskOptionEnumField>, GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField> {
+  readonly filterService = inject(TasksFiltersService);
+  readonly utilsService = inject(UtilsService<TaskSummaryEnumField, TaskOptionEnumField>);
+  readonly grpcClient = inject(TasksClient);
 
   readonly sortFields: Record<TaskSummaryFieldKey, TaskSummaryEnumField> = {
     id: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
@@ -42,17 +37,20 @@ export class TasksGrpcService {
     countParentTaskIds: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
     countRetryOfIds: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
     error: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED,
+    receivedToEndDuration: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION,
+    fetchedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
+    processedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
   };
 
-  list$(options: TaskSummaryListOptions, filters: TaskSummaryFiltersOr): Observable<ListTasksResponse> {
+  list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const listTasksRequest = new ListTasksRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
-        direction: this.sortDirections[options.sort.direction],
+        direction: sortDirections[options.sort.direction],
         field: {
           taskSummaryField: {
             field: this.sortFields[options.sort.active] ?? TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID
@@ -62,7 +60,7 @@ export class TasksGrpcService {
       filters: requestFilters
     });
 
-    return this.#tasksClient.listTasks(listTasksRequest);
+    return this.grpcClient.listTasks(listTasksRequest);
   }
 
   get$(taskId: string): Observable<GetTaskResponse> {
@@ -70,7 +68,7 @@ export class TasksGrpcService {
       taskId
     });
 
-    return this.#tasksClient.getTask(getTaskRequest);
+    return this.grpcClient.getTask(getTaskRequest);
   }
 
   cancel$(tasksIds: string[]): Observable<CancelTasksResponse> {
@@ -79,22 +77,22 @@ export class TasksGrpcService {
       taskIds: tasksIds
     });
 
-    return this.#tasksClient.cancelTasks(request);
+    return this.grpcClient.cancelTasks(request);
   }
 
-  countByStatu$(filters: TaskSummaryFiltersOr): Observable<CountTasksByStatusResponse> {
+  countByStatus$(filters: TaskSummaryFilters): Observable<CountTasksByStatusResponse> {
 
-    const requestFilters = this.#utilsService.createFilters<TaskFilterField.AsObject>(filters, this.#tasksFiltersService.retrieveFiltersDefinitions(), this.#buildFilterField);
+    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
 
     const request = new CountTasksByStatusRequest({
       filters: requestFilters
     });
 
-    return this.#tasksClient.countTasksByStatus(request);
+    return this.grpcClient.countTasksByStatus(request);
   }
 
   #buildFilterField(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>) {
-    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean, isGeneric: boolean) => {
+    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean, isCustom: boolean) => {
 
       let filterField: TaskFilterField.AsObject['field'];
       if (isForRoot) {
@@ -103,7 +101,7 @@ export class TasksGrpcService {
             field: field as TaskSummaryEnumField
           }
         };
-      } else if (isGeneric) {
+      } else if (isCustom) {
         filterField = {
           taskOptionGenericField: {
             field: field as string
@@ -130,7 +128,7 @@ export class TasksGrpcService {
         return {
           field: filterField,
           filterStatus: {
-            value: Number(filter.value) ?? 0,
+            value: filter.value ? Number(filter.value) : 0,
             operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
           },
         } satisfies TaskFilterField.AsObject;
@@ -138,7 +136,7 @@ export class TasksGrpcService {
         return {
           field: filterField,
           filterStatus: {
-            value: Number(filter.value) ?? 0,
+            value: filter.value ? Number(filter.value) : 0,
             operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
           },
         } satisfies TaskFilterField.AsObject;

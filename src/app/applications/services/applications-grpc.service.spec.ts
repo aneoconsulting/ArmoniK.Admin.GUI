@@ -1,30 +1,27 @@
-import { ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRaw, ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FilterDefinitionRootString } from '@app/types/filter-definition';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationsGrpcService } from './applications-grpc.service';
-import { ApplicationRawFilter, ApplicationRawListOptions } from '../types';
+import { ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 describe('ApplicationsGrpcService', () => {
   let service: ApplicationsGrpcService;
 
   const mockApplicationFiltersService = {
-    retrieveFiltersDefinitions: jest.fn().mockImplementation(() => {
-      const definitions: FilterDefinitionRootString<ApplicationRawEnumField>[] = [
-        {
-          for: 'root',
-          field: 1,
-          type: 'string'
-        },
-        {
-          for: 'root',
-          field: 2,
-          type: 'number'
-        } as unknown as FilterDefinitionRootString<ApplicationRawEnumField>
-      ];
-      return definitions;
-    })
+    filtersDefinitions: [
+      {
+        for: 'root',
+        field: 1,
+        type: 'string'
+      },
+      {
+        for: 'root',
+        field: 2,
+        type: 'number'
+      } as unknown as FilterDefinitionRootString<ApplicationRawEnumField>
+    ]
   };
   
   const mockApplicationsClient = {
@@ -35,12 +32,12 @@ describe('ApplicationsGrpcService', () => {
     pageIndex: 0,
     pageSize: 10,
     sort: {
-      active: 'name',
+      active: 'version',
       direction: 'asc'
     }
   };
 
-  const correctfilters: ApplicationRawFilter = [[
+  const correctfilters: ApplicationRawFilters = [[
     {
       field: 1,
       for: 'root',
@@ -49,7 +46,7 @@ describe('ApplicationsGrpcService', () => {
     }
   ]];
 
-  const uncorrectfilters: ApplicationRawFilter = [[
+  const uncorrectfilters: ApplicationRawFilters = [[
     {
       field: 2,
       for: 'root',
@@ -73,10 +70,6 @@ describe('ApplicationsGrpcService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should not get', () => {
-    expect(() => {service.get$();}).toThrowError('This method must never be called');
-  });
-
   it('should create a request without filters', () => {
     const listResult = new ListApplicationsRequest({
       page: 0,
@@ -85,7 +78,7 @@ describe('ApplicationsGrpcService', () => {
         direction: 1,
         fields: [{
           applicationField: {
-            field: 1
+            field: 2
           }
         }]
       },
@@ -102,7 +95,7 @@ describe('ApplicationsGrpcService', () => {
         direction: 1,
         fields: [{
           applicationField: {
-            field: 1
+            field: 2
           }
         }]
       },
@@ -125,5 +118,35 @@ describe('ApplicationsGrpcService', () => {
 
   it('should throw error in case on unexpected type', () => {
     expect(() => {service.list$(options, uncorrectfilters);}).toThrowError('Type number not supported');
+  });
+
+  it('should throw error in case on unexpected sort field', () => {
+    options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw.AsObject;
+    expect(() => {service.list$(options, []);}).toThrowError('Sort field "unexpected" not supported');
+  });
+
+  it('should create the appropriate application sorting field', () => {
+    options.sort.active = 'name';
+    const listResult = new ListApplicationsRequest({
+      page: 0,
+      pageSize: 10,
+      sort: {
+        direction: 1,
+        fields: [
+          {
+            applicationField: {
+              field: 1
+            }
+          },
+          {
+            applicationField: {
+              field: 2
+            }
+          }
+        ]
+      },
+      filters: {or: []}
+    });
+    expect(service.list$(options, [])).toEqual(listResult);
   });
 });

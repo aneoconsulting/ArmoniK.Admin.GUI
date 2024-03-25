@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { GenericColumn } from '@app/types/data';
+import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInputOutput, FilterValueOptions } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -77,10 +77,15 @@ describe('FiltersDialogFilterFieldComponent', () => {
       field: 7,
       type: 'date',
       for: 'root'
+    },
+    {
+      field: 8,
+      type: 'boolean',
+      for: 'root'
     }
   ];
 
-  const genericList: GenericColumn[] = ['generic.test', 'generic.fastCompute', 'generic.column'];
+  const customList: CustomColumn[] = ['custom.test', 'custom.fastCompute', 'custom.column'];
 
   beforeEach(async () => {
     component = TestBed.configureTestingModule({
@@ -99,7 +104,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
       value: 'someValue'
     };
     component.first = true;
-    component.genericColumns = genericList;
+    component.customColumns = customList;
     component.ngOnInit();
   });
 
@@ -108,77 +113,57 @@ describe('FiltersDialogFilterFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('ngOnInit', () => {
-    describe('filteredGenerics', () => {
-      it('should filter generics', () => {
-        component.filteredGenerics.subscribe(value => {
-          expect(value).toEqual(['generic.test', 'generic.fastCompute']);
-        });
-        component.genericFormControl.setValue('te');
-        component.genericFormControl.updateValueAndValidity({emitEvent: true});
+  describe('filteredProperties', () => {
+    it('should filter properly', () => {
+      component.filteredProperties.subscribe(value => {
+        expect(value).toEqual(['status', 'Start to End duration', 'Created at']);
       });
-
-      it('should return all the list in case of null value', () => {
-        component.filteredGenerics.subscribe(value => {
-          expect(value).toEqual(Object.values(genericList));
-        });
-        component.genericFormControl.setValue(null);
-        component.genericFormControl.updateValueAndValidity({emitEvent: true});
-      });
-    });
-    
-    describe('filteredProperties', () => {
-      it('should filter properly', () => {
-        component.filteredProperties.subscribe(value => {
-          expect(value).toEqual(['status', 'Start to End duration', 'Created at']);
-        });
-        component.propertyFormControl.setValue('at');
-        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
-      });
-
-      it('should return all the list in case of null value', () => {
-        component.filteredProperties.subscribe(value => {
-          expect(value).toEqual(Object.values(propertiesLabel));
-        });
-        component.propertyFormControl.setValue(null);
-        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
-      });
+      component.propertyFormControl.setValue('at');
+      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
     });
 
-    describe('filteredOperators', () => {
-      it('should filter properly', () => {
-        component.filteredOperators.subscribe(value => {
-          expect(value).toEqual(['equal', 'not equal']);
-        });
-        component.propertyFormControl.setValue('equal');
-        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    it('should return all the list in case of null value', () => {
+      component.filteredProperties.subscribe(value => {
+        expect(value).toEqual(Object.values(propertiesLabel));
       });
+      component.propertyFormControl.setValue(null);
+      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    });
+  });
 
-      it('should return all the list in case of null value', () => {
-        component.filteredOperators.subscribe(value => {
-          expect(value).toEqual(['equal', 'not equal']);
-        });
-        component.propertyFormControl.setValue(null);
-        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+  describe('filteredOperators', () => {
+    it('should filter properly', () => {
+      component.filteredOperators.subscribe(value => {
+        expect(value).toEqual(['equal', 'not equal']);
       });
+      component.propertyFormControl.setValue('equal');
+      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
     });
 
-    describe('filteredStatuses', () => {
-      it('should filter properly', () => {
-        component.filteredStatuses.subscribe(value => {
-          expect(value).toEqual(['sumbitted', 'Ended']);
-        });
-        component.propertyFormControl.setValue('ed');
-        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    it('should return all the list in case of null value', () => {
+      component.filteredOperators.subscribe(value => {
+        expect(value).toEqual(['equal', 'not equal']);
       });
+      component.propertyFormControl.setValue(null);
+      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    });
+  });
 
-      it('should return all the list in case of null value', () => {
-        component.filteredStatuses.subscribe(value => {
-          expect(value).toEqual(Object.values(allStatuses));
-        });
-        component.propertyFormControl.setValue(null);
-        component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+  describe('filteredStatuses', () => {
+    it('should filter properly', () => {
+      component.filteredStatuses.subscribe(value => {
+        expect(value).toEqual(['sumbitted', 'Ended']);
       });
+      component.propertyFormControl.setValue('ed');
+      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    });
+
+    it('should return all the list in case of null value', () => {
+      component.filteredStatuses.subscribe(value => {
+        expect(value).toEqual(Object.values(allStatuses));
+      });
+      component.propertyFormControl.setValue(null);
+      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
     });
   });
 
@@ -233,7 +218,6 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
   });
 
-  //TODO: security type check
   it('should retrieve the label', () => {
     component.retrieveLabel(filterDefinitions[0]);
     expect(mockDataFiltersService.retrieveLabel).toHaveBeenCalledWith(
@@ -242,14 +226,12 @@ describe('FiltersDialogFilterFieldComponent', () => {
     );
   });
 
-  //TODO: security type check
   it('should change the operator of the filter', () => {
     component.operatorFormControl.setValue('Equal');
     component.onOperatorChange();
     expect(component.filter.operator).toEqual(0);
   });
 
-  //TODO: security type check
   describe('onInputChange', () => {
     it('should change the filter value on string input', () => {
       const inputEvent = {
@@ -303,6 +285,15 @@ describe('FiltersDialogFilterFieldComponent', () => {
       };
       component.onInputChange(inputEvent);
       expect(component.filter.value).toEqual(1);
+    });
+
+    it('should change the filter value to boolean if one boolean is passed', () => {
+      const inputEvent: FilterInputOutput = {
+        type: 'boolean',
+        value: true
+      };
+      component.onInputChange(inputEvent);
+      expect(component.filter.value).toEqual(true);
     });
   });
 
@@ -393,6 +384,20 @@ describe('FiltersDialogFilterFieldComponent', () => {
         expect(component.findInput(arrayFilter)).toEqual({
           type: 'string',
           value: null
+        });
+      });
+
+      it('should return a boolean filteValue', () => {
+        const booleanFilter: Filter<number, number> = {
+          field: 8,
+          for: 'root',
+          operator: 1,
+          value: true
+        };
+
+        expect(component.findInput(booleanFilter)).toEqual({
+          type: 'boolean',
+          value: true
         });
       });
     });
@@ -497,14 +502,14 @@ describe('FiltersDialogFilterFieldComponent', () => {
       });
     });
 
-    it('should return a filter of type string for a generic', () => {
-      const genericFilter: Filter<number, number> = {
+    it('should return a filter of type string for a custom', () => {
+      const customFilter: Filter<number, number> = {
         field: 'fastCompute',
-        for: 'generic',
+        for: 'custom',
         operator: 0,
         value: null
       };
-      expect(component.findInput(genericFilter)).toEqual({
+      expect(component.findInput(customFilter)).toEqual({
         type: 'string',
         value: null
       });
@@ -595,9 +600,85 @@ describe('FiltersDialogFilterFieldComponent', () => {
     expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
   });
 
-  it('should change generic filters', () => {
-    component.genericFormControl.setValue('column');
-    component.onGenericFieldChange();
-    expect(component.filter.field).toEqual('column');
+  describe('hasOneOperator', () => {
+    it('should be false if the filter has more than one operator', () => {
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      expect(component.hasOneOperator).toBeFalsy();
+    });
+
+    it('should be true if the filter has only one operator', () => {
+      component.allOperators = {
+        0: 'is'
+      };
+      expect(component.hasOneOperator).toBeTruthy();
+    });
+  });
+
+  describe('disableOperator', () => {
+    it('should set the first filter operator as the operator', () => {
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      component.disableOperator();
+      expect(component.filter.operator).toEqual(0);
+    });
+
+    it('should disable operator form control', () => {
+      component.disableOperator();
+      expect(component.operatorFormControl.disabled).toBeTruthy();
+    });
+  });
+
+  describe('enableOperator', () => {
+    it('should enable operator form control', () => {
+      component.enableOperator();
+      expect(component.operatorFormControl.enabled).toBeTruthy();
+    });
+
+    it('should set filter operator to null if it is not kept', () => {
+      component.enableOperator();
+      expect(component.filter.operator).toBeNull();
+    });
+
+    it('should does not modify the filter operator if it is kept', () => {
+      component.filter.operator = 1;
+      component.enableOperator(true);
+      expect(component.filter.operator).toEqual(1);
+    });
+  });
+
+  describe('handleOperatorState', () => {
+    it('should enable operator if there is more than one operator', () => {
+      const spy = jest.spyOn(component, 'enableOperator');
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      component.handleOperatorState(false);
+      expect(spy).toHaveBeenCalledWith(false);
+    });
+
+    it('should disable operator if there is only one operator', () => {
+      const spy = jest.spyOn(component, 'disableOperator');
+      component.allOperators = {
+        0: 'equal',
+      };
+      component.handleOperatorState();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should set the label of the selected operator', () => {
+      component.allOperators = {
+        0: 'equal',
+        1: 'not equal'
+      };
+      component.filter.operator = 0;
+      component.handleOperatorState(true);
+      expect(component.operatorFormControl.value).toEqual('equal');
+    });
   });
 });

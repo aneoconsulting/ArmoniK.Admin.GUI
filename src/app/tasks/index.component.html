@@ -9,8 +9,8 @@
         [loading]="isLoading"
         [refreshTooltip]="autoRefreshTooltip()"
         [intervalValue]="intervalValue"
-        [columnsLabels]="columnsLabels()"
-        [displayedColumns]="displayedColumns"
+        [columnsLabels]="columnsLabels"
+        [displayedColumns]="displayedColumnsKeys"
         [availableColumns]="availableColumns"
         [lockColumns]="lockColumns"
         (refresh)="onRefresh()"
@@ -33,10 +33,10 @@
               Manage View in Logs
             </span>
           </button>
-          <button mat-menu-item (click)="addGenericColumn()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-generics')"></mat-icon>
+          <button mat-menu-item (click)="addCustomColumn()">
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>
             <span i18n appNoWrap>
-              Manage Generic Column
+              Manage Custom Columns
             </span>
           </button>
         </ng-container>
@@ -44,12 +44,13 @@
     </mat-toolbar-row>
   
     <mat-toolbar-row class="filters">
-      <app-filters-toolbar [filters]="filters" [genericColumns]="genericColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+      <app-filters-toolbar [filters]="filters" [customColumns]="customColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
     </mat-toolbar-row>
   </mat-toolbar>
   
   <app-tasks-table
     [data]="data"
+    [filters]="filters"
     [displayedColumns]="displayedColumns"
     [interval]="interval"
     [intervalValue]="intervalValue"

@@ -9,17 +9,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ExternalService } from '@app/types/external-service';
-import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
+import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ManageExternalServicesDialogComponent } from './manage-external-services-dialog.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import pkg from '../../../../package.json';
@@ -87,10 +87,11 @@ main {
     MatMenuModule,
     MatTooltipModule,
     MatDialogModule,
+    ChangeLanguageButtonComponent,
   ]
 })
 export class NavigationComponent implements OnInit{
-  version = pkg.version;
+  version = process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
   externalServices: ExternalService[];
 
   #breakpointObserver = inject(BreakpointObserver);
@@ -100,20 +101,12 @@ export class NavigationComponent implements OnInit{
   #iconsService = inject(IconsService);
   #versionsService = inject(VersionsService);
   #environmentService = inject(EnvironmentService);
-  #router = inject(Router);
-  #storageService = inject(StorageService);
-  #defaultConfigService = inject(DefaultConfigService);
-
-  availableLanguages: string[];
-  selectedLanguage: string;
 
   environment = this.#environmentService.getEnvironment();
 
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
-
-  languageButtonTip = $localize`Change language`;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -123,9 +116,6 @@ export class NavigationComponent implements OnInit{
 
   ngOnInit(): void {
     this.externalServices = this.#navigationService.restoreExternalServices();
-    
-    this.selectedLanguage = this.#storageService.getItem('language') ?? this.#defaultConfigService.defaultLanguage;
-    this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language != this.selectedLanguage);
   }
 
   manageExternalServices() {
@@ -141,14 +131,6 @@ export class NavigationComponent implements OnInit{
         this.#navigationService.saveExternalServices(this.externalServices);
       }
     });
-  }
-
-  setLanguage(language: string) {
-    this.#storageService.setItem('language', language);
-  }
-
-  getRoute() {
-    return this.#router.url;
   }
 
   getIcon(name: string): string {
@@ -174,9 +156,5 @@ export class NavigationComponent implements OnInit{
 
   trackByService(_: number, service: ExternalService) {
     return service.name + service.url;
-  }
-
-  trackByLanguage(_: number, language: string) {
-    return language;
   }
 }

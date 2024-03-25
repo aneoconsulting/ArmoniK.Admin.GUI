@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, map, startWith } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { GenericColumn } from '@app/types/data';
+import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInput, FilterInputOutput, FilterInputType, FilterInputValueDuration, FilterInputValueString, FilterValueOptions, MaybeNull } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
@@ -22,7 +22,6 @@ import { FiltersDialogInputComponent } from './filters-dialog-input.component';
   display: flex;
   flex-direction: row;
   align-items: center;
-
   gap: 1rem;
 }
 
@@ -52,10 +51,7 @@ span {
 export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> implements OnInit {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
-  @Input() genericColumns: GenericColumn[] | undefined;
-
-  genericFormControl: FormControl<string | null>;
-  filteredGenerics: Observable<string[]>;
+  @Input() customColumns: CustomColumn[] | undefined;
 
   allProperties: FilterDefinition<T, U>[];
   propertyFormControl: FormControl<string | null>;
@@ -73,15 +69,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   #dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
   ngOnInit(): void {
-    // Generics form handling
-    if (this.genericColumns) {
-      this.genericFormControl = new FormControl(this.filter.field as string | null);
-      this.filteredGenerics = this.genericFormControl.valueChanges.pipe(
-        startWith(''),
-        map(value => this._filterGenerics(value))
-      );
-    }
-
     // Property form handling
     this.propertyFormControl = new FormControl(this.columnValue);
     this.allProperties = this.#dataFiltersService.retrieveFiltersDefinitions<T, U>();
@@ -92,7 +79,8 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
     // Operator form handling
     this.allOperators = this.findOperator(this.filter);
-    this.operatorFormControl = new FormControl(this.retrieveOperatorLabel(this.filter.operator));
+    this.operatorFormControl = new FormControl();
+    this.handleOperatorState(true);
     this.filteredOperators = this.operatorFormControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filterOperators(value))
@@ -106,21 +94,12 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       map(value => this._filterStatuses(value))
     );
   }
-  
-  private _filterGenerics(value: MaybeNull<string>): string[] {
-    if (this.genericColumns) {
-      if (value === null) {
-        return this.genericColumns;
-      } else {
-        const formValue = value.toLowerCase();
-        return this.genericColumns.map(generic => generic.replace('generic.','')).filter(generic => generic.toLowerCase().includes(formValue));
-      }
-    }
-    return [];
-  }
 
   private _filterProperties(value: MaybeNull<string>): string[] {
     const labelledProperties = this.allProperties.map(property => this.retrieveLabel(property));
+    if (this.customColumns) {
+      labelledProperties.push(...this.customColumns.map(custom => custom.replace('custom.','')));
+    }
     if (value === null) {
       return labelledProperties;
     } else {
@@ -150,7 +129,18 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   get columnValue() {
-    return this.filter.field && this.filter.for ? this.#dataFiltersService.retrieveLabel(this.filter.for, this.filter.field) : '';
+    if (this.filter.field && this.filter.for) {
+      if (this.filter.for !== 'custom') {
+        return this.#dataFiltersService.retrieveLabel(this.filter.for, this.filter.field);
+      } else {
+        return this.filter.field.toString();
+      }
+    }
+    return '';
+  }
+
+  get hasOneOperator() {
+    return Object.keys(this.allOperators).length === 1;
   }
 
   get filtersDefinitions() {
@@ -197,6 +187,12 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       const field = this.#dataFiltersService.retrieveField(formValue);
 
       if (field.index === -1) {
+        const customField = this.customColumns?.find(col => col.toLowerCase() === `custom.${formValue.toLowerCase()}`);
+        if (customField) {
+          this.filter.for = 'custom';
+          this.filter.field = formValue;
+          this.allOperators = this.findOperator(this.filter);
+        }
         return;
       }
 
@@ -209,20 +205,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       this.filter.field = field.index as T | U;
 
       this.allOperators = this.findOperator(this.filter);
-      this.operatorFormControl.setValue('');
-      this.filter.operator = null;
+      this.handleOperatorState();
 
       this.allStatuses = this.findStatuses(this.filter);
       this.statusFormControl.setValue('');
       this.filter.value = null;
-    }
-  }
-    
-  onGenericFieldChange() {
-    if (this.genericColumns) {
-      const formValue = `generic.${this.genericFormControl.value}`;
-      const value = this.genericColumns.find(column => column.toLowerCase() === formValue.toLowerCase());
-      this.filter.field = value !== undefined ? value.replace('generic.', '') : null;
     }
   }
 
@@ -251,11 +238,14 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     case 'duration':
       this.filter.value = Number(event.value) || null;
       break;
+    case 'boolean':
+      this.filter.value = event.value;
+      break;
     }
   }
 
   findInput(filter: Filter<T, U>): FilterInput {
-    if (filter.for === 'generic') {
+    if (filter.for === 'custom') {
       return {
         type: 'string',
         value: filter.value as FilterInputValueString
@@ -297,6 +287,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       return {
         type: 'duration',
         value: filter.value as FilterInputValueDuration
+      };
+    case 'boolean':
+      return {
+        type: 'boolean',
+        value: filter.value as boolean
       };
     default:
       throw new Error(`Unknown type ${type}`);
@@ -343,11 +338,31 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
 
     const operators = this.#filtersService.findOperators(type);
-
     return operators;
   }
 
   #findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
     return this.#dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+  }
+
+  handleOperatorState(keepOperator?: boolean) {
+    if (this.hasOneOperator) {
+      this.disableOperator();
+    } else {
+      this.enableOperator(keepOperator);
+    }
+    this.operatorFormControl.setValue(this.retrieveOperatorLabel(this.filter.operator));
+  }
+
+  disableOperator() {
+    this.filter.operator = Number(Object.keys(this.allOperators)[0]);
+    this.operatorFormControl.disable();
+  }
+
+  enableOperator(keepOperator?: boolean) {
+    if (!keepOperator) {
+      this.filter.operator = null;
+    }
+    this.operatorFormControl.enable();
   }
 }

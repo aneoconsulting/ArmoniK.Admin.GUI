@@ -6,7 +6,7 @@ import { ListOptions } from '@app/types/options';
 
 export type TaskRaw = GrpcTaskRaw.AsObject;
 export type TaskSummary = GrpcTaskSummary.AsObject;
-export type TaskSummaryColumnKey = ColumnKey<TaskSummary, TaskOptions> | 'select';
+export type TaskSummaryColumnKey = ColumnKey<TaskSummary, TaskOptions> | 'select' | `options.options.${string}`;
 export type TaskSummaryFieldKey = FieldKey<TaskSummary>;
 export type TaskSummaryListOptions = ListOptions<TaskSummary>;
 
@@ -16,7 +16,7 @@ export type TaskFilterField = TaskSummaryEnumField | TaskOptionEnumField | TaskO
 export type TaskFilterDefinition = FilterDefinition<TaskSummaryEnumField, TaskOptionEnumField>;
 
 export type TaskFilterFor = FilterFor<TaskSummaryEnumField, TaskOptionEnumField>;
-export type TaskSummaryFiltersOr = FiltersOr<TaskSummaryEnumField, TaskOptionEnumField>;
+export type TaskSummaryFilters = FiltersOr<TaskSummaryEnumField, TaskOptionEnumField>;
 export type TaskSummaryFilter = Filter<TaskSummaryEnumField, TaskOptionEnumField>;
 
 export type TaskOptions = GrpcTaskOptions.AsObject;

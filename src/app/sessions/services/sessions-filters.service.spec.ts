@@ -4,7 +4,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionFilterDefinition, SessionRawFiltersOr } from '../types';
+import { SessionFilterDefinition, SessionRawFilters } from '../types';
 
 describe('SessionsFiltersService', () => {
   let service: SessionsFiltersService;
@@ -15,7 +15,7 @@ describe('SessionsFiltersService', () => {
     resetFilters: jest.fn()
   };
 
-  const testFiltersOr: SessionRawFiltersOr = [[
+  const testFiltersOr: SessionRawFilters = [[
     {
       field: 1,
       for: 'root',
@@ -51,6 +51,22 @@ describe('SessionsFiltersService', () => {
         {
           key: '2',
           value: 'Cancelled'
+        },
+        {
+          key: '3',
+          value: 'Paused'
+        },
+        {
+          key: '4',
+          value: 'Closed'
+        },
+        {
+          key: '5',
+          value: 'Purged'
+        },
+        {
+          key: '6',
+          value: 'Deleted'
         }
       ],
     },
@@ -63,6 +79,31 @@ describe('SessionsFiltersService', () => {
       for: 'root',
       field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
       type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+      type: 'boolean'
+    },
+    {
+      for: 'root',
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
+      type: 'boolean'
     },
     {  
       for: 'options',
@@ -141,7 +182,7 @@ describe('SessionsFiltersService', () => {
   });
 
   it('should retrieve filtersDefinitions', () => {
-    expect(service.retrieveFiltersDefinitions()).toEqual(filtersDefinitions);
+    expect(service.filtersDefinitions).toEqual(filtersDefinitions);
   });
 
   it('should retrieve labels for a root filter', () => {

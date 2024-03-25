@@ -53,17 +53,29 @@ export class ViewTasksByStatusComponent {
 
   @Input({ required: true }) loading = true;
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
-  @Input() defaultQueryParams: Record<string, string> = {};
+  @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
 
   @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {
     this.buildTasks(entries);
   }
 
   createQueryParams(status: TaskStatus): Record<string, string> {
+    const taskStatusQueryParams = this.#createQueryParamsStatusKey(status);
     return {
       ...this.defaultQueryParams,
-      [`0-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`]: status.toString(),
+      ...taskStatusQueryParams
     };
+  }
+
+  #createQueryParamsStatusKey(status: TaskStatus): Record<string, string> {
+    const filterGroup = Object.keys(this.defaultQueryParams).map(keys => keys[0]); // The first character of the key represents the filter "Or Group"
+
+    const taskStatusQueryParams: Record<string, string> = {};
+    filterGroup.forEach(groupId => {
+      taskStatusQueryParams[`${groupId}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`] = status.toString();
+    });
+
+    return taskStatusQueryParams;
   }
 
   tooltip(status: TaskStatus): string {

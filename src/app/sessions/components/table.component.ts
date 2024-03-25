@@ -1,5 +1,5 @@
-import { FilterStringOperator, SessionRaw, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskOptions, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ClipboardModule } from '@angular/cdk/clipboard';
+import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard} from '@angular/cdk/clipboard';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
@@ -9,29 +9,32 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { Task } from '@app/partitions/components/table.component';
-import { TaskSummaryFiltersOr } from '@app/tasks/types';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Params, Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { TaskSummaryFilters } from '@app/tasks/types';
+import { TableColumn } from '@app/types/column.type';
+import { ColumnKey, SessionData } from '@app/types/data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
+import { Page } from '@app/types/pages';
+import { ActionTable } from '@app/types/table';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { TableActionsComponent } from '@components/table/table-actions.component';
+import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
-import { DurationPipe } from '@pipes/duration.pipe';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -44,7 +47,8 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
     TasksByStatusService,
     MatDialog,
     IconsService,
-    FiltersService
+    FiltersService,
+    Clipboard,
   ],
   imports: [
     TableActionsToolbarComponent,
@@ -60,46 +64,41 @@ import { SessionRawColumnKey, SessionRawFieldKey, SessionRawFiltersOr, SessionRa
     MatTableModule,
     MatIconModule,
     RouterModule,
-    EmptyCellPipe,
     DragDropModule,
     MatButtonModule,
-    ClipboardModule,
     DatePipe,
-    DurationPipe,
-    EmptyCellPipe,
     TableInspectObjectComponent,
-    MatDialogModule
+    MatDialogModule,
+    TableCellComponent,
+    TableActionsComponent,
+    NgIf,
   ]
 })
 export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
-  @Input({required: true}) displayedColumns: SessionRawColumnKey[] = [];
+  @Input({required: true}) displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
   @Input({required: true}) options: SessionRawListOptions;
   @Input({required: true}) total: number;
-  @Input({required: true}) filters: SessionRawFiltersOr;
+  @Input({required: true}) filters: SessionRawFilters;
+  @Input({ required: true}) data$: Subject<SessionRaw[]>;
   @Input() lockColumns = false;
 
-  private _data: Task[] = [];
-  get data(): Task[] {
+  private _data: SessionData[] = [];
+  get data(): SessionData[] {
     return this._data;
   }
 
-  @Input({ required: true }) set data(entries: SessionRaw.AsObject[]) {
-    this._data = [];
-    entries.forEach(entry => {
-      const task: Task = {
-        raw: entry,
-        queryParams: this.createTasksByStatusQueryParams(entry.sessionId),
-        filters: this.countTasksByStatusFilters(entry.sessionId)
-      };
-      this._data.push(task);
-    });
+  get columnKeys() {
+    return this.displayedColumns.map(c => c.key);
   }
 
   @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
+  @Output() closeSession = new EventEmitter<string>();
+  @Output() deleteSession = new EventEmitter<string>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
+  dataSource = new MatTableDataSource<SessionData>(this._data);
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
@@ -110,6 +109,61 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   readonly _notificationService = inject(NotificationService);
   readonly _sessionsStatusesService = inject(SessionsStatusesService);
   readonly _dialog = inject(MatDialog);
+  readonly _router = inject(Router);
+  readonly _copyService = inject(Clipboard);
+
+  copy$ = new Subject<SessionData>();
+  copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
+
+  seeSessions$ = new Subject<SessionData>();
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions', data.raw.sessionId]));
+
+  seeResults$ = new Subject<SessionData>();
+  seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+
+  cancelSession$ = new Subject<SessionData>();
+  cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
+
+  closeSession$ = new Subject<SessionData>();
+  closeSessionSubscription = this.closeSession$.subscribe(data => this.onClose(data.raw.sessionId));
+
+  deleteSession$ = new Subject<SessionData>();
+  deleteSessionSubscription = this.deleteSession$.subscribe(data => this.onDelete(data.raw.sessionId));
+
+  actions: ActionTable<SessionData>[] = [
+    {
+      label: 'Copy session ID',
+      icon: this.getIcon('copy'),
+      action$: this.copy$, 
+    },
+    {
+      label: 'See session',
+      icon: this.getPageIcon('sessions'),
+      action$: this.seeSessions$,
+    },
+    {
+      label: 'See results',
+      icon: this.getPageIcon('results'),
+      action$: this.seeResults$,
+    },
+    {
+      label: 'Cancel session',
+      icon: this.getIcon('cancel'),
+      action$: this.cancelSession$, 
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+    },
+    {
+      label: 'Close session',
+      icon: this.getIcon('close'),
+      action$: this.closeSession$,
+      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+    },
+    {
+      label: 'Delete session',
+      icon: this.getIcon('delete'),
+      action$: this.deleteSession$,
+    }
+  ];
 
   ngOnInit(): void {
     this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('sessions');
@@ -126,9 +180,40 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     });
 
     this.paginator.page.subscribe(() => {
+      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
+    });
+
+    this.data$.subscribe(entries => {
+      if (entries.length !== 0) {
+        this._data = this.data.filter(d => entries.find(entry => entry.sessionId === d.raw.sessionId));
+        entries.forEach((entry, index) => {
+          const session = this._data[index];
+          if (session && session.raw.sessionId === entry.sessionId) {
+            session.raw = entry;
+            this._data.splice(index, 1, session);
+            this._data[index].value$.next(entry);
+          } else {
+            const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
+            queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
+            const session: SessionData = {
+              raw: entry,
+              queryParams,
+              queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+              resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
+              filters: this.countTasksByStatusFilters(entry.sessionId),
+              value$: new Subject<SessionRaw>(),
+            };
+            this._data.splice(index, 1, session);
+          }
+        });
+        this.dataSource.data = this._data;
+      } else {
+        this._data = [];
+        this.dataSource.data = this._data;
+      }
     });
   }
 
@@ -136,74 +221,18 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return this._iconsService.getIcon(name);
   }
 
-  columnToLabel(column: SessionRawColumnKey): string {
-    return this._sessionsIndexService.columnToLabel(column);
-  }
-
-  isGenericColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isGenericColumn(column);
-  }
-
-  isNotSortableColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isNotSortableColumn(column);
-  }
-
-  isSimpleColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isSimpleColumn(column);
-  }
-
-  isSessionIdColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isSessionIdColumn(column);
-  }
-
-  isObjectColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isObjectColumn(column);
-  }
-
-  isDateColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isDateColumn(column);
-  }
-
-  isDurationColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isDurationColumn(column);
-  }
-
-  isStatusColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isStatusColumn(column);
-  }
-
-  isCountColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isCountColumn(column);
-  }
-
-  isActionsColumn(column: SessionRawColumnKey): boolean {
-    return this._sessionsIndexService.isActionsColumn(column);
+  getPageIcon(page: Page): string {
+    return this._iconsService.getPageIcon(page);
   }
 
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
 
-    this._sessionsIndexService.saveColumns(this.displayedColumns);
+    this._sessionsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 
-  extractData(element: SessionRaw, column: SessionRawColumnKey): Duration | null {
-    return this.show(element, column) as Duration | null;
-  }
-
-  // TODO: move to a service for date and time
-  columnToDate(element: Timestamp | undefined): Date | null {
-    if (!element) {
-      return null;
-    }
-
-    return element.toDate();
-  }
-
-  statusToLabel(status: SessionStatus): string {
-    return this._sessionsStatusesService.statusToLabel(status);
-  }
-
-  onCopiedSessionId() {
+  onCopiedSessionId(data: SessionData) {
+    this._copyService.copy(data.raw.sessionId);
     this._notificationService.success('Session ID copied to clipboard');
   }
 
@@ -227,7 +256,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       this.filters.forEach((filterAnd, index) => {
         filterAnd.forEach(filter => {
           if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
-            const filterLabel = this.#createQueryParamFilterKey(filter, index);
+            const filterLabel = this.#createTaskByStatusLabel(filter, index);
             if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
           }
         });
@@ -237,7 +266,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  #createQueryParamFilterKey(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
+  #createTaskByStatusLabel(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
       if (filter.for === 'root' && filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) {
         return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
@@ -248,7 +277,29 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     return null;
   }
 
-  countTasksByStatusFilters(sessionId: string): TaskSummaryFiltersOr {
+  createResultsQueryParams(sessionId: string) {
+    if(this.filters.length === 0) {
+      const keySession = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+
+      return {
+        [keySession]: sessionId
+      };
+    } else {
+      const params: Record<string, string> = {};
+      this.filters.forEach((filterAnd, index) => {
+        filterAnd.forEach(filter => {
+          if (filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL && filter.value !== null && filter.operator !== null) {
+            const filterLabel = this._filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+            if (filterLabel) params[filterLabel] = filter.value.toString();
+          }
+        });
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
+      });
+      return params;
+    }
+  }
+
+  countTasksByStatusFilters(sessionId: string): TaskSummaryFilters {
     return [
       [
         {
@@ -265,19 +316,13 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     this.cancelSession.emit(sessionId);
   }
 
-  show(session: SessionRaw, column: SessionRawColumnKey) {
-    if (column.startsWith('options.')) {
-      const optionColumn = column.replace('options.', '') as keyof TaskOptions;
-      const options = session['options'] as TaskOptions | undefined;
+  onClose(sessionId: string) {
+    this.closeSession.emit(sessionId);
+  }
 
-      if (!options) {
-        return null;
-      }
-
-      return options[optionColumn];
-    }
-
-    return session[column as keyof SessionRaw];
+  onDelete(sessionId: string) {
+    this._data = this._data.filter(session => session.raw.sessionId !== sessionId);
+    this.deleteSession.emit(sessionId);
   }
 
   personalizeTasksByStatus() {
@@ -293,10 +338,5 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         this._tasksByStatusService.saveStatuses('sessions', result);
       }
     });
-  }
-
-  handleGenericColumn(column: SessionRawColumnKey, element: SessionRaw) {
-    const field = this._sessionsIndexService.genericField(column);
-    return element.options?.options[field];
   }
 }

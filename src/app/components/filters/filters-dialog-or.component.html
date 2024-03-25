@@ -7,22 +7,16 @@
       <app-filters-dialog-and
         [first]="index === 0"
         [filter]="filtersAnd"
-        [genericColumns]="genericColumns"
+        [customColumns]="customColumns"
         (removeChange)="onRemoveAnd($event)"
       >
       </app-filters-dialog-and>
     </ng-container>
 
-    <div>
-      <button mat-button (click)="onAdd()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n>Add an And Filter</span>
-      </button>
-      <button *ngIf="genericColumns" mat-button (click)="onAddGeneric()">
-        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
-        <span i18n>Add a Generic Filter</span>
-      </button>
-    </div>
+    <button mat-button (click)="onAdd()" style="width: fit-content;">
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
+      <span i18n>Add an And Filter</span>
+    </button>
   </div>
 </div>
 
@@ -36,4 +30,3 @@
     <span i18n>Remove</span>
   </button>
 </mat-menu>
-<!-- TODO: add a button to remove this or group -->

@@ -1,11 +1,12 @@
+import { FilterArrayOperator, FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
-import { Subject, map, switchMap } from 'rxjs';
-import { AppShowComponent } from '@app/types/components';
-import { Page } from '@app/types/pages';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { catchError, map, switchMap } from 'rxjs';
+import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
-import { IconsService } from '@services/icons.service';
+import { FiltersService } from '@services/filters.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TableStorageService } from '@services/table-storage.service';
@@ -20,7 +21,7 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="data?.id ?? null" [data]="data" [sharableURL]="sharableURL" type="partitions" (refresh)="onRefresh()">
+<app-show-page [id]="data?.id ?? ''" [data]="data" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>
@@ -38,49 +39,67 @@ import { PartitionRaw } from './types';
     TableService,
     TableURLService,
     TableStorageService,
+    NotificationService,
+    MatSnackBar,
+    FiltersService
   ],
   imports: [
     ShowPageComponent,
     MatIconModule
   ]
 })
-export class ShowComponent implements AppShowComponent<PartitionRaw>, OnInit, AfterViewInit {
-  sharableURL = '';
-  data: PartitionRaw | null = null;
-  refresh = new Subject<void>();
-  id: string;
+export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
+  protected override _grpcService = inject(PartitionsGrpcService);
+  private _filtersService = inject(FiltersService);
 
-  #iconsService = inject(IconsService);
-  #shareUrlService = inject(ShareUrlService);
-  #partitionsGrpcService = inject(PartitionsGrpcService);
-  #route = inject(ActivatedRoute); 
+  actionButtons: ShowActionButton[] = [
+    {
+      id: 'sessions',
+      name: $localize`See sessions`,
+      icon: this.getPageIcon('sessions'),
+      link: '/sessions',
+      queryParams: {},
+      area: 'left'
+    },
+    {
+      id: 'tasks',
+      name: $localize`See tasks`,
+      icon: this.getPageIcon('tasks'),
+      link: '/tasks',
+      queryParams: {},
+      area: 'left'
+    }
+  ];
 
   ngOnInit(): void {
-    this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
+    this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
     this.refresh.pipe(
       switchMap(() => {
-        return this.#partitionsGrpcService.get$(this.id);
+        return this._grpcService.get$(this.id);
       }),
       map((data) => {
         return data.partition ?? null;
-      })
-    ).subscribe((data) => this.data = data);
-    this.#route.params.pipe(
-      map(params => params['id']),
-    ).subscribe(id => {
-      this.id = id;
-      this.refresh.next();
+      }),
+      catchError(error => this.handleError(error))
+    ).subscribe((data) => {
+      if (data) {
+        this.data = data;
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'sessions', this.partitionsKey, this.data.id);
+        this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.id);
+      }
     });
+
+    this.getIdByRoute();
   }
 
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
+  get partitionsKey() {
+    return this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
   }
 
-  onRefresh() {
-    this.refresh.next();
+  get tasksKey() {
+    return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
   }
 }

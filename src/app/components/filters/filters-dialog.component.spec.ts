@@ -9,14 +9,22 @@ import { FiltersDialogComponent } from './filters-dialog.component';
 describe('FiltersDialogComponent', () => {
   let component: FiltersDialogComponent<number, number>;
   let fixture: ComponentFixture<FiltersDialogComponent<number, number>>;
-  const filterAnd: FiltersAnd<number, number> = [{
+
+  const filterAnd1: FiltersAnd<number, number> = [{
     field: 1,
     for: 'root',
     operator: 1,
     value: 'someValue'
   }];
+  const filterAnd2: FiltersAnd<number, number> = [{
+    field: 1,
+    for: 'root',
+    operator: 2,
+    value: 'otherValue'
+  }];
+
   const filterOr: FiltersOr<number, number> = [
-    filterAnd
+    filterAnd1, filterAnd2
   ];
   const mockMatDialogData = {
     filtersOr: [] as FiltersOr<number, number>
@@ -69,7 +77,7 @@ describe('FiltersDialogComponent', () => {
 
   it('should add empty FilterAnd on add', () => {
     component.onAdd();
-    expect(component.filtersOr[1]).toEqual([
+    expect(component.filtersOr[2]).toEqual([
       {
         for: null,
         field: null,
@@ -79,10 +87,25 @@ describe('FiltersDialogComponent', () => {
     ]);
   });
 
-  it('should remove from orFilter', () => {
-    const toRemove = component.filtersOr[0];
-    component.onRemoveOr(toRemove);
-    expect(component.filtersOr).toEqual([]);
+  describe('removeOr', () => {
+    it('should remove a filter from orFilter', () => {
+      const toRemove = component.filtersOr[0];
+      component.onRemoveOr(toRemove);
+      expect(component.filtersOr).toEqual([filterAnd2]);
+    });
+
+    it('should push a new empty filter if the group is empty', () => {
+      component.onRemoveOr(component.filtersOr[0]);
+      component.onRemoveOr(component.filtersOr[0]);
+      expect(component.filtersOr).toEqual([
+        [{
+          for: null,
+          field: null,
+          operator: null,
+          value: null,
+        }]
+      ]);
+    });
   });
 
   it('should close on no click', () => {
@@ -95,6 +118,6 @@ describe('FiltersDialogComponent', () => {
   });
 
   it('should track by filter', () => {
-    expect(component.trackByFilter(0, filterAnd)).toEqual('01');
+    expect(component.trackByFilter(0, filterAnd1)).toEqual('01');
   });
 });

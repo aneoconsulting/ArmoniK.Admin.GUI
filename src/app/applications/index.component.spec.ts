@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { TableColumn } from '@app/types/column.type';
 import { DataFilterService } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -10,11 +11,46 @@ import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
 import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFilter, ApplicationRawListOptions } from './types';
+import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 describe('Application component', () => {
 
   let component: IndexComponent;
+
+  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+    {
+      name: 'Name',
+      key: 'name',
+      sortable: true
+    },
+    {
+      name: 'Namespace',
+      key: 'namespace',
+      sortable: true
+    },
+    {
+      name: 'Service',
+      key: 'service',
+      sortable: true
+    },
+    {
+      name: 'Version',
+      key: 'version',
+      sortable: true
+    },
+    {
+      name: 'Actions',
+      key: 'actions',
+      type: 'actions',
+      sortable: false
+    },
+    {
+      name: 'Tasks by Status',
+      key: 'count',
+      type: 'count',
+      sortable: true
+    }
+  ];
 
   const dataSample = {
     total: 3,
@@ -54,7 +90,7 @@ describe('Application component', () => {
   const intervalRefreshSubject = new Subject<number>();
 
   const mockApplicationIndexService = {
-    availableColumns: ['name', 'namespace', 'service', 'version', 'actions', 'count'],
+    availableTableColumns: displayedColumns,
     columnsLabels: {
       name: $localize`Name`,
       namespace: $localize`Namespace`,
@@ -63,7 +99,7 @@ describe('Application component', () => {
       count: $localize`Tasks by Status`,
       actions: $localize`Actions`,
     },
-    restoreColumns: jest.fn(),
+    restoreColumns: jest.fn(() => displayedColumns.map(col => col.key)),
     saveColumns: jest.fn(),
     resetColumns: jest.fn(),
     columnToLabel: jest.fn(),
@@ -119,7 +155,6 @@ describe('Application component', () => {
 
     component.ngOnInit();
     component.ngAfterViewInit();
-    component.displayedColumns = ['name', 'namespace', 'service', 'version', 'actions', 'count'];
   });
   
   it('Should run', () => {
@@ -132,7 +167,7 @@ describe('Application component', () => {
     expect(mockApplicationsFilterService.restoreFilters).toHaveBeenCalled();
     expect(mockApplicationIndexService.restoreIntervalValue).toHaveBeenCalled();
     expect(mockShareUrlService.generateSharableURL).toHaveBeenCalledWith(component.options, component.filters);
-    expect(component.availableColumns).toBe(mockApplicationIndexService.availableColumns);
+    expect(component.availableColumns).toEqual(displayedColumns.map(col => col.key));
   });
 
   describe('ngAfterViewInit', () => {
@@ -187,10 +222,6 @@ describe('Application component', () => {
     expect(component.total).toEqual(0);
   });
 
-  it('should return column labels', () => {
-    expect(component.columnsLabels()).toEqual(mockApplicationIndexService.columnsLabels);
-  });
-
   it('should get page icon', () => {
     expect(component.getPageIcon('applications')).toEqual('apps');
   });
@@ -223,19 +254,19 @@ describe('Application component', () => {
   it('should change columns', () => {
     const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
     component.onColumnsChange(newColumns);
-    expect(component.displayedColumns).toEqual(newColumns);
+    expect(component.displayedColumnsKeys).toEqual(newColumns);
     expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
 
   it('should reset columns', () => {
-    mockApplicationIndexService.resetColumns.mockImplementationOnce(() => mockApplicationIndexService.availableColumns);
+    mockApplicationIndexService.resetColumns.mockImplementationOnce(() => mockApplicationIndexService.availableTableColumns.map(col => col.key));
     component.onColumnsReset();
-    expect(component.displayedColumns).toEqual(mockApplicationIndexService.availableColumns);
+    expect(component.displayedColumnsKeys).toEqual(mockApplicationIndexService.availableTableColumns.map(col => col.key));
     expect(mockApplicationIndexService.resetColumns).toHaveBeenCalled();
   });
 
   it('should update filters', () => {
-    const newFilterOr: ApplicationRawFilter = [[{
+    const newFilterOr: ApplicationRawFilters = [[{
       field: 3,
       for: 'root',
       operator: 4,

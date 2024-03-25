@@ -13,5 +13,5 @@ export type PartitionFilterField = PartitionRawEnumField | { for: string, index:
 export type PartitionsFiltersDefinition = FilterDefinition<PartitionRawEnumField>;
 
 export type PartitionFilterFor = FilterFor<PartitionRawEnumField>;
-export type PartitionRawFiltersOr = FiltersOr<PartitionRawEnumField>;
+export type PartitionRawFilters = FiltersOr<PartitionRawEnumField>;
 export type PartitionRawFilter = Filter<PartitionRawEnumField>;

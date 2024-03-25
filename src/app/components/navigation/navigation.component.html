@@ -18,16 +18,8 @@
       {{ environment.name }} {{ environment.version }}
     </div>
     <div class="spacer"></div>
-    <button mat-button [matMenuTriggerFor]="switchLanguage" [matTooltip]="languageButtonTip">
-      <mat-icon matListItemIcon [fontIcon]="getIcon('language')" aria-hidden="true">Truc</mat-icon>
-      <span>{{selectedLanguage.toLocaleUpperCase()}}</span>
-    </button>
-    <mat-menu #switchLanguage="matMenu">
-      <ng-container *ngFor="let language of availableLanguages; trackBy:trackByLanguage">
-        <a mat-menu-item [href]="'/admin/' + language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
-      </ng-container>
-    </mat-menu>
-    <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services" i18n-matTooltip>
+    <app-change-language-button /> 
+    <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
       <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
       <span i18n="Button to view external services">
         External Services

@@ -4,7 +4,7 @@ import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { StatusCount, TaskSummaryFiltersOr } from '@app/tasks/types';
+import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { Filter } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { TasksStatusesGroup } from '../types';
@@ -56,7 +56,7 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) group: TasksStatusesGroup;
   @Input({ required: true }) hideGroupHeaders: boolean;
   @Input({ required: true }) data: StatusCount[] = [];
-  @Input({required: true}) filters: TaskSummaryFiltersOr;
+  @Input({required: true}) filters: TaskSummaryFilters;
 
   #tasksStatusesService = inject(TasksStatusesService);
   #filtersService = inject(FiltersService);
@@ -81,7 +81,7 @@ export class StatusesGroupCardComponent {
   }
 
   createQueryParamManyStatuses() {
-    const params: { [key: string]: string | number | Date | null} = {};
+    const params: { [key: string]: string | number | Date | boolean | null} = {};
     let orGroup = 0;
     
     if (this.filters.length !== 0) {
@@ -109,7 +109,7 @@ export class StatusesGroupCardComponent {
       };
     }
     else {
-      const params: { [key: string]: string | number | Date | null} = {};
+      const params: { [key: string]: string | number | Date | boolean | null} = {};
 
       this.filters.forEach((filterAnd, index) => {
         params[this.#createQueryParamKeyOr(index)] = status;

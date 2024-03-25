@@ -1,19 +1,20 @@
 import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
+import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksStatusesService } from './tasks-statuses.service';
-import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFiltersOr } from '../types';
+import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService {
-  readonly #tasksStatusesService = inject(TasksStatusesService);
-  readonly #defaultConfigService = inject(DefaultConfigService);
-  readonly #tableService = inject(TableService);
+export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  readonly statusService = inject(TasksStatusesService);
+  readonly defaultConfigService = inject(DefaultConfigService);
+  readonly tableService = inject(TableService);
 
-  readonly #rootField: Record<TaskSummaryEnumField, string> = {
+  readonly rootField: Record<TaskSummaryEnumField, string> = {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID]: $localize`Owner Pod ID`,
@@ -31,9 +32,12 @@ export class TasksFiltersService {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT]: $localize`Acquired at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ERROR]: $localize`Error`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION]: $localize`Received to End Duration`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT]: $localize`Processed at`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT]: $localize`Fetched at`,
   };
 
-  readonly #optionsField: Record<TaskOptionEnumField, string> = {
+  readonly optionsField: Record<TaskOptionEnumField, string> = {
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION]: $localize`Max Duration`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES]: $localize`Max Retries`,
@@ -47,7 +51,7 @@ export class TasksFiltersService {
   };
 
 
-  readonly #filtersDefinitions: TaskFilterDefinition[] = [
+  readonly filtersDefinitions: TaskFilterDefinition[] = [
     // Do not filter object fields
     {
       for: 'root',
@@ -68,10 +72,10 @@ export class TasksFiltersService {
       for: 'root',
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
       type: 'status',
-      statuses: Object.keys(this.#tasksStatusesService.statuses).map(status => {
+      statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.#tasksStatusesService.statuses[Number(status) as TaskStatus],
+          value: this.statusService.statuses[Number(status) as TaskStatus],
         };
       }),
     },
@@ -120,6 +124,16 @@ export class TasksFiltersService {
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_POD_TTL,
       type: 'date'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
+      type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
+      type: 'date'
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -162,46 +176,46 @@ export class TasksFiltersService {
     }
   ];
 
-  readonly #defaultFilters: TaskSummaryFiltersOr = this.#defaultConfigService.defaultTasks.filters;
+  readonly defaultFilters: TaskSummaryFilters = this.defaultConfigService.defaultTasks.filters;
 
-  saveFilters(filters: TaskSummaryFiltersOr): void {
-    this.#tableService.saveFilters('tasks-filters', filters);
+  saveFilters(filters: TaskSummaryFilters): void {
+    this.tableService.saveFilters('tasks-filters', filters);
   }
 
-  restoreFilters(): TaskSummaryFiltersOr {
-    return this.#tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.#filtersDefinitions) ?? this.#defaultFilters;
+  restoreFilters(): TaskSummaryFilters {
+    return this.tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.filtersDefinitions) ?? this.defaultFilters;
   }
 
-  resetFilters(): TaskSummaryFiltersOr {
-    this.#tableService.resetFilters('tasks-filters');
+  resetFilters(): TaskSummaryFilters {
+    this.tableService.resetFilters('tasks-filters');
 
-    return this.#defaultFilters;
+    return this.defaultFilters;
   }
 
-  retrieveFiltersDefinitions() {
-    return this.#filtersDefinitions;
-  }
-
-  retrieveLabel(filterFor: TaskFilterFor, filterField:  TaskFilterField): string {
+  retrieveLabel(filterFor: TaskFilterFor, filterField: TaskFilterField): string {
     switch (filterFor) {
     case 'root':
-      return this.#rootField[filterField as TaskSummaryEnumField];
+      return this.rootField[filterField as TaskSummaryEnumField];
     case 'options':
-      return this.#optionsField[filterField as TaskOptionEnumField];
+      return this.optionsField[filterField as TaskOptionEnumField];
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
   }
 
+  retrieveFiltersDefinitions(): TaskFilterDefinition[] {
+    return this.filtersDefinitions;
+  }
+
   retrieveField(filterField: string): TaskFilterField  {
-    const rootValues = Object.values(this.#rootField);
+    const rootValues = Object.values(this.rootField);
     let index = rootValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
 
     if (index >= 0) {
       return { for: 'root', index: index };
     }
 
-    const optionsValues = Object.values(this.#optionsField);
+    const optionsValues = Object.values(this.optionsField);
     index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
     return { for: 'options', index: index };
   }
