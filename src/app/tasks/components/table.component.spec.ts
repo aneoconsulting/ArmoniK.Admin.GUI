@@ -6,6 +6,7 @@ import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
@@ -105,6 +106,9 @@ describe('TasksTableComponent', () => {
 
     component.displayedColumns = displayedColumns;
     component.selection = selection;
+    component.serviceIcon$ = new Subject();
+    component.serviceName = 'Service',
+    component.urlTemplate = 'myUrl?taskId=%taskId';
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -122,6 +126,15 @@ describe('TasksTableComponent', () => {
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have a "view in logs" action', () => {
+    expect(component.actions.find(action => action.label === 'View in logs')).toBeTruthy();
+  });
+
+  it('should update the view in logs columns on icon change', () => {
+    component.serviceIcon$.next('newIcon');
+    expect(component.actions.find(action => action.label === 'View in logs')?.icon).toEqual('newIcon');
   });
 
   it('should update options sort on sort change', () => {
@@ -185,11 +198,11 @@ describe('TasksTableComponent', () => {
 
   describe('generateViewInLogsUrl', () => {
     it('should return an empty string if there is no urlTemplate', () => {
+      component.urlTemplate = null;
       expect(component.generateViewInLogsUrl('taskId')).toEqual('');
     });
 
     it('should return something if the urlTemplate is present', () => {
-      component.urlTemplate = 'myUrl?taskId=%taskId';
       expect(component.generateViewInLogsUrl('myUniqueId')).toEqual('myUrl?taskId=myUniqueId');
     });
   });
