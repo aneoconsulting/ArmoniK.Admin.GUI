@@ -17,7 +17,7 @@
             <button mat-menu-item (click)="onToggleGroupsHeader()">
               <mat-icon aria-hidden="true" [fontIcon]="line.hideGroupsHeader ? getIcon('view') : getIcon('view-off')"></mat-icon>
               <span i18n>
-                Toggle Groups Header
+                {line.hideGroupsHeader, select, true {Show} false {Hide} } Groups Header 
               </span>
             </button>
             <button mat-menu-item (click)="onManageGroupsDialog()">
