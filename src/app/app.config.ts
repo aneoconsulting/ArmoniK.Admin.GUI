@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-import { catchError, merge, tap } from 'rxjs';
+import { catchError, merge, of, tap } from 'rxjs';
 import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -15,8 +15,9 @@ import { UserService } from '@services/user.service';
 import { VersionsGrpcService } from '@services/versions-grpc.service';
 import { VersionsService } from '@services/versions.service';
 import { routes } from './app.routes';
+import { ExportedDefaultConfig } from './types/config';
 
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService) {
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
       tap((data) => {
@@ -52,7 +53,18 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
       catchError((err) => {
         throw err;
       }),
-    )
+    ),
+    httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_configuration').pipe(
+      tap((data) => {
+        if (data) {
+          storageService.importConfigurationFromServer(data);
+        }
+      }),
+      catchError(() => {
+        console.warn('Server Config not found. Using default configuration.');
+        return of();
+      })
+    ),
   );
 }
 
@@ -78,7 +90,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
-      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, EnvironmentService],
+      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, EnvironmentService, StorageService],
       multi: true
     },
     provideRouter(routes),

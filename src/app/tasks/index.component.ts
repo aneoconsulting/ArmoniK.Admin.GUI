@@ -113,6 +113,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLoading = true;
   data: TaskSummary[] = [];
+  data$: Subject<TaskSummary[]> = new Subject();
   total = 0;
 
   taskId: string;
@@ -203,6 +204,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))).map(task => task.id));
           }
         }
+        this.data$.next(this.data);
       });
 
     this.handleAutoRefreshStart();

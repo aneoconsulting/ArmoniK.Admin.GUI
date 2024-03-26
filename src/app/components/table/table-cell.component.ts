@@ -32,8 +32,12 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
   ]
 })
 export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status>{  
-  @Input({ required: true }) column: TableColumn<K>;
   @Input({ required: true }) value$: Subject<DataRaw>;
+
+  @Input({ required: true }) set column(entry: TableColumn<K>) {
+    this._column = entry;
+  }
+
   @Input({ required: true }) set element(entry: T) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
@@ -41,7 +45,9 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
       this.value$.subscribe((entry: DataRaw) => {
         this._element.raw = entry;
         this._value = this.handleNestedKeys(this._element);
-        this.refreshStatuses.next();
+        if (this.column.key === 'count') {
+          this.refreshStatuses.next();
+        }
       });
       this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
       this.createLink();
@@ -58,10 +64,15 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   private _value: unknown;
   private _element: T;
+  private _column: TableColumn<K>;
 
   private _link: string;
   private _queryParams: Params | undefined;
   refreshStatuses = new Subject<void>();
+
+  get column() {
+    return this._column;
+  }
 
   get element() {
     return this._element;

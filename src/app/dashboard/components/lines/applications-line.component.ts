@@ -94,7 +94,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   total: number;
   loadApplicationData = false;
-  data: ApplicationRaw[] = [];
+  data$: Subject<ApplicationRaw[]> = new Subject();
   filters: ApplicationRawFilters;
   options: ApplicationRawListOptions;
 
@@ -149,7 +149,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
         return partitions;
       })
     ).subscribe(data => {
-      this.data = data;
+      this.data$.next(data);
     });
 
     this.subscriptions.add(mergeSubscription);

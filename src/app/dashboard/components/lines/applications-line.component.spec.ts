@@ -144,16 +144,18 @@ describe('ApplicationsLineComponent', () => {
         total: 2
       } as ListApplicationsResponse;
       mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(receivedData));
+      const data$Spy = jest.spyOn(component.data$, 'next');
       component.ngAfterViewInit();
-      expect(component.data).toEqual(receivedData.applications);
+      expect(data$Spy).toHaveBeenCalledWith(receivedData.applications);
       expect(component.total).toEqual(receivedData.total);
     });
 
     it('should load default data', () => {
-      component.data = [{name: 'applications', namespace: 'namespace 1', service: 'service', version: '1'}];
+      component.data$.next([{name: 'applications', namespace: 'namespace 1', service: 'service', version: '1'}]);
       mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(null));
+      const data$Spy = jest.spyOn(component.data$, 'next');
       component.ngAfterViewInit();
-      expect(component.data).toEqual([]);
+      expect(data$Spy).toHaveBeenCalledWith([]);
       expect(component.total).toEqual(0);
     });
   });
