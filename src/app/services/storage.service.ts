@@ -87,8 +87,7 @@ export class StorageService implements Storage {
   importConfigurationFromServer(data: Partial<ExportedDefaultConfig>) {
     const keys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
     for (const key of keys) {
-      const value = this.getItem(key);
-      if (!value && data[key]) {
+      if (!this.getItem(key) && data[key] !== undefined && data[key] !== null) {
         this.setItem(key, data[key]);
       }
     }
