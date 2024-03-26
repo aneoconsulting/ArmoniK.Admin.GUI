@@ -143,4 +143,15 @@ export class TableService {
   restoreViewInLogs(key: 'tasks-view-in-logs'): { serviceIcon: string, serviceName: string, urlTemplate: string } | null {
     return this._tableStorageService.restore<{ serviceIcon: string, serviceName: string, urlTemplate: string }>(key) as { serviceIcon: string, serviceName: string, urlTemplate: string } | null;
   }
+
+  /**
+   * Data
+   */
+  cacheData<T extends DataRaw>(key: `${Scope}-data`, data: T[]): void {
+    this._tableStorageService.save(key, data);
+  }
+
+  restoreData<T extends DataRaw>(key: `${Scope}-data`): T[] | null {
+    return this._tableStorageService.restore<T[]>(key) as T[] | null;
+  }
 }

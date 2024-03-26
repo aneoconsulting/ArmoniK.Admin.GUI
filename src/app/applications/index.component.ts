@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -124,7 +124,7 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent implements OnInit, AfterViewInit {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
@@ -209,6 +209,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe(data => {
         this.data$.next(data);
+        this._applicationsIndexService.cacheData(data);
       });
 
     this.handleAutoRefreshStart();
@@ -216,9 +217,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.add(mergeSubscription);
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
 
   updateDisplayedColumns() {
     this.displayedColumns = this.displayedColumnsKeys.map(key => this._applicationsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<ApplicationRawColumnKey>[];

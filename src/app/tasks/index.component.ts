@@ -1,7 +1,7 @@
 import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { SelectionModel } from '@angular/cdk/collections';
 import { NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -91,7 +91,7 @@ app-table-actions-toolbar {
     FiltersService,
   ],
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent implements OnInit, AfterViewInit {
   readonly #dialog = inject(MatDialog);
   readonly #iconsService = inject(IconsService);
   readonly #shareURLService = inject(ShareUrlService);
@@ -203,15 +203,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
         this.data$.next(this.data);
+        this.#tasksIndexService.cacheData(this.data);
       });
 
     this.handleAutoRefreshStart();
 
     this.subscriptions.add(mergeSubscription);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   updateDisplayedColumns(): void {

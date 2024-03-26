@@ -1,5 +1,5 @@
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -91,7 +91,7 @@ app-table-actions-toolbar {
     ResultsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent implements OnInit, AfterViewInit {
   readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
@@ -173,18 +173,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
           return results;
         })
-      ).subscribe(
-        data => {
-          this.data$.next(data);
-        });
+      ).subscribe(data => {
+        this.data$.next(data);
+        this._resultsIndexService.cacheData(data);
+      });
 
     this.handleAutoRefreshStart();
 
     this.subscriptions.add(mergeSubscription);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
   }
 
   updateDisplayedColumns(): void {

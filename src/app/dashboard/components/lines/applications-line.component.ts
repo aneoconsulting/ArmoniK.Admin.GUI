@@ -1,5 +1,5 @@
 import { NgForOf, NgIf } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {  MatIconModule } from '@angular/material/icon';
@@ -79,7 +79,7 @@ app-table-actions-toolbar {
     TableActionsToolbarComponent
   ]
 })
-export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestroy {
+export class ApplicationsLineComponent implements OnInit, AfterViewInit {
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
@@ -153,10 +153,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     });
 
     this.subscriptions.add(mergeSubscription);
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
   }
 
   updateDisplayedColumns() {

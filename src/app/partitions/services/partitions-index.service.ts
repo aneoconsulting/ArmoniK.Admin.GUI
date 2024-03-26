@@ -7,7 +7,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '..
 
 @Injectable()
 // TODO: re-add app-index-service
-export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions> {
+export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions, PartitionRaw> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
@@ -118,5 +118,16 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
     this.tableService.resetColumns('partitions-columns');
 
     return Array.from(this.defaultColumns);
+  }
+
+  /**
+   * Data
+   */
+  cacheData(data: PartitionRaw[]): void {
+    this.tableService.cacheData<PartitionRaw>('partitions-data', data);
+  }
+
+  restoreData(): PartitionRaw[] {
+    return this.tableService.restoreData<PartitionRaw>('partitions-data') ?? [];
   }
 }

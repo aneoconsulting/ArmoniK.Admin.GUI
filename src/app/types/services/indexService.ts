@@ -1,9 +1,9 @@
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TableColumn } from '../column.type';
-import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
+import { CustomColumn, DataRaw, IndexListOptions, RawColumnKey } from '../data';
 
-export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexListOptions> {
+export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexListOptions, R extends DataRaw> {
   readonly defaultConfigService: DefaultConfigService;
   readonly tableService: TableService;
 
@@ -31,9 +31,13 @@ export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexLi
   saveColumns(columns: K[]): void;
   restoreColumns(): K[];
   resetColumns(): K[];
+
+  // Data
+  cacheData(data: R[]): void;
+  restoreData(): R[];
 }
 
-export interface IndexServiceCustomInterface<K extends RawColumnKey, O extends IndexListOptions> extends IndexServiceInterface<K, O> {
+export interface IndexServiceCustomInterface<K extends RawColumnKey, O extends IndexListOptions, R extends DataRaw> extends IndexServiceInterface<K, O, R> {
   saveCustomColumns(columns: CustomColumn[]): void;
 
   restoreCustomColumns(): CustomColumn[];

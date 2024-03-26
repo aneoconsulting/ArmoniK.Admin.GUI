@@ -7,7 +7,7 @@ import { TableService } from '@services/table.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksIndexService implements IndexServiceCustomInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
+export class TasksIndexService implements IndexServiceCustomInterface<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummary> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -309,5 +309,16 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
 
   saveViewInLogs(serviceIcon: string, serviceName: string, urlTemplate: string) {
     this.tableService.saveViewInLogs('tasks-view-in-logs', serviceIcon, serviceName, urlTemplate);
+  }
+
+  /**
+   * Data
+   */
+  cacheData(data: TaskSummary[]): void {
+    this.tableService.cacheData<TaskSummary>('tasks-data', data);
+  }
+
+  restoreData(): TaskSummary[] {
+    return this.tableService.restoreData<TaskSummary>('tasks-data') ?? [];
   }
 }

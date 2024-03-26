@@ -299,6 +299,11 @@ export class DefaultConfigService {
     'healthcheck-interval': this.#defaultHealthCheck.interval,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'tasks-data': [],
+    'sessions-data': [],
+    'results-data': [],
+    'applications-data': [],
+    'partitions-data': [],
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {
