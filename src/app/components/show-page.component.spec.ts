@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { DataRaw } from '@app/types/data';
 import { NotificationService } from '@services/notification.service';
 import { ShowPageComponent } from './show-page.component';
 
 describe('ShowPageComponent', () => {
-  let component: ShowPageComponent;
+  let component: ShowPageComponent<DataRaw>;
 
   const mockNotificationService = {
     success: jest.fn()
