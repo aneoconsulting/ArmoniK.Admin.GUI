@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-import { catchError, merge, tap } from 'rxjs';
+import { catchError, merge, of, tap } from 'rxjs';
 import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -15,6 +15,7 @@ import { UserService } from '@services/user.service';
 import { VersionsGrpcService } from '@services/versions-grpc.service';
 import { VersionsService } from '@services/versions.service';
 import { routes } from './app.routes';
+import { ExportedDefaultConfig } from './types/config';
 
 function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
   return () => merge(
@@ -53,14 +54,15 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         throw err;
       }),
     ),
-    httpClient.get<Partial<object>>('/static/environment.json').pipe(
+    httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_configu').pipe(
       tap((data) => {
         if (data) {
-          storageService.importConfigurationFromURL(data);
+          storageService.importConfigurationFromServer(data);
         }
       }),
-      catchError((err) => {
-        throw err;
+      catchError(() => {
+        console.warn('Server Config not found. Using default configuration.');
+        return of();
       })
     ),
   );
