@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
@@ -13,7 +13,7 @@ import { IconsService } from '@services/icons.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -156,7 +156,7 @@ describe('ApplicationTableComponent', () => {
         FiltersService
       ]
     }).inject(ApplicationsTableComponent);
-
+    component.data$ = new Subject();
     component.displayedColumns = displayedColumns;
     component.filters = [];
     component.options = {
@@ -169,19 +169,25 @@ describe('ApplicationTableComponent', () => {
     };
     component.sort = sort;
     component.paginator = paginator;
+    component.ngOnInit();
+    component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should update data on next', () => {
+    const newData = [{name: '1'}, {name: '2'}] as unknown as ApplicationRaw[];
+    component.data$.next(newData);
+    expect(component.data.map(d => d.raw)).toEqual(newData);
+  });
+
   it('should restore taskStatus on init', () => {
-    component.ngOnInit();
     expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('applications');
   });
 
   it('should update options sort on sort change', () => {
-    component.ngAfterViewInit();
     sort.sortChange.emit();
     expect(component.options.sort).toEqual({
       active: sort.active,
@@ -190,7 +196,6 @@ describe('ApplicationTableComponent', () => {
   });
 
   it('should update options pagination on page change', () => {
-    component.ngAfterViewInit();
     paginator.page.emit();
     expect(component.options).toEqual({
       pageIndex: paginator.pageIndex,
