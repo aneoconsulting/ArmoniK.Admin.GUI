@@ -1,0 +1,14 @@
+<button mat-icon-button (click)="$event.preventDefault();" [matMenuTriggerFor]="menu">
+  <mat-icon [fontIcon]="getIcon(selectedIcon)" />
+</button>
+<mat-menu #menu="matMenu" yPosition="below">
+  <mat-form-field style="width: 100%;" subscriptSizing="dynamic" (click)="$event.stopPropagation();">
+    <mat-label i18n="Input label">Icon</mat-label>
+    <input matInput [formControl]="iconFormControl" placeholder="Search icon" />
+  </mat-form-field>
+  <article mat-menu-item style="background-color: transparent;" disableRipple>
+    <button mat-icon-button *ngFor="let icon of filteredIcons" (click)="selectIcon(icon)" [matTooltip]="icon">
+      <mat-icon [fontIcon]="getIcon(icon)" />
+    </button>
+  </article>
+</mat-menu>
