@@ -1,20 +1,19 @@
 import { ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
-import { TableColumn } from '@app/types/column.type';
+import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ApplicationData } from '@app/types/data';
-import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
@@ -25,13 +24,12 @@ import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
-import { TasksByStatusService } from '@services/tasks-by-status.service';
+import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
@@ -113,63 +111,16 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
     TableActionsComponent
   ]
 })
-export class ApplicationsTableComponent implements OnInit, AfterViewInit {
-
-  @Input({required: true}) displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
-  @Input({required: true}) options: ApplicationRawListOptions;
-  @Input({required: true}) total: number;
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions> implements OnInit {
   @Input({required: true}) filters: ApplicationRawFilters;
-  @Input() lockColumns = false;
-
-  private _data: ApplicationData[] = [];
-  get data(): ApplicationData[] {
-    return this._data;
-  }
-
-  get columnKeys(): ApplicationRawColumnKey[] {
-    return this.displayedColumns.map(column => column.key);
-  }
-
-  @Input({ required: true }) set data(entries: ApplicationRaw[]) {
-    if (entries.length !== 0) {
-      this._data = this.data.filter(d => entries.find(entry => entry.name === d.raw.namespace && entry.version === d.raw.version));
-      entries.forEach((entry, index) => {
-        const application = this._data[index];
-        if (application && application.raw.name === entry.name && application.raw.version === entry.version) {
-          this._data[index].value$?.next(entry);
-        } else {
-          const lineData: ApplicationData = {
-            raw: entry,
-            queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
-            filters: this.countTasksByStatusFilters(entry.name, entry.version),
-            value$: new Subject<ApplicationRaw>()
-          };
-          this._data.splice(index, 1, lineData);
-        }
-      });
-      this.dataSource.data = this._data;
-    } else {
-      this._data = [];
-      this.dataSource.data = this._data;
-    }
-  }
-
-  @Output() optionsChange = new EventEmitter<never>();
-
-  tasksStatusesColored: TaskStatusColored[] = [];
-  dataSource = new MatTableDataSource<ApplicationData>(this._data);
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  table: TableTasksByStatus = 'applications';
   
-  readonly _applicationsIndexService = inject(ApplicationsIndexService);
-  readonly _tasksByStatusService = inject(TasksByStatusService);
-  readonly _dialog = inject(MatDialog);
-  readonly _iconsService = inject(IconsService);
-  readonly _filtersService = inject(FiltersService);
-  readonly _router = inject(Router);
+  override readonly indexService = inject(ApplicationsIndexService);
+  readonly iconsService = inject(IconsService);
+  readonly router = inject(Router);
 
   seeSessions$ = new Subject<ApplicationData>();
-  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(data.raw.name, data.raw.version) }));
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this.router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(data.raw.name, data.raw.version) }));
 
   actions: ActionTable<ApplicationData>[] = [
     {
@@ -178,35 +129,26 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       action$: this.seeSessions$
     },
   ];
-
-  ngOnInit(): void {
-    this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('applications');
+  
+  isDataRawEqual(value: ApplicationRaw, entry: ApplicationRaw): boolean {
+    return value.name === entry.name && value.version === entry.version;
   }
 
-  ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(() => {
-      this.options.pageIndex = 0; // If the user change the sort order, reset back to the first page.
-      this.options.sort = {
-        active: this.sort.active as ApplicationRawFieldKey,
-        direction: this.sort.direction
-      };
-      this.optionsChange.emit();
-    });
-
-    this.paginator.page.subscribe(() => {
-      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
-      this.options.pageIndex = this.paginator.pageIndex;
-      this.options.pageSize = this.paginator.pageSize;
-      this.optionsChange.emit();
-    });
+  createNewLine(entry: ApplicationRaw): ApplicationData {
+    return {
+      raw: entry,
+      queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
+      filters: this.countTasksByStatusFilters(entry.name, entry.version),
+      value$: new Subject<ApplicationRaw>()
+    };
   }
 
   getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   getPageIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
+    return this.iconsService.getPageIcon(name);
   }
 
   createViewSessionsQueryParams(name: string, version: string) {
@@ -243,7 +185,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     if (filter.field !== null && filter.operator !== null) {
       const taskField = this.#applicationsToTaskField(filter.field as ApplicationRawEnumField); // We transform it into an options filter for a task
       if (!taskField) return null;
-      return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 
+      return this.filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 
     }
     return null;
   }
@@ -263,23 +205,6 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     }
   }
 
-  personalizeTasksByStatus() {
-    const dialogRef = this._dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
-      data: {
-        statusesCounts: this.tasksStatusesColored,
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) {
-        return;
-      }
-
-      this.tasksStatusesColored = result;
-      this._tasksByStatusService.saveStatuses('applications', result);
-    });
-  }
-
   countTasksByStatusFilters(applicationName: string, applicationVersion: string): TaskSummaryFilters {
     return [
       [
@@ -297,11 +222,5 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
         }
       ]
     ];
-  }
-
-  onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-
-    this._applicationsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 }

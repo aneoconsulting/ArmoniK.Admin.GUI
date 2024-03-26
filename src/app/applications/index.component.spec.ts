@@ -185,29 +185,33 @@ describe('Application component', () => {
       });
 
       it('should load data', () => {
+        const data$Spy = jest.spyOn(component.data$, 'next');
         component.optionsChange.next();
         expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
         expect(component.total).toEqual(3);
-        expect(component.data).toEqual(dataSample.applications);
+        expect(data$Spy).toHaveBeenCalledWith(dataSample.applications);
       });
     });
   });
 
   it('should load data on user refresh', () => {
+    const data$Spy = jest.spyOn(component.data$, 'next');
     component.refresh.next();
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
     expect(component.total).toEqual(3);
-    expect(component.data).toEqual(dataSample.applications);
+    expect(data$Spy).toHaveBeenCalledWith(dataSample.applications);
   });
 
   it('should load data on interval refresh', () => {
+    const data$Spy = jest.spyOn(component.data$, 'next');
     intervalRefreshSubject.next(1);
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
     expect(component.total).toEqual(3);
-    expect(component.data).toEqual(dataSample.applications);
+    expect(data$Spy).toHaveBeenCalledWith(dataSample.applications);
   });
 
   it('should catch the error and have empty data', () => {
+    const data$Spy = jest.spyOn(component.data$, 'next');
     mockGrpcApplicationsService.list$.mockImplementationOnce(() => {
       return throwError(() => new Error('Test error'));
     });
@@ -218,7 +222,7 @@ describe('Application component', () => {
     
     component.refresh.next();
     expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to fetch applications');
-    expect(component.data).toEqual([]);
+    expect(data$Spy).toHaveBeenCalledWith([]);
     expect(component.total).toEqual(0);
   });
 
