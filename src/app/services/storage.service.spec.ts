@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Key } from '@app/types/config';
+import { ExportedDefaultConfig, Key } from '@app/types/config';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
@@ -221,5 +221,21 @@ describe('StorageService', () => {
   it('restoreKeys should create a set of the keys', () => {
     const result: Set<Key> = new Set(['navigation-sidebar', 'navigation-theme']);
     expect(service.restoreKeys()).toEqual(result);
+  });
+
+  it('should import data from server without override local data', () => {
+    const mockData: Partial<ExportedDefaultConfig> = {
+      'navigation-sidebar': 'profile',
+      'navigation-theme': 'dark-green'
+    };
+    const setItemSpy = jest.spyOn(service, 'setItem');
+    jest.spyOn(service, 'getItem').mockImplementation((key: Key) => {
+      if (key === 'navigation-theme') {
+        return {'navigation-theme': 'deeppurple-amber'};
+      }
+      return null;
+    });
+    service.importConfigurationFromServer(mockData);
+    expect(setItemSpy).toHaveBeenCalledTimes(1);
   });
 });

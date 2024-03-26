@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { createDefu } from 'defu';
-import { Key } from '@app/types/config';
+import { ExportedDefaultConfig, Key } from '@app/types/config';
 import { DefaultConfigService } from './default-config.service';
 
 @Injectable()
@@ -77,6 +77,20 @@ export class StorageService implements Storage {
     }
 
     return this.#defu()(data, this.#defaultConfigService.exportedDefaultConfig);
+  }
+
+  /**
+   * Stores the provided JSON data in the local storage of the application.
+   * If there is already some data stored, it will NOT be overridden.
+   * @param data - JSON object from server.
+   */
+  importConfigurationFromServer(data: Partial<ExportedDefaultConfig>) {
+    const keys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
+    for (const key of keys) {
+      if (!this.getItem(key) && data[key] !== undefined && data[key] !== null) {
+        this.setItem(key, data[key]);
+      }
+    }
   }
 
   /**
