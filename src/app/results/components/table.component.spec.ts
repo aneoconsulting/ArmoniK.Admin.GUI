@@ -3,12 +3,13 @@ import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
 import { ResultsTableComponent } from './table.component';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRawColumnKey } from '../types';
+import { ResultRaw, ResultRawColumnKey } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ResultsTableComponent;
@@ -64,7 +65,7 @@ describe('ApplicationTableComponent', () => {
         ResultsStatusesService
       ]
     }).inject(ResultsTableComponent);
-
+    component.data$ = new Subject();
     component.displayedColumns = displayedColumns;
     component.options = {
       pageIndex: 0,
@@ -76,14 +77,20 @@ describe('ApplicationTableComponent', () => {
     };
     component.sort = sort;
     component.paginator = paginator;
+    component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should update data on next', () => {
+    const newData = [{resultId: '1'}, {resultId: '2'}] as unknown as ResultRaw[];
+    component.data$.next(newData);
+    expect(component.data.map(d => d.raw)).toEqual(newData);
+  });
+
   it('should update options sort on sort change', () => {
-    component.ngAfterViewInit();
     sort.sortChange.emit();
     expect(component.options.sort).toEqual({
       active: sort.active,
@@ -92,7 +99,6 @@ describe('ApplicationTableComponent', () => {
   });
 
   it('should update options pagination on page change', () => {
-    component.ngAfterViewInit();
     paginator.page.emit();
     expect(component.options).toEqual({
       pageIndex: paginator.pageIndex,

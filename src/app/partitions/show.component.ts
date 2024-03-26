@@ -15,13 +15,12 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
-import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw } from './types';
 
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="data?.id ?? ''" [data]="data" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.id ?? ''" [data$]="data$" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>
@@ -34,7 +33,6 @@ import { PartitionRaw } from './types';
     ShareUrlService,
     QueryParamsService,
     PartitionsGrpcService,
-    PartitionsIndexService,
     PartitionsFiltersService,
     TableService,
     TableURLService,
@@ -89,6 +87,7 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpc
         this.data = data;
         this._filtersService.createFilterQueryParams(this.actionButtons, 'sessions', this.partitionsKey, this.data.id);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.id);
+        this.data$.next(data);
       }
     });
 
