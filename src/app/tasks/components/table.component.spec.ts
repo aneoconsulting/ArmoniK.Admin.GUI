@@ -107,7 +107,7 @@ describe('TasksTableComponent', () => {
     component.displayedColumns = displayedColumns;
     component.selection = selection;
     component.serviceIcon$ = new Subject();
-    component.serviceName = 'Service',
+    component.serviceName = 'Service';
     component.urlTemplate = 'myUrl?taskId=%taskId';
     component.options = {
       pageIndex: 0,
