@@ -66,7 +66,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
 </mat-toolbar>
 
 <app-application-table 
-  [data]="data"
+  [data$]="data$"
   [filters]="filters"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
@@ -136,7 +136,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   columnsLabels: Record<ApplicationRawColumnKey, string> = {} as unknown as Record<ApplicationRawColumnKey, string>;
 
   isLoading = true;
-  data: ApplicationRaw[] = [];
+  data$: Subject<ApplicationRaw[]> = new Subject();
   total = 0;
 
   options: ApplicationRawListOptions;
@@ -208,7 +208,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       )
       .subscribe(data => {
-        this.data = data;
+        this.data$.next(data);
       });
 
     this.handleAutoRefreshStart();

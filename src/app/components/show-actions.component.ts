@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { ShowActionButton } from '@app/types/components/show';
-import { DataRaw } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { ShowActionAreaComponent } from './show-action-area.component';
 
@@ -38,8 +37,6 @@ import { ShowActionAreaComponent } from './show-action-area.component';
 })
 export class ShowActionsComponent implements OnInit {
   @Input({ required: true }) actionsButton: ShowActionButton[];
-  @Input({ required: true }) data: DataRaw = {} as DataRaw;
-  @Input() id: string | null = null;
   @Output() refresh = new EventEmitter<never>();
 
   rightActions: ShowActionButton[];

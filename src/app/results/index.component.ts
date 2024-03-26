@@ -103,7 +103,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   columnsLabels: Record<ResultRawColumnKey, string> = {} as Record<ResultRawColumnKey, string>;
 
   isLoading = true;
-  data: ResultRaw[] = [];
   total = 0;
 
   options: ResultRawListOptions;
@@ -118,6 +117,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
   optionsChange: Subject<void> = new Subject<void>();
+
+  data$ = new Subject<ResultRaw[]>();
 
   subscriptions: Subscription = new Subscription();
 
@@ -174,7 +175,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       ).subscribe(
         data => {
-          this.data = data;
+          this.data$.next(data);
         });
 
     this.handleAutoRefreshStart();

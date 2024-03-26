@@ -6,7 +6,7 @@ describe('IconsService', () => {
   describe('getIcon', () => {
     it('Should return the correct icon (3 tests)', () => {
       expect(service.getIcon('refresh')).toEqual('refresh');
-      expect(service.getIcon('format-color-fill')).toEqual('format_color_fill');
+      expect(service.getIcon('fill')).toEqual('format_color_fill');
       expect(service.getIcon('arrow-down')).toEqual('arrow_drop_down');
     });
 
