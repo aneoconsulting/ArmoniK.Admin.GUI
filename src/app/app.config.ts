@@ -54,7 +54,7 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         throw err;
       }),
     ),
-    httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_config').pipe(
+    httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_configuration').pipe(
       tap((data) => {
         if (data) {
           storageService.importConfigurationFromServer(data);
