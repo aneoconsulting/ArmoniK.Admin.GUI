@@ -36,7 +36,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
-            "localize": true,
+            "localize": false,
             "outputPath": "dist/admin",
             "index": "src/index.html",
             "main": "src/main.ts",
