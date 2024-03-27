@@ -12,7 +12,10 @@
   "projects": {
     "armonik-admin-gui": {
       "i18n": {
-        "sourceLocale": "en"
+        "sourceLocale": "en",
+        "locales": {
+          "fr": "src/locale/messages.fr.xlf"
+        }
       },
       "projectType": "application",
       "schematics": {
@@ -74,6 +77,11 @@
             "en": {
               "localize": [
                 "en"
+              ]
+            },
+            "fr": {
+              "localize": [
+                "fr"
               ]
             },
             "production": {
