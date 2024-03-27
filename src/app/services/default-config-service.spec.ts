@@ -2,7 +2,9 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { DefaultConfigService } from './default-config.service';
 
 describe('DefaultConfigService', () => {
-  let service: DefaultConfigService; 
+  let service: DefaultConfigService;
+
+  window.location.href = 'http://localhost:4200';
   
   it('should create default config service', () => {
     service = new DefaultConfigService(); 
