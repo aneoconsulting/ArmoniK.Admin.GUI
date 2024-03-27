@@ -10,11 +10,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { Params, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
-import {  SessionData } from '@app/types/data';
+import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
@@ -145,8 +145,11 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   }
 
   createNewLine(entry: SessionRaw): SessionData {
+    const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
+    queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
     return {
       raw: entry,
+      queryParams,
       resultsQueryParams: this.createResultsQueryParams(entry.sessionId),
       queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
       filters: this.countTasksByStatusFilters(entry.sessionId),
