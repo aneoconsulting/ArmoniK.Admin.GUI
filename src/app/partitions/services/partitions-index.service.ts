@@ -33,13 +33,13 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
       name: $localize`Parent Partition Ids`,
       key: 'parentPartitionIds',
       type: 'object',
-      sortable: true
+      sortable: false,
     },
     {
       name: $localize`Pod Configuration`,
       key: 'podConfiguration',
       type: 'object',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Pod Max`,
