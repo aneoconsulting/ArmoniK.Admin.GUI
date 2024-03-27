@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Subject, Subscription, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
@@ -28,7 +28,7 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
     ViewTasksByStatusComponent,
   ]
 })
-export class CountTasksByStatusComponent implements OnDestroy {
+export class CountTasksByStatusComponent {
   @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) queryParams: Record<string, string> = {};
   @Input({ required: true }) refresh: Subject<void>;
@@ -56,9 +56,5 @@ export class CountTasksByStatusComponent implements OnDestroy {
       this.statusesCounts = response.status ?? null;
     });
     this.refresh.next();
-  }
-
-  ngOnDestroy(): void {
-    this.refresh.unsubscribe();
   }
 }
