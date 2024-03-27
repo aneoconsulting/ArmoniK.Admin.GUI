@@ -50,6 +50,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   padding-bottom: 0px !important;
 }
 
-.mat-mdc-menu-item-text {
+article > .mat-mdc-menu-item-text {
   min-width: 20em !important;
 }
