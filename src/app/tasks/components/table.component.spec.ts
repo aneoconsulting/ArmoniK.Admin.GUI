@@ -121,6 +121,7 @@ describe('TasksTableComponent', () => {
     component.sort = sort;
     component.paginator = paginator;
     component.data$ = data$;
+    component.ngOnInit();
     component.ngAfterViewInit();
     data$.next(data);
   });
@@ -130,6 +131,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should have a "view in logs" action', () => {
+    component.serviceIcon$.next('truth');
     expect(component.actions.find(action => action.label === 'View in logs')).toBeTruthy();
   });
 
