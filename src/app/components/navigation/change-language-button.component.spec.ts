@@ -7,11 +7,14 @@ import { ChangeLanguageButtonComponent } from './change-language-button.componen
 
 const jestReplace = jest.fn();
 
+const url = 'localhost:4200';
+
 function overrideLocation(newLocation: string) {
   Object.defineProperty(window, 'location', {
     value: {
       pathname: newLocation,
-      replace: jestReplace
+      replace: jestReplace,
+      href: url
     },
     writable: true,
     configurable: true
