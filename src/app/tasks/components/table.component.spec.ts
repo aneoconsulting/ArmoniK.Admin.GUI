@@ -106,6 +106,9 @@ describe('TasksTableComponent', () => {
 
     component.displayedColumns = displayedColumns;
     component.selection = selection;
+    component.serviceIcon$ = new Subject();
+    component.serviceName = 'Service';
+    component.urlTemplate = 'myUrl?taskId=%taskId';
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -118,6 +121,7 @@ describe('TasksTableComponent', () => {
     component.sort = sort;
     component.paginator = paginator;
     component.data$ = data$;
+    component.ngOnInit();
     component.ngAfterViewInit();
     data$.next(data);
   });
@@ -126,6 +130,15 @@ describe('TasksTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should have a "view in logs" action', () => {
+    component.serviceIcon$.next('truth');
+    expect(component.actions.find(action => action.label === 'View in logs')).toBeTruthy();
+  });
+
+  it('should update the view in logs columns on icon change', () => {
+    component.serviceIcon$.next('newIcon');
+    expect(component.actions.find(action => action.label === 'View in logs')?.icon).toEqual('newIcon');
+  });
   it('should update data on next', () => {
     const newData = [{id: '1'}, {id: '2'}] as unknown as TaskSummary[];
     component.data$.next(newData);
@@ -193,11 +206,11 @@ describe('TasksTableComponent', () => {
 
   describe('generateViewInLogsUrl', () => {
     it('should return an empty string if there is no urlTemplate', () => {
+      component.urlTemplate = null;
       expect(component.generateViewInLogsUrl('taskId')).toEqual('');
     });
 
     it('should return something if the urlTemplate is present', () => {
-      component.urlTemplate = 'myUrl?taskId=%taskId';
       expect(component.generateViewInLogsUrl('myUniqueId')).toEqual('myUrl?taskId=myUniqueId');
     });
   });

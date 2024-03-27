@@ -8,7 +8,7 @@ aria-label="Actions" i18n-aria-label>
     *ngIf="action.condition ? action.condition(element) : true"   
     (click)="action.action$.next(element)"
   >
-    <mat-icon>{{ action.icon }}</mat-icon>
+    <mat-icon [fontIcon]="getIcon(action.icon)"/>
     <p>{{ action.label }}</p>
   </button>
 </ng-container>

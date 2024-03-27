@@ -3,7 +3,7 @@ import { Clipboard , ClipboardModule } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -77,12 +77,13 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableActionsComponent,
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> implements SelectableTable<TaskSummary>{
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> implements SelectableTable<TaskSummary>, OnInit {
   @Input({required: true}) stopInterval: Subject<void>;
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
   @Input({required: true}) selection: SelectionModel<string>;
   @Input() filters: TaskSummaryFilters = [];
+  @Input({required: true}) serviceIcon$: Subject<string | null>;
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
@@ -112,16 +113,16 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   openViewInLogs$ = new Subject<TaskData>();
   openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
-
+  
   actions: ActionTable<TaskData>[] = [
     {
       label: $localize`Copy Task ID`,
-      icon: 'content_copy',
+      icon: 'copy',
       action$: this.copy$,
     },
     {
       label: $localize`See related result`,
-      icon: 'visibility',
+      icon: 'view',
       action$: this.seeResult$,
     },
     {
@@ -136,13 +137,24 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       action$: this.cancelTask$,
       condition: (element: TaskData) => this.canCancelTask(element.raw),
     },
-    {
-      label: $localize`View in logs`,
-      icon: this.serviceIcon ?? 'description',
-      action$: this.openViewInLogs$,
-      condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
-    }
   ];
+
+  ngOnInit(): void {
+    this.serviceIcon$.subscribe(icon => {
+      if (icon) {
+        const index = this.actions.findIndex(action => action.label === $localize`View in logs`);
+        if (index !== -1) {
+          this.actions[index].icon = icon;
+        } else {
+          this.actions.push({
+            label: $localize`View in logs`,
+            icon,
+            action$: this.openViewInLogs$,
+          });
+        }
+      }
+    });
+  }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;
