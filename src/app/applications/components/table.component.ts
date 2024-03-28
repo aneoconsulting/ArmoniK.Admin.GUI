@@ -21,6 +21,7 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsComponent } from '@components/table/table-actions.component';
 import { TableCellComponent } from '@components/table/table-cell.component';
+import { TableColumnHeaderComponent } from '@components/table/table-column-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -41,10 +42,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
-        {{ column.name }}
-        <button mat-icon-button *ngIf="column.type === 'count'" (click)="personalizeTasksByStatus()" i18n-matTooltip matTooltip="Personalize Tasks Status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-        </button>
+        <app-table-column-header [column]="column" (personnaliseTasksByStatus)="personalizeTasksByStatus()" />
       </th>
       <!-- Columns -->
       <ng-container *ngIf="column.type !== 'actions'">
@@ -108,7 +106,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     DragDropModule,
     MatButtonModule,
     TableCellComponent,
-    TableActionsComponent
+    TableActionsComponent,
+    TableColumnHeaderComponent,
   ]
 })
 export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions> implements OnInit {

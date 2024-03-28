@@ -1,0 +1,13 @@
+<ng-container *ngIf="type !== 'select'">
+  {{ name }}
+  <button mat-icon-button *ngIf="type === 'count'" (click)="onPersonnalizeTasksByStatus()" i18n-matTooltip
+    matTooltip="Personalize Tasks Status">
+    <mat-icon aria-hidden="true" [fontIcon]="icon" />
+  </button>
+</ng-container>
+
+<!-- Header for selection -->
+<ng-container *ngIf="type === 'select'">
+  <mat-checkbox (change)="$event ? onToggleAllRows() : null" [checked]="checked"
+    [indeterminate]="isSelectionIndeterminate" [aria-label]="checkBoxLabel" />
+</ng-container>
