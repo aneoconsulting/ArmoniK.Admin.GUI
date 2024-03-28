@@ -16,6 +16,7 @@ import { ResultData } from '@app/types/data';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableCellComponent } from '@components/table/table-cell.component';
+import { TableColumnHeaderComponent } from '@components/table/table-column-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -58,6 +59,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
     DatePipe,
     RouterLink,
     TableCellComponent,
+    TableColumnHeaderComponent,
   ]
 })
 export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions> implements AfterViewInit{

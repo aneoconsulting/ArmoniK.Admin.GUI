@@ -23,6 +23,7 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsComponent } from '@components/table/table-actions.component';
 import { TableCellComponent } from '@components/table/table-cell.component';
+import { TableColumnHeaderComponent } from '@components/table/table-column-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -75,6 +76,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableCellComponent,
     MatCheckboxModule,
     TableActionsComponent,
+    TableColumnHeaderComponent,
   ]
 })
 export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> implements SelectableTable<TaskSummary>{

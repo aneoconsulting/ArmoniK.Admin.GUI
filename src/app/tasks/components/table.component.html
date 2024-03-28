@@ -3,21 +3,9 @@
   
       <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
         <!-- Header -->
-        <ng-container *ngIf="column.type !== 'select'">
-          <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
-            {{ column.name }}
-          </th>
-        </ng-container>
-        <!-- Header for selection -->
-        <ng-container *ngIf="column.type === 'select'">
-          <th mat-header-cell *matHeaderCellDef cdkDrag appNoWrap>
-            <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                          [checked]="selection.hasValue() && isAllSelected()"
-                          [indeterminate]="selection.hasValue() && !isAllSelected()"
-                          [aria-label]="checkboxLabel()">
-            </mat-checkbox>
-          </th>
-        </ng-container>
+        <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
+          <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected()" [isSelectionIndeterminate]="selection.hasValue() && !isAllSelected()" (toggleRowsSelection)="toggleAllRows()" />
+        </th>
         <!-- Columns -->
         <ng-container *ngIf="column.type !== 'actions'">
           <td mat-cell *matCellDef="let element" appNoWrap>

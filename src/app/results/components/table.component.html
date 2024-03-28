@@ -3,8 +3,8 @@
   
       <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
         <!-- Header -->
-        <th mat-header-cell mat-sort-header *matHeaderCellDef cdkDrag appNoWrap>
-          {{ column.name }}
+        <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
+          <app-table-column-header [column]="column" />
         </th>
         <!-- Columns -->
         <td mat-cell *matCellDef="let element" appNoWrap>
