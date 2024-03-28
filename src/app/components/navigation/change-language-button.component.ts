@@ -32,6 +32,12 @@ export class ChangeLanguageButtonComponent implements OnInit {
   availableLanguages: string[];
   languageButtonTip = $localize`Change language`;
 
+  private _disable = false;
+
+  get disable() {
+    return this._disable;
+  }
+
   ngOnInit(): void {
     const storedLanguage: string | null = this.#storageService.getItem('language');
     const urlLanguage = this.getLanguageFromUrl();
@@ -40,6 +46,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
     }
     this.selectedLanguage = storedLanguage ?? urlLanguage ?? this.#defaultConfigService.defaultLanguage;
     this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
+    this._disable = this.#defaultConfigService.availableLanguages.length <= 1;
   }
   
   getLanguageFromUrl(): string | undefined {

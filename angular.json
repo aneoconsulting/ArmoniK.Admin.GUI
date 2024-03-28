@@ -12,10 +12,7 @@
   "projects": {
     "armonik-admin-gui": {
       "i18n": {
-        "sourceLocale": "en",
-        "locales": {
-          "fr": "src/locale/messages.fr.xlf"
-        }
+        "sourceLocale": "en"
       },
       "projectType": "application",
       "schematics": {
@@ -39,7 +36,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
-            "localize": false,
+            "localize": true,
             "outputPath": "dist/admin",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -77,11 +74,6 @@
             "en": {
               "localize": [
                 "en"
-              ]
-            },
-            "fr": {
-              "localize": [
-                "fr"
               ]
             },
             "production": {

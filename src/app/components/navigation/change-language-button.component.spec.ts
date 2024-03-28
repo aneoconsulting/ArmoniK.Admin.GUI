@@ -30,14 +30,19 @@ describe('ChangeLanguageButtonComponent', () => {
     getItem: jest.fn(),
   };
 
+  const mockDefaultConfigService = {
+    defaultLanguage: 'en',
+    availableLanguages: ['en', 'fr'],
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ChangeLanguageButtonComponent,
-        {provide: Router, useValue: mockRouter},
-        DefaultConfigService,
+        { provide: Router, useValue: mockRouter },
+        { provide: DefaultConfigService, useValue: mockDefaultConfigService },
         IconsService,
-        {provide: StorageService, useValue: mockStorageService}
+        { provide: StorageService, useValue: mockStorageService }
       ]
     }).inject(ChangeLanguageButtonComponent);
 
@@ -68,17 +73,23 @@ describe('ChangeLanguageButtonComponent', () => {
       component.ngOnInit();
       expect(jestReplace).toHaveBeenCalledWith('/admin/en/my-route');
     });
-  
+
     it('should get Language from default config', () => {
       mockStorageService.getItem.mockImplementationOnce(() => null);
       overrideLocation('admin/undefined');
       component.ngOnInit();
       expect(component.selectedLanguage).toEqual('en');
     });
-  
+
     it('should update available languages', () => {
       component.ngOnInit();
-      expect(component.availableLanguages).toEqual(new DefaultConfigService().availableLanguages.filter(language => language !== 'en'));
+      expect(component.availableLanguages).toEqual(mockDefaultConfigService.availableLanguages.filter(language => language !== 'en'));
+    });
+
+    it('should disable button if there is only one available language', () => {
+      mockDefaultConfigService.availableLanguages = ['en'];
+      component.ngOnInit();
+      expect(component.disable).toBeTruthy();
     });
   });
 

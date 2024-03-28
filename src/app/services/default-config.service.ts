@@ -189,8 +189,8 @@ export class DefaultConfigService {
     interval: 10,
   };
 
-  readonly #availableLanguages = ['en', 'fr'];
-  readonly #defaultLanguage = this.#availableLanguages.includes(navigator.language) ? navigator.language : 'en';
+  readonly #availableLanguages = ['en'];
+  readonly #defaultLanguage = 'en';
 
   readonly #defaultTasksViewInLogs = {
     serviceName: null,
