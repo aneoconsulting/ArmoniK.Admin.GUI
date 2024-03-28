@@ -82,7 +82,7 @@ export class DefaultConfigService {
     ],
     options: {
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 100,
       sort: {
         active: 'name',
         direction: 'asc'
@@ -119,7 +119,7 @@ export class DefaultConfigService {
     ],
     options: {
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 100,
       sort: {
         active: 'id',
         direction: 'asc'
@@ -138,10 +138,10 @@ export class DefaultConfigService {
     ],
     options: {
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 100,
       sort: {
-        active: 'sessionId',
-        direction: 'asc'
+        active: 'createdAt',
+        direction: 'desc'
       },
     },
     filters: [],
@@ -156,10 +156,10 @@ export class DefaultConfigService {
     ],
     options: {
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 100,
       sort: {
-        active: 'name',
-        direction: 'asc'
+        active: 'createdAt',
+        direction: 'desc'
       },
     },
     filters: [],
@@ -176,10 +176,10 @@ export class DefaultConfigService {
     ],
     options: {
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 100,
       sort: {
-        active: 'id',
-        direction: 'asc'
+        active: 'createdAt',
+        direction: 'desc'
       },
     },
     filters: [],
