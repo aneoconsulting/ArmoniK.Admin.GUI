@@ -10,10 +10,10 @@ describe('TasksIndexService', () => {
 
   const expectDefaultOptions :TaskSummaryListOptions = {
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 100,
     sort: {
-      active: 'id',
-      direction: 'asc'
+      active: 'createdAt',
+      direction: 'desc'
     },
   };  
   const expectedDefaultColumns = new DefaultConfigService().defaultTasks.columns;
