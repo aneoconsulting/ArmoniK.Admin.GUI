@@ -69,7 +69,6 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   }
 
   onDrop(columnsKeys: C[]) {
-
     this.indexService.saveColumns(columnsKeys);
   }
 

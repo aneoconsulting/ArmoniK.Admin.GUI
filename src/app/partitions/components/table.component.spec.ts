@@ -1,9 +1,5 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
@@ -52,18 +48,6 @@ describe('PartitionsTableComponent', () => {
     restoreStatuses: jest.fn(),
     saveStatuses: jest.fn(),
   };
-
-  const sort: MatSort = {
-    active: 'namespace',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
-
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
 
   const filters: PartitionRawFilters = [
     [
@@ -135,8 +119,6 @@ describe('PartitionsTableComponent', () => {
         direction: 'desc'
       }
     };
-    component.sort = sort;
-    component.paginator = paginator;
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -155,33 +137,10 @@ describe('PartitionsTableComponent', () => {
     expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('partitions');
   });
 
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options pagination on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'id',
-        direction: 'desc'
-      }
-    });
-  });
-
   it('should change column order', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1
-    } as unknown as CdkDragDrop<string[]>;
-    component.onDrop(event);
-    expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
+    const newColumns: PartitionRawColumnKey[] = ['actions', 'id', 'parentPartitionIds'];
+    component.onDrop(newColumns);
+    expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     expect(component.displayedColumns).toEqual(displayedColumns);
   });
 

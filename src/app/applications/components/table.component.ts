@@ -1,15 +1,7 @@
 import { ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
@@ -17,16 +9,7 @@ import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableActionsComponent } from '@components/table/table-actions.component';
-import { TableCellComponent } from '@components/table/table-cell.component';
-import { TableColumnHeaderComponent } from '@components/table/table-column-header.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableComponent } from '@components/table/table.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -48,25 +31,6 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     FiltersService
   ],
   imports: [
-    TableActionsToolbarComponent,
-    FiltersToolbarComponent,
-    TableContainerComponent,
-    MatPaginatorModule,
-    TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
-    MatSortModule,
-    NgFor,
-    NgIf,
-    MatTableModule,
-    MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
-    DragDropModule,
-    MatButtonModule,
-    TableCellComponent,
-    TableActionsComponent,
-    TableColumnHeaderComponent,
     TableComponent,
   ]
 })

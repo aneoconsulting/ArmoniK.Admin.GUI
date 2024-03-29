@@ -97,9 +97,9 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   }
 
   onDrop(event: CdkDragDrop<string[]>) {
-    console.log('before', this.columns);
-    moveItemInArray(this.columns, event.previousIndex, event.currentIndex);
-    console.log('after', this.columns);
+    const columns = this._columns;
+    moveItemInArray(columns, event.previousIndex, event.currentIndex);
+    this.columns = columns;
     this.columnDrop.emit(this.columns.map(column => column.key));
   }
 
