@@ -36,11 +36,10 @@
     </mat-toolbar-row>
   </mat-toolbar>
   <app-application-table
-    [data$]="data$"
     [filters]="filters"
     [options]="options"
-    [total]="total"
     [displayedColumns]="displayedColumns"
     [lockColumns]="lockColumns"
-    (optionsChange)="onOptionsChange()"
-  ></app-application-table>
+    [refresh$]="refresh$"
+    [loading$]="loadApplicationData$"
+  />

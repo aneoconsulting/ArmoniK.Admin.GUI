@@ -6,7 +6,7 @@ import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge, } from 'rxjs';
 import { ApplicationsTableComponent } from '@app/applications/components/table.component';
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
@@ -93,7 +93,8 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
   total: number;
-  loadApplicationData = false;
+  loadApplicationData = true;
+  loadApplicationData$: Subject<boolean> = new BehaviorSubject(true);
   data$: Subject<ApplicationRaw[]> = new Subject();
   filters: ApplicationRawFilters;
   options: ApplicationRawListOptions;
@@ -106,6 +107,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   intervalValue: number;
 
+  refresh$: Subject<void> = new Subject<void>();
   refresh: Subject<void> = new Subject<void>();
   optionsChange: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
@@ -130,29 +132,8 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   ngAfterViewInit() {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).pipe(
-      startWith(0),
-      tap(() => (this.loadApplicationData = true)),
-      switchMap(() => {
-        return this.#applicationGrpcService.list$(this.options, this.filters).pipe(catchError((error) => {
-          console.error(error);
-          this.#notificationService.error('Unable to fetch applications');
-          return of(null);
-        }));
-      }),
-      map(data => {
-        this.loadApplicationData = false;
-        this.total = data?.total ?? 0;
-
-        const partitions = data?.applications ?? [];
-
-        return partitions;
-      })
-    ).subscribe(data => {
-      this.data$.next(data);
-    });
-
-    this.subscriptions.add(mergeSubscription);
+    merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    this.loadApplicationData$.subscribe((value) => this.loadApplicationData = value);
   }
 
   ngOnDestroy() {

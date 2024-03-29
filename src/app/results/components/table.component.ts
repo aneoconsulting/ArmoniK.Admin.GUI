@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ListResultsResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
@@ -7,15 +7,18 @@ import { ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
+import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from '../types';
 
 @Component({
   selector: 'app-results-table',
   standalone: true,
   templateUrl: './table.component.html', 
   providers: [
+    ResultsGrpcService,
+    ResultsIndexService,
     MatDialog,
     IconsService,
     FiltersService,
@@ -24,8 +27,9 @@ import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
     TableComponent,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions> implements AfterViewInit{
-  override readonly indexService = inject(ResultsIndexService);
+export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements AfterViewInit{
+  readonly _grpcService = inject(ResultsGrpcService);
+  readonly indexService = inject(ResultsIndexService);
   readonly statusesService = inject(ResultsStatusesService);
 
   createSessionIdQueryParams(sessionId: string) {
@@ -34,6 +38,10 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
     return {
       [keySession]: sessionId,
     };
+  }
+
+  computeGrpcData(entries: ListResultsResponse): ResultRaw[] | undefined {
+    return entries.results;
   }
 
   override isDataRawEqual(value: ResultRaw, entry: ResultRaw): boolean {

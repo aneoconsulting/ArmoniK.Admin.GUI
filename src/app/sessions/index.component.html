@@ -37,14 +37,10 @@
   </mat-toolbar>
   
   <app-sessions-table
-    [data$]="data$"
     [filters]="filters"
     [displayedColumns]="displayedColumns"
     [lockColumns]="lockColumns"
     [options]="options"
-    [total]="total"
-    (optionsChange)="onOptionsChange()"
-    (cancelSession)="onCancel($event)"
-    (closeSession)="onClose($event)"
-    (deleteSession)="onDelete($event)"
-  ></app-sessions-table>
+    [refresh$]="refresh$"
+    [loading$]="isLoading$"
+  />

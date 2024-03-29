@@ -1,5 +1,5 @@
-import { ApplicationRawEnumField, FilterStringOperator, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { ApplicationRawEnumField, FilterStringOperator, ListApplicationsResponse, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -12,7 +12,9 @@ import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
@@ -24,7 +26,9 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     
   ],
   providers: [
+    ApplicationsGrpcService,
     ApplicationsIndexService,
+    NotificationService,
     TasksByStatusService,
     MatDialog,
     IconsService,
@@ -34,10 +38,10 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     TableComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions> implements OnInit {
-  @Input({required: true}) filters: ApplicationRawFilters;
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements OnInit {
   table: TableTasksByStatus = 'applications';
   
+  override readonly _grpcService = inject(ApplicationsGrpcService);
   override readonly indexService = inject(ApplicationsIndexService);
   readonly iconsService = inject(IconsService);
   readonly router = inject(Router);
@@ -52,6 +56,10 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       action$: this.seeSessions$
     },
   ];
+
+  computeGrpcData(entries: ListApplicationsResponse): ApplicationRaw[] | undefined {
+    return entries.applications;
+  }
   
   isDataRawEqual(value: ApplicationRaw, entry: ApplicationRaw): boolean {
     return value.name === entry.name && value.version === entry.version;

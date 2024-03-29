@@ -1,6 +1,6 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Params, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -13,8 +13,8 @@ import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
-import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '../types';
@@ -39,15 +39,14 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
     MatDialogModule,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions>  implements OnInit {
-  @Input({required: true}) filters: SessionRawFilters;
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters>  implements OnInit {
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
   
-  override readonly indexService = inject(SessionsIndexService);
+  readonly _grpcService = inject(SessionsGrpcService);
+  readonly indexService = inject(SessionsIndexService);
   readonly iconsService = inject(IconsService);
-  readonly notificationService = inject(NotificationService);
   readonly statusesService = inject(SessionsStatusesService);
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
@@ -106,6 +105,10 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       action$: this.deleteSession$,
     }
   ];
+
+  computeGrpcData(entries: ListSessionsResponse): SessionRaw[] | undefined {
+    return entries.sessions;
+  }
 
   isDataRawEqual(value: SessionRaw, entry: SessionRaw): boolean {
     return value.sessionId === entry.sessionId;
@@ -222,7 +225,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   }
 
   onDelete(sessionId: string) {
-    this._data = this.data.filter(session => session.raw.sessionId !== sessionId);
+    this.data = this.data.filter(session => session.raw.sessionId !== sessionId);
     this.deleteSession.emit(sessionId);
   }
 }

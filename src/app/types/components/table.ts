@@ -1,15 +1,21 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { Subject } from 'rxjs';
-import { TaskSummaryFilters } from '@app/tasks/types';
+import { Observable, Subject, catchError, of, switchMap } from 'rxjs';
+import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
+import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
+import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';
+import { SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
+import { TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { FiltersService } from '@services/filters.service';
+import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { TableColumn } from '../column.type';
-import { ArmonikData, DataRaw, IndexListOptions, RawColumnKey } from '../data';
+import { ArmonikData, DataRaw, GrpcResponse, IndexListOptions, RawColumnKey } from '../data';
 import { TaskStatusColored, ViewTasksByStatusDialogData } from '../dialog';
+import { RawFilters } from '../filters';
+import { GrpcService } from '../services';
 import { IndexServiceInterface } from '../services/indexService';
 
 export interface SelectableTable<D extends DataRaw> {
@@ -23,48 +29,75 @@ export interface SelectableTable<D extends DataRaw> {
   selector: 'app-results-table',
   template: '',
 })
-export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions> implements AfterViewInit {
+export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> implements AfterViewInit {
   @Input({required: true}) displayedColumns: TableColumn<C>[] = [];
   @Input({required: true}) options: O;
-  @Input({required: true}) total: number;
+  @Input({ required: true }) filters: F;
+  @Input({required: true}) refresh$: Subject<void>;
+  @Input({ required: true }) loading$: Subject<boolean>;
   @Input() lockColumns = false;
-  @Input({required: true}) data$: Subject<R[]>;
 
   @Output() optionsChange = new EventEmitter<never>();
   
-  protected _data: ArmonikData<R>[] = [];
-  readonly dataSource = new MatTableDataSource<ArmonikData<R>>(this._data);
-
-  get data(): ArmonikData<R>[] {
-    return this._data;
-  }
+  data: ArmonikData<R>[] = [];
+  total: number = 0;
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
   }
 
+  abstract _grpcService: GrpcService;
   abstract readonly indexService: IndexServiceInterface<C, O>;
   readonly filtersService = inject(FiltersService);
+  readonly notificationService = inject(NotificationService);
+
+  list$(options: O, filters: F): Observable<GrpcResponse> {
+    return this._grpcService.list$(
+      options as TaskSummaryListOptions & SessionRawListOptions & ApplicationRawListOptions & ResultRawListOptions & PartitionRawListOptions,
+      filters as SessionRawFilters & TaskSummaryFilters & PartitionRawFilters & ApplicationRawFilters & ResultRawFilters
+    );
+  }
 
   ngAfterViewInit(): void {
-    this.data$.subscribe(entries => this.newData(entries));
+    this.refresh$.pipe(
+      switchMap(
+        () => {
+          this.loading$.next(true);
+          const options = structuredClone(this.options);
+          const filters = structuredClone(this.filters);
+
+          return this.list$(options, filters).pipe(
+            catchError(err => {
+              console.error(err);
+              this.notificationService.error(err);
+              return of(null);
+            })
+          );
+        })
+    ).subscribe(entries => {
+      this.loading$.next(false);
+      if (entries) {
+        this.total = entries.total;
+        const data = this.computeGrpcData(entries) ?? [];
+        this.newData(data);
+      }
+    });
+    this.refresh$.next();
   }
 
   private newData(entries: R[]) {
     if (entries.length !== 0) {
-      this._data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
+      this.data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
       entries.forEach((entry, index) => {
-        const value = this._data[index];
+        const value = this.data[index];
         if (value && this.isDataRawEqual(value.raw, entry)) {
-          this._data[index].value$?.next(entry);
+          this.data[index].value$?.next(entry);
         } else {
-          this._data.splice(index, 1, this.createNewLine(entry));
+          this.data.splice(index, 1, this.createNewLine(entry));
         }
       });
-      this.dataSource.data = this._data;
     } else {
-      this._data = [];
-      this.dataSource.data = this._data;
+      this.data = [];
     }
   }
 
@@ -76,6 +109,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     this.optionsChange.emit();
   }
 
+  abstract computeGrpcData(entries: GrpcResponse): R[] | undefined;
   abstract isDataRawEqual(value: R, entry: R): boolean;
   abstract createNewLine(entry: R): ArmonikData<R>;
 }
@@ -84,7 +118,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   selector: 'app-results-table',
   template: '',
 })
-export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions> extends AbstractTableComponent<R, C, O> implements OnInit {
+export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> extends AbstractTableComponent<R, C, O, F> implements OnInit {
   readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
 

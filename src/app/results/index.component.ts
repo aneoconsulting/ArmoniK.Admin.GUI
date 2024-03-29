@@ -6,7 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableColumn } from '@app/types/column.type';
@@ -29,7 +29,6 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsTableComponent } from './components/table.component';
 import { ResultsFiltersService } from './services/results-filters.service';
-import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
@@ -60,7 +59,6 @@ app-table-actions-toolbar {
     TableURLService,
     TableService,
     ResultsIndexService,
-    ResultsGrpcService,
     AutoRefreshService,
     NotificationService,
     ResultsFiltersService,
@@ -103,6 +101,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   columnsLabels: Record<ResultRawColumnKey, string> = {} as Record<ResultRawColumnKey, string>;
 
   isLoading = true;
+  isLoading$: Subject<boolean> = new BehaviorSubject<boolean>(true);
   total = 0;
 
   options: ResultRawListOptions;
@@ -112,6 +111,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   intervalValue = 0;
   sharableURL = '';
 
+  refresh$: Subject<void> = new Subject<void>();
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
@@ -125,7 +125,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private _shareURLService: ShareUrlService,
     private _resultsIndexService: ResultsIndexService,
-    private _resultsGrpcService: ResultsGrpcService,
     private _autoRefreshService: AutoRefreshService,
   ) { }
 
@@ -148,36 +147,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-
-          const filters = this.filters;
-
-          this.sharableURL = this._shareURLService.generateSharableURL(this.options, filters);
-          this._resultsIndexService.saveOptions(this.options);
-
-          return this._resultsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
-            console.error(error);
-            this.#notificationService.error('Unable to fetch results');
-            return of(null);
-          }));
-        }),
-        map(data => {
-          this.isLoading = false;
-          this.total = data?.total ?? 0;
-
-          const results = data?.results ?? [];
-
-          return results;
-        })
-      ).subscribe(
-        data => {
-          this.data$.next(data);
-        });
-
+    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.handleAutoRefreshStart();
 
     this.subscriptions.add(mergeSubscription);

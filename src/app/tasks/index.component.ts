@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge, } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableColumn } from '@app/types/column.type';
@@ -112,6 +112,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedRows: string[] = [];
 
   isLoading = true;
+  isLoading$: Subject<boolean> = new BehaviorSubject(true);
   data: TaskSummary[] = [];
   data$: Subject<TaskSummary[]> = new Subject();
   total = 0;
@@ -134,6 +135,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   interval: Subject<number> = new Subject<number>();
   optionsChange: Subject<void> = new Subject<void>();
   interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
+  refresh$: Subject<void> = new Subject<void>();
 
   subscriptions: Subscription = new Subscription();
 
@@ -163,51 +165,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-          this.selectedRows = this.selection.selected;
-          this.selection.clear();
-
-          const filters = this.filters;
-
-          this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
-          this.#tasksIndexService.saveOptions(this.options);
-
-          return this.#tasksGrpcService.list$(this.options, filters).pipe(
-            catchError((error) => {
-              console.error(error);
-              this.#notificationService.error('Unable to fetch tasks');
-              return of(null);
-            }),
-          );
-        }),
-        map(data => {
-          this.isLoading = false;
-
-          this.total = data?.total ?? 0;
-
-          const tasks = data?.tasks ?? [];
-          return tasks;
-        }),
-      )
-      .subscribe((data) => {
-        this.data = data;
-        if (this.selectedRows.length > 0) {
-          if (this.selectedRows.length === data.length) {
-            this.selection.select(...this.data.map(task => task.id));
-          } else {
-            this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))).map(task => task.id));
-          }
-        }
-        this.data$.next(this.data);
-      });
-
-    this.handleAutoRefreshStart();
-
-    this.subscriptions.add(mergeSubscription);
+    merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
   }
 
   ngOnDestroy(): void {

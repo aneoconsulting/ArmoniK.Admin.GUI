@@ -49,21 +49,14 @@
   </mat-toolbar>
   
   <app-tasks-table
-    [data$]="data$"
     [filters]="filters"
     [displayedColumns]="displayedColumns"
-    [interval]="interval"
-    [intervalValue]="intervalValue"
     [lockColumns]="lockColumns"
     [options]="options"
-    [selection]="selection"
-    [stopInterval]="stopInterval"
     [serviceName]="serviceName"
     [serviceIcon]="serviceIcon"
     [urlTemplate]="urlTemplate"
-    [total]="total"
-    (optionsChange)="onOptionsChange()"
-    (cancelTask)="onCancelTask($event)"
-    (retries)="onRetries($event)"
+    [refresh$]="refresh$"
+    [loading$]="isLoading$"
   ></app-tasks-table>
   

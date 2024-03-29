@@ -1,19 +1,18 @@
-import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { TaskData } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
@@ -35,12 +34,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> {
-  @Input({required: true}) stopInterval: Subject<void>;
-  @Input({required: true}) interval: Subject<number>;
-  @Input({required: true}) intervalValue: number;
-  @Input({required: true}) selection: SelectionModel<string>;
-  @Input() filters: TaskSummaryFilters = [];
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> {
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
@@ -48,9 +42,8 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
 
-  tasksStatusesColored: TaskStatusColored[] = [];
-
   override readonly indexService = inject(TasksIndexService);
+  override readonly _grpcService = inject(TasksGrpcService);
   readonly #notificationService = inject(NotificationService);
   readonly _router = inject(Router);
   readonly _clipboard = inject(Clipboard);
@@ -101,6 +94,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
     }
   ];
+
+  computeGrpcData(entries: ListTasksResponse): TaskSummary[] | undefined {
+    return entries.tasks;
+  }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;

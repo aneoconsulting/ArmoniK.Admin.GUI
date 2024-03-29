@@ -1,5 +1,5 @@
-import { FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
@@ -22,6 +23,8 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
 
   ],
   providers: [
+    PartitionsGrpcService,
+    PartitionsIndexService,
     TasksByStatusService,
     IconsService,
     FiltersService
@@ -32,12 +35,17 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     TableComponent,
   ]
 })
-export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions> implements OnInit {
-  @Input({ required: true }) filters: PartitionRawFilters;
-
-  override readonly indexService = inject(PartitionsIndexService);
+export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements OnInit {
+  
+  readonly _grpcService = inject(PartitionsGrpcService);
+  readonly indexService = inject(PartitionsIndexService);
   readonly iconsService = inject(IconsService);
+  
   table: TableTasksByStatus = 'partitions';
+
+  computeGrpcData(entries: ListPartitionsResponse): PartitionRaw[] | undefined {
+    return entries.partitions;
+  }
 
   isDataRawEqual(value: PartitionRaw, entry: PartitionRaw): boolean {
     return value.id === entry.id;
