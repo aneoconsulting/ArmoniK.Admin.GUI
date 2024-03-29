@@ -84,7 +84,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     });
 
     this.paginator.page.subscribe(() => {
-      if (this.options.pageSize > this.paginator.pageSize) this.data = [];
+      if (this.options.pageSize > this.paginator.pageSize) this.data = this.data.slice(0, this.paginator.pageSize);
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
