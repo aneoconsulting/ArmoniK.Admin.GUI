@@ -36,13 +36,12 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
-import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsTableComponent } from './components/table.component';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from './types';
+import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from './types';
 
 @Component({
   selector: 'app-sessions-index',
@@ -61,7 +60,6 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
-    TasksByStatusService,
     IconsService,
     ShareUrlService,
     QueryParamsService,
@@ -72,7 +70,6 @@ app-table-actions-toolbar {
     UtilsService,
     AutoRefreshService,
     SessionsIndexService,
-    TasksByStatusService,
     TasksStatusesService,
     TasksIndexService,
     FiltersService,
@@ -110,9 +107,7 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #tasksByStatusService = inject(TasksByStatusService);
   readonly #sessionsFiltersService = inject(SessionsFiltersService);
-  readonly _tasksByStatusService = inject(TasksByStatusService);
   readonly #dialog = inject(MatDialog);
 
   displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
@@ -124,8 +119,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLoading = true;
   isLoading$: Subject<boolean> = new BehaviorSubject(true);
-  data: SessionRaw[] = [];
-  total = 0;
 
   options: SessionRawListOptions;
 
@@ -139,7 +132,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
 
@@ -170,16 +162,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
 
     this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
-
-    this.tasksStatusesColored = this.#tasksByStatusService.restoreStatuses('sessions');
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
-
-    this.handleAutoRefreshStart();
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {
@@ -284,11 +273,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.interval.next(this.intervalValue);
     }
   }
-
-  onOptionsChange() {
-    this.optionsChange.next();
-  }
-
 
   addCustomColumn(): void {
     const dialogRef = this.#dialog.open<ManageCustomColumnDialogComponent, CustomColumn[], CustomColumn[]>(ManageCustomColumnDialogComponent, {

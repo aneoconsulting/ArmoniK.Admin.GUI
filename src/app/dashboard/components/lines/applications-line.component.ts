@@ -11,7 +11,7 @@ import { ApplicationsTableComponent } from '@app/applications/components/table.c
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableColumn } from '@app/types/column.type';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
@@ -92,10 +92,8 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  total: number;
   loadApplicationData = true;
   loadApplicationData$: Subject<boolean> = new BehaviorSubject(true);
-  data$: Subject<ApplicationRaw[]> = new Subject();
   filters: ApplicationRawFilters;
   options: ApplicationRawListOptions;
 
@@ -109,7 +107,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   refresh$: Subject<void> = new Subject<void>();
   refresh: Subject<void> = new Subject<void>();
-  optionsChange: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   subscriptions: Subscription = new Subscription();
@@ -132,8 +129,10 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   ngAfterViewInit() {
-    merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    this.loadApplicationData$.subscribe((value) => this.loadApplicationData = value);
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.loadApplicationData$.subscribe((value) => this.loadApplicationData = value);
+    this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy() {
@@ -194,12 +193,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();
-  }
-
-  onOptionsChange() {
-    this.line.options = this.options;
-    this.optionsChange.next();
-    this.lineChange.emit();
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {

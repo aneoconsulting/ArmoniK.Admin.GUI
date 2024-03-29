@@ -113,9 +113,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLoading = true;
   isLoading$: Subject<boolean> = new BehaviorSubject(true);
-  data: TaskSummary[] = [];
-  data$: Subject<TaskSummary[]> = new Subject();
-  total = 0;
 
   taskId: string;
 
@@ -165,8 +162,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
+    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
+    this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {

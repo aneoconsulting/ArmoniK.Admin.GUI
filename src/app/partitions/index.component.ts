@@ -31,7 +31,6 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
@@ -41,7 +40,7 @@ import { PartitionsTableComponent } from './components/table.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
+import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -99,10 +98,8 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
-    IconsService,
     ShareUrlService,
     QueryParamsService,
-    StorageService,
     TableURLService,
     TableStorageService,
     TableService,
@@ -161,8 +158,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLoading$: Subject<boolean> = new BehaviorSubject(true);
   isLoading = true;
-  data$: Subject<PartitionRaw[]> = new Subject();
-  total = 0;
 
   options: PartitionRawListOptions;
 
@@ -176,7 +171,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
 
@@ -198,14 +192,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.intervalValue = this.#partitionsIndexService.restoreIntervalValue();
 
     this.sharableURL = this.#shareURLService.generateSharableURL(this.options, this.filters);
-
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription =  merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
-    this.handleAutoRefreshStart();
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {
@@ -277,9 +270,5 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }

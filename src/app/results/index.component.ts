@@ -31,7 +31,7 @@ import { ResultsTableComponent } from './components/table.component';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
+import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
 
 
 @Component({
@@ -102,7 +102,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLoading = true;
   isLoading$: Subject<boolean> = new BehaviorSubject<boolean>(true);
-  total = 0;
 
   options: ResultRawListOptions;
 
@@ -116,9 +115,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
-
-  data$ = new Subject<ResultRaw[]>();
 
   subscriptions: Subscription = new Subscription();
 
@@ -147,11 +143,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
-    this.handleAutoRefreshStart();
-
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {
@@ -227,9 +222,5 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }
