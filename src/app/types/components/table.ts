@@ -1,12 +1,8 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject } from 'rxjs';
-import { ResultRawFieldKey } from '@app/results/types';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { FiltersService } from '@services/filters.service';
@@ -35,8 +31,6 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   @Input({required: true}) data$: Subject<R[]>;
 
   @Output() optionsChange = new EventEmitter<never>();
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   
   protected _data: ArmonikData<R>[] = [];
   readonly dataSource = new MatTableDataSource<ArmonikData<R>>(this._data);
@@ -53,22 +47,6 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   readonly filtersService = inject(FiltersService);
 
   ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(() => {
-      this.options.pageIndex = 0; // If the user change the sort order, reset back to the first page.
-      this.options.sort = {
-        active: this.sort.active as ResultRawFieldKey,
-        direction: this.sort.direction
-      };
-      this.optionsChange.emit();
-    });
-
-    this.paginator.page.subscribe(() => {
-      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
-      this.options.pageIndex = this.paginator.pageIndex;
-      this.options.pageSize = this.paginator.pageSize;
-      this.optionsChange.emit();
-    });
-
     this.data$.subscribe(entries => this.newData(entries));
   }
 
@@ -90,10 +68,13 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     }
   }
 
-  onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
+  onDrop(columnsKeys: C[]) {
 
-    this.indexService.saveColumns(this.displayedColumns.map(column => column.key));
+    this.indexService.saveColumns(columnsKeys);
+  }
+
+  onOptionsChange() {
+    this.optionsChange.emit();
   }
 
   abstract isDataRawEqual(value: R, entry: R): boolean;

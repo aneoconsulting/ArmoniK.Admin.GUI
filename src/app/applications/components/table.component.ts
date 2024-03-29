@@ -23,6 +23,7 @@ import { TableActionsComponent } from '@components/table/table-actions.component
 import { TableCellComponent } from '@components/table/table-cell.component';
 import { TableColumnHeaderComponent } from '@components/table/table-column-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
+import { TableComponent } from '@components/table/table.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
@@ -35,49 +36,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
 @Component({
   selector: 'app-application-table',
   standalone: true,
-  template: `
-<app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)" i18n-aria-label aria-label="Applications Data Table">
-
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
-      <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
-        <app-table-column-header [column]="column" (personnaliseTasksByStatus)="personalizeTasksByStatus()" />
-      </th>
-      <!-- Columns -->
-      <ng-container *ngIf="column.type !== 'actions'">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-          <app-table-cell 
-            [value$]="element.value$"
-            [column]="column"
-            [element]="element"
-            [tasksStatusesColored]="tasksStatusesColored"
-          />
-        </td>
-      </ng-container>
-      <!-- Action -->
-      <ng-container *ngIf="column.type === 'actions'">
-        <td mat-cell *matCellDef="let element" appNoWrap>
-         <app-table-actions [actions]="actions" [element]="element" />
-        </td>
-      </ng-container>
-    </ng-container>
-
-    <!-- Empty -->
-    <tr *matNoDataRow>
-      <td [attr.colspan]="displayedColumns.length">
-        <app-table-empty-data/>
-      </td>
-    </tr>
-
-    <tr mat-header-row *matHeaderRowDef="columnKeys; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnKeys;"></tr>
-  </table>
-
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of applications">
-  </mat-paginator>
-</app-table-container>
-  `,
+  templateUrl: './table.component.html',
   styles: [
     
   ],
@@ -108,6 +67,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     TableCellComponent,
     TableActionsComponent,
     TableColumnHeaderComponent,
+    TableComponent,
   ]
 })
 export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions> implements OnInit {
@@ -140,10 +100,6 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       filters: this.countTasksByStatusFilters(entry.name, entry.version),
       value$: new Subject<ApplicationRaw>()
     };
-  }
-
-  getIcon(name: string): string {
-    return this.iconsService.getIcon(name);
   }
 
   getPageIcon(name: Page): string {
