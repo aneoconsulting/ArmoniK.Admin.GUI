@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject, catchError, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
 import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
 import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';
@@ -25,19 +25,24 @@ export interface SelectableTable<D extends DataRaw> {
   checkboxLabel(row?: ArmonikData<D>): string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+  prepareBeforeFetching(...args: unknown[]): void;
+  afterDataCreation(...args: unknown[]): void;
+}
+
 @Component({
   selector: 'app-results-table',
   template: '',
 })
-export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> implements AfterViewInit {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
   @Input({required: true}) displayedColumns: TableColumn<C>[] = [];
   @Input({required: true}) options: O;
   @Input({ required: true }) filters: F;
   @Input({required: true}) refresh$: Subject<void>;
   @Input({ required: true }) loading$: Subject<boolean>;
   @Input() lockColumns = false;
-
-  @Output() optionsChange = new EventEmitter<never>();
   
   data: ArmonikData<R>[] = [];
   total: number = 0;
@@ -58,13 +63,17 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     );
   }
 
-  ngAfterViewInit(): void {
+  subscribeToData() {
     this.refresh$.pipe(
       switchMap(
         () => {
           this.loading$.next(true);
           const options = structuredClone(this.options);
           const filters = structuredClone(this.filters);
+
+          if (this.prepareBeforeFetching) {
+            this.prepareBeforeFetching(options, filters);
+          }
 
           return this.list$(options, filters).pipe(
             catchError(err => {
@@ -73,19 +82,26 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
               return of(null);
             })
           );
-        })
-    ).subscribe(entries => {
-      this.loading$.next(false);
-      if (entries) {
-        this.total = entries.total;
-        const data = this.computeGrpcData(entries) ?? [];
-        this.newData(data);
+        }),
+      map(entries => {
+        this.total = entries?.total ?? 0;
+        if (entries) {
+          return this.computeGrpcData(entries) ?? [];
+        }
+        return [];
+      })
+    ).subscribe(data => {
+      this.newData(data);
+      if (this.total !== 0 && this.afterDataCreation) {
+        this.afterDataCreation();
+      } else {
+        this.loading$.next(false);
       }
     });
     this.refresh$.next();
   }
 
-  private newData(entries: R[]) {
+  protected newData(entries: R[]) {
     if (entries.length !== 0) {
       this.data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
       entries.forEach((entry, index) => {
@@ -106,7 +122,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   }
 
   onOptionsChange() {
-    this.optionsChange.emit();
+    this.refresh$.next();
   }
 
   abstract computeGrpcData(entries: GrpcResponse): R[] | undefined;

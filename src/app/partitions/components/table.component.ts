@@ -1,5 +1,5 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -19,9 +19,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
   selector: 'app-partitions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-
-  ],
   providers: [
     PartitionsGrpcService,
     PartitionsIndexService,
@@ -35,13 +32,17 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     TableComponent,
   ]
 })
-export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements OnInit {
+export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements AfterViewInit {
   
   readonly _grpcService = inject(PartitionsGrpcService);
   readonly indexService = inject(PartitionsIndexService);
   readonly iconsService = inject(IconsService);
   
   table: TableTasksByStatus = 'partitions';
+
+  ngAfterViewInit(): void {
+    this.subscribeToData();
+  }
 
   computeGrpcData(entries: ListPartitionsResponse): PartitionRaw[] | undefined {
     return entries.partitions;

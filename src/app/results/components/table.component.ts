@@ -27,10 +27,14 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions }
     TableComponent,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements AfterViewInit{
+export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements AfterViewInit {
   readonly _grpcService = inject(ResultsGrpcService);
   readonly indexService = inject(ResultsIndexService);
   readonly statusesService = inject(ResultsStatusesService);
+
+  ngAfterViewInit(): void {
+    this.subscribeToData();
+  }
 
   createSessionIdQueryParams(sessionId: string) {
     const keySession = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);

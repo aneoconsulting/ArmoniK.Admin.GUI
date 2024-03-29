@@ -1,6 +1,6 @@
 import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
@@ -34,7 +34,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> implements AfterViewInit {
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
@@ -94,6 +94,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
     }
   ];
+
+  ngAfterViewInit(): void {
+    this.subscribeToData();
+  }
 
   computeGrpcData(entries: ListTasksResponse): TaskSummary[] | undefined {
     return entries.tasks;
