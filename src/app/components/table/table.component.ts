@@ -10,7 +10,6 @@ import { ArmonikData, ArmonikDataType, DataRaw, IndexListOptions, RawColumnKey, 
 import { TaskStatusColored } from '@app/types/dialog';
 import { StatusesServiceI } from '@app/types/services';
 import { ActionTable } from '@app/types/table';
-import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
@@ -21,7 +20,6 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
   templateUrl: './table.component.html',
   standalone: true,
   imports: [
-    TableContainerComponent,
     TableColumnHeaderComponent,
     TableCellComponent,
     MatPaginatorModule,
