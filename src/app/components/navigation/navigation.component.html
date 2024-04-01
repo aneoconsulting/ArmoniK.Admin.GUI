@@ -18,7 +18,7 @@
       {{ environment.name }} {{ environment.version }}
     </div>
     <div class="spacer"></div>
-    <app-change-language-button /> 
+    <app-change-language-button />
     <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
       <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
       <span i18n="Button to view external services">
@@ -28,7 +28,7 @@
     <mat-menu #external_services="matMenu">
       <ng-container *ngFor="let service of externalServices; trackBy:trackByService">
         <a mat-menu-item [href]="service.url" target="_blank" rel="noopener noreferrer">
-          <mat-icon *ngIf="service.icon" matListItemIcon aria-hidden="true" [fontIcon]="service.icon"></mat-icon>
+          <mat-icon *ngIf="service.icon" matListItemIcon aria-hidden="true" [fontIcon]="getIcon(service.icon)"></mat-icon>
           <span>{{ service.name }}</span>
         </a>
       </ng-container>
@@ -86,13 +86,13 @@
               <span matListItemTitle> {{ item.display}} </span>
             </a>
           </ng-container>
-        </ng-container> 
+        </ng-container>
         <a mat-list-item [routerLink]="'/settings'" routerLinkActive="navbar-item-selected">
           <mat-icon matListItemIcon aria-hidden="true" fontIcon="settings"></mat-icon>
           <span matListItemTitle> {{ settingsItem }} </span>
-        </a>  
+        </a>
       </mat-nav-list>
-      
+
     </mat-sidenav>
     <mat-sidenav-content>
       <main>

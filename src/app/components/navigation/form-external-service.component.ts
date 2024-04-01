@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ExternalService } from '@app/types/external-service';
+import { IconPickerDialogComponent } from '@components/icon-picker-dialog.component';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-form-external-service',
@@ -19,6 +21,17 @@ mat-dialog-content {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+}
+
+.grid-span-2 {
+  grid-column: span 2;
+}
+
+.icon {
+  height: 48px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .preview {
@@ -38,6 +51,7 @@ mat-dialog-content {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    IconPickerDialogComponent
   ],
 })
 export class FormExternalServiceComponent implements OnInit {
@@ -46,6 +60,8 @@ export class FormExternalServiceComponent implements OnInit {
   @Output() cancelChange = new EventEmitter<void>();
   @Output() submitChange = new EventEmitter<ExternalService>();
 
+  icon: string = '';
+
   serviceForm = new FormGroup({
     name: new FormControl('', [
       Validators.required,
@@ -53,17 +69,20 @@ export class FormExternalServiceComponent implements OnInit {
     url: new FormControl('', [
       Validators.required,
     ]),
-    icon: new FormControl(''),
   });
 
   ngOnInit(): void {
     if (this.externalService) {
       this.serviceForm.patchValue(this.externalService);
+      this.icon = this.externalService.icon || '';
     }
   }
 
   onSubmit() {
-    this.submitChange.emit(this.serviceForm.value as ExternalService);
+    this.submitChange.emit({
+      ...this.serviceForm.value as ExternalService,
+      icon: this.icon
+    });
   }
 
   onCancel() {
