@@ -31,7 +31,7 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
   }
 
   canClose(status: SessionStatus): boolean {
-    return status === SessionStatus.SESSION_STATUS_RUNNING  || status === SessionStatus.SESSION_STATUS_PAUSED;
+    return status === SessionStatus.SESSION_STATUS_RUNNING || status === SessionStatus.SESSION_STATUS_PAUSED;
   }
 
   canDelete(status: SessionStatus): boolean {

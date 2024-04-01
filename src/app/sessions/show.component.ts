@@ -169,6 +169,8 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
+        this.canPause$.next(!this._sessionsStatusesService.canPause(this.data.status));
+        this.canResume$.next(!this._sessionsStatusesService.canResume(this.data.status));
         this.canCancel$.next(!this._sessionsStatusesService.canCancel(this.data.status));
         this.canClose$.next(!this._sessionsStatusesService.canClose(this.data.status));
         this.data$.next(data);
