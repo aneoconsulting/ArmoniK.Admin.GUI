@@ -77,7 +77,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
 </mat-toolbar>
 
 <app-partitions-table
-  [data]="data"
+  [data$]="data$"
   [filters]="filters"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
@@ -164,7 +164,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   columnsLabels: Record<PartitionRawColumnKey, string> = {} as unknown as Record<PartitionRawColumnKey, string>;
 
   isLoading = true;
-  data: PartitionRaw[] = [];
+  data$: Subject<PartitionRaw[]> = new Subject();
   total = 0;
 
   options: PartitionRawListOptions;
@@ -231,7 +231,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       )
       .subscribe(data => {
-        this.data = data;
+        this.data$.next(data);
       });
 
     this.handleAutoRefreshStart();

@@ -39,7 +39,7 @@ describe('ThemeSelectorComponent', () => {
   });
 
   it('should get icon', () => {
-    expect(component.getIcon('format-color-fill')).toEqual('format_color_fill');
+    expect(component.getIcon('fill')).toEqual('format_color_fill');
   });
 
   it('should update theme', () => {

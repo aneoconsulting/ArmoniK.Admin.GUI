@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,7 +27,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.sessionId ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -73,6 +73,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   private _filtersService = inject(FiltersService);
   private router = inject(Router);
 
+
+  canCancel$ = new Subject<boolean>();
+  canClose$ = new Subject<boolean>();
+
   actionButtons: ShowActionButton[] = [
     {
       id: 'tasks',
@@ -100,7 +104,16 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       name: $localize`Cancel Session`,
       icon: this.getIcon('cancel'),
       action$: this.cancel$,
-      disabled: this.canCancel(),
+      disabled: this.canCancel$,
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'close',
+      name: $localize`Close Session`,
+      icon: this.getIcon('close'),
+      action$: this.close$,
+      disabled: this.canClose$,
       color: 'accent',
       area: 'right'
     },
@@ -134,6 +147,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
+        this.canCancel$.next(!this._sessionsStatusesService.canCancel(this.data.status));
+        this.canClose$.next(!this._sessionsStatusesService.canClose(this.data.status));
+        this.data$.next(data);
       }
     });
 
@@ -144,6 +160,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
 
     this.delete$.subscribe(() => {
       this.delete();
+    });
+
+    this.close$.subscribe(() => {
+      this.close();
     });
 
     this.duration$.pipe(
@@ -235,13 +255,5 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
 
   get tasksKey() {
     return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-  }
-
-  canCancel(): boolean {
-    return this._sessionsStatusesService.canCancel(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  canClose(): boolean {
-    return this._sessionsStatusesService.canClose(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
   }
 }

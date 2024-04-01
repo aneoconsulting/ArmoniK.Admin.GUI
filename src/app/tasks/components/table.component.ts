@@ -1,20 +1,20 @@
 import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard , ClipboardModule } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { Router, RouterLink , RouterModule} from '@angular/router';
 import { Subject } from 'rxjs';
-import { TableColumn } from '@app/types/column.type';
+import { AbstractTableComponent, SelectableTable } from '@app/types/components/table';
 import { TaskData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
@@ -34,7 +34,7 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -77,11 +77,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryFilt
     TableActionsComponent,
   ]
 })
-export class TasksTableComponent implements AfterViewInit {
-
-  @Input({required: true}) displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [];
-  @Input({required: true}) options: TaskSummaryListOptions;
-  @Input({required: true}) total: number;
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> implements SelectableTable<TaskSummary>{
   @Input({required: true}) stopInterval: Subject<void>;
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
@@ -90,51 +86,13 @@ export class TasksTableComponent implements AfterViewInit {
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
-  @Input() lockColumns = false;
 
-  private _data: TaskData[] = [];
-  get data(): TaskData[] {
-    return this._data;
-  }
-
-  @Input({required: true}) set data(entries: TaskSummary[]) {
-    if (entries.length !== 0) {
-      this._data = this.data.filter(d => entries.find(entry => entry.id === d.raw.id));
-      entries.forEach((entry, index) => {
-        const task = this._data[index];
-        if (task && task.raw.id === entry.id) {
-          this._data[index].value$?.next(entry);
-        } else {
-          const lineData: TaskData = {
-            raw: entry,
-            resultsQueryParams: this.createResultsQueryParams(entry.id),
-            value$: new Subject<TaskSummary>(),
-          };
-          this._data.splice(index, 1, lineData);
-        }
-      });
-      this.dataSource.data = this._data;
-    } else {
-      this._data = [];
-      this.dataSource.data = this._data;
-    }
-  }
-
-  get columnKeys() {
-    return this.displayedColumns.map(c => c.key);
-  }
-
-  @Output() optionsChange = new EventEmitter<never>();
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
-  dataSource = new MatTableDataSource<TaskData>(this._data);
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  readonly _tasksIndexService = inject(TasksIndexService );
-  readonly _filtersService = inject(FiltersService);
+  override readonly indexService = inject(TasksIndexService);
   readonly #notificationService = inject(NotificationService);
   readonly _router = inject(Router);
   readonly _clipboard = inject(Clipboard);
@@ -186,26 +144,21 @@ export class TasksTableComponent implements AfterViewInit {
     }
   ];
 
-  ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(() => {
-      this.options.pageIndex = 0; // If the user change the sort order, reset back to the first page.
-      this.options.sort = {
-        active: this.sort.active as TaskSummaryFieldKey,
-        direction: this.sort.direction
-      };
-      this.optionsChange.emit();
-    });
+  isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
+    return value.id === entry.id;
+  }
 
-    this.paginator.page.subscribe(() => {
-      this.options.pageIndex = this.paginator.pageIndex;
-      this.options.pageSize = this.paginator.pageSize;
-      this.optionsChange.emit();
-    });
+  createNewLine(entry: TaskSummary): TaskData {
+    return {
+      raw: entry,
+      resultsQueryParams: this.createResultsQueryParams(entry.id),
+      value$: new Subject<TaskSummary>()
+    };
   }
 
   createResultsQueryParams(taskId: string) {
     if (this.filters.length === 0) {
-      const keyTask = this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+      const keyTask = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
 
       return {
         [keyTask]: taskId
@@ -228,9 +181,9 @@ export class TasksTableComponent implements AfterViewInit {
   #createResultFilterLabel(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number) {
     if (filter.field !== null && filter.operator !== null) {
       if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID) {
-        return this._filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+        return this.filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
       } else if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID) {
-        return this._filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+        return this.filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
       }
     }
     return null;
@@ -287,11 +240,5 @@ export class TasksTableComponent implements AfterViewInit {
     else {
       return $localize`Select Task ${row.raw.id}`;
     }
-  }
-
-  onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-
-    this._tasksIndexService.saveColumns(this.displayedColumns.map(column => column.key));
   }
 }

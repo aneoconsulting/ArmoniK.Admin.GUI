@@ -1,21 +1,20 @@
 import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { Params, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
-import { TableColumn } from '@app/types/column.type';
-import { ColumnKey, SessionData } from '@app/types/data';
-import { TaskStatusColored, ViewTasksByStatusDialogData } from '@app/types/dialog';
+import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
@@ -27,14 +26,13 @@ import { TableEmptyDataComponent } from '@components/table/table-empty-data.comp
 import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
-import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
-import { TasksByStatusService } from '@services/tasks-by-status.service';
+import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -74,52 +72,29 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters,
     NgIf,
   ]
 })
-export class ApplicationsTableComponent implements OnInit, AfterViewInit {
-
-  @Input({required: true}) displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
-  @Input({required: true}) options: SessionRawListOptions;
-  @Input({required: true}) total: number;
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions>  implements OnInit {
   @Input({required: true}) filters: SessionRawFilters;
-  @Input({ required: true}) data$: Subject<SessionRaw[]>;
-  @Input() lockColumns = false;
-
-  private _data: SessionData[] = [];
-  get data(): SessionData[] {
-    return this._data;
-  }
-
-  get columnKeys() {
-    return this.displayedColumns.map(c => c.key);
-  }
-
-  @Output() optionsChange = new EventEmitter<never>();
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
-
-  tasksStatusesColored: TaskStatusColored[] = [];
-  dataSource = new MatTableDataSource<SessionData>(this._data);
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   
-  readonly _sessionsIndexService = inject(SessionsIndexService);
-  readonly _tasksByStatusService = inject(TasksByStatusService);
-  readonly _iconsService = inject(IconsService);
-  readonly _filtersService = inject(FiltersService);
-  readonly _notificationService = inject(NotificationService);
-  readonly _sessionsStatusesService = inject(SessionsStatusesService);
-  readonly _dialog = inject(MatDialog);
-  readonly _router = inject(Router);
-  readonly _copyService = inject(Clipboard);
+  override readonly indexService = inject(SessionsIndexService);
+  readonly iconsService = inject(IconsService);
+  readonly notificationService = inject(NotificationService);
+  readonly statusesService = inject(SessionsStatusesService);
+  readonly router = inject(Router);
+  readonly copyService = inject(Clipboard);
+
+  table: TableTasksByStatus = 'sessions';
 
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
 
   seeSessions$ = new Subject<SessionData>();
-  seeSessionsSubscription = this.seeSessions$.subscribe(data => this._router.navigate(['/sessions', data.raw.sessionId]));
+  seeSessionsSubscription = this.seeSessions$.subscribe(data => this.router.navigate(['/sessions', data.raw.sessionId]));
 
   seeResults$ = new Subject<SessionData>();
-  seeResultsSubscription = this.seeResults$.subscribe(data => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+  seeResultsSubscription = this.seeResults$.subscribe(data => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
 
   cancelSession$ = new Subject<SessionData>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
@@ -165,79 +140,38 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
     }
   ];
 
-  ngOnInit(): void {
-    this.tasksStatusesColored = this._tasksByStatusService.restoreStatuses('sessions');
+  isDataRawEqual(value: SessionRaw, entry: SessionRaw): boolean {
+    return value.sessionId === entry.sessionId;
   }
 
-  ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(() => {
-      this.options.pageIndex = 0; // If the user change the sort order, reset back to the first page.
-      this.options.sort = {
-        active: this.sort.active as SessionRawFieldKey,
-        direction: this.sort.direction
-      };
-      this.optionsChange.emit();
-    });
-
-    this.paginator.page.subscribe(() => {
-      if (this.options.pageSize > this.paginator.pageSize) this._data = [];
-      this.options.pageIndex = this.paginator.pageIndex;
-      this.options.pageSize = this.paginator.pageSize;
-      this.optionsChange.emit();
-    });
-
-    this.data$.subscribe(entries => {
-      if (entries.length !== 0) {
-        this._data = this.data.filter(d => entries.find(entry => entry.sessionId === d.raw.sessionId));
-        entries.forEach((entry, index) => {
-          const session = this._data[index];
-          if (session && session.raw.sessionId === entry.sessionId) {
-            session.raw = entry;
-            this._data.splice(index, 1, session);
-            this._data[index].value$.next(entry);
-          } else {
-            const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
-            queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
-            const session: SessionData = {
-              raw: entry,
-              queryParams,
-              queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
-              resultsQueryParams: {...this.createResultsQueryParams(entry.sessionId)},
-              filters: this.countTasksByStatusFilters(entry.sessionId),
-              value$: new Subject<SessionRaw>(),
-            };
-            this._data.splice(index, 1, session);
-          }
-        });
-        this.dataSource.data = this._data;
-      } else {
-        this._data = [];
-        this.dataSource.data = this._data;
-      }
-    });
+  createNewLine(entry: SessionRaw): SessionData {
+    const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
+    queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
+    return {
+      raw: entry,
+      queryParams,
+      resultsQueryParams: this.createResultsQueryParams(entry.sessionId),
+      queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
+      filters: this.countTasksByStatusFilters(entry.sessionId),
+      value$: new Subject<SessionRaw>()
+    };
   }
 
   getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   getPageIcon(page: Page): string {
-    return this._iconsService.getPageIcon(page);
-  }
-
-  onDrop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
-
-    this._sessionsIndexService.saveColumns(this.displayedColumns.map(column => column.key));
+    return this.iconsService.getPageIcon(page);
   }
 
   onCopiedSessionId(data: SessionData) {
-    this._copyService.copy(data.raw.sessionId);
-    this._notificationService.success('Session ID copied to clipboard');
+    this.copyService.copy(data.raw.sessionId);
+    this.notificationService.success('Session ID copied to clipboard');
   }
 
   createSessionIdQueryParams(sessionId: string) {
-    const keySession = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+    const keySession = this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
@@ -246,7 +180,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   createTasksByStatusQueryParams(sessionId: string) {
     if(this.filters.length === 0) {
-      const keySession = this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+      const keySession = this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
       return {
         [keySession]: sessionId,
@@ -269,9 +203,9 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   #createTaskByStatusLabel(filter: Filter<SessionRawEnumField, TaskOptionEnumField>, orGroup: number): string | null {
     if (filter.field !== null && filter.operator !== null) {
       if (filter.for === 'root' && filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) {
-        return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+        return this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', filter.operator, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
       } else if (filter.for === 'options') {
-        return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, filter.field as TaskOptionEnumField);
+        return this.filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, filter.field as TaskOptionEnumField);
       }
     }
     return null;
@@ -279,7 +213,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
 
   createResultsQueryParams(sessionId: string) {
     if(this.filters.length === 0) {
-      const keySession = this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+      const keySession = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
 
       return {
         [keySession]: sessionId
@@ -289,7 +223,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
       this.filters.forEach((filterAnd, index) => {
         filterAnd.forEach(filter => {
           if (filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL && filter.value !== null && filter.operator !== null) {
-            const filterLabel = this._filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+            const filterLabel = this.filtersService.createQueryParamsKey<ResultRawEnumField>(index, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
             if (filterLabel) params[filterLabel] = filter.value.toString();
           }
         });
@@ -321,22 +255,7 @@ export class ApplicationsTableComponent implements OnInit, AfterViewInit {
   }
 
   onDelete(sessionId: string) {
-    this._data = this._data.filter(session => session.raw.sessionId !== sessionId);
+    this._data = this.data.filter(session => session.raw.sessionId !== sessionId);
     this.deleteSession.emit(sessionId);
-  }
-
-  personalizeTasksByStatus() {
-    const dialogRef = this._dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
-      data: {
-        statusesCounts: this.tasksStatusesColored,
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.tasksStatusesColored = result;
-        this._tasksByStatusService.saveStatuses('sessions', result);
-      }
-    });
   }
 }

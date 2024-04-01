@@ -32,7 +32,7 @@ export class IconsService {
     'edit': 'edit',
     'view': 'visibility',
     'view-off': 'visibility_off',
-    'format-color-fill': 'format_color_fill',
+    'fill': 'format_color_fill',
     'settings': 'settings',
     'storage': 'storage',
     'download': 'file_download',
@@ -45,6 +45,10 @@ export class IconsService {
     'update': 'update',
     'tune': 'tune',
     'arrow-down': 'arrow_drop_down',
+    'arrow-up': 'arrow_drop_up',
+    'arrow-left': 'arrow_left',
+    'arrow-right': 'arrow_right',
+    'layers': 'layers',
     'layers-clear': 'layers_clear',
     'format-clear': 'format_color_reset',
     'highlight': 'highlight',
@@ -58,6 +62,17 @@ export class IconsService {
     'task-by-status': 'wifi_tethering',
     'default': 'radio_button_unchecked',
     'close': 'do_not_disturb_on',
+    'icon': 'palette',
+    'publish': 'published_with_changes',
+    'description': 'description',
+    'star': 'star',
+    'terminal': 'terminal',
+    'heart': 'favorite',
+    'open': 'open_in_new',
+    'key': 'key',
+    'compare': 'compare_arrows',
+    'groups': 'groups',
+    'info': 'info',
   };
 
   getIcon(name: string): string {
@@ -72,5 +87,9 @@ export class IconsService {
 
   getPageIcon(name: Page) {
     return this.pageIcons[name];
+  }
+
+  getAllIcons() {
+    return Object.keys(this.icons);
   }
 }

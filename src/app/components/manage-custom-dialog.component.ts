@@ -41,10 +41,18 @@ export class ManageCustomColumnDialogComponent implements OnInit {
   }
 
   add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
+    let value = (event.value || '').trim() as `custom.${string}`;
 
-    if (value) {
-      this.existingColumnList.push(`custom.${value}`);
+    if (value.length === 0) {
+      return;
+    }
+
+    if (!value.startsWith('custom.')) {
+      value = `custom.${value}`;
+    }
+
+    if (value && !this.existingColumnList.includes(value)) {
+      this.existingColumnList.push(value);
     }
 
     event.chipInput!.clear();
