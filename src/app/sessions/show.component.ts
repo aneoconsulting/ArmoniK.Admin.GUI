@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,7 +27,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.sessionId ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -75,7 +75,79 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   private _filtersService = inject(FiltersService);
   private router = inject(Router);
 
-  actionButtons: ShowActionButton[] = [];
+
+  canPause$ = new Subject<boolean>();
+  canResume$ = new Subject<boolean>();
+  canCancel$ = new Subject<boolean>();
+  canClose$ = new Subject<boolean>();
+
+  actionButtons: ShowActionButton[] = [
+    {
+      id: 'tasks',
+      name: $localize`See tasks`,
+      icon: this.getPageIcon('tasks'),
+      link: '/tasks',
+      queryParams: {},
+    },
+    {
+      id: 'results',
+      name: $localize`See results`,
+      icon: this.getPageIcon('results'),
+      link: '/results',
+      queryParams: {},
+    },
+    {
+      id: 'partitions',
+      name: $localize`See partitions`,
+      icon: this.getPageIcon('partitions'),
+      link: '/partitions',
+      queryParams: {},
+    },
+    {
+      id: 'pause',
+      name: $localize`Pause Session`,
+      icon: this.getIcon('pause'),
+      action$: this.pause$,
+      disabled: this.canPause$,
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'resume',
+      name: $localize`Resume Session`,
+      icon: this.getIcon('play'),
+      action$: this.resume$,
+      disabled: this.canResume$,
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'cancel',
+      name: $localize`Cancel Session`,
+      icon: this.getIcon('cancel'),
+      action$: this.cancel$,
+      disabled: this.canCancel$,
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'close',
+      name: $localize`Close Session`,
+      icon: this.getIcon('close'),
+      action$: this.close$,
+      disabled: this.canClose$,
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'delete',
+      name: $localize`Delete Session`,
+      icon: this.getIcon('delete'),
+      action$: this.delete$,
+      color: 'accent',
+      area: 'right'
+    }
+  ];
 
   ngOnInit(): void {
     this.sharableURL = this.getSharableUrl();
@@ -93,12 +165,13 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        /** We need to wait for the data before knowing available actions */
-        this.actionButtons = this.assignActions();
         this.duration$.next();
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
+        this.canCancel$.next(!this._sessionsStatusesService.canCancel(this.data.status));
+        this.canClose$.next(!this._sessionsStatusesService.canClose(this.data.status));
+        this.data$.next(data);
       }
     });
 
@@ -117,6 +190,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
 
     this.delete$.subscribe(() => {
       this.delete();
+    });
+
+    this.close$.subscribe(() => {
+      this.close();
     });
 
     this.duration$.pipe(
@@ -242,88 +319,5 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
 
   get tasksKey() {
     return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-  }
-
-  canCancel(): boolean {
-    return this._sessionsStatusesService.canCancel(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  canPause(): boolean {
-    return this._sessionsStatusesService.canPause(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  canResume(): boolean {
-    return this._sessionsStatusesService.canResume(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  canClose(): boolean {
-    return this._sessionsStatusesService.canClose(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  canDelete(): boolean {
-    return this._sessionsStatusesService.canDelete(this.data?.status ?? SessionStatus.SESSION_STATUS_UNSPECIFIED);
-  }
-
-  assignActions(): ShowActionButton[] {
-    return [
-      {
-        id: 'tasks',
-        name: $localize`See tasks`,
-        icon: this.getPageIcon('tasks'),
-        link: '/tasks',
-        queryParams: {},
-      },
-      {
-        id: 'results',
-        name: $localize`See results`,
-        icon: this.getPageIcon('results'),
-        link: '/results',
-        queryParams: {},
-      },
-      {
-        id: 'partitions',
-        name: $localize`See partitions`,
-        icon: this.getPageIcon('partitions'),
-        link: '/partitions',
-        queryParams: {},
-      },
-      {
-        id: 'pause',
-        name: $localize`Pause Session`,
-        icon: this.getIcon('pause'),
-        action$: this.pause$,
-        show: this.canPause(),
-        color: 'accent',
-        area: 'right'
-      },
-      {
-        id: 'resume',
-        name: $localize`Resume Session`,
-        icon: this.getIcon('play'),
-        action$: this.resume$,
-        show: this.canResume(),
-        color: 'accent',
-        area: 'right'
-      },
-      {
-        id: 'cancel',
-        name: $localize`Cancel Session`,
-        icon: this.getIcon('cancel'),
-        action$: this.cancel$,
-        show: this.canCancel(),
-        color: 'accent',
-        area: 'right'
-      },
-      // TODO: Add missing close button in another PR.
-      {
-        id: 'delete',
-        name: $localize`Delete Session`,
-        icon: this.getIcon('delete'),
-        show: this.canDelete(),
-        action$: this.delete$,
-        color: 'accent',
-        area: 'right'
-      }
-    ];
   }
 }

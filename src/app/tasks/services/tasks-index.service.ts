@@ -120,7 +120,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       name: $localize`Options`,
       key: 'options',
       type: 'object',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Count Data Dependencies`,
@@ -211,7 +211,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       name: $localize`Custom Data`,
       key: 'options.options',
       type: 'object',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Priority`,

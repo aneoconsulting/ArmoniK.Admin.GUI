@@ -11,9 +11,7 @@ export type ShowActionButton = {
   id: string;
   name: string;
   icon?: string;
-  disabled?: boolean;
-  // TODO: Remove `disabled` in favor of `show` in another PR to avoid too many items in the interface. This behavior is similar in the table.
-  show?: boolean;
+  disabled?: Subject<boolean>;
   link?: string;
   color?: 'accent' | 'primary';
   queryParams?: { [x: string]: string; };
@@ -23,16 +21,14 @@ export type ShowActionButton = {
 
 export interface ShowCancellableInterface {
   cancel$: Subject<void>;
-
   cancel(): void;
-  canCancel(): boolean;
+  canCancel$: Subject<boolean>;
 }
 
 export interface ShowClosableInterface {
   close$: Subject<void>;
-
   close(): void;
-  canClose(): boolean;
+  canClose$: Subject<boolean>;
 }
 
 export interface ShowActionInterface {
@@ -44,6 +40,7 @@ export abstract class AppShowComponent<T extends object, E extends GrpcService> 
   sharableURL: string = '';
   refresh = new Subject<void>();
   data: T | null;
+  data$: Subject<T> = new Subject<T>();
 
   private _iconsService = inject(IconsService);
   protected _grpcService: E;

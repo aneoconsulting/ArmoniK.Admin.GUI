@@ -3,7 +3,7 @@ import { TaskStatusColored } from '@app/types/dialog';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
-type TableTasksByStatus = 'applications' | 'sessions' | 'partitions';
+export type TableTasksByStatus = 'applications' | 'sessions' | 'partitions';
 
 @Injectable()
 export class TasksByStatusService {

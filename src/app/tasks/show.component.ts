@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,14 +16,13 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
-import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
 import { TaskRaw } from './types';
 
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data?.id ?? ''" [data]="data" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data?.id ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
@@ -38,7 +37,6 @@ import { TaskRaw } from './types';
     QueryParamsService,
     TasksGrpcService,
     TasksStatusesService,
-    TasksIndexService,
     TableService,
     TableStorageService,
     TableURLService,
@@ -59,6 +57,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   private _tasksStatusesService = inject(TasksStatusesService);
   private _filtersService = inject(FiltersService);
   protected override _grpcService = inject(TasksGrpcService);
+
+  canCancel$ = new Subject<boolean>();
 
   actionButtons: ShowActionButton[] = [
     {
@@ -90,7 +90,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
       color: 'accent',
       area: 'right',
       action$: this.cancel$,
-      disabled: this.canCancel()
+      disabled: this.canCancel$
     }
   ];
 
@@ -113,6 +113,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
         this.setLink('session', 'sessions', data.sessionId);
         if (data.options) this.setLink('partition', 'partitions', data.options.partitionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, data.id);
+        this.canCancel$.next(this._tasksStatusesService.taskNotEnded(this.data.status));
+        this.data$.next(data);
       }
     });
 
@@ -135,10 +137,6 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
         this.error('Unable to cancel task');
       },
     });
-  }
-  
-  canCancel() {
-    return this._tasksStatusesService.taskNotEnded(this.data?.status ?? TaskStatus.TASK_STATUS_UNSPECIFIED);
   }
 
   get resultsKey() {
