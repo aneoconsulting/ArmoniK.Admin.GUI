@@ -10,6 +10,7 @@ import { ArmonikData, ArmonikDataType, DataRaw, IndexListOptions, RawColumnKey, 
 import { TaskStatusColored } from '@app/types/dialog';
 import { StatusesServiceI } from '@app/types/services';
 import { ActionTable } from '@app/types/table';
+import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
@@ -30,6 +31,7 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
     MatTableModule,
     MatSortModule,
     TableActionsComponent,
+    TableContainerComponent,
   ]
 })
 export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends ArmonikDataType, S extends Status> implements AfterViewInit, OnDestroy {
@@ -39,7 +41,11 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     this._columnsKeys = entries.map((entry) => entry.key);
   }
 
-  @Input({ required: true }) data: ArmonikData<R>[];
+  @Input({ required: true }) set data(entries: ArmonikData<R>[]) {
+    const selectedRows = this.selection.selected;
+    this._data = entries;
+    this.selection.select(...selectedRows.filter(row => entries.find(entry => entry.raw === row)));
+  }
 
   @Input({ required: true }) total: number;
 
@@ -58,8 +64,13 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  private _data: ArmonikData<R>[];
   private _columns: TableColumn<K>[];
   private _columnsKeys: K[];
+
+  get data(): ArmonikData<R>[] {
+    return this._data;
+  }
 
   get columns(): TableColumn<K>[] {
     return this._columns;
