@@ -162,7 +162,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   onCancelTask(id: string) {
-    this.cancelTask.emit(id);
+    this._grpcService.cancel$([id]).subscribe(() => this.notificationService.success('Task canceled'));
   }
 
   onSelectionChange($event: TaskSummary[]): void {
