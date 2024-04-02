@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
-import { DataFilterService } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
+import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
 import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
@@ -124,11 +125,22 @@ describe('Application component', () => {
       providers: [
         IndexComponent,
         IconsService,
-        DataFilterService,
-        { provide: DATA_FILTERS_SERVICE, useValue: mockApplicationsFilterService },
+        { provide: ApplicationsFiltersService, useValue: mockApplicationsFilterService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
         { provide: AutoRefreshService, useValue: mockAutoRefreshService },
+        { provide: MatDialog, useValue:
+          {
+            open: () => {
+              return {
+                afterClosed: () => {
+                  return of([]);
+                }
+              };
+            }
+          }
+        },
+        DefaultConfigService,
       ]
     }).inject(IndexComponent);
 
