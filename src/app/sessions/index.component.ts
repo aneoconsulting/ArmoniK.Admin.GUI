@@ -36,7 +36,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
-import { ApplicationsTableComponent } from './components/table.component';
+import { SessionsTableComponent } from './components/table.component';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
@@ -100,7 +100,7 @@ app-table-actions-toolbar {
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    ApplicationsTableComponent
+    SessionsTableComponent
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
