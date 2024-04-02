@@ -46,6 +46,7 @@ export interface ResultData extends ArmonikData<ResultRaw> {
 }
 
 export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
+export type RawCustomColumnKey = SessionRawColumnKey | TaskSummaryColumnKey;
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
 
 export type Status = TaskStatus | SessionStatus | ResultStatus;

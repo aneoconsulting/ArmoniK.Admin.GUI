@@ -2,7 +2,7 @@ import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/ar
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -10,11 +10,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableHandler } from '@app/types/components';
-import { CustomColumn } from '@app/types/data';
+import { TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -87,14 +85,11 @@ app-table-actions-toolbar {
     FiltersService,
   ],
 })
-export class IndexComponent extends TableHandler<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryEnumField> implements OnInit, AfterViewInit, OnDestroy {
-  readonly #dialog = inject(MatDialog);
+export class IndexComponent extends TableHandlerCustomValues<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly tasksGrpcService = inject(TasksGrpcService);
   readonly notificationService = inject(NotificationService);
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
-
-  customColumns: CustomColumn[];
 
   selection: string[] = [];
 
@@ -104,9 +99,6 @@ export class IndexComponent extends TableHandler<TaskSummaryColumnKey, TaskSumma
 
   ngOnInit(): void {
     this.initTableEnvironment();
-    this.customColumns = this.indexService.restoreCustomColumns();
-    this.availableColumns.push(...this.customColumns);
-    this.updateDisplayedColumns();
 
     const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
@@ -155,7 +147,7 @@ export class IndexComponent extends TableHandler<TaskSummaryColumnKey, TaskSumma
   }
 
   manageViewInLogs(): void {
-    const dialogRef = this.#dialog.open<ManageViewInLogsDialogComponent, ManageViewInLogsDialogData, ManageViewInLogsDialogResult>(ManageViewInLogsDialogComponent, {
+    const dialogRef = this.dialog.open<ManageViewInLogsDialogComponent, ManageViewInLogsDialogData, ManageViewInLogsDialogResult>(ManageViewInLogsDialogComponent, {
       data: {
         serviceIcon: this.serviceIcon,
         serviceName: this.serviceName,
@@ -171,25 +163,6 @@ export class IndexComponent extends TableHandler<TaskSummaryColumnKey, TaskSumma
       this.urlTemplate = result.urlTemplate;
 
       this.indexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
-    });
-  }
-
-  addCustomColumn(): void {
-    const dialogRef = this.#dialog.open<ManageCustomColumnDialogComponent, CustomColumn[], CustomColumn[]>(ManageCustomColumnDialogComponent, {
-      data: this.customColumns
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if(result) {
-        this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('custom.'));
-        this.availableColumns.push(...result);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
-        this.displayedColumnsKeys.push(...result);
-        this.updateDisplayedColumns();
-        this.indexService.saveColumns(this.displayedColumnsKeys);
-        this.indexService.saveCustomColumns(this.customColumns);
-      }
     });
   }
 }

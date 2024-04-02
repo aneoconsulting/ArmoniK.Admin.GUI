@@ -15,11 +15,9 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableHandler } from '@app/types/components';
-import { CustomColumn } from '@app/types/data';
+import { TableHandlerCustomValues } from '@app/types/components';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -100,19 +98,12 @@ app-table-actions-toolbar {
     SessionsTableComponent
   ]
 })
-export class IndexComponent extends TableHandler<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters, SessionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
-
-  readonly #dialog = inject(MatDialog);
+export class IndexComponent extends TableHandlerCustomValues<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters, SessionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
 
-  customColumns: CustomColumn[];
-
   ngOnInit() {
     this.initTableEnvironment();
-    this.customColumns = this.indexService.restoreCustomColumns();
-    this.availableColumns.push(...this.customColumns);
-    this.updateDisplayedColumns();
   }
 
   ngAfterViewInit(): void {
@@ -121,24 +112,5 @@ export class IndexComponent extends TableHandler<SessionRawColumnKey, SessionRaw
 
   ngOnDestroy(): void {
     this.unsubscribe();
-  }
-
-  addCustomColumn(): void {
-    const dialogRef = this.#dialog.open<ManageCustomColumnDialogComponent, CustomColumn[], CustomColumn[]>(ManageCustomColumnDialogComponent, {
-      data: this.customColumns
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if(result) {
-        this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('custom.'));
-        this.availableColumns.push(...result);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
-        this.displayedColumnsKeys.push(...result);
-        this.updateDisplayedColumns();
-        this.indexService.saveColumns(this.displayedColumnsKeys);
-        this.indexService.saveCustomColumns(this.customColumns);
-      }
-    });
   }
 }

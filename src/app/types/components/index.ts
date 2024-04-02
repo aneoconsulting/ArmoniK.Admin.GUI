@@ -1,20 +1,23 @@
 import { inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { FiltersEnums } from '@app/dashboard/types';
+import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TableColumn } from '../column.type';
-import { IndexListOptions, RawColumnKey } from '../data';
+import { CustomColumn, IndexListOptions, RawColumnKey, RawCustomColumnKey } from '../data';
 import { RawFilters } from '../filters';
 import { Page } from '../pages';
 import { FiltersServiceInterface } from '../services/filtersService';
-import { IndexServiceInterface } from '../services/indexService';
+import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 
 export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters, E extends FiltersEnums> {
   readonly shareUrlService = inject(ShareUrlService);
   readonly iconsService = inject(IconsService);
   readonly autoRefreshService = inject(AutoRefreshService);
+  readonly dialog = inject(MatDialog);
 
   abstract readonly indexService: IndexServiceInterface<K, O>;
   abstract readonly filtersService: FiltersServiceInterface<F, E>;
@@ -52,7 +55,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.sharableURL = this.shareUrlService.generateSharableURL(this.options, this.filters);
   }
 
-  private initColumns() {
+  protected initColumns() {
     this.displayedColumnsKeys = this.indexService.restoreColumns();
     this.updateDisplayedColumns();
     this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
@@ -111,10 +114,10 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.indexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(data: K[]) {
-    this.displayedColumnsKeys = [...data];
+  onColumnsChange(columns: K[]) {
+    this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
-    this.indexService.saveColumns(data);
+    this.indexService.saveColumns(columns);
   }
 
   onColumnsReset() {
@@ -151,5 +154,58 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+}
+
+export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O extends IndexListOptions, F extends RawFilters, E extends FiltersEnums> extends TableHandler<K, O, F, E> {
+
+  abstract override readonly indexService: IndexServiceCustomInterface<K, O>;
+
+  customColumns: CustomColumn[];
+
+  protected override initColumns() {
+    this.displayedColumnsKeys = this.indexService.restoreColumns();
+    this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
+    this.customColumns = this.indexService.restoreCustomColumns();
+    this.availableColumns.push(...this.customColumns as K[]);
+    this.lockColumns = this.indexService.restoreLockColumns();
+    this.indexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
+    this.updateDisplayedColumns();
+  }
+
+  override updateDisplayedColumns(): void {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => {
+      if (key.includes('custom.')) {
+        const customColumn = key.replaceAll('custom.', '');
+        return {
+          key: `options.options.${customColumn}`,
+          name: customColumn,
+          sortable: true,
+        } as TableColumn<K>;
+      } else {
+        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>;
+      }
+    });
+  }
+
+  addCustomColumn(): void {
+    const dialogRef = this.dialog.open<ManageCustomColumnDialogComponent, CustomColumn[], CustomColumn[]>(ManageCustomColumnDialogComponent, {
+      data: this.customColumns
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if(result) {
+        this.customColumns = result;
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('custom.'));
+        this.availableColumns.push(...result as K[]);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
+        this.displayedColumnsKeys.push(...result as K[]);
+        this.updateDisplayedColumns();
+        this.indexService.saveColumns(this.displayedColumnsKeys);
+        this.indexService.saveCustomColumns(this.customColumns);
+      }
+    });
   }
 }
