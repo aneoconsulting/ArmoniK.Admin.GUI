@@ -1,3 +1,4 @@
+import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,18 +7,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableColumn } from '@app/types/column.type';
-import { Page } from '@app/types/pages';
+import { TableHandler } from '@app/types/components';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
-import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
@@ -49,7 +48,6 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
-    IconsService,
     ShareUrlService,
     QueryParamsService,
     StorageService,
@@ -64,7 +62,8 @@ app-table-actions-toolbar {
       useExisting: ResultsFiltersService,
     },
     ResultsStatusesService,
-    TableStorageService
+    TableStorageService,
+    NotificationService,
   ],
   imports: [
     NoWrapDirective,
@@ -85,139 +84,20 @@ app-table-actions-toolbar {
     ResultsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #iconsService = inject(IconsService);
-  readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
+export class IndexComponent extends TableHandler<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
 
-  displayedColumns: TableColumn<ResultRawColumnKey>[] = [];
-  displayedColumnsKeys: ResultRawColumnKey[] = [];
-  availableColumns: ResultRawColumnKey[] = [];
-  lockColumns: boolean = false;
-  columnsLabels: Record<ResultRawColumnKey, string> = {} as Record<ResultRawColumnKey, string>;
-
-  isLoading = true;
-  isLoading$: Subject<boolean> = new BehaviorSubject<boolean>(true);
-
-  options: ResultRawListOptions;
-
-  filters: ResultRawFilters = [];
-  filters$: Subject<ResultRawFilters>;
-
-  intervalValue = 0;
-  sharableURL = '';
-
-  refresh$: Subject<void> = new Subject<void>();
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _shareURLService: ShareUrlService,
-    private _resultsIndexService: ResultsIndexService,
-    private _autoRefreshService: AutoRefreshService,
-  ) { }
+  readonly filtersService = inject(ResultsFiltersService);
+  readonly indexService = inject(ResultsIndexService);
 
   ngOnInit(): void {
-    this.displayedColumnsKeys = this._resultsIndexService.restoreColumns();
-    this.updateDisplayedColumns();
-    this.availableColumns = this._resultsIndexService.availableTableColumns.map(column => column.key);
-    this._resultsIndexService.availableTableColumns.forEach(column => {
-      this.columnsLabels[column.key] = column.name;
-    });
-    this.lockColumns = this._resultsIndexService.restoreLockColumns();
-
-    this.options = this._resultsIndexService.restoreOptions();
-
-    this.filters = this.#resultsFiltersService.restoreFilters();
-    this.filters$ = new BehaviorSubject(this.filters);
-
-    this.intervalValue = this._resultsIndexService.restoreIntervalValue();
-
-    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
+    this.initTableEnvironment();
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
-    this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
+    this.mergeSubscriptions();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this._resultsIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<ResultRawColumnKey>);
-  }
-
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
-  getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this._resultsIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(data: ResultRawColumnKey[]) {
-    this.displayedColumnsKeys = [...data];
-    this.updateDisplayedColumns();
-    this._resultsIndexService.saveColumns(data);
-  }
-
-  onColumnsReset() {
-    this.displayedColumnsKeys = this._resultsIndexService.resetColumns();
-    this.updateDisplayedColumns();
-  }
-
-  onFiltersChange(value: unknown[]) {
-    this.filters = value as ResultRawFilters;
-
-    this.#resultsFiltersService.saveFilters(value as ResultRawFilters);
-    this.options.pageIndex = 0;
-    this.filters$.next(this.filters);
-  }
-
-  onFiltersReset(): void {
-    this.filters = this.#resultsFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.filters$.next([]);
-  }
-  
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this._resultsIndexService.saveLockColumns(this.lockColumns);
-  }
-
-  autoRefreshTooltip() {
-    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  handleAutoRefreshStart() {
-    if (this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
+    this.unsubscribe();
   }
 }

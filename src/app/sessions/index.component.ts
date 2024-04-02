@@ -1,3 +1,4 @@
+import { SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
@@ -9,16 +10,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableColumn } from '@app/types/column.type';
+import { TableHandler } from '@app/types/components';
 import { CustomColumn } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
@@ -28,7 +26,6 @@ import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
@@ -103,157 +100,27 @@ app-table-actions-toolbar {
     SessionsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #sessionsFiltersService = inject(SessionsFiltersService);
+export class IndexComponent extends TableHandler<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters, SessionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
+
   readonly #dialog = inject(MatDialog);
+  readonly filtersService = inject(SessionsFiltersService);
+  readonly indexService = inject(SessionsIndexService);
 
-  displayedColumns: TableColumn<SessionRawColumnKey>[] = [];
-  availableColumns: SessionRawColumnKey[] = [];
-  displayedColumnsKeys: SessionRawColumnKey[] = [];
   customColumns: CustomColumn[];
-  lockColumns: boolean = false;
-  columnsLabels: Record<SessionRawColumnKey, string> = {} as unknown as Record<SessionRawColumnKey, string>;
-
-  isLoading = true;
-  isLoading$: Subject<boolean> = new BehaviorSubject(true);
-
-  options: SessionRawListOptions;
-
-  filters: SessionRawFilters = [];
-  filters$: Subject<SessionRawFilters>;
-
-  intervalValue = 0;
-  sharableURL = '';
-
-  refresh$: Subject<void> = new Subject<void>();
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  tasksStatusesColored: TaskStatusColored[] = [];
-
-  subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _iconsService: IconsService,
-    private _shareURLService: ShareUrlService,
-    private _sessionsIndexService: SessionsIndexService,
-    private _autoRefreshService: AutoRefreshService
-  ) {}
 
   ngOnInit() {
-    this.displayedColumnsKeys = this._sessionsIndexService.restoreColumns();
-    this.availableColumns = this._sessionsIndexService.availableTableColumns.map(column => column.key);
-    this.customColumns = this._sessionsIndexService.restoreCustomColumns();
+    this.initTableEnvironment();
+    this.customColumns = this.indexService.restoreCustomColumns();
     this.availableColumns.push(...this.customColumns);
-    this.lockColumns = this._sessionsIndexService.restoreLockColumns();
-    this._sessionsIndexService.availableTableColumns.forEach(column => {
-      this.columnsLabels[column.key] = column.name;
-    });
     this.updateDisplayedColumns();
-
-    this.options = this._sessionsIndexService.restoreOptions();
-
-    this.filters = this.#sessionsFiltersService.restoreFilters();
-    this.filters$ = new BehaviorSubject(this.filters);
-
-    this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
-
-    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
-    this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
+    this.mergeSubscriptions();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.includes('custom.')) {
-        const customColumn = key.replaceAll('custom.', '');
-        return {
-          key: `options.options.${customColumn}`,
-          name: customColumn,
-          sortable: true,
-        };
-      } else {
-        return this._sessionsIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<SessionRawColumnKey>;
-      }
-    });
-  }
-
-  getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
-  }
-
-  getPageIcon(name: Page): string {
-    return this._iconsService.getPageIcon(name);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this._sessionsIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(data: SessionRawColumnKey[]) {
-    this.displayedColumnsKeys = data;
-    this.updateDisplayedColumns();
-    this._sessionsIndexService.saveColumns(data);
-  }
-
-  onColumnsReset() {
-    this.displayedColumnsKeys = this._sessionsIndexService.resetColumns();
-    this.updateDisplayedColumns();
-  }
-
-  onFiltersChange(filters: unknown[]) {
-    this.filters = filters as SessionRawFilters;
-
-    this.#sessionsFiltersService.saveFilters(filters as SessionRawFilters);
-    this.options.pageIndex = 0;
-    this.filters$.next(this.filters);
-  }
-
-  onFiltersReset() {
-    this.filters = this.#sessionsFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.filters$.next([]);
-  }
-  
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this._sessionsIndexService.saveLockColumns(this.lockColumns);
-  }
-
-  autoRefreshTooltip() {
-    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  handleAutoRefreshStart() {
-    if (this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
+    this.unsubscribe();
   }
 
   addCustomColumn(): void {
@@ -269,8 +136,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
         this.displayedColumnsKeys.push(...result);
         this.updateDisplayedColumns();
-        this._sessionsIndexService.saveColumns(this.displayedColumnsKeys);
-        this._sessionsIndexService.saveCustomColumns(this.customColumns);
+        this.indexService.saveColumns(this.displayedColumnsKeys);
+        this.indexService.saveCustomColumns(this.customColumns);
       }
     });
   }
