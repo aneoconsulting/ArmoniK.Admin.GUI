@@ -1,7 +1,6 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
@@ -9,7 +8,6 @@ import { PartitionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
@@ -23,11 +21,9 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     PartitionsGrpcService,
     PartitionsIndexService,
     TasksByStatusService,
-    IconsService,
     FiltersService
   ],
   imports: [
-    RouterModule,
     MatDialogModule,
     TableComponent,
   ]
@@ -36,7 +32,6 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
   
   readonly _grpcService = inject(PartitionsGrpcService);
   readonly indexService = inject(PartitionsIndexService);
-  readonly iconsService = inject(IconsService);
   
   table: TableTasksByStatus = 'partitions';
 
@@ -59,10 +54,6 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
       filters: this.countTasksByStatusFilters(entry.id),
       value$: new Subject<PartitionRaw>()
     };
-  }
-
-  getIcon(name: string): string {
-    return this.iconsService.getIcon(name);
   }
 
   createTasksByStatusQueryParams(partition: string) {

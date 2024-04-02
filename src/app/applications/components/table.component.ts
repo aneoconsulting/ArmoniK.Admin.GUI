@@ -31,7 +31,6 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     NotificationService,
     TasksByStatusService,
     MatDialog,
-    IconsService,
     FiltersService
   ],
   imports: [

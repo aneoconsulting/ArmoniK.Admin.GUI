@@ -19,7 +19,6 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
-import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
@@ -60,7 +59,6 @@ app-table-actions-toolbar {
     TableService,
     ResultsIndexService,
     AutoRefreshService,
-    NotificationService,
     ResultsFiltersService,
     {
       provide: DATA_FILTERS_SERVICE,
@@ -90,7 +88,6 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #resultsFiltersService = inject(DATA_FILTERS_SERVICE);
 

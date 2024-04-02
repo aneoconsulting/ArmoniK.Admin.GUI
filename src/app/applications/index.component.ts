@@ -28,7 +28,7 @@ import { UtilsService } from '@services/utils.service';
 import { ApplicationsTableComponent } from './components/table.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
+import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -131,8 +131,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isLoading = true;
   isLoading$: Subject<boolean> = new BehaviorSubject(true);
-  data$: Subject<ApplicationRaw[]> = new Subject();
-  total = 0;
 
   options: ApplicationRawListOptions;
 

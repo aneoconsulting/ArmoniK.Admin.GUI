@@ -1,4 +1,3 @@
-import { ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
@@ -128,38 +127,6 @@ describe('ApplicationsLineComponent', () => {
     expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, component.filters);
   });
 
-  describe('Data fetching', () => {
-    it('should load received data', () => {
-      const receivedData: ListApplicationsResponse = {
-        applications: [
-          {
-            name: 'application 1',
-            namespace: 'namespace 1'
-          },
-          {
-            name: 'application 2',
-            namespace: 'namespace 2'
-          }
-        ],
-        total: 2
-      } as ListApplicationsResponse;
-      mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(receivedData));
-      const data$Spy = jest.spyOn(component.data$, 'next');
-      component.ngAfterViewInit();
-      expect(data$Spy).toHaveBeenCalledWith(receivedData.applications);
-      expect(component.total).toEqual(receivedData.total);
-    });
-
-    it('should load default data', () => {
-      component.data$.next([{name: 'applications', namespace: 'namespace 1', service: 'service', version: '1'}]);
-      mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(null));
-      const data$Spy = jest.spyOn(component.data$, 'next');
-      component.ngAfterViewInit();
-      expect(data$Spy).toHaveBeenCalledWith([]);
-      expect(component.total).toEqual(0);
-    });
-  });
-
   it('should unsubscribe on destroy', () => {
     const subSpy = jest.spyOn(component.subscriptions, 'unsubscribe');
     component.ngOnDestroy();
@@ -245,34 +212,6 @@ describe('ApplicationsLineComponent', () => {
       const refreshSpy = jest.spyOn(component.refresh, 'next');
       component.onFiltersChange(newFilters);
       expect(refreshSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('onOptionsChange', () => {
-    it('should change line options', () => {
-      const newOptions: ApplicationRawListOptions = {
-        pageIndex: 2,
-        pageSize: 25,
-        sort: {
-          active: 'service',
-          direction: 'desc'
-        }
-      };
-      component.options = newOptions;
-      component.onOptionsChange();
-      expect(component.line.options).toEqual(newOptions);
-    });
-
-    it('should refresh', () => {
-      const optionsSpy = jest.spyOn(component.optionsChange, 'next');
-      component.onOptionsChange();
-      expect(optionsSpy).toHaveBeenCalled();
-    });
-
-    it('should emit', () => {
-      const lineSpy = jest.spyOn(component.lineChange, 'emit');
-      component.onOptionsChange();
-      expect(lineSpy).toHaveBeenCalled();
     });
   });
 

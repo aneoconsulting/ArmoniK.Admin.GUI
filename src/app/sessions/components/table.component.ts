@@ -197,6 +197,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
         this.nextDuration$.next(session.sessionId);
       });
     } else {
+      this.newData(data);
       this.loading$.next(false);
     }
   }

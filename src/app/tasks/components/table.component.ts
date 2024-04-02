@@ -10,7 +10,6 @@ import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
@@ -20,13 +19,9 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
 @Component({
   selector: 'app-tasks-table',
   standalone: true,
-  templateUrl: './table.component.html', 
-  styles: [
-
-  ],
+  templateUrl: './table.component.html',
   providers: [
     MatDialog,
-    IconsService,
     FiltersService,
     Clipboard,
   ],
@@ -48,6 +43,8 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   readonly _router = inject(Router);
   readonly _clipboard = inject(Clipboard);
   readonly _tasksStatusesService = inject(TasksStatusesService);
+
+  selection: string[];
 
   copy$ = new Subject<TaskData>();
   copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data as TaskData));

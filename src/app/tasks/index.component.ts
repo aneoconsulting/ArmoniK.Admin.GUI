@@ -245,10 +245,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.refresh.next();
   }
 
-  onCancelTask(taskId: string): void {
-    this.cancelTasks([taskId]);
-  }
-
   onCancelTasksSelection():void {
     const tasksIds = this.selection.selected;
     this.cancelTasks(tasksIds);

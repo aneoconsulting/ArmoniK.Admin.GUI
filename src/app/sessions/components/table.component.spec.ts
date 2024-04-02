@@ -11,9 +11,10 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
+import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
+import { SessionRawColumnKey, SessionRawFilters } from '../types';
 
 describe('ApplicationsTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -116,6 +117,7 @@ describe('ApplicationsTableComponent', () => {
     isCountColumn: jest.fn(),
     isActionsColumn: jest.fn(),
     saveColumns: jest.fn(),
+    saveOptions: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -137,22 +139,28 @@ describe('ApplicationsTableComponent', () => {
     }
   };
 
+  const mockSessionsGrpcService = {
+    list$: jest.fn(() => of({ sessions: [{ sessionId: '1' }, { sessionId: '2' }], total: 2 }))
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ApplicationsTableComponent,
-        {provide: SessionsIndexService, useValue: mockSessionsIndexService},
-        {provide: TasksByStatusService, useValue: mockTasksByStatusService},
+        { provide: SessionsIndexService, useValue: mockSessionsIndexService },
+        { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         IconsService,
         FiltersService,
-        {provide: NotificationService, useValue: mockNotificationService},
+        { provide: NotificationService, useValue: mockNotificationService },
         SessionsStatusesService,
-        {provide: MatDialog, useValue: mockMatDialog},
-        {provide: Clipboard, useValue: mockClipBoard},
+        { provide: MatDialog, useValue: mockMatDialog },
+        { provide: Clipboard, useValue: mockClipBoard },
+        { provide: SessionsGrpcService, useValue: mockSessionsGrpcService }
       ]
     }).inject(ApplicationsTableComponent);
 
-    component.data$ = new Subject<SessionRaw[]>();
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
 
     component.options = {
       pageIndex: 0,
@@ -176,6 +184,50 @@ describe('ApplicationsTableComponent', () => {
 
   it('should init', () => {
     expect(component.tasksStatusesColored).toBe(tasksStatusesColored);
+  });
+
+  it('should update data on refresh', () => {
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: {
+          sessionId: '1'
+        },
+        queryParams: new Map().set('sessionId', { '0-root-1-0': '1' }),
+        resultsQueryParams: { '0-root-1-0': '1' },
+        queryTasksParams: { '0-root-1-0': '1' },
+        filters: [
+          [
+            {
+              for: 'root',
+              field: 1,
+              value: '1',
+              operator: 0
+            }
+          ]
+        ],
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          sessionId: '2'
+        },
+        value$: expect.any(Subject),
+        queryParams: new Map().set('sessionId', { '0-root-1-0': '2' }),
+        resultsQueryParams: { '0-root-1-0': '2' },
+        queryTasksParams: { '0-root-1-0': '2' },
+        filters: [
+          [
+            {
+              for: 'root',
+              field: 1,
+              value: '2',
+              operator: 0
+            }
+          ]
+        ]
+      }
+    ]);
   });
 
   it('should get related icons', () => {
@@ -203,7 +255,7 @@ describe('ApplicationsTableComponent', () => {
       component.filters = filters;
       expect(component.createTasksByStatusQueryParams(sessionId)).toEqual({
         '0-root-1-0': sessionId,
-        '0-root-1-1':'session not equal',
+        '0-root-1-1': 'session not equal',
         '1-root-1-0': sessionId,
         '1-root-1-3': 'some value',
         '1-options-5-0': 'application name',
@@ -251,9 +303,9 @@ describe('ApplicationsTableComponent', () => {
 
   describe('on delete', () => {
     it('should delete the specified line', () => {
-      component.data$.next([{sessionId: '1'}, {sessionId: '2'}, {sessionId: '3'}] as unknown as SessionRaw[]);
+      component.refresh$.next();
       component.onDelete('2');
-      expect(component.data.map(session => session.raw.sessionId)).toEqual(['1', '3']);
+      expect(component.data.map(session => session.raw.sessionId)).toEqual(['1']);
     });
 
     it('should emit', () => {

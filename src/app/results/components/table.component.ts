@@ -6,7 +6,6 @@ import { AbstractTableComponent } from '@app/types/components/table';
 import { ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
@@ -20,7 +19,6 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions }
     ResultsGrpcService,
     ResultsIndexService,
     MatDialog,
-    IconsService,
     FiltersService,
   ],
   imports: [
