@@ -148,7 +148,7 @@ describe('TableComponent', () => {
   test('emitSelectionChange should emit', () => {
     const spy = jest.spyOn(component.selectionChange, 'emit');
     component.emitSelectionChange();
-    expect(spy).toHaveBeenCalledWith(component.selection);
+    expect(spy).toHaveBeenCalledWith(component.selection.selected);
   });
 
   test('onDrop should emit columnDrop', () => {
