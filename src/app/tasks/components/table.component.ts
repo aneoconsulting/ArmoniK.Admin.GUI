@@ -1,6 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { SelectionModel } from '@angular/cdk/collections';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
@@ -39,7 +38,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   @Input({required: true}) stopInterval: Subject<void>;
   @Input({required: true}) interval: Subject<number>;
   @Input({required: true}) intervalValue: number;
-  @Input({required: true}) selection: SelectionModel<string>;
   @Input() filters: TaskSummaryFilters = [];
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
@@ -47,6 +45,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
+  @Output() selectionChange = new EventEmitter<string[]>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
 
@@ -166,6 +165,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   onCancelTask(id: string) {
     this.cancelTask.emit(id);
+  }
+
+  onSelectionChange($event: TaskSummary[]): void {
+    this.selectionChange.emit($event.map(task => task.id));
   }
 
   generateViewInLogsUrl(taskId: string): string {

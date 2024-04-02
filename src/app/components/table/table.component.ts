@@ -53,7 +53,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
 
   @Output() columnDrop = new EventEmitter<K[]>();
   @Output() optionsChange = new EventEmitter<never>();
-  @Output() selectionChange = new EventEmitter<SelectionModel<R>>();
+  @Output() selectionChange = new EventEmitter<R[]>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -102,7 +102,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   }
 
   emitSelectionChange(): void {
-    this.selectionChange.emit(this.selection);
+    this.selectionChange.emit(this.selection.selected);
   }
 
   isAllSelected(): boolean {
