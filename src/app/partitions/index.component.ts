@@ -75,7 +75,7 @@ import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } f
 </mat-toolbar>
 
 <app-partitions-table
-  [filters]="filters"
+  [filters$]="filters$"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
@@ -160,6 +160,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   options: PartitionRawListOptions;
 
   filters: PartitionRawFilters = [];
+  filters$: Subject<PartitionRawFilters>;
 
   intervalValue = 0;
   sharableURL = '';
@@ -186,6 +187,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this.#partitionsIndexService.restoreOptions();
 
     this.filters = this.#partitionsFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this.#partitionsIndexService.restoreIntervalValue();
 
@@ -244,13 +246,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#partitionsFiltersService.saveFilters(filters as PartitionRawFilters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset() {
     this.filters = this.#partitionsFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next([]);
   }
   
   onLockColumnsChange() {

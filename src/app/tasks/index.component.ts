@@ -117,6 +117,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   options: TaskSummaryListOptions;
 
   filters: TaskSummaryFilters = [];
+  filters$: Subject<TaskSummaryFilters>;
 
   sharableURL = '';
 
@@ -148,6 +149,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this.#tasksIndexService.restoreOptions();
 
     this.filters = this.#tasksFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this.#tasksIndexService.restoreIntervalValue();
 
@@ -234,13 +236,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#tasksFiltersService.saveFilters(this.filters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset(): void{
     this.filters = this.#tasksFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next([]);
   }
 
   onSelectionChange(selection: string[]): void {

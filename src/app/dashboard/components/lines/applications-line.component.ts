@@ -83,8 +83,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
-  readonly #applicationGrpcService = inject(ApplicationsGrpcService);
-  readonly #notificationService = inject(NotificationService);
   readonly _applicationsIndexService = inject(ApplicationsIndexService);
   readonly #defaultConfigService = inject(DefaultConfigService);
 
@@ -94,7 +92,10 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   loadApplicationData = true;
   loadApplicationData$: Subject<boolean> = new BehaviorSubject(true);
+
   filters: ApplicationRawFilters;
+  filters$: Subject<ApplicationRawFilters>;
+
   options: ApplicationRawListOptions;
 
   displayedColumnsKeys: ApplicationRawColumnKey[] = [];
@@ -125,6 +126,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.intervalValue = this.line.interval;
 
     this.filters = this.line.filters as ApplicationRawFilters;
+    this.filters$ = new BehaviorSubject(this.filters);
     this.interval.next(this.line.interval);
   }
 
@@ -192,7 +194,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.filters = value as [];
     this.line.filters = value as [];
     this.lineChange.emit();
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
@@ -213,7 +215,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.filters = [];
     this.line.filters = [];
     this.lineChange.emit();
-    this.refresh.next();
+    this.filters$.next([]);
   }
 
   onLockColumnsChange() {

@@ -120,6 +120,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   options: SessionRawListOptions;
 
   filters: SessionRawFilters = [];
+  filters$: Subject<SessionRawFilters>;
 
   intervalValue = 0;
   sharableURL = '';
@@ -155,6 +156,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this._sessionsIndexService.restoreOptions();
 
     this.filters = this.#sessionsFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this._sessionsIndexService.restoreIntervalValue();
 
@@ -228,13 +230,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#sessionsFiltersService.saveFilters(filters as SessionRawFilters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset() {
     this.filters = this.#sessionsFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next([]);
   }
   
   onLockColumnsChange() {

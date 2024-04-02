@@ -37,15 +37,16 @@ export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKe
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
-  @Input({required: true}) displayedColumns: TableColumn<C>[] = [];
-  @Input({required: true}) options: O;
-  @Input({ required: true }) filters: F;
-  @Input({required: true}) refresh$: Subject<void>;
+  @Input({ required: true }) displayedColumns: TableColumn<C>[] = [];
+  @Input({ required: true }) options: O;
+  @Input({ required: true }) filters$: Subject<F>;
+  @Input({ required: true }) refresh$: Subject<void>;
   @Input({ required: true }) loading$: Subject<boolean>;
   @Input() lockColumns = false;
   
   data: ArmonikData<R>[] = [];
   total: number = 0;
+  filters: F = [] as unknown as F;
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
@@ -64,6 +65,10 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   }
 
   subscribeToData() {
+    this.filters$.subscribe(filters => {
+      this.filters = filters;
+      this.refresh$.next();
+    });
     this.refresh$.pipe(
       switchMap(
         () => {
@@ -91,6 +96,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         return [];
       })
     ).subscribe(data => {
+      console.log('Data received', data);
       if (this.total !== 0 && this.afterDataCreation) {
         this.afterDataCreation(data);
       } else {

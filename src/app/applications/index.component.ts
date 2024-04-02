@@ -63,7 +63,7 @@ import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptio
 </mat-toolbar>
 
 <app-application-table
-  [filters]="filters"
+  [filters$]="filters$"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
@@ -133,6 +133,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   options: ApplicationRawListOptions;
 
   filters: ApplicationRawFilters = [];
+  filters$: Subject<ApplicationRawFilters>;
 
   intervalValue = 0;
   sharableURL = '';
@@ -163,6 +164,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this._applicationsIndexService.restoreOptions();
 
     this.filters = this.#applicationsFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
 
@@ -221,13 +223,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset() {
     this.filters = this.#applicationsFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next([]);
   }
 
   onLockColumnsChange() {
