@@ -10,7 +10,6 @@ import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { NotificationService } from '@services/notification.service';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
@@ -39,7 +38,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   override readonly indexService = inject(TasksIndexService);
   override readonly _grpcService = inject(TasksGrpcService);
-  readonly #notificationService = inject(NotificationService);
   readonly _router = inject(Router);
   readonly _clipboard = inject(Clipboard);
   readonly _tasksStatusesService = inject(TasksStatusesService);
@@ -147,7 +145,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   onCopiedTaskId(element: TaskData) {
     this._clipboard.copy(element.raw.id);
-    this.#notificationService.success('Task ID copied to clipboard');
+    this.notificationService.success('Task ID copied to clipboard');
   }
 
   isRetried(task: TaskSummary): boolean {
