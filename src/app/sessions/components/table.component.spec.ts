@@ -10,14 +10,14 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { ApplicationsTableComponent } from './table.component';
+import { SessionsTableComponent } from './table.component';
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRawColumnKey, SessionRawFilters } from '../types';
 
-describe('ApplicationsTableComponent', () => {
-  let component: ApplicationsTableComponent;
+describe('SessionsTableComponent', () => {
+  let component: SessionsTableComponent;
 
   const tasksStatusesColored: TaskStatusColored[] = [
     {
@@ -140,13 +140,16 @@ describe('ApplicationsTableComponent', () => {
   };
 
   const mockSessionsGrpcService = {
-    list$: jest.fn(() => of({ sessions: [{ sessionId: '1' }, { sessionId: '2' }], total: 2 }))
+    list$: jest.fn(() => of({ sessions: [{ sessionId: '1' }, { sessionId: '2' }], total: 2 })),
+    delete$: jest.fn(() => of({})),
+    close$: jest.fn(() => of({})),
+    cancel$: jest.fn(() => of({})),
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        ApplicationsTableComponent,
+        SessionsTableComponent,
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         IconsService,
@@ -157,7 +160,7 @@ describe('ApplicationsTableComponent', () => {
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: SessionsGrpcService, useValue: mockSessionsGrpcService }
       ]
-    }).inject(ApplicationsTableComponent);
+    }).inject(SessionsTableComponent);
 
     component.refresh$ = new Subject();
     component.loading$ = new Subject();
@@ -290,10 +293,9 @@ describe('ApplicationsTableComponent', () => {
     ]]);
   });
 
-  it('should emit on Cancel', () => {
-    const spy = jest.spyOn(component.cancelSession, 'emit');
+  it('should ask grpc service to cancel session on Cancel', () => {
     component.onCancel('sessionId');
-    expect(spy).toHaveBeenCalledWith('sessionId');
+    expect(mockSessionsGrpcService.cancel$).toHaveBeenCalledWith('sessionId');
   });
 
   it('should personalize tasks by status', () => {
@@ -302,16 +304,16 @@ describe('ApplicationsTableComponent', () => {
   });
 
   describe('on delete', () => {
-    it('should delete the specified line', () => {
-      component.refresh$.next();
+    it('should ask grpc service to delete session', () => {
       component.onDelete('2');
-      expect(component.data.map(session => session.raw.sessionId)).toEqual(['1']);
+      expect(mockSessionsGrpcService.delete$).toHaveBeenCalledWith('2');
     });
+  });
 
-    it('should emit', () => {
-      const spy = jest.spyOn(component.deleteSession, 'emit');
-      component.onDelete('2');
-      expect(spy).toHaveBeenCalledWith('2');
+  describe('on close', () => {
+    it('should ask grpc service to close session', () => {
+      component.onClose('2');
+      expect(mockSessionsGrpcService.close$).toHaveBeenCalledWith('2');
     });
   });
 });

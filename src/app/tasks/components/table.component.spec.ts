@@ -67,7 +67,8 @@ describe('TasksTableComponent', () => {
   };
 
   const mockTasksGrpcService = {
-    list$: jest.fn(() => of({tasks: [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}], total: 3}))
+    list$: jest.fn(() => of({tasks: [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}], total: 3})),
+    cancel$: jest.fn(() => of({})),
   };
 
   beforeEach(() => {
@@ -169,10 +170,9 @@ describe('TasksTableComponent', () => {
   });
 
   it('should emit on cancel task', () => {
-    const spy = jest.spyOn(component.cancelTask, 'emit');
     const id = 'taskId';
     component.onCancelTask(id);
-    expect(spy).toHaveBeenCalledWith(id);
+    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([id]);
   });
 
   describe('generateViewInLogsUrl', () => {
