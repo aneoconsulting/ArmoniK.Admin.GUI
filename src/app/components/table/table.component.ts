@@ -60,6 +60,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   @Output() columnDrop = new EventEmitter<K[]>();
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<R[]>();
+  @Output() personnalizeTasksByStatus = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -136,5 +137,9 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
       this.selection.select(data);
     }
     this.emitSelectionChange();
+  }
+
+  onPersonnalizeTasksByStatus(): void {
+    this.personnalizeTasksByStatus.emit();
   }
 }
