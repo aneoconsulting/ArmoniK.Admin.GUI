@@ -199,12 +199,12 @@ describe('Application component', () => {
       operator: 4,
       value: 'new value'
     }]];
-    const spyRefresh = jest.spyOn(component.refresh, 'next');
+    const spyFilters = jest.spyOn(component.filters$, 'next');
     component.onFiltersChange(newFilterOr);
     
     expect(mockApplicationsFilterService.saveFilters).toHaveBeenCalledWith(newFilterOr);
     expect(component.options.pageIndex).toEqual(0);
-    expect(spyRefresh).toHaveBeenCalled();
+    expect(spyFilters).toHaveBeenCalled();
     expect(component.filters).toEqual(newFilterOr);
   });
 

@@ -155,7 +155,7 @@ describe('ApplicationTableComponent', () => {
     component.refresh$ = new Subject();
     component.loading$ = new Subject();
     component.displayedColumns = displayedColumns;
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<ApplicationRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,

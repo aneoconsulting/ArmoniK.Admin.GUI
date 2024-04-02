@@ -1,7 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
@@ -10,7 +10,7 @@ import { TasksTableComponent } from './table.component';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
@@ -85,7 +85,7 @@ describe('TasksTableComponent', () => {
 
     component.displayedColumns = displayedColumns;
     component.selection = [];
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<TaskSummaryFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,

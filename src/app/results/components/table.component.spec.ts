@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -7,7 +7,7 @@ import { ResultsTableComponent } from './table.component';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRawColumnKey } from '../types';
+import { ResultRawColumnKey, ResultRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ResultsTableComponent;
@@ -64,6 +64,7 @@ describe('ApplicationTableComponent', () => {
     component.refresh$ = new Subject();
     component.loading$ = new Subject();
     component.displayedColumns = displayedColumns;
+    component.filters$ = new BehaviorSubject<ResultRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -121,7 +121,7 @@ describe('PartitionsTableComponent', () => {
     component.displayedColumns = displayedColumns;
     component.refresh$ = new Subject();
     component.loading$ = new Subject();
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<PartitionRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,

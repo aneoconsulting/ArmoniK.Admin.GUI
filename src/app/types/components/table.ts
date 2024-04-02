@@ -96,7 +96,6 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         return [];
       })
     ).subscribe(data => {
-      console.log('Data received', data);
       if (this.total !== 0 && this.afterDataCreation) {
         this.afterDataCreation(data);
       } else {

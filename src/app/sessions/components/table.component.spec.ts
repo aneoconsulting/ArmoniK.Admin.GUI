@@ -2,7 +2,7 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -170,7 +170,7 @@ describe('ApplicationsTableComponent', () => {
         direction: 'desc'
       }
     };
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<SessionRawFilters>([]);
 
     component.ngOnInit();
     component.ngAfterViewInit();
