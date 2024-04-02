@@ -60,7 +60,6 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
-    IconsService,
     ShareUrlService,
     QueryParamsService,
     StorageService,
@@ -248,23 +247,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   autoRefreshTooltip() {
     return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
   }
-
-  // onCancel(sessionId: string) {
-  //   this._sessionsGrpcService.cancel$(sessionId).subscribe(
-  //     () => this.refresh.next(),
-  //   );
-  // }
-
-  // onClose(sessionId: string) {
-  //   this._sessionsGrpcService.close$(sessionId).subscribe(
-  //     () => this.refresh.next(),
-  //   );
-  // }
-  // onDelete(sessionId: string) {
-  //   this._sessionsGrpcService.delete$(sessionId).subscribe(
-  //     () => this.refresh.next(),
-  //   );
-  // }
 
   handleAutoRefreshStart() {
     if (this.intervalValue === 0) {

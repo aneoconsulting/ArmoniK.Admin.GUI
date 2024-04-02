@@ -32,7 +32,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
   providers: [
     TasksByStatusService,
     MatDialog,
-    IconsService,
     FiltersService,
     Clipboard,
     TasksGrpcService,
@@ -305,16 +304,22 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   }
 
   onCancel(sessionId: string) {
-    this.cancelSession.emit(sessionId);
+    this._grpcService.cancel$(sessionId).subscribe(
+      () => this.refresh$.next(),
+    );
   }
 
   onClose(sessionId: string) {
-    this.closeSession.emit(sessionId);
+    this._grpcService.close$(sessionId).subscribe(
+      () => this.refresh$.next(),
+    );
   }
 
   onDelete(sessionId: string) {
     this.data = this.data.filter(session => session.raw.sessionId !== sessionId);
-    this.deleteSession.emit(sessionId);
+    this._grpcService.delete$(sessionId).subscribe(
+      () => this.refresh$.next(),
+    );
   }
 
   // Session Duration computation section
