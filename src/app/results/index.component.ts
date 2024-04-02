@@ -15,7 +15,6 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
@@ -76,7 +75,6 @@ app-table-actions-toolbar {
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
-    TableContainerComponent,
     MatTableModule,
     MatToolbarModule,
     MatIconModule,

@@ -35,6 +35,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
+  @Output() selectionChange = new EventEmitter<string[]>();
 
   override readonly indexService = inject(TasksIndexService);
   override readonly _grpcService = inject(TasksGrpcService);
@@ -162,6 +163,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   onCancelTask(id: string) {
     this.cancelTask.emit(id);
+  }
+
+  onSelectionChange($event: TaskSummary[]): void {
+    this.selectionChange.emit($event.map(task => task.id));
   }
 
   generateViewInLogsUrl(taskId: string): string {

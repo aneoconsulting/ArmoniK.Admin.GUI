@@ -15,7 +15,6 @@ import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.c
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -110,7 +109,6 @@ app-table-actions-toolbar {
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
-    TableContainerComponent,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

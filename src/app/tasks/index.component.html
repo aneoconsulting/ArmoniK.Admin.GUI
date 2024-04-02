@@ -21,7 +21,7 @@
         (lockColumnsChange)="onLockColumnsChange()"
         >
           <ng-container extra-buttons-right>
-            <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.selected.length">
+            <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
               <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
               <span i18n> Cancel Tasks </span>
             </button>
@@ -58,5 +58,6 @@
     [urlTemplate]="urlTemplate"
     [refresh$]="refresh$"
     [loading$]="isLoading$"
+    (selectionChange)="onSelectionChange($event)"
   ></app-tasks-table>
   

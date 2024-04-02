@@ -21,7 +21,6 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
   templateUrl: './table.component.html',
   standalone: true,
   imports: [
-    TableContainerComponent,
     TableColumnHeaderComponent,
     TableCellComponent,
     MatPaginatorModule,
@@ -32,6 +31,7 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
     MatTableModule,
     MatSortModule,
     TableActionsComponent,
+    TableContainerComponent,
   ]
 })
 export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends ArmonikDataType, S extends Status> implements AfterViewInit, OnDestroy {
@@ -41,7 +41,11 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     this._columnsKeys = entries.map((entry) => entry.key);
   }
 
-  @Input({ required: true }) data: ArmonikData<R>[];
+  @Input({ required: true }) set data(entries: ArmonikData<R>[]) {
+    const selectedRows = this.selection.selected;
+    this._data = entries;
+    this.selection.select(...selectedRows.filter(row => entries.find(entry => entry.raw === row)));
+  }
 
   @Input({ required: true }) total: number;
 
@@ -55,13 +59,18 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
 
   @Output() columnDrop = new EventEmitter<K[]>();
   @Output() optionsChange = new EventEmitter<never>();
-  @Output() selectionChange = new EventEmitter<SelectionModel<R>>();
+  @Output() selectionChange = new EventEmitter<R[]>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  private _data: ArmonikData<R>[];
   private _columns: TableColumn<K>[];
   private _columnsKeys: K[];
+
+  get data(): ArmonikData<R>[] {
+    return this._data;
+  }
 
   get columns(): TableColumn<K>[] {
     return this._columns;
@@ -104,7 +113,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   }
 
   emitSelectionChange(): void {
-    this.selectionChange.emit(this.selection);
+    this.selectionChange.emit(this.selection.selected);
   }
 
   isAllSelected(): boolean {

@@ -1,5 +1,4 @@
 import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { SelectionModel } from '@angular/cdk/collections';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -108,8 +107,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   lockColumns: boolean = false;
   columnsLabels: Record<TaskSummaryColumnKey, string> = {} as unknown as Record<TaskSummaryColumnKey, string>;
 
-  selection = new SelectionModel<string>(true, []);
-  selectedRows: string[] = [];
+  selection: string[] = [];
 
   isLoading = true;
   isLoading$: Subject<boolean> = new BehaviorSubject(true);
@@ -245,9 +243,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.refresh.next();
   }
 
+  onSelectionChange(selection: string[]): void {
+    this.selection = selection;
+  }
+
   onCancelTasksSelection():void {
-    const tasksIds = this.selection.selected;
-    this.cancelTasks(tasksIds);
+    this.cancelTasks(this.selection);
   }
   
   onLockColumnsChange() {

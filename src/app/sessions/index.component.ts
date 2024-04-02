@@ -24,7 +24,6 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -94,7 +93,6 @@ app-table-actions-toolbar {
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
-    TableContainerComponent,
     MatTooltipModule,
     MatToolbarModule,
     MatButtonModule,
