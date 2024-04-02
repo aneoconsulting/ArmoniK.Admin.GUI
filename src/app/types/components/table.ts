@@ -91,10 +91,10 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         return [];
       })
     ).subscribe(data => {
-      this.newData(data);
       if (this.total !== 0 && this.afterDataCreation) {
-        this.afterDataCreation();
+        this.afterDataCreation(data);
       } else {
+        this.newData(data);
         this.loading$.next(false);
       }
     });

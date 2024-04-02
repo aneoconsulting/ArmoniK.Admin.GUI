@@ -59,6 +59,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
 
   table: TableTasksByStatus = 'sessions';
 
+  dataRaw: SessionRaw[];
   isDurationSorted: boolean = false;
   sessionEndedDates: {sessionId: string, date: Timestamp | undefined}[] = [];
   sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
@@ -121,16 +122,15 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   ngAfterViewInit(): void {
     this.subscribeToData();
     this.computeDuration$.subscribe(() => {
-      if (this.data.length === this.sessionEndedDates.length && this.data.length === this.sessionCreationDates.length) {
-        const data = this.data.map(d => d.raw);
+      if (this.dataRaw.length === this.sessionEndedDates.length && this.dataRaw.length === this.sessionCreationDates.length) {
         const keys: string[] = this.sessionEndedDates.map(duration => duration.sessionId);
         keys.forEach(key => {
-          const sessionIndex = data.findIndex(session => session.sessionId === key);
+          const sessionIndex = this.dataRaw.findIndex(session => session.sessionId === key);
           if (sessionIndex !== -1) {
             const lastDuration = this.sessionEndedDates.find(duration => duration.sessionId === key)?.date;
             const firstDuration = this.sessionCreationDates.find(duration => duration.sessionId === key)?.date;
             if (firstDuration && lastDuration) {
-              data[sessionIndex].duration = {
+              this.dataRaw[sessionIndex].duration = {
                 seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
                 nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
               } as Duration;
@@ -140,9 +140,9 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
           }
         });
         if (this.isDurationSorted) {
-          this.orderByDuration(data);
+          this.orderByDuration(this.dataRaw);
         } else {
-          this.newData(data);
+          this.newData(this.dataRaw);
         }
         this.sessionEndedDates = [];
         this.sessionCreationDates = [];
@@ -190,10 +190,11 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     }
   }
 
-  override afterDataCreation(): void {
+  override afterDataCreation(data: SessionRaw[]): void {
     if (this.isDurationDisplayed()) {
-      this.data.forEach(session => {
-        this.nextDuration$.next(session.raw.sessionId);
+      this.dataRaw = data;
+      data.forEach(session => {
+        this.nextDuration$.next(session.sessionId);
       });
     } else {
       this.loading$.next(false);
