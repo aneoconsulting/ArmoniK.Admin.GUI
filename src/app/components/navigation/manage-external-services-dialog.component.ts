@@ -137,7 +137,7 @@ export class ManageExternalServicesDialogComponent implements OnInit {
 
   addExternalService(): void {
     const dialogRef = this.#dialog.open(AddExternalServiceDialogComponent, {
-       maxWidth: '40vw',
+      maxWidth: '40vw',
     });
 
     dialogRef.afterClosed().subscribe((externalService: ExternalService) => {
