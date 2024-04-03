@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ExternalService } from '@app/types/external-service';
 import { IconPickerDialogComponent } from '@components/icon-picker-dialog.component';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-form-external-service',
@@ -74,7 +73,7 @@ export class FormExternalServiceComponent implements OnInit {
   ngOnInit(): void {
     if (this.externalService) {
       this.serviceForm.patchValue(this.externalService);
-      this.icon = this.externalService.icon || '';
+      this.icon = this.externalService.icon ?? '';
     }
   }
 
