@@ -379,31 +379,47 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onPause(sessionId: string) {
-    this._sessionsGrpcService.pause$(sessionId).subscribe(
-      () => this.refresh.next(),
-    );
+    this._sessionsGrpcService.pause$(sessionId)
+      .subscribe(
+        {
+          error: () => this.#notificationService.error('Unable to pause session'),
+          complete: () => this.refresh.next()
+        }
+      );
   }
 
   onResume(sessionId: string) {
     this._sessionsGrpcService.resume$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to resume session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
 
   onCancel(sessionId: string) {
     this._sessionsGrpcService.cancel$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to cancel session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
 
   onClose(sessionId: string) {
     this._sessionsGrpcService.close$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to close session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
   onDelete(sessionId: string) {
     this._sessionsGrpcService.delete$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to delete session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
 
