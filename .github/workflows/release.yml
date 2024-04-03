@@ -1,11 +1,11 @@
 name: CD Docker
 
 on:
-  push:
+  pull_request:
     branches:
       - 'main'
-    tags:
-      - '*'
+    # tags:
+    #   - '*'
 
 permissions:
   contents: write
@@ -58,3 +58,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  
+  docker_scout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker Scout
+        uses: docker/scout-action@v1
+        with:
+          command: cves, recommendations
+          image: dockerhubaneo/armonik_admin_app:${{ steps.meta.outputs.tags }}
+          write-comment: false
