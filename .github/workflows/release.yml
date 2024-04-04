@@ -64,6 +64,6 @@ jobs:
         with:
           command: cves, recommendations
           image: ${{ steps.meta.outputs.tags }}
-          write-comment: false
+          write-comment: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
       
