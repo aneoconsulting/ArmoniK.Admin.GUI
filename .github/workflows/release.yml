@@ -58,10 +58,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  
-  docker_scout:
-    runs-on: ubuntu-latest
-    steps:
+      
       - name: Docker Scout
         uses: docker/scout-action@v1
         with:
@@ -69,3 +66,4 @@ jobs:
           image: dockerhubaneo/armonik_admin_app:${{ steps.meta.outputs.tags }}
           write-comment: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      
