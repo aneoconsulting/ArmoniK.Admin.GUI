@@ -42,7 +42,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
-        <app-table-column-header [column]="column" (personnaliseTasksByStatus)="personalizeTasksByStatus()" />
+        <app-table-column-header [column]="column" (statusesChange)="personalizeTasksByStatus()" />
       </th>
       <!-- Columns -->
       <ng-container *ngIf="column.type !== 'actions'">

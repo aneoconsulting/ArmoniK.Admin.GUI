@@ -4,7 +4,7 @@
       <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
         <!-- Header -->
         <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
-          <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected()" [isSelectionIndeterminate]="selection.hasValue() && !isAllSelected()" (toggleRowsSelection)="toggleAllRows()" />
+          <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected()" [isSelectionIndeterminate]="selection.hasValue() && !isAllSelected()" (rowsSelectionChange)="toggleAllRows()" />
         </th>
         <!-- Columns -->
         <ng-container *ngIf="column.type !== 'actions'">
