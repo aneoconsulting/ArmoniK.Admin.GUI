@@ -63,7 +63,7 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: cves, recommendations
-          image: dockerhubaneo/armonik_admin_app:${{ steps.meta.outputs.tags }}
+          image: ${{ steps.meta.outputs.tags }}
           write-comment: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
       
