@@ -238,7 +238,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options.pageIndex = 0;
     this.filters$.next([]);
   }
-  
+
   onLockColumnsChange() {
     this.lockColumns = !this.lockColumns;
     this._sessionsIndexService.saveLockColumns(this.lockColumns);
