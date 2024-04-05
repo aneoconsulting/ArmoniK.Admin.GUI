@@ -10,7 +10,7 @@ describe('TasksIndexService', () => {
 
   const expectDefaultOptions :ApplicationRawListOptions = {
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 100,
     sort: {
       active: 'name',
       direction: 'asc'
