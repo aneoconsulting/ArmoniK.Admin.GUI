@@ -41,7 +41,7 @@ export abstract class AppShowComponent<T extends object, E extends GrpcService> 
   refresh = new Subject<void>();
   data: T | null;
   data$: Subject<T> = new Subject<T>();
-  
+
   private _iconsService = inject(IconsService);
   protected _grpcService: E;
   private _shareURLService = inject(ShareUrlService);
