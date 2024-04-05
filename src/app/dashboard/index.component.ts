@@ -37,6 +37,7 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { ApplicationsLineComponent } from './components/lines/applications-line.component';
+import { ResultsLineComponent } from './components/lines/results-line.component';
 import { TaskByStatusLineComponent } from './components/lines/task-by-status-line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
@@ -133,7 +134,8 @@ import { Line, LineType } from './types';
     MatProgressSpinnerModule,
     FiltersToolbarComponent,
     TaskByStatusLineComponent,
-    ApplicationsLineComponent
+    ApplicationsLineComponent,
+    ResultsLineComponent,
   ]
 })
 export class IndexComponent implements OnInit {
