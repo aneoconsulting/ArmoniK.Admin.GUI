@@ -18,11 +18,23 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
     return this.statuses[status];
   }
 
-  canCancel(status: SessionStatus) {
-    return status === SessionStatus.SESSION_STATUS_RUNNING;
+  canCancel(status: SessionStatus): boolean {
+    return status === SessionStatus.SESSION_STATUS_RUNNING  || status === SessionStatus.SESSION_STATUS_PAUSED;
   }
 
-  canClose(status: SessionStatus) {
-    return status === SessionStatus.SESSION_STATUS_RUNNING;
+  canPause(status: SessionStatus): boolean {
+    return status !== SessionStatus.SESSION_STATUS_PAUSED && status !== SessionStatus.SESSION_STATUS_CANCELLED && status !== SessionStatus.SESSION_STATUS_CLOSED;
+  }
+
+  canResume(status: SessionStatus): boolean {
+    return status === SessionStatus.SESSION_STATUS_PAUSED;
+  }
+
+  canClose(status: SessionStatus): boolean {
+    return status === SessionStatus.SESSION_STATUS_RUNNING || status === SessionStatus.SESSION_STATUS_PAUSED;
+  }
+
+  canDelete(status: SessionStatus): boolean {
+    return status !== SessionStatus.SESSION_STATUS_DELETED;
   }
 }
