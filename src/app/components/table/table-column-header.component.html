@@ -1,0 +1,18 @@
+<ng-container *ngIf="type !== 'count' && type !== 'select'">
+  {{ name }}
+</ng-container>
+
+<!-- Header for count columns -->
+<ng-container *ngIf="type === 'count'">
+  {{ name }}
+  <button mat-icon-button (click)="onPersonnalizeStatuses()" i18n-matTooltip
+    matTooltip="Personalize Statuses">
+    <mat-icon aria-hidden="true" [fontIcon]="icon" />
+  </button>
+</ng-container>
+
+<!-- Header for selection -->
+<ng-container *ngIf="type === 'select'">
+  <mat-checkbox (change)="onToggleAllRows()" [checked]="checked"
+    [indeterminate]="isSelectionIndeterminate" [aria-label]="checkBoxLabel" />
+</ng-container>
