@@ -11,7 +11,6 @@ import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
@@ -21,12 +20,8 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
   selector: 'app-tasks-table',
   standalone: true,
   templateUrl: './table.component.html', 
-  styles: [
-
-  ],
   providers: [
     MatDialog,
-    IconsService,
     FiltersService,
     Clipboard,
   ],

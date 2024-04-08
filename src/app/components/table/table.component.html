@@ -9,7 +9,7 @@
     <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
       <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected()"
         [isSelectionIndeterminate]="selection.hasValue() && !isAllSelected()"
-        (toggleRowsSelection)="toggleAllRows()" (personnaliseTasksByStatus)="onPersonnalizeTasksByStatus()" />
+        (rowsSelectionChange)="toggleAllRows()" (statusesChange)="onPersonnalizeTasksByStatus()" />
     </th>
     <!-- Columns -->
     <ng-container *ngIf="column.type !== 'actions'">

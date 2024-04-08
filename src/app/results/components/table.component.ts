@@ -6,7 +6,6 @@ import { AbstractTableComponent } from '@app/types/components/table';
 import { ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
@@ -17,7 +16,6 @@ import { ResultRaw, ResultRawColumnKey, ResultRawListOptions } from '../types';
   templateUrl: './table.component.html', 
   providers: [
     MatDialog,
-    IconsService,
     FiltersService,
   ],
   imports: [

@@ -20,14 +20,10 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
   selector: 'app-application-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-    
-  ],
   providers: [
     ApplicationsIndexService,
     TasksByStatusService,
     MatDialog,
-    IconsService,
     FiltersService
   ],
   imports: [

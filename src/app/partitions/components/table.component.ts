@@ -1,7 +1,5 @@
 import { FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
@@ -18,17 +16,11 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
   selector: 'app-partitions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-
-  ],
   providers: [
     TasksByStatusService,
-    IconsService,
     FiltersService
   ],
   imports: [
-    RouterModule,
-    MatDialogModule,
     TableComponent,
   ]
 })
