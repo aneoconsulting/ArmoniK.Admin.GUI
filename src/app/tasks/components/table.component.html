@@ -1,3 +1,4 @@
-<app-table [columns]="displayedColumns" [data]="data" [total]="total" [options]="options" [lockColumns]="lockColumns"
-  [actions]="actions" (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()" (selectionChange)="onSelectionChange($event)"
+<app-table [columns]="displayedColumns" [dataComparator]="isDataRawEqual" [data]="data" [total]="total"
+  [options]="options" [lockColumns]="lockColumns" [actions]="actions" (columnDrop)="onDrop($event)"
+  (optionsChange)="onOptionsChange()" (selectionChange)="onSelectionChange($event)"
   [statusesService]="_tasksStatusesService" />
