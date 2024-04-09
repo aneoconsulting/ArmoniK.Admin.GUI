@@ -49,7 +49,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
   
-  readonly _grpcService = inject(SessionsGrpcService);
+  readonly grpcService = inject(SessionsGrpcService);
   readonly indexService = inject(SessionsIndexService);
   readonly iconsService = inject(IconsService);
   readonly statusesService = inject(SessionsStatusesService);
@@ -169,12 +169,12 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     });
     
     this.nextDuration$.pipe(
-      map(sessionId => this._grpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
+      map(sessionId => this.grpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'created'));
 
     this.nextDuration$.pipe(
-      map(sessionId => this._grpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
+      map(sessionId => this.grpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'ended'));
   }
@@ -323,7 +323,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   onPause(sessionId: string) {
-    this._grpcService.pause$(sessionId)
+    this.grpcService.pause$(sessionId)
       .subscribe(
         {
           error: () => this.notificationService.error('Unable to pause session'),
@@ -333,7 +333,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   onResume(sessionId: string) {
-    this._grpcService.resume$(sessionId).subscribe(
+    this.grpcService.resume$(sessionId).subscribe(
       {
         error: () => this.notificationService.error('Unable to resume session'),
         complete: () => this.refresh$.next()
@@ -342,7 +342,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   onCancel(sessionId: string) {
-    this._grpcService.cancel$(sessionId).subscribe(
+    this.grpcService.cancel$(sessionId).subscribe(
       {
         error: () => this.notificationService.error('Unable to cancel session'),
         complete: () => this.refresh$.next()
@@ -351,7 +351,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   onClose(sessionId: string) {
-    this._grpcService.close$(sessionId).subscribe(
+    this.grpcService.close$(sessionId).subscribe(
       {
         error: () => this.notificationService.error('Unable to close session'),
         complete: () => this.refresh$.next()
@@ -359,7 +359,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     );
   }
   onDelete(sessionId: string) {
-    this._grpcService.delete$(sessionId).subscribe(
+    this.grpcService.delete$(sessionId).subscribe(
       {
         error: () => this.notificationService.error('Unable to delete session'),
         complete: () => this.refresh$.next()

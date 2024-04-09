@@ -30,7 +30,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
 })
 export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements AfterViewInit {
   
-  readonly _grpcService = inject(PartitionsGrpcService);
+  readonly grpcService = inject(PartitionsGrpcService);
   readonly indexService = inject(PartitionsIndexService);
   
   table: TableTasksByStatus = 'partitions';

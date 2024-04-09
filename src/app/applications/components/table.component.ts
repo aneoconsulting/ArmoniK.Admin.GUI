@@ -40,8 +40,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
 export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements AfterViewInit {
   table: TableTasksByStatus = 'applications';
   
-  override readonly _grpcService = inject(ApplicationsGrpcService);
-  override readonly indexService = inject(ApplicationsIndexService);
+  readonly grpcService = inject(ApplicationsGrpcService);
+  readonly indexService = inject(ApplicationsIndexService);
   readonly iconsService = inject(IconsService);
   readonly router = inject(Router);
 
