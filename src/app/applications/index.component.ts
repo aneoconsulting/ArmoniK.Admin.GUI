@@ -1,16 +1,15 @@
+import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableColumn } from '@app/types/column.type';
-import { Page } from '@app/types/pages';
+import { TableHandler } from '@app/types/components';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -31,46 +30,7 @@ import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptio
 
 @Component({
   selector: 'app-applications-index',
-  template: `
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('applications')"></mat-icon>
-  <span matListItemTitle i18n="Page title"> Applications </span>
-</app-page-header>
-
-<mat-toolbar>
-  <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="isLoading"
-      [refreshTooltip]="autoRefreshTooltip()"
-      [intervalValue]="intervalValue"
-      [columnsLabels]="columnsLabels"
-      [displayedColumns]="displayedColumnsKeys"
-      [availableColumns]="availableColumns"
-      [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
-      (intervalValueChange)="onIntervalValueChange($event)"
-      (displayedColumnsChange)="onColumnsChange($event)"
-      (resetColumns)="onColumnsReset()"
-      (resetFilters)="onFiltersReset()"
-      (lockColumnsChange)="onLockColumnsChange()"
-    >
-    </app-table-actions-toolbar>
-  </mat-toolbar-row>
-
-  <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-  </mat-toolbar-row>
-</mat-toolbar>
-
-<app-application-table
-  [filters$]="filters$"
-  [displayedColumns]="displayedColumns"
-  [lockColumns]="lockColumns"
-  [options]="options"
-  [refresh$]="refresh$"
-  [loading$]="isLoading$"
-/>
-  `,
+  templateUrl: './index.component.html',
   styles: [`
 app-table-actions-toolbar {
   flex-grow: 1;
@@ -117,135 +77,20 @@ app-table-actions-toolbar {
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #iconsService = inject(IconsService);
-  readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
+export class IndexComponent extends TableHandler<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters, ApplicationRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
 
-  displayedColumnsKeys: ApplicationRawColumnKey[] = [];
-  displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [];
-  availableColumns: ApplicationRawColumnKey[] = [];
-  lockColumns: boolean = false;
-  columnsLabels: Record<ApplicationRawColumnKey, string> = {} as unknown as Record<ApplicationRawColumnKey, string>;
-
-  isLoading = true;
-  isLoading$: Subject<boolean> = new BehaviorSubject(true);
-
-  options: ApplicationRawListOptions;
-
-  filters: ApplicationRawFilters = [];
-  filters$: Subject<ApplicationRawFilters>;
-
-  intervalValue = 0;
-  sharableURL = '';
-
-  refresh$: Subject<void> = new Subject<void>();
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  subscriptions: Subscription = new Subscription();
-
-  constructor(
-    private _shareURLService: ShareUrlService,
-    private _applicationsIndexService: ApplicationsIndexService,
-    private _autoRefreshService: AutoRefreshService
-  ) {}
+  readonly filtersService = inject(ApplicationsFiltersService);
+  readonly indexService = inject(ApplicationsIndexService);
 
   ngOnInit(): void {
-    this.availableColumns = this._applicationsIndexService.availableTableColumns.map(c => c.key);
-    this.displayedColumnsKeys = this._applicationsIndexService.restoreColumns();
-    this.updateDisplayedColumns();
-    this._applicationsIndexService.availableTableColumns.forEach(column => {
-      this.columnsLabels[column.key] = column.name;
-    });
-    this.lockColumns = this._applicationsIndexService.restoreLockColumns();
-
-    this.options = this._applicationsIndexService.restoreOptions();
-
-    this.filters = this.#applicationsFiltersService.restoreFilters();
-    this.filters$ = new BehaviorSubject(this.filters);
-
-    this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
-
-    this.sharableURL = this._shareURLService.generateSharableURL(this.options, this.filters);
+    this.initTableEnvironment();
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
-    this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
+    this.mergeSubscriptions();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  updateDisplayedColumns() {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this._applicationsIndexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<ApplicationRawColumnKey>[];
-  }
-
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if (value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this._applicationsIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(data: ApplicationRawColumnKey[]) {
-    this.displayedColumnsKeys = data;
-    this.updateDisplayedColumns();
-    this._applicationsIndexService.saveColumns(data);
-  }
-
-  onColumnsReset() {
-    this.displayedColumnsKeys = this._applicationsIndexService.resetColumns();
-    this.updateDisplayedColumns();
-  }
-
-  onFiltersChange(filters: unknown[]) {
-    this.filters = filters as ApplicationRawFilters;
-
-    this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilters);
-    this.options.pageIndex = 0;
-    this.filters$.next(this.filters);
-  }
-
-  onFiltersReset() {
-    this.filters = this.#applicationsFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.filters$.next([]);
-  }
-
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this._applicationsIndexService.saveLockColumns(this.lockColumns);
-  }
-
-  autoRefreshTooltip() {
-    return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  handleAutoRefreshStart() {
-    if (this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
+    this.unsubscribe();
   }
 }
