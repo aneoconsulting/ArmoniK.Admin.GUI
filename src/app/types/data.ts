@@ -52,3 +52,4 @@ export type Status = TaskStatus | SessionStatus | ResultStatus;
 export type IndexListFilters = SessionRawFilters | TaskSummaryFilters | PartitionRawFilters | ApplicationRawFilters | ResultRawFilters;
 
 export type DataFilterField = ApplicationFilterField.AsObject | SessionFilterField.AsObject | ResultFilterField.AsObject | PartitionFilterField.AsObject | TaskFilterField.AsObject;
+export type ArmonikDataType = ApplicationData | PartitionData | ResultData | SessionData | TaskData;

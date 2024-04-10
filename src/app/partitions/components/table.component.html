@@ -1,36 +1,3 @@
-<app-table-container>
-  <table mat-table matSort [matSortActive]="options.sort.active" recycleRows matSortDisableClear [matSortDirection]="options.sort.direction" [dataSource]="dataSource" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)" i18n-aria-label aria-label="Partitions Data Table">
-    <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column.key">
-      <!-- Header -->
-      <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
-        <app-table-column-header [column]="column" (statusesChange)="personalizeTasksByStatus()" />
-      </th>
-      <!-- Columns -->
-      <td mat-cell *matCellDef="let element" appNoWrap>
-        <app-table-cell 
-          [value$]="element.value$"
-          [column]="column"
-          [element]="element"
-          [tasksStatusesColored]="tasksStatusesColored"
-        />
-      </td>
-    </ng-container>
-
-    <!-- Empty -->
-    <tr *matNoDataRow>
-      <td [attr.colspan]="displayedColumns.length">
-        <app-table-empty-data/>
-      </td>
-    </tr>
-
-    <tr mat-header-row *matHeaderRowDef="columnKeys; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnKeys;"></tr>
-  </table>
-
-  <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize"  [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of partitions" i18n-aria-label>
-    </mat-paginator>
-</app-table-container>
-
-<ng-template #noDate>
-  <span> - </span>
-</ng-template>
+<app-table [columns]="displayedColumns" [data]="data" [total]="total" [lockColumns]="lockColumns" [options]="options"
+  (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()" [tasksStatusesColored]="tasksStatusesColored"
+  (personnalizeTasksByStatus)="personalizeTasksByStatus()" />

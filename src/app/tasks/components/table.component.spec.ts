@@ -1,11 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { SelectionModel } from '@angular/cdk/collections';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
@@ -48,18 +44,6 @@ describe('TasksTableComponent', () => {
       sortable: false,
     }
   ];
-
-  const sort: MatSort = {
-    active: 'createdAt',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
-
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
 
   const selection: SelectionModel<string> = {
     selected: [] as string[],
@@ -105,7 +89,6 @@ describe('TasksTableComponent', () => {
     selection.clear();
 
     component.displayedColumns = displayedColumns;
-    component.selection = selection;
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -115,8 +98,6 @@ describe('TasksTableComponent', () => {
       }
     };
     const data$ = new Subject<TaskSummary[]>();
-    component.sort = sort;
-    component.paginator = paginator;
     component.data$ = data$;
     component.ngAfterViewInit();
     data$.next(data);
@@ -130,26 +111,6 @@ describe('TasksTableComponent', () => {
     const newData = [{id: '1'}, {id: '2'}] as unknown as TaskSummary[];
     component.data$.next(newData);
     expect(component.data.map(d => d.raw)).toEqual(newData);
-  });
-
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options pagination on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'id',
-        direction: 'desc'
-      }
-    });
   });
 
   it('should check if the task is retried', () => {
@@ -202,65 +163,15 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should check if all rows are selected or not', () => {
-    selection.selected.push('task1');
-    expect(component.isAllSelected()).toBeFalsy();
+  test('onDrop should call tasksIndexService', () => {
+    const newColumns: TaskSummaryColumnKey[] = ['actions', 'id', 'status'];
+    component.onDrop(newColumns);
+    expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
 
-  describe('toggleAllRows', () => {
-    it('should toggle all row to selected', () => {
-      component.toggleAllRows();
-      expect(selection.select).toHaveBeenCalledWith(...component.data.map(data => data.raw.id));
-    });
-
-    it('should clear all row', () => {
-      selection.selected.push(...data.map(row => row.id));
-      component.toggleAllRows();
-      expect(selection.clear).toHaveBeenCalled();
-    });
-  });
-
-  describe('checkBoxLabel', () => {
-    it('should give the option to select all if they are not all selected', () => {
-      selection.selected.push('task1');
-      console.log('checkBox');
-      expect(component.checkboxLabel()).toEqual('select all');
-    });
-
-    it('should give the option to deselect all if all are selected', () => {
-      selection.selected.push(...data.map(row => row.id));
-      console.log('checkBox');
-      expect(component.checkboxLabel()).toEqual('deselect all');
-    });
-
-    it('should get the label to deselect a task', () => {
-      const task = {raw: {id:'selected1'} as unknown as TaskSummary} as unknown as TaskData;
-      expect(component.checkboxLabel(task)).toEqual('Deselect Task selected1');
-    });
-
-    it('should get the label to select one task', () => {
-      const task = {raw: {id:'selected2'} as unknown as TaskSummary} as unknown as TaskData;
-      expect(component.checkboxLabel(task)).toEqual('Select Task selected2');
-    });
-  });
-
-  describe('onDrop', () => {
-    it('should moveItem', () => {
-      const event = {
-        previousIndex: 0,
-        currentIndex: 1
-      } as unknown as CdkDragDrop<string[]>;
-      component.onDrop(event);
-      expect(component.displayedColumns).toEqual(displayedColumns);
-    });
-
-    it('should call tasksIndexService', () => {
-      const event = {
-        previousIndex: 0,
-        currentIndex: 1
-      } as unknown as CdkDragDrop<string[]>;
-      component.onDrop(event);
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
-    });
+  it('should emit on selection change', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    component.onSelectionChange([{id: 'taskId1'}, {id: 'taskId2'}] as unknown as TaskSummary[]);
+    expect(spy).toHaveBeenCalledWith(['taskId1', 'taskId2']);
   });
 });
