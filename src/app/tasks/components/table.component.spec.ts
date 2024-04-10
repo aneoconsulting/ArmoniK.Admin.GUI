@@ -191,4 +191,10 @@ describe('TasksTableComponent', () => {
     component.onDrop(newColumns);
     expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
+
+  it('should emit on selection change', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    component.onSelectionChange([{id: 'taskId1'}, {id: 'taskId2'}] as unknown as TaskSummary[]);
+    expect(spy).toHaveBeenCalledWith(['taskId1', 'taskId2']);
+  });
 });

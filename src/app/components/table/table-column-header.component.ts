@@ -37,8 +37,8 @@ export class TableColumnHeaderComponent<K extends RawColumnKey> {
   @Input({ required: false }) checked: boolean;
   @Input({ required: false }) isSelectionIndeterminate: boolean;
 
-  @Output() toggleRowsSelection = new EventEmitter<void>();
-  @Output() personnaliseTasksByStatus = new EventEmitter<void>();
+  @Output() rowsSelectionChange = new EventEmitter<void>();
+  @Output() statusesChange = new EventEmitter<void>();
 
   get name() {
     return this._name;
@@ -53,10 +53,10 @@ export class TableColumnHeaderComponent<K extends RawColumnKey> {
   }
 
   onToggleAllRows() {
-    this.toggleRowsSelection.emit();
+    this.rowsSelectionChange.emit();
   }
 
-  onPersonnalizeTasksByStatus() {
-    this.personnaliseTasksByStatus.emit();
+  onPersonnalizeStatuses() {
+    this.statusesChange.emit();
   }
 }
