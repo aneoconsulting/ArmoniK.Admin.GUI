@@ -1,4 +1,4 @@
-import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { AfterViewInit, Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -26,9 +26,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
   selector: 'app-sessions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-    
-  ],
   providers: [
     TasksByStatusService,
     MatDialog,
@@ -49,7 +46,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
   
-  readonly _grpcService = inject(SessionsGrpcService);
+  readonly grpcService = inject(SessionsGrpcService);
   readonly indexService = inject(SessionsIndexService);
   readonly iconsService = inject(IconsService);
   readonly statusesService = inject(SessionsStatusesService);
@@ -74,6 +71,12 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   seeResults$ = new Subject<SessionData>();
   seeResultsSubscription = this.seeResults$.subscribe(data => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
 
+  pauseSession$ = new Subject<SessionData>();
+  pauseSessionSubscription = this.pauseSession$.subscribe(data => this.onPause(data.raw.sessionId));
+
+  resumeSession$ = new Subject<SessionData>();
+  resumeSessionSubscription = this.resumeSession$.subscribe(data => this.onResume(data.raw.sessionId));
+
   cancelSession$ = new Subject<SessionData>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
@@ -87,7 +90,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     {
       label: 'Copy session ID',
       icon: this.getIcon('copy'),
-      action$: this.copy$, 
+      action$: this.copy$,
     },
     {
       label: 'See session',
@@ -100,21 +103,34 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       action$: this.seeResults$,
     },
     {
+      label: 'Pause session',
+      icon: this.getIcon('pause'),
+      action$: this.pauseSession$,
+      condition: (element: SessionData) => this.statusesService.canPause(element.raw.status)
+    },
+    {
+      label: 'Resume session',
+      icon: this.getIcon('play'),
+      action$: this.resumeSession$,
+      condition: (element: SessionData) => this.statusesService.canResume(element.raw.status)
+    },
+    {
       label: 'Cancel session',
       icon: this.getIcon('cancel'),
-      action$: this.cancelSession$, 
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+      action$: this.cancelSession$,
+      condition: (element: SessionData) => this.statusesService.canCancel(element.raw.status)
     },
     {
       label: 'Close session',
       icon: this.getIcon('close'),
       action$: this.closeSession$,
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+      condition: (element: SessionData) => this.statusesService.canClose(element.raw.status)
     },
     {
       label: 'Delete session',
       icon: this.getIcon('delete'),
       action$: this.deleteSession$,
+      condition: (element: SessionData) => this.statusesService.canDelete(element.raw.status)
     }
   ];
 
@@ -150,12 +166,12 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     });
     
     this.nextDuration$.pipe(
-      map(sessionId => this._grpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
+      map(sessionId => this.grpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'created'));
 
     this.nextDuration$.pipe(
-      map(sessionId => this._grpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
+      map(sessionId => this.grpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'ended'));
   }
@@ -203,7 +219,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
 
   createNewLine(entry: SessionRaw): SessionData {
     const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
-    queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
+    queryParams.set('sessionId', { '0-root-1-0': entry.sessionId });
     return {
       raw: entry,
       queryParams,
@@ -303,22 +319,48 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     ];
   }
 
+  onPause(sessionId: string) {
+    this.grpcService.pause$(sessionId)
+      .subscribe(
+        {
+          error: () => this.notificationService.error('Unable to pause session'),
+          complete: () => this.refresh$.next()
+        }
+      );
+  }
+
+  onResume(sessionId: string) {
+    this.grpcService.resume$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to resume session'),
+        complete: () => this.refresh$.next()
+      }
+    );
+  }
+
   onCancel(sessionId: string) {
-    this._grpcService.cancel$(sessionId).subscribe(
-      () => this.refresh$.next(),
+    this.grpcService.cancel$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to cancel session'),
+        complete: () => this.refresh$.next()
+      }
     );
   }
 
   onClose(sessionId: string) {
-    this._grpcService.close$(sessionId).subscribe(
-      () => this.refresh$.next(),
+    this.grpcService.close$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to close session'),
+        complete: () => this.refresh$.next()
+      }
     );
   }
-
   onDelete(sessionId: string) {
-    this.data = this.data.filter(session => session.raw.sessionId !== sessionId);
-    this._grpcService.delete$(sessionId).subscribe(
-      () => this.refresh$.next(),
+    this.grpcService.delete$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to delete session'),
+        complete: () => this.refresh$.next()
+      }
     );
   }
 

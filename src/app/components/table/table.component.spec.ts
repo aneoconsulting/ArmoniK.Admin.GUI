@@ -62,7 +62,6 @@ describe('TableComponent', () => {
 
   const total = 1;
 
-
   const sort: MatSort = {
     active: 'namespace',
     direction: 'asc',
@@ -75,9 +74,13 @@ describe('TableComponent', () => {
     page: new EventEmitter()
   } as unknown as MatPaginator;
 
+  const sessionComparator = (a: SessionRaw, b: SessionRaw) => {
+    return a.sessionId === b.sessionId;
+  };
 
   beforeEach(() => {
     component.columns = structuredClone(columns);
+    component.dataComparator = sessionComparator;
     component.data = data;
     component.total = total;
     component.options = options;
@@ -180,7 +183,7 @@ describe('TableComponent', () => {
 
   test('isAllSelected should be false when not everything is selected', () => {
     component.selection.selected.push(data[0].raw);
-    expect(component.isAllSelected()).toBeFalsy();
+    expect(component.isAllSelected).toBeFalsy();
   });
 
   describe('toggleAllRows', () => {
@@ -209,6 +212,12 @@ describe('TableComponent', () => {
       component.toggleRow(data[0].raw);
       expect(component.selection.isSelected(data[0].raw)).toBeFalsy();
     });
+  });
+
+  it('should emit on PersonnalizeTasksByStatus', () => {
+    const spy = jest.spyOn(component.personnalizeTasksByStatus, 'emit');
+    component.onPersonnalizeTasksByStatus();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should unsubscribe on destroy', () => {
