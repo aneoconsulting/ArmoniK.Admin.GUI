@@ -36,6 +36,9 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   @Input({ required: true }) set column(entry: TableColumn<K>) {
     this._column = entry;
+    if (entry.key === 'count') {
+      this.refreshStatuses = new Subject<void>();
+    }
   }
 
   @Input({ required: true }) set element(entry: T) {
@@ -68,7 +71,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   private _link: string;
   private _queryParams: Params | undefined;
-  refreshStatuses = new Subject<void>();
+  refreshStatuses: Subject<void>;
 
   get column() {
     return this._column;

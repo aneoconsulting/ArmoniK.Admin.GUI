@@ -60,6 +60,8 @@ import { SessionRaw } from './types';
 })
 export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
   cancel$ = new Subject<void>();
+  pause$ = new Subject<void>();
+  resume$ = new Subject<void>();
   close$ = new Subject<void>();
   delete$ = new Subject<void>();
   duration$ = new Subject<void>();
@@ -74,6 +76,8 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   private router = inject(Router);
 
 
+  canPause$ = new Subject<boolean>();
+  canResume$ = new Subject<boolean>();
   canCancel$ = new Subject<boolean>();
   canClose$ = new Subject<boolean>();
 
@@ -98,6 +102,24 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       icon: this.getPageIcon('partitions'),
       link: '/partitions',
       queryParams: {},
+    },
+    {
+      id: 'pause',
+      name: $localize`Pause Session`,
+      icon: this.getIcon('pause'),
+      action$: this.pause$,
+      disabled: this.canPause$,
+      color: 'accent',
+      area: 'right'
+    },
+    {
+      id: 'resume',
+      name: $localize`Resume Session`,
+      icon: this.getIcon('play'),
+      action$: this.resume$,
+      disabled: this.canResume$,
+      color: 'accent',
+      area: 'right'
     },
     {
       id: 'cancel',
@@ -147,6 +169,8 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
+        this.canPause$.next(!this._sessionsStatusesService.canPause(this.data.status));
+        this.canResume$.next(!this._sessionsStatusesService.canResume(this.data.status));
         this.canCancel$.next(!this._sessionsStatusesService.canCancel(this.data.status));
         this.canClose$.next(!this._sessionsStatusesService.canClose(this.data.status));
         this.data$.next(data);
@@ -156,6 +180,14 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     this.getIdByRoute();
     this.cancel$.subscribe(() => {
       this.cancel();
+    });
+
+    this.pause$.subscribe(() => {
+      this.pause();
+    });
+
+    this.resume$.subscribe(() => {
+      this.resume();
     });
 
     this.delete$.subscribe(() => {
@@ -215,6 +247,40 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     });
   }
 
+  pause(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._grpcService.pause$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session paused');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to pause session');
+      },
+    });
+  }
+
+  resume(): void {
+    if(!this.data?.sessionId) {
+      return;
+    }
+
+    this._grpcService.resume$(this.data.sessionId).subscribe({
+      complete: () => {
+        this.success('Session resumed');
+        this.refresh.next();
+      },
+      error: (error) => {
+        console.error(error);
+        this.error('Unable to resume session');
+      },
+    });
+  }
+
   close(): void {
     if(!this.data?.sessionId) {
       return;
@@ -236,7 +302,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     if(!this.data?.sessionId) {
       return;
     }
-  
+
     this._grpcService.delete$(this.data.sessionId).subscribe({
       complete: () => {
         this.success('Session deleted');

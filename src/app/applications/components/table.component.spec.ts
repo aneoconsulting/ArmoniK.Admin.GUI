@@ -1,10 +1,6 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -86,18 +82,6 @@ describe('ApplicationTableComponent', () => {
 
   let dialogSubject: BehaviorSubject<TaskStatusColored[] | undefined>;
 
-  const sort: MatSort = {
-    active: 'namespace',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
-
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
-
   const filters: ApplicationRawFilters = [
     [
       {
@@ -167,8 +151,6 @@ describe('ApplicationTableComponent', () => {
         direction: 'desc'
       }
     };
-    component.sort = sort;
-    component.paginator = paginator;
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -187,40 +169,10 @@ describe('ApplicationTableComponent', () => {
     expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('applications');
   });
 
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options pagination on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'name',
-        direction: 'desc'
-      }
-    });
-  });
-
-  it('should get required icons', () => {
-    expect(component.getIcon('tune')).toEqual('tune');
-    expect(component.getIcon('more')).toEqual('more_vert');
-    expect(component.getIcon('view')).toEqual('visibility');
-  });
-
   it('should change column order', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1
-    } as unknown as CdkDragDrop<string[]>;
-    component.onDrop(event);
-    expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    const newColumns: ApplicationRawColumnKey[] = ['actions', 'count', 'name'];
+    component.onDrop(newColumns);
+    expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
 
   it('should count tasks by status of the filters', () => {

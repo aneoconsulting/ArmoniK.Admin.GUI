@@ -21,7 +21,7 @@
         (lockColumnsChange)="onLockColumnsChange()"
         >
           <ng-container extra-buttons-right>
-            <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.selected.length">
+            <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
               <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
               <span i18n> Cancel Tasks </span>
             </button>
@@ -56,13 +56,13 @@
     [intervalValue]="intervalValue"
     [lockColumns]="lockColumns"
     [options]="options"
-    [selection]="selection"
     [stopInterval]="stopInterval"
     [serviceName]="serviceName"
     [serviceIcon$]="serviceIcon$"
     [serviceIcon]="serviceIcon"
     [urlTemplate]="urlTemplate"
     [total]="total"
+    (selectionChange)="onSelectionChange($event)"
     (optionsChange)="onOptionsChange()"
     (cancelTask)="onCancelTask($event)"
     (retries)="onRetries($event)"

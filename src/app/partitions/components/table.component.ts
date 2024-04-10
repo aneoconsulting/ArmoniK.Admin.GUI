@@ -1,28 +1,11 @@
 import { FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { PartitionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableCellComponent } from '@components/table/table-cell.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -33,34 +16,12 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
   selector: 'app-partitions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-
-  ],
   providers: [
     TasksByStatusService,
-    IconsService,
     FiltersService
   ],
   imports: [
-    TableActionsToolbarComponent,
-    FiltersToolbarComponent,
-    TableContainerComponent,
-    MatPaginatorModule,
-    TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
-    MatSortModule,
-    NgFor,
-    NgIf,
-    MatTableModule,
-    MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
-    DragDropModule,
-    MatButtonModule,
-    TableInspectObjectComponent,
-    MatDialogModule,
-    TableCellComponent,
+    TableComponent,
   ]
 })
 export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions> implements OnInit {

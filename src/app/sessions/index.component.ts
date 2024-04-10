@@ -27,7 +27,6 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -106,7 +105,6 @@ app-table-actions-toolbar {
     PageHeaderComponent,
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
-    TableContainerComponent,
     MatTooltipModule,
     MatToolbarModule,
     MatButtonModule,
@@ -275,7 +273,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isLoading = false;
       }
     });
-    
+
     this.nextDuration$.pipe(
       map(sessionId => this._sessionsGrpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
       mergeAll(),
@@ -368,7 +366,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options.pageIndex = 0;
     this.refresh.next();
   }
-  
+
   onLockColumnsChange() {
     this.lockColumns = !this.lockColumns;
     this._sessionsIndexService.saveLockColumns(this.lockColumns);
@@ -378,20 +376,48 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._autoRefreshService.autoRefreshTooltip(this.intervalValue);
   }
 
+  onPause(sessionId: string) {
+    this._sessionsGrpcService.pause$(sessionId)
+      .subscribe(
+        {
+          error: () => this.#notificationService.error('Unable to pause session'),
+          complete: () => this.refresh.next()
+        }
+      );
+  }
+
+  onResume(sessionId: string) {
+    this._sessionsGrpcService.resume$(sessionId).subscribe(
+      {
+        error: () => this.#notificationService.error('Unable to resume session'),
+        complete: () => this.refresh.next()
+      }
+    );
+  }
+
   onCancel(sessionId: string) {
     this._sessionsGrpcService.cancel$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to cancel session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
 
   onClose(sessionId: string) {
     this._sessionsGrpcService.close$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to close session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
   onDelete(sessionId: string) {
     this._sessionsGrpcService.delete$(sessionId).subscribe(
-      () => this.refresh.next(),
+      {
+        error: () => this.#notificationService.error('Unable to delete session'),
+        complete: () => this.refresh.next()
+      }
     );
   }
 

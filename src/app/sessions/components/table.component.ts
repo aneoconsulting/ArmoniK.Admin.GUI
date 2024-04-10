@@ -1,15 +1,7 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { Params, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
@@ -18,14 +10,7 @@ import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableActionsComponent } from '@components/table/table-actions.component';
-import { TableCellComponent } from '@components/table/table-cell.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
+import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -38,46 +23,26 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
   selector: 'app-sessions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-    
-  ],
   providers: [
     TasksByStatusService,
     MatDialog,
-    IconsService,
     FiltersService,
     Clipboard,
   ],
   imports: [
-    TableActionsToolbarComponent,
-    FiltersToolbarComponent,
-    TableContainerComponent,
-    MatPaginatorModule,
-    TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
-    MatSortModule,
-    NgFor,
-    NgIf,
-    MatTableModule,
-    MatIconModule,
+    TableComponent,
     RouterModule,
-    DragDropModule,
-    MatButtonModule,
-    DatePipe,
-    TableInspectObjectComponent,
     MatDialogModule,
-    TableCellComponent,
-    TableActionsComponent,
-    NgIf,
   ]
 })
 export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions>  implements OnInit {
   @Input({required: true}) filters: SessionRawFilters;
+  @Output() pauseSession = new EventEmitter<string>();
+  @Output() resumeSession = new EventEmitter<string>();
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
-  
+
   override readonly indexService = inject(SessionsIndexService);
   readonly iconsService = inject(IconsService);
   readonly notificationService = inject(NotificationService);
@@ -96,6 +61,12 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   seeResults$ = new Subject<SessionData>();
   seeResultsSubscription = this.seeResults$.subscribe(data => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
 
+  pauseSession$ = new Subject<SessionData>();
+  pauseSessionSubscription = this.pauseSession$.subscribe(data => this.onPause(data.raw.sessionId));
+
+  resumeSession$ = new Subject<SessionData>();
+  resumeSessionSubscription = this.resumeSession$.subscribe(data => this.onResume(data.raw.sessionId));
+
   cancelSession$ = new Subject<SessionData>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
@@ -108,8 +79,8 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   actions: ActionTable<SessionData>[] = [
     {
       label: 'Copy session ID',
-      icon: 'copy',
-      action$: this.copy$, 
+      icon: this.getIcon('copy'),
+      action$: this.copy$,
     },
     {
       label: 'See session',
@@ -122,21 +93,34 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       action$: this.seeResults$,
     },
     {
+      label: 'Pause session',
+      icon: this.getIcon('pause'),
+      action$: this.pauseSession$,
+      condition: (element: SessionData) => this.statusesService.canPause(element.raw.status)
+    },
+    {
+      label: 'Resume session',
+      icon: this.getIcon('play'),
+      action$: this.resumeSession$,
+      condition: (element: SessionData) => this.statusesService.canResume(element.raw.status)
+    },
+    {
       label: 'Cancel session',
-      icon: 'cancel',
-      action$: this.cancelSession$, 
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+      icon: this.getIcon('cancel'),
+      action$: this.cancelSession$,
+      condition: (element: SessionData) => this.statusesService.canCancel(element.raw.status)
     },
     {
       label: 'Close session',
       icon: 'close',
       action$: this.closeSession$,
-      condition: (element: SessionData) => element.raw.status === SessionStatus.SESSION_STATUS_RUNNING
+      condition: (element: SessionData) => this.statusesService.canClose(element.raw.status)
     },
     {
       label: 'Delete session',
       icon: 'delete',
       action$: this.deleteSession$,
+      condition: (element: SessionData) => this.statusesService.canDelete(element.raw.status)
     }
   ];
 
@@ -146,7 +130,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
 
   createNewLine(entry: SessionRaw): SessionData {
     const queryParams = new Map<ColumnKey<SessionRaw>, Params>();
-    queryParams.set('sessionId', { '0-root-1-0': entry.sessionId }); 
+    queryParams.set('sessionId', { '0-root-1-0': entry.sessionId });
     return {
       raw: entry,
       queryParams,
@@ -244,6 +228,14 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
         }
       ]
     ];
+  }
+
+  onPause(sessionId: string) {
+    this.pauseSession.emit(sessionId);
+  }
+
+  onResume(sessionId: string) {
+    this.resumeSession.emit(sessionId);
   }
 
   onCancel(sessionId: string) {

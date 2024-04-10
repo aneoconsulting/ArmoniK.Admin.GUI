@@ -1,5 +1,4 @@
 import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { SelectionModel } from '@angular/cdk/collections';
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -108,8 +107,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   lockColumns: boolean = false;
   columnsLabels: Record<TaskSummaryColumnKey, string> = {} as unknown as Record<TaskSummaryColumnKey, string>;
 
-  selection = new SelectionModel<string>(true, []);
-  selectedRows: string[] = [];
+  selection: string[] = [];
 
   isLoading = true;
   data: TaskSummary[] = [];
@@ -170,9 +168,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         startWith({}),
         switchMap(() => {
           this.isLoading = true;
-          this.selectedRows = this.selection.selected;
-          this.selection.clear();
-
           const filters = this.filters;
 
           this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
@@ -197,13 +192,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe((data) => {
         this.data = data;
-        if (this.selectedRows.length > 0) {
-          if (this.selectedRows.length === data.length) {
-            this.selection.select(...this.data.map(task => task.id));
-          } else {
-            this.selection.select(...(this.data.filter(task => this.selectedRows.includes(task.id))).map(task => task.id));
-          }
-        }
         this.data$.next(this.data);
       });
 
@@ -293,9 +281,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cancelTasks([taskId]);
   }
 
+  onSelectionChange(selection: string[]): void {
+    this.selection = selection;
+  }
+
   onCancelTasksSelection():void {
-    const tasksIds = this.selection.selected;
-    this.cancelTasks(tasksIds);
+    this.cancelTasks(this.selection);
   }
   
   onLockColumnsChange() {

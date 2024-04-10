@@ -15,7 +15,6 @@ import { Component } from '@angular/core';
 .container {
   position: relative;
 }
-
 .table-container {
   position: relative;
   overflow: auto;
