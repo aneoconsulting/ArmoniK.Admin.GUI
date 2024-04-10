@@ -2,7 +2,7 @@
     <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
     <span i18n="Page title"> Sessions </span>
   </app-page-header>
-  
+
   <mat-toolbar>
     <mat-toolbar-row>
       <app-table-actions-toolbar
@@ -30,12 +30,12 @@
         </ng-container>
       </app-table-actions-toolbar>
     </mat-toolbar-row>
-  
+
     <mat-toolbar-row class="filters">
       <app-filters-toolbar [filters]="filters" [customColumns]="customColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
     </mat-toolbar-row>
   </mat-toolbar>
-  
+
   <app-sessions-table
     [filters$]="filters$"
     [displayedColumns]="displayedColumns"
