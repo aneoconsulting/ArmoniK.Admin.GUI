@@ -35,18 +35,6 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
 @Component({
   selector: 'app-tasks-index',
   templateUrl: './index.component.html',
-  styles: [`
-app-table-actions-toolbar {
-  flex-grow: 1;
-}
-
-.filters {
-  height: auto;
-  min-height: 64px;
-
-  padding: 1rem;
-}
-  `],
   standalone: true,
   imports: [
     NgFor,

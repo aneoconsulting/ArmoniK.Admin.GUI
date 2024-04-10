@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ResultsTableComponent } from '@app/results/components/table.component';
@@ -23,6 +24,7 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
     TableActionsToolbarComponent,
     FiltersToolbarComponent,
     ResultsTableComponent,
+    MatMenuModule,
   ]
 })
 export class ResultsLineComponent extends DashboardLineTableComponent<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements OnInit, OnDestroy, AfterViewInit {

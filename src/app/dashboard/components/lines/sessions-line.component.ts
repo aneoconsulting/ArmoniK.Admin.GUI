@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { SessionsTableComponent } from '@app/sessions/components/table.component';
@@ -18,16 +19,6 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-dashboard-sessions-line',
   templateUrl: './sessions-line.component.html',
   standalone: true,
-  styles: [`
-app-table-actions-toolbar {
-  flex-grow: 1;
-}
-.filters {
-  height: auto;
-  min-height: 64px;
-  padding: 1rem;
-}
-  `],
   providers: [
     MatSnackBar,
     NotificationService,
@@ -43,6 +34,7 @@ app-table-actions-toolbar {
     FiltersToolbarComponent,
     SessionsTableComponent,
     MatIconModule,
+    MatMenuModule,
   ],
 })
 export class SessionsLineComponent extends DashboardLineTableComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> implements OnInit, AfterViewInit, OnDestroy {

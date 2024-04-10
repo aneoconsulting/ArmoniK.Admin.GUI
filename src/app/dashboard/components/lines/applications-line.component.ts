@@ -30,9 +30,6 @@ import { StatusesGroupCardComponent } from '../statuses-group-card.component';
   selector: 'app-dashboard-applications-line',
   templateUrl: './applications-line.component.html',
   styles: [`
-app-table-actions-toolbar {
-  flex-grow: 1;
-}
 .filters {
   height: auto;
   min-height: 64px;

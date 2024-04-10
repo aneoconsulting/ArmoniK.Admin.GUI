@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { PartitionsTableComponent } from '@app/partitions/components/table.component';
@@ -16,9 +17,6 @@ import { NotificationService } from '@services/notification.service';
   templateUrl: './partitions-line.component.html',
   standalone: true,
   styles: [`
-app-table-actions-toolbar {
-  flex-grow: 1;
-}
 .filters {
   height: auto;
   min-height: 64px;
@@ -37,6 +35,7 @@ app-table-actions-toolbar {
     FiltersToolbarComponent,
     PartitionsTableComponent,
     MatIconModule,
+    MatMenuModule,
   ]
 })
 export class PartitionsLineComponent extends DashboardLineTableComponent<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
