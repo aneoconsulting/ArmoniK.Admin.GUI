@@ -23,6 +23,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     MatDialog,
     FiltersService,
     Clipboard,
+    TasksGrpcService
   ],
   imports: [
     TableComponent
@@ -37,11 +38,11 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   @Output() cancelTask = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<string[]>();
 
-  override readonly indexService = inject(TasksIndexService);
-  override readonly _grpcService = inject(TasksGrpcService);
-  readonly _router = inject(Router);
-  readonly _clipboard = inject(Clipboard);
-  readonly _tasksStatusesService = inject(TasksStatusesService);
+  readonly indexService = inject(TasksIndexService);
+  readonly grpcService = inject(TasksGrpcService);
+  readonly router = inject(Router);
+  readonly clipboard = inject(Clipboard);
+  readonly tasksStatusesService = inject(TasksStatusesService);
 
   selection: string[];
 
@@ -49,7 +50,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data as TaskData));
 
   seeResult$ = new Subject<TaskData>();
-  resultSubscription = this.seeResult$.subscribe((data) => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
 
   retries$ = new Subject<TaskData>();
   retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
@@ -145,16 +146,16 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   onCopiedTaskId(element: TaskData) {
-    this._clipboard.copy(element.raw.id);
+    this.clipboard.copy(element.raw.id);
     this.notificationService.success('Task ID copied to clipboard');
   }
 
   isRetried(task: TaskSummary): boolean {
-    return this._tasksStatusesService.isRetried(task.status);
+    return this.tasksStatusesService.isRetried(task.status);
   }
 
   canCancelTask(task: TaskSummary): boolean {
-    return !this._tasksStatusesService.taskNotEnded(task.status);
+    return !this.tasksStatusesService.taskNotEnded(task.status);
   }
 
   onRetries(task: TaskSummary) {
@@ -162,7 +163,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   onCancelTask(id: string) {
-    this._grpcService.cancel$([id]).subscribe(() => this.notificationService.success('Task canceled'));
+    this.grpcService.cancel$([id]).subscribe(() => this.notificationService.success('Task canceled'));
   }
 
   onSelectionChange($event: TaskSummary[]): void {
