@@ -107,7 +107,7 @@ describe('ApplicationsLineComponent', () => {
   it('should init', () => {
     const intervalSpy = jest.spyOn(component.interval, 'next');
     component.ngOnInit();
-    expect(component.loadApplicationData).toBeTruthy();
+    expect(component.loading).toBeTruthy();
     expect(component.filters).toBe(line.filters);
     expect(intervalSpy).toHaveBeenCalledWith(line.interval);
   });

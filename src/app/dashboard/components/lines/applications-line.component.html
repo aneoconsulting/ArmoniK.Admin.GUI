@@ -1,7 +1,7 @@
 <mat-toolbar>
     <mat-toolbar-row>
       <app-table-actions-toolbar
-        [loading]="loadApplicationData"
+        [loading]="loading"
         [refreshTooltip]="autoRefreshTooltip()"
         [intervalValue]="intervalValue"
         [columnsLabels]="columnsLabels"
@@ -41,5 +41,5 @@
     [displayedColumns]="displayedColumns"
     [lockColumns]="lockColumns"
     [refresh$]="refresh$"
-    [loading$]="loadApplicationData$"
+    [loading$]="loading$"
   />
