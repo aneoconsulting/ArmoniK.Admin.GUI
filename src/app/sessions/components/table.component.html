@@ -1,3 +1,4 @@
 <app-table [columns]="displayedColumns" [data]="data" [total]="total" [options]="options" [lockColumns]="lockColumns"
   [actions]="actions" [statusesService]="statusesService" [tasksStatusesColored]="tasksStatusesColored"
-  (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()" />
+  (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()"
+  (personnalizeTasksByStatus)="personalizeTasksByStatus()" />

@@ -26,7 +26,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions }
   ]
 })
 export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements AfterViewInit {
-  readonly _grpcService = inject(ResultsGrpcService);
+  readonly grpcService = inject(ResultsGrpcService);
   readonly indexService = inject(ResultsIndexService);
   readonly statusesService = inject(ResultsStatusesService);
 
@@ -46,11 +46,11 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
     return entries.results;
   }
 
-  override isDataRawEqual(value: ResultRaw, entry: ResultRaw): boolean {
+  isDataRawEqual(value: ResultRaw, entry: ResultRaw): boolean {
     return value.resultId === entry.resultId;
   }
   
-  override createNewLine(entry: ResultRaw): ResultData {
+  createNewLine(entry: ResultRaw): ResultData {
     return {
       raw: entry,
       value$: new Subject<ResultRaw>(),
