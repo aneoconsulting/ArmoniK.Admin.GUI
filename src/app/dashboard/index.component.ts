@@ -34,6 +34,7 @@ import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { ApplicationsLineComponent } from './components/lines/applications-line.component';
 import { PartitionsLineComponent } from './components/lines/partitions-line.component';
+import { ResultsLineComponent } from './components/lines/results-line.component';
 import { SessionsLineComponent } from './components/lines/sessions-line.component';
 import { TaskByStatusLineComponent } from './components/lines/task-by-status-line.component';
 import { TasksLineComponent } from './components/lines/tasks-line.component';
@@ -127,6 +128,7 @@ import { Line, LineType } from './types';
     FiltersToolbarComponent,
     TaskByStatusLineComponent,
     ApplicationsLineComponent,
+    ResultsLineComponent,
     PartitionsLineComponent,
     SessionsLineComponent,
     TasksLineComponent,
