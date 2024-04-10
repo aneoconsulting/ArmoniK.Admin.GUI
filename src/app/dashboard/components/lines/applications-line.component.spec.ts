@@ -1,15 +1,12 @@
-import { ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { TableColumn } from '@app/types/column.type';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
-import { NotificationService } from '@services/notification.service';
 import { ApplicationsLineComponent } from './applications-line.component';
 import { Line } from '../../types';
 
@@ -81,13 +78,6 @@ describe('ApplicationsLineComponent', () => {
     }),
   };
 
-  const mockGrpcApplicationsService = {
-    list$: jest.fn()
-  };
-
-  const mockNotificationService = {
-    error: jest.fn()
-  };
   const mockApplicationsIndexService = {
     availableTableColumns: displayedColumns,
     resetColumns: jest.fn(() => new DefaultConfigService().defaultApplications.columns),
@@ -99,15 +89,15 @@ describe('ApplicationsLineComponent', () => {
       providers: [
         ApplicationsLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
-        { provide: ApplicationsGrpcService, useValue: mockGrpcApplicationsService },
         AutoRefreshService,
         IconsService,
-        { provide: NotificationService, useValue: mockNotificationService },
         { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
         DefaultConfigService
       ]
     }).inject(ApplicationsLineComponent);
     component.line = line;
+    component.ngOnInit();
+    component.ngAfterViewInit();
   });
 
   it('should run', () => {
@@ -120,44 +110,6 @@ describe('ApplicationsLineComponent', () => {
     expect(component.loadApplicationData).toBeTruthy();
     expect(component.filters).toBe(line.filters);
     expect(intervalSpy).toHaveBeenCalledWith(line.interval);
-  });
-
-  it('should create subscriptions after init', () => {
-    component.ngOnInit();
-    component.ngAfterViewInit();
-    expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, component.filters);
-  });
-
-  describe('Data fetching', () => {
-    it('should load received data', () => {
-      const receivedData: ListApplicationsResponse = {
-        applications: [
-          {
-            name: 'application 1',
-            namespace: 'namespace 1'
-          },
-          {
-            name: 'application 2',
-            namespace: 'namespace 2'
-          }
-        ],
-        total: 2
-      } as ListApplicationsResponse;
-      mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(receivedData));
-      const data$Spy = jest.spyOn(component.data$, 'next');
-      component.ngAfterViewInit();
-      expect(data$Spy).toHaveBeenCalledWith(receivedData.applications);
-      expect(component.total).toEqual(receivedData.total);
-    });
-
-    it('should load default data', () => {
-      component.data$.next([{name: 'applications', namespace: 'namespace 1', service: 'service', version: '1'}]);
-      mockGrpcApplicationsService.list$.mockImplementationOnce(() => of(null));
-      const data$Spy = jest.spyOn(component.data$, 'next');
-      component.ngAfterViewInit();
-      expect(data$Spy).toHaveBeenCalledWith([]);
-      expect(component.total).toEqual(0);
-    });
   });
 
   it('should unsubscribe on destroy', () => {
@@ -242,37 +194,9 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const refreshSpy = jest.spyOn(component.refresh, 'next');
+      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
-      expect(refreshSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe('onOptionsChange', () => {
-    it('should change line options', () => {
-      const newOptions: ApplicationRawListOptions = {
-        pageIndex: 2,
-        pageSize: 25,
-        sort: {
-          active: 'service',
-          direction: 'desc'
-        }
-      };
-      component.options = newOptions;
-      component.onOptionsChange();
-      expect(component.line.options).toEqual(newOptions);
-    });
-
-    it('should refresh', () => {
-      const optionsSpy = jest.spyOn(component.optionsChange, 'next');
-      component.onOptionsChange();
-      expect(optionsSpy).toHaveBeenCalled();
-    });
-
-    it('should emit', () => {
-      const lineSpy = jest.spyOn(component.lineChange, 'emit');
-      component.onOptionsChange();
-      expect(lineSpy).toHaveBeenCalled();
+      expect(spyFilters).toHaveBeenCalled();
     });
   });
 
@@ -351,9 +275,9 @@ describe('ApplicationsLineComponent', () => {
     });
 
     it('should refresh', () => {
-      const refreshSpy = jest.spyOn(component.refresh, 'next');
+      const spyFilters = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
-      expect(refreshSpy).toHaveBeenCalled();
+      expect(spyFilters).toHaveBeenCalled();
     });
   });
 

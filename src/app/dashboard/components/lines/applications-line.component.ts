@@ -6,12 +6,12 @@ import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge, } from 'rxjs';
 import { ApplicationsTableComponent } from '@app/applications/components/table.component';
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableColumn } from '@app/types/column.type';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
@@ -83,8 +83,6 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   readonly #dialog = inject(MatDialog);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #iconsService = inject(IconsService);
-  readonly #applicationGrpcService = inject(ApplicationsGrpcService);
-  readonly #notificationService = inject(NotificationService);
   readonly _applicationsIndexService = inject(ApplicationsIndexService);
   readonly #defaultConfigService = inject(DefaultConfigService);
 
@@ -92,10 +90,12 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  total: number;
-  loadApplicationData = false;
-  data$: Subject<ApplicationRaw[]> = new Subject();
+  loadApplicationData = true;
+  loadApplicationData$: Subject<boolean> = new BehaviorSubject(true);
+
   filters: ApplicationRawFilters;
+  filters$: Subject<ApplicationRawFilters>;
+
   options: ApplicationRawListOptions;
 
   displayedColumnsKeys: ApplicationRawColumnKey[] = [];
@@ -106,8 +106,8 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
 
   intervalValue: number;
 
+  refresh$: Subject<void> = new Subject<void>();
   refresh: Subject<void> = new Subject<void>();
-  optionsChange: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   subscriptions: Subscription = new Subscription();
@@ -126,33 +126,15 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.intervalValue = this.line.interval;
 
     this.filters = this.line.filters as ApplicationRawFilters;
+    this.filters$ = new BehaviorSubject(this.filters);
     this.interval.next(this.line.interval);
   }
 
   ngAfterViewInit() {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).pipe(
-      startWith(0),
-      tap(() => (this.loadApplicationData = true)),
-      switchMap(() => {
-        return this.#applicationGrpcService.list$(this.options, this.filters).pipe(catchError((error) => {
-          console.error(error);
-          this.#notificationService.error('Unable to fetch applications');
-          return of(null);
-        }));
-      }),
-      map(data => {
-        this.loadApplicationData = false;
-        this.total = data?.total ?? 0;
-
-        const partitions = data?.applications ?? [];
-
-        return partitions;
-      })
-    ).subscribe(data => {
-      this.data$.next(data);
-    });
-
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.loadApplicationData$.subscribe((value) => this.loadApplicationData = value);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy() {
@@ -212,13 +194,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.filters = value as [];
     this.line.filters = value as [];
     this.lineChange.emit();
-    this.refresh.next();
-  }
-
-  onOptionsChange() {
-    this.line.options = this.options;
-    this.optionsChange.next();
-    this.lineChange.emit();
+    this.filters$.next(this.filters);
   }
 
   onColumnsChange(data: ApplicationRawColumnKey[]) {
@@ -239,7 +215,7 @@ export class ApplicationsLineComponent implements OnInit, AfterViewInit,OnDestro
     this.filters = [];
     this.line.filters = [];
     this.lineChange.emit();
-    this.refresh.next();
+    this.filters$.next([]);
   }
 
   onLockColumnsChange() {

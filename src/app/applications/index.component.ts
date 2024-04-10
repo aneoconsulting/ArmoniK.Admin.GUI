@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
@@ -17,7 +17,6 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
-import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
@@ -27,9 +26,8 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsTableComponent } from './components/table.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
-import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
+import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -64,15 +62,14 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
   </mat-toolbar-row>
 </mat-toolbar>
 
-<app-application-table 
-  [data$]="data$"
-  [filters]="filters"
+<app-application-table
+  [filters$]="filters$"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
-  [total]="total"
-  (optionsChange)="onOptionsChange()"
-></app-application-table>
+  [refresh$]="refresh$"
+  [loading$]="isLoading$"
+/>
   `,
   styles: [`
 app-table-actions-toolbar {
@@ -98,8 +95,6 @@ app-table-actions-toolbar {
     UtilsService,
     AutoRefreshService,
     ApplicationsIndexService,
-    ApplicationsGrpcService,
-    NotificationService,
     TasksStatusesService,
     ApplicationsFiltersService,
     {
@@ -123,7 +118,6 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #applicationsFiltersService = inject(DATA_FILTERS_SERVICE);
 
@@ -134,28 +128,27 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   columnsLabels: Record<ApplicationRawColumnKey, string> = {} as unknown as Record<ApplicationRawColumnKey, string>;
 
   isLoading = true;
-  data$: Subject<ApplicationRaw[]> = new Subject();
-  total = 0;
+  isLoading$: Subject<boolean> = new BehaviorSubject(true);
 
   options: ApplicationRawListOptions;
 
   filters: ApplicationRawFilters = [];
+  filters$: Subject<ApplicationRawFilters>;
 
   intervalValue = 0;
   sharableURL = '';
 
+  refresh$: Subject<void> = new Subject<void>();
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this._autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
 
   subscriptions: Subscription = new Subscription();
 
   constructor(
     private _shareURLService: ShareUrlService,
     private _applicationsIndexService: ApplicationsIndexService,
-    private _applicationsGrpcService: ApplicationsGrpcService,
     private _autoRefreshService: AutoRefreshService
   ) {}
 
@@ -171,6 +164,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this._applicationsIndexService.restoreOptions();
 
     this.filters = this.#applicationsFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this._applicationsIndexService.restoreIntervalValue();
 
@@ -178,40 +172,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-
-          const filters = this.filters;
-
-          this.sharableURL = this._shareURLService.generateSharableURL(this.options, filters);
-          this._applicationsIndexService.saveOptions(this.options);
-
-          return this._applicationsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
-            console.error(error);
-            this.#notificationService.error('Unable to fetch applications');
-            return of(null);
-          }));
-        }),
-        map(data => {
-          this.isLoading = false;
-          this.total = data?.total ?? 0;
-
-          const partitions = data?.applications ?? [];
-
-          return partitions;
-        })
-      )
-      .subscribe(data => {
-        this.data$.next(data);
-      });
-
-    this.handleAutoRefreshStart();
-
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {
@@ -259,13 +223,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#applicationsFiltersService.saveFilters(filters as ApplicationRawFilters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset() {
     this.filters = this.#applicationsFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next([]);
   }
 
   onLockColumnsChange() {
@@ -283,9 +247,5 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }

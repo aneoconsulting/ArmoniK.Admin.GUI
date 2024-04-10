@@ -8,7 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge, } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableColumn } from '@app/types/column.type';
@@ -110,15 +110,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   selection: string[] = [];
 
   isLoading = true;
-  data: TaskSummary[] = [];
-  data$: Subject<TaskSummary[]> = new Subject();
-  total = 0;
+  isLoading$: Subject<boolean> = new BehaviorSubject(true);
 
   taskId: string;
 
   options: TaskSummaryListOptions;
 
   filters: TaskSummaryFilters = [];
+  filters$: Subject<TaskSummaryFilters>;
 
   sharableURL = '';
 
@@ -132,6 +131,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   interval: Subject<number> = new Subject<number>();
   optionsChange: Subject<void> = new Subject<void>();
   interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
+  refresh$: Subject<void> = new Subject<void>();
 
   subscriptions: Subscription = new Subscription();
 
@@ -149,6 +149,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this.#tasksIndexService.restoreOptions();
 
     this.filters = this.#tasksFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this.#tasksIndexService.restoreIntervalValue();
 
@@ -161,41 +162,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-          const filters = this.filters;
-
-          this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
-          this.#tasksIndexService.saveOptions(this.options);
-
-          return this.#tasksGrpcService.list$(this.options, filters).pipe(
-            catchError((error) => {
-              console.error(error);
-              this.#notificationService.error('Unable to fetch tasks');
-              return of(null);
-            }),
-          );
-        }),
-        map(data => {
-          this.isLoading = false;
-
-          this.total = data?.total ?? 0;
-
-          const tasks = data?.tasks ?? [];
-          return tasks;
-        }),
-      )
-      .subscribe((data) => {
-        this.data = data;
-        this.data$.next(this.data);
-      });
-
-    this.handleAutoRefreshStart();
-
+    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {
@@ -266,17 +236,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#tasksFiltersService.saveFilters(this.filters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset(): void{
     this.filters = this.#tasksFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onCancelTask(taskId: string): void {
-    this.cancelTasks([taskId]);
+    this.filters$.next([]);
   }
 
   onSelectionChange(selection: string[]): void {

@@ -1,15 +1,17 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
+import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
+import { ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -80,6 +82,14 @@ describe('ApplicationTableComponent', () => {
     saveStatuses: jest.fn()
   };
 
+  const mockNotificationService = {
+    error: jest.fn()
+  };
+
+  const mockApplicationGrpcService = {
+    list$: jest.fn(() => of({ applications: [{ name: '1', version: '1' }, { name: '2', version: '1' }], total: 2}))
+  };
+
   let dialogSubject: BehaviorSubject<TaskStatusColored[] | undefined>;
 
   const filters: ApplicationRawFilters = [
@@ -124,8 +134,8 @@ describe('ApplicationTableComponent', () => {
       providers: [
         ApplicationsTableComponent,
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
-        {provide: TasksByStatusService, useValue: mockTasksByStatusService },
-        {provide: MatDialog, useValue:
+        { provide: TasksByStatusService, useValue: mockTasksByStatusService },
+        { provide: MatDialog, useValue:
           {
             open: () => {
               return {
@@ -136,13 +146,16 @@ describe('ApplicationTableComponent', () => {
             }
           }
         },
-        IconsService,
-        FiltersService
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ApplicationsGrpcService, useValue: mockApplicationGrpcService },
+        FiltersService,
+        IconsService
       ]
     }).inject(ApplicationsTableComponent);
-    component.data$ = new Subject();
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
     component.displayedColumns = displayedColumns;
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<ApplicationRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -160,9 +173,49 @@ describe('ApplicationTableComponent', () => {
   });
 
   it('should update data on next', () => {
-    const newData = [{name: '1'}, {name: '2'}] as unknown as ApplicationRaw[];
-    component.data$.next(newData);
-    expect(component.data.map(d => d.raw)).toEqual(newData);
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: { name: '1', version: '1'},
+        queryTasksParams: {
+          '0-options-5-0': '1',
+          '0-options-6-0': '1'
+        },
+        filters: [[{
+          field: 5,
+          for: 'options',
+          operator: 0,
+          value: '1'
+        },
+        {
+          field: 6,
+          for: 'options',
+          operator: 0,
+          value: '1'
+        }]],
+        value$: expect.any(Subject)
+      },
+      {
+        raw: { name: '2', version: '1'},
+        queryTasksParams: {
+          '0-options-5-0': '2',
+          '0-options-6-0': '1'
+        },
+        filters: [[{
+          field: 5,
+          for: 'options',
+          operator: 0,
+          value: '2'
+        },
+        {
+          field: 6,
+          for: 'options',
+          operator: 0,
+          value: '1'
+        }]],
+        value$: expect.any(Subject)
+      }
+    ]);
   });
 
   it('should restore taskStatus on init', () => {

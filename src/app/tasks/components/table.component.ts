@@ -1,17 +1,16 @@
-import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { TaskData } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { NotificationService } from '@services/notification.service';
+import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
@@ -19,7 +18,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
 @Component({
   selector: 'app-tasks-table',
   standalone: true,
-  templateUrl: './table.component.html', 
+  templateUrl: './table.component.html',
   providers: [
     MatDialog,
     FiltersService,
@@ -29,11 +28,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions> {
-  @Input({required: true}) stopInterval: Subject<void>;
-  @Input({required: true}) interval: Subject<number>;
-  @Input({required: true}) intervalValue: number;
-  @Input() filters: TaskSummaryFilters = [];
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> implements AfterViewInit {
   @Input() serviceIcon: string | null = null;
   @Input() serviceName: string | null = null;
   @Input() urlTemplate: string | null = null;
@@ -42,19 +37,19 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   @Output() cancelTask = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<string[]>();
 
-  tasksStatusesColored: TaskStatusColored[] = [];
+  readonly indexService = inject(TasksIndexService);
+  readonly grpcService = inject(TasksGrpcService);
+  readonly router = inject(Router);
+  readonly clipboard = inject(Clipboard);
+  readonly tasksStatusesService = inject(TasksStatusesService);
 
-  override readonly indexService = inject(TasksIndexService);
-  readonly #notificationService = inject(NotificationService);
-  readonly _router = inject(Router);
-  readonly _clipboard = inject(Clipboard);
-  readonly _tasksStatusesService = inject(TasksStatusesService);
+  selection: string[];
 
   copy$ = new Subject<TaskData>();
   copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data as TaskData));
 
   seeResult$ = new Subject<TaskData>();
-  resultSubscription = this.seeResult$.subscribe((data) => this._router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
 
   retries$ = new Subject<TaskData>();
   retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
@@ -95,6 +90,14 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
     }
   ];
+
+  ngAfterViewInit(): void {
+    this.subscribeToData();
+  }
+
+  computeGrpcData(entries: ListTasksResponse): TaskSummary[] | undefined {
+    return entries.tasks;
+  }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;
@@ -142,16 +145,16 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   onCopiedTaskId(element: TaskData) {
-    this._clipboard.copy(element.raw.id);
-    this.#notificationService.success('Task ID copied to clipboard');
+    this.clipboard.copy(element.raw.id);
+    this.notificationService.success('Task ID copied to clipboard');
   }
 
   isRetried(task: TaskSummary): boolean {
-    return this._tasksStatusesService.isRetried(task.status);
+    return this.tasksStatusesService.isRetried(task.status);
   }
 
   canCancelTask(task: TaskSummary): boolean {
-    return !this._tasksStatusesService.taskNotEnded(task.status);
+    return !this.tasksStatusesService.taskNotEnded(task.status);
   }
 
   onRetries(task: TaskSummary) {
@@ -159,7 +162,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   }
 
   onCancelTask(id: string) {
-    this.cancelTask.emit(id);
+    this.grpcService.cancel$([id]).subscribe(() => this.notificationService.success('Task canceled'));
   }
 
   onSelectionChange($event: TaskSummary[]): void {

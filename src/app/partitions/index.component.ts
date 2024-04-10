@@ -9,7 +9,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
@@ -30,7 +30,6 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
@@ -40,7 +39,7 @@ import { PartitionsTableComponent } from './components/table.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
+import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -76,15 +75,13 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
 </mat-toolbar>
 
 <app-partitions-table
-  [data$]="data$"
-  [filters]="filters"
+  [filters$]="filters$"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
-  [total]="total"
-  (optionsChange)="onOptionsChange()"
->
-</app-partitions-table>
+  [refresh$]="refresh$"
+  [loading$]="isLoading$"
+/>
   `,
   styles: [`
 app-table-actions-toolbar {
@@ -100,10 +97,8 @@ app-table-actions-toolbar {
   `],
   standalone: true,
   providers: [
-    IconsService,
     ShareUrlService,
     QueryParamsService,
-    StorageService,
     TableURLService,
     TableStorageService,
     TableService,
@@ -147,11 +142,9 @@ app-table-actions-toolbar {
   ]
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #notificationService = inject(NotificationService);
   readonly #iconsService = inject(IconsService);
   readonly #shareURLService = inject(ShareUrlService);
   readonly #partitionsIndexService = inject(PartitionsIndexService);
-  readonly #partitionsGrpcService = inject(PartitionsGrpcService);
   readonly #autoRefreshService = inject(AutoRefreshService);
   readonly #partitionsFiltersService = inject(PartitionsFiltersService);
 
@@ -161,22 +154,22 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   lockColumns: boolean;
   columnsLabels: Record<PartitionRawColumnKey, string> = {} as unknown as Record<PartitionRawColumnKey, string>;
 
+  isLoading$: Subject<boolean> = new BehaviorSubject(true);
   isLoading = true;
-  data$: Subject<PartitionRaw[]> = new Subject();
-  total = 0;
 
   options: PartitionRawListOptions;
 
   filters: PartitionRawFilters = [];
+  filters$: Subject<PartitionRawFilters>;
 
   intervalValue = 0;
   sharableURL = '';
 
+  refresh$: Subject<void> = new Subject<void>();
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-  optionsChange: Subject<void> = new Subject<void>();
 
   tasksStatusesColored: TaskStatusColored[] = [];
 
@@ -194,46 +187,18 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.options = this.#partitionsIndexService.restoreOptions();
 
     this.filters = this.#partitionsFiltersService.restoreFilters();
+    this.filters$ = new BehaviorSubject(this.filters);
 
     this.intervalValue = this.#partitionsIndexService.restoreIntervalValue();
 
     this.sharableURL = this.#shareURLService.generateSharableURL(this.options, this.filters);
-
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription =  merge(this.optionsChange, this.refresh, this.interval$)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-
-          const filters = this.filters;
-
-          this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
-          this.#partitionsIndexService.saveOptions(this.options);
-
-          return this.#partitionsGrpcService.list$(this.options, filters).pipe(catchError((error) => {
-            console.error(error);
-            this.#notificationService.error('Unable to fetch partitions');
-            return of(null);
-          }));
-        }),
-        map(data => {
-          this.isLoading = false;
-          this.total = data?.total ?? 0;
-
-          const partitions = data?.partitions ?? [];
-
-          return partitions;
-        })
-      )
-      .subscribe(data => {
-        this.data$.next(data);
-      });
-
-    this.handleAutoRefreshStart();
+    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
+    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
+    this.subscriptions.add(loadingSubscription);
   }
 
   ngOnDestroy(): void {
@@ -281,13 +246,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.#partitionsFiltersService.saveFilters(filters as PartitionRawFilters);
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next(this.filters);
   }
 
   onFiltersReset() {
     this.filters = this.#partitionsFiltersService.resetFilters();
     this.options.pageIndex = 0;
-    this.refresh.next();
+    this.filters$.next([]);
   }
   
   onLockColumnsChange() {
@@ -305,9 +270,5 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.interval.next(this.intervalValue);
     }
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }

@@ -1,4 +1,4 @@
-import { ApplicationFilterField, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationFilterField, ListApplicationsResponse, ListPartitionsResponse, ListResultsResponse, ListSessionsResponse, ListTasksResponse, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
@@ -53,3 +53,5 @@ export type IndexListFilters = SessionRawFilters | TaskSummaryFilters | Partitio
 
 export type DataFilterField = ApplicationFilterField.AsObject | SessionFilterField.AsObject | ResultFilterField.AsObject | PartitionFilterField.AsObject | TaskFilterField.AsObject;
 export type ArmonikDataType = ApplicationData | PartitionData | ResultData | SessionData | TaskData;
+
+export type GrpcResponse = ListApplicationsResponse | ListTasksResponse | ListSessionsResponse | ListPartitionsResponse | ListResultsResponse;
