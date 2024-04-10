@@ -26,9 +26,6 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
   selector: 'app-sessions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-
-  ],
   providers: [
     TasksByStatusService,
     MatDialog,

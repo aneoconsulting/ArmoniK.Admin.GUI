@@ -42,9 +42,13 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   }
 
   @Input({ required: true }) set data(entries: ArmonikData<R>[]) {
-    const selectedRows = this.selection.selected;
     this._data = entries;
-    this.selection.select(...selectedRows.filter(row => entries.find(entry => entry.raw === row)));
+    if (this.dataComparator) {
+      const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
+      this.selection.clear();
+      this.selection.select(...selection);
+      this._isAllSelected = this.selection.selected.length === entries.length;
+    }
   }
 
   @Input({ required: true }) total: number;
@@ -56,10 +60,12 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   @Input({ required: false }) actions: ActionTable<D>[];
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
   @Input({ required: false }) tasksStatusesColored: TaskStatusColored[] = [];
+  @Input({ required: false }) dataComparator: ((a: R, b: R) => boolean) | undefined;
 
   @Output() columnDrop = new EventEmitter<K[]>();
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<R[]>();
+  @Output() personnalizeTasksByStatus = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -67,6 +73,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   private _data: ArmonikData<R>[];
   private _columns: TableColumn<K>[];
   private _columnsKeys: K[];
+  private _isAllSelected: boolean = false;
 
   get data(): ArmonikData<R>[] {
     return this._data;
@@ -78,6 +85,10 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
 
   get columnsKeys(): K[] {
     return this._columnsKeys;
+  }
+
+  get isAllSelected(): boolean {
+    return this._isAllSelected;
   }
 
   selection = new SelectionModel<R>(true, []);
@@ -116,16 +127,24 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     this.selectionChange.emit(this.selection.selected);
   }
 
-  isAllSelected(): boolean {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.data.length;
-    return numSelected === numRows;
+  isSelected(row: R): boolean {
+    return this.selection.selected.find(selectedRow => {
+      if (this.dataComparator) {
+        return this.dataComparator(row, selectedRow);
+      } else {
+        return false;
+      }
+    }) !== undefined;
   }
 
   toggleAllRows(): void {
-    this.isAllSelected() ?
-      this.selection.clear() :
+    if (this.isAllSelected) {
+      this.selection.clear();
+      this._isAllSelected = false;
+    } else {
       this.selection.select(...(this.data.map(d => d.raw)));
+      this._isAllSelected = true;
+    }
     this.emitSelectionChange();
   }
 
@@ -136,5 +155,9 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
       this.selection.select(data);
     }
     this.emitSelectionChange();
+  }
+
+  onPersonnalizeTasksByStatus(): void {
+    this.personnalizeTasksByStatus.emit();
   }
 }

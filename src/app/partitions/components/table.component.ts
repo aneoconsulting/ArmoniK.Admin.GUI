@@ -1,6 +1,5 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, inject } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
@@ -24,7 +23,6 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     FiltersService
   ],
   imports: [
-    MatDialogModule,
     TableComponent,
   ]
 })
