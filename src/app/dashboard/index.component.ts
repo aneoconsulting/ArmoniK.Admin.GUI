@@ -9,9 +9,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
-import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -33,12 +30,13 @@ import { StorageService } from '@services/storage.service';
 import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
-import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { ApplicationsLineComponent } from './components/lines/applications-line.component';
 import { PartitionsLineComponent } from './components/lines/partitions-line.component';
+import { SessionsLineComponent } from './components/lines/sessions-line.component';
 import { TaskByStatusLineComponent } from './components/lines/task-by-status-line.component';
+import { TasksLineComponent } from './components/lines/tasks-line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
 import { SplitLinesDialogComponent } from './components/split-lines-dialog.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
@@ -91,26 +89,20 @@ import { Line, LineType } from './types';
   `],
   standalone: true,
   providers: [
-    TasksStatusesService,
     ShareUrlService,
     QueryParamsService,
-    TasksGrpcService,
     StorageService,
     DashboardStorageService,
     DashboardIndexService,
     AutoRefreshService,
-    TasksIndexService,
     TableService,
     TableURLService,
     TableStorageService,
-    TasksByStatusService,
     UtilsService,
-    TableService,
     TableURLService,
     TableStorageService,
-    IconsService,
     FiltersService,
-    ApplicationsFiltersService,
+    TasksStatusesService
   ],
   imports: [
     NgFor,
@@ -136,6 +128,8 @@ import { Line, LineType } from './types';
     TaskByStatusLineComponent,
     ApplicationsLineComponent,
     PartitionsLineComponent,
+    SessionsLineComponent,
+    TasksLineComponent,
   ]
 })
 export class IndexComponent implements OnInit {

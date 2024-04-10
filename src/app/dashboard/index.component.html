@@ -43,5 +43,11 @@
       <ng-container *ngIf="line.type === 'Partitions'">
         <app-dashboard-partitions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
       </ng-container>
+      <ng-container *ngIf="line.type === 'Sessions'">
+        <app-dashboard-sessions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
+      </ng-container>
+      <ng-container *ngIf="line.type === 'Tasks'">
+        <app-dashboard-tasks-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
+      </ng-container>
     </app-page-section>
   </main>

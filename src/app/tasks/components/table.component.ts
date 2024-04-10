@@ -23,6 +23,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     MatDialog,
     FiltersService,
     Clipboard,
+    TasksGrpcService
   ],
   imports: [
     TableComponent
