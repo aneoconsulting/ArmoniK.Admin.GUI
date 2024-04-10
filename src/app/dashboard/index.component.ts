@@ -33,6 +33,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { AddLineDialogComponent } from './components/add-line-dialog.component';
 import { ApplicationsLineComponent } from './components/lines/applications-line.component';
+import { SessionsLineComponent } from './components/lines/sessions-line.component';
 import { TaskByStatusLineComponent } from './components/lines/task-by-status-line.component';
 import { TasksLineComponent } from './components/lines/tasks-line.component';
 import { ReorganizeLinesDialogComponent } from './components/reorganize-lines-dialog.component';
@@ -125,6 +126,7 @@ import { Line, LineType } from './types';
     FiltersToolbarComponent,
     TaskByStatusLineComponent,
     ApplicationsLineComponent,
+    SessionsLineComponent,
     TasksLineComponent,
   ]
 })
