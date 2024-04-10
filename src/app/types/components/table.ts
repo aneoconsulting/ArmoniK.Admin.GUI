@@ -27,7 +27,18 @@ export interface SelectableTable<D extends DataRaw> {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+  /**
+   * Modify environment before fetching the data.
+   * It is required for computing values that are not directly returned by the API (example: sessions durations).
+   * @param options 
+   * @param filters 
+   */
   prepareBeforeFetching(...args: unknown[]): void;
+
+  /**
+   * Call functions required to compute values after fetching the data.
+   * @param args 
+   */
   afterDataCreation(...args: unknown[]): void;
 }
 
@@ -52,13 +63,13 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     return this.displayedColumns.map(c => c.key);
   }
 
-  abstract _grpcService: GrpcService;
+  abstract readonly grpcService: GrpcService;
   abstract readonly indexService: IndexServiceInterface<C, O>;
   readonly filtersService = inject(FiltersService);
   readonly notificationService = inject(NotificationService);
 
   list$(options: O, filters: F): Observable<GrpcResponse> {
-    return this._grpcService.list$(
+    return this.grpcService.list$(
       options as TaskSummaryListOptions & SessionRawListOptions & ApplicationRawListOptions & ResultRawListOptions & PartitionRawListOptions,
       filters as SessionRawFilters & TaskSummaryFilters & PartitionRawFilters & ApplicationRawFilters & ResultRawFilters
     );

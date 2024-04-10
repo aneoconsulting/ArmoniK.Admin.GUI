@@ -46,14 +46,14 @@ describe('TableColumnHeaderComponent', () => {
   });
 
   it('should emit on toggle all rows', () => {
-    const spy = jest.spyOn(component.toggleRowsSelection, 'emit');
+    const spy = jest.spyOn(component.rowsSelectionChange, 'emit');
     component.onToggleAllRows();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should emit on personnalize tasks by status', () => {
-    const spy = jest.spyOn(component.personnaliseTasksByStatus, 'emit');
-    component.onPersonnalizeTasksByStatus();
+    const spy = jest.spyOn(component.statusesChange, 'emit');
+    component.onPersonnalizeStatuses();
     expect(spy).toHaveBeenCalled();
   });
 });

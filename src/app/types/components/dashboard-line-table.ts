@@ -56,6 +56,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.initOptions();
     this.initFilters();
     this.initFilters();
+    this.initInterval();
   }
 
   initColumns() {

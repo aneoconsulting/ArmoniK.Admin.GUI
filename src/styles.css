@@ -53,3 +53,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 article > .mat-mdc-menu-item-text {
   min-width: 20em !important;
 }
+
+app-table-column-header {
+  display: flex;
+  align-items: center;
+}
