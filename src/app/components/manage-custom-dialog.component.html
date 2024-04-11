@@ -11,7 +11,7 @@
     <mat-label i18n>Existing Customs columns</mat-label>
       <mat-chip-grid #chipGrid aria-label="Enter custom column">
       <mat-chip-row 
-        *ngFor="let column of existingColumnList"
+        *ngFor="let column of displayedColumnsList"
         (removed)="remove(column)"
         [editable]="true"
         (edited)="edit(column, $event)"
