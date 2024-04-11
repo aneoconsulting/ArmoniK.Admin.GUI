@@ -124,10 +124,10 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   }
 
-  onEditNameLine(value: string) {
+  onEditNameLine() {
     const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
       data: {
-        name: value
+        name: this.line.name
       }
     });
 
@@ -139,8 +139,8 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     });
   }
 
-  onDeleteLine(value: Line): void {
-    this.lineDelete.emit(value);
+  onDeleteLine(): void {
+    this.lineDelete.emit(this.line);
   }
 
   onFiltersChange(value: unknown[]) {
