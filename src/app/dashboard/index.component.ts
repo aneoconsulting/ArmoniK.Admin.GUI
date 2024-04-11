@@ -54,7 +54,7 @@ import { Line, LineType } from './types';
   bottom: 2rem;
   right: 2rem;
 
-  z-index: 50;
+  z-index: 150;
 
   display: flex;
   flex-direction: column-reverse;

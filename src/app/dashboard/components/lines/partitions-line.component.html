@@ -1,6 +1,6 @@
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-table-actions-toolbar
+    <app-table-dashboard-actions-toolbar
       [loading]="loading"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
@@ -14,22 +14,10 @@
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
+      (deleteLine)="onDeleteLine()"
+      (editNameLine)="onEditNameLine()"
     >
-      <ng-container extra-menu-items>
-        <button mat-menu-item (click)="onEditNameLine(line.name)">
-          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-          <span i18n appNoWrap>
-            Edit name line
-          </span>
-        </button>
-        <button mat-menu-item (click)="onDeleteLine(line)">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-          <span i18n appNoWrap>
-            Delete line
-          </span>
-        </button>
-      </ng-container>
-    </app-table-actions-toolbar>
+    </app-table-dashboard-actions-toolbar>
   </mat-toolbar-row>
   <mat-toolbar-row class="filters">
     <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"/>

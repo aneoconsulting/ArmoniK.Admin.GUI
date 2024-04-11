@@ -157,21 +157,16 @@ describe('ApplicationsLineComponent', () => {
     });
   });
 
-  it('should edit the name line', () => {
-    component.onEditNameLine('NewNameLine');
-    expect(component.line.name).toEqual('NewNameLine');
-  });
-
   it('should emit on edit name line', () => {
     const spy = jest.spyOn(component.lineChange, 'emit');
-    component.onEditNameLine('NewNameLine');
+    component.onEditNameLine();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should emit on delete line', () => {
     const spy = jest.spyOn(component.lineDelete, 'emit');
-    component.onDeleteLine(line);
-    expect(spy).toHaveBeenCalledWith(line);
+    component.onDeleteLine();
+    expect(spy).toHaveBeenCalledWith(component.line);
   });
 
   describe('onFilterChange', () => {
