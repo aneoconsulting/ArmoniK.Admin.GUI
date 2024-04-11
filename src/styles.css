@@ -58,3 +58,7 @@ app-table-column-header {
   display: flex;
   align-items: center;
 }
+
+app-table-index-actions-toolbar {
+  flex-grow: 1;
+}

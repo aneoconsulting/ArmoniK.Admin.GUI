@@ -1,20 +1,15 @@
 import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandler } from '@app/types/components';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -34,18 +29,6 @@ import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './ty
 @Component({
   selector: 'app-results-index',
   templateUrl: './index.component.html',
-  styles: [`
-app-table-actions-toolbar {
-  flex-grow: 1;
-}
-
-.filters {
-  height: auto;
-  min-height: 64px;
-
-  padding: 1rem;
-}
-  `],
   standalone: true,
   providers: [
     ShareUrlService,
@@ -66,21 +49,14 @@ app-table-actions-toolbar {
     NotificationService,
   ],
   imports: [
-    NoWrapDirective,
-    EmptyCellPipe,
-    NgIf,
-    NgFor,
-    DatePipe,
     PageHeaderComponent,
-    TableActionsToolbarComponent,
+    TableIndexActionsToolbarComponent,
     FiltersToolbarComponent,
-    MatTableModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    TableEmptyDataComponent,
     ResultsTableComponent
   ]
 })
