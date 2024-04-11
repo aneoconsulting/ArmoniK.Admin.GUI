@@ -6,6 +6,7 @@ import { PartitionsTableComponent } from '@app/partitions/components/table.compo
 import { PartitionsFiltersService } from '@app/partitions/services/partitions-filters.service';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
 import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -30,6 +31,10 @@ app-table-actions-toolbar {
     NotificationService,
     MatSnackBar,
     PartitionsFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: PartitionsFiltersService
+    },
   ],
   imports: [
     MatToolbarModule,

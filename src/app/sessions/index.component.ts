@@ -6,11 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandlerCustomValues } from '@app/types/components';
+import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
@@ -54,6 +57,8 @@ import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '.
     },
     SessionsStatusesService,
     MatDialog,
+    DashboardIndexService,
+    DashboardStorageService,
   ],
   imports: [
     PageHeaderComponent,
@@ -70,6 +75,8 @@ import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '.
 export class IndexComponent extends TableHandlerCustomValues<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters, SessionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
+
+  tableType: TableType = 'Sessions';
 
   ngOnInit() {
     this.initTableEnvironment();

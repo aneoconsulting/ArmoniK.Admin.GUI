@@ -5,10 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandler } from '@app/types/components';
+import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
@@ -47,7 +49,8 @@ import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptio
       provide: DATA_FILTERS_SERVICE,
       useExisting: ApplicationsFiltersService
     },
-    DashboardStorageService
+    DashboardIndexService,
+    DashboardStorageService,
   ],
   imports: [
     PageHeaderComponent,
@@ -65,6 +68,8 @@ export class IndexComponent extends TableHandler<ApplicationRawColumnKey, Applic
 
   readonly filtersService = inject(ApplicationsFiltersService);
   readonly indexService = inject(ApplicationsIndexService);
+
+  tableType: TableType = 'Applications';
 
   ngOnInit(): void {
     this.initTableEnvironment();

@@ -1,6 +1,8 @@
 import { inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { FiltersEnums } from '@app/dashboard/types';
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -12,15 +14,20 @@ import { RawFilters } from '../filters';
 import { Page } from '../pages';
 import { FiltersServiceInterface } from '../services/filtersService';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
+import { TableType } from '../table';
 
 export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters, E extends FiltersEnums> {
   readonly shareUrlService = inject(ShareUrlService);
   readonly iconsService = inject(IconsService);
   readonly autoRefreshService = inject(AutoRefreshService);
   readonly dialog = inject(MatDialog);
+  readonly dashboardIndexService = inject(DashboardIndexService);
+  readonly router = inject(Router);
 
   abstract readonly indexService: IndexServiceInterface<K, O>;
   abstract readonly filtersService: FiltersServiceInterface<F, E>;
+
+  abstract tableType: TableType;
 
   displayedColumns: TableColumn<K>[] = [];
   displayedColumnsKeys: K[] = [];
@@ -154,6 +161,19 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     } else {
       this.interval.next(this.intervalValue);
     }
+  }
+
+  onAddToDashboard() {
+    this.dashboardIndexService.addLine({
+      name: this.tableType,
+      type: this.tableType,
+      interval: 10,
+      filters: this.filters,
+      options: this.options,
+      displayedColumns: this.displayedColumnsKeys,
+      lockColumns: this.lockColumns
+    });
+    this.router.navigate(['/dashboard']);
   }
 }
 

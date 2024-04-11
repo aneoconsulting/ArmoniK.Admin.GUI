@@ -6,6 +6,7 @@ import { TasksTableComponent } from '@app/tasks/components/table.component';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -20,6 +21,10 @@ import { NotificationService } from '@services/notification.service';
     TasksIndexService,
     NotificationService,
     TasksFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: TasksFiltersService
+    }
   ],
   imports: [
     MatToolbarModule,

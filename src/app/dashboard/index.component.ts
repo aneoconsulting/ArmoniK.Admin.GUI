@@ -103,7 +103,7 @@ import { Line, LineType } from './types';
     TableURLService,
     TableStorageService,
     FiltersService,
-    TasksStatusesService
+    TasksStatusesService,
   ],
   imports: [
     NgFor,

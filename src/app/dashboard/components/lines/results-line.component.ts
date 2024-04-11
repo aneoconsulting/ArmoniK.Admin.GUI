@@ -3,8 +3,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ResultsTableComponent } from '@app/results/components/table.component';
+import { ResultsFiltersService } from '@app/results/services/results-filters.service';
 import { ResultsIndexService } from '@app/results/services/results-index.service';
 import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from '@app/results/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -16,6 +18,11 @@ import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.
   providers: [
     MatSnackBar,
     ResultsIndexService,
+    ResultsFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: ResultsFiltersService
+    },
   ],
   imports: [
     MatIconModule,

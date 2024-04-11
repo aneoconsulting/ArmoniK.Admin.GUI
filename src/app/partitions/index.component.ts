@@ -5,10 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandler } from '@app/types/components';
+import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
@@ -52,6 +55,8 @@ import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } f
       provide: DATA_FILTERS_SERVICE,
       useExisting: PartitionsFiltersService
     },
+    DashboardIndexService,
+    DashboardStorageService,
   ],
   imports: [
     PageHeaderComponent,
@@ -70,6 +75,8 @@ export class IndexComponent extends TableHandler<PartitionRawColumnKey, Partitio
 
   readonly filtersService = inject(PartitionsFiltersService);
   readonly indexService = inject(PartitionsIndexService);
+
+  tableType: TableType = 'Partitions';
 
   ngOnInit() {
     this.initTableEnvironment();

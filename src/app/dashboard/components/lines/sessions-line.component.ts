@@ -9,6 +9,7 @@ import { SessionsStatusesService } from '@app/sessions/services/sessions-statuse
 import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
@@ -32,10 +33,18 @@ app-table-actions-toolbar {
     MatSnackBar,
     NotificationService,
     SessionsFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: SessionsFiltersService
+    },
     SessionsIndexService,
     SessionsStatusesService,
     TasksStatusesService,
     TasksFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: TasksFiltersService
+    },
   ],
   imports: [
     MatToolbarModule,

@@ -1,14 +1,14 @@
 import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { ApplicationRaw, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRaw, ApplicationRawFilters } from '@app/applications/types';
 import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
-import { ColumnKey, RawColumnKey } from '@app/types/data';
+import { ColumnKey, IndexListOptions, RawColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
-import { ListOptions } from '@app/types/options';
+import { TableType } from '@app/types/table';
 
-export type LineType = 'Applications' | 'Tasks' | 'Sessions' | 'Partitions' | 'Results' | 'CountStatus';
+export type LineType = TableType | 'CountStatus';
 export type Summary = TaskSummary | ApplicationRaw | PartitionRaw | SessionRaw | ResultRaw;
 export type SummaryOptions = TaskOptions;
 export type FiltersEnums = ApplicationRawEnumField | PartitionRawEnumField | SessionRawEnumField | TaskSummaryEnumField | ResultRawEnumField;
@@ -20,7 +20,7 @@ export type Line = {
   interval: number,
   hideGroupsHeader?: boolean,
   filters: FiltersOr<FiltersEnums, FiltersOptionsEnums> | ApplicationRawFilters,
-  options?: ListOptions<Summary> | ApplicationRawListOptions;
+  options?: IndexListOptions;
   taskStatusesGroups?: TasksStatusesGroup[],
   displayedColumns?: ColumnKey<Summary, SummaryOptions> | RawColumnKey[],
   lockColumns?: boolean;
