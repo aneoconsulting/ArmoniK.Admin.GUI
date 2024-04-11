@@ -178,10 +178,10 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
   override updateDisplayedColumns(): void {
     this.displayedColumns = this.displayedColumnsKeys.map(key => {
       if (key.includes('options.options.')) {
-        const customColumn = key.replaceAll('options.options.', '');
+        const customColumnName = key.replaceAll('options.options.', '');
         return {
-          key: `options.options.${customColumn}`,
-          name: customColumn,
+          key: key,
+          name: customColumnName,
           sortable: true,
         } as TableColumn<K>;
       } else {
