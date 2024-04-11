@@ -164,7 +164,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   onAddToDashboard() {
-    this.dashboardIndexService.addLine({
+    const index = this.dashboardIndexService.addLine({
       name: this.tableType,
       type: this.tableType,
       interval: 10,
@@ -172,8 +172,8 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
       options: this.options,
       displayedColumns: this.displayedColumnsKeys,
       lockColumns: this.lockColumns
-    });
-    this.router.navigate(['/dashboard']);
+    }, true);
+    this.router.navigate(['/dashboard'], {fragment: `${this.tableType}-${index}`});
   }
 }
 

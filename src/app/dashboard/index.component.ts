@@ -1,6 +1,6 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { JsonPipe, NgFor, NgIf } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NavigationEnd, Router } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
 import { Page } from '@app/types/pages';
@@ -134,22 +135,38 @@ import { Line, LineType } from './types';
     TasksLineComponent,
   ]
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, AfterViewChecked {
+
   readonly #iconsService = inject(IconsService);
   readonly #dialog = inject(MatDialog);
   readonly #shareURLService = inject(ShareUrlService);
   readonly #dashboardIndexService = inject(DashboardIndexService);
+  readonly #router = inject(Router);
 
   lines: Line[];
   showFabActions = false;
   columns = 1;
 
   sharableURL = '';
+  sectionScroll: string | null = null;
+  routerEvent: unknown | null = null;
 
   ngOnInit(): void {
     this.lines = this.#dashboardIndexService.restoreLines();
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
     this.columns = this.#dashboardIndexService.restoreSplitLines();
+    this.#router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
+      }
+      this.routerEvent = evt;
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.sectionScroll = this.#router.url.split('#')[1];
+    this.doScroll();
+    this.sectionScroll = null;
   }
 
   getIcon(name: string): string {
@@ -281,5 +298,14 @@ export class IndexComponent implements OnInit {
 
   trackByLine(index: number, line: Line): string {
     return line.name + index;
+  }
+
+  doScroll() {
+    if (this.sectionScroll) {
+      const elements = document.getElementById(this.sectionScroll);
+      if (elements) {
+        elements.scrollIntoView();
+      }
+    }
   }
 }
