@@ -177,8 +177,8 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
 
   override updateDisplayedColumns(): void {
     this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.includes('custom.')) {
-        const customColumn = key.replaceAll('custom.', '');
+      if (key.includes('options.options.')) {
+        const customColumn = key.replaceAll('options.options.', '');
         return {
           key: `options.options.${customColumn}`,
           name: customColumn,
@@ -198,9 +198,9 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('custom.'));
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('options.options.'));
         this.availableColumns.push(...result as K[]);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('options.options.'));
         this.displayedColumnsKeys.push(...result as K[]);
         this.updateDisplayedColumns();
         this.indexService.saveColumns(this.displayedColumnsKeys);
