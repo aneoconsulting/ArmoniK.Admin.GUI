@@ -28,7 +28,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  loading: boolean;
+  loading: boolean = true;
   loading$: Subject<boolean> = new BehaviorSubject(true);
 
   filters: F;
