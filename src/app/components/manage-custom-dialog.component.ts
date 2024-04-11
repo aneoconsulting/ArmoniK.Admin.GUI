@@ -32,51 +32,58 @@ import { CustomColumn } from '@app/types/data';
 export class ManageCustomColumnDialogComponent implements OnInit {
 
   existingColumnList: CustomColumn[];
+  displayedColumnsList: string[] = [];
+
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   constructor(public dialogRef: MatDialogRef<ManageCustomColumnDialogComponent, CustomColumn[]>, @Inject(MAT_DIALOG_DATA) public data: CustomColumn[]) {}
 
   ngOnInit() {
     this.existingColumnList = this.data;
+    this.displayedColumnsList = this.data.map(column => column.replace('options.options.', ''));
   }
 
   add(event: MatChipInputEvent): void {
-    let value = (event.value || '').trim() as `custom.${string}`;
+    let value = (event.value || '').trim() as `options.options.${string}`;
 
     if (value.length === 0) {
       return;
     }
 
-    if (!value.startsWith('custom.')) {
-      value = `custom.${value}`;
+    if (!value.startsWith('options.options.')) {
+      value = `options.options.${value}`;
     }
 
     if (value && !this.existingColumnList.includes(value)) {
       this.existingColumnList.push(value);
+      const test = value.replace('options.options.', '');
+      this.displayedColumnsList.push(test);
     }
 
     event.chipInput!.clear();
   }
 
-  remove(column: CustomColumn): void {
-    const index = this.existingColumnList.indexOf(column);
+  remove(column: string): void {
+    const index = this.displayedColumnsList.indexOf(column);
 
     if (index >= 0) {
       this.existingColumnList.splice(index, 1);
+      this.displayedColumnsList.splice(index, 1);
     }
   }
 
-  edit(column: CustomColumn, event: MatChipEditedEvent) {
-    const value = event.value.trim().replace('custom.', '');
+  edit(column: string, event: MatChipEditedEvent) {
+    const value = event.value.trim().replace('options.options.', '');
 
     if (!value) {
       this.remove(column);
       return;
     }
 
-    const index = this.existingColumnList.indexOf(column);
+    const index = this.displayedColumnsList.indexOf(column);
     if (index >= 0) {
-      this.existingColumnList[index] = `custom.${value}`;
+      this.existingColumnList[index] = `options.options.${value}`;
+      this.displayedColumnsList[index] = value;
     }
   }
 

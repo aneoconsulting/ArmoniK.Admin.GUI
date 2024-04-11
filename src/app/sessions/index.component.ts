@@ -296,8 +296,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   updateDisplayedColumns(): void {
     this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.includes('custom.')) {
-        const customColumn = key.replaceAll('custom.', '');
+      if (key.includes('options.options.')) {
+        const customColumn = key.replaceAll('options.options.', '');
         return {
           key: `options.options.${customColumn}`,
           name: customColumn,
@@ -416,9 +416,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('custom.'));
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('options.options.'));
         this.availableColumns.push(...result);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('options.options.'));
         this.displayedColumnsKeys.push(...result);
         this.updateDisplayedColumns();
         this._sessionsIndexService.saveColumns(this.displayedColumnsKeys);
