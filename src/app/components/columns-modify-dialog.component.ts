@@ -47,11 +47,11 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   columnToLabel(column: ColumnKey<T, O>): string {
-    return !this.isCustomColumn(column) ? this.columnsLabels[column] ?? column.toString() : column.toString().replace('custom.', '');
+    return !this.isCustomColumn(column) ? this.columnsLabels[column] ?? column.toString() : column.toString().replace('options.options.', '');
   }
 
   isCustomColumn(column: ColumnKey<T, O>): boolean {
-    return column.toString().startsWith('custom.');
+    return column.toString().startsWith('options.options.');
   }
 
   /**
@@ -71,7 +71,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   }
 
   availableCustomColumns(): CustomColumn[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('custom.')).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
+    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
     return columns;
   }
 

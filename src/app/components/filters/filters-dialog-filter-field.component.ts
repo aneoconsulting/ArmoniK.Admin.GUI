@@ -98,7 +98,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   private _filterProperties(value: MaybeNull<string>): string[] {
     const labelledProperties = this.allProperties.map(property => this.retrieveLabel(property));
     if (this.customColumns) {
-      labelledProperties.push(...this.customColumns.map(custom => custom.replace('custom.','')));
+      labelledProperties.push(...this.customColumns.map(custom => custom.replace('options.options.','')));
     }
     if (value === null) {
       return labelledProperties;
@@ -187,7 +187,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       const field = this.#dataFiltersService.retrieveField(formValue);
 
       if (field.index === -1) {
-        const customField = this.customColumns?.find(col => col.toLowerCase() === `custom.${formValue.toLowerCase()}`);
+        const customField = this.customColumns?.find(col => col.toLowerCase() === `options.options.${formValue.toLowerCase()}`);
         if (customField) {
           this.filter.for = 'custom';
           this.filter.field = formValue;
