@@ -8,7 +8,7 @@ import { PartitionsIndexService } from '@app/partitions/services/partitions-inde
 import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
+import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { NotificationService } from '@services/notification.service';
 
 @Component({
@@ -33,7 +33,7 @@ app-table-actions-toolbar {
   ],
   imports: [
     MatToolbarModule,
-    TableActionsToolbarComponent,
+    TableDashboardActionsToolbarComponent,
     FiltersToolbarComponent,
     PartitionsTableComponent,
     MatIconModule,

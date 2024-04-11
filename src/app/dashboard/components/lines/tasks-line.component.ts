@@ -8,7 +8,7 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
+import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { NotificationService } from '@services/notification.service';
 
 @Component({
@@ -23,7 +23,7 @@ import { NotificationService } from '@services/notification.service';
   ],
   imports: [
     MatToolbarModule,
-    TableActionsToolbarComponent,
+    TableDashboardActionsToolbarComponent,
     FiltersToolbarComponent,
     TasksTableComponent,
     MatIconModule,
