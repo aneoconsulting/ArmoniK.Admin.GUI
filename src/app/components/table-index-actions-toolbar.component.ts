@@ -11,12 +11,12 @@ import { TableActionsToolbarComponent } from './table-actions-toolbar.component'
   ]
 })
 export class TableIndexActionsToolbarComponent<T extends object, O extends object> {
-  @Input({ required: true }) loading = false;
-  @Input({ required: true }) refreshTooltip = '';
-  @Input({ required: true }) intervalValue = 0;
+  @Input({ required: true }) loading: boolean;
+  @Input({ required: true }) refreshTooltip: string;
+  @Input({ required: true }) intervalValue: number;
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
-  @Input({ required: true }) displayedColumns: RawColumnKey[] = [];
-  @Input({ required: true }) availableColumns: RawColumnKey[] = [];
+  @Input({ required: true }) displayedColumns: RawColumnKey[];
+  @Input({ required: true }) availableColumns: RawColumnKey[];
   @Input({ required: true }) lockColumns = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
