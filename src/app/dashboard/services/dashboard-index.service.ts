@@ -33,13 +33,10 @@ export class DashboardIndexService {
     });
   }
 
-  addLine(line: Line, index: boolean = false): number | void {
+  addLine(line: Line): number | void {
     const lines = this.restoreLines();
     lines.push(line);
     this.saveLines(lines);
-    if (index) {
-      return lines.indexOf(line);
-    }
   }
 
   restoreLines(): Line[] {
