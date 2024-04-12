@@ -6,7 +6,6 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Subject } from 'rxjs';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { IconPickerDialogComponent } from '@components/icon-picker-dialog.component';
 import { IconsService } from '@services/icons.service';
@@ -68,20 +67,16 @@ export class ManageViewInLogsDialogComponent implements OnInit {
     urlTemplate: new FormControl('', Validators.required),
   });
 
-  selectedIcon$ = new Subject<string>();
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: ManageViewInLogsDialogData,
-  ) {
-    this.selectedIcon$.subscribe(selected => {
-      this.viewInLogsForm.controls.serviceIcon.setValue(selected);
-      this.icon = selected;
-    });
-  }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: ManageViewInLogsDialogData) {}
 
   ngOnInit(): void {
     this.viewInLogsForm.patchValue(this.data);
     this.icon = this.data.serviceIcon ?? 'icon';
+  }
+
+  onIconChange(icon: string) {
+    this.viewInLogsForm.controls.serviceIcon.setValue(icon);
+    this.icon = icon;
   }
 
   onSubmit() {

@@ -182,6 +182,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should return something if the urlTemplate is present', () => {
+      component.urlTemplate = 'myUrl?taskId=%taskId';
       expect(component.generateViewInLogsUrl('myUniqueId')).toEqual('myUrl?taskId=myUniqueId');
     });
   });

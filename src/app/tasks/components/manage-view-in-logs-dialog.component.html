@@ -14,7 +14,7 @@
   
         <div class="preview">
           <span i18n> Icon: </span>
-          <app-icon-picker [selected$]="selectedIcon$" [selectedIcon]="icon"/>
+          <app-icon-picker  [icon]="icon" (iconChange)="onIconChange($event)"/>
         </div>
       </article>
 
