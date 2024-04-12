@@ -6,14 +6,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
-import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandler } from '@app/types/components';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
+import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -52,10 +50,8 @@ import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptio
     DashboardStorageService
   ],
   imports: [
-    NoWrapDirective,
-    CountTasksByStatusComponent,
     PageHeaderComponent,
-    TableActionsToolbarComponent,
+    TableIndexActionsToolbarComponent,
     FiltersToolbarComponent,
     MatToolbarModule,
     MatButtonModule,
