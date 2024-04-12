@@ -45,6 +45,21 @@ import { EditExternalServiceDialogComponent } from './edit-external-service-dial
   padding-left: 1rem;
 }
 
+.empty {
+  text-align: center;
+  opacity: 80%;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+
+  & div {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
 [cdkDragHandle] {
   cursor: move;
 }
@@ -121,7 +136,9 @@ export class ManageExternalServicesDialogComponent implements OnInit {
   }
 
   addExternalService(): void {
-    const dialogRef = this.#dialog.open(AddExternalServiceDialogComponent, {});
+    const dialogRef = this.#dialog.open(AddExternalServiceDialogComponent, {
+      maxWidth: '40vw',
+    });
 
     dialogRef.afterClosed().subscribe((externalService: ExternalService) => {
       if (externalService) {
@@ -135,6 +152,7 @@ export class ManageExternalServicesDialogComponent implements OnInit {
       data: {
         externalService
       },
+      maxWidth: '40vw',
     });
 
     dialogRef.afterClosed().subscribe((editedExternalService: ExternalService) => {
