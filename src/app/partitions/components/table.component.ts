@@ -1,31 +1,14 @@
-import { FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { PartitionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableCellComponent } from '@components/table/table-cell.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
-import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
@@ -33,42 +16,30 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
   selector: 'app-partitions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-
-  ],
   providers: [
+    PartitionsGrpcService,
+    PartitionsIndexService,
     TasksByStatusService,
-    IconsService,
     FiltersService
   ],
   imports: [
-    TableActionsToolbarComponent,
-    FiltersToolbarComponent,
-    TableContainerComponent,
-    MatPaginatorModule,
-    TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
-    MatSortModule,
-    NgFor,
-    NgIf,
-    MatTableModule,
-    MatIconModule,
-    RouterModule,
-    EmptyCellPipe,
-    DragDropModule,
-    MatButtonModule,
-    TableInspectObjectComponent,
-    MatDialogModule,
-    TableCellComponent,
+    TableComponent,
   ]
 })
-export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions> implements OnInit {
-  @Input({ required: true }) filters: PartitionRawFilters;
-
-  override readonly indexService = inject(PartitionsIndexService);
-  readonly iconsService = inject(IconsService);
+export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements AfterViewInit {
+  
+  readonly grpcService = inject(PartitionsGrpcService);
+  readonly indexService = inject(PartitionsIndexService);
+  
   table: TableTasksByStatus = 'partitions';
+
+  ngAfterViewInit(): void {
+    this.subscribeToData();
+  }
+
+  computeGrpcData(entries: ListPartitionsResponse): PartitionRaw[] | undefined {
+    return entries.partitions;
+  }
 
   isDataRawEqual(value: PartitionRaw, entry: PartitionRaw): boolean {
     return value.id === entry.id;
@@ -81,10 +52,6 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
       filters: this.countTasksByStatusFilters(entry.id),
       value$: new Subject<PartitionRaw>()
     };
-  }
-
-  getIcon(name: string): string {
-    return this.iconsService.getIcon(name);
   }
 
   createTasksByStatusQueryParams(partition: string) {

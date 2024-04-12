@@ -1,15 +1,13 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
+import { NotificationService } from '@services/notification.service';
 import { ResultsTableComponent } from './table.component';
+import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey } from '../types';
+import { ResultRawColumnKey, ResultRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ResultsTableComponent;
@@ -44,29 +42,29 @@ describe('ApplicationTableComponent', () => {
     isResultIdColumn: jest.fn()
   };
 
-  const sort: MatSort = {
-    active: 'namespace',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
+  const mockResultsGrpcService = {
+    list$: jest.fn(() => of({results: [{resultId: '1'}, {resultId: '2'}]}))
+  };
 
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
+  const mockNotificationService = {
+    error: jest.fn()
+  };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ResultsTableComponent,
         { provide: ResultsIndexService, useValue: mockResultsIndexService },
+        { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
+        { provide: NotificationService, useValue: mockNotificationService },
         FiltersService,
         ResultsStatusesService
       ]
     }).inject(ResultsTableComponent);
-    component.data$ = new Subject();
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
     component.displayedColumns = displayedColumns;
+    component.filters$ = new BehaviorSubject<ResultRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -75,8 +73,6 @@ describe('ApplicationTableComponent', () => {
         direction: 'desc'
       }
     };
-    component.sort = sort;
-    component.paginator = paginator;
     component.ngAfterViewInit();
   });
 
@@ -85,38 +81,27 @@ describe('ApplicationTableComponent', () => {
   });
 
   it('should update data on next', () => {
-    const newData = [{resultId: '1'}, {resultId: '2'}] as unknown as ResultRaw[];
-    component.data$.next(newData);
-    expect(component.data.map(d => d.raw)).toEqual(newData);
-  });
-
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options pagination on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'name',
-        direction: 'desc'
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: {
+          resultId: '1'
+        },
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          resultId: '2'
+        },
+        value$: expect.any(Subject)
       }
-    });
+    ]);
   });
 
   it('should change column order', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1
-    } as unknown as CdkDragDrop<string[]>;
-    component.onDrop(event);
-    expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(component.displayedColumns.map(column => column.key));
+    const newColumns: ResultRawColumnKey[] = ['actions', 'name', 'completedAt'];
+    component.onDrop(newColumns);
+    expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     expect(component.displayedColumns).toEqual(displayedColumns);
   });
 

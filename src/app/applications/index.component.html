@@ -1,6 +1,6 @@
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-  <span i18n="Page title"> Results </span>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('applications')"></mat-icon>
+  <span matListItemTitle i18n="Page title"> Applications </span>
 </app-page-header>
 
 <mat-toolbar>
@@ -19,7 +19,7 @@
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
-      >
+    >
     </app-table-actions-toolbar>
   </mat-toolbar-row>
 
@@ -28,11 +28,11 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<app-results-table
+<app-application-table
+  [filters$]="filters$"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
   [refresh$]="refresh$"
   [loading$]="isLoading$"
-  [filters$]="filters$"
 />

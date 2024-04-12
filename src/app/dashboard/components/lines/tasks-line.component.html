@@ -1,12 +1,7 @@
-<app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-  <span i18n="Page title"> Results </span>
-</app-page-header>
-
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-table-actions-toolbar
-      [loading]="isLoading"
+    <app-table-dashboard-actions-toolbar
+      [loading]="loading"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels"
@@ -19,20 +14,20 @@
       (resetColumns)="onColumnsReset()"
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
-      >
-    </app-table-actions-toolbar>
+      (deleteLine)="onDeleteLine()"
+      (editNameLine)="onEditNameLine()"
+    >
+    </app-table-dashboard-actions-toolbar>
   </mat-toolbar-row>
-
   <mat-toolbar-row class="filters">
     <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
   </mat-toolbar-row>
 </mat-toolbar>
-
-<app-results-table
+<app-tasks-table
+  [filters$]="filters$"
+  [options]="options"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
-  [options]="options"
   [refresh$]="refresh$"
-  [loading$]="isLoading$"
-  [filters$]="filters$"
+  [loading$]="loading$"
 />

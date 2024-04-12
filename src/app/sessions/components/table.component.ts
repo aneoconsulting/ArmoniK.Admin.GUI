@@ -1,35 +1,23 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { AfterViewInit, Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { Params, Router, RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { Subject, map, mergeAll } from 'rxjs';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
-import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { AbstractTableComponent, AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
-import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableActionsComponent } from '@components/table/table-actions.component';
-import { TableCellComponent } from '@components/table/table-cell.component';
-import { TableEmptyDataComponent } from '@components/table/table-empty-data.component';
-import { TableInspectObjectComponent } from '@components/table/table-inspect-object.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
-import { TableContainerComponent } from '@components/table-container.component';
+import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '../types';
@@ -38,56 +26,41 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
   selector: 'app-sessions-table',
   standalone: true,
   templateUrl: './table.component.html',
-  styles: [
-
-  ],
   providers: [
     TasksByStatusService,
     MatDialog,
-    IconsService,
     FiltersService,
     Clipboard,
+    TasksGrpcService,
+    SessionsGrpcService,
+    NotificationService,
   ],
   imports: [
-    TableActionsToolbarComponent,
-    FiltersToolbarComponent,
-    TableContainerComponent,
-    MatPaginatorModule,
-    TableEmptyDataComponent,
-    MatMenuModule,
-    CountTasksByStatusComponent,
-    MatSortModule,
-    NgFor,
-    NgIf,
-    MatTableModule,
-    MatIconModule,
+    TableComponent,
     RouterModule,
-    DragDropModule,
-    MatButtonModule,
-    DatePipe,
-    TableInspectObjectComponent,
     MatDialogModule,
-    TableCellComponent,
-    TableActionsComponent,
-    NgIf,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions>  implements OnInit {
-  @Input({required: true}) filters: SessionRawFilters;
-  @Output() pauseSession = new EventEmitter<string>();
-  @Output() resumeSession = new EventEmitter<string>();
+export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters>  implements AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> {
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
-
-  override readonly indexService = inject(SessionsIndexService);
+  
+  readonly grpcService = inject(SessionsGrpcService);
+  readonly indexService = inject(SessionsIndexService);
   readonly iconsService = inject(IconsService);
-  readonly notificationService = inject(NotificationService);
   readonly statusesService = inject(SessionsStatusesService);
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
 
   table: TableTasksByStatus = 'sessions';
+
+  dataRaw: SessionRaw[];
+  isDurationSorted: boolean = false;
+  sessionEndedDates: {sessionId: string, date: Timestamp | undefined}[] = [];
+  sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
+  nextDuration$ = new Subject<string>();
+  computeDuration$ = new Subject<void>();
 
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
@@ -161,8 +134,87 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     }
   ];
 
+  ngAfterViewInit(): void {
+    this.subscribeToData();
+    this.computeDuration$.subscribe(() => {
+      if (this.dataRaw.length === this.sessionEndedDates.length && this.dataRaw.length === this.sessionCreationDates.length) {
+        const keys: string[] = this.sessionEndedDates.map(duration => duration.sessionId);
+        keys.forEach(key => {
+          const sessionIndex = this.dataRaw.findIndex(session => session.sessionId === key);
+          if (sessionIndex !== -1) {
+            const lastDuration = this.sessionEndedDates.find(duration => duration.sessionId === key)?.date;
+            const firstDuration = this.sessionCreationDates.find(duration => duration.sessionId === key)?.date;
+            if (firstDuration && lastDuration) {
+              this.dataRaw[sessionIndex].duration = {
+                seconds: (Number(lastDuration.seconds) - Number(firstDuration.seconds)).toString(),
+                nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
+              } as Duration;
+            } else {
+              this.notificationService.warning('Error while computing duration for session: ' + key);
+            }
+          }
+        });
+        if (this.isDurationSorted) {
+          this.orderByDuration(this.dataRaw);
+        } else {
+          this.newData(this.dataRaw);
+        }
+        this.sessionEndedDates = [];
+        this.sessionCreationDates = [];
+        this.loading$.next(false);
+      }
+    });
+    
+    this.nextDuration$.pipe(
+      map(sessionId => this.grpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
+      mergeAll(),
+    ).subscribe(task => this.durationSubscription(task, 'created'));
+
+    this.nextDuration$.pipe(
+      map(sessionId => this.grpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
+      mergeAll(),
+    ).subscribe(task => this.durationSubscription(task, 'ended'));
+  }
+
+  computeGrpcData(entries: ListSessionsResponse): SessionRaw[] | undefined {
+    return entries.sessions;
+  }
+
   isDataRawEqual(value: SessionRaw, entry: SessionRaw): boolean {
     return value.sessionId === entry.sessionId;
+  }
+
+  override prepareBeforeFetching(options: SessionRawListOptions, filters: SessionRawFilters): void {
+    this.indexService.saveOptions(this.options);
+    if(this.isDurationDisplayed() && this.options.sort.active === 'duration') {
+      options.sort.active = 'createdAt';
+      this.isDurationSorted = true;
+      if(!this.filterHasCreatedAt(filters)) {
+        options.pageSize = 100;
+        const date = new Date();
+        date.setDate(date.getDate() - 3);
+        filters.push([{
+          field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+          for: 'root',
+          operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
+          value: Math.floor(date.getTime()/1000)
+        }]);
+      }
+    } else {
+      this.isDurationSorted = false;
+    }
+  }
+
+  override afterDataCreation(data: SessionRaw[]): void {
+    if (this.isDurationDisplayed()) {
+      this.dataRaw = data;
+      data.forEach(session => {
+        this.nextDuration$.next(session.sessionId);
+      });
+    } else {
+      this.newData(data);
+      this.loading$.next(false);
+    }
   }
 
   createNewLine(entry: SessionRaw): SessionData {
@@ -268,23 +320,83 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   }
 
   onPause(sessionId: string) {
-    this.pauseSession.emit(sessionId);
+    this.grpcService.pause$(sessionId)
+      .subscribe(
+        {
+          error: () => this.notificationService.error('Unable to pause session'),
+          complete: () => this.refresh$.next()
+        }
+      );
   }
 
   onResume(sessionId: string) {
-    this.resumeSession.emit(sessionId);
+    this.grpcService.resume$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to resume session'),
+        complete: () => this.refresh$.next()
+      }
+    );
   }
 
   onCancel(sessionId: string) {
-    this.cancelSession.emit(sessionId);
+    this.grpcService.cancel$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to cancel session'),
+        complete: () => this.refresh$.next()
+      }
+    );
   }
 
   onClose(sessionId: string) {
-    this.closeSession.emit(sessionId);
+    this.grpcService.close$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to close session'),
+        complete: () => this.refresh$.next()
+      }
+    );
+  }
+  onDelete(sessionId: string) {
+    this.grpcService.delete$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to delete session'),
+        complete: () => this.refresh$.next()
+      }
+    );
   }
 
-  onDelete(sessionId: string) {
-    this._data = this.data.filter(session => session.raw.sessionId !== sessionId);
-    this.deleteSession.emit(sessionId);
+  // Session Duration computation section
+
+  filterHasCreatedAt(filters: SessionRawFilters) {
+    for (const filterAnd of filters) {
+      const result = filterAnd.some(filter => filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT);
+      if (result) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isDurationDisplayed(): boolean {
+    return this.displayedColumns.map(c => c.key).includes('duration');
+  }
+
+  orderByDuration(data: SessionRaw[]) {
+    data.sort((a, b) => {
+      if (this.options.sort.direction === 'asc') {
+        return Number(a.duration?.seconds) - Number(b.duration?.seconds);
+      } else {
+        return Number(b.duration?.seconds) - Number(a.duration?.seconds);
+      }
+    }).slice(0, this.options.pageSize);
+    this.newData(data);
+  }
+
+  durationSubscription(data: {sessionId: string, date: Timestamp | undefined}, type: 'ended' | 'created') {
+    if (type === 'ended') {
+      this.sessionEndedDates.push({sessionId: data.sessionId, date: data.date});
+    } else {
+      this.sessionCreationDates.push({sessionId: data.sessionId, date: data.date});
+    }
+    this.computeDuration$.next();
   }
 }

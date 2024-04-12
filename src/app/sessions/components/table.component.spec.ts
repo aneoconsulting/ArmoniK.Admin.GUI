@@ -1,12 +1,8 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
 import { TaskStatusColored } from '@app/types/dialog';
@@ -14,13 +10,14 @@ import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { ApplicationsTableComponent } from './table.component';
+import { SessionsTableComponent } from './table.component';
+import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
+import { SessionRawColumnKey, SessionRawFilters } from '../types';
 
-describe('ApplicationsTableComponent', () => {
-  let component: ApplicationsTableComponent;
+describe('SessionsTableComponent', () => {
+  let component: SessionsTableComponent;
 
   const tasksStatusesColored: TaskStatusColored[] = [
     {
@@ -101,18 +98,7 @@ describe('ApplicationsTableComponent', () => {
       }
     ]
   ];
-  
-  const sort: MatSort = {
-    active: 'sessionId',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
 
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
 
   const mockTasksByStatusService = {
     restoreStatuses: jest.fn(() => tasksStatusesColored),
@@ -131,6 +117,7 @@ describe('ApplicationsTableComponent', () => {
     isCountColumn: jest.fn(),
     isActionsColumn: jest.fn(),
     saveColumns: jest.fn(),
+    saveOptions: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -152,24 +139,31 @@ describe('ApplicationsTableComponent', () => {
     }
   };
 
+  const mockSessionsGrpcService = {
+    list$: jest.fn(() => of({ sessions: [{ sessionId: '1' }, { sessionId: '2' }], total: 2 })),
+    delete$: jest.fn(() => of({})),
+    close$: jest.fn(() => of({})),
+    cancel$: jest.fn(() => of({})),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        ApplicationsTableComponent,
-        {provide: SessionsIndexService, useValue: mockSessionsIndexService},
-        {provide: TasksByStatusService, useValue: mockTasksByStatusService},
+        SessionsTableComponent,
+        { provide: SessionsIndexService, useValue: mockSessionsIndexService },
+        { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         IconsService,
         FiltersService,
-        {provide: NotificationService, useValue: mockNotificationService},
+        { provide: NotificationService, useValue: mockNotificationService },
         SessionsStatusesService,
-        {provide: MatDialog, useValue: mockMatDialog},
-        {provide: Clipboard, useValue: mockClipBoard},
+        { provide: MatDialog, useValue: mockMatDialog },
+        { provide: Clipboard, useValue: mockClipBoard },
+        { provide: SessionsGrpcService, useValue: mockSessionsGrpcService }
       ]
-    }).inject(ApplicationsTableComponent);
+    }).inject(SessionsTableComponent);
 
-    component.sort = sort;
-    component.paginator = paginator;
-    component.data$ = new Subject<SessionRaw[]>();
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
 
     component.options = {
       pageIndex: 0,
@@ -179,7 +173,7 @@ describe('ApplicationsTableComponent', () => {
         direction: 'desc'
       }
     };
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<SessionRawFilters>([]);
 
     component.ngOnInit();
     component.ngAfterViewInit();
@@ -195,24 +189,48 @@ describe('ApplicationsTableComponent', () => {
     expect(component.tasksStatusesColored).toBe(tasksStatusesColored);
   });
 
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options paginator on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'partitionIds',
-        direction: 'desc'
+  it('should update data on refresh', () => {
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: {
+          sessionId: '1'
+        },
+        queryParams: new Map().set('sessionId', { '0-root-1-0': '1' }),
+        resultsQueryParams: { '0-root-1-0': '1' },
+        queryTasksParams: { '0-root-1-0': '1' },
+        filters: [
+          [
+            {
+              for: 'root',
+              field: 1,
+              value: '1',
+              operator: 0
+            }
+          ]
+        ],
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          sessionId: '2'
+        },
+        value$: expect.any(Subject),
+        queryParams: new Map().set('sessionId', { '0-root-1-0': '2' }),
+        resultsQueryParams: { '0-root-1-0': '2' },
+        queryTasksParams: { '0-root-1-0': '2' },
+        filters: [
+          [
+            {
+              for: 'root',
+              field: 1,
+              value: '2',
+              operator: 0
+            }
+          ]
+        ]
       }
-    });
+    ]);
   });
 
   it('should get related icons', () => {
@@ -220,12 +238,9 @@ describe('ApplicationsTableComponent', () => {
   });
 
   it('should change column order', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1
-    } as unknown as CdkDragDrop<string[]>;
-    component.onDrop(event);
-    expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
+    const newColumns: SessionRawColumnKey[] = ['actions', 'sessionId', 'count'];
+    component.onDrop(newColumns);
+    expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
     expect(component.displayedColumns).toEqual(displayedColumns);
   });
 
@@ -243,7 +258,7 @@ describe('ApplicationsTableComponent', () => {
       component.filters = filters;
       expect(component.createTasksByStatusQueryParams(sessionId)).toEqual({
         '0-root-1-0': sessionId,
-        '0-root-1-1':'session not equal',
+        '0-root-1-1': 'session not equal',
         '1-root-1-0': sessionId,
         '1-root-1-3': 'some value',
         '1-options-5-0': 'application name',
@@ -278,10 +293,9 @@ describe('ApplicationsTableComponent', () => {
     ]]);
   });
 
-  it('should emit on Cancel', () => {
-    const spy = jest.spyOn(component.cancelSession, 'emit');
+  it('should ask grpc service to cancel session on Cancel', () => {
     component.onCancel('sessionId');
-    expect(spy).toHaveBeenCalledWith('sessionId');
+    expect(mockSessionsGrpcService.cancel$).toHaveBeenCalledWith('sessionId');
   });
 
   it('should personalize tasks by status', () => {
@@ -290,16 +304,16 @@ describe('ApplicationsTableComponent', () => {
   });
 
   describe('on delete', () => {
-    it('should delete the specified line', () => {
-      component.data$.next([{sessionId: '1'}, {sessionId: '2'}, {sessionId: '3'}] as unknown as SessionRaw[]);
+    it('should ask grpc service to delete session', () => {
       component.onDelete('2');
-      expect(component.data.map(session => session.raw.sessionId)).toEqual(['1', '3']);
+      expect(mockSessionsGrpcService.delete$).toHaveBeenCalledWith('2');
     });
+  });
 
-    it('should emit', () => {
-      const spy = jest.spyOn(component.deleteSession, 'emit');
-      component.onDelete('2');
-      expect(spy).toHaveBeenCalledWith('2');
+  describe('on close', () => {
+    it('should ask grpc service to close session', () => {
+      component.onClose('2');
+      expect(mockSessionsGrpcService.close$).toHaveBeenCalledWith('2');
     });
   });
 });

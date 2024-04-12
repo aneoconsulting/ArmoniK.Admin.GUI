@@ -1,25 +1,19 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { SelectionModel } from '@angular/cdk/collections';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
+import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
-
-  const data = [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}] as unknown as TaskSummary[];
 
   const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
     {
@@ -49,25 +43,6 @@ describe('TasksTableComponent', () => {
     }
   ];
 
-  const sort: MatSort = {
-    active: 'createdAt',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
-
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
-
-  const selection: SelectionModel<string> = {
-    selected: [] as string[],
-    clear: jest.fn(() => {selection.selected.forEach(() => selection.selected.pop());}),
-    select: jest.fn(),
-    isSelected: jest.fn((rowId: string) => rowId === 'selected1')
-  } as unknown as SelectionModel<string>;
-
   const mockTasksIndexService = {
     isActionsColumn: jest.fn(),
     isTaskIdColumn: jest.fn(),
@@ -83,11 +58,17 @@ describe('TasksTableComponent', () => {
   };
 
   const mockNotificationService = {
-    success: jest.fn()
+    success: jest.fn(),
+    error: jest.fn(),
   };
 
   const mockClipBoard = {
     copy: jest.fn()
+  };
+
+  const mockTasksGrpcService = {
+    list$: jest.fn(() => of({tasks: [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}], total: 3})),
+    cancel$: jest.fn(() => of({})),
   };
 
   beforeEach(() => {
@@ -95,6 +76,7 @@ describe('TasksTableComponent', () => {
       providers: [
         TasksTableComponent,
         {provide: TasksIndexService, useValue: mockTasksIndexService},
+        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         TasksStatusesService,
         FiltersService,
         {provide: NotificationService, useValue: mockNotificationService},
@@ -102,10 +84,9 @@ describe('TasksTableComponent', () => {
       ]
     }).inject(TasksTableComponent);
 
-    selection.clear();
-
     component.displayedColumns = displayedColumns;
-    component.selection = selection;
+    component.selection = [];
+    component.filters$ = new BehaviorSubject<TaskSummaryFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -114,42 +95,46 @@ describe('TasksTableComponent', () => {
         direction: 'desc'
       }
     };
-    const data$ = new Subject<TaskSummary[]>();
-    component.sort = sort;
-    component.paginator = paginator;
-    component.data$ = data$;
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
     component.ngAfterViewInit();
-    data$.next(data);
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update data on next', () => {
-    const newData = [{id: '1'}, {id: '2'}] as unknown as TaskSummary[];
-    component.data$.next(newData);
-    expect(component.data.map(d => d.raw)).toEqual(newData);
-  });
-
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options pagination on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'id',
-        direction: 'desc'
+  it('should update data on refresh', () => {
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: {
+          id: 'task1'
+        },
+        resultsQueryParams: {
+          '1-root-3-0': 'task1'
+        },
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          id: 'task2'
+        },
+        resultsQueryParams: {
+          '1-root-3-0': 'task2'
+        },
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          id: 'task3'
+        },
+        resultsQueryParams: {
+          '1-root-3-0': 'task3'
+        },
+        value$: expect.any(Subject)
       }
-    });
+    ]);
   });
 
   it('should check if the task is retried', () => {
@@ -185,10 +170,9 @@ describe('TasksTableComponent', () => {
   });
 
   it('should emit on cancel task', () => {
-    const spy = jest.spyOn(component.cancelTask, 'emit');
     const id = 'taskId';
     component.onCancelTask(id);
-    expect(spy).toHaveBeenCalledWith(id);
+    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([id]);
   });
 
   describe('generateViewInLogsUrl', () => {
@@ -202,65 +186,15 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should check if all rows are selected or not', () => {
-    selection.selected.push('task1');
-    expect(component.isAllSelected()).toBeFalsy();
+  test('onDrop should call tasksIndexService', () => {
+    const newColumns: TaskSummaryColumnKey[] = ['actions', 'id', 'status'];
+    component.onDrop(newColumns);
+    expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
 
-  describe('toggleAllRows', () => {
-    it('should toggle all row to selected', () => {
-      component.toggleAllRows();
-      expect(selection.select).toHaveBeenCalledWith(...component.data.map(data => data.raw.id));
-    });
-
-    it('should clear all row', () => {
-      selection.selected.push(...data.map(row => row.id));
-      component.toggleAllRows();
-      expect(selection.clear).toHaveBeenCalled();
-    });
-  });
-
-  describe('checkBoxLabel', () => {
-    it('should give the option to select all if they are not all selected', () => {
-      selection.selected.push('task1');
-      console.log('checkBox');
-      expect(component.checkboxLabel()).toEqual('select all');
-    });
-
-    it('should give the option to deselect all if all are selected', () => {
-      selection.selected.push(...data.map(row => row.id));
-      console.log('checkBox');
-      expect(component.checkboxLabel()).toEqual('deselect all');
-    });
-
-    it('should get the label to deselect a task', () => {
-      const task = {raw: {id:'selected1'} as unknown as TaskSummary} as unknown as TaskData;
-      expect(component.checkboxLabel(task)).toEqual('Deselect Task selected1');
-    });
-
-    it('should get the label to select one task', () => {
-      const task = {raw: {id:'selected2'} as unknown as TaskSummary} as unknown as TaskData;
-      expect(component.checkboxLabel(task)).toEqual('Select Task selected2');
-    });
-  });
-
-  describe('onDrop', () => {
-    it('should moveItem', () => {
-      const event = {
-        previousIndex: 0,
-        currentIndex: 1
-      } as unknown as CdkDragDrop<string[]>;
-      component.onDrop(event);
-      expect(component.displayedColumns).toEqual(displayedColumns);
-    });
-
-    it('should call tasksIndexService', () => {
-      const event = {
-        previousIndex: 0,
-        currentIndex: 1
-      } as unknown as CdkDragDrop<string[]>;
-      component.onDrop(event);
-      expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
-    });
+  it('should emit on selection change', () => {
+    const spy = jest.spyOn(component.selectionChange, 'emit');
+    component.onSelectionChange([{id: 'taskId1'}, {id: 'taskId2'}] as unknown as TaskSummary[]);
+    expect(spy).toHaveBeenCalledWith(['taskId1', 'taskId2']);
   });
 });

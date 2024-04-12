@@ -144,7 +144,7 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
   ];
 
   customField(column: SessionRawColumnKey) {
-    return column.replace('custom.', '');
+    return column.replace('options.options.', '');
   }
 
   /**

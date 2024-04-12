@@ -1,19 +1,17 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { EventEmitter } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
+import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
+import { ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
 
 describe('ApplicationTableComponent', () => {
   let component: ApplicationsTableComponent;
@@ -84,19 +82,15 @@ describe('ApplicationTableComponent', () => {
     saveStatuses: jest.fn()
   };
 
+  const mockNotificationService = {
+    error: jest.fn()
+  };
+
+  const mockApplicationGrpcService = {
+    list$: jest.fn(() => of({ applications: [{ name: '1', version: '1' }, { name: '2', version: '1' }], total: 2}))
+  };
+
   let dialogSubject: BehaviorSubject<TaskStatusColored[] | undefined>;
-
-  const sort: MatSort = {
-    active: 'namespace',
-    direction: 'asc',
-    sortChange: new EventEmitter()
-  } as unknown as MatSort;
-
-  const paginator: MatPaginator = {
-    pageIndex: 2,
-    pageSize: 50,
-    page: new EventEmitter()
-  } as unknown as MatPaginator;
 
   const filters: ApplicationRawFilters = [
     [
@@ -140,8 +134,8 @@ describe('ApplicationTableComponent', () => {
       providers: [
         ApplicationsTableComponent,
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
-        {provide: TasksByStatusService, useValue: mockTasksByStatusService },
-        {provide: MatDialog, useValue:
+        { provide: TasksByStatusService, useValue: mockTasksByStatusService },
+        { provide: MatDialog, useValue:
           {
             open: () => {
               return {
@@ -152,13 +146,16 @@ describe('ApplicationTableComponent', () => {
             }
           }
         },
-        IconsService,
-        FiltersService
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ApplicationsGrpcService, useValue: mockApplicationGrpcService },
+        FiltersService,
+        IconsService
       ]
     }).inject(ApplicationsTableComponent);
-    component.data$ = new Subject();
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
     component.displayedColumns = displayedColumns;
-    component.filters = [];
+    component.filters$ = new BehaviorSubject<ApplicationRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -167,8 +164,6 @@ describe('ApplicationTableComponent', () => {
         direction: 'desc'
       }
     };
-    component.sort = sort;
-    component.paginator = paginator;
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -178,49 +173,59 @@ describe('ApplicationTableComponent', () => {
   });
 
   it('should update data on next', () => {
-    const newData = [{name: '1'}, {name: '2'}] as unknown as ApplicationRaw[];
-    component.data$.next(newData);
-    expect(component.data.map(d => d.raw)).toEqual(newData);
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: { name: '1', version: '1'},
+        queryTasksParams: {
+          '0-options-5-0': '1',
+          '0-options-6-0': '1'
+        },
+        filters: [[{
+          field: 5,
+          for: 'options',
+          operator: 0,
+          value: '1'
+        },
+        {
+          field: 6,
+          for: 'options',
+          operator: 0,
+          value: '1'
+        }]],
+        value$: expect.any(Subject)
+      },
+      {
+        raw: { name: '2', version: '1'},
+        queryTasksParams: {
+          '0-options-5-0': '2',
+          '0-options-6-0': '1'
+        },
+        filters: [[{
+          field: 5,
+          for: 'options',
+          operator: 0,
+          value: '2'
+        },
+        {
+          field: 6,
+          for: 'options',
+          operator: 0,
+          value: '1'
+        }]],
+        value$: expect.any(Subject)
+      }
+    ]);
   });
 
   it('should restore taskStatus on init', () => {
     expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('applications');
   });
 
-  it('should update options sort on sort change', () => {
-    sort.sortChange.emit();
-    expect(component.options.sort).toEqual({
-      active: sort.active,
-      direction: sort.direction
-    });
-  });
-
-  it('should update options pagination on page change', () => {
-    paginator.page.emit();
-    expect(component.options).toEqual({
-      pageIndex: paginator.pageIndex,
-      pageSize: paginator.pageSize,
-      sort: {
-        active: 'name',
-        direction: 'desc'
-      }
-    });
-  });
-
-  it('should get required icons', () => {
-    expect(component.getIcon('tune')).toEqual('tune');
-    expect(component.getIcon('more')).toEqual('more_vert');
-    expect(component.getIcon('view')).toEqual('visibility');
-  });
-
   it('should change column order', () => {
-    const event = {
-      previousIndex: 0,
-      currentIndex: 1
-    } as unknown as CdkDragDrop<string[]>;
-    component.onDrop(event);
-    expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(displayedColumns.map(column => column.key));
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    const newColumns: ApplicationRawColumnKey[] = ['actions', 'count', 'name'];
+    component.onDrop(newColumns);
+    expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
 
   it('should count tasks by status of the filters', () => {
