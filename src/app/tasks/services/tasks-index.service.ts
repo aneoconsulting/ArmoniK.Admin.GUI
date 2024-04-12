@@ -226,7 +226,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
   ];
 
   customField(column: TaskSummaryColumnKey) {
-    return column.replace('custom.', '');
+    return column.replace('options.options.', '');
   }
 
   /**

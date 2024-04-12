@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TasksTableComponent } from '@app/tasks/components/table.component';
@@ -9,7 +10,7 @@ import { TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
+import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { NotificationService } from '@services/notification.service';
 
 @Component({
@@ -28,10 +29,11 @@ import { NotificationService } from '@services/notification.service';
   ],
   imports: [
     MatToolbarModule,
-    TableActionsToolbarComponent,
+    TableDashboardActionsToolbarComponent,
     FiltersToolbarComponent,
     TasksTableComponent,
     MatIconModule,
+    MatMenuModule,
   ]
 })
 export class TasksLineComponent extends DashboardLineTableComponent<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> implements OnInit, AfterViewInit, OnDestroy {
