@@ -1,20 +1,16 @@
 import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
-import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
-import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
+import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -37,12 +33,8 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
   templateUrl: './index.component.html',
   standalone: true,
   imports: [
-    NgFor,
-    NgIf,
-    RouterModule,
-    NoWrapDirective,
     FiltersToolbarComponent,
-    TableActionsToolbarComponent,
+    TableIndexActionsToolbarComponent,
     PageHeaderComponent,
     MatToolbarModule,
     MatIconModule,
@@ -50,7 +42,6 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule,
     TasksTableComponent,
   ],
   providers: [
