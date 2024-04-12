@@ -94,12 +94,12 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     },
     {
       label: 'See session',
-      icon: this.getPageIcon('sessions'),
+      icon: 'sessions',
       action$: this.seeSessions$,
     },
     {
       label: 'See results',
-      icon: this.getPageIcon('results'),
+      icon: 'results',
       action$: this.seeResults$,
     },
     {
@@ -122,13 +122,13 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     },
     {
       label: 'Close session',
-      icon: this.getIcon('close'),
+      icon: 'close',
       action$: this.closeSession$,
       condition: (element: SessionData) => this.statusesService.canClose(element.raw.status)
     },
     {
       label: 'Delete session',
-      icon: this.getIcon('delete'),
+      icon: 'delete',
       action$: this.deleteSession$,
       condition: (element: SessionData) => this.statusesService.canDelete(element.raw.status)
     }
