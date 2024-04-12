@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { IconPickerDialogComponent } from './icon-picker-dialog.component';
 
@@ -14,8 +13,7 @@ describe('IconPickerDialogComponent', () => {
       ]
     }).inject(IconPickerDialogComponent);
 
-    component.selectedIcon = 'icon';
-    component.selected$ = new Subject<string>();
+    component.icon = 'icon';
     component.ngOnInit();
   });
 
@@ -33,13 +31,8 @@ describe('IconPickerDialogComponent', () => {
   });
 
   describe('selectIcon', () => {
-    it('should select an icon', () => {
-      component.selectIcon('newIcon');
-      expect(component.selectedIcon).toEqual('newIcon');
-    });
-
     it('should emit a new icon', () => {
-      const spy = jest.spyOn(component.selected$, 'next');
+      const spy = jest.spyOn(component.iconChange, 'next');
       component.selectIcon('newIcon');
       expect(spy).toHaveBeenCalledWith('newIcon');
     });

@@ -1,5 +1,5 @@
-import { NgFor } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Subject } from 'rxjs';
 import { Page } from '@app/types/pages';
 import { IconsService } from '@services/icons.service';
 
@@ -27,6 +26,7 @@ article {
   ],
   imports: [
     NgFor,
+    NgIf,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
@@ -38,8 +38,9 @@ article {
 })
 export class IconPickerDialogComponent implements OnInit {
   readonly iconsService = inject(IconsService);
-  @Input({ required: true }) selected$: Subject<string>;
-  @Input({ required: true }) selectedIcon: string = '';
+
+  @Input({ required: true }) icon: string = '';
+  @Output() iconChange = new EventEmitter<string>();
 
   icons: string[] = this.iconsService.getAllIcons();
   filteredIcons: string[] = this.icons;
@@ -60,8 +61,7 @@ export class IconPickerDialogComponent implements OnInit {
   }
 
   selectIcon(icon: string): void {
-    this.selected$.next(icon);
-    this.selectedIcon = icon;
+    this.iconChange.next(icon);
   }
 
   filterIcons(filter: string | null): void {
