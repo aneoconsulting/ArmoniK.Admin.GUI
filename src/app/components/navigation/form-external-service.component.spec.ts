@@ -32,7 +32,10 @@ describe('', () => {
 
   it('should init', () => {
     component.ngOnInit();
-    expect(component.serviceForm.value).toEqual(component.externalService);
+    expect({
+      ...component.serviceForm.value,
+      icon: component.icon
+    }).toEqual(component.externalService);
   });
 
   it('should emit on submit', () => {
