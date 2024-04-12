@@ -2,26 +2,21 @@ import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/ar
 import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { Observable, Subject, Subscription, catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { NoWrapDirective } from '@app/directives/no-wrap.directive';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { TableHandlerCustomValues } from '@app/types/components';
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -40,18 +35,6 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
 @Component({
   selector: 'app-tasks-index',
   templateUrl: './index.component.html',
-  styles: [`
-app-table-actions-toolbar {
-  flex-grow: 1;
-}
-
-.filters {
-  height: auto;
-  min-height: 64px;
-
-  padding: 1rem;
-}
-  `],
   standalone: true,
   imports: [
     NgFor,
@@ -90,133 +73,33 @@ app-table-actions-toolbar {
     FiltersService,
   ],
 })
-export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly #dialog = inject(MatDialog);
-  readonly #iconsService = inject(IconsService);
-  readonly #shareURLService = inject(ShareUrlService);
-  readonly #autoRefreshService = inject(AutoRefreshService);
-  readonly #tasksIndexService = inject(TasksIndexService);
-  readonly #tasksGrpcService = inject(TasksGrpcService);
-  readonly #notificationService = inject(NotificationService);
-  readonly #tasksFiltersService = inject(TasksFiltersService);
-
-  displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [];
-  displayedColumnsKeys: TaskSummaryColumnKey[] = [];
-  customColumns: CustomColumn[];
-  availableColumns: TaskSummaryColumnKey[] = [];
-  lockColumns: boolean = false;
-  columnsLabels: Record<TaskSummaryColumnKey, string> = {} as unknown as Record<TaskSummaryColumnKey, string>;
+export class IndexComponent extends TableHandlerCustomValues<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryEnumField> implements OnInit, AfterViewInit, OnDestroy {
+  readonly tasksGrpcService = inject(TasksGrpcService);
+  readonly notificationService = inject(NotificationService);
+  readonly indexService = inject(TasksIndexService);
+  readonly filtersService = inject(TasksFiltersService);
 
   selection: string[] = [];
 
-  isLoading = true;
-  data: TaskSummary[] = [];
-  data$: Subject<TaskSummary[]> = new Subject();
-  total = 0;
-
-  taskId: string;
-
-  options: TaskSummaryListOptions;
-
-  filters: TaskSummaryFilters = [];
-
-  sharableURL = '';
-
-  serviceIcon$ = new Subject<string | null>();
   serviceIcon: string | null = null;
   serviceName: string | null = null;
   urlTemplate: string | null = null;
 
-  intervalValue = 0;
-  refresh: Subject<void> = new Subject<void>();
-  stopInterval: Subject<void> = new Subject<void>();
-  interval: Subject<number> = new Subject<number>();
-  optionsChange: Subject<void> = new Subject<void>();
-  interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  subscriptions: Subscription = new Subscription();
-
   ngOnInit(): void {
-    this.displayedColumnsKeys = this.#tasksIndexService.restoreColumns();
-    this.availableColumns = this.#tasksIndexService.availableTableColumns.map(column => column.key);
-    this.customColumns = this.#tasksIndexService.restoreCustomColumns();
-    this.availableColumns.push(...this.customColumns);
-    this.lockColumns = this.#tasksIndexService.restoreLockColumns();
-    this.#tasksIndexService.availableTableColumns.forEach(column => {
-      this.columnsLabels[column.key] = column.name;
-    });
-    this.updateDisplayedColumns();
+    this.initTableEnvironment();
 
-    this.options = this.#tasksIndexService.restoreOptions();
-
-    this.filters = this.#tasksFiltersService.restoreFilters();
-
-    this.intervalValue = this.#tasksIndexService.restoreIntervalValue();
-
-    this.sharableURL = this.#shareURLService.generateSharableURL(this.options, this.filters);
-
-    const viewInLogs = this.#tasksIndexService.restoreViewInLogs();
+    const viewInLogs = this.indexService.restoreViewInLogs();
     this.serviceIcon = viewInLogs.serviceIcon;
     this.serviceName = viewInLogs.serviceName;
     this.urlTemplate = viewInLogs.urlTemplate;
-    this.serviceIcon$.next(this.serviceIcon);
   }
 
   ngAfterViewInit(): void {
-    const mergeSubscription = merge(this.optionsChange, this.refresh, this.interval$)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-          const filters = this.filters;
-
-          this.sharableURL = this.#shareURLService.generateSharableURL(this.options, filters);
-          this.#tasksIndexService.saveOptions(this.options);
-
-          return this.#tasksGrpcService.list$(this.options, filters).pipe(
-            catchError((error) => {
-              console.error(error);
-              this.#notificationService.error('Unable to fetch tasks');
-              return of(null);
-            }),
-          );
-        }),
-        map(data => {
-          this.isLoading = false;
-
-          this.total = data?.total ?? 0;
-
-          const tasks = data?.tasks ?? [];
-          return tasks;
-        }),
-      )
-      .subscribe((data) => {
-        this.data = data;
-        this.data$.next(this.data);
-      });
-
-    this.handleAutoRefreshStart();
-
-    this.subscriptions.add(mergeSubscription);
+    this.mergeSubscriptions();
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.includes('custom.')) {
-        const customColumn = key.replaceAll('custom.', '');
-        return {
-          key: `options.options.${customColumn}`,
-          name: customColumn,
-          sortable: true,
-        };
-      } else {
-        return this.#tasksIndexService.availableTableColumns.find(column => column.key === key) as TableColumn<TaskSummaryColumnKey>;
-      }
-    });
+    this.unsubscribe();
   }
 
   onRetries(task: TaskSummary): void {
@@ -230,57 +113,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onFiltersChange([filter]);
   }
 
-  onRefresh() {
-    this.refresh.next();
-  }
-
-  onIntervalValueChange(value: number) {
-    this.intervalValue = value;
-
-    if(value === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(value);
-      this.refresh.next();
-    }
-
-    this.#tasksIndexService.saveIntervalValue(value);
-  }
-
-  onColumnsChange(columns: TaskSummaryColumnKey[]) {
-    if (columns.includes('select')) {
-      const selectIndex = columns.indexOf('select');
-      columns.splice(selectIndex, 1);
-      columns.unshift('select');
-    }
-    this.displayedColumnsKeys = [...columns];
-    this.updateDisplayedColumns();
-    this.#tasksIndexService.saveColumns(columns);
-  }
-
-  onColumnsReset() {
-    this.displayedColumnsKeys = this.#tasksIndexService.resetColumns();
-    this.updateDisplayedColumns();
-  }
-
-  onFiltersChange(value: unknown[]) {
-    this.filters = value as TaskSummaryFilters;
-
-    this.#tasksFiltersService.saveFilters(this.filters);
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onFiltersReset(): void{
-    this.filters = this.#tasksFiltersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.refresh.next();
-  }
-
-  onCancelTask(taskId: string): void {
-    this.cancelTasks([taskId]);
-  }
-
   onSelectionChange(selection: string[]): void {
     this.selection = selection;
   }
@@ -288,47 +120,22 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   onCancelTasksSelection():void {
     this.cancelTasks(this.selection);
   }
-  
-  onLockColumnsChange() {
-    this.lockColumns = !this.lockColumns;
-    this.#tasksIndexService.saveLockColumns(this.lockColumns);
-  }
 
   cancelTasks(tasksIds: string[]): void {
-    this.#tasksGrpcService.cancel$(tasksIds).subscribe({
+    this.tasksGrpcService.cancel$(tasksIds).subscribe({
       complete: () => {
-        this.#notificationService.success('Tasks canceled');
+        this.notificationService.success('Tasks canceled');
         this.refresh.next();
       },
       error: (error) => {
         console.error(error);
-        this.#notificationService.error('Unable to cancel tasks');
+        this.notificationService.error('Unable to cancel tasks');
       },
     });
   }
 
-  handleAutoRefreshStart(): void {
-    if(this.intervalValue === 0) {
-      this.stopInterval.next();
-    } else {
-      this.interval.next(this.intervalValue);
-    }
-  }
-
-  autoRefreshTooltip(): string {
-    return this.#autoRefreshService.autoRefreshTooltip(this.intervalValue);
-  }
-
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
-  getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
-  }
-
   manageViewInLogs(): void {
-    const dialogRef = this.#dialog.open<ManageViewInLogsDialogComponent, ManageViewInLogsDialogData, ManageViewInLogsDialogResult>(ManageViewInLogsDialogComponent, {
+    const dialogRef = this.dialog.open<ManageViewInLogsDialogComponent, ManageViewInLogsDialogData, ManageViewInLogsDialogResult>(ManageViewInLogsDialogComponent, {
       data: {
         serviceIcon: this.serviceIcon,
         serviceName: this.serviceName,
@@ -342,36 +149,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.serviceIcon = result.serviceIcon;
       this.serviceName = result.serviceName;
       this.urlTemplate = result.urlTemplate;
-      this.serviceIcon$.next(this.serviceIcon);
 
-      this.#tasksIndexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
+      this.indexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
     });
-  }
-
-  addCustomColumn(): void {
-    const dialogRef = this.#dialog.open<ManageCustomColumnDialogComponent, CustomColumn[], CustomColumn[]>(ManageCustomColumnDialogComponent, {
-      data: this.customColumns
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if(result) {
-        this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('custom.'));
-        this.availableColumns.push(...result);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('custom.'));
-        this.displayedColumnsKeys.push(...result);
-        this.updateDisplayedColumns();
-        this.#tasksIndexService.saveColumns(this.displayedColumnsKeys);
-        this.#tasksIndexService.saveCustomColumns(this.customColumns);
-      }
-    });
-  }
-
-  idAssignment(taskId: string) {
-    this.taskId = taskId;
-  }
-
-  onOptionsChange() {
-    this.optionsChange.next();
   }
 }

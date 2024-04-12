@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, Subject, throwError } from 'rxjs';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
-import { DataFilterService } from '@app/types/filter-definition';
 import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
-import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
-import { ApplicationsGrpcService } from './services/applications-grpc.service';
+import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
 import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
@@ -51,15 +50,6 @@ describe('Application component', () => {
       sortable: true
     }
   ];
-
-  const dataSample = {
-    total: 3,
-    applications: [
-      {id: 'abc', sessions: [], partitionsId: []},
-      {id: 'def', sessions: [], partitionsId: []},
-      {id: 'ghi', sessions: [], partitionsId: []},
-    ]
-  };
 
   const sampleFiltersOr: FiltersOr<number, null> = [
     [
@@ -125,14 +115,6 @@ describe('Application component', () => {
     resetFilters: jest.fn(),
   };
 
-  const mockNotificationService = {
-    error: jest.fn()
-  };
-
-  const mockGrpcApplicationsService = {
-    list$: jest.fn()
-  };
-
   const mockAutoRefreshService = {
     autoRefreshTooltip: jest.fn(),
     createInterval: jest.fn(() => intervalRefreshSubject),
@@ -142,14 +124,23 @@ describe('Application component', () => {
     component = TestBed.configureTestingModule({
       providers: [
         IndexComponent,
-        {provide: NotificationService, useValue: mockNotificationService },
         IconsService,
-        DataFilterService,
-        { provide: DATA_FILTERS_SERVICE, useValue: mockApplicationsFilterService },
+        { provide: ApplicationsFiltersService, useValue: mockApplicationsFilterService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
-        { provide: ApplicationsGrpcService, useValue: mockGrpcApplicationsService },
         { provide: AutoRefreshService, useValue: mockAutoRefreshService },
+        { provide: MatDialog, useValue:
+          {
+            open: () => {
+              return {
+                afterClosed: () => {
+                  return of([]);
+                }
+              };
+            }
+          }
+        },
+        DefaultConfigService,
       ]
     }).inject(IndexComponent);
 
@@ -168,62 +159,6 @@ describe('Application component', () => {
     expect(mockApplicationIndexService.restoreIntervalValue).toHaveBeenCalled();
     expect(mockShareUrlService.generateSharableURL).toHaveBeenCalledWith(component.options, component.filters);
     expect(component.availableColumns).toEqual(displayedColumns.map(col => col.key));
-  });
-
-  describe('ngAfterViewInit', () => {
-    mockGrpcApplicationsService.list$.mockImplementation(() => {
-      return new BehaviorSubject(dataSample);
-    });
-
-    describe('on optionschange', () => {
-
-      beforeEach(() => {
-        component.options.sort.active = 'namespace';
-        component.options.sort.direction = 'asc';
-        component.options.pageIndex = 2;
-        component.options.pageSize = 25;
-      });
-
-      it('should load data', () => {
-        const data$Spy = jest.spyOn(component.data$, 'next');
-        component.optionsChange.next();
-        expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
-        expect(component.total).toEqual(3);
-        expect(data$Spy).toHaveBeenCalledWith(dataSample.applications);
-      });
-    });
-  });
-
-  it('should load data on user refresh', () => {
-    const data$Spy = jest.spyOn(component.data$, 'next');
-    component.refresh.next();
-    expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
-    expect(component.total).toEqual(3);
-    expect(data$Spy).toHaveBeenCalledWith(dataSample.applications);
-  });
-
-  it('should load data on interval refresh', () => {
-    const data$Spy = jest.spyOn(component.data$, 'next');
-    intervalRefreshSubject.next(1);
-    expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
-    expect(component.total).toEqual(3);
-    expect(data$Spy).toHaveBeenCalledWith(dataSample.applications);
-  });
-
-  it('should catch the error and have empty data', () => {
-    const data$Spy = jest.spyOn(component.data$, 'next');
-    mockGrpcApplicationsService.list$.mockImplementationOnce(() => {
-      return throwError(() => new Error('Test error'));
-    });
-
-    // To prevent the error to be printed in the console
-    const mockConsole = jest.spyOn(console, 'error');
-    mockConsole.mockImplementationOnce(() => {});
-    
-    component.refresh.next();
-    expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to fetch applications');
-    expect(data$Spy).toHaveBeenCalledWith([]);
-    expect(component.total).toEqual(0);
   });
 
   it('should get page icon', () => {
@@ -276,12 +211,12 @@ describe('Application component', () => {
       operator: 4,
       value: 'new value'
     }]];
-    const spyRefresh = jest.spyOn(component.refresh, 'next');
+    const spyFilters = jest.spyOn(component.filters$, 'next');
     component.onFiltersChange(newFilterOr);
     
     expect(mockApplicationsFilterService.saveFilters).toHaveBeenCalledWith(newFilterOr);
     expect(component.options.pageIndex).toEqual(0);
-    expect(spyRefresh).toHaveBeenCalled();
+    expect(spyFilters).toHaveBeenCalled();
     expect(component.filters).toEqual(newFilterOr);
   });
 
@@ -317,10 +252,5 @@ describe('Application component', () => {
       component.onLockColumnsChange();
       expect(mockApplicationIndexService.saveLockColumns).toHaveBeenCalledWith(component.lockColumns);
     });
-  });
-
-  it('should load data onOptionsChange', () => {
-    component.onOptionsChange();
-    expect(mockGrpcApplicationsService.list$).toHaveBeenCalledWith(options, sampleFiltersOr);
   });
 });

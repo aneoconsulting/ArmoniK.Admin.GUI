@@ -1,21 +1,19 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { SelectionModel } from '@angular/cdk/collections';
 import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
+import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
-
-  const data = [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}] as unknown as TaskSummary[];
 
   const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
     {
@@ -45,13 +43,6 @@ describe('TasksTableComponent', () => {
     }
   ];
 
-  const selection: SelectionModel<string> = {
-    selected: [] as string[],
-    clear: jest.fn(() => {selection.selected.forEach(() => selection.selected.pop());}),
-    select: jest.fn(),
-    isSelected: jest.fn((rowId: string) => rowId === 'selected1')
-  } as unknown as SelectionModel<string>;
-
   const mockTasksIndexService = {
     isActionsColumn: jest.fn(),
     isTaskIdColumn: jest.fn(),
@@ -67,11 +58,17 @@ describe('TasksTableComponent', () => {
   };
 
   const mockNotificationService = {
-    success: jest.fn()
+    success: jest.fn(),
+    error: jest.fn(),
   };
 
   const mockClipBoard = {
     copy: jest.fn()
+  };
+
+  const mockTasksGrpcService = {
+    list$: jest.fn(() => of({tasks: [{id: 'task1'}, {id: 'task2'}, {id: 'task3'}], total: 3})),
+    cancel$: jest.fn(() => of({})),
   };
 
   beforeEach(() => {
@@ -79,6 +76,7 @@ describe('TasksTableComponent', () => {
       providers: [
         TasksTableComponent,
         {provide: TasksIndexService, useValue: mockTasksIndexService},
+        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         TasksStatusesService,
         FiltersService,
         {provide: NotificationService, useValue: mockNotificationService},
@@ -86,12 +84,9 @@ describe('TasksTableComponent', () => {
       ]
     }).inject(TasksTableComponent);
 
-    selection.clear();
-
     component.displayedColumns = displayedColumns;
-    component.serviceIcon$ = new Subject();
-    component.serviceName = 'Service';
-    component.urlTemplate = 'myUrl?taskId=%taskId';
+    component.selection = [];
+    component.filters$ = new BehaviorSubject<TaskSummaryFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -100,30 +95,46 @@ describe('TasksTableComponent', () => {
         direction: 'desc'
       }
     };
-    const data$ = new Subject<TaskSummary[]>();
-    component.data$ = data$;
-    component.ngOnInit();
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
     component.ngAfterViewInit();
-    data$.next(data);
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a "view in logs" action', () => {
-    component.serviceIcon$.next('truth');
-    expect(component.actions.find(action => action.label === 'View in logs')).toBeTruthy();
-  });
-
-  it('should update the view in logs columns on icon change', () => {
-    component.serviceIcon$.next('newIcon');
-    expect(component.actions.find(action => action.label === 'View in logs')?.icon).toEqual('newIcon');
-  });
-  it('should update data on next', () => {
-    const newData = [{id: '1'}, {id: '2'}] as unknown as TaskSummary[];
-    component.data$.next(newData);
-    expect(component.data.map(d => d.raw)).toEqual(newData);
+  it('should update data on refresh', () => {
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: {
+          id: 'task1'
+        },
+        resultsQueryParams: {
+          '1-root-3-0': 'task1'
+        },
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          id: 'task2'
+        },
+        resultsQueryParams: {
+          '1-root-3-0': 'task2'
+        },
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          id: 'task3'
+        },
+        resultsQueryParams: {
+          '1-root-3-0': 'task3'
+        },
+        value$: expect.any(Subject)
+      }
+    ]);
   });
 
   it('should check if the task is retried', () => {
@@ -159,10 +170,9 @@ describe('TasksTableComponent', () => {
   });
 
   it('should emit on cancel task', () => {
-    const spy = jest.spyOn(component.cancelTask, 'emit');
     const id = 'taskId';
     component.onCancelTask(id);
-    expect(spy).toHaveBeenCalledWith(id);
+    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([id]);
   });
 
   describe('generateViewInLogsUrl', () => {

@@ -58,3 +58,14 @@ app-table-column-header {
   display: flex;
   align-items: center;
 }
+
+app-table-actions-toolbar {
+  flex-grow: 1;
+}
+
+.filters {
+  height: auto;
+  min-height: 64px;
+
+  padding: 1rem;
+}

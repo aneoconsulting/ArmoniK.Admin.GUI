@@ -1,4 +1,4 @@
-import { ApplicationFilterField, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationFilterField, ListApplicationsResponse, ListPartitionsResponse, ListResultsResponse, ListSessionsResponse, ListTasksResponse, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Params } from '@angular/router';
 import { Subject } from 'rxjs';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
@@ -15,7 +15,7 @@ export type FieldKey<T extends DataRaw> = keyof T;
 
 export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary;
 
-export type CustomColumn = `custom.${string}`;
+export type CustomColumn = `options.options.${string}`;
 
 export interface ArmonikData<T extends DataRaw> {
   raw: T,
@@ -46,6 +46,7 @@ export interface ResultData extends ArmonikData<ResultRaw> {
 }
 
 export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
+export type RawCustomColumnKey = SessionRawColumnKey | TaskSummaryColumnKey;
 export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
 
 export type Status = TaskStatus | SessionStatus | ResultStatus;
@@ -53,3 +54,5 @@ export type IndexListFilters = SessionRawFilters | TaskSummaryFilters | Partitio
 
 export type DataFilterField = ApplicationFilterField.AsObject | SessionFilterField.AsObject | ResultFilterField.AsObject | PartitionFilterField.AsObject | TaskFilterField.AsObject;
 export type ArmonikDataType = ApplicationData | PartitionData | ResultData | SessionData | TaskData;
+
+export type GrpcResponse = ListApplicationsResponse | ListTasksResponse | ListSessionsResponse | ListPartitionsResponse | ListResultsResponse;

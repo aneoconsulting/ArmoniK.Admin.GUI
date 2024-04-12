@@ -1,6 +1,6 @@
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
-  <span i18n="Page title"> Results </span>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
+  <span i18n="Page title">Partitions</span>
 </app-page-header>
 
 <mat-toolbar>
@@ -28,11 +28,11 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<app-results-table
+<app-partitions-table
+  [filters$]="filters$"
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [options]="options"
   [refresh$]="refresh$"
   [loading$]="isLoading$"
-  [filters$]="filters$"
 />

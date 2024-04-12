@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersService } from '@services/filters.service';
-import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
+import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../types';
+import { PartitionRawColumnKey, PartitionRawFilters } from '../types';
 
 describe('PartitionsTableComponent', () => {
   let component: PartitionsTableComponent;
@@ -47,6 +48,10 @@ describe('PartitionsTableComponent', () => {
   const mockTasksByStatusService = {
     restoreStatuses: jest.fn(),
     saveStatuses: jest.fn(),
+  };
+
+  const mockPartitionsGrpcService = {
+    list$: jest.fn(() => of({partitions: [{id: '1'}, {id: '2'}], total: 2}))
   };
 
   const filters: PartitionRawFilters = [
@@ -97,20 +102,26 @@ describe('PartitionsTableComponent', () => {
     }
   };
 
+  const mockNotificationService = {
+    error: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         PartitionsTableComponent,
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },
+        { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
+        { provide: NotificationService, useValue: mockNotificationService },
         FiltersService,
         {provide: MatDialog, useValue: mockMatDialog},
-        IconsService
       ]
     }).inject(PartitionsTableComponent);
-    component.data$ = new Subject();
     component.displayedColumns = displayedColumns;
-    component.filters = [];
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
+    component.filters$ = new BehaviorSubject<PartitionRawFilters>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -127,10 +138,48 @@ describe('PartitionsTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update data on next', () => {
-    const newData = [{id: '1'}, {id: '2'}] as unknown as PartitionRaw[];
-    component.data$.next(newData);
-    expect(component.data.map(d => d.raw)).toEqual(newData);
+  it('should update data on refresh', () => {
+    component.refresh$.next();
+    expect(component.data).toEqual([
+      {
+        raw: {
+          id: '1'
+        },
+        queryTasksParams: {
+          '0-options-4-0': '1'
+        },
+        filters: [
+          [
+            {
+              field: 4,
+              for: 'options',
+              operator: 0,
+              value: '1'
+            }
+          ]
+        ],
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          id: '2'
+        },
+        queryTasksParams: {
+          '0-options-4-0': '2'
+        },
+        filters: [
+          [
+            {
+              field: 4,
+              for: 'options',
+              operator: 0,
+              value: '2'
+            }
+          ]
+        ],
+        value$: expect.any(Subject)
+      }
+    ]);
   });
 
   it('should restore taskStatus on init', () => {
@@ -179,9 +228,5 @@ describe('PartitionsTableComponent', () => {
   it('should personalize tasks by status', () => {
     component.personalizeTasksByStatus();
     expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith('partitions', dialogResult);
-  });
-
-  it('should get required icons', () => {
-    expect(component.getIcon('tune')).toEqual('tune');
   });
 });

@@ -85,7 +85,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
     }
   ];
 
-  const customList: CustomColumn[] = ['custom.test', 'custom.fastCompute', 'custom.column'];
+  const customList: CustomColumn[] = ['options.options.test', 'options.options.fastCompute', 'options.options.column'];
 
   beforeEach(async () => {
     component = TestBed.configureTestingModule({
