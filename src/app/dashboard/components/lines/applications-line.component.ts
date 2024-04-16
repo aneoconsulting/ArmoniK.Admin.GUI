@@ -20,13 +20,6 @@ import { ShareUrlService } from '@services/share-url.service';
 @Component({
   selector: 'app-dashboard-applications-line',
   templateUrl: './applications-line.component.html',
-  styles: [`
-.filters {
-  height: auto;
-  min-height: 64px;
-  padding: 1rem;
-}
-    `],
   standalone: true,
   providers: [
     ShareUrlService,

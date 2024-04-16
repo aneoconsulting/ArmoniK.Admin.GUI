@@ -17,13 +17,6 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-dashboard-partitions-line',
   templateUrl: './partitions-line.component.html',
   standalone: true,
-  styles: [`
-.filters {
-  height: auto;
-  min-height: 64px;
-  padding: 1rem;
-}  
-  `],
   providers: [
     PartitionsIndexService,
     NotificationService,
