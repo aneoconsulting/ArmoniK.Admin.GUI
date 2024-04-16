@@ -177,6 +177,7 @@ describe('TasksTableComponent', () => {
 
   describe('generateViewInLogsUrl', () => {
     it('should return an empty string if there is no urlTemplate', () => {
+      component.urlTemplate = null;
       expect(component.generateViewInLogsUrl('taskId')).toEqual('');
     });
 

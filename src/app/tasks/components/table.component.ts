@@ -30,9 +30,24 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
   ]
 })
 export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> implements AfterViewInit {
-  @Input() serviceIcon: string | null = null;
-  @Input() serviceName: string | null = null;
-  @Input() urlTemplate: string | null = null;
+  @Input({ required: false }) set serviceIcon(entry: string | null) {
+    if (entry) {
+      this._serviceIcon = entry;
+      this.addService();
+    }
+  }
+  @Input({ required: false }) set serviceName(entry: string | null) {
+    if (entry) {
+      this._serviceName = entry;
+      this.addService();
+    }
+  }
+  @Input({ required: false }) set urlTemplate(entry: string | null) {
+    if (entry) {
+      this._urlTemplate = entry;
+      this.addService();
+    }
+  }
 
   @Output() retries = new EventEmitter<TaskSummary>();
   @Output() cancelTask = new EventEmitter<string>();
@@ -43,6 +58,22 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(TasksStatusesService);
+
+  private _serviceIcon: string = '';
+  private _serviceName: string = '';
+  private _urlTemplate: string = '';
+
+  get serviceIcon(): string {
+    return this._serviceIcon;
+  }
+
+  get serviceName(): string {
+    return this._serviceName;
+  }
+
+  get urlTemplate(): string {
+    return this._urlTemplate;
+  }
 
   selection: string[];
 
@@ -60,16 +91,16 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   openViewInLogs$ = new Subject<TaskData>();
   openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
-
+  
   actions: ActionTable<TaskData>[] = [
     {
       label: $localize`Copy Task ID`,
-      icon: 'content_copy',
+      icon: 'copy',
       action$: this.copy$,
     },
     {
       label: $localize`See related result`,
-      icon: 'visibility',
+      icon: 'view',
       action$: this.seeResult$,
     },
     {
@@ -84,12 +115,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       action$: this.cancelTask$,
       condition: (element: TaskData) => this.canCancelTask(element.raw),
     },
-    {
-      label: $localize`View in logs`,
-      icon: this.serviceIcon ?? 'description',
-      action$: this.openViewInLogs$,
-      condition: () => !!(this.urlTemplate && this.serviceName && this.serviceName),
-    }
   ];
 
   ngAfterViewInit(): void {
@@ -176,5 +201,23 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     }
 
     return this.urlTemplate.replaceAll('%taskId', taskId);
+  }
+
+  addService() {
+    if (this._serviceIcon !== '' && this._serviceName !== '' && this._urlTemplate !== '') {
+      if (this.actions[4]) {
+        this.actions[4] = {
+          label: this._serviceName,
+          icon: this._serviceIcon,
+          action$: this.openViewInLogs$,
+        };
+      } else {
+        this.actions.push({
+          label: this._serviceName,
+          icon: this._serviceIcon,
+          action$: this.openViewInLogs$,
+        });
+      }
+    }
   }
 }
