@@ -11,12 +11,12 @@ import { FiltersServiceInterface } from './filtersService';
 import { IndexListFilters, IndexListOptions } from '../data';
 import { RawFilters } from '../filters';
 
-type GrpcClient = TasksClient | ApplicationsClient | ResultsClient | SessionsClient | PartitionsClient;
-type ListResponse = ListTasksResponse | ListApplicationsResponse | ListResultsResponse | ListSessionsResponse | ListPartitionsResponse;
+export type GrpcClient = TasksClient | ApplicationsClient | ResultsClient | SessionsClient | PartitionsClient;
+export type ListResponse = ListTasksResponse | ListApplicationsResponse | ListResultsResponse | ListSessionsResponse | ListPartitionsResponse;
 type GetResponse = GetTaskResponse | GetPartitionResponse | GetResultResponse | GetSessionResponse;
 type CancelResponse = CancelSessionResponse | CancelTasksResponse;
 type CountByStatusResponse = CountTasksByStatusResponse;
-type DataFieldKey = SessionRawFieldKey | TaskSummaryFieldKey | ApplicationRawFieldKey | PartitionRawFieldKey | ResultRawFieldKey;
+export type DataFieldKey = SessionRawFieldKey | TaskSummaryFieldKey | ApplicationRawFieldKey | PartitionRawFieldKey | ResultRawFieldKey;
 
 export interface GrpcListInterface<C extends GrpcClient, L extends IndexListOptions, E extends IndexListFilters, K extends DataFieldKey, F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   readonly filterService: FiltersServiceInterface<RawFilters, F>; 

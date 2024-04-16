@@ -17,6 +17,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { TableContainerComponent } from '@components/table-container.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -107,7 +108,8 @@ app-table-actions-toolbar {
       provide: DATA_FILTERS_SERVICE,
       useExisting: ApplicationsFiltersService
     },
-    DashboardStorageService
+    DashboardStorageService,
+    GrpcSortFieldService,
   ],
   imports: [
     NoWrapDirective,

@@ -26,6 +26,7 @@ import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -110,6 +111,7 @@ import { Line, LineType } from './types';
     IconsService,
     FiltersService,
     ApplicationsFiltersService,
+    GrpcSortFieldService,
   ],
   imports: [
     NgFor,

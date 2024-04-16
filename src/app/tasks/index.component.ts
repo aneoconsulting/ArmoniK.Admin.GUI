@@ -22,6 +22,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableActionsToolbarComponent } from '@components/table-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -89,6 +90,7 @@ app-table-actions-toolbar {
     QueryParamsService,
     UtilsService,
     FiltersService,
+    GrpcSortFieldService,
   ],
 })
 export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
