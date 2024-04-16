@@ -7,6 +7,7 @@ import { PartitionsTableComponent } from '@app/partitions/components/table.compo
 import { PartitionsFiltersService } from '@app/partitions/services/partitions-filters.service';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
 import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
+import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
@@ -16,18 +17,15 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-dashboard-partitions-line',
   templateUrl: './partitions-line.component.html',
   standalone: true,
-  styles: [`
-.filters {
-  height: auto;
-  min-height: 64px;
-  padding: 1rem;
-}  
-  `],
   providers: [
     PartitionsIndexService,
     NotificationService,
     MatSnackBar,
     PartitionsFiltersService,
+    {
+      provide: DATA_FILTERS_SERVICE,
+      useExisting: PartitionsFiltersService
+    },
   ],
   imports: [
     MatToolbarModule,

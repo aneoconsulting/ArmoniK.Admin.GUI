@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, of } from 'rxjs';
+import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
 import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -120,6 +121,18 @@ describe('Application component', () => {
     createInterval: jest.fn(() => intervalRefreshSubject),
   };
 
+  const mockDashboardIndexService = {
+    restoreIntervalValue: jest.fn(),
+    restoreColumns: jest.fn(),
+    restoreLockColumns: jest.fn(),
+    restoreOptions: jest.fn(),
+    saveIntervalValue: jest.fn(),
+    saveColumns: jest.fn(),
+    saveOptions: jest.fn(),
+    saveLockColumns: jest.fn(),
+    availableTableColumns: displayedColumns,
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -140,6 +153,7 @@ describe('Application component', () => {
             }
           }
         },
+        { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         DefaultConfigService,
       ]
     }).inject(IndexComponent);

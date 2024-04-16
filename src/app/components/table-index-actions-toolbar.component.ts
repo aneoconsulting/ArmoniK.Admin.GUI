@@ -1,5 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ColumnKey, RawColumnKey } from '@app/types/data';
+import { Page } from '@app/types/pages';
+import { IconsService } from '@services/icons.service';
 import { TableActionsToolbarComponent } from './table-actions-toolbar.component';
 
 @Component({
@@ -8,9 +12,13 @@ import { TableActionsToolbarComponent } from './table-actions-toolbar.component'
   standalone: true,
   imports: [
     TableActionsToolbarComponent,
+    MatMenuModule,
+    MatIconModule,
   ]
 })
 export class TableIndexActionsToolbarComponent<T extends object, O extends object> {
+  readonly iconsService = inject(IconsService);
+
   @Input({ required: true }) loading: boolean;
   @Input({ required: true }) refreshTooltip: string;
   @Input({ required: true }) intervalValue: number;
@@ -25,6 +33,11 @@ export class TableIndexActionsToolbarComponent<T extends object, O extends objec
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
   @Output() lockColumnsChange = new EventEmitter<void>();
+  @Output() addToDashboard = new EventEmitter<void>();
+
+  getPageIcon(string: Page): string {
+    return this.iconsService.getPageIcon(string);
+  }
 
   onRefresh(): void {
     this.refresh.emit();
@@ -48,5 +61,9 @@ export class TableIndexActionsToolbarComponent<T extends object, O extends objec
 
   onLockColumnsChange(): void {
     this.lockColumnsChange.emit();
+  }
+
+  onAddToDashboard(): void {
+    this.addToDashboard.emit();
   }
 }

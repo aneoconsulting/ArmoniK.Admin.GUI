@@ -47,13 +47,6 @@ app-actions-toolbar {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 }
-
-.filters {
-  height: auto;
-  min-height: 64px;
-
-  padding: 1rem;
-}
     `],
   standalone: true,
   providers: [

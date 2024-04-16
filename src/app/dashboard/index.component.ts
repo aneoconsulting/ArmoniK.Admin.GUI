@@ -103,7 +103,7 @@ import { Line, LineType } from './types';
     TableURLService,
     TableStorageService,
     FiltersService,
-    TasksStatusesService
+    TasksStatusesService,
   ],
   imports: [
     NgFor,
@@ -135,6 +135,7 @@ import { Line, LineType } from './types';
   ]
 })
 export class IndexComponent implements OnInit {
+
   readonly #iconsService = inject(IconsService);
   readonly #dialog = inject(MatDialog);
   readonly #shareURLService = inject(ShareUrlService);

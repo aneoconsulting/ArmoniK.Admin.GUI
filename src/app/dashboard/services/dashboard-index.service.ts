@@ -33,6 +33,12 @@ export class DashboardIndexService {
     });
   }
 
+  addLine(line: Line): number | void {
+    const lines = this.restoreLines();
+    lines.push(line);
+    this.saveLines(lines);
+  }
+
   restoreLines(): Line[] {
     return this.#dashboardStorageService.restoreLines() ?? this.defaultLines;
   }

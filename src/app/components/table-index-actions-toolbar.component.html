@@ -14,6 +14,10 @@
 (lockColumnsChange)="onLockColumnsChange()"
 >
 <ng-container extra-menu-items>
+  <button mat-menu-item (click)="onAddToDashboard()">
+    <mat-icon [fontIcon]="getPageIcon('dashboard')"/>
+    <span i18n>Add to Dashboard</span>
+  </button>
   <ng-content select="[extra-menu-items]"></ng-content>
 </ng-container>
 </app-table-actions-toolbar>
