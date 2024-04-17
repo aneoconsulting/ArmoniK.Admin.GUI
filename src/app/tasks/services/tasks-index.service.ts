@@ -96,7 +96,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Status Message`,
       key: 'statusMessage',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Submitted at`,
@@ -125,27 +125,27 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Count Data Dependencies`,
       key: 'countDataDependencies',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Count Expected Output Ids`,
       key: 'countExpectedOutputIds',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Count Parent Task Ids`,
       key: 'countParentTaskIds',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Count Retry Of Ids`,
       key: 'countRetryOfIds',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Error`,
       key: 'error',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Select`,
