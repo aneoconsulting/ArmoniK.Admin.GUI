@@ -27,6 +27,7 @@ import { TableContainerComponent } from '@components/table-container.component';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -122,6 +123,7 @@ app-table-actions-toolbar {
       provide: DATA_FILTERS_SERVICE,
       useExisting: PartitionsFiltersService
     },
+    GrpcSortFieldService,
   ],
   imports: [
     NoWrapDirective,

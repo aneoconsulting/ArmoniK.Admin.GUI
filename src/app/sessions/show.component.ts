@@ -11,6 +11,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -52,6 +53,7 @@ import { SessionRaw } from './types';
     TasksGrpcService,
     TasksFiltersService,
     TasksStatusesService,
+    GrpcSortFieldService,
   ],
   imports: [
     ShowPageComponent,
