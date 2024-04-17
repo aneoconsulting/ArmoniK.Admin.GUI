@@ -5,7 +5,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , Applic
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters , PartitionRawListOptions} from '@app/partitions/types';
 import { ResultRaw, ResultRawColumnKey, ResultRawFilters , ResultRawListOptions} from '@app/results/types';
 import { SessionRaw, SessionRawColumnKey, SessionRawFilters , SessionRawListOptions} from '@app/sessions/types';
-import { TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
+import { TaskOptions, TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
@@ -13,7 +13,7 @@ export type ColumnKey<T extends object, O extends object = Record<string, never>
 
 export type FieldKey<T extends DataRaw> = keyof T;
 
-export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary;
+export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary | TaskOptions;
 
 export type CustomColumn = `options.options.${string}`;
 

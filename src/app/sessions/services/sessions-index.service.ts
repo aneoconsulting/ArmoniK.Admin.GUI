@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { CustomColumn } from '@app/types/data';
 import { IndexServiceCustomInterface } from '@app/types/services/indexService';
@@ -180,7 +181,7 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
   }
 
   restoreOptions(): SessionRawListOptions {
-    const options = this.tableService.restoreOptions<SessionRaw>('sessions-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<SessionRaw & TaskOptions>('sessions-options', this.defaultOptions);
 
     return options;
   }

@@ -16,6 +16,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -67,6 +68,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilter, TaskSummaryFilter
     FiltersService,
     DashboardIndexService,
     DashboardStorageService,
+    GrpcSortFieldService,
   ],
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryEnumField> implements OnInit, AfterViewInit, OnDestroy {
