@@ -142,6 +142,16 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
       key: 'options.priority',
       sortable: true,
     },
+    {
+      name: $localize`Worker Submission`,
+      key: 'workerSubmission',
+      sortable: true,
+    },
+    {
+      name: $localize`Client Submission`,
+      key: 'clientSubmission',
+      sortable: true,
+    }
   ];
 
   customField(column: SessionRawColumnKey) {
