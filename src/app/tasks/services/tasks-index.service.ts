@@ -96,7 +96,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Status Message`,
       key: 'statusMessage',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Submitted at`,
@@ -145,7 +145,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Error`,
       key: 'error',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Select`,
