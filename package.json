@@ -1,7 +1,7 @@
 {
   "name": "armonik-admin-gui",
-  "version": "0.10.6",
-  "packageManager": "pnpm@8.7.5",
+  "version": "0.10.7",
+  "packageManager": "pnpm@9.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -18,7 +18,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aneoconsultingfr/armonik.api.angular": "^3.16.2",
+    "@aneoconsultingfr/armonik.api.angular": "^3.17.0-edge.14.b451f87",
     "@angular-material-components/datetime-picker": "^16.0.1",
     "@angular/animations": "^16.2.12",
     "@angular/cdk": "16.2.14",
@@ -38,7 +38,6 @@
     "defu": "^6.1.2",
     "jest-junit": "^16.0.0",
     "luxon": "^3.4.3",
-    "pnpm": "^8.11.0",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.13.3"
