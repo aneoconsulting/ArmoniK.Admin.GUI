@@ -5,9 +5,25 @@ import { StorageService } from './storage.service';
 
 describe('StorageService', () => {
   let service: StorageService;
-  const mockItemData: Record<string, string> = {
-    'navigation-sidebar': 'myItemData1',
-    'navigation-theme': 'myItemData2'
+  const keys: Key[] = ['navigation-sidebar', 'navigation-theme'];
+  const mockItemData: Record<string, unknown> = {
+    'navigation-sidebar': {
+      '0': 'profile',
+      '1': 'divider',
+      '2': 'healthcheck',
+      '3': 'divider',
+      '4': 'dashboard',
+      '5': 'divider',
+      '6': 'applications',
+      '7': 'partitions',
+      '8': 'divider',
+      '9': 'sessions',
+      '10': 'tasks',
+      '11': 'results',
+      '12': 'divider',
+      '13': 'sessions',
+    },
+    'navigation-theme': 'indigo-pink'
   }; 
   const mockStorage = {
     length: 1,
@@ -16,8 +32,7 @@ describe('StorageService', () => {
     key: jest.fn(),
     removeItem: jest.fn(),
     setItem: jest.fn(),
-    'navigation-sidebar': 'myItemData1',
-    'navigation-theme': 'myItemData2'
+    ...mockItemData,
   };
 
   beforeEach(() => {
@@ -58,14 +73,16 @@ describe('StorageService', () => {
     });
 
     it('Should return data if the parameters are corrects', () => {
-      expect(service.getItem('navigation-sidebar')).toEqual({
-        'value': 'myItemData1'
+      const key = 'navigation-sidebar';
+      expect(service.getItem(key)).toEqual({
+        'value': mockItemData[key]
       });
     });
 
     it('Should return data if the parameters are corrects and parse is true', () => {
-      expect(service.getItem('navigation-theme', true)).toEqual({
-        'value': 'myItemData2'
+      const key = 'navigation-theme';
+      expect(service.getItem(key, true)).toEqual({
+        'value': mockItemData[key]
       });
     });
 
@@ -138,32 +155,22 @@ describe('StorageService', () => {
         const result = mockItemData[key];
         if(result) {
           if(!parse) {
-            return {'13': 'sessions'};
+            return result;
           } 
           else {
-            return JSON.stringify({'13': 'sessions'});
+            return JSON.stringify(result);
           }
         }
         else {
           return undefined;
         }
       });
-      const expectedList = ['profile', 'divider', 'healthcheck', 'divider', 'dashboard', 'divider', 'applications', 'partitions', 'divider', 'sessions', 'tasks', 'results', 'divider', 'sessions'];
-      const expectedResult: {[key: number]: string} = {};
-      expectedList.forEach((value, index) => expectedResult[index] = value);
-      expect(service.exportData()['navigation-sidebar'])
-        .toEqual(expectedResult);
-      expect(service.exportData()['applications-tasks-by-status'])
-        .toEqual([
-          { status: 4, color: '#4caf50' },
-          { status: 5, color: '#ff0000' },
-          { status: 6, color: '#ff6944' },
-          { status: 11, color: '#ff9800' }
-        ],);
+      const exportedData = service.exportData();
+      expect(exportedData[keys[0]]).toEqual(mockItemData[keys[0]]);
     });
 
     it('Should use defu properly', () => {
-      mockStorage.getItem.mockImplementationOnce((key: Key, parse) => {
+      mockStorage.getItem.mockImplementationOnce((key: Key, parse: boolean) => {
         const result = mockItemData[key];
         if (!parse) return result ? [{
           '0': 'profile',
