@@ -7,6 +7,7 @@ import { PartitionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
@@ -20,7 +21,8 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     PartitionsGrpcService,
     PartitionsIndexService,
     TasksByStatusService,
-    FiltersService
+    FiltersService,
+    GrpcSortFieldService,
   ],
   imports: [
     TableComponent,

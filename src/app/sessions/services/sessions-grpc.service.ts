@@ -1,14 +1,17 @@
-import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionField, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, map } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TaskOptions } from '@app/tasks/types';
 import { Filter, FilterType } from '@app/types/filters';
+import { ListOptionsSort } from '@app/types/options';
 import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
 import { buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Injectable()
 export class SessionsGrpcService implements GrpcListInterface<SessionsClient, SessionRawListOptions, SessionRawFilters, SessionRawFieldKey, SessionRawEnumField, SessionTaskOptionEnumField>, GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
@@ -16,6 +19,7 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
   readonly grpcClient = inject(SessionsClient);
   readonly tasksGrpcService = inject(TasksGrpcService);
   readonly utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
+  readonly sortFieldService = new GrpcSortFieldService();
 
   readonly sortFields: Record<SessionRawFieldKey, SessionRawEnumField> = {
     'sessionId': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
@@ -34,17 +38,22 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
 
   list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
     const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
+    const sortField = this.sortFieldService.buildSortField<SessionRaw, SessionField>(options.sort, 
+      (sort: ListOptionsSort<SessionRaw & TaskOptions>) => {
+        return {
+          sessionRawField: {
+            field: this.sortFields[sort.active as SessionRawFieldKey] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID
+          }
+        } as SessionField;
+      }
+    );
 
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
       sort: {
         direction: sortDirections[options.sort.direction],
-        field: {
-          sessionRawField: {
-            field: this.sortFields[options.sort.active] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID
-          }
-        }
+        field: sortField
       },
       filters: requestFilters
     });

@@ -61,7 +61,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   initColumns() {
     this.availableColumns = this.indexService.availableTableColumns.map(c => c.key);
-    this.displayedColumnsKeys = this.indexService.restoreColumns();
+    this.displayedColumnsKeys = this.line.displayedColumns as K[] ?? this.indexService.defaultColumns;
     this.updateDisplayedColumns();
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
@@ -165,8 +165,8 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   onColumnsReset() {
-    this.displayedColumnsKeys = this.indexService.resetColumns();
-    this.line.displayedColumns = this.displayedColumnsKeys;
+    this.displayedColumnsKeys = this.indexService.defaultColumns;
+    this.line.displayedColumns = this.indexService.defaultColumns;
     this.updateDisplayedColumns();
     this.lineChange.emit();
   }

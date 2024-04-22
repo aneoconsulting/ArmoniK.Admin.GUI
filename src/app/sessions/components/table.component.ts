@@ -14,6 +14,7 @@ import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -34,6 +35,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
     TasksGrpcService,
     SessionsGrpcService,
     NotificationService,
+    GrpcSortFieldService,
   ],
   imports: [
     TableComponent,

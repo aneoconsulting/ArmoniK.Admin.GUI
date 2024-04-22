@@ -4,7 +4,7 @@ import { CustomColumn } from '@app/types/data';
 import { IndexServiceCustomInterface } from '@app/types/services/indexService';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
+import { TaskOptions, TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
 export class TasksIndexService implements IndexServiceCustomInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
@@ -96,7 +96,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Status Message`,
       key: 'statusMessage',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Submitted at`,
@@ -145,7 +145,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Error`,
       key: 'error',
-      sortable: true,
+      sortable: false,
     },
     {
       name: $localize`Select`,
@@ -262,7 +262,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
   }
 
   restoreOptions(): TaskSummaryListOptions {
-    const options = this.tableService.restoreOptions<TaskSummary>('tasks-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<TaskSummary & TaskOptions>('tasks-options', this.defaultOptions);
 
     return options;
   }
