@@ -156,6 +156,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
   nextDuration$ = new Subject<string>();
   computeDuration$ = new Subject<void>();
+  sessionsIdsComputationError: string[] = [];
 
   data$ = new Subject<SessionRaw[]>();
 
@@ -264,7 +265,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
                 nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
               } as Duration;
             } else {
-              this.#notificationService.warning('Error while computing duration for session: ' + key);
+              this.computationErrorNotification(key);
             }
           }
         });
@@ -450,5 +451,12 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sessionCreationDates.push({sessionId: data.sessionId, date: data.date});
     }
     this.computeDuration$.next();
+  }
+
+  computationErrorNotification(sessionId: string) {
+    if (!this.sessionsIdsComputationError.includes(sessionId)) {
+      this.sessionsIdsComputationError.push(sessionId);
+      this.#notificationService.warning('Error while computing duration for session: ' + sessionId);
+    }
   }
 }
