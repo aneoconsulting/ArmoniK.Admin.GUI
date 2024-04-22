@@ -1,4 +1,5 @@
 import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
+import { IndexListOptions } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsService } from './query-params.service';
@@ -30,7 +31,7 @@ describe('QueryParamsService', () => {
       sortField:'name,service',
       sortDirection:'asc'
     };
-    expect(service.createOptions(options)).toEqual(optionsResult);
+    expect(service.createOptions(options as IndexListOptions)).toEqual(optionsResult);
   });
 
   it('Should create Filters', () => {

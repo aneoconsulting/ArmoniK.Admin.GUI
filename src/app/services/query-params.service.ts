@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { DataRaw } from '@app/types/data';
+import { IndexListOptions } from '@app/types/data';
 import { FilterInputValueDate, MaybeNull, RawFilters } from '@app/types/filters';
-import { ListOptions } from '@app/types/options';
 import { QueryParamsOptions } from '@app/types/query-params';
 
 @Injectable()
 export class QueryParamsService {
-  createOptions<T extends DataRaw>(options: ListOptions<T>): QueryParamsOptions {
+  createOptions<T extends IndexListOptions>(options: T): QueryParamsOptions {
     const queryParamsOptions: QueryParamsOptions = {
       pageIndex: options.pageIndex.toString(),
       pageSize: options.pageSize.toString(),
