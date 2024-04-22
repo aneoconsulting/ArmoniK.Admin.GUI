@@ -51,11 +51,11 @@ export class AddLineDialogComponent implements OnInit {
 
   constructor(
     public _dialogRef: MatDialogRef<AddLineDialogComponent, AddLineDialogResult>,
-    @Inject(MAT_DIALOG_DATA) public data: AddLineDialogData,
+    @Inject(MAT_DIALOG_DATA) public data?: AddLineDialogData,
   ) {}
 
   ngOnInit(): void {
-    if(this.data && this.data.name && this.data.type) {
+    if(this.data?.name && this.data?.type) {
       this.lineForm.setValue({
         name: this.data.name,
         type: this.data.type
