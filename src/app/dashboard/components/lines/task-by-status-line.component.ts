@@ -15,6 +15,7 @@ import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -64,6 +65,7 @@ app-actions-toolbar {
       provide: DATA_FILTERS_SERVICE,
       useClass: TasksFiltersService
     },
+    GrpcSortFieldService,
   ],
   imports: [
     PageSectionComponent,

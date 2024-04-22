@@ -6,6 +6,7 @@ import { AbstractTableComponent } from '@app/types/components/table';
 import { ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 import { ResultsFiltersService } from '../services/results-filters.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
@@ -24,7 +25,8 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions }
     FiltersService,
     NotificationService,
     ResultsStatusesService,
-    ResultsFiltersService
+    ResultsFiltersService,
+    GrpcSortFieldService,
   ],
   imports: [
     TableComponent,

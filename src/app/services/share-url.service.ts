@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { DataRaw } from '@app/types/data';
+import { IndexListOptions } from '@app/types/data';
 import { RawFilters } from '@app/types/filters';
-import { ListOptions } from '@app/types/options';
 import { QueryParamsService } from './query-params.service';
 
 @Injectable()
@@ -9,7 +8,7 @@ export class ShareUrlService {
   #window = inject(Window);
   #queryParamsService = inject(QueryParamsService);
 
-  generateSharableURL<T extends DataRaw, F extends RawFilters>(options: ListOptions<T> | null, filters: F | null): string {
+  generateSharableURL<T extends IndexListOptions, F extends RawFilters>(options: T | null, filters: F | null): string {
     const origin = this.#window.location.origin;
     const pathname = this.#window.location.pathname;
 
