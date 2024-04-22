@@ -167,7 +167,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
 
-      this.line.name = result.name;
+      this.line.name = result;
       this.lineChange.emit();
     });
   }

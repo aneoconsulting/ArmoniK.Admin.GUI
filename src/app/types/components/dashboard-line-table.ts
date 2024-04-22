@@ -133,7 +133,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.line.name = result.name;
+        this.line.name = result;
         this.lineChange.emit();
       }
     });

@@ -51,7 +51,10 @@ export interface ViewArrayDialogData {
 
 export type ViewArrayDialogResult = Record<string, never>;
 
-export type AddLineDialogData = Record<string, never>;
+export type AddLineDialogData = {
+  name: string;
+  type: LineType | '';
+};
 
 export type AddLineDialogResult = {
   name: string;
@@ -62,9 +65,7 @@ export type EditNameLineData = {
   name: string;
 };
 
-export type EditNameLineResult = {
-  name: string;
-};
+export type EditNameLineResult = string;
 
 export type ReorganizeLinesDialogData = {
   lines: Line[];
