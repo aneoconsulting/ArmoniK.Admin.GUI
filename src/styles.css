@@ -68,3 +68,22 @@ app-table-index-actions-toolbar, app-table-dashboard-actions-toolbar {
   min-height: 64px !important;
   padding: 1rem !important;
 }
+
+.custom-file-upload {
+  border: 1px solid rgba(189, 189, 189, 0.6);
+  border-radius: 0.4em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  width: 60px;
+}
+
+.custom-file-upload:hover {
+  background-color: rgba(189, 189, 189, 0.3);
+}
+
+input[type="file"] {
+  display: none;
+}
