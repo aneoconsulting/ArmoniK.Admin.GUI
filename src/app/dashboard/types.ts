@@ -4,7 +4,7 @@ import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
-import { ColumnKey, IndexListOptions, RawColumnKey } from '@app/types/data';
+import { IndexListOptions, RawColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { TableType } from '@app/types/table';
 
@@ -22,7 +22,7 @@ export type Line = {
   filters: FiltersOr<FiltersEnums, FiltersOptionsEnums> | ApplicationRawFilters,
   options?: IndexListOptions;
   taskStatusesGroups?: TasksStatusesGroup[],
-  displayedColumns?: ColumnKey<Summary, SummaryOptions> | RawColumnKey[],
+  displayedColumns?: RawColumnKey[],
   lockColumns?: boolean;
 };
 

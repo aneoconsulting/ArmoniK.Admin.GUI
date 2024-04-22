@@ -14,6 +14,7 @@ import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -34,6 +35,7 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
     TasksGrpcService,
     SessionsGrpcService,
     NotificationService,
+    GrpcSortFieldService,
   ],
   imports: [
     TableComponent,
@@ -61,6 +63,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
   nextDuration$ = new Subject<string>();
   computeDuration$ = new Subject<void>();
+  sessionsIdsComputationError: string[] = [];
 
   copy$ = new Subject<SessionData>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
@@ -150,7 +153,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
                 nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
               } as Duration;
             } else {
-              this.notificationService.warning('Error while computing duration for session: ' + key);
+              this.computationErrorNotification(key);
             }
           }
         });
@@ -398,5 +401,12 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       this.sessionCreationDates.push({sessionId: data.sessionId, date: data.date});
     }
     this.computeDuration$.next();
+  }
+
+  computationErrorNotification(sessionId: string) {
+    if (!this.sessionsIdsComputationError.includes(sessionId)) {
+      this.sessionsIdsComputationError.push(sessionId);
+      this.notificationService.warning('Error while computing duration for session: ' + sessionId);
+    }
   }
 }

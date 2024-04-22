@@ -13,6 +13,8 @@ import { Line } from '../../types';
 describe('ApplicationsLineComponent', () => {
   let component: ApplicationsLineComponent;
 
+  const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
+
   const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
     {
       name: 'Name',
@@ -60,6 +62,7 @@ describe('ApplicationsLineComponent', () => {
   const line: Line = {
     name: 'Tasks',
     type: 'Applications',
+    displayedColumns: displayedColumns.map(c => c.key),
     filters: [],
     interval: 20,
     options: options
@@ -80,6 +83,7 @@ describe('ApplicationsLineComponent', () => {
 
   const mockApplicationsIndexService = {
     availableTableColumns: displayedColumns,
+    defaultColumns: defaultColumns,
     resetColumns: jest.fn(() => new DefaultConfigService().defaultApplications.columns),
     restoreColumns: jest.fn(() => ['name', 'count']),
   };
@@ -221,9 +225,6 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('onColumnsReset', () => {
-    const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
-    mockApplicationsIndexService.resetColumns.mockImplementation(() => defaultColumns);
-
     beforeEach(() => {
       component.displayedColumnsKeys = ['namespace', 'service'];
       component.line.displayedColumns = ['namespace', 'service'];
