@@ -82,8 +82,13 @@ export class ManageCustomColumnDialogComponent implements OnInit {
 
     const index = this.displayedColumnsList.indexOf(column);
     if (index >= 0) {
-      this.existingColumnList[index] = `options.options.${value}`;
-      this.displayedColumnsList[index] = value;
+      if (this.displayedColumnsList.includes(value)) {
+        this.remove(column);
+      } else {
+        this.existingColumnList[index] = `options.options.${value}`;
+        this.displayedColumnsList[index] = value;
+      }
+      
     }
   }
 
