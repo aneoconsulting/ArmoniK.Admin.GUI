@@ -19,7 +19,6 @@ import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
   ]
 })
 export class EditNameLineDialogComponent implements OnInit  {
-  name: string;
   nameForm: FormGroup;
 
   constructor(
@@ -28,9 +27,8 @@ export class EditNameLineDialogComponent implements OnInit  {
   ) {}
 
   ngOnInit(): void {
-    this.name = this.data.name;
     this.nameForm = new FormGroup({
-      name: new FormControl(this.name, [
+      name: new FormControl(this.data.name, [
         Validators.required,
         Validators.minLength(1)
       ])
@@ -38,8 +36,12 @@ export class EditNameLineDialogComponent implements OnInit  {
   }
 
   onSubmit() {
-    const name = this.nameForm.get('name')?.value;
-    this._dialogRef.close(name ?? this.name);
+    if (this.nameForm.invalid) {
+      this._dialogRef.close(this.data.name);
+    } else {
+      const name = this.nameForm.value.name;
+      this._dialogRef.close(name);
+    }
   }
 
   onNoClick(): void {
