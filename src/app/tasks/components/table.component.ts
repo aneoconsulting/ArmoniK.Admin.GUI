@@ -10,6 +10,7 @@ import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
@@ -23,7 +24,8 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     MatDialog,
     FiltersService,
     Clipboard,
-    TasksGrpcService
+    TasksGrpcService,
+    GrpcSortFieldService,
   ],
   imports: [
     TableComponent

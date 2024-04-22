@@ -6,6 +6,7 @@ import { Subject, catchError, map, switchMap } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -44,6 +45,7 @@ import { TaskRaw } from './types';
     NotificationService,
     MatSnackBar,
     FiltersService,
+    GrpcSortFieldService,
   ],
   imports: [
     ShowPageComponent,
