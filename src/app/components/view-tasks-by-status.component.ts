@@ -16,14 +16,14 @@ import { SpinnerComponent } from './spinner.component';
 <app-spinner *ngIf="loading; else data"></app-spinner>
 
 <ng-template #data>
-  <ng-container *ngFor="let task of tasks; let index = index; trackBy:trackByCount">
+  <ng-container *ngFor="let status of statuses; let index = index; trackBy:trackByCount">
     <a mat-button
-      [matTooltip]="task.tooltip"
+      [matTooltip]="status.tooltip"
       [routerLink]="['/tasks']"
-      [queryParams]="task.queryParams"
-      [style]="'color: ' + task.color"
+      [queryParams]="status.queryParams"
+      [style]="'color: ' + status.color"
     >
-      {{ task.statusCount }}
+      {{ status.statusCount }}
     </a>
     <span *ngIf="index !== statuses.length - 1">|</span>
   </ng-container>
@@ -44,19 +44,39 @@ import { SpinnerComponent } from './spinner.component';
     RouterModule,
     SpinnerComponent,
     MatTooltipModule,
-    MatButtonModule,
+    MatButtonModule
   ],
 })
 export class ViewTasksByStatusComponent {
-  tasks: Required<TaskStatusColored>[] = [];
-  readonly #tasksStatusesService = inject(TasksStatusesService);
+  readonly tasksStatusesService = inject(TasksStatusesService);
 
   @Input({ required: true }) loading = true;
-  @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
 
+  @Input({ required: true }) set statuses(entries: TaskStatusColored[]) {
+    this._statuses = this._statuses.filter(status => entries.some(entry => entry.status === status.status && entry.color === status.color));
+    entries.forEach((entry, index) => {
+      if (index >= this._statuses.length) {
+        this._statuses.push(this.completeStatus(entry));
+      } else if (entry.status !== this._statuses[index].status || entry.color !== this._statuses[index].color) {
+        this._statuses[index] = this.completeStatus(entry);
+      }
+    });
+  }
+
   @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {
-    this.buildTasks(entries);
+    if (entries) {
+      this.statuses.forEach(status => {
+        const statusCount = entries.find(entry => entry.status === status.status);
+        status.statusCount = statusCount?.count ?? 0;
+      });
+    }
+  }
+
+  private _statuses: Required<TaskStatusColored>[] = [];
+
+  get statuses(): Required<TaskStatusColored>[] {
+    return this._statuses;
   }
 
   createQueryParams(status: TaskStatus): Record<string, string> {
@@ -78,33 +98,24 @@ export class ViewTasksByStatusComponent {
     return taskStatusQueryParams;
   }
 
-  tooltip(status: TaskStatus): string {
-    const statusLabel = this.#tasksStatusesService.statusToLabel(status);
-
-    return statusLabel;
+  /**
+   * Create a status that can be used by the component by filling its missing fields
+   * @param incompleteStatus initial status to transform
+   * @returns the complete status
+   */
+  completeStatus(incompleteStatus: TaskStatusColored) {
+    return {
+      status: incompleteStatus.status,
+      color: incompleteStatus.color,
+      queryParams: this.createQueryParams(incompleteStatus.status),
+      tooltip: this.tooltip(incompleteStatus.status),
+      statusCount: 0
+    };
   }
 
-  buildTasks(statusesCounts: StatusCount[] | null): void {
-    this.tasks = [];
-
-    this.statuses.forEach(status => {
-      const task: Required<TaskStatusColored> = {
-        status: status.status,
-        color: status.color,
-        tooltip: this.tooltip(status.status),
-        queryParams:  this.createQueryParams(status.status),
-        statusCount: 0
-      };
-
-      statusesCounts?.forEach(statusCount => {
-        if (statusCount.status === status.status) { 
-          task.statusCount = statusCount.count;
-          return;
-        }
-      });
-
-      this.tasks.push(task);
-    });
+  tooltip(status: TaskStatus): string {
+    const statusLabel = this.tasksStatusesService.statusToLabel(status);
+    return statusLabel;
   }
 
   trackByCount(_: number, status: TaskStatusColored): TaskStatus {
