@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { CustomColumn } from '@app/types/data';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TasksIndexService } from './tasks-index.service';
@@ -127,6 +128,28 @@ describe('TasksIndexService', () => {
     it('should call restoreViewInLogs from TableService', ()=>{
       service.restoreViewInLogs(); 
       expect(mockTableService.restoreViewInLogs).toBeCalledWith('tasks-view-in-logs');
+    });
+  });
+
+  describe('Custom Columns', () => {
+    const columns: CustomColumn[] = ['options.options.FastCompute', 'options.options.CustomColumn'];
+    it('should create custom fields', () => {
+      expect(service.customField('options.options.FastCompute')).toEqual('FastCompute');
+    });
+  
+    it('should save custom columns', () => {
+      service.saveCustomColumns(columns);
+      expect(mockTableService.saveColumns).toHaveBeenCalledWith('tasks-custom-columns', columns);
+    });
+  
+    it('should restore custom columns', () => {
+      mockTableService.restoreColumns.mockReturnValueOnce(columns);
+      expect(service.restoreCustomColumns()).toEqual(columns);
+    });
+
+    it('should restore empty columns by default', () => {
+      mockTableService.restoreColumns.mockReturnValueOnce(null);
+      expect(service.restoreCustomColumns()).toEqual([]);
     });
   });
 });

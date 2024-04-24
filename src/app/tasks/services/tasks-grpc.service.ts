@@ -79,10 +79,9 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
     return this.grpcClient.getTask(getTaskRequest);
   }
 
-  cancel$(tasksIds: string[]): Observable<CancelTasksResponse> {
+  cancel$(taskIds: string[]): Observable<CancelTasksResponse> {
     const request = new CancelTasksRequest({
-      // TODO: upstream typo in armonik.api.angular
-      taskIds: tasksIds
+      taskIds
     });
 
     return this.grpcClient.cancelTasks(request);
@@ -143,8 +142,8 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
       case 'number':
         return {
           field: filterField,
-          filterStatus: {
-            value: filter.value ? Number(filter.value) : 0,
+          filterNumber: {
+            value: filter.value ? Number(filter.value).toString() : '0',
             operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
           },
         } satisfies TaskFilterField.AsObject;
