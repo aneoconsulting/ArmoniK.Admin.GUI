@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { createDefu } from 'defu';
 import { ExportedDefaultConfig, Key } from '@app/types/config';
 import { DefaultConfigService } from './default-config.service';
 
@@ -76,7 +75,7 @@ export class StorageService implements Storage {
       }
     }
 
-    return this.#defu()(data, this.#defaultConfigService.exportedDefaultConfig);
+    return data;
   }
 
   /**
@@ -145,21 +144,5 @@ export class StorageService implements Storage {
    */
   restoreKeys(): Set<Key> {
     return new Set(this.keys);
-  }
-
-  /**
-   * Add keys to the defaultConfig attributes. If a key is linked to an array, the default config
-   * of the GUI will be override by the array.
-   * @returns 
-   */
-  #defu() {
-    // If array, we return the storage array instead of merging it with default config.
-    return createDefu((obj, key, value) => {
-      if (Array.isArray(obj[key]) && Array.isArray(value)) {
-        obj[key] = value;
-        return true;
-      }
-      return;
-    });
   }
 }
