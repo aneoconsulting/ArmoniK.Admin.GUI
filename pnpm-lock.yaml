@@ -59,9 +59,6 @@ importers:
       '@ungap/structured-clone':
         specifier: ^1.2.0
         version: 1.2.0
-      defu:
-        specifier: ^6.1.4
-        version: 6.1.4
       jest-junit:
         specifier: ^16.0.0
         version: 16.0.0
