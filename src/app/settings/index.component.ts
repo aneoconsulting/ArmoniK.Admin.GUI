@@ -77,6 +77,10 @@ main {
   gap: 1rem;
 }
 
+.file {
+  align-items: center;
+}
+
 .actions {
   margin-top: 1rem;
 
@@ -131,6 +135,7 @@ main {
 })
 export class IndexComponent implements OnInit {
   sharableURL = '';
+  fileName: string | undefined;
   keys: Set<Key> = new Set();
 
   sidebar: Sidebar[] = [];
@@ -322,5 +327,9 @@ export class IndexComponent implements OnInit {
 
   #sortKeys(keys: Set<Key>): Set<Key> {
     return new Set([...keys].sort((a, b) => a.localeCompare(b)));
+  }
+
+  addConfigFile(event: Event): void {
+    this.fileName = (event.target as HTMLInputElement).files?.item(0)?.name;
   }
 }
