@@ -12,7 +12,7 @@ import { TasksStatusesGroup } from '../../types';
 describe('TaskByStatusLineComponent', () => {
   let component: TaskByStatusLineComponent;
 
-  let dialogRefSubject: Observable<{name: string} | {groups: TasksStatusesGroup[]} | null>;
+  let dialogRefSubject: Observable<string | {groups: TasksStatusesGroup[]} | null>;
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
@@ -133,7 +133,7 @@ describe('TaskByStatusLineComponent', () => {
 
   it('should update the line name on edit name line', () => {
     const newName = 'newName';
-    dialogRefSubject = of({name: newName});
+    dialogRefSubject = of(newName);
     component.onEditNameLine(newName);
     expect(component.line.name).toEqual(newName);
   });
@@ -148,7 +148,7 @@ describe('TaskByStatusLineComponent', () => {
   it('should emit on edit name', () => {
     const spyLineChange = jest.spyOn(component.lineChange, 'emit');
     const newName = 'newName';
-    dialogRefSubject = of({name: newName});
+    dialogRefSubject = of(newName);
     component.onEditNameLine(newName);
     expect(spyLineChange).toHaveBeenCalled();
   });
