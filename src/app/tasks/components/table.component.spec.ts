@@ -335,7 +335,7 @@ describe('TasksTableComponent', () => {
     const task = {
       raw: {
         id: 'taskId',
-        status: TaskStatus.TASK_STATUS_UNSPECIFIED
+        status: TaskStatus.TASK_STATUS_COMPLETED
       }
     } as unknown as TaskData;
 
