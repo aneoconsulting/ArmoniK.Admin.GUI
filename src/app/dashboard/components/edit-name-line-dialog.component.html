@@ -1,0 +1,14 @@
+<h2 mat-dialog-title i18n="Dialog title">Edit the line name</h2>
+
+<form [formGroup]="nameForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field subscriptSizing="dynamic" appearance="outline">
+      <mat-label for="name">Name</mat-label>
+      <input matInput id="name" type="text" formControlName="name" i18n-placeholder="placeholder" placeholder="Line name"/>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close i18n="Button to close the dialog">Cancel</button>
+    <button mat-flat-button (click)="onSubmit()" type="button" color="primary" [disabled]="!nameForm.valid" i18n="Button to submit the dialog">Submit</button>
+  </mat-dialog-actions>
+</form>
