@@ -24,7 +24,7 @@ describe('tasksStatusesService', () => {
 
   describe('taskNotEnded', () => {
     it('should return true if not ended', () => {
-      expect(service.taskNotEnded(TaskStatus.TASK_STATUS_TIMEOUT)).toBeTruthy();
+      expect(service.taskNotEnded(TaskStatus.TASK_STATUS_CREATING)).toBeTruthy();
     });
 
     it('should return false', () => {
