@@ -29,9 +29,21 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
   ]
 })
 export class CountTasksByStatusComponent {
-  @Input({ required: true }) statuses: TaskStatusColored[] = [];
   @Input({ required: true }) queryParams: Record<string, string> = {};
   @Input({ required: true }) refresh: Subject<void>;
+
+  @Input({ required: true }) set statuses(entries: TaskStatusColored[]) {
+    this._statuses = entries;
+    if (this.refresh) {
+      this.refresh.next();
+    }
+  }
+
+  private _statuses: TaskStatusColored[] = [];
+
+  get statuses(): TaskStatusColored[] {
+    return this._statuses;
+  }
 
   statusesCounts: StatusCount[] | null = null;
 
@@ -41,12 +53,7 @@ export class CountTasksByStatusComponent {
 
   subscription = new Subscription();
 
-  private _filters: TaskSummaryFilters;
-  get filters(): TaskSummaryFilters {
-    return this._filters;
-  }
-
-  @Input({required: true}) set filters(entries: TaskSummaryFilters) {
+  @Input({ required: true }) set filters(entries: TaskSummaryFilters) {
     this.statusesCounts = null;
     this._filters = entries;
     this.refresh.pipe(
@@ -56,5 +63,11 @@ export class CountTasksByStatusComponent {
       this.statusesCounts = response.status ?? null;
     });
     this.refresh.next();
+  }
+
+  private _filters: TaskSummaryFilters;
+
+  get filters(): TaskSummaryFilters {
+    return this._filters;
   }
 }
