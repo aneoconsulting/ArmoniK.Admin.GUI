@@ -1,10 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-import { ResultsFiltersService } from "./results-filters.service";
-import { ResultsStatusesService } from "./results-statuses.service";
-import { DefaultConfigService } from "@services/default-config.service";
-import { TableService } from "@services/table.service";
-import { ResultRawFilters } from "../types";
-import { FilterStringOperator, ResultRawEnumField } from "@aneoconsultingfr/armonik.api.angular";
+import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
+import { DefaultConfigService } from '@services/default-config.service';
+import { TableService } from '@services/table.service';
+import { ResultsFiltersService } from './results-filters.service';
+import { ResultsStatusesService } from './results-statuses.service';
+import { ResultRawFilters } from '../types';
 
 describe('ResultsFilterService', () => {
   let service: ResultsFiltersService;
@@ -16,13 +16,13 @@ describe('ResultsFilterService', () => {
       operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
       value: 'resultId'
     }
-  ]]
+  ]];
 
   const mockTableService = {
     saveFilters: jest.fn(),
     restoreFilters: jest.fn((): ResultRawFilters | undefined => storedFilters),
     resetFilters: jest.fn(),
-  }
+  };
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -86,7 +86,7 @@ describe('ResultsFilterService', () => {
     it('should throw an error for unknown filter type', () => {
       expect(() => service.retrieveLabel('custom', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toThrow(`Unknown filter type: custom ${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID}`);
     });
-  })
+  });
 
   it('should return filters definitions', () => {
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
@@ -96,6 +96,6 @@ describe('ResultsFilterService', () => {
     expect(service.retrieveField('Created at')).toEqual({
       for: 'root',
       index: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT
-    })
+    });
   });
 });

@@ -1,5 +1,5 @@
-import { ResultStatus } from "@aneoconsultingfr/armonik.api.angular";
-import { ResultsStatusesService } from "./results-statuses.service"
+import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ResultsStatusesService } from './results-statuses.service';
 
 describe('ResultsStatusService', () => {
   const service = new ResultsStatusesService();

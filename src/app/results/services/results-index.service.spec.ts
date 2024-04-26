@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { CustomColumn } from '@app/types/data';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ResultsIndexService } from './results-index.service';

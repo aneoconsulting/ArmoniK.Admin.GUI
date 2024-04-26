@@ -1,10 +1,10 @@
-import { TestBed } from "@angular/core/testing";
-import { ResultsGrpcService } from "./results-grpc.service";
-import { ResultsFiltersService } from "./results-filters.service";
-import { UtilsService } from "@services/utils.service";
-import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, ListResultsRequest, ResultRawEnumField, ResultStatus, ResultsClient } from "@aneoconsultingfr/armonik.api.angular";
-import { ResultRawFilters, ResultRawListOptions } from "../types";
-import { ResultsStatusesService } from "./results-statuses.service";
+import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, ListResultsRequest, ResultRawEnumField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
+import { UtilsService } from '@services/utils.service';
+import { ResultsFiltersService } from './results-filters.service';
+import { ResultsGrpcService } from './results-grpc.service';
+import { ResultsStatusesService } from './results-statuses.service';
+import { ResultRawFilters, ResultRawListOptions } from '../types';
 
 describe('ResultsGrpcService', () => {
   let service: ResultsGrpcService;
@@ -79,12 +79,12 @@ describe('ResultsGrpcService', () => {
         type: 'number'
       }
     ],
-  }
+  };
 
   const mockResultsClient = {
     listResults: jest.fn(),
     getResult: jest.fn(),
-  }
+  };
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({

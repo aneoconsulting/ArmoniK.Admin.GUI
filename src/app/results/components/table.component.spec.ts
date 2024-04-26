@@ -1,14 +1,12 @@
-import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
-import { TaskData } from '@app/types/data';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { ResultsTableComponent } from './table.component';
-import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
+import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRawColumnKey, ResultRawFilters } from '../types';
 
