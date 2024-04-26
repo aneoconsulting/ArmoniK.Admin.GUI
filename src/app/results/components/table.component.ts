@@ -1,4 +1,4 @@
-import { FilterStringOperator, ListResultsResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ListResultsResponse, ResultRawEnumField, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
@@ -42,7 +42,7 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
   }
 
   createSessionIdQueryParams(sessionId: string) {
-    const keySession = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+    const keySession = this.filtersService.createQueryParamsKey<SessionRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
