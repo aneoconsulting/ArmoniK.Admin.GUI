@@ -18,7 +18,6 @@ describe('TasksIndexService', () => {
       direction: 'desc'
     },
   };
-  const defaultOptions: TaskSummaryListOptions = defaultConfig.defaultTasks.options;
 
   const storedColumns: TaskSummaryColumnKey[] = ['id', 'createdAt', 'countRetryOfIds', 'fetchedAt', 'actions'];
   const defaultColumns = defaultConfig.defaultTasks.columns;
@@ -148,7 +147,7 @@ describe('TasksIndexService', () => {
         serviceName: 'seq',
         serviceIcon: 'heart',
         urlTemplate: 'https://seq.com/'
-      }
+      };
       service.saveViewInLogs(viewLogService.serviceIcon, viewLogService.serviceName, viewLogService.urlTemplate);
       expect(mockTableService.saveViewInLogs).toHaveBeenCalledWith('tasks-view-in-logs', viewLogService.serviceIcon, viewLogService.serviceName, viewLogService.urlTemplate);
     });
