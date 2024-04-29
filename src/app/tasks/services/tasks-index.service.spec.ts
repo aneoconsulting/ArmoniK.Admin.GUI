@@ -45,7 +45,7 @@ describe('TasksIndexService', () => {
     restoreColumns: jest.fn((): TaskSummaryColumnKey[] | null => storedColumns),
     resetColumns: jest.fn(),
     saveViewInLogs: jest.fn(),
-    restoreViewInLogs: jest.fn(() => storedViewInLogs)
+    restoreViewInLogs: jest.fn((): { serviceIcon: string, serviceName: string, urlTemplate: string } | null => storedViewInLogs)
   };
 
 
@@ -154,6 +154,11 @@ describe('TasksIndexService', () => {
 
     it('should call restoreViewInLogs from TableService', () => {
       expect(service.restoreViewInLogs()).toEqual(storedViewInLogs);
+    });
+
+    it('should return a default view in logs configuration', () => {
+      mockTableService.restoreViewInLogs.mockReturnValueOnce(null);
+      expect(service.restoreViewInLogs()).toEqual(defaultConfig.defaultTasksViewInLogs);
     });
   });
 

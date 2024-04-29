@@ -1,11 +1,12 @@
 import { CancelTasksRequest, CountTasksByStatusRequest, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetTaskRequest, ListTasksRequest, SortDirection, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { ListOptionsSort } from '@app/types/options';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksGrpcService } from './tasks-grpc.service';
 import { TasksStatusesService } from './tasks-statuses.service';
-import { TaskFilterDefinition, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskFilterDefinition, TaskSummary, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 describe('TasksGrpcService', () => {
   let service: TasksGrpcService;
@@ -186,6 +187,31 @@ describe('TasksGrpcService', () => {
           }
         ]
       }
+    }));
+  });
+
+  it('should list by a default sort direction', () => {
+    const options: TaskSummaryListOptions = {
+      pageIndex: 0,
+      pageSize: 10,
+      sort: {
+        active: null,
+        direction: 'desc'
+      } as unknown as ListOptionsSort<TaskSummary>
+    };
+    service.list$(options, []);
+    expect(mockGrpcClient.listTasks).toHaveBeenCalledWith(new ListTasksRequest({
+      page: options.pageIndex,
+      pageSize: options.pageSize,
+      sort: {
+        direction: SortDirection.SORT_DIRECTION_DESC,
+        field: {
+          taskSummaryField: {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT
+          }
+        }
+      },
+      filters: {}
     }));
   });
 

@@ -116,7 +116,7 @@ describe('AppShowComponent', () => {
 
     it('should catch errors', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockTasksGrpcService.get$.mockImplementationOnce(() => throwError(() => new Error()));
+      mockTasksGrpcService.get$.mockReturnValueOnce(throwError(() => new Error()));
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe('AppShowComponent', () => {
 
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockTasksGrpcService.cancel$.mockImplementationOnce(() => throwError(() => new Error()));
+      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       component.cancel();
       expect(errorSpy).toHaveBeenCalled();
     });
@@ -181,5 +181,12 @@ describe('AppShowComponent', () => {
 
   it('should get resultKeys', () => {
     expect(component.resultsKey).toEqual('1-root-3-0');
+  });
+
+  describe('actions', () => {
+    it('should cancel a task', () => {
+      component.actionButtons.find(button => button.id === 'cancel')?.action$?.next();
+      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
+    });
   });
 });
