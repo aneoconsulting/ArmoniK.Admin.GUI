@@ -2,35 +2,40 @@ import { TestBed } from '@angular/core/testing';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { ApplicationsIndexService } from './applications-index.service';
-import { ApplicationRawListOptions } from '../types';
+import { ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
 
 
 describe('TasksIndexService', () => {
   let service: ApplicationsIndexService; 
 
-  const expectDefaultOptions :ApplicationRawListOptions = {
-    pageIndex: 0,
-    pageSize: 100,
-    sort: {
-      active: 'name',
-      direction: 'asc'
-    },
-  };  
-  const expectedDefaultColumns = new DefaultConfigService().defaultApplications.columns;
+  const defaultConfig = new DefaultConfigService();
 
-  const expectedDefaultIntervalValue = new DefaultConfigService().defaultApplications.interval;
-  const mockTableService = {
-    saveIntervalValue: jest.fn(),
-    restoreIntervalValue: jest.fn(),
-    saveOptions: jest.fn(),
-    restoreOptions: jest.fn(),
-    saveColumns: jest.fn(),
-    restoreColumns: jest.fn(),
-    resetColumns: jest.fn(),
-    saveViewInLogs: jest.fn(),
-    restoreViewInLogs: jest.fn()
+  const storedOptions: ApplicationRawListOptions = {
+    pageIndex: 1,
+    pageSize: 10,
+    sort: {
+      active: 'service',
+      direction: 'asc'
+    }
   };
 
+  const storedColumns: ApplicationRawColumnKey[] = ['service', 'actions', 'name'];
+  const defaultColumns = defaultConfig.defaultApplications.columns;
+
+  const storedIntervalValue = 5;
+  const defaultIntervalValue = defaultConfig.defaultApplications.interval;
+  
+  const mockTableService = {
+    saveIntervalValue: jest.fn(),
+    restoreIntervalValue: jest.fn((): number | null => storedIntervalValue),
+    saveOptions: jest.fn(),
+    restoreOptions: jest.fn((): ApplicationRawListOptions | null => storedOptions),
+    saveColumns: jest.fn(),
+    restoreColumns: jest.fn((): ApplicationRawColumnKey[] | null => storedColumns),
+    resetColumns: jest.fn(),
+    saveLockColumns: jest.fn(),
+    restoreLockColumns: jest.fn((): boolean | null => true),
+  };
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -58,44 +63,67 @@ describe('TasksIndexService', () => {
     });
 
     it('should return defaultIntervalValue when restoreIntervalValue from TableService returns null', () => {
-      mockTableService.restoreIntervalValue.mockImplementationOnce(() => null);
-      expect(service.restoreIntervalValue()).toEqual(expectedDefaultIntervalValue);
+      mockTableService.restoreIntervalValue.mockReturnValueOnce(null);
+      expect(service.restoreIntervalValue()).toEqual(defaultIntervalValue);
     });  
 
   });
 
   describe('Options', ()=>{
     it('should call saveOptions from TableService', ()=>{
-      service.saveOptions(expectDefaultOptions);
-      expect(mockTableService.saveOptions).toBeCalledWith('applications-options',expectDefaultOptions);
+      const newOptions: ApplicationRawListOptions = {
+        pageIndex: 2,
+        pageSize: 20,
+        sort: {
+          active: 'version',
+          direction: 'asc'
+        }
+      };
+      service.saveOptions(newOptions);
+      expect(mockTableService.saveOptions).toHaveBeenCalledWith('applications-options', newOptions);
     });
 
     it('should call restoreOptions from TableService', ()=>{
-      service.restoreOptions(); 
-      expect(mockTableService.restoreOptions).toBeCalledWith('applications-options',expectDefaultOptions);
+      expect(service.restoreOptions()).toEqual(storedOptions);
     });
   });
 
   describe('Columns', ()=>{
     it('should call saveColumns from TableService', ()=>{
-      service.saveColumns(['namespace', 'actions', 'version']); 
-      expect(mockTableService.saveColumns).toBeCalledWith('applications-columns', ['namespace', 'actions', 'version']);
+      const columns: ApplicationRawColumnKey[] = ['namespace', 'actions', 'version'];
+      service.saveColumns(columns); 
+      expect(mockTableService.saveColumns).toHaveBeenCalledWith('applications-columns', columns);
     });
 
     it('should call restoreColumns from TableService', ()=>{
-      service.restoreColumns(); 
-      expect(mockTableService.restoreColumns).toBeCalledWith('applications-columns');
+      expect(service.restoreColumns()).toEqual(storedColumns);
     });
 
     it('should return defaultColums when restoreColumns from TableService returns null', ()=>{
-      mockTableService.restoreColumns.mockImplementationOnce(() => null);
-      expect(service.restoreColumns()).toEqual(expectedDefaultColumns);
+      mockTableService.restoreColumns.mockReturnValueOnce(null);
+      expect(service.restoreColumns()).toEqual(defaultColumns);
     });
 
     it('should call resetColumns from TableService', ()=>{
-      service.resetColumns(); 
-      expect(mockTableService.resetColumns).toBeCalledWith('applications-columns');
-      expect(service.resetColumns()).toEqual(expectedDefaultColumns);
+      const columns = service.resetColumns(); 
+      expect(mockTableService.resetColumns).toHaveBeenCalledWith('applications-columns');
+      expect(columns).toEqual(defaultColumns);
+    });
+  });
+
+  describe('lockColumns', () => {
+    it('should save lockColumns', () => {
+      service.saveLockColumns(true);
+      expect(mockTableService.saveLockColumns).toHaveBeenCalledWith('applications-lock-columns', true);
+    });
+
+    it('should restore lockColumns', () => {
+      expect(service.restoreLockColumns()).toBe(true);
+    });
+
+    it('should restore default lockColumns', () => {
+      mockTableService.restoreLockColumns.mockReturnValueOnce(null);
+      expect(service.restoreLockColumns()).toBe(defaultConfig.defaultApplications.lockColumns);
     });
   });
 });

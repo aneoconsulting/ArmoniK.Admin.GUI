@@ -75,6 +75,15 @@ export class IconsService {
     'compare': 'compare_arrows',
     'groups': 'groups',
     'info': 'info',
+    'applications': 'apps',
+    'partitions': 'donut_small',
+    'sessions': 'workspaces',
+    'tasks': 'adjust',
+    'results': 'workspace_premium',
+    'submitter': 'api',
+    'dashboard': 'dashboard',
+    'profile': 'account_circle',
+    'healthcheck': 'monitor_heart'
   };
 
   getIcon(name: string): string {
@@ -92,6 +101,6 @@ export class IconsService {
   }
 
   getAllIcons() {
-    return Object.keys(this.icons).concat(Object.keys(this.pageIcons));
+    return Object.keys(this.icons);
   }
 }
