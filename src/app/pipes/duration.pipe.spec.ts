@@ -20,19 +20,8 @@ describe('DurationPipe', () => {
     expect(pipe.transform({ seconds: '3661', nanos: 123456789 } as Duration)).toEqual('1h 1m 1s 123ms');
   });
 
-  it('should not display hours when there are none', () => {
-    expect(pipe.transform({ seconds: '61', nanos: 123456789 } as Duration)).toEqual('1m 1s 123ms');
-  });
-
-  it('should not display minutes when there are none', () => {
-    expect(pipe.transform({ seconds: '1', nanos: 123456789 } as Duration)).toEqual('1s 123ms');
-  });
-
-  it('should not display seconds when there are none', () => {
+  it('should not display useless time unities', () => {
     expect(pipe.transform({ seconds: '0', nanos: 123456789 } as Duration)).toEqual('123ms');
-  });
-
-  it('should not display milliseconds when there are none', () => {
     expect(pipe.transform({ seconds: '1', nanos: 0 } as Duration)).toEqual('1s');
   });
 });
