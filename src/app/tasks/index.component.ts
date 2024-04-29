@@ -110,7 +110,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummaryColumnKe
       operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
     };
 
-    this.onFiltersChange([filter]);
+    this.onFiltersChange([[filter]]);
   }
 
   onSelectionChange(selection: string[]): void {
@@ -144,13 +144,13 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummaryColumnKe
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-
-      this.serviceIcon = result.serviceIcon;
-      this.serviceName = result.serviceName;
-      this.urlTemplate = result.urlTemplate;
-
-      this.indexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
+      if (result) {
+        this.serviceIcon = result.serviceIcon;
+        this.serviceName = result.serviceName;
+        this.urlTemplate = result.urlTemplate;
+  
+        this.indexService.saveViewInLogs(this.serviceIcon, this.serviceName, this.urlTemplate);
+      }
     });
   }
 }

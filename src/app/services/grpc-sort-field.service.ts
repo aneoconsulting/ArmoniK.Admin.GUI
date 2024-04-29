@@ -23,13 +23,13 @@ export class GrpcSortFieldService {
     sort: ListOptionsSort<D & TaskOptions>,
     buildField: (sortOptions: ListOptionsSort<D & TaskOptions>) => F): F
   {
-    if (sort.active.toString().startsWith('options.options.')) {
+    if (sort.active && sort.active.toString().startsWith('options.options.')) {
       return {
         taskOptionGenericField: {
           field: sort.active.toString().replace('options.options.', '')
         }
       } as F;
-    } else if (sort.active.toString().startsWith('options.')) {
+    } else if (sort.active && sort.active.toString().startsWith('options.')) {
       return {
         taskOptionField: {
           field: this.sortOptionsFields[sort.active.toString().replace('options.', '') as TaskOptionsFieldKey]
