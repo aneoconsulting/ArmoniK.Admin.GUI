@@ -1,31 +1,25 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
-import { FormNameLineComponent } from './form-name-line.component';
 
 @Component({
   selector: 'app-edit-name-line-dialog',
-  template: `
-<h2 mat-dialog-title i18n="Dialog title">Edit the name line</h2>
-
-<app-form-name-line
-  [line]="name"
-  (cancelChange)="onNoClick()"
-  (submitChange)="onSubmit($event)"
-></app-form-name-line>
-  `,
-  styles: [`
-  `],
+  templateUrl: 'edit-name-line-dialog.component.html',
   standalone: true,
   providers: [
   ],
   imports: [
-    FormNameLineComponent,
     MatDialogModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
   ]
 })
 export class EditNameLineDialogComponent implements OnInit  {
-  name: string;
+  nameForm: FormGroup;
 
   constructor(
     public _dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult>,
@@ -33,11 +27,21 @@ export class EditNameLineDialogComponent implements OnInit  {
   ) {}
 
   ngOnInit(): void {
-    this.name = this.data.name;
+    this.nameForm = new FormGroup({
+      name: new FormControl(this.data.name, [
+        Validators.required,
+        Validators.minLength(1)
+      ])
+    });
   }
 
-  onSubmit(result: {name: string, type: string}) {
-    this._dialogRef.close(result);
+  onSubmit() {
+    if (this.nameForm.invalid) {
+      this._dialogRef.close(this.data.name);
+    } else {
+      const name = this.nameForm.value.name;
+      this._dialogRef.close(name);
+    }
   }
 
   onNoClick(): void {

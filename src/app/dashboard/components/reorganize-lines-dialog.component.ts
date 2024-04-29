@@ -121,7 +121,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
         const selectedLine = this.lines[index];
         const changeSelectedNameLine = (line: Line, oldName: string): void => {
           if(line.name === oldName) {
-            line.name = result.name;
+            line.name = result;
           }
         };
         this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));

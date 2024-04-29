@@ -115,7 +115,7 @@ describe('ReorganizeLinesDialogComponent', () => {
   });
 
   it('should edit a name line', () => {
-    const newName = {name: 'newLineName'};
+    const newName = 'newLineName';
     dialogRef$ = of(newName);
     component.onEditNameLine(component.lines[1], 1);
     expect(component.lines[1].name).toEqual('newLineName');

@@ -59,7 +59,7 @@ export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcServic
     },
     {
       id: 'task',
-      name: $localize`See task`,
+      name: $localize`See owner task`,
       icon: this.getPageIcon('tasks'),
       link: '/tasks'
     }
@@ -82,7 +82,11 @@ export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcServic
       if (data) {
         this.data = data;
         this.setLink('session', 'sessions', data.sessionId);
-        this.setLink('task', 'tasks', data.ownerTaskId);
+        if(data.sessionId === data.ownerTaskId) {
+          this.actionButtons = this.actionButtons.filter(element => element.id !== 'task');
+        } else {
+          this.setLink('task', 'tasks', data.ownerTaskId);
+        }
         this.data$.next(data);
       }
     });
