@@ -107,6 +107,19 @@ describe('ShowComponent', () => {
       expect(spy).toHaveBeenCalledWith(returnedResult);
     });
 
+    it(('should set link if sessionId is not the same as ownerTaskId'), () => {
+      const spy = jest.spyOn(component, 'setLink');
+      mockResultsGrpcService.get$.mockImplementationOnce(() => of({result: {...returnedResult, sessionId: 'sessionId', ownerTaskId: 'ownerTaskId'}}));
+      component.refresh.next();
+      expect(spy).toHaveBeenCalledWith('task', 'tasks', 'ownerTaskId');
+    });
+
+    it('should remove an action if sessionId is the same as ownerTaskId', () => {
+      mockResultsGrpcService.get$.mockImplementationOnce(() => of({result: {...returnedResult, sessionId: 'sessionId', ownerTaskId: 'sessionId'}}));
+      component.refresh.next();
+      expect(component.actionButtons.find(action => action.id === 'task')).toBeUndefined();
+    });
+
     it('should not update data if there is none', () => {
       mockResultsGrpcService.get$.mockImplementationOnce(() => of({}));
       const spy = jest.spyOn(component.data$, 'next');

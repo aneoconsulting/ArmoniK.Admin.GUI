@@ -1,10 +1,11 @@
-import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, ListResultsRequest, ResultRawEnumField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetResultRequest, ListResultsRequest, ResultRawEnumField, ResultStatus, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { ListOptionsSort } from '@app/types/options';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './results-filters.service';
 import { ResultsGrpcService } from './results-grpc.service';
 import { ResultsStatusesService } from './results-statuses.service';
-import { ResultRawFilters, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawFilters, ResultRawListOptions } from '../types';
 
 describe('ResultsGrpcService', () => {
   let service: ResultsGrpcService;
@@ -77,6 +78,11 @@ describe('ResultsGrpcService', () => {
         for: 'root',
         field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SIZE,
         type: 'number'
+      },
+      {
+        for: 'root',
+        field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID,
+        type: 'array',
       }
     ],
   };
@@ -174,6 +180,41 @@ describe('ResultsGrpcService', () => {
         ]
       }
     }));
+  });
+
+  it('should have a default sort field', () => {
+    const options: ResultRawListOptions = {
+      pageIndex: 2,
+      pageSize: 10,
+      sort: {
+        active: null,
+        direction: 'asc'
+      } as unknown as ListOptionsSort<ResultRaw>
+    };
+    service.list$(options, []);
+    expect(mockResultsClient.listResults).toHaveBeenCalledWith(new ListResultsRequest({
+      page: options.pageIndex,
+      pageSize: options.pageSize,
+      sort: {
+        direction: 1,
+        field: {
+          resultRawField: {
+            field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
+          }
+        }
+      },
+      filters: {}
+    }));
+  });
+
+  it('should throw an error if the filter type is not supported', () => {
+    const filter: ResultRawFilters = [[{
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID,
+      for: 'root',
+      operator: FilterArrayOperator.FILTER_ARRAY_OPERATOR_NOT_CONTAINS,
+      value: 'task'
+    }]];
+    expect(() => service.list$(options, filter)).toThrow('Type array not supported');
   });
 
   it('should get a result', () => {
