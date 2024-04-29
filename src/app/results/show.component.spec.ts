@@ -116,7 +116,7 @@ describe('ShowComponent', () => {
 
     it('should catch errors', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockResultsGrpcService.get$.mockImplementationOnce(() => throwError(() => new Error()));
+      mockResultsGrpcService.get$.mockReturnValueOnce(throwError(() => new Error()));
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
