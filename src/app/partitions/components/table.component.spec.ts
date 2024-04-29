@@ -176,9 +176,7 @@ describe('TasksTableComponent', () => {
 
   describe('on list error', () => {
     beforeEach(() => {
-      mockPartitionsGrpcService.list$.mockImplementationOnce(() => {
-        return throwError(() => new Error());
-      });
+      mockPartitionsGrpcService.list$.mockReturnValueOnce(throwError(() => new Error()));
     });
 
     it('should log error', () => {

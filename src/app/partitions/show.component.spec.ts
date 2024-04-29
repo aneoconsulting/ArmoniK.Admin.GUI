@@ -105,7 +105,7 @@ describe('ShowComponent', () => {
 
     it('should catch errors', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockPartitionsGrpcService.get$.mockImplementationOnce(() => throwError(() => new Error()));
+      mockPartitionsGrpcService.get$.mockReturnValueOnce(throwError(() => new Error()));
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
