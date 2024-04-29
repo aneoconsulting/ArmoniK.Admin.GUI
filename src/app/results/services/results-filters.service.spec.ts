@@ -1,0 +1,101 @@
+import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
+import { DefaultConfigService } from '@services/default-config.service';
+import { TableService } from '@services/table.service';
+import { ResultsFiltersService } from './results-filters.service';
+import { ResultsStatusesService } from './results-statuses.service';
+import { ResultRawFilters } from '../types';
+
+describe('ResultsFilterService', () => {
+  let service: ResultsFiltersService;
+
+  const storedFilters: ResultRawFilters = [[
+    {
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+      value: 'resultId'
+    }
+  ]];
+
+  const mockTableService = {
+    saveFilters: jest.fn(),
+    restoreFilters: jest.fn((): ResultRawFilters | undefined => storedFilters),
+    resetFilters: jest.fn(),
+  };
+
+  beforeEach(() => {
+    service = TestBed.configureTestingModule({
+      providers: [
+        ResultsFiltersService,
+        ResultsStatusesService,
+        DefaultConfigService,
+        { provide: TableService, useValue: mockTableService }
+      ]
+    }).inject(ResultsFiltersService);
+  });
+
+  it('should create', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('should save filters', () => {
+    const filters: ResultRawFilters = [[
+      {
+        field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+        value: 'someSession'
+      }
+    ]];
+    service.saveFilters(filters);
+    expect(mockTableService.saveFilters).toHaveBeenCalledWith('results-filters', filters);
+  });
+
+  describe('restore filters', () => {
+    it('should restore filters', () => {
+      expect(service.restoreFilters()).toEqual(storedFilters);
+    });
+
+    it('should restore default filters if no filters are stored', () => {
+      mockTableService.restoreFilters.mockReturnValueOnce(undefined);
+      expect(service.restoreFilters()).toEqual(service.defaultFilters);
+    });
+  });
+
+  describe('reset filter', () => {
+    it('should reset filters', () => {
+      service.resetFilters();
+      expect(mockTableService.resetFilters).toHaveBeenCalled();
+    });
+
+    it('should return default filters', () => {
+      expect(service.resetFilters()).toEqual(service.defaultFilters);
+    });
+  });
+
+  describe('retrieveLabel', () => {
+    it('should permit to retrieve label', () => {
+      expect(service.retrieveLabel('root', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toEqual('Result ID');
+    });
+
+    it('should throw an error for options cases', () => {
+      expect(() => service.retrieveLabel('options', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toThrow('Impossible case');
+    });
+
+    it('should throw an error for unknown filter type', () => {
+      expect(() => service.retrieveLabel('custom', ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID)).toThrow(`Unknown filter type: custom ${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID}`);
+    });
+  });
+
+  it('should return filters definitions', () => {
+    expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
+  });
+
+  it('should retrieve Field', () => {
+    expect(service.retrieveField('Created at')).toEqual({
+      for: 'root',
+      index: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT
+    });
+  });
+});
