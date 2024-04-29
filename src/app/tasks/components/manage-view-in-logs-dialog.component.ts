@@ -42,9 +42,6 @@ mat-dialog-content {
 }
   `],
   standalone: true,
-  providers: [
-    IconsService,
-  ],
   imports: [
     NgIf,
     ReactiveFormsModule,

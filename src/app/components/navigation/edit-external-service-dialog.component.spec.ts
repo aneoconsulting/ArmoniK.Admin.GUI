@@ -10,7 +10,7 @@ describe('EditExternalServiceDialogComponent', () => {
   const externalService = {
     name: 'service',
     url: 'url',
-    icon: 'main'
+    icon: 'heart'
   };
   const mockMatDialogData = {
     externalService: externalService

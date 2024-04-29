@@ -112,11 +112,13 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
     ).subscribe((data) => {
       if (data) {
         this.data = data;
+        this.data$.next(data);
         this.setLink('session', 'sessions', data.sessionId);
-        if (data.options) this.setLink('partition', 'partitions', data.options.partitionId);
+        if (data.options) {
+          this.setLink('partition', 'partitions', data.options.partitionId);
+        }
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, data.id);
         this.canCancel$.next(this._tasksStatusesService.taskNotEnded(this.data.status));
-        this.data$.next(data);
       }
     });
 
@@ -125,20 +127,17 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   } 
   
   cancel(): void {
-    if(!this.data) {
-      return;
+    if(this.data) {
+      this._grpcService.cancel$([this.data.id]).subscribe({
+        complete: () => {
+          this.success('Task canceled');
+          this.refresh.next();
+        },
+        error: (error) => {
+          this.handleError(error);
+        },
+      });
     }
-
-    this._grpcService.cancel$([this.data.id]).subscribe({
-      complete: () => {
-        this.success('Task canceled');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.error('Unable to cancel task');
-      },
-    });
   }
 
   get resultsKey() {
