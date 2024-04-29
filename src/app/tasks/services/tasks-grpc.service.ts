@@ -1,10 +1,10 @@
-import { CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, FilterDateOperator, FilterNumberOperator, FilterStringOperator, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskField, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskField, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { ListOptionsSort } from '@app/types/options';
 import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { sortDirections } from '@services/grpc-build-request.service';
+import { buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
@@ -79,10 +79,9 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
     return this.grpcClient.getTask(getTaskRequest);
   }
 
-  cancel$(tasksIds: string[]): Observable<CancelTasksResponse> {
+  cancel$(taskIds: string[]): Observable<CancelTasksResponse> {
     const request = new CancelTasksRequest({
-      // TODO: upstream typo in armonik.api.angular
-      taskIds: tasksIds
+      taskIds
     });
 
     return this.grpcClient.cancelTasks(request);
@@ -125,40 +124,13 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
 
       switch (type) {
       case 'string':
-        return {
-          field: filterField,
-          filterString: {
-            value: filter.value?.toString() ?? '',
-            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
-          },
-        } satisfies TaskFilterField.AsObject;
+        return buildStringFilter(filterField, filter) as TaskFilterField.AsObject;
       case 'status':
-        return {
-          field: filterField,
-          filterStatus: {
-            value: filter.value ? Number(filter.value) : 0,
-            operator: filter.operator ?? FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL
-          },
-        } satisfies TaskFilterField.AsObject;
+        return buildStatusFilter(filterField, filter) as TaskFilterField.AsObject;
       case 'number':
-        return {
-          field: filterField,
-          filterStatus: {
-            value: filter.value ? Number(filter.value) : 0,
-            operator: filter.operator ?? FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL
-          },
-        } satisfies TaskFilterField.AsObject;
+        return buildNumberFilter(filterField, filter) as TaskFilterField.AsObject;
       case 'date':
-        return {
-          field: filterField,
-          filterDate: {
-            value: {
-              nanos: 0,
-              seconds: filter.value?.toString() ?? '0'
-            },
-            operator: filter.operator ?? FilterDateOperator.FILTER_DATE_OPERATOR_EQUAL
-          }
-        } satisfies TaskFilterField.AsObject;
+        return buildDateFilter(filterField, filter) as TaskFilterField.AsObject;
       default:
         throw new Error(`Type ${type} not supported`);
       }
