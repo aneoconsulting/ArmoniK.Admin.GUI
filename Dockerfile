@@ -16,7 +16,7 @@ COPY angular.json ./
 
 RUN nr build --base-href=/admin/
 
-FROM nginx:stable AS production
+FROM nginx:stable-alpine-perl AS production
 
 WORKDIR /usr/share/nginx/html
 
@@ -27,7 +27,7 @@ COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build /usr/src/app/dist/ .
 
-RUN groupadd --gid 5000 armonik && useradd --home-dir /home/armonik --create-home --uid 5000 --gid 5000 --shell /bin/sh armonik
+RUN addgroup -g 5000 armonik && adduser -h /home/armonik -u 5000 -G armonik -s /bin/sh armonik -D
 USER armonik
 
 RUN mkdir -p /tmp/log/nginx && mkdir -p /tmp/run && mkdir -p /tmp/nginx/{client_body_temp,fastcgi_temp,proxy_temp,uwsgi_temp,scgi_temp}
