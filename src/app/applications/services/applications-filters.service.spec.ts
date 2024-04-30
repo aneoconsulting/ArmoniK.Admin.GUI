@@ -89,17 +89,27 @@ describe('ApplicationsFiltersService', () => {
     expect(service.filtersDefinitions).toEqual(defaultFilterDefinition);
   });
 
-  it('should retrieve label', () => {
-    expect(service.retrieveLabel('root', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME)).toEqual('Name');
+  describe('retrieveLabel', () => {
+    it('should retrieve label', () => {
+      expect(service.retrieveLabel('root', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME)).toEqual('Name');
+    });
+  
+    it('should not retrieve label in case of options property', () => {
+      expect(() => {service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME);})
+        .toThrow('Impossible case');
+    });
+
+    it('should throw an error in case of an unknown filter for', () => {
+      expect(() => service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
+        .toThrow('Unknown filter type: unexisting 1');
+    });
   });
 
-  it('should not retrieve label in case of options property', () => {
-    expect(() => {service.retrieveLabel('options', ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME);})
-      .toThrowError('Impossible case');
+  it('should return filter definitions', () => {
+    expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should throw an error in case of an unknown filter for', () => {
-    expect(() => service.retrieveLabel('unexisting' as FilterFor<ApplicationRawEnumField, null>, ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME))
-      .toThrowError('Unknown filter type: unexisting 1');
+  it('should retrieve the field', () => {
+    expect(service.retrieveField('Namespace')).toEqual({for: 'root', index: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE});
   });
 });

@@ -10,10 +10,10 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
   selector: 'app-count-tasks-by-status',
   template: `
 <app-view-tasks-by-status
+  [defaultQueryParams]="queryParams"
   [statuses]="statuses"
   [loading]="loading"
   [statusesCounts]="statusesCounts"
-  [defaultQueryParams]="queryParams"
 >
 </app-view-tasks-by-status>
   `,

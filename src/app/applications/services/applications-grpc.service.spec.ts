@@ -1,10 +1,10 @@
-import { ApplicationRaw, ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FilterDefinitionRootString } from '@app/types/filter-definition';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationsGrpcService } from './applications-grpc.service';
-import { ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 describe('ApplicationsGrpcService', () => {
   let service: ApplicationsGrpcService;
@@ -117,36 +117,75 @@ describe('ApplicationsGrpcService', () => {
   });
 
   it('should throw error in case on unexpected type', () => {
-    expect(() => {service.list$(options, uncorrectfilters);}).toThrowError('Type number not supported');
+    expect(() => {service.list$(options, uncorrectfilters);}).toThrow('Type number not supported');
   });
 
   it('should throw error in case on unexpected sort field', () => {
-    options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw.AsObject;
-    expect(() => {service.list$(options, []);}).toThrowError('Sort field "unexpected" not supported');
+    options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw;
+    expect(() => {service.list$(options, []);}).toThrow('Sort field "unexpected" not supported');
   });
 
-  it('should create the appropriate application sorting field', () => {
-    options.sort.active = 'name';
-    const listResult = new ListApplicationsRequest({
+  describe('getSortFieldsArray', () => {
+    const requestObject = {
       page: 0,
       pageSize: 10,
       sort: {
         direction: 1,
-        fields: [
-          {
-            applicationField: {
-              field: 1
-            }
-          },
-          {
-            applicationField: {
-              field: 2
-            }
-          }
-        ]
+        fields: [] as {applicationField: {field: ApplicationRawEnumField}}[],
       },
       filters: {or: []}
+    };
+
+    it('should create the correct sorting field for "name"', () => {
+      options.sort.active = 'name';
+      requestObject.sort.fields = [
+        {
+          applicationField: {
+            field: 1
+          }
+        },
+        {
+          applicationField: {
+            field: 2
+          }
+        }
+      ];
+      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
     });
-    expect(service.list$(options, [])).toEqual(listResult);
+
+    it('should create the correct sorting field for "version"', () => {
+      options.sort.active = 'version';
+      requestObject.sort.fields = [{
+        applicationField: {
+          field: 2
+        }
+      }];
+      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
+    });
+  
+    it('should create the correct sorting field for "namespace"', () => {
+      options.sort.active = 'namespace';
+      requestObject.sort.fields = [{
+        applicationField: {
+          field: 3
+        }
+      }];
+      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
+    });
+  
+    it('should create the correct sorting field for "service"', () => {
+      options.sort.active = 'service';
+      requestObject.sort.fields = [{
+        applicationField: {
+          field: 4
+        }
+      }];
+      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
+    });
+
+    it('should throw error in case of an unexpected sort field', () => {
+      options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw;
+      expect(() => {service.list$(options, []);}).toThrow('Sort field "unexpected" not supported');
+    });
   });
 });

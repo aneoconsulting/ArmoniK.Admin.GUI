@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { PartitionData } from '@app/types/data';
-import { Filter } from '@app/types/filters';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -64,7 +63,7 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
     }
     const params: Record<string, string> = {};
     this.filters.forEach((filtersAnd, index) => {
-      filtersAnd.filter(filter => this.#isTaskFilter(filter)).forEach((filter) => {
+      filtersAnd.forEach((filter) => {
         const taskField = this.#partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
         if (taskField && filter.operator !== null && filter.value !== null) {
           const key = this.filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
@@ -74,10 +73,6 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
       params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
     });
     return params;
-  }
-
-  #isTaskFilter(filter: Filter<PartitionRawEnumField, null>): boolean {
-    return filter.field === PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID || filter.field === PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY;
   }
 
   #partitionToTaskFilter(field: PartitionRawEnumField | null) {
