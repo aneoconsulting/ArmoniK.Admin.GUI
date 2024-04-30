@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Page } from '@app/types/pages';
 import { IconsService } from '@services/icons.service';
 
 @Component({
@@ -53,11 +52,7 @@ export class IconPickerDialogComponent implements OnInit {
   }
 
   getIcon(icon: string): string {
-    try {
-      return this.iconsService.getIcon(icon);
-    } catch (error) {
-      return this.iconsService.getPageIcon(icon as Page);
-    }
+    return this.iconsService.getIcon(icon);
   }
 
   selectIcon(icon: string): void {

@@ -21,7 +21,7 @@ describe('', () => {
     component.externalService = {
       name: 'service',
       url: 'url',
-      icon: 'main'
+      icon: 'heart'
     };
     fixture.detectChanges();
   });

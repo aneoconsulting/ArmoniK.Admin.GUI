@@ -92,7 +92,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   actions: ActionTable<SessionData>[] = [
     {
       label: 'Copy session ID',
-      icon: this.getIcon('copy'),
+      icon: 'copy',
       action$: this.copy$,
     },
     {
