@@ -1,16 +1,20 @@
+import { FilterNumberOperator, FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subject, of } from 'rxjs';
+import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
+import { PartitionData } from '@app/types/data';
+import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFilters } from '../types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../types';
 
-describe('PartitionsTableComponent', () => {
+describe('TasksTableComponent', () => {
   let component: PartitionsTableComponent;
 
   const displayedColumns: TableColumn<PartitionRawColumnKey>[] = [
@@ -36,74 +40,58 @@ describe('PartitionsTableComponent', () => {
   ];
 
   const mockPartitionsIndexService = {
-    isPartitionIdColumn: jest.fn(),
-    columnToLabel: jest.fn(),
-    isCountColumn: jest.fn(),
+    isActionsColumn: jest.fn(),
+    isTaskIdColumn: jest.fn(),
+    isStatusColumn: jest.fn(),
+    isDateColumn: jest.fn(),
+    isDurationColumn: jest.fn(),
+    isObjectColumn: jest.fn(),
+    isSelectColumn: jest.fn(),
     isSimpleColumn: jest.fn(),
     isNotSortableColumn: jest.fn(),
-    saveColumns: jest.fn(),
-    isObjectColumn: jest.fn(),
+    columnToLabel: jest.fn(),
+    saveColumns: jest.fn()
+  };
+
+  const mockNotificationService = {
+    success: jest.fn(),
+    error: jest.fn(),
+  };
+
+  const mockClipBoard = {
+    copy: jest.fn()
+  };
+
+  const mockPartitionsGrpcService = {
+    list$: jest.fn(() => of({ partitions: [{ id: 'partition1' }, { id: 'partition2', }, { id: 'partition3', }], total: 3 })),
+    cancel$: jest.fn(() => of({})),
+  };
+
+  const matDialogData: TaskStatusColored[] = [
+    {
+      color: 'red',
+      status: TaskStatus.TASK_STATUS_CANCELLING,
+    },
+    {
+      color: 'blue',
+      status: TaskStatus.TASK_STATUS_CREATING,
+    },
+    {
+      color: 'green',
+      status: TaskStatus.TASK_STATUS_RETRIED
+    }
+  ];
+  const mockMatDialog = {
+    open: jest.fn(() => {
+      return {
+        afterClosed: jest.fn(() => of(matDialogData))
+      };
+    })
   };
 
   const mockTasksByStatusService = {
     restoreStatuses: jest.fn(),
-    saveStatuses: jest.fn(),
-  };
-
-  const mockPartitionsGrpcService = {
-    list$: jest.fn(() => of({partitions: [{id: '1'}, {id: '2'}], total: 2}))
-  };
-
-  const filters: PartitionRawFilters = [
-    [
-      {
-        field: 1, 
-        for: 'root', 
-        operator: 1,
-        value: 2
-      },
-      {
-        field: 2,
-        for: 'root', // This shouldn't appear as a filter when redirecting on a task since it is not a task filter
-        operator: 2,
-        value: 'string'
-      },
-      {
-        field: 6,
-        for: 'root',
-        operator: 0,
-        value: 2
-      },
-    ],
-    [
-      {
-        field: 1, // This shouldn't appear as a filter when redirecting on a task since it already filters on partition id equal something
-        for: 'root',
-        operator: 0,
-        value: 'someValue'
-      },
-      {
-        field: 6,
-        for: 'root',
-        operator: 2,
-        value: 'namespace'
-      }
-    ]
-  ];
-
-  const dialogResult = 'color';
-  const mockMatDialog = {
-    open: () => {
-      return {
-        afterClosed() {
-          return of(dialogResult);
-        }
-      };
-    }
-  };
-
-  const mockNotificationService = {
-    error: jest.fn()
+    saveStatuses: jest.fn()
   };
 
   beforeEach(() => {
@@ -111,16 +99,16 @@ describe('PartitionsTableComponent', () => {
       providers: [
         PartitionsTableComponent,
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
-        { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
-        { provide: NotificationService, useValue: mockNotificationService },
         FiltersService,
-        {provide: MatDialog, useValue: mockMatDialog},
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: Clipboard, useValue: mockClipBoard },
+        { provide: MatDialog, useValue: mockMatDialog },
+        { provide: TasksByStatusService, useValue: mockTasksByStatusService },
       ]
     }).inject(PartitionsTableComponent);
+
     component.displayedColumns = displayedColumns;
-    component.refresh$ = new Subject();
-    component.loading$ = new Subject();
     component.filters$ = new BehaviorSubject<PartitionRawFilters>([]);
     component.options = {
       pageIndex: 0,
@@ -130,6 +118,8 @@ describe('PartitionsTableComponent', () => {
         direction: 'desc'
       }
     };
+    component.refresh$ = new Subject();
+    component.loading$ = new Subject();
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -140,93 +130,169 @@ describe('PartitionsTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data).toEqual<PartitionData[]>([
       {
         raw: {
-          id: '1'
-        },
+          id: 'partition1',
+        } as PartitionRaw,
         queryTasksParams: {
-          '0-options-4-0': '1'
+          '0-options-4-0': 'partition1',
         },
-        filters: [
-          [
-            {
-              field: 4,
-              for: 'options',
-              operator: 0,
-              value: '1'
-            }
-          ]
-        ],
+        filters: [[
+          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
+        ]],
         value$: expect.any(Subject)
       },
       {
         raw: {
-          id: '2'
-        },
+          id: 'partition2',
+        } as PartitionRaw,
         queryTasksParams: {
-          '0-options-4-0': '2'
+          '0-options-4-0': 'partition2',
         },
-        filters: [
-          [
-            {
-              field: 4,
-              for: 'options',
-              operator: 0,
-              value: '2'
-            }
-          ]
-        ],
+        filters: [[
+          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
+        ]],
+        value$: expect.any(Subject)
+      },
+      {
+        raw: {
+          id: 'partition3',
+        } as PartitionRaw,
+        queryTasksParams: {
+          '0-options-4-0': 'partition3',
+        },
+        filters: [[
+          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition3' },
+        ]],
         value$: expect.any(Subject)
       }
     ]);
   });
 
-  it('should restore taskStatus on init', () => {
-    expect(mockTasksByStatusService.restoreStatuses).toHaveBeenCalledWith('partitions');
+  it('should return columns keys', () => {
+    expect(component.columnKeys).toEqual(displayedColumns.map(column => column.key));
   });
 
-  it('should change column order', () => {
-    const newColumns: PartitionRawColumnKey[] = ['actions', 'id', 'parentPartitionIds'];
+  describe('on list error', () => {
+    beforeEach(() => {
+      mockPartitionsGrpcService.list$.mockReturnValueOnce(throwError(() => new Error()));
+    });
+
+    it('should log error', () => {
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
+      component.refresh$.next();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should send a notification', () => {
+      component.refresh$.next();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+
+    it('should send empty data', () => {
+      component.refresh$.next();
+      expect(component.data).toEqual([]);
+    });
+  });
+
+  it('should refresh data on options changes', () => {
+    const spy = jest.spyOn(component.refresh$, 'next');
+    component.onOptionsChange();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  test('onDrop should call PartitionsIndexService', () => {
+    const newColumns: PartitionRawColumnKey[] = ['actions', 'id', 'parentPartitionIds', 'preemptionPercentage'];
     component.onDrop(newColumns);
     expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
-    expect(component.displayedColumns).toEqual(displayedColumns);
   });
 
-  it('should count tasks by status of the filters', () => {
-    expect(component.countTasksByStatusFilters('bench'))
-      .toEqual([[
-        {
-          for: 'options',
-          field: 4,
-          value: 'bench',
-          operator: 0
-        }
-      ]]);
-  });
-
-  describe('createTasksByStatusQueryParams', () => {
-    it('should create query params for the specified application', () => {
-      const name = 'bench';
-      expect(component.createTasksByStatusQueryParams(name)).toEqual({
-        '0-options-4-0': name
-      });
+  describe('personnalizeTasksByStatus', () => {
+    beforeEach(() => {
+      component.personalizeTasksByStatus();
     });
 
-    it('should apply all task-related filters', () => {
-      component.filters = filters;
-      expect(component.createTasksByStatusQueryParams('bench')).toEqual({
-        '0-options-4-1': '2',
-        '0-options-3-0': '2',
-        '0-options-4-0': 'bench',
-        '1-options-3-2': 'namespace',
-        '1-options-4-0': 'bench'
-      });
+    it('should update tasks statuses', () => {
+      expect(component.tasksStatusesColored).toEqual(matDialogData);
+    });
+
+    it('should call tasksByStatus service',() => {
+      expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith(component.table, matDialogData);
     });
   });
 
-  it('should personalize tasks by status', () => {
-    component.personalizeTasksByStatus();
-    expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith('partitions', dialogResult);
+  describe('createTasksByStatysQueryParams', () => {
+    it('should create params for a task by status redirection', () => {
+      const partitionId = 'partitionId';
+      expect(component.createTasksByStatusQueryParams(partitionId)).toEqual({
+        '0-options-4-0': partitionId,
+      });
+    });
+
+    it('should create params for each filter', () => {
+      component.filters = [
+        [
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_NOT_EQUAL,
+            value: 'partitionId',
+            for: 'root'
+          },
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY,
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: '1',
+            for: 'root'
+          },
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+            operator: null,
+            value: null,
+            for: 'root'
+          },
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY,
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: null,
+            for: 'root'
+          }
+        ],
+        [
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: 'ShouldNotAppearId',
+            for: 'root'
+          },
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PRIORITY,
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+            value: '2',
+            for: 'root'
+          },
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+            operator: null,
+            value: 'nullOperatorPartionId',
+            for: 'root'
+          },
+          {
+            field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_POD_MAX,
+            operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_GREATER_THAN,
+            value: '3',
+            for: 'root'
+          }
+        ]
+      ];
+      const partitionId = 'partitionId';
+      expect(component.createTasksByStatusQueryParams(partitionId)).toEqual({
+        '0-options-4-1': 'partitionId',
+        '0-options-3-0': '1',
+        '0-options-4-0': partitionId,
+        '1-options-3-2': '2',
+        '1-options-4-0': partitionId,
+      });
+    });
   });
 });
