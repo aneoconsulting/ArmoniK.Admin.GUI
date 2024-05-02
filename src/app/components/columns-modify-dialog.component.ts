@@ -64,12 +64,20 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
     return columns;
   }
 
+  /**
+   * Get every Options column
+   * Sort the columns alphabetically
+   */
   availableOptionsColumns(): PrefixedOptions<O>[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
+    const columns = this.data.availableColumns.filter(column => !this.isCustomColumn(column as ColumnKey<T, O>) && column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
 
     return columns;
   }
 
+  /**
+   * Get every custom column
+   * Sort the columns alphabetically
+   */
   availableCustomColumns(): CustomColumn[] {
     const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
     return columns;

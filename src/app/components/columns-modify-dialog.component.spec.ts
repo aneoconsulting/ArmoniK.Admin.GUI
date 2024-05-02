@@ -1,15 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ColumnKey } from '@app/types/data';
+import { ColumnsModifyDialogData } from '@app/types/dialog';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
 
 describe('', () => {
-  let component: ColumnsModifyDialogComponent<object, object>;
-  let fixture: ComponentFixture<ColumnsModifyDialogComponent<object, object>>;
   const mockMatDialogRef = {
     close: jest.fn()
-  };
+  } as unknown as MatDialogRef<ColumnsModifyDialogComponent<object, object>>;
+
   const mockMatDialogData = {
     currentColumns: ['id', 'created_time'],
     columnsLabels: {
@@ -20,27 +19,34 @@ describe('', () => {
       'options.task_id': 'Task ID',
       'actions': 'Actions'
     } as Record<ColumnKey<object, object>, string>,
-    availableColumns: ['name', 'duration', 'options.task_id', 'actions']
-  };
+    availableColumns: ['name', 'duration', 'options.task_id', 'actions', 'options.options.FastCompute']
+  } as ColumnsModifyDialogData<object, object>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [
-        ColumnsModifyDialogComponent,
-        { provide: MatDialogRef, useValue: mockMatDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: mockMatDialogData }
-      ]
-    }).compileComponents();
-  });
+  const component = new ColumnsModifyDialogComponent<object, object>(
+    mockMatDialogRef,
+    mockMatDialogData
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ColumnsModifyDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.ngOnInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('on init', () => {
+    it('should load columns', () => {
+      expect(component.columns).toEqual(mockMatDialogData.currentColumns);
+    });
+
+    it('should copy the columns', () => {
+      expect(component.columns).not.toBe(mockMatDialogData.currentColumns);
+    });
+
+    it('should load columns labels', () => {
+      expect(component.columnsLabels).toEqual(mockMatDialogData.columnsLabels);
+    });
   });
 
   test('optionsColumnValue should add "options." to any provided string', () => {
@@ -57,14 +63,34 @@ describe('', () => {
       expect(component.columnToLabel('nonExistingLabel' as ColumnKey<object, object>))
         .toEqual('nonExistingLabel');
     });
+
+    it('should remove the "options.options." key from custom columns', () => {
+      expect(component.columnToLabel('options.options.FastCompute')).toEqual('FastCompute');
+    });
   });
 
-  test('availableColumns should return every column without the "options." prefix', () => {
-    expect(component.availableColumns()).toEqual(['actions', 'duration', 'name']);
+  describe('isCustomColumn', () => {
+    it('should be true in case of a custom column', () => {
+      expect(component.isCustomColumn('options.options.FastCompute')).toBeTruthy();
+    });
+
+    it('should be false in case of a non-custom column', () => {
+      expect(component.isCustomColumn('actions')).toBeFalsy();
+    });
   });
 
-  test('availableOptionsColumns should return every column with the "options." prefix', () => {
-    expect(component.availableOptionsColumns()).toEqual(['options.task_id']);
+  describe('Getting available columns', () => {
+    it('should return every column without the "options." prefix', () => {
+      expect(component.availableColumns()).toEqual(['actions', 'duration', 'name']);
+    });
+  
+    it('should return every column with the "options." prefix', () => {
+      expect(component.availableOptionsColumns()).toEqual(['options.task_id']);
+    });
+
+    it('should return every custom column', () => {
+      expect(component.availableCustomColumns()).toEqual(['options.options.FastCompute']);
+    });
   });
 
   describe('updateColumn', () => {
