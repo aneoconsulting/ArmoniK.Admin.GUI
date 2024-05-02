@@ -38,6 +38,7 @@ import { NotificationService } from '@services/notification.service';
 })
 export class PartitionsLineComponent extends DashboardLineTableComponent<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(PartitionsIndexService);
+  readonly defaultConfig = this.defaultConfigService.defaultPartitions;
 
   ngOnInit() {
     this.initLineEnvironment();

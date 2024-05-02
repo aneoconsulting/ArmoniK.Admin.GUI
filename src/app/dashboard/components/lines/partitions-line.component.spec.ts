@@ -1,41 +1,34 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
+import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
+import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
 import { TableColumn } from '@app/types/column.type';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
-import { ApplicationsLineComponent } from './applications-line.component';
+import { PartitionsLineComponent } from './partitions-line.component';
 import { Line } from '../../types';
 
-describe('ApplicationsLineComponent', () => {
-  let component: ApplicationsLineComponent;
+describe('PartitionsLineComponent', () => {
+  let component: PartitionsLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
+  const defaultColumns: PartitionRawColumnKey[] = ['id', 'count'];
 
-  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  const displayedColumns: TableColumn<PartitionRawColumnKey>[] = [
     {
-      name: 'Name',
-      key: 'name',
+      key: 'id',
+      name: 'ID',
+      type: 'link',
+      link: '/partitions/',
       sortable: true
     },
     {
-      name: 'Namespace',
-      key: 'namespace',
-      sortable: true
-    },
-    {
-      name: 'Service',
-      key: 'service',
-      sortable: true
-    },
-    {
-      name: 'Version',
-      key: 'version',
+      key: 'parentPartitionIds',
+      name: 'Parent Partition IDs',
+      type: 'object',
       sortable: true
     },
     {
@@ -52,18 +45,18 @@ describe('ApplicationsLineComponent', () => {
     }
   ];
 
-  const options: ApplicationRawListOptions = {
+  const options: PartitionRawListOptions = {
     pageIndex: 0,
     pageSize: 5,
     sort: {
-      active: 'name' as ApplicationRawFieldKey,
+      active: 'name' as PartitionRawFieldKey,
       direction: 'desc',
     },
   };
 
   const line: Line = {
     name: 'Tasks',
-    type: 'Applications',
+    type: 'Partitions',
     displayedColumns: displayedColumns.map(c => c.key),
     filters: [],
     interval: 20,
@@ -83,24 +76,24 @@ describe('ApplicationsLineComponent', () => {
     }),
   };
 
-  const mockApplicationsIndexService = {
+  const mockPartitionsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
-    resetColumns: jest.fn(() => new DefaultConfigService().defaultApplications.columns),
+    resetColumns: jest.fn(() => new DefaultConfigService().defaultPartitions.columns),
     restoreColumns: jest.fn(() => ['name', 'count']),
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        ApplicationsLineComponent,
+        PartitionsLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
-        { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
+        { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         DefaultConfigService
       ]
-    }).inject(ApplicationsLineComponent);
+    }).inject(PartitionsLineComponent);
     component.line = line;
     component.ngOnInit();
     component.ngAfterViewInit();
@@ -129,7 +122,7 @@ describe('ApplicationsLineComponent', () => {
       component.ngOnInit();
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
       expect(component.intervalValue).toEqual(10);
-      expect(component.options).toEqual(defaultConfigService.defaultApplications.options);
+      expect(component.options).toEqual(defaultConfigService.defaultPartitions.options);
     });
   });
 
@@ -217,11 +210,11 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
+    const newColumns: PartitionRawColumnKey[] = ['id', 'count', 'podMax'];
 
     beforeEach(() => {
-      component.displayedColumnsKeys = ['namespace', 'service'];
-      component.line.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['count', 'id'] as PartitionRawColumnKey[];
+      component.line.displayedColumns = ['id', 'podReserved'] as PartitionRawColumnKey[];
     });
 
     it('should change displayedColumns', () => {
@@ -243,8 +236,8 @@ describe('ApplicationsLineComponent', () => {
 
   describe('onColumnsReset', () => {
     beforeEach(() => {
-      component.displayedColumnsKeys = ['namespace', 'service'];
-      component.line.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['preemptionPercentage', 'id'] as PartitionRawColumnKey[];
+      component.line.displayedColumns = ['count', 'actions'] as PartitionRawColumnKey[];
     });
 
     it('should reset to default columns', () => {
