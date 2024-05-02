@@ -159,7 +159,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
 
     it('should return all the list in case of null value', () => {
-      expect(component['_filterProperties'](null).sort()).toEqual([...Object.values(propertiesLabel), ...customLabels].sort());
+      expect(component['_filterProperties'](null).sort((a, b) => a.toString().localeCompare(b.toString())))
+        .toEqual([...Object.values(propertiesLabel), ...customLabels].sort((a, b) => a.toString().localeCompare(b.toString())));
     });
   });
 
