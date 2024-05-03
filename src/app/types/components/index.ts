@@ -185,7 +185,7 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
 
   protected override initColumns() {
     this.customColumns = this.indexService.restoreCustomColumns();
-    this.displayedColumnsKeys = [...this.indexService.restoreColumns(), ...this.customColumns as K[]];
+    this.displayedColumnsKeys = [...this.indexService.restoreColumns()];
     this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
     this.availableColumns.push(...this.customColumns as K[]);
     this.lockColumns = this.indexService.restoreLockColumns();
