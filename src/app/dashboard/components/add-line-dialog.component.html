@@ -12,12 +12,13 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label for="type"> Type </mat-label>
-      <mat-select id="type" [value]="types" formControlName="type" required>
-        <mat-option *ngFor="let option of types; trackByType" [value]="option">{{option}}</mat-option>
-      </mat-select>
-      <mat-error *ngIf="lineForm.get('type')?.hasError('required')">
-      Type is <strong>required</strong>
+      <mat-label i18n="Input label">Type</mat-label>
+      <input matInput [matAutocomplete]="autoStatus" formControlName="type" required>
+      <mat-autocomplete (optionSelected)="onTypeSelected($event)" #autoStatus>
+        <mat-option *ngFor="let option of (filteredTypes | async)" [value]="option">{{ option }}</mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="lineForm.get('type')?.hasError('invalid')">
+        Type is <strong>invalid</strong>
       </mat-error>
     </mat-form-field>
 

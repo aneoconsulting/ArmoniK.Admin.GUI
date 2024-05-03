@@ -1,12 +1,15 @@
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { Observable, map, startWith } from 'rxjs';
 import { AddLineDialogData, AddLineDialogResult } from '@app/types/dialog';
+import { MaybeNull } from '@app/types/filters';
 import { LineType } from '../types';
 
 @Component({
@@ -33,18 +36,21 @@ mat-dialog-content {
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule,
+    AsyncPipe,
   ]
 })
 export class AddLineDialogComponent implements OnInit {
 
   types: LineType[] = ['CountStatus', 'Applications', 'Sessions', 'Tasks', 'Partitions', 'Results'];
+  filteredTypes: Observable<LineType[]>;
 
   lineForm = new FormGroup({
     name: new FormControl('', [
       Validators.required,
     ]),
-    type: new FormControl<LineType | ''>('', [
+    type: new FormControl('', [
       Validators.required
     ])
   });
@@ -61,14 +67,24 @@ export class AddLineDialogComponent implements OnInit {
         type: this.data.type
       });
     }
+
+    this.filteredTypes = this.lineForm.controls.type.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterType(value))
+    );
   }
 
   onSubmit() {
-    const result = {
-      name: this.lineForm.value.name ?? '',
-      type: this.lineForm.value.type ?? ''
-    } as AddLineDialogResult;
-    this._dialogRef.close(result);
+    const type = this.getType(this.lineForm.value.type);
+    if (type) {
+      const result = {
+        name: this.lineForm.value.name ?? '',
+        type: type
+      } as AddLineDialogResult;
+      this._dialogRef.close(result);
+    } else {
+      this.lineForm.controls.type.setErrors({ invalid: true });
+    }
   }
 
   onCancel(): void {
@@ -77,5 +93,18 @@ export class AddLineDialogComponent implements OnInit {
 
   trackByType(_: number, item: LineType) {
     return item;
+  }
+
+  onTypeSelected(event: MatAutocompleteSelectedEvent) {
+    this.lineForm.controls.type.setValue(event.option.value);
+  }
+
+  private filterType(value: MaybeNull<string>): LineType[] {
+    const filterValue = value?.toLowerCase();
+    return this.types.filter(type => type.toLowerCase().includes(filterValue ?? ''));
+  }
+
+  private getType(type: string | null | undefined): LineType | undefined {
+    return type ? this.types.find(t => t.toLowerCase() === type.toLowerCase()) : undefined;
   }
 }
