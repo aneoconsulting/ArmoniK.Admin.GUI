@@ -29,7 +29,9 @@ describe('NavigationComponent', () => {
   const mockNavigationService = {
     currentSidebar: currentSidebar,
     restoreExternalServices: jest.fn(),
-    saveExternalServices: jest.fn()
+    saveExternalServices: jest.fn(),
+    restoreSideBarOpened: jest.fn(),
+    saveSideBarOpened: jest.fn(),
   };
   const mockUserService = {
     user: undefined as unknown as {username: string}
@@ -55,15 +57,21 @@ describe('NavigationComponent', () => {
         { provide: StorageService, useValue: mockStorageService },
       ]
     }).inject(NavigationComponent);
+    component.ngOnInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should restore external services on load', () => {
-    component.ngOnInit();
-    expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
+  describe('on init', () => {
+    it('should restore external services', () => {
+      expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
+    });
+
+    it('should retore sideBarOpened', () => {
+      expect(mockNavigationService.restoreSideBarOpened).toHaveBeenCalled();
+    });
   });
 
   it('should manage external services', () => {
@@ -122,5 +130,18 @@ describe('NavigationComponent', () => {
       icon: 'main'
     } as ExternalService;
     expect(component.trackByService(0, externalService)).toEqual('serviceurl');
+  });
+
+  describe('toggle sidebar', () => {
+    it('should toggle sidebar', () => {
+      component.sideBarOpened = false;
+      component.toggleSideBar();
+      expect(component.sideBarOpened).toBeTruthy();
+    });
+
+    it('should save sidebar opened', () => {
+      component.toggleSideBar();
+      expect(mockNavigationService.saveSideBarOpened).toHaveBeenCalledWith(component.sideBarOpened);
+    });
   });
 });

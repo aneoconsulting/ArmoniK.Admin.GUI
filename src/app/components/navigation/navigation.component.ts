@@ -108,7 +108,6 @@ export class NavigationComponent implements OnInit {
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
 
-  // TODO: tests
   sideBarOpened = true;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
