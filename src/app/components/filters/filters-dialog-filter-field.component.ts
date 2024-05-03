@@ -210,7 +210,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     const formValue = this.operatorFormControl.value;
     if (formValue) {
       const key = this.retrieveOperatorKey(formValue);
-      console.log(key);
       this.filter.operator = key !== undefined ? Number(key) : null;
     }
   }

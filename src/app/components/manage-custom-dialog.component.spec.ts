@@ -122,7 +122,6 @@ describe('ManageCustomDialogComponent', () => {
       event.value = 'SlowCompute';
       component.existingColumnList.push('options.options.SlowCompute');
       component.displayedColumnsList.push('SlowCompute');
-      console.log(component.existingColumnList, component.displayedColumnsList);
       component.edit('FastCompute', event);
       expect(component.existingColumnList).toEqual(['options.options.SlowCompute']);
     });

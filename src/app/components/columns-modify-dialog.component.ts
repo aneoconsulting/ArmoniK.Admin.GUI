@@ -79,7 +79,7 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
    * Sort the columns alphabetically
    */
   availableCustomColumns(): CustomColumn[] {
-    const columns = this.data.availableColumns.filter(column => column.toString().startsWith('options.options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
+    const columns = this.data.availableColumns.filter(column => this.isCustomColumn(column as ColumnKey<T, O>)).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
     return columns;
   }
 

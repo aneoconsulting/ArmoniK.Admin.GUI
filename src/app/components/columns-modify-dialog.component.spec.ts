@@ -1,10 +1,13 @@
+import { TestBed } from '@angular/core/testing';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ColumnKey } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
 
 describe('', () => {
+  let component: ColumnsModifyDialogComponent<object, object>;
+
   const mockMatDialogRef = {
     close: jest.fn()
   } as unknown as MatDialogRef<ColumnsModifyDialogComponent<object, object>>;
@@ -22,12 +25,14 @@ describe('', () => {
     availableColumns: ['name', 'duration', 'options.task_id', 'actions', 'options.options.FastCompute']
   } as ColumnsModifyDialogData<object, object>;
 
-  const component = new ColumnsModifyDialogComponent<object, object>(
-    mockMatDialogRef,
-    mockMatDialogData
-  );
-
   beforeEach(() => {
+    component = TestBed.configureTestingModule({
+      providers: [
+        ColumnsModifyDialogComponent,
+        { provide: MatDialogRef, useValue: mockMatDialogRef },
+        { provide: MAT_DIALOG_DATA, useValue: mockMatDialogData }
+      ]
+    }).inject(ColumnsModifyDialogComponent);
     component.ngOnInit();
   });
 
