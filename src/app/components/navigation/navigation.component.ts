@@ -90,7 +90,7 @@ main {
     ChangeLanguageButtonComponent,
   ]
 })
-export class NavigationComponent implements OnInit{
+export class NavigationComponent implements OnInit {
   version = process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
   externalServices: ExternalService[];
 
@@ -107,6 +107,9 @@ export class NavigationComponent implements OnInit{
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
+
+  // TODO: tests
+  sideBarOpened = true;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -116,6 +119,7 @@ export class NavigationComponent implements OnInit{
 
   ngOnInit(): void {
     this.externalServices = this.#navigationService.restoreExternalServices();
+    this.sideBarOpened = this.#navigationService.restoreSideBarOpened();
   }
 
   manageExternalServices() {
@@ -156,5 +160,10 @@ export class NavigationComponent implements OnInit{
 
   trackByService(_: number, service: ExternalService) {
     return service.name + service.url;
+  }
+
+  toggleSideBar() {
+    this.sideBarOpened = !this.sideBarOpened;
+    this.#navigationService.saveSideBarOpened(this.sideBarOpened);
   }
 }
