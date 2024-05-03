@@ -11,8 +11,6 @@ import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetim
 import { Observable, map, startWith } from 'rxjs';
 import { FilterInput, FilterInputOutput, FilterInputType, MaybeNull } from '@app/types/filters';
 
-
-
 @Component({
   selector: 'app-filters-dialog-input',
   templateUrl: './filters-dialog-input.component.html',

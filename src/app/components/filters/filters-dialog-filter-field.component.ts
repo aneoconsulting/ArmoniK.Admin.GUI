@@ -269,7 +269,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
     case 'array':
       return {
-        type: 'string',
+        type: 'array',
         value: filter.value as FilterInputValueString
       };
     case 'status':
