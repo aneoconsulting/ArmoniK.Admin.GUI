@@ -11,7 +11,7 @@ import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '@
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
+import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { NotificationService } from '@services/notification.service';
@@ -46,7 +46,7 @@ import { NotificationService } from '@services/notification.service';
     MatMenuModule,
   ],
 })
-export class SessionsLineComponent extends DashboardLineTableComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
+export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);
 
   ngOnInit(): void {

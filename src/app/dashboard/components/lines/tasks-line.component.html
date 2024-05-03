@@ -17,6 +17,26 @@
       (deleteLine)="onDeleteLine()"
       (editNameLine)="onEditNameLine()"
     >
+    <ng-container extra-buttons-right>
+      <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
+        <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
+        <span i18n> Cancel Tasks </span>
+      </button>
+    </ng-container>
+    <ng-container extra-menu-items>
+    <button mat-menu-item (click)="manageViewInLogs()">
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
+      <span i18n appNoWrap>
+        Manage View in Logs
+      </span>
+    </button>
+    <button mat-menu-item (click)="addCustomColumn()">
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>
+      <span i18n appNoWrap>
+        Manage Custom Columns
+      </span>
+    </button>
+  </ng-container>
     </app-table-dashboard-actions-toolbar>
   </mat-toolbar-row>
   <mat-toolbar-row class="filters">
@@ -30,4 +50,8 @@
   [lockColumns]="lockColumns"
   [refresh$]="refresh$"
   [loading$]="loading$"
+  [serviceIcon]="serviceIcon"
+  [serviceName]="serviceName"
+  [urlTemplate]="urlTemplate"
+  (selectionChange)="onSelectionChange($event)"
 />

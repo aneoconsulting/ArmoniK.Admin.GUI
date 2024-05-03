@@ -3,14 +3,16 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { EditNameLineDialogComponent } from '@app/dashboard/components/edit-name-line-dialog.component';
 import { Line } from '@app/dashboard/types';
+import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { TableColumn } from '../column.type';
-import { IndexListOptions, RawColumnKey } from '../data';
+import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
 import { EditNameLineData, EditNameLineResult } from '../dialog';
 import { RawFilters } from '../filters';
-import { IndexServiceInterface } from '../services/indexService';
+import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 
 @Component({
   selector: 'app-dashboard-line-table',
@@ -21,6 +23,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   readonly iconsService = inject(IconsService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly dialog = inject(MatDialog);
+  readonly notificationService = inject(NotificationService);
 
   abstract readonly indexService: IndexServiceInterface<K, O>;
   
@@ -175,5 +178,61 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.lockColumns = !this.lockColumns;
     this.line.lockColumns = this.lockColumns;
     this.lineChange.emit();
+  }
+}
+
+@Component({
+  selector: 'app-dashboard-line-table',
+  template: ''
+})
+export abstract class DashboardLineCustomColumnsComponent<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> extends DashboardLineTableComponent<K, O, F> {
+  abstract override readonly indexService: IndexServiceCustomInterface<K, O>;
+
+  customColumns: CustomColumn[];
+
+  override initColumns() {
+    this.customColumns = this.line.customColumns ?? [];
+    this.displayedColumnsKeys = [...(this.line.displayedColumns as K[] ?? this.indexService.defaultColumns)];
+    this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
+    this.availableColumns.push(...this.customColumns as K[]);
+    this.lockColumns = this.line.lockColumns ?? false;
+    this.indexService.availableTableColumns.forEach(column => {
+      this.columnsLabels[column.key] = column.name;
+    });
+    this.updateDisplayedColumns();
+  }
+
+  override updateDisplayedColumns(): void {
+    this.displayedColumns = this.displayedColumnsKeys.map(key => {
+      if (key.includes('options.options.')) {
+        const customColumnName = key.replaceAll('options.options.', '');
+        return {
+          key: key,
+          name: customColumnName,
+          sortable: true,
+        } as TableColumn<K>;
+      } else {
+        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>;
+      }
+    });
+  }
+  
+  addCustomColumn(): void {
+    const dialogRef = this.dialog.open<ManageCustomColumnDialogComponent, CustomColumn[], CustomColumn[]>(ManageCustomColumnDialogComponent, {
+      data: this.customColumns
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if(result) {
+        this.customColumns = result;
+        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('options.options.'));
+        this.availableColumns.push(...result as K[]);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('options.options.'));
+        this.displayedColumnsKeys.push(...result as K[]);
+        this.updateDisplayedColumns();
+        this.line.displayedColumns = this.displayedColumnsKeys;
+        this.line.customColumns = result;
+      }
+    });
   }
 }

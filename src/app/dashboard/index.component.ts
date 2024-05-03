@@ -143,6 +143,7 @@ export class IndexComponent implements OnInit {
 
   lines: Line[];
   showFabActions = false;
+  hasOnlyOneLine = false;
   columns = 1;
 
   sharableURL = '';
@@ -182,6 +183,7 @@ export class IndexComponent implements OnInit {
 
   openFab() {
     this.showFabActions = !this.showFabActions;
+    this.hasOnlyOneLine = this.lines.length === 1;
   }
 
   onAddLineDialog() {
@@ -277,6 +279,7 @@ export class IndexComponent implements OnInit {
   }
 
   onSaveChange() {
+    this.hasOnlyOneLine = this.lines.length === 1;
     this.#dashboardIndexService.saveLines(this.lines);
   }
 

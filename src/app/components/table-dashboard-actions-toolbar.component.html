@@ -13,6 +13,7 @@
 (resetFilters)="onFiltersReset()"
 (lockColumnsChange)="onLockColumnsChange()"
 >
+<ng-content extra-buttons-right select="[extra-buttons-right]"></ng-content>
 <ng-container extra-menu-items>
   <button mat-menu-item (click)="onEditNameLine()">
     <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>

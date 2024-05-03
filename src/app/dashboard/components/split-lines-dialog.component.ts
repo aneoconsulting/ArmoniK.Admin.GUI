@@ -13,9 +13,9 @@ import { SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog'
   <p i18n="Dialog description">Indicate the number of columns for positioning lines.</p>
 
   <!-- TODO: use a form control to handle error -->
-  <mat-form-field appearance="outline"  subscriptSizing="dynamic">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label i18n="Label input">Number of columns</mat-label>
-    <input matInput type="number" i18n-placeholder="Placeholder" placeholder="Number of columns" [value]="columns" (input)="updateColumns($event)">
+    <input matInput type="number" i18n-placeholder="Placeholder" placeholder="Number of columns" [value]="columns" (input)="updateColumns($event)" min="1" max="20">
   </mat-form-field>
 </mat-dialog-content>
 
@@ -25,6 +25,9 @@ import { SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog'
 </mat-dialog-actions>
   `,
   styles: [`
+mat-form-field {
+  width: 100%;
+}
   `],
   standalone: true,
   providers: [],
