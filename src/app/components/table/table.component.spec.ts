@@ -186,6 +186,23 @@ describe('TableComponent', () => {
     expect(component.isAllSelected).toBeFalsy();
   });
 
+  describe('isSelected', () => {
+    it('should return true if the row is selected', () => {
+      component.selection.select(data[0].raw);
+      expect(component.isSelected(data[0].raw)).toBeTruthy();
+    });
+
+    it('should return false if the row is not selected', () => {
+      expect(component.isSelected(data[1].raw)).toBeFalsy();
+    });
+
+    it('should return false if there is no dataComparator', () => {
+      component.dataComparator = undefined;
+      component.selection.select(data[0].raw);
+      expect(component.isSelected(data[0].raw)).toBeFalsy();
+    });
+  });
+
   describe('toggleAllRows', () => {
     it('should toggle all row to selected', () => {
       const spy = jest.spyOn(component.selection, 'select');

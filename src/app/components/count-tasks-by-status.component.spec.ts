@@ -1,14 +1,14 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TaskSummaryFilters } from '@app/tasks/types';
+import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { TaskStatusColored } from '@app/types/dialog';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
 describe('CountTasksByStatusComponent', () => {
-  
+
   let component: CountTasksByStatusComponent;
 
   const statuses: TaskStatusColored[] = [
@@ -23,14 +23,12 @@ describe('CountTasksByStatusComponent', () => {
   ];
 
   const finalStatusesCount = [
-    {status: TaskStatus.TASK_STATUS_CREATING, count: 3},
-    {status: TaskStatus.TASK_STATUS_CANCELLED, count: 5}
+    { status: TaskStatus.TASK_STATUS_CREATING, count: 3 },
+    { status: TaskStatus.TASK_STATUS_CANCELLED, count: 5 }
   ];
 
   const mockTasksGrpcService = {
-    countByStatus$: jest.fn(() => {
-      return subject;
-    })
+    countByStatus$: jest.fn((): Observable<{ status: StatusCount[] | null | undefined }> => of({ status: finalStatusesCount }))
   };
 
   const filters: TaskSummaryFilters = [[{
@@ -39,10 +37,6 @@ describe('CountTasksByStatusComponent', () => {
     value: 'myValue',
     operator: 2
   }]];
-
-  const subject = new BehaviorSubject({
-    status: finalStatusesCount
-  });
 
   const refresh$ = new Subject<void>();
   const refreshSpy = jest.spyOn(refresh$, 'next');
@@ -79,7 +73,7 @@ describe('CountTasksByStatusComponent', () => {
     it('should set filters', () => {
       expect(component.filters).toEqual(filters);
     });
-    
+
     it('should subscribe to refresh', () => {
       expect(refresh$.observed).toBeTruthy();
     });
@@ -90,17 +84,19 @@ describe('CountTasksByStatusComponent', () => {
   });
 
   describe('Refreshing', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       component.statusesCounts = null;
-      component.refresh.next();
-    });
-
-    it('should call countByStatus$', () => {
-      expect(mockTasksGrpcService.countByStatus$).toHaveBeenCalled();
     });
 
     it('should update statusesCounts', () => {
+      component.refresh.next();
       expect(component.statusesCounts).toEqual(finalStatusesCount);
+    });
+
+    it('should set null if there is no response status', () => {
+      mockTasksGrpcService.countByStatus$.mockReturnValue(of({ status: undefined }));
+      component.refresh.next();
+      expect(component.statusesCounts).toBeNull();
     });
   });
 });

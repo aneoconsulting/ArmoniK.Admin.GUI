@@ -25,6 +25,10 @@ describe('ShareUrlComponent', () => {
     expect(component.sharableURL).toEqual(sharableURL);
   });
 
+  it('should get icon', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
+  });
+
   it('Should copy the link', () => {
     component.onCopied();
     expect(component.copied).toBeTruthy();
