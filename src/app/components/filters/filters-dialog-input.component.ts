@@ -105,6 +105,7 @@ export class FiltersDialogInputComponent implements OnInit {
     const durationSeconds = (getHours ?? 0) * 3600
       + (getMinutes ?? 0) * 60 
       + (getSeconds ?? 0);
+
     this.valueChange.emit({
       type: 'duration',
       value: durationSeconds

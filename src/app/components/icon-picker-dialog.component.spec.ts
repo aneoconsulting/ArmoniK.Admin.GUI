@@ -21,9 +21,16 @@ describe('IconPickerDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should filter icons', () => {
-    component.filterIcons('icon');
-    expect(component.filteredIcons).toEqual(['icon']);
+  describe('filerIcons', () => {
+    it('should filter icons', () => {
+      component.filterIcons('icon');
+      expect(component.filteredIcons).toEqual(['icon']);
+    });
+
+    it('should disaplay all icons by default', () => {
+      component.filterIcons(null);
+      expect(component.filteredIcons).toEqual(component.icons);
+    });
   });
 
   it('should get an icon', () => {

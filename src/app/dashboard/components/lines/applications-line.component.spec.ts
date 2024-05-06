@@ -13,6 +13,8 @@ import { Line } from '../../types';
 describe('ApplicationsLineComponent', () => {
   let component: ApplicationsLineComponent;
 
+  const defaultConfigService = new DefaultConfigService();
+
   const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
 
   const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
@@ -108,12 +110,27 @@ describe('ApplicationsLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should init', () => {
-    const intervalSpy = jest.spyOn(component.interval, 'next');
-    component.ngOnInit();
-    expect(component.loading).toBeTruthy();
-    expect(component.filters).toBe(line.filters);
-    expect(intervalSpy).toHaveBeenCalledWith(line.interval);
+  describe('on init', () => {
+    it('should init with line values', () => {
+      const intervalSpy = jest.spyOn(component.interval, 'next');
+      component.ngOnInit();
+      expect(component.loading).toBeTruthy();
+      expect(component.filters).toBe(line.filters);
+      expect(intervalSpy).toHaveBeenCalledWith(line.interval);
+    });
+
+    it('should init with default values', () => {
+      component.line = {
+        ...line,
+        displayedColumns: undefined,
+        interval: undefined as unknown as number,
+        options: undefined,
+      };
+      component.ngOnInit();
+      expect(component.displayedColumnsKeys).toEqual(defaultColumns);
+      expect(component.intervalValue).toEqual(10);
+      expect(component.options).toEqual(defaultConfigService.defaultApplications.options);
+    });
   });
 
   it('should unsubscribe on destroy', () => {

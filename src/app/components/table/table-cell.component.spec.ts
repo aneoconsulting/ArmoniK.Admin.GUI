@@ -1,29 +1,31 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { TaskSummaryColumnKey, TaskSummaryFilters } from '@app/tasks/types';
+import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
+import { SessionRaw, SessionRawColumnKey } from '@app/sessions/types';
+import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData, TaskData } from '@app/types/data';
+import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
 import { TableCellComponent } from './table-cell.component';
 
 describe('TableCellComponent', () => {
-  let component: TableCellComponent<ArmonikData<DataRaw>, TaskSummaryColumnKey, TaskStatus>;
+  let component: TableCellComponent<ArmonikData<DataRaw>, SessionRawColumnKey, SessionStatus>;
 
   const options = {
     applicationName: 'application-name',
     applicationVersion: 'application-version',
-  };
+  } as TaskOptions;
 
   const createdAt: Timestamp = new Timestamp({
     seconds: '1343540',
     nanos: 0,
   });
 
-  const column: TableColumn<TaskSummaryColumnKey> = {
-    key: 'id',
-    name: 'id',
+  const column: TableColumn<SessionRawColumnKey> = {
+    key: 'sessionId',
+    name: 'Session ID',
     sortable: true,
   };
 
@@ -38,30 +40,47 @@ describe('TableCellComponent', () => {
     ]
   ];
 
-  const element: TaskData = {
+  const queryParamsMap = new Map<SessionRawColumnKey, { [key: string]: string }>();
+  queryParamsMap.set('sessionId', { sessionId: 'session-id' });
+
+  const element: SessionData = {
     raw: {
-      id: 'task-id',
-      status: TaskStatus.TASK_STATUS_COMPLETED,
-      creationToEndDuration: 1000,
+      sessionId: 'session-id',
+      status: SessionStatus.SESSION_STATUS_RUNNING,
+      duration: {
+        seconds: '1',
+        nanos: 0,
+      },
       createdAt,
-      options
-    },
-    queryTasksParams: {
-      'application-name': 'application-name',
-      'application-version': 'application-version',
+      options,
+      clientSubmission: false,
+      workerSubmission: false,
+      partitionIds: []
+    } as SessionRaw,
+    resultsQueryParams: {
+      '0-root-1-1': 'session-not-id',
+      '0-root-2-1': 'session',
     } as Record<string, string>,
     filters: countFilters,
-  } as unknown as TaskData;
+    queryParams: queryParamsMap,
+  } as unknown as SessionData;
+
+  const mockRouter = {
+    navigate: jest.fn()
+  };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
-      providers: [ 
-        TableCellComponent
+      providers: [
+        TableCellComponent,
+        { provide: Router, useValue: mockRouter }
       ]
     }).inject(TableCellComponent);
+
+    component.statusesService = new SessionsStatusesService();
     component.value$ = new Subject<DataRaw>();
     component.column = column;
-    component.element = element as unknown as ArmonikData<DataRaw>;
+    component.element = element as ArmonikData<DataRaw>;
   });
 
   it('should create', () => {
@@ -70,6 +89,10 @@ describe('TableCellComponent', () => {
 
   it('should set element', () => {
     expect(component.element).toEqual(element);
+  });
+
+  it('should get queryParams', () => {
+    expect(component.queryParams).toEqual(element.queryParams?.get('sessionId'));
   });
 
   it('should get queryTasksParams', () => {
@@ -83,11 +106,23 @@ describe('TableCellComponent', () => {
   describe('simple value', () => {
     beforeEach(() => {
       component.column = column;
+      component.element = element as ArmonikData<DataRaw>;
     });
 
     it('should set value', () => {
-      expect(component.value).toEqual('task-id');
+      expect(component.value).toEqual('session-id');
     });
+  });
+
+  it('should refresh refreshStatuses in case of a count column', () => {
+    component.column = {
+      key: 'count',
+      name: 'Count',
+      sortable: false,
+    };
+    const spy = jest.spyOn(component.refreshStatuses, 'next');
+    component.value$.next(element.raw);
+    expect(spy).toHaveBeenCalled();
   });
 
   test('undefined element should return undefined value', () => {
@@ -97,44 +132,59 @@ describe('TableCellComponent', () => {
 
   describe('link value', () => {
     beforeEach(() => {
-      component.column.link = '/tasks';
-      component.column.key = 'id';
-      component.column.type = 'link';
-      component.element = element as unknown as ArmonikData<DataRaw>;
+      component.column = {
+        link: '/sessions',
+        key: 'sessionId',
+        type: 'link',
+        sortable: true,
+        name: 'Session ID'
+      };
+      const elementCopy = structuredClone(element);
+      elementCopy.queryParams = undefined;
+      component.element = elementCopy as ArmonikData<DataRaw>;
     });
 
     it('should set link', () => {
-      expect(component.link).toEqual('/tasks/task-id');
+      expect(component.link).toEqual(`${component.column.link}/${element.raw[component.column.key as keyof DataRaw]}`);
     });
   });
 
   describe('duration value', () => {
     beforeEach(() => {
-      component.column.key = 'creationToEndDuration';
-      component.column.type = 'duration';
-      component.element = element as unknown as ArmonikData<DataRaw>;
+      component.column = {
+        key: 'duration',
+        type: 'duration',
+        sortable: true,
+        name: 'Duration'
+      };
+      component.element = element as ArmonikData<DataRaw>;
     });
 
     it('should set durationValue', () => {
-      expect(component.durationValue).toEqual(1000);
+      expect(component.durationValue).toEqual({
+        seconds: '1',
+        nanos: 0,
+      });
     });
   });
 
   describe('status value', () => {
     beforeEach(() => {
-      column.key = 'status';
-      column.type = 'status';
-      component.column = column;
-      component.statusesService = new TasksStatusesService();
-      component.element = element as unknown as ArmonikData<DataRaw>;
+      component.column = {
+        key: 'status',
+        type: 'status',
+        sortable: true,
+        name: 'Status'
+      };
+      component.element = element as ArmonikData<DataRaw>;
     });
 
     it('should set statusValue', () => {
-      expect(component.statusValue).toEqual(TaskStatus.TASK_STATUS_COMPLETED);
+      expect(component.statusValue).toEqual(SessionStatus.SESSION_STATUS_RUNNING);
     });
 
     it('should get status label', () => {
-      expect(component.statusLabel()).toEqual('Completed');
+      expect(component.statusLabel()).toEqual('Running');
     });
   });
 
@@ -160,9 +210,12 @@ describe('TableCellComponent', () => {
 
   describe('object value', () => {
     beforeEach(() => {
-      column.key = 'options';
-      column.type = 'object';
-      component.column = column;
+      component.column = {
+        key: 'options',
+        type: 'object',
+        sortable: true,
+        name: 'Options'
+      };
       component.element = element as unknown as ArmonikData<DataRaw>;
     });
 
@@ -172,9 +225,8 @@ describe('TableCellComponent', () => {
   });
 
   describe('selection', () => {
-
     beforeEach(() => {
-      component.column.key = 'id';
+      component.column.key = 'sessionId';
       component.element = element as unknown as ArmonikData<DataRaw>;
     });
 
@@ -186,17 +238,17 @@ describe('TableCellComponent', () => {
 
     it('should tip to deselect if it is selected', () => {
       component.isSelected = true;
-      expect(component.checkboxLabel()).toEqual('Deselect Task task-id');
+      expect(component.checkboxLabel()).toEqual('Deselect Task session-id');
     });
 
     it('should tip to select if it is unselected', () => {
       component.isSelected = false;
-      expect(component.checkboxLabel()).toEqual('Select Task task-id');
+      expect(component.checkboxLabel()).toEqual('Select Task session-id');
     });
   });
 
   describe('Update values', () => {
-    const newValue = {id: 'new-id'} as unknown as DataRaw;
+    const newValue = { id: 'new-id' } as unknown as DataRaw;
 
     it('should update value', () => {
       component.value$.next(newValue);
@@ -207,6 +259,54 @@ describe('TableCellComponent', () => {
       const spy = jest.spyOn(component, 'handleNestedKeys');
       component.value$.next(newValue);
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('create link', () => {
+    beforeEach(() => {
+      component.column = {
+        link: '/sessions',
+        key: 'sessionId',
+        type: 'link',
+        sortable: true,
+        name: 'Session ID'
+      };
+    });
+
+    it('should create a link with queryParams', () => {
+      component.element = element as ArmonikData<DataRaw>;
+      component.createLink();
+      expect(component.link).toEqual('/sessions');
+    });
+
+    it('should create a link without queryParams', () => {
+      const elementCopy = structuredClone(element);
+      elementCopy.queryParams = undefined;
+      elementCopy.raw.sessionId = 'session-id';
+      component.element = elementCopy as ArmonikData<DataRaw>;
+      component.createLink();
+      expect(component.link).toEqual(`${component.column.link}/${elementCopy.raw[component.column.key as keyof DataRaw]}`);
+    });
+
+    it('should set an empty link', () => {
+      component.column.link = undefined;
+      component.createLink();
+      expect(component.link).toEqual('');
+    });
+  });
+
+  describe('navigate', () => {
+    it('should navigate to link', () => {
+      component.column = {
+        link: '/sessions',
+        key: 'sessionId',
+        type: 'link',
+        sortable: true,
+        name: 'Session ID'
+      };
+      component.createLink();
+      component.navigate();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions'], { queryParams: element.queryParams?.get('sessionId') });
     });
   });
 });

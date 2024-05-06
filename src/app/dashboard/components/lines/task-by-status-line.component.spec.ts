@@ -1,13 +1,15 @@
-import { CountTasksByStatusResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { CountTasksByStatusResponse, FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
+import { TaskSummaryFilters } from '@app/tasks/types';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { TaskByStatusLineComponent } from './task-by-status-line.component';
 import { TasksStatusesGroup } from '../../types';
+import { ManageGroupsDialogComponent } from '../manage-groups-dialog.component';
 
 describe('TaskByStatusLineComponent', () => {
   let component: TaskByStatusLineComponent;
@@ -33,6 +35,13 @@ describe('TaskByStatusLineComponent', () => {
     } as CountTasksByStatusResponse)),
   };
 
+  const filters: TaskSummaryFilters = [[{
+    field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+    operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+    for: 'root',
+    value: 'examplefilter'
+  }]];
+
   const mockTasksIndexService = {};
 
   beforeEach(() => {
@@ -47,7 +56,7 @@ describe('TaskByStatusLineComponent', () => {
       ]
     }).inject(TaskByStatusLineComponent);
     component.line = {
-      filters: [],
+      filters: filters,
       hideGroupsHeader: true,
       interval: 10,
       name: 'name',
@@ -159,43 +168,55 @@ describe('TaskByStatusLineComponent', () => {
     expect(spyLineDelete).toHaveBeenCalledWith(component.line);
   });
 
-  it('should update tasks statuses groups on manage group', () => {
-    dialogRefSubject = of({
-      groups: [
-        {
-          name: 'status',
-          color: 'green',
-          statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_DISPATCHED]
-        }
-      ]
+  describe('onManageGroupsDialog', () => {
+    it('should update tasks statuses groups on manage group', () => {
+      dialogRefSubject = of({
+        groups: [
+          {
+            name: 'status',
+            color: 'green',
+            statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_DISPATCHED]
+          }
+        ]
+      });
+      component.onManageGroupsDialog();
+      expect(component.line.taskStatusesGroups).toEqual([{
+        name: 'status',
+        color: 'green',
+        statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_DISPATCHED]
+      }]);
     });
-    component.onManageGroupsDialog();
-    expect(component.line.taskStatusesGroups).toEqual([{
-      name: 'status',
-      color: 'green',
-      statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_DISPATCHED]
-    }]);
-  });
-
-  it('should not update tasks statuses groups on manage group', () => {
-    dialogRefSubject = of(null);
-    component.onManageGroupsDialog();
-    expect(component.line.taskStatusesGroups).toEqual([]);
-  });
-
-  it('should not update tasks statuses groups on manage group', () => {
-    const spyLineChange = jest.spyOn(component.lineChange, 'emit');
-    dialogRefSubject = of({
-      groups: [
-        {
-          name: 'status',
-          color: 'green',
-          statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_DISPATCHED]
-        }
-      ]
+  
+    it('should not update tasks statuses groups on manage group', () => {
+      dialogRefSubject = of(null);
+      component.onManageGroupsDialog();
+      expect(component.line.taskStatusesGroups).toEqual([]);
     });
-    component.onManageGroupsDialog();
-    expect(spyLineChange).toHaveBeenCalledWith();
+  
+    it('should not update tasks statuses groups on manage group', () => {
+      const spyLineChange = jest.spyOn(component.lineChange, 'emit');
+      dialogRefSubject = of({
+        groups: [
+          {
+            name: 'status',
+            color: 'green',
+            statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_DISPATCHED]
+          }
+        ]
+      });
+      component.onManageGroupsDialog();
+      expect(spyLineChange).toHaveBeenCalledWith();
+    });
+
+    it('should use default empty list if no statuses groups are provided', () => {
+      component.line.taskStatusesGroups = undefined;
+      component.onManageGroupsDialog();
+      expect(mockMatDialog.open).toHaveBeenCalledWith(ManageGroupsDialogComponent, {
+        data: {
+          groups: []
+        }
+      });
+    });
   });
 
   it('should update filters on filters change', () => {
@@ -214,5 +235,9 @@ describe('TaskByStatusLineComponent', () => {
     const spyRefresh = jest.spyOn(component.refresh, 'next');
     component.onFiltersChange([]);
     expect(spyRefresh).toHaveBeenCalled();
+  });
+
+  it('should return the filters', () => {
+    expect(component.taskByStatusFilters()).toEqual(filters);
   });
 });

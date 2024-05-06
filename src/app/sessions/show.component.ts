@@ -66,7 +66,8 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   resume$ = new Subject<void>();
   close$ = new Subject<void>();
   delete$ = new Subject<void>();
-  duration$ = new Subject<void>();
+  lowerDuration$ = new Subject<void>();
+  upperDuration$ = new Subject<void>();
   computeDuration$ = new Subject<void>();
 
   lowerDate: Timestamp | undefined;
@@ -167,7 +168,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     ).subscribe((data) => {
       if (data) {
         this.data = data;
-        this.duration$.next();
+        this.lowerDuration$.next();
+        this.upperDuration$.next();
+        this.data$.next(data);
         this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
         this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
@@ -175,7 +178,6 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
         this.canResume$.next(!this._sessionsStatusesService.canResume(this.data.status));
         this.canCancel$.next(!this._sessionsStatusesService.canCancel(this.data.status));
         this.canClose$.next(!this._sessionsStatusesService.canClose(this.data.status));
-        this.data$.next(data);
       }
     });
 
@@ -200,7 +202,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       this.close();
     });
 
-    this.duration$.pipe(
+    this.lowerDuration$.pipe(
       switchMap(() => {
         return this._grpcService.getTaskData$(this.id, 'createdAt', 'asc').pipe(map(d => d.date));
       })
@@ -209,7 +211,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
       this.computeDuration$.next();
     });
 
-    this.duration$.pipe(
+    this.upperDuration$.pipe(
       switchMap(() => {
         return this._grpcService.getTaskData$(this.id, 'endedAt', 'desc').pipe(map(d => d.date));
       })
@@ -233,88 +235,78 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
   }
 
   cancel(): void {
-    if(!this.data?.sessionId) {
-      return;
+    if(this.data?.sessionId) {
+      this._grpcService.cancel$(this.data.sessionId).subscribe({
+        complete: () => {
+          this.success('Session canceled');
+          this.refresh.next();
+        },
+        error: (error) => {
+          console.error(error);
+          this.error('Unable to cancel session');
+        },
+      });
     }
-
-    this._grpcService.cancel$(this.data.sessionId).subscribe({
-      complete: () => {
-        this.success('Session canceled');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.error('Unable to cancel session');
-      },
-    });
   }
 
   pause(): void {
-    if(!this.data?.sessionId) {
-      return;
+    if(this.data?.sessionId) {
+      this._grpcService.pause$(this.data.sessionId).subscribe({
+        complete: () => {
+          this.success('Session paused');
+          this.refresh.next();
+        },
+        error: (error) => {
+          console.error(error);
+          this.error('Unable to pause session');
+        },
+      });
     }
-
-    this._grpcService.pause$(this.data.sessionId).subscribe({
-      complete: () => {
-        this.success('Session paused');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.error('Unable to pause session');
-      },
-    });
   }
 
   resume(): void {
-    if(!this.data?.sessionId) {
-      return;
+    if(this.data?.sessionId) {
+      this._grpcService.resume$(this.data.sessionId).subscribe({
+        complete: () => {
+          this.success('Session resumed');
+          this.refresh.next();
+        },
+        error: (error) => {
+          console.error(error);
+          this.error('Unable to resume session');
+        },
+      });
     }
-
-    this._grpcService.resume$(this.data.sessionId).subscribe({
-      complete: () => {
-        this.success('Session resumed');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.error('Unable to resume session');
-      },
-    });
   }
 
   close(): void {
-    if(!this.data?.sessionId) {
-      return;
+    if(this.data?.sessionId) {
+      this._grpcService.close$(this.data.sessionId).subscribe({
+        complete: () => {
+          this.success('Session closed');
+          this.refresh.next();
+        },
+        error: (error) => {
+          console.error(error);
+          this.error('Unable to close session');
+        },
+      });
     }
-
-    this._grpcService.close$(this.data.sessionId).subscribe({
-      complete: () => {
-        this.success('Session closed');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.error('Unable to close session');
-      },
-    });
   }
 
   delete(): void {
-    if(!this.data?.sessionId) {
-      return;
+    if(this.data?.sessionId) {
+      this._grpcService.delete$(this.data.sessionId).subscribe({
+        complete: () => {
+          this.success('Session deleted');
+          this.router.navigate(['/sessions']);
+        },
+        error: (error) => {
+          console.error(error);
+          this.error('Unable to delete session');
+        },
+      });
     }
-
-    this._grpcService.delete$(this.data.sessionId).subscribe({
-      complete: () => {
-        this.success('Session deleted');
-        this.router.navigate(['/sessions']);
-      },
-      error: (error) => {
-        console.error(error);
-        this.error('Unable to delete session');
-      },
-    });
   }
 
   get resultsKey() {
