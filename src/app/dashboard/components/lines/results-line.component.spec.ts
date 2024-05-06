@@ -1,41 +1,34 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
+import { ResultsIndexService } from '@app/results/services/results-index.service';
+import { ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '@app/results/types';
 import { TableColumn } from '@app/types/column.type';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
-import { ApplicationsLineComponent } from './applications-line.component';
+import { ResultsLineComponent } from './results-line.component';
 import { Line } from '../../types';
 
-describe('ApplicationsLineComponent', () => {
-  let component: ApplicationsLineComponent;
+describe('ResultsLineComponent', () => {
+  let component: ResultsLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
+  const defaultColumns: ResultRawColumnKey[] = ['name', 'resultId'];
 
-  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ResultRawColumnKey>[] = [
     {
-      name: 'Name',
+      key: 'resultId',
+      name: 'ID',
+      type: 'link',
+      link: '/results/',
+      sortable: true
+    },
+    {
       key: 'name',
-      sortable: true
-    },
-    {
-      name: 'Namespace',
-      key: 'namespace',
-      sortable: true
-    },
-    {
-      name: 'Service',
-      key: 'service',
-      sortable: true
-    },
-    {
-      name: 'Version',
-      key: 'version',
+      name: 'Name',
+      type: 'object',
       sortable: true
     },
     {
@@ -45,25 +38,25 @@ describe('ApplicationsLineComponent', () => {
       sortable: false
     },
     {
-      name: 'Tasks by Status',
-      key: 'count',
+      name: 'Size',
+      key: 'size',
       type: 'count',
       sortable: true
     }
   ];
 
-  const options: ApplicationRawListOptions = {
+  const options: ResultRawListOptions = {
     pageIndex: 0,
     pageSize: 5,
     sort: {
-      active: 'name' as ApplicationRawFieldKey,
+      active: 'name' as ResultRawFieldKey,
       direction: 'desc',
     },
   };
 
   const line: Line = {
     name: 'Tasks',
-    type: 'Applications',
+    type: 'Results',
     displayedColumns: displayedColumns.map(c => c.key),
     filters: [],
     interval: 20,
@@ -83,24 +76,24 @@ describe('ApplicationsLineComponent', () => {
     }),
   };
 
-  const mockApplicationsIndexService = {
+  const mockResultsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
-    resetColumns: jest.fn(() => new DefaultConfigService().defaultApplications.columns),
+    resetColumns: jest.fn(() => new DefaultConfigService().defaultResults.columns),
     restoreColumns: jest.fn(() => ['name', 'count']),
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        ApplicationsLineComponent,
+        ResultsLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
-        { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
+        { provide: ResultsIndexService, useValue: mockResultsIndexService },
         DefaultConfigService
       ]
-    }).inject(ApplicationsLineComponent);
+    }).inject(ResultsLineComponent);
     component.line = line;
     component.ngOnInit();
     component.ngAfterViewInit();
@@ -129,7 +122,7 @@ describe('ApplicationsLineComponent', () => {
       component.ngOnInit();
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
       expect(component.intervalValue).toEqual(10);
-      expect(component.options).toEqual(defaultConfigService.defaultApplications.options);
+      expect(component.options).toEqual(defaultConfigService.defaultResults.options);
     });
   });
 
@@ -217,11 +210,11 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
+    const newColumns: ResultRawColumnKey[] = ['resultId', 'name', 'sessionId'];
 
     beforeEach(() => {
-      component.displayedColumnsKeys = ['namespace', 'service'];
-      component.line.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['actions', 'resultId'] as ResultRawColumnKey[];
+      component.line.displayedColumns = ['ownerTaskId', 'size'] as ResultRawColumnKey[];
     });
 
     it('should change displayedColumns', () => {
@@ -243,8 +236,8 @@ describe('ApplicationsLineComponent', () => {
 
   describe('onColumnsReset', () => {
     beforeEach(() => {
-      component.displayedColumnsKeys = ['namespace', 'service'];
-      component.line.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['resultId', 'name'] as ResultRawColumnKey[];
+      component.line.displayedColumns = ['createdAt', 'actions'] as ResultRawColumnKey[];
     });
 
     it('should reset to default columns', () => {

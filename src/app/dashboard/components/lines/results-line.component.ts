@@ -36,6 +36,7 @@ import { TableDashboardActionsToolbarComponent } from '@components/table-dashboa
 })
 export class ResultsLineComponent extends DashboardLineTableComponent<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements OnInit, OnDestroy, AfterViewInit {
   readonly indexService = inject(ResultsIndexService);
+  readonly defaultConfig = this.defaultConfigService.defaultResults;
 
   ngOnInit(): void {
     this.initLineEnvironment();

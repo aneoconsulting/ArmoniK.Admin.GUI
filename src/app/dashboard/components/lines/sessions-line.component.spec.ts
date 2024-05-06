@@ -1,41 +1,34 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
+import { SessionsIndexService } from '@app/sessions/services/sessions-index.service';
+import { SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions } from '@app/sessions/types';
 import { TableColumn } from '@app/types/column.type';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
-import { ApplicationsLineComponent } from './applications-line.component';
+import { SessionsLineComponent } from './sessions-line.component';
 import { Line } from '../../types';
 
-describe('ApplicationsLineComponent', () => {
-  let component: ApplicationsLineComponent;
+describe('SessionsLineComponent', () => {
+  let component: SessionsLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
+  const defaultColumns: SessionRawColumnKey[] = ['sessionId', 'count'];
 
-  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  const displayedColumns: TableColumn<SessionRawColumnKey>[] = [
     {
-      name: 'Name',
-      key: 'name',
+      key: 'sessionId',
+      name: 'ID',
+      type: 'link',
+      link: '/sessions/',
       sortable: true
     },
     {
-      name: 'Namespace',
-      key: 'namespace',
-      sortable: true
-    },
-    {
-      name: 'Service',
-      key: 'service',
-      sortable: true
-    },
-    {
-      name: 'Version',
-      key: 'version',
+      key: 'deletedAt',
+      name: 'Parent Session IDs',
+      type: 'object',
       sortable: true
     },
     {
@@ -52,18 +45,18 @@ describe('ApplicationsLineComponent', () => {
     }
   ];
 
-  const options: ApplicationRawListOptions = {
+  const options: SessionRawListOptions = {
     pageIndex: 0,
     pageSize: 5,
     sort: {
-      active: 'name' as ApplicationRawFieldKey,
+      active: 'name' as SessionRawFieldKey,
       direction: 'desc',
     },
   };
 
   const line: Line = {
     name: 'Tasks',
-    type: 'Applications',
+    type: 'Sessions',
     displayedColumns: displayedColumns.map(c => c.key),
     filters: [],
     interval: 20,
@@ -83,24 +76,24 @@ describe('ApplicationsLineComponent', () => {
     }),
   };
 
-  const mockApplicationsIndexService = {
+  const mockSessionsIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
-    resetColumns: jest.fn(() => new DefaultConfigService().defaultApplications.columns),
+    resetColumns: jest.fn(() => new DefaultConfigService().defaultSessions.columns),
     restoreColumns: jest.fn(() => ['name', 'count']),
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        ApplicationsLineComponent,
+        SessionsLineComponent,
         { provide: MatDialog, useValue: mockMatDialog },
         AutoRefreshService,
         IconsService,
-        { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
+        { provide: SessionsIndexService, useValue: mockSessionsIndexService },
         DefaultConfigService
       ]
-    }).inject(ApplicationsLineComponent);
+    }).inject(SessionsLineComponent);
     component.line = line;
     component.ngOnInit();
     component.ngAfterViewInit();
@@ -129,7 +122,7 @@ describe('ApplicationsLineComponent', () => {
       component.ngOnInit();
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
       expect(component.intervalValue).toEqual(10);
-      expect(component.options).toEqual(defaultConfigService.defaultApplications.options);
+      expect(component.options).toEqual(defaultConfigService.defaultSessions.options);
     });
   });
 
@@ -217,11 +210,11 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
+    const newColumns: SessionRawColumnKey[] = ['sessionId', 'count', 'duration'];
 
     beforeEach(() => {
-      component.displayedColumnsKeys = ['namespace', 'service'];
-      component.line.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['count', 'id'] as SessionRawColumnKey[];
+      component.line.displayedColumns = ['sessionId', 'options.maxDuration'] as SessionRawColumnKey[];
     });
 
     it('should change displayedColumns', () => {
@@ -243,8 +236,8 @@ describe('ApplicationsLineComponent', () => {
 
   describe('onColumnsReset', () => {
     beforeEach(() => {
-      component.displayedColumnsKeys = ['namespace', 'service'];
-      component.line.displayedColumns = ['namespace', 'service'];
+      component.displayedColumnsKeys = ['sessionId', 'createdAt'] as SessionRawColumnKey[];
+      component.line.displayedColumns = ['closedAt', 'options'] as SessionRawColumnKey[];
     });
 
     it('should reset to default columns', () => {
