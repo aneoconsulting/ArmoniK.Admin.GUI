@@ -1,4 +1,4 @@
-<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'string'">
+<mat-form-field appearance="outline" subscriptSizing="dynamic" *ngIf="input.type === 'string' || input.type === 'array'">
   <mat-label i18n="Input label">Value</mat-label>
   <input matInput [type]="getInputType()" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
 </mat-form-field>

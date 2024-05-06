@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { lastValueFrom } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
@@ -14,32 +15,34 @@ describe('FiltersDialogFilterFieldComponent', () => {
     retrieveFiltersDefinitions: jest.fn(() => {
       return filterDefinitions;
     }),
-    retrieveLabel: jest.fn((value: string) => {
-      const labels = Object.values(propertiesLabel);
-      return labels.map(label => label.toLowerCase() === value.toLowerCase());
+    retrieveLabel: jest.fn((for_: string, value: number) => {
+      return propertiesLabel[value];
     }),
     retrieveField: jest.fn((value: string) => {
       const values = Object.values(propertiesLabel);
       const index = values.findIndex(label => label.toLowerCase() === value.toLowerCase());
-      return { for: 'root', index: index };
+      const key = index !== -1 ? Number(Object.keys(propertiesLabel).at(index)) : index;
+      const for_ = filterDefinitions.find(def => def.field === key)?.for ?? -1;
+      return { for: for_ ?? 'custom', index: key };
     })
   };
+
   const allStatuses = [
-    {key: 0, value: 'Creation'},
-    {key: 1, value: 'Submitted'},
-    {key: 2, value: 'Ended'}
+    { key: 0, value: 'Creation' },
+    { key: 1, value: 'Submitted' },
+    { key: 2, value: 'Ended' }
   ];
 
-  const propertiesLabel: {[key: number]: string} = {
-    0: 'undefined',
-    1:'status',
-    2:'task id',
-    3:'children',
-    4:'size',
-    5:'-',
-    6:'Start to End duration',
-    7:'Created at',
-  }; 
+  const propertiesLabel: { [key: number]: string } = {
+    1: 'status',
+    2: 'task id',
+    3: 'children',
+    4: 'size',
+    5: '-',
+    6: 'Start to End duration',
+    7: 'Created at',
+    8: 'Client Submission'
+  };
 
   const filterDefinitions: FilterDefinition<number, number>[] = [
     {
@@ -86,10 +89,18 @@ describe('FiltersDialogFilterFieldComponent', () => {
   ];
 
   const customList: CustomColumn[] = ['options.options.test', 'options.options.fastCompute', 'options.options.column'];
+  const customLabels: string[] = ['test', 'fastCompute', 'column'];
+
+  const defaultFilter: Filter<number, number> = {
+    field: 1,
+    for: 'root',
+    operator: 0,
+    value: 'someValue'
+  };
 
   beforeEach(async () => {
     component = TestBed.configureTestingModule({
-      imports: [ BrowserAnimationsModule ],
+      imports: [BrowserAnimationsModule],
       providers: [
         FiltersDialogFilterFieldComponent,
         FiltersService,
@@ -108,62 +119,82 @@ describe('FiltersDialogFilterFieldComponent', () => {
     component.ngOnInit();
   });
 
-
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('columnValue', () => {
+    it('should return the label of the column', () => {
+      expect(component.columnValue).toEqual('status');
+    });
+
+    it('should return the label of the custom column', () => {
+      const customColumn = 'fastCompute';
+      component.filter.for = 'custom';
+      component.filter.field = customColumn;
+      expect(component.columnValue).toEqual(customColumn);
+    });
+
+    it('should return an empty string if there is no for nor field', () => {
+      component.filter.field = null;
+      component.filter.for = null;
+      expect(component.columnValue).toEqual('');
+    });
+  });
+
+  it('should retrieve the filter definitions', () => {
+    expect(component.filtersDefinitions).toEqual(filterDefinitions);
+  });
+
   describe('filteredProperties', () => {
-    it('should filter properly', () => {
-      component.filteredProperties.subscribe(value => {
+    it('should map', () => {
+      component.propertyFormControl.setValue('at');
+      lastValueFrom(component.filteredProperties).then((value) => {
         expect(value).toEqual(['status', 'Start to End duration', 'Created at']);
       });
-      component.propertyFormControl.setValue('at');
-      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    });
+
+    it('should filter properly', () => {
+      expect(component['_filterProperties']('at')).toEqual(['status', 'Start to End duration', 'Created at']);
     });
 
     it('should return all the list in case of null value', () => {
-      component.filteredProperties.subscribe(value => {
-        expect(value).toEqual(Object.values(propertiesLabel));
-      });
-      component.propertyFormControl.setValue(null);
-      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      expect(component['_filterProperties'](null).sort((a, b) => a.toString().localeCompare(b.toString())))
+        .toEqual([...Object.values(propertiesLabel), ...customLabels].sort((a, b) => a.toString().localeCompare(b.toString())));
     });
   });
 
   describe('filteredOperators', () => {
-    it('should filter properly', () => {
-      component.filteredOperators.subscribe(value => {
-        expect(value).toEqual(['equal', 'not equal']);
+    it('should map', () => {
+      component.operatorFormControl.setValue('no');
+      lastValueFrom(component.filteredOperators).then((value) => {
+        expect(value).toEqual(['Not Equal']);
       });
-      component.propertyFormControl.setValue('equal');
-      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    });
+
+    it('should filter properly', () => {
+      expect(component['_filterOperators']('no')).toEqual(['Not Equal']);
     });
 
     it('should return all the list in case of null value', () => {
-      component.filteredOperators.subscribe(value => {
-        expect(value).toEqual(['equal', 'not equal']);
-      });
-      component.propertyFormControl.setValue(null);
-      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      expect(component['_filterOperators'](null)).toEqual(['Equal', 'Not Equal']);
     });
   });
 
   describe('filteredStatuses', () => {
-    it('should filter properly', () => {
-      component.filteredStatuses.subscribe(value => {
-        expect(value).toEqual(['sumbitted', 'Ended']);
+    it('should map', () => {
+      component.statusFormControl.setValue('ed');
+      lastValueFrom(component.filteredStatuses).then((value) => {
+        expect(value).toEqual(['Submitted', 'Ended']);
       });
-      component.propertyFormControl.setValue('ed');
-      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+    });
+
+    it('should filter properly', () => {
+      expect(component['_filterStatuses']('ed')).toEqual(['Submitted', 'Ended']);
     });
 
     it('should return all the list in case of null value', () => {
-      component.filteredStatuses.subscribe(value => {
-        expect(value).toEqual(Object.values(allStatuses));
-      });
-      component.propertyFormControl.setValue(null);
-      component.propertyFormControl.updateValueAndValidity({emitEvent: true});
+      expect(component['_filterStatuses'](null)).toEqual(allStatuses.map(status => status.value));
     });
   });
 
@@ -207,13 +238,20 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
 
     it('should not update anything if the field does not exists', () => {
+      component.filter = defaultFilter;
       component.propertyFormControl.setValue('Unexisting');
       component.onPropertyChange();
+      expect(component.filter).toEqual(defaultFilter);
+    });
+
+    it('should handle custom fields', () => {
+      component.propertyFormControl.setValue('test');
+      component.onPropertyChange();
       expect(component.filter).toEqual({
-        field: 1,
-        for: 'root',
-        operator: 0,
-        value: 'someValue'
+        for: 'custom',
+        field: 'test',
+        operator: null,
+        value: null
       });
     });
   });
@@ -226,10 +264,18 @@ describe('FiltersDialogFilterFieldComponent', () => {
     );
   });
 
-  it('should change the operator of the filter', () => {
-    component.operatorFormControl.setValue('Equal');
-    component.onOperatorChange();
-    expect(component.filter.operator).toEqual(0);
+  describe('on operator change', () => {
+    it('should change the operator of the filter', () => {
+      component.operatorFormControl.setValue('Equal');
+      component.onOperatorChange();
+      expect(component.filter.operator).toEqual(0);
+    });
+
+    it('should set the operator to null if the key does not exists', () => {
+      component.operatorFormControl.setValue('Unexisting');
+      component.onOperatorChange();
+      expect(component.filter.operator).toBeNull();
+    });
   });
 
   describe('onInputChange', () => {
@@ -278,6 +324,15 @@ describe('FiltersDialogFilterFieldComponent', () => {
       expect(component.filter.value).toEqual(94350);
     });
 
+    it('should set the duration value to null if it is not a number', () => {
+      const inputEvent = {
+        type: 'duration',
+        value: 'someNotNumberValue'
+      } as unknown as FilterInputOutput;
+      component.onInputChange(inputEvent);
+      expect(component.filter.value).toBeNull();
+    });
+
     it('should change the filter value to status if one status is passed', () => {
       const inputEvent: FilterInputOutput = {
         type: 'status',
@@ -312,7 +367,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
           value: 1
         });
       });
-  
+
       it('should return a filterInput with a null value in case of a string value', () => {
         const numberFilter: Filter<number, number> = {
           field: 4,
@@ -342,7 +397,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
           value: 'myStringValue'
         });
       });
-  
+
       it('should return a filterInput with a null value in case of any falsy filter value', () => {
         const stringFilter: Filter<number, number> = {
           field: 2,
@@ -368,11 +423,11 @@ describe('FiltersDialogFilterFieldComponent', () => {
         };
 
         expect(component.findInput(arrayFilter)).toEqual({
-          type: 'string',
+          type: 'array',
           value: 'myStringValue'
         });
       });
-  
+
       it('should return a filterInput with a null value in case of any falsy filter value', () => {
         const arrayFilter: Filter<number, number> = {
           field: 3,
@@ -382,7 +437,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         };
 
         expect(component.findInput(arrayFilter)).toEqual({
-          type: 'string',
+          type: 'array',
           value: null
         });
       });
@@ -417,7 +472,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
           statuses: allStatuses
         });
       });
-  
+
       it('should return a filterInput with a null value in case of any falsy filter value', () => {
         const statusFilter: Filter<number, number> = {
           field: 1,
@@ -441,7 +496,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 1
       };
-      expect(() => {component.findInput(unknownFilter);}).toThrowError(
+      expect(() => { component.findInput(unknownFilter); }).toThrowError(
         'Unknown type unknownType'
       );
     });
@@ -590,14 +645,16 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
   });
 
-  it('should retrieve all operators of a type', () => {
-    const filter: Filter<number, number> = {
-      field: 4,
-      for: 'root',
-      operator: 1,
-      value: 'myStatus'
-    };
-    expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
+  describe('findOperator', () => {
+    it('should retrieve all number operators', () => {
+      const filter: Filter<number, number> = {
+        field: 4,
+        for: 'root',
+        operator: 1,
+        value: 'myStatus'
+      };
+      expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
+    });
   });
 
   describe('hasOneOperator', () => {

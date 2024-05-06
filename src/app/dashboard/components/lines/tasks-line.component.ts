@@ -38,6 +38,7 @@ import { NotificationService } from '@services/notification.service';
 })
 export class TasksLineComponent extends DashboardLineTableComponent<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(TasksIndexService);
+  readonly defaultConfig = this.defaultConfigService.defaultTasks;
 
   ngOnInit(): void {
     this.initLineEnvironment();

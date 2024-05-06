@@ -46,7 +46,7 @@ export class TableInspectObjectComponent
     }
   }
 
-  get isObjectUndefined(): boolean {
+  get isObjectDefined(): boolean {
     return !!this.object && Object.keys(this.object).length !== 0;
   }
 }

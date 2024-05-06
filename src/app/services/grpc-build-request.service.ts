@@ -1,9 +1,9 @@
-import { ApplicationFilterField, SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, PartitionFilterField, ResultFilterField, SessionFilterField, TaskFilterField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationFilterField, SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, PartitionFilterField, ResultFilterField, SessionFilterField, TaskFilterField } from '@aneoconsultingfr/armonik.api.angular';
 import { SortDirection } from '@angular/material/sort';
 import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
 import { Filter } from '@app/types/filters';
 
-type FilterField = SessionFilterField.AsObject['field'] | TaskFilterField.AsObject['field'] | ApplicationFilterField.AsObject['field'] | PartitionFilterField.AsObject['field'] | ResultFilterField.AsObject['field'];
+export type FilterField = SessionFilterField.AsObject['field'] | TaskFilterField.AsObject['field'] | ApplicationFilterField.AsObject['field'] | PartitionFilterField.AsObject['field'] | ResultFilterField.AsObject['field'];
 
 export const sortDirections: Record<SortDirection, ArmoniKSortDirection> = {
   'asc': ArmoniKSortDirection.SORT_DIRECTION_ASC,
@@ -70,7 +70,7 @@ export function buildBooleanFilter(filterField: FilterField, filter: Filter<Filt
     field: filterField,
     filterBoolean: {
       value: filter.value ?? false,
-      operator: filter.operator ?? 0,
+      operator: FilterBooleanOperator.FILTER_BOOLEAN_OPERATOR_IS,
     }
   };
 }
