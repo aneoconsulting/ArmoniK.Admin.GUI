@@ -19,7 +19,7 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
   }
 
   canCancel(status: SessionStatus): boolean {
-    return status === SessionStatus.SESSION_STATUS_RUNNING  || status === SessionStatus.SESSION_STATUS_PAUSED;
+    return status === SessionStatus.SESSION_STATUS_RUNNING || status === SessionStatus.SESSION_STATUS_PAUSED;
   }
 
   canPause(status: SessionStatus): boolean {
