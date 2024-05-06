@@ -122,6 +122,9 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   onColumnsChange(columns: K[]) {
+    if ((columns as string[]).includes('select')) {
+      columns = ['select' as K, ...columns.filter(column => column !== 'select')];
+    }
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
     this.indexService.saveColumns(columns);
