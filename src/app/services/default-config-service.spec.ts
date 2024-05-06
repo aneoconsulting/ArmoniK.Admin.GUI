@@ -3,19 +3,25 @@ import { DefaultConfigService } from './default-config.service';
 
 window = Object.create(window);
 
-const url = 'localhost:4200';
-Object.defineProperty(window, 'location', {
-  value: {
-    href: url
-  },
-  writable: true
-});
+function overrideWindowLocation(location: string) {
+  const url = 'localhost:4200';
+  Object.defineProperty(window, 'location', {
+    value: {
+      href: `${url}/${location}`,
+    },
+    writable: true
+  });
+}
 
 describe('DefaultConfigService', () => {
   let service: DefaultConfigService;
+
+  beforeEach(() => {
+    overrideWindowLocation('en');
+    service = new DefaultConfigService();
+  });
   
   it('should create default config service', () => {
-    service = new DefaultConfigService(); 
     expect(service).toBeTruthy();
   });
 
@@ -67,8 +73,16 @@ describe('DefaultConfigService', () => {
     expect(service.exportedDefaultConfig).toBeDefined();
   });
 
-  it('should have a defined defaultLanguage configuration', () => {
-    expect(service.defaultLanguage).toBeDefined();
+  describe('defaultLanguage configuration', () => {
+    it('should be english by default', () => {
+      expect(service.defaultLanguage).toBe('en');
+    });
+
+    it('should be french if the url is in french', () => {
+      overrideWindowLocation('fr');
+      service = new DefaultConfigService();
+      expect(service.defaultLanguage).toBe('fr');
+    });
   });
 
   it('should have a defined availableLanguages configuration', () => {
