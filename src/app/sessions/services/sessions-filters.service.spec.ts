@@ -4,192 +4,90 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionFilterDefinition, SessionRawFilters } from '../types';
+import { SessionFilterDefinition, SessionFilterField, SessionRawFilters } from '../types';
 
-describe('SessionsFiltersService', () => {
+describe('SessionsFilterService', () => {
   let service: SessionsFiltersService;
 
   const mockTableService = {
     saveFilters: jest.fn(),
+    resetFilters: jest.fn(),
     restoreFilters: jest.fn(),
-    resetFilters: jest.fn()
   };
 
-  const testFiltersOr: SessionRawFilters = [[
-    {
-      field: 1,
-      for: 'root',
-      operator: 0,
-      value: 1
-    }
-  ]];
-
-  const filtersDefinitions: SessionFilterDefinition[] = [
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
-      type: 'string',
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS,
-      type: 'array',
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
-      type: 'status',
-      statuses: [
-        {
-          key: '0',
-          value: 'Unspecified',
-        },
-        {
-          key: '1',
-          value: 'Running'
-        },
-        {
-          key: '2',
-          value: 'Cancelled'
-        },
-        {
-          key: '3',
-          value: 'Paused'
-        },
-        {
-          key: '4',
-          value: 'Closed'
-        },
-        {
-          key: '5',
-          value: 'Purged'
-        },
-        {
-          key: '6',
-          value: 'Deleted'
-        }
-      ],
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
-      type: 'date'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
-      type: 'date'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLOSED_AT,
-      type: 'date'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_DELETED_AT,
-      type: 'date'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PURGED_AT,
-      type: 'date'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
-      type: 'boolean'
-    },
-    {
-      for: 'root',
-      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
-      type: 'boolean'
-    },
-    {  
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
-      type: 'string'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE,
-      type: 'string'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_SERVICE,
-      type: 'string'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION,
-      type: 'string'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_ENGINE_TYPE,
-      type: 'string'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID,
-      type: 'string'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PRIORITY,
-      type: 'number'
-    },
-    {
-      for: 'options',
-      field: SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES,
-      type: 'number'
-    }
-  ];
+  const sessionFilter: SessionRawFilters = [[{
+    field: 1,
+    for: 'root',
+    operator: 1,
+    value: 'Dummy'
+  }]];
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         SessionsFiltersService,
-        SessionsStatusesService,
         DefaultConfigService,
+        SessionsStatusesService,
         { provide: TableService, useValue: mockTableService }
       ]
     }).inject(SessionsFiltersService);
   });
 
-  it('should run', () => {
+  test('the service must create SessionsFilterService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should save filters', () => {
-    service.saveFilters([]);
-    expect(mockTableService.saveFilters).toHaveBeenCalledWith('sessions-filters', []);
+  test('the service must call saveFilters from Table Service', () => {
+    service.saveFilters(sessionFilter);
+    expect(mockTableService.saveFilters).toHaveBeenCalledWith('sessions-filters', sessionFilter);
   });
 
-  it('should restore filters', () => {
-    mockTableService.restoreFilters.mockImplementationOnce(() => testFiltersOr);
-    expect(service.restoreFilters()).toEqual(testFiltersOr);
+  test('the service must call restoreFilters from Table Service', () => {
+    service.restoreFilters();
+    expect(mockTableService.restoreFilters).toHaveBeenCalledWith('sessions-filters', service.filtersDefinitions);
   });
 
-  it('should reset filters', () => {
-    service.resetFilters();
+  test('the service must call resetFilters from Table Service', () => {
+    const mockDefaultFilters = new DefaultConfigService().defaultSessions.filters;
+    const result = service.resetFilters();
     expect(mockTableService.resetFilters).toHaveBeenCalledWith('sessions-filters');
+    expect(result).toEqual(mockDefaultFilters);
   });
 
-  it('should return default filters on reset', () => {
-    expect(service.resetFilters()).toEqual(new DefaultConfigService().defaultSessions.filters);
+  test('the service must return filtersDefinitions', () => {
+    expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });
 
-  it('should retrieve filtersDefinitions', () => {
-    expect(service.filtersDefinitions).toEqual(filtersDefinitions);
+  describe('retrieveLabel', () => {
+    it('should return the right label with filterFor root', () => {
+      const filterDefinition = service.filtersDefinitions.find(filter => filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID) as SessionFilterDefinition;
+      expect(service.retrieveLabel(filterDefinition?.for, (filterDefinition.field as SessionFilterField))).toEqual('Session ID');
+    });
+
+    it('should return the right label with filterFor options', () => {
+      const filterDefinition = service.filtersDefinitions.find(filter => filter.field === SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAMESPACE) as SessionFilterDefinition;
+      expect(service.retrieveLabel(filterDefinition.for, (filterDefinition.field as SessionFilterField))).toEqual('Application Namespace');
+    });
+
+    it('should throw an error when filterFor is unknown', () => {
+      const field = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID;
+      expect(() => service.retrieveLabel('custom', field)).toThrow(`Unknown filter type: custom ${field}`);
+    });
   });
 
-  it('should retrieve labels for a root filter', () => {
-    expect(service.retrieveLabel('root', 1)).toEqual('Session ID');
-  });
+  describe('retrieveField', () => {
+    it('should return the field of a root field', () => {
+      expect(service.retrieveField('Session ID')).toEqual({
+        for: 'root',
+        index: 1,
+      });
+    });
 
-  it('should retrieve labels for an option filter', () => {
-    expect(service.retrieveLabel('options', 1)).toEqual('Max Duration');
+    it('should return the field of an optional field', () => {
+      expect(service.retrieveField('Application Version')).toEqual({
+        for: 'options',
+        index: 6,
+      });
+    });
   });
 });
