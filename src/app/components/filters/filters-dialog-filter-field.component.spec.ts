@@ -423,7 +423,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         };
 
         expect(component.findInput(arrayFilter)).toEqual({
-          type: 'string',
+          type: 'array',
           value: 'myStringValue'
         });
       });
@@ -437,7 +437,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         };
 
         expect(component.findInput(arrayFilter)).toEqual({
-          type: 'string',
+          type: 'array',
           value: null
         });
       });

@@ -37,6 +37,13 @@ describe('IconPickerDialogComponent', () => {
     expect(component.getIcon('icon')).toEqual('palette');
   });
 
+  it('should select first', () => {
+    component.filteredIcons = ['icon', 'newIcon'];
+    const spy = jest.spyOn(component.iconChange, 'next');
+    component.selectFirst();
+    expect(spy).toHaveBeenCalledWith(component.filteredIcons[0]);
+  });
+
   describe('selectIcon', () => {
     it('should emit a new icon', () => {
       const spy = jest.spyOn(component.iconChange, 'next');
