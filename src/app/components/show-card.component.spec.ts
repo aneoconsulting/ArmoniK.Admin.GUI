@@ -6,13 +6,12 @@ describe('ShowCardComponent', () => {
 
   let component: ShowCardComponent<ResultRaw>;
 
-  const spy = {
-    subscribe: jest.fn()
-  } as unknown as Subject<ResultRaw>;
+  const subject = new Subject<ResultRaw>();
 
   beforeEach(() => {
     component = new ShowCardComponent();
-    component.data$ = spy;
+    component.data$ = subject;
+    component.statuses = { 1: 'status' };
     component.ngOnInit();
   });
 
@@ -21,7 +20,13 @@ describe('ShowCardComponent', () => {
   });
 
   it('should subscribe to data$', () => {
-    expect(spy.subscribe).toHaveBeenCalled();
+    expect(subject.observed).toBeTruthy();
+  });
+
+  it('should update data', () => {
+    const result = { name: 'result' } as ResultRaw;
+    subject.next(result);
+    expect(component.data).toEqual(result);
   });
 
 });

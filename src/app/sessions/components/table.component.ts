@@ -61,7 +61,8 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   isDurationSorted: boolean = false;
   sessionEndedDates: {sessionId: string, date: Timestamp | undefined}[] = [];
   sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
-  nextDuration$ = new Subject<string>();
+  nextStartDuration$ = new Subject<string>();
+  nextEndDuration$ = new Subject<string>();
   computeDuration$ = new Subject<void>();
   sessionsIdsComputationError: string[] = [];
 
@@ -168,12 +169,12 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       }
     });
     
-    this.nextDuration$.pipe(
+    this.nextStartDuration$.pipe(
       map(sessionId => this.grpcService.getTaskData$(sessionId, 'createdAt', 'asc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'created'));
 
-    this.nextDuration$.pipe(
+    this.nextEndDuration$.pipe(
       map(sessionId => this.grpcService.getTaskData$(sessionId, 'endedAt', 'desc')),
       mergeAll(),
     ).subscribe(task => this.durationSubscription(task, 'ended'));
@@ -212,7 +213,8 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     if (this.isDurationDisplayed()) {
       this.dataRaw = data;
       data.forEach(session => {
-        this.nextDuration$.next(session.sessionId);
+        this.nextStartDuration$.next(session.sessionId);
+        this.nextEndDuration$.next(session.sessionId);
       });
     } else {
       this.newData(data);
@@ -247,7 +249,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   createSessionIdQueryParams(sessionId: string) {
-    const keySession = this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+    const keySession = this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
 
     return {
       [keySession]: sessionId,
@@ -256,11 +258,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
 
   createTasksByStatusQueryParams(sessionId: string) {
     if(this.filters.length === 0) {
-      const keySession = this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
-
-      return {
-        [keySession]: sessionId,
-      };
+      return this.createSessionIdQueryParams(sessionId);
     } else {
       const params: Record<string, string> = {};
       this.filters.forEach((filterAnd, index) => {
@@ -358,6 +356,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       }
     );
   }
+
   onDelete(sessionId: string) {
     this.grpcService.delete$(sessionId).subscribe(
       {
@@ -384,7 +383,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   orderByDuration(data: SessionRaw[]) {
-    data.sort((a, b) => {
+    data = data.sort((a, b) => {
       if (this.options.sort.direction === 'asc') {
         return Number(a.duration?.seconds) - Number(b.duration?.seconds);
       } else {
