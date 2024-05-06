@@ -1,4 +1,3 @@
-import { FilterNumberOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { AsyncPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -170,7 +169,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   retrieveOperatorKey(operator: string) {
     const labelledOperators = Object.values(this.allOperators);
     const value = labelledOperators.find(label => label.toLowerCase() === operator.toLowerCase());
-    return Object.keys(this.allOperators).filter(key => this.allOperators[Number(key)] === value);
+    return Object.keys(this.allOperators).find(key => this.allOperators[Number(key)] === value);
   }
 
   retrieveStatusKey(status: MaybeNull<string>) {
@@ -185,28 +184,22 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     const formValue = this.propertyFormControl.value;
     if (formValue) {
       const field = this.#dataFiltersService.retrieveField(formValue);
-
       if (field.index === -1) {
         const customField = this.customColumns?.find(col => col.toLowerCase() === `options.options.${formValue.toLowerCase()}`);
         if (customField) {
           this.filter.for = 'custom';
           this.filter.field = formValue;
-          this.allOperators = this.findOperator(this.filter);
         }
-        return;
+      } else {
+        const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
+        
+        if (for_) {
+          this.filter.for = for_;
+          this.filter.field = field.index as T | U;
+        }
       }
-
-      const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
-      if (!for_) {
-        return;
-      }
-
-      this.filter.for = for_;
-      this.filter.field = field.index as T | U;
-
       this.allOperators = this.findOperator(this.filter);
       this.handleOperatorState();
-
       this.allStatuses = this.findStatuses(this.filter);
       this.statusFormControl.setValue('');
       this.filter.value = null;
@@ -329,13 +322,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   findOperator(filter: Filter<T, U>): Record<number, string> {
     const type = this.findType(filter);
-
-    if (type === 'number' && filter.for === 'options') {
-      return {
-        [FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL]: $localize`Equal`,
-        [FilterNumberOperator.FILTER_NUMBER_OPERATOR_NOT_EQUAL]: $localize`Not Equal`,
-      };
-    }
 
     const operators = this.#filtersService.findOperators(type);
     return operators;
