@@ -11,8 +11,6 @@ import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetim
 import { Observable, map, startWith } from 'rxjs';
 import { FilterInput, FilterInputOutput, FilterInputType, MaybeNull } from '@app/types/filters';
 
-
-
 @Component({
   selector: 'app-filters-dialog-input',
   templateUrl: './filters-dialog-input.component.html',
@@ -107,6 +105,7 @@ export class FiltersDialogInputComponent implements OnInit {
     const durationSeconds = (getHours ?? 0) * 3600
       + (getMinutes ?? 0) * 60 
       + (getSeconds ?? 0);
+
     this.valueChange.emit({
       type: 'duration',
       value: durationSeconds

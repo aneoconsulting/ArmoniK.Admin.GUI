@@ -1,3 +1,4 @@
+import { SimpleChanges } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ShowActionButton } from '@app/types/components/show';
 import { IconsService } from '@services/icons.service';
@@ -63,6 +64,13 @@ describe('ShowActionComponent', () => {
         area: 'right'
       }
     ]);
+  });
+
+  it('should split applications on changes', () => {
+    const changes = {'actionsButton': ''} as unknown as SimpleChanges;
+    component.rightActions = [];
+    component.ngOnChanges(changes);
+    expect(component.rightActions).toEqual(actionButtons.filter(action => action.area === 'right'));
   });
 
   it('should get refresh icon', () => {
