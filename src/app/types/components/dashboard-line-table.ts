@@ -226,11 +226,12 @@ export abstract class DashboardLineCustomColumnsComponent<K extends RawColumnKey
 
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
+        const oldCustoms = this.customColumns;
         this.customColumns = result;
         this.availableColumns = this.availableColumns.filter(column => !column.startsWith('options.options.'));
         this.availableColumns.push(...result as K[]);
         this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('options.options.'));
-        this.displayedColumnsKeys.push(...result as K[]);
+        this.displayedColumnsKeys.push(...result.filter(column => !oldCustoms.includes(column)) as K[]);
         this.updateDisplayedColumns();
         this.line.displayedColumns = this.displayedColumnsKeys;
         this.line.customColumns = result;

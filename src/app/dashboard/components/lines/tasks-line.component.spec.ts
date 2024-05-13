@@ -5,6 +5,7 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
+import { CustomColumn } from '@app/types/data';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -17,7 +18,8 @@ describe('TasksLineComponent', () => {
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: TaskSummaryColumnKey[] = ['id', 'creationToEndDuration'];
+  const defaultColumns: TaskSummaryColumnKey[] = ['id', 'options.applicationName', 'actions', 'status'];
+  const customColumns: CustomColumn[] = ['options.options.FastCompute'];
 
   const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
     {
@@ -59,7 +61,7 @@ describe('TasksLineComponent', () => {
   const line: Line = {
     name: 'Tasks',
     type: 'Tasks',
-    displayedColumns: displayedColumns.map(c => c.key),
+    displayedColumns: [...displayedColumns.map(c => c.key), ...customColumns],
     filters: [],
     interval: 20,
     options: options
@@ -377,5 +379,40 @@ describe('TasksLineComponent', () => {
     expect(component.serviceIcon).toEqual('newIcon');
     expect(component.serviceName).toEqual('newName');
     expect(component.urlTemplate).toEqual('newUrl');
+  });
+
+  describe('addCustomColumn', () => {
+    const newCustom: CustomColumn[] = ['options.options.newColumn', 'options.options.FastCompute'];
+
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed() {
+          return of(newCustom);
+        }
+      });
+      component.customColumns = customColumns;
+      component.displayedColumnsKeys.filter(c => c === 'options.options.FastCompute');
+      component.addCustomColumn();
+    });
+
+    it('should update custom columns', () => {
+      expect(component.customColumns).toEqual(newCustom);
+    });
+
+    it('should update available columns', () => {
+      expect(component.availableColumns).toEqual([...defaultColumns, ...newCustom]);
+    });
+
+    it('should update displayed columns', () => {
+      expect(component.displayedColumnsKeys).toEqual([...defaultColumns, 'options.options.newColumn']);
+    });
+
+    it('should update line displayed columns', () => {
+      expect(component.line.displayedColumns).toEqual([...defaultColumns, 'options.options.newColumn']);
+    });
+
+    it('should update line custom columns', () => {
+      expect(component.line.customColumns).toEqual(newCustom);
+    });
   });
 });
