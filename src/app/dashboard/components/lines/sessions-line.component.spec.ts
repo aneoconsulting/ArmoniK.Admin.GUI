@@ -7,6 +7,7 @@ import { TableColumn } from '@app/types/column.type';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { SessionsLineComponent } from './sessions-line.component';
 import { Line } from '../../types';
 
@@ -83,6 +84,11 @@ describe('SessionsLineComponent', () => {
     restoreColumns: jest.fn(() => ['name', 'count']),
   };
 
+  const mockNotificationService = {
+    success: jest.fn(),
+    error: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -91,7 +97,8 @@ describe('SessionsLineComponent', () => {
         AutoRefreshService,
         IconsService,
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
-        DefaultConfigService
+        DefaultConfigService,
+        { provide: NotificationService, useValue: mockNotificationService },
       ]
     }).inject(SessionsLineComponent);
     component.line = line;
