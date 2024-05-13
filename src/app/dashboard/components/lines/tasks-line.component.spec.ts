@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
@@ -68,7 +69,7 @@ describe('TasksLineComponent', () => {
     name: 'NewNameLine'
   };
   const mockMatDialog = {
-    open: jest.fn(() => {
+    open: jest.fn((): unknown => {
       return {
         afterClosed() {
           return of(nameLine);
@@ -77,16 +78,27 @@ describe('TasksLineComponent', () => {
     }),
   };
 
+  const viewInLogs = {
+    serviceIcon: 'icon',
+    serviceName: 'name',
+    urlTemplate: 'url',
+  };
+
   const mockTasksIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
     resetColumns: jest.fn(() => new DefaultConfigService().defaultTasks.columns),
     restoreColumns: jest.fn(() => ['name', 'count']),
+    restoreViewInLogs: jest.fn(() => viewInLogs)
   };
 
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
+  };
+
+  const mockTasksGrpcService = {
+    cancel$: jest.fn((): Observable<unknown> => of({})),
   };
 
   beforeEach(() => {
@@ -98,10 +110,12 @@ describe('TasksLineComponent', () => {
         IconsService,
         { provide: TasksIndexService, useValue: mockTasksIndexService },
         DefaultConfigService,
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
       ]
     }).inject(TasksLineComponent);
     component.line = line;
+    component.selection = [];
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -315,5 +329,53 @@ describe('TasksLineComponent', () => {
       component.onLockColumnsChange();
       expect(spy).toHaveBeenCalled();
     });
+  });
+
+  it('should update selection', () => {
+    const selection = ['1', '2'];
+    component.onSelectionChange(selection);
+    expect(component.selection).toEqual(selection);
+  });
+
+  describe('cancelTasks', () => {
+    it('should cancel task', () => {
+      const tasksIds = ['1', '2'];
+      component.cancelTasks(tasksIds);
+      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(tasksIds);
+    });
+
+    it('should notify on success', () => {
+      component.cancelTasks(['1', '2']);
+      expect(mockNotificationService.success).toHaveBeenCalled();
+    });
+
+    it('should notify on error', () => {
+      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error('error')));
+      component.cancelTasks(['1', '2']);
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+  });
+
+  it('should cancel tasks selection', () => {
+    const selection = ['1', '2'];
+    component.selection = selection;
+    component.onCancelTasksSelection();
+    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(selection);
+  });
+
+  it('should update view in logs', () => {
+    mockMatDialog.open.mockReturnValueOnce({
+      afterClosed() {
+        return of({
+          serviceIcon: 'newIcon',
+          serviceName: 'newName',
+          urlTemplate: 'newUrl',
+        });
+      }
+    });
+    component.manageViewInLogs();
+    expect(component.serviceIcon).toEqual('newIcon');
+    expect(component.serviceName).toEqual('newName');
+    expect(component.urlTemplate).toEqual('newUrl');
   });
 });
