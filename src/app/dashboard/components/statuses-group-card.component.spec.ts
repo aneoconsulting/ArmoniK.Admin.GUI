@@ -29,6 +29,12 @@ describe('StatusesGroupCardComponent', () => {
         for: 'root',
         operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
         value: 'someOtherFilterValue'
+      },
+      {
+        field: null,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+        value: 'shouldNotAppear'
       }
     ]
   ];

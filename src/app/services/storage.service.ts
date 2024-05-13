@@ -98,19 +98,19 @@ export class StorageService implements Storage {
    * @param data - JSON object you want to store. Either an object or an array.
    */
   importData(data: string): void {
-    const parsedData = JSON.parse(data) as Record<string, string>;
+    try {
+      const parsedData = JSON.parse(data) as Record<string, string>;
 
-    if (Array.isArray(parsedData)) {
-      for (const data in parsedData) {
-        try {
+      if (Array.isArray(parsedData)) {
+        for (const data in parsedData) {
           this.#importDataObject(JSON.parse(data) as Record<string, string>);
-        } catch (e) {
-          console.warn('Data format is not supported');
         }
       }
-    }
-    else {
-      this.#importDataObject(parsedData);
+      else {
+        this.#importDataObject(parsedData);
+      }
+    } catch (e) {
+      console.warn('Data format is not supported');
     }
   }
 

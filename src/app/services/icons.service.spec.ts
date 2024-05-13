@@ -23,4 +23,10 @@ describe('IconsService', () => {
       expect(service.getPageIcon('profile')).toEqual('account_circle');
     });
   });
+
+  describe('getAllIcons', () => {
+    it('should return a list of icons', () => {
+      expect(service.getAllIcons()).toEqual(Object.keys(service.icons));
+    });
+  });
 });

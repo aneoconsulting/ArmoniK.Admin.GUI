@@ -10,9 +10,9 @@ describe('DashboardIndexService', () => {
   let service: DashboardIndexService;
 
   const mockDashboardStorageService = {
-    restoreLines: jest.fn(),
+    restoreLines: jest.fn((): Line[] | null => lines),
     saveLines: jest.fn(),
-    restoreSplitLines: jest.fn(),
+    restoreSplitLines: jest.fn((): number | null => 4),
     saveSplitLines: jest.fn()
   };
 
@@ -78,7 +78,6 @@ describe('DashboardIndexService', () => {
   });
 
   it('should restore lines', () => {
-    mockDashboardStorageService.restoreLines.mockImplementationOnce(() => lines);
     expect(service.restoreLines()).toEqual(lines);
   });
 
@@ -93,7 +92,6 @@ describe('DashboardIndexService', () => {
   });
 
   it('should restore splitted lines', () => {
-    mockDashboardStorageService.restoreSplitLines.mockImplementationOnce(() => 4);
     expect(service.restoreSplitLines()).toEqual(4);
   });
 
@@ -105,5 +103,27 @@ describe('DashboardIndexService', () => {
   it('should save splitted lines', () => {
     service.saveSplitLines(2);
     expect(mockDashboardStorageService.saveSplitLines).toHaveBeenCalledWith(2);
+  });
+
+  describe('Adding a line', () => {
+    it('should push and save the line to the saved lines', () => {
+      const newLine: Line = {
+        name: 'line3',
+        type: 'Tasks',
+        interval: 30,
+        hideGroupsHeader: false,
+        filters: [],
+        taskStatusesGroups: [
+          { name: 'Success', color: 'green', statuses: [TaskStatus.TASK_STATUS_COMPLETED, TaskStatus.TASK_STATUS_PROCESSED]},
+          { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
+          { name: 'Error', color: 'red', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_TIMEOUT]}
+        ],
+      };
+      const savedLines = lines;
+      savedLines.push(newLine);
+
+      service.addLine(newLine);
+      expect(mockDashboardStorageService.saveLines).toHaveBeenCalledWith(savedLines);
+    });
   });
 });

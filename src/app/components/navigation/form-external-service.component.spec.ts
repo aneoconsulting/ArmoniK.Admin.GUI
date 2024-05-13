@@ -1,47 +1,52 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ExternalService } from '@app/types/external-service';
 import { FormExternalServiceComponent } from './form-external-service.component';
 
 describe('', () => {
-  let component: FormExternalServiceComponent;
-  let fixture: ComponentFixture<FormExternalServiceComponent>;
+  const component = new FormExternalServiceComponent();
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ BrowserAnimationsModule ],
-      providers: [
-        FormExternalServiceComponent
-      ]
-    }).compileComponents();
-  });
+  const externalService = {
+    name: 'service',
+    url: 'url',
+    icon: 'heart' as string | null
+  };
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormExternalServiceComponent);
-    component = fixture.componentInstance;
-    component.externalService = {
-      name: 'service',
-      url: 'url',
-      icon: 'heart'
-    };
-    fixture.detectChanges();
+    component.externalService = externalService as ExternalService;
+    component.ngOnInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should init', () => {
-    component.ngOnInit();
-    expect({
-      ...component.serviceForm.value,
-      icon: component.icon
-    }).toEqual(component.externalService);
+  describe('on init', () => {
+    it('should patch service form', () => {
+      expect(component.serviceForm.value).toEqual({
+        name: externalService.name,
+        url: externalService.url
+      });
+    });
+
+    it('should set icon', () => {
+      expect(component.icon).toEqual(externalService.icon);
+    });
+
+    it('should not have an icon if there is none', () => {
+      const nullExternalService = {
+        name: 'service',
+        url: 'url',
+        icon: null
+      };
+      component.externalService = nullExternalService as unknown as ExternalService;
+      component.ngOnInit();
+      expect(component.icon).toEqual('');
+    });
   });
 
   it('should emit on submit', () => {
     const spy = jest.spyOn(component.submitChange, 'emit');
     component.onSubmit();
-    expect(spy).toHaveBeenCalledWith(component.externalService);
+    expect(spy).toHaveBeenCalledWith(externalService);
   });
 
   it('should emit on cancel', () => {

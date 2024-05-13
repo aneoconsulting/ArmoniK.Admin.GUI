@@ -91,7 +91,7 @@ main {
   ]
 })
 export class NavigationComponent implements OnInit{
-  version = process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
+  version = this.getVersion();
   externalServices: ExternalService[];
 
   #breakpointObserver = inject(BreakpointObserver);
@@ -131,6 +131,10 @@ export class NavigationComponent implements OnInit{
         this.#navigationService.saveExternalServices(this.externalServices);
       }
     });
+  }
+
+  getVersion(): string {
+    return process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
   }
 
   getIcon(name: string): string {
