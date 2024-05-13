@@ -213,15 +213,15 @@ describe('StorageService', () => {
       expect(setItemSpy).toHaveBeenCalledTimes(2);
     });
 
-    it('Should throw a syntaxError in case of an invalid JSON data', () => {
-      expect(() => {service.importData('Invalid-json-data');}).toThrow(SyntaxError);
-      expect(() => {service.importData('{"still-some":Invalid-json-data}');}).toThrow(SyntaxError);
-      expect(() => {service.importData('[{"navigation-sidebar":is-that-invalid-data?}, {"navigation-theme": "dark-green"}]');}).toThrow(SyntaxError);
+    it('should warn in case of an unsupported key.', () => {
+      const key = 'unsuported-key';
+      service.importData(`{"${key}": "some-value"}`);
+      expect(consoleSpy).toHaveBeenCalledWith(`Key "${key}" is not supported`);
     });
 
-    it('should warn in case of an unsupported key.', () => {
-      service.importData('{"unsuported-key": "some-value"}');
-      expect(consoleSpy).toHaveBeenCalled();
+    it('should warn is the data format is not supported', () => {
+      service.importData('Invalid-json-data');
+      expect(consoleSpy).toHaveBeenCalledWith('Data format is not supported');
     });
   });
 

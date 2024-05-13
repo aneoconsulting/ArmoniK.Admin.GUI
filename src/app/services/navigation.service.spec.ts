@@ -97,12 +97,16 @@ describe('NavigationService', () => {
     expect(service.currentSidebar).toEqual(expectedFormatResult);
   });
 
-  test('restoreExternalServices should return the call of StorageService.getItem', () => {
-    mockStorageService.getItem.mockImplementationOnce(() => {
-      return externalServices; 
+  describe('restoreExternalService', () => {
+    it('should return stored item', () => {
+      mockStorageService.getItem.mockReturnValueOnce(externalServices);
+      expect(service.restoreExternalServices()).toBe(externalServices);
     });
 
-    expect(service.restoreExternalServices()).toBe(externalServices);
+    it('should return empty list if there is no stored item', () => {
+      mockStorageService.getItem.mockReturnValueOnce(null);
+      expect(service.restoreExternalServices()).toEqual([]);
+    });
   });
 
   test('saveExternalServices should call setItem', () => {

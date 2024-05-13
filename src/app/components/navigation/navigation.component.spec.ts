@@ -1,7 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { ExternalService } from '@app/types/external-service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
@@ -11,6 +11,7 @@ import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { NavigationComponent } from './navigation.component';
+import pkg from '../../../../package.json';
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -40,11 +41,15 @@ describe('NavigationComponent', () => {
     getItem: jest.fn()
   };
 
+  const mockBreakpointObserver = {
+    observe: jest.fn(() => of({matches: true}))
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         NavigationComponent,
-        BreakpointObserver,
+        { provide: BreakpointObserver, useValue: mockBreakpointObserver },
         { provide: NavigationService, useValue: mockNavigationService },
         { provide: MatDialog, useValue: mockMatDialog },
         IconsService,
@@ -64,6 +69,24 @@ describe('NavigationComponent', () => {
   it('should restore external services on load', () => {
     component.ngOnInit();
     expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
+  });
+
+  it('should set handset', () => {
+    lastValueFrom(component.isHandset$).then((isHandset) => {
+      expect(isHandset).toBe(true);
+    });
+  });
+
+  describe('getVersion', () => {
+    it('should get production version', () => {
+      process.env['NODE_ENV'] = 'production';
+      expect(component.getVersion()).toEqual(pkg.version);
+    });
+
+    it('should get development version', () => {
+      process.env['NODE_ENV'] = 'development';
+      expect(component.getVersion()).toEqual('-dev');
+    });
   });
 
   it('should manage external services', () => {

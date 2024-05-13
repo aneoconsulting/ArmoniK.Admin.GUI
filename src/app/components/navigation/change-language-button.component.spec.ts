@@ -85,6 +85,12 @@ describe('ChangeLanguageButtonComponent', () => {
     });
   });
 
+  it('should set language', () => {
+    const language = 'fr';
+    component.setLanguage(language);
+    expect(mockStorageService.setItem).toHaveBeenCalledWith('language', language);
+  });
+
   it('should get icons', () => {
     expect(component.getIcon('language')).toEqual('language');
   });

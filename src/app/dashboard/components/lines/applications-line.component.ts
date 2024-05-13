@@ -46,6 +46,7 @@ import { ShareUrlService } from '@services/share-url.service';
 })
 export class ApplicationsLineComponent extends DashboardLineTableComponent<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements OnInit, AfterViewInit,OnDestroy {
   readonly indexService = inject(ApplicationsIndexService);
+  readonly defaultConfig = this.defaultConfigService.defaultApplications;
 
   ngOnInit(): void {
     this.initLineEnvironment();

@@ -54,14 +54,11 @@ export class ViewTasksByStatusComponent {
   @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
 
   @Input({ required: true }) set statuses(entries: TaskStatusColored[]) {
-    this._statuses = this._statuses.filter(status => entries.some(entry => entry.status === status.status && entry.color === status.color));
-    entries.forEach((entry, index) => {
-      if (index >= this._statuses.length) {
-        this._statuses.push(this.completeStatus(entry));
-      } else if (entry.status !== this._statuses[index].status || entry.color !== this._statuses[index].color) {
-        this._statuses[index] = this.completeStatus(entry);
-      }
+    const statuses: Required<TaskStatusColored>[] = [];
+    entries.forEach(entry => {
+      statuses.push(this.completeStatus(entry));
     });
+    this._statuses = statuses;
   }
 
   @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {

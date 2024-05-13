@@ -48,6 +48,7 @@ import { NotificationService } from '@services/notification.service';
 })
 export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);
+  readonly defaultConfig = this.defaultConfigService.defaultSessions;
 
   ngOnInit(): void {
     this.initLineEnvironment();

@@ -10,8 +10,8 @@ describe('ViewTasksByStatusComponent', () => {
   let fixture: ComponentFixture<ViewTasksByStatusComponent>;
 
   const defaultQueryParams = {
-    '0-options-1-2': TaskStatus.TASK_STATUS_CANCELLED.toString(),
-    '1-root-0-1': TaskStatus.TASK_STATUS_PROCESSING.toString()
+    '0-root-1-0': 'sessionId',
+    '1-options-1-1': 'applicationName'
   };
 
   const initialStatuses: TaskStatusColored[] = [
@@ -114,21 +114,21 @@ describe('ViewTasksByStatusComponent', () => {
   it('should update statuses on new statuses', () => {
     const newStatuses: TaskStatusColored[] = [
       {
-        status: TaskStatus.TASK_STATUS_COMPLETED,
+        status: TaskStatus.TASK_STATUS_CANCELLED,
         color: 'green'
       }
     ];
     component.statuses = newStatuses;
     expect(component.statuses).toEqual([
       {
-        status: TaskStatus.TASK_STATUS_COMPLETED,
+        status: TaskStatus.TASK_STATUS_CANCELLED,
         color: 'green',
         statusCount: 0,
-        tooltip: 'Completed',
+        tooltip: 'Cancelled',
         queryParams: {
           ...defaultQueryParams,
-          '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
-          '1-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString()
+          '0-root-2-0': TaskStatus.TASK_STATUS_CANCELLED.toString(),
+          '1-root-2-0': TaskStatus.TASK_STATUS_CANCELLED.toString()
         }
       }
     ]);

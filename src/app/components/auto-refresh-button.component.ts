@@ -31,12 +31,24 @@ export class AutoRefreshButtonComponent implements OnInit{
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private _dialog: MatDialog) { }
+
+  private _isDisabled = false;
   
   ngOnInit(): void {
-    this.intervalDisplay = this.intervalValue == 0 ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
+    this.intervalDisplay = this.intervalValue === 0 ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
+    this.setDisabled();
   }
+
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
+  }
+
+  setDisabled() {
+    this._isDisabled = this.intervalValue === 0;
+  }
+
+  get isDisabled(): boolean {
+    return this._isDisabled;
   }
   
   emit(value: number): void {
@@ -44,7 +56,6 @@ export class AutoRefreshButtonComponent implements OnInit{
   }
   
   openAutoRefreshDialog(): void {
-    // Get value from the storage
     const dialogRef = this._dialog.open(AutoRefreshDialogComponent, {
       data: {
         value: this.intervalValue
@@ -52,15 +63,12 @@ export class AutoRefreshButtonComponent implements OnInit{
     });
     
     dialogRef.afterClosed().subscribe(value => {
-      if (value === undefined) {
-        return;
-      }   
-      this.emit(value);
-      this.intervalDisplay = value == 0 ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (value + $localize` seconds`);
+      if (value !== undefined) {
+        this.intervalValue = value;
+        this.setDisabled();
+        this.intervalDisplay = this.isDisabled ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
+        this.emit(value);
+      }
     });  
-  }
-
-  isDisabled(): boolean {
-    return this.intervalValue === 0;
   }
 }

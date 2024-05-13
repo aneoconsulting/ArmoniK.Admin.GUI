@@ -1,4 +1,5 @@
 import { FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterDurationOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { ShowActionButton } from '@app/types/components/show';
 import { FiltersService } from './filters.service';
 
 describe('FiltersService', () => {
@@ -78,6 +79,37 @@ describe('FiltersService', () => {
     it('should return the correct string if a duration filter operator is provied', () => {
       expect(service.createQueryParamsKey(1, 'my_string', FilterDurationOperator.FILTER_DURATION_OPERATOR_EQUAL, 7))
         .toEqual('1-my_string-7-0');
+    });
+  });
+
+  describe('createFilterQueryParams', () => {
+    it('should return the crrect query params', () => {
+      const id = 'sessionId';
+      const actionsButton: ShowActionButton = {
+        id: id,
+        name: 'Session ID',
+        link: '/tasks',
+      };
+      const key = '0-root-1-0';
+      service.createFilterQueryParams([actionsButton], 'sessionId', key, id);
+      expect(actionsButton.queryParams).toEqual({[key]: id});
+    });
+  });
+
+  describe('createFilterPartitionQueryParams', () => {
+    it('should return the correct query params', () => {
+      const actionsButton: ShowActionButton = {
+        id: 'partitions',
+        name: 'Partitions',
+        link: '/partitions',
+      };
+      const partitionIds = ['partition1', 'partition2', 'partition3'];
+      service.createFilterPartitionQueryParams([actionsButton], partitionIds);
+      expect(actionsButton.queryParams).toEqual({
+        '0-root-1-0': 'partition1',
+        '1-root-1-0': 'partition2',
+        '2-root-1-0': 'partition3',
+      });
     });
   });
 });

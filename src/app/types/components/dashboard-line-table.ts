@@ -9,6 +9,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableColumn } from '../column.type';
+import { ScopeConfig } from '../config';
 import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
 import { EditNameLineData, EditNameLineResult } from '../dialog';
 import { RawFilters } from '../filters';
@@ -26,6 +27,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   readonly notificationService = inject(NotificationService);
 
   abstract readonly indexService: IndexServiceInterface<K, O>;
+  abstract readonly defaultConfig: ScopeConfig<K, O, F>;
   
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
@@ -69,7 +71,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
     });
-    this.lockColumns = this.line.lockColumns ?? this.defaultConfigService.defaultApplications.lockColumns;
+    this.lockColumns = this.line.lockColumns ?? this.defaultConfig.lockColumns;
   }
 
   initFilters() {
@@ -83,7 +85,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   initOptions() {
-    this.options = (this.line.options as O) ?? this.defaultConfigService.defaultApplications.options;
+    this.options = (this.line.options as O) ?? this.defaultConfig.options;
   }
 
   mergeSubscriptions() {

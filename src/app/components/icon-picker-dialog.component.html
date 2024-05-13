@@ -5,7 +5,7 @@
   <mat-icon [fontIcon]="getIcon(icon)" />
 </button>
 <mat-menu #menu="matMenu" yPosition="below">
-  <mat-form-field style="width: 100%;" subscriptSizing="dynamic" (click)="$event.stopPropagation();">
+  <mat-form-field style="width: 100%;" subscriptSizing="dynamic" (click)="$event.stopPropagation();" (keydown.enter)="selectFirst()">
     <mat-label i18n="Input label">Icon</mat-label>
     <input matInput [formControl]="iconFormControl" placeholder="Search icon" />
   </mat-form-field>

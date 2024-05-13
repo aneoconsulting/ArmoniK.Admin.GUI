@@ -53,6 +53,7 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
   urlTemplate: string | null = null;
 
   selection: string[] = [];
+  readonly defaultConfig = this.defaultConfigService.defaultTasks;
 
   ngOnInit(): void {
     this.initLineEnvironment();
