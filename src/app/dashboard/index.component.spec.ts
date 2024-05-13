@@ -7,7 +7,7 @@ import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
-import { Line } from './types';
+import { Line, LineType } from './types';
 
 describe('IndexComponent', () => {
   let component: IndexComponent;
@@ -102,43 +102,66 @@ describe('IndexComponent', () => {
     expect(component.showFabActions).toBeTruthy();
   });
 
-  it('should add a line', () => {
-    dialogRef$ = of({name: 'New line', type: 'CountStatus'} as unknown as Line);
-    const newLines = structuredClone(defaultLines);
-    newLines.push({
-      name: 'New line',
-      type: 'CountStatus',
-      interval: 5,
-      hideGroupsHeader: false,
-      filters: [],
-      taskStatusesGroups: [
-        {
-          name: 'Finished',
-          color: '#00ff00',
-          statuses: [
-            TaskStatus.TASK_STATUS_COMPLETED,
-            TaskStatus.TASK_STATUS_CANCELLED,
-          ],
-        },
-        {
-          name: 'Running',
-          color: '#ffa500',
-          statuses: [
-            TaskStatus.TASK_STATUS_PROCESSING,
-          ]
-        },
-        {
-          name: 'Errors',
-          color: '#ff0000',
-          statuses: [
-            TaskStatus.TASK_STATUS_ERROR,
-            TaskStatus.TASK_STATUS_TIMEOUT,
-          ]
-        },
-      ],
+  describe('onAddLineDialog', () => {
+    it('should add a line', () => {
+      dialogRef$ = of({name: 'New line', type: 'CountStatus'} as unknown as Line);
+      const newLines = structuredClone(defaultLines);
+      newLines.push({
+        name: 'New line',
+        type: 'CountStatus',
+        interval: 5,
+        hideGroupsHeader: false,
+        filters: [],
+        taskStatusesGroups: [
+          {
+            name: 'Finished',
+            color: '#00ff00',
+            statuses: [
+              TaskStatus.TASK_STATUS_COMPLETED,
+              TaskStatus.TASK_STATUS_CANCELLED,
+            ],
+          },
+          {
+            name: 'Running',
+            color: '#ffa500',
+            statuses: [
+              TaskStatus.TASK_STATUS_PROCESSING,
+            ]
+          },
+          {
+            name: 'Errors',
+            color: '#ff0000',
+            statuses: [
+              TaskStatus.TASK_STATUS_ERROR,
+              TaskStatus.TASK_STATUS_TIMEOUT,
+            ]
+          },
+        ],
+      });
+      component.onAddLineDialog();
+      expect(component.lines).toEqual(newLines);
     });
-    component.onAddLineDialog();
-    expect(component.lines).toEqual(newLines);
+
+    it('should not add a line if there is no result', () => {
+      dialogRef$ = of(undefined);
+      component.onAddLineDialog();
+      expect(component.lines).toEqual(defaultLines);
+    });
+
+    it('should add a line with provided values', () => {
+      const result: AddLineDialogResult = {name: 'Tasks', type: 'Tasks'};
+      dialogRef$ = of(result);
+      const newLines = structuredClone(defaultLines);
+      newLines.push({
+        name: result.name,
+        type: result.type,
+        interval: 5,
+        filters: []
+      });
+      component.onAddLineDialog();
+      expect(component.lines).toEqual(newLines);
+    });
+
   });
 
   it('should reorganize lines', () => {
@@ -178,5 +201,35 @@ describe('IndexComponent', () => {
 
   it('should track by line', () => {
     expect(component.trackByLine(0, component.lines[0])).toEqual('line10');
+  });
+
+  describe('getLineIcon', () => {
+    it('should get Tasks Icon', () => {
+      expect(component.getLineIcon('Tasks')).toEqual('adjust');
+    });
+
+    it('should get CountStatus Icon', () => {
+      expect(component.getLineIcon('CountStatus')).toEqual('wifi_tethering');
+    });
+
+    it('should get Applications Icon', () => {
+      expect(component.getLineIcon('Applications')).toEqual('apps');
+    });
+
+    it('should get Partitions Icon', () => {
+      expect(component.getLineIcon('Partitions')).toEqual('donut_small');
+    });
+
+    it('should get Sessions Icon', () => {
+      expect(component.getLineIcon('Sessions')).toEqual('workspaces');
+    });
+
+    it('should get Results Icon', () => {
+      expect(component.getLineIcon('Results')).toEqual('workspace_premium');
+    });
+
+    it('should get default icon', () => {
+      expect(component.getLineIcon('Unknown' as LineType)).toEqual('radio_button_unchecked');
+    });
   });
 });

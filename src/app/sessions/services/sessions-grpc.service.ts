@@ -42,12 +42,12 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
       (sort: ListOptionsSort<SessionRaw & TaskOptions>) => {
         return {
           sessionRawField: {
-            field: this.sortFields[sort.active as SessionRawFieldKey] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID
+            field: this.sortFields[sort.active as SessionRawFieldKey] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT
           }
         } as SessionField;
       }
     );
-
+    console.log(requestFilters);
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,

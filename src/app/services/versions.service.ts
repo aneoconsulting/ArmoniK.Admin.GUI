@@ -6,34 +6,34 @@ export class VersionsService {
   api: string;
   VERSION_NOT_FOUND = '- version indisponible';
 
-  #formatVersion(version: string ): number[] {
+  private formatVersion(version: string): number[] {
     const versionParts = version.split('.');
-    return versionParts.map(versionPart =>  Number(versionPart)); 
+    return versionParts.map(versionPart => Number(versionPart));
   }
 
-  #handleNullableVersion( version:  string | null = null) : string {
-    return  version === null ? this.VERSION_NOT_FOUND : version;
+  private handleNullableVersion(version: string | null = null): string {
+    return version === null ? this.VERSION_NOT_FOUND : version;
   }
 
-  #fixVersion(version: number[]): string {
+  private fixVersion(version: number[]): string {
     if (version.length === 4) {
       version.pop();
     }
     return version.join('.');
-  } 
+  }
 
-  setCoreVersion(version: string | null = null ): void {
-    const notNullableNumberVersion = this.#handleNullableVersion(version);
-    const coreNumber = this.#formatVersion(notNullableNumberVersion);
+  setCoreVersion(version: string | null = null): void {
+    const notNullableNumberVersion = this.handleNullableVersion(version);
+    const coreNumber = this.formatVersion(notNullableNumberVersion);
     const isInvalidCoreNumber = coreNumber.some(number => Number.isNaN(number));
-    this.core = isInvalidCoreNumber ? this.VERSION_NOT_FOUND : this.#fixVersion(coreNumber);  
+    this.core = isInvalidCoreNumber ? this.VERSION_NOT_FOUND : this.fixVersion(coreNumber);
   }
 
   setAPIVersion(version: string | null = null): void {
-    const notNullableNumbersVersion = this.#handleNullableVersion(version);
-    const APINumber = this.#formatVersion(notNullableNumbersVersion);
+    const notNullableNumbersVersion = this.handleNullableVersion(version);
+    const APINumber = this.formatVersion(notNullableNumbersVersion);
     const isInvalidAPINumber = APINumber.some(number => Number.isNaN(number));
-    this.api = isInvalidAPINumber ? this.VERSION_NOT_FOUND : this.#fixVersion(APINumber);
+    this.api = isInvalidAPINumber ? this.VERSION_NOT_FOUND : this.fixVersion(APINumber);
   }
-  
+
 }

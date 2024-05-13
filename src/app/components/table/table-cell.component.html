@@ -38,6 +38,7 @@
   <mat-checkbox
     (click)="$event.stopPropagation()"
     (change)="$event ? onSelectionChange() : null"
+    (keydown.enter)="$event ? onSelectionChange() : null"
     [checked]="isSelected"
     [aria-label]="checkboxLabel()"
   />

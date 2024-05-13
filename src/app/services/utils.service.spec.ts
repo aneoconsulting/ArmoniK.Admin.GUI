@@ -55,6 +55,12 @@ describe('UtilsService', () => {
         for: 'root',
         operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_EQUAL,
         value: 1
+      },
+      {
+        field: 'options.options.FastCompute',
+        for: 'custom',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_NOT_CONTAINS,
+        value: 'true'
       }
     ];
 
@@ -125,7 +131,19 @@ describe('UtilsService', () => {
             value: '1',
             operator: 0
           }
-        }]
+        },
+        {
+          field: {
+            taskOptionCustomField: {
+              field: 'options.options.FastCompute'
+            }
+          },
+          filterString: {
+            value: 'true',
+            operator: 3
+          }
+        }
+        ]
       },
       {and: 
         [

@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApplicationData, PartitionData, ResultData, SessionData, TaskData } from '@app/types/data';
-import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { IconsService } from '@services/icons.service';
 
@@ -34,10 +33,6 @@ export class TableActionsComponent<T extends ApplicationData | SessionData | Par
   readonly iconsService = inject(IconsService);
 
   getIcon(icon: string): string {
-    try {
-      return this.iconsService.getIcon(icon);
-    } catch (error) {
-      return this.iconsService.getPageIcon(icon as Page);
-    }
+    return this.iconsService.getIcon(icon);
   }
 }
