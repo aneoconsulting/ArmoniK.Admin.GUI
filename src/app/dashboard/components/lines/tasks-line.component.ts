@@ -72,7 +72,6 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
     this.unsubscribe();
   }
 
-  // TODO: Test new methods
   onSelectionChange(selection: string[]): void {
     this.selection = selection;
   }
