@@ -4,7 +4,7 @@ import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
 import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
-import { IndexListOptions, RawColumnKey } from '@app/types/data';
+import { CustomColumn, IndexListOptions, RawColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { TableType } from '@app/types/table';
 
@@ -23,6 +23,7 @@ export type Line = {
   options?: IndexListOptions;
   taskStatusesGroups?: TasksStatusesGroup[],
   displayedColumns?: RawColumnKey[],
+  customColumns?: CustomColumn[],
   lockColumns?: boolean;
 };
 

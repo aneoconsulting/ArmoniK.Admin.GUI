@@ -17,6 +17,14 @@
       (deleteLine)="onDeleteLine()"
       (editNameLine)="onEditNameLine()"
     >
+      <ng-container extra-menu-items>
+        <button mat-menu-item (click)="addCustomColumn()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>
+          <span i18n appNoWrap>
+            Manage Custom Columns
+          </span>
+        </button>
+      </ng-container>
     </app-table-dashboard-actions-toolbar>
   </mat-toolbar-row>
   <mat-toolbar-row class="filters">
