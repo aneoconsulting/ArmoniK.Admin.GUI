@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
+import { CustomColumn } from '@app/types/data';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { TasksLineComponent } from './tasks-line.component';
 import { Line } from '../../types';
 
@@ -15,7 +18,8 @@ describe('TasksLineComponent', () => {
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: TaskSummaryColumnKey[] = ['id', 'creationToEndDuration'];
+  const defaultColumns: TaskSummaryColumnKey[] = ['id', 'options.applicationName', 'actions', 'status'];
+  const customColumns: CustomColumn[] = ['options.options.FastCompute'];
 
   const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
     {
@@ -57,7 +61,7 @@ describe('TasksLineComponent', () => {
   const line: Line = {
     name: 'Tasks',
     type: 'Tasks',
-    displayedColumns: displayedColumns.map(c => c.key),
+    displayedColumns: [...displayedColumns.map(c => c.key), ...customColumns],
     filters: [],
     interval: 20,
     options: options
@@ -67,7 +71,7 @@ describe('TasksLineComponent', () => {
     name: 'NewNameLine'
   };
   const mockMatDialog = {
-    open: jest.fn(() => {
+    open: jest.fn((): unknown => {
       return {
         afterClosed() {
           return of(nameLine);
@@ -76,11 +80,27 @@ describe('TasksLineComponent', () => {
     }),
   };
 
+  const viewInLogs = {
+    serviceIcon: 'icon',
+    serviceName: 'name',
+    urlTemplate: 'url',
+  };
+
   const mockTasksIndexService = {
     availableTableColumns: displayedColumns,
     defaultColumns: defaultColumns,
     resetColumns: jest.fn(() => new DefaultConfigService().defaultTasks.columns),
     restoreColumns: jest.fn(() => ['name', 'count']),
+    restoreViewInLogs: jest.fn(() => viewInLogs)
+  };
+
+  const mockNotificationService = {
+    success: jest.fn(),
+    error: jest.fn(),
+  };
+
+  const mockTasksGrpcService = {
+    cancel$: jest.fn((): Observable<unknown> => of({})),
   };
 
   beforeEach(() => {
@@ -91,10 +111,13 @@ describe('TasksLineComponent', () => {
         AutoRefreshService,
         IconsService,
         { provide: TasksIndexService, useValue: mockTasksIndexService },
-        DefaultConfigService
+        DefaultConfigService,
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
       ]
     }).inject(TasksLineComponent);
     component.line = line;
+    component.selection = [];
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -307,6 +330,89 @@ describe('TasksLineComponent', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
       component.onLockColumnsChange();
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  it('should update selection', () => {
+    const selection = ['1', '2'];
+    component.onSelectionChange(selection);
+    expect(component.selection).toEqual(selection);
+  });
+
+  describe('cancelTasks', () => {
+    it('should cancel task', () => {
+      const tasksIds = ['1', '2'];
+      component.cancelTasks(tasksIds);
+      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(tasksIds);
+    });
+
+    it('should notify on success', () => {
+      component.cancelTasks(['1', '2']);
+      expect(mockNotificationService.success).toHaveBeenCalled();
+    });
+
+    it('should notify on error', () => {
+      mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error('error')));
+      component.cancelTasks(['1', '2']);
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+  });
+
+  it('should cancel tasks selection', () => {
+    const selection = ['1', '2'];
+    component.selection = selection;
+    component.onCancelTasksSelection();
+    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith(selection);
+  });
+
+  it('should update view in logs', () => {
+    mockMatDialog.open.mockReturnValueOnce({
+      afterClosed() {
+        return of({
+          serviceIcon: 'newIcon',
+          serviceName: 'newName',
+          urlTemplate: 'newUrl',
+        });
+      }
+    });
+    component.manageViewInLogs();
+    expect(component.serviceIcon).toEqual('newIcon');
+    expect(component.serviceName).toEqual('newName');
+    expect(component.urlTemplate).toEqual('newUrl');
+  });
+
+  describe('addCustomColumn', () => {
+    const newCustom: CustomColumn[] = ['options.options.newColumn', 'options.options.FastCompute'];
+
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed() {
+          return of(newCustom);
+        }
+      });
+      component.customColumns = customColumns;
+      component.displayedColumnsKeys.filter(c => c === 'options.options.FastCompute');
+      component.addCustomColumn();
+    });
+
+    it('should update custom columns', () => {
+      expect(component.customColumns).toEqual(newCustom);
+    });
+
+    it('should update available columns', () => {
+      expect(component.availableColumns).toEqual([...defaultColumns, ...newCustom]);
+    });
+
+    it('should update displayed columns', () => {
+      expect(component.displayedColumnsKeys).toEqual([...defaultColumns, 'options.options.newColumn']);
+    });
+
+    it('should update line displayed columns', () => {
+      expect(component.line.displayedColumns).toEqual([...defaultColumns, 'options.options.newColumn']);
+    });
+
+    it('should update line custom columns', () => {
+      expect(component.line.customColumns).toEqual(newCustom);
     });
   });
 });
