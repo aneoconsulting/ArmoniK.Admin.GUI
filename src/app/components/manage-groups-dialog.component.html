@@ -1,17 +1,6 @@
 <h2 mat-dialog-title i18n="Dialog title">Manage Groups</h2>
 
 <mat-dialog-content>
-  <mat-toolbar>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <button mat-stroked-button (click)="openAddStatusGroupModal()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
-          <span i18n="Open a modal on click">Add a group</span>
-        </button>
-      </app-actions-toolbar-group>
-    </app-actions-toolbar>
-  </mat-toolbar>
-
   <ul class="groups" cdkDropListGroup>
     <li *ngFor="let group of groups">
       <div class="group-header">
@@ -39,6 +28,10 @@
         </li>
       </ul>
     </li>
+    <button class="addGroup" mat-stroked-button (click)="openAddStatusGroupModal()">
+      <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
+      <span i18n="Open a modal on click">Add a group</span>
+    </button>
   </ul>
 </mat-dialog-content>
 

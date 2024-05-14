@@ -45,6 +45,10 @@ ul {
   border-radius: 0.5rem;
 }
 
+.addGroup {
+  height: 4rem;
+}
+
 .groups ul li mat-icon {
   cursor: move;
 }
