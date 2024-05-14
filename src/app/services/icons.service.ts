@@ -83,7 +83,9 @@ export class IconsService {
     'submitter': 'api',
     'dashboard': 'dashboard',
     'profile': 'account_circle',
-    'healthcheck': 'monitor_heart'
+    'healthcheck': 'monitor_heart',
+    'menu': 'menu',
+    'menu-open': 'menu_open',
   };
 
   getIcon(name: string): string {

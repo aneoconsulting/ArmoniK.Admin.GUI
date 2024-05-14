@@ -113,4 +113,16 @@ describe('NavigationService', () => {
     service.saveExternalServices(externalServices);
     expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-external-services', externalServices);
   });
+
+  it('should save SideBarOpened', () => {
+    const sideBarOpened = true;
+    service.saveSideBarOpened(sideBarOpened);
+    expect(mockStorageService.setItem).toHaveBeenCalledWith('navigation-sidebar-opened', sideBarOpened);
+  });
+
+  it('should restore SideBarOpened', () => {
+    const sideBarOpened = true;
+    mockStorageService.getItem.mockReturnValueOnce(sideBarOpened);
+    expect(service.restoreSideBarOpened()).toBe(sideBarOpened);
+  });
 });

@@ -53,7 +53,7 @@ export class DefaultConfigService {
   ];
   readonly #defaultDashboardSplitLines: number = 1;
 
-
+  readonly #defaultSidebarOpened: boolean = true;
 
   readonly #defaultSidebar: Sidebar[] = [
     'profile',
@@ -216,6 +216,10 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultDashboardSplitLines);
   }
 
+  get defaultSidebarOpened(): boolean {
+    return structuredClone(this.#defaultSidebarOpened);
+  }
+
   get defaultSidebar(): Sidebar[] {
     return structuredClone(this.#defaultSidebar);
   }
@@ -263,6 +267,7 @@ export class DefaultConfigService {
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
+    'navigation-sidebar-opened': this.#defaultSidebarOpened,
     'navigation-theme': this.#defaultTheme,
     'navigation-external-services': this.#defaultExternalServices,
     'applications-tasks-by-status': this.#defaultTasksByStatus,
