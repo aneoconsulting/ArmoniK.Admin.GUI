@@ -24,11 +24,11 @@
 <ng-container *ngIf="column.type === 'status'">
   {{ statusLabel() }}
 </ng-container>
-<!-- Count Tasks by Status -->
+<!-- Count Tasks by Statuses -->
 <ng-container *ngIf="column.type === 'count'">
     <app-count-tasks-by-status
       [refresh]="refreshStatuses"
-      [statuses]="tasksStatusesColored"
+      [statusesGroups]="statusesGroups"
       [queryParams]="queryTasksParams"
       [filters]="countFilters"
     />

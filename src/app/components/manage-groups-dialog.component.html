@@ -5,7 +5,7 @@
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <button mat-stroked-button (click)="openAddStatusGroupModal()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
           <span i18n="Open a modal on click">Add a group</span>
         </button>
       </app-actions-toolbar-group>
@@ -20,11 +20,11 @@
         </h3>
         <div class="group-header-actions">
           <button mat-icon-button (click)="openEditStatusGroupModal(group)">
-            <mat-icon  [fontIcon]="getIcon('edit')"></mat-icon>
+            <mat-icon [fontIcon]="getIcon('edit')"/>
             <span class="sr-only" i18n="Edit the group">Edit {{ group.name }}</span>
           </button>
           <button mat-icon-button (click)="onDelete(group)">
-            <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
+            <mat-icon [fontIcon]="getIcon('delete')"/>
             <span class="sr-only" i18n="Delete the group">Delete {{ group.name }}</span>
           </button>
         </div>
@@ -34,7 +34,7 @@
           [cdkDropListData]="group.statuses"
         >
         <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"></mat-icon>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
           <span>{{ statusToLabel(status) }}</span>
         </li>
       </ul>

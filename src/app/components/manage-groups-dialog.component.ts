@@ -11,11 +11,8 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { IconsService } from '@services/icons.service';
-import { StorageService } from '@services/storage.service';
-import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
-import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
-import { DashboardIndexService } from '../services/dashboard-index.service';
-import { DashboardStorageService } from '../services/dashboard-storage.service';
+import { AddStatusesGroupDialogComponent } from '../dashboard/components/add-statuses-group-dialog.component';
+import { EditStatusesGroupDialogComponent } from '../dashboard/components/edit-status-group-dialog.component';
 
 @Component({
   templateUrl: './manage-groups-dialog.component.html',
@@ -102,9 +99,6 @@ ul {
   standalone: true,
   providers: [
     TasksStatusesService,
-    StorageService,
-    DashboardStorageService,
-    DashboardIndexService
   ],
   imports: [
     ActionsToolbarComponent,
@@ -122,7 +116,6 @@ export class ManageGroupsDialogComponent implements OnInit {
 
   #dialog = inject(MatDialog);
   #iconsServices = inject(IconsService);
-  #dashboardIndexService = inject(DashboardIndexService);
   #tasksStatusesService = inject(TasksStatusesService);
 
   constructor(
@@ -158,7 +151,7 @@ export class ManageGroupsDialogComponent implements OnInit {
   openAddStatusGroupModal(): void {
     const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup> = this.#dialog.open(AddStatusesGroupDialogComponent, {
       data: {
-        statuses: this.#dashboardIndexService.statuses(),
+        statuses: this.#tasksStatusesService.statusesRecord(),
       }
     });
 
@@ -173,7 +166,7 @@ export class ManageGroupsDialogComponent implements OnInit {
     const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup> = this.#dialog.open(EditStatusesGroupDialogComponent, {
       data: {
         group,
-        statuses: this.#dashboardIndexService.statuses(),
+        statuses: this.#tasksStatusesService.statusesRecord(),
       }
     });
 

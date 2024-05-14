@@ -20,6 +20,24 @@ export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
     [TaskStatus.TASK_STATUS_RETRIED]: $localize`Retried`,
   };
 
+  statusesRecord(): { value: string, name: string }[] {
+    const values = Object.values(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
+    const keys = Object.keys(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
+    const sortedKeys = values.map((value) => {
+      return keys.find((key) => {
+        return this.statuses[Number(key) as TaskStatus] === value;
+      });
+    });
+
+    return (sortedKeys.filter(Boolean) as string[]).map((key) => {
+      const status = Number(key) as TaskStatus;
+      return {
+        value: key,
+        name: this.statusToLabel(status)
+      };
+    });
+  }
+
   /**
    * @param status Number standing for a task status
    * @returns a string standing for the corresponding task status

@@ -13,7 +13,15 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
+import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
+import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
+import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
+import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
+import { PageSectionHeaderComponent } from '@components/page-section-header.component';
+import { PageSectionComponent } from '@components/page-section.component';
+import { RefreshButtonComponent } from '@components/refresh-button.component';
+import { SpinnerComponent } from '@components/spinner.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
@@ -21,16 +29,8 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { ActionsToolbarGroupComponent } from '../../../components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '../../../components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '../../../components/auto-refresh-button.component';
-import { PageSectionHeaderComponent } from '../../../components/page-section-header.component';
-import { PageSectionComponent } from '../../../components/page-section.component';
-import { RefreshButtonComponent } from '../../../components/refresh-button.component';
-import { SpinnerComponent } from '../../../components/spinner.component';
 import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
 import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
-import { ManageGroupsDialogComponent } from '../manage-groups-dialog.component';
 import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
 @Component({
@@ -201,7 +201,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     this.refresh.next();
   }
 
-  taskByStatusFilters() {
+  get taskByStatusFilters() {
     return this.line.filters as TaskSummaryFilters;
   }
 }
