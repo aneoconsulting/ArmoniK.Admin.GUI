@@ -107,7 +107,7 @@ describe('Sessions Index Component', () => {
     saveViewInLogs: jest.fn(),
     restoreIntervalValue: jest.fn(() => defaultIntervalValue),
     saveIntervalValue: jest.fn(),
-    restoreColumns: jest.fn(() => defaultColumns),
+    restoreColumns: jest.fn(() => [...defaultColumns, ...defaultCustomColumns]),
     saveColumns: jest.fn(),
     availableTableColumns,
     restoreLockColumns: jest.fn(() => false),
