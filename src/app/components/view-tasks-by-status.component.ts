@@ -80,7 +80,7 @@ export class ViewTasksByStatusComponent {
         group.statuses.forEach(status => {
           taskStatusQueryParams[this.#createQueryParamKeyOr(orGroups)] = status.toString();
           queryParamsKeys.forEach((key, index) => {
-            if (key[0] === or) {
+            if (key.startsWith(or)) {
               taskStatusQueryParams[`${orGroups}${key.slice(1)}`] = queryParamsValues[index];
             }
           });
