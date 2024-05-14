@@ -13,6 +13,7 @@ export type Element = 'columns' | 'options' | 'filters' | 'interval' | 'lock-col
 export type Key =
   'language' |
   'navigation-sidebar' |
+  'navigation-sidebar-opened' |
   'navigation-theme' |
   'navigation-external-services' |
   'dashboard-lines'|

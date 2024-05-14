@@ -107,6 +107,8 @@ export class NavigationComponent implements OnInit{
   apiVersion = this.#versionsService.api;
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
+
+  sideBarOpened = true;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -116,6 +118,7 @@ export class NavigationComponent implements OnInit{
 
   ngOnInit(): void {
     this.externalServices = this.#navigationService.restoreExternalServices();
+    this.sideBarOpened = this.#navigationService.restoreSideBarOpened();
   }
 
   manageExternalServices() {
@@ -160,5 +163,10 @@ export class NavigationComponent implements OnInit{
 
   trackByService(_: number, service: ExternalService) {
     return service.name + service.url;
+  }
+
+  toggleSideBar() {
+    this.sideBarOpened = !this.sideBarOpened;
+    this.#navigationService.saveSideBarOpened(this.sideBarOpened);
   }
 }

@@ -92,6 +92,10 @@ describe('DefaultConfigService', () => {
   it('should have a defined healthcheck configuration', () => {
     expect(service.healthCheck).toBeDefined();
   });
+  
+  it('should have a defined defaultSideBarOpened', () => {
+    expect(service.defaultSidebarOpened).toBeDefined();
+  });
 
   describe(' default dashboard configuration', () => {
     it('the dashboard lines configuration should display at least 1 line', () => {

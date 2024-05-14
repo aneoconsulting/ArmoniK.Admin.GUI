@@ -96,6 +96,15 @@ export class NavigationService {
     this.currentSidebar = this.#formatSidebar(sidebar);
   }
 
+
+  saveSideBarOpened(sideBarOpened: boolean) {
+    this.#storageService.setItem('navigation-sidebar-opened', sideBarOpened);
+  }
+
+  restoreSideBarOpened(): boolean {
+    return this.#storageService.getItem('navigation-sidebar-opened') !== 'false';
+  }
+
   /**
    * Change the format of a simple sidebar to a [SidebarItem](../types/navigation.ts)
    */

@@ -8,6 +8,12 @@
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
     <!-- TODO: Add the logo -->
+    <button mat-icon-button *ngIf="!sideBarOpened" (click)="toggleSideBar()">
+      <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
+    </button>
+    <button mat-icon-button *ngIf="sideBarOpened" (click)="toggleSideBar()">
+      <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
+    </button>
     <div class="title">
       <span>ArmoniK</span>
       <span> - </span>
@@ -74,7 +80,7 @@
     <mat-sidenav #drawer class="sidenav"
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="(isHandset$ | async) === false">
+    [opened]="(isHandset$ | async) === false && sideBarOpened">
       <mat-nav-list>
         <ng-container *ngFor="let item of getSidebar()">
           <ng-container *ngIf="item.type === 'divider'">
