@@ -9,7 +9,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { TaskByStatusLineComponent } from './task-by-status-line.component';
 import { TasksStatusesGroup } from '../../types';
-import { ManageGroupsDialogComponent } from '../manage-groups-dialog.component';
+import { ManageGroupsDialogComponent } from '../../../components/manage-groups-dialog.component';
 
 describe('TaskByStatusLineComponent', () => {
   let component: TaskByStatusLineComponent;

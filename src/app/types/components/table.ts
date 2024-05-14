@@ -3,7 +3,7 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
 import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { ManageGroupsDialogComponent } from '@app/dashboard/components/manage-groups-dialog.component';
+import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';

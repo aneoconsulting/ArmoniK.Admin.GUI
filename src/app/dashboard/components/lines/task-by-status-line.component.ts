@@ -30,7 +30,7 @@ import { RefreshButtonComponent } from '../../../components/refresh-button.compo
 import { SpinnerComponent } from '../../../components/spinner.component';
 import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
 import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
-import { ManageGroupsDialogComponent } from '../manage-groups-dialog.component';
+import { ManageGroupsDialogComponent } from '../../../components/manage-groups-dialog.component';
 import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
 @Component({
