@@ -201,7 +201,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     this.refresh.next();
   }
 
-  taskByStatusFilters() {
+  get taskByStatusFilters() {
     return this.line.filters as TaskSummaryFilters;
   }
 }

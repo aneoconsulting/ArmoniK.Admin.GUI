@@ -30,6 +30,8 @@ export type TasksStatusesGroup = {
   name: string;
   color?: string;
   statuses: TaskStatus[];
+  statusCount?: number;
+  queryParams?: Record<string, string>;
 };
 
 export type ManageGroupsDialogData = {

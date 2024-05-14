@@ -47,7 +47,7 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
         } as SessionField;
       }
     );
-    console.log(requestFilters);
+
     const listSessionsRequest = new ListSessionsRequest({
       page: options.pageIndex,
       pageSize: options.pageSize,
