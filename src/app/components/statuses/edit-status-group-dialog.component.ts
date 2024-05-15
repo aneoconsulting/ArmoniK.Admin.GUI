@@ -13,7 +13,7 @@ import { EditStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '..
   [statuses]="statuses"
   (cancelChange)="onNoClick()"
   (submitChange)="onSubmit($event)"
-></app-form-statuses-group>
+/>
   `,
   styles: [`
   `],
@@ -35,7 +35,7 @@ export class EditStatusesGroupDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.group = Object.assign({}, this.data.group);
+    this.group = {...this.data.group};
     this.statuses = this.data.statuses;
   }
 

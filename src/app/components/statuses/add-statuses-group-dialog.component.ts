@@ -13,7 +13,7 @@ import { AddStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../
   [statuses]="statuses"
   (cancelChange)="onNoClick()"
   (submitChange)="onSubmit($event)"
-></app-form-statuses-group>
+/>
   `,
   styles: [`
   `],
