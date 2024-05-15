@@ -88,6 +88,7 @@ export class DefaultConfigService {
       },
     },
     filters: [],
+    showFilters: true,
   };
 
   readonly #defaultTasksByStatus: TasksStatusesGroup[] = [
@@ -129,6 +130,7 @@ export class DefaultConfigService {
       },
     },
     filters: [],
+    showFilters: true,
   };
 
   readonly #defaultSessions: ScopeConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> = {
@@ -148,6 +150,7 @@ export class DefaultConfigService {
       },
     },
     filters: [],
+    showFilters: true,
   };
 
   readonly #defaultResults: ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> = {
@@ -166,6 +169,7 @@ export class DefaultConfigService {
       },
     },
     filters: [],
+    showFilters: true,
   };
 
   readonly #defaultTasks: ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> = {
@@ -186,6 +190,7 @@ export class DefaultConfigService {
       },
     },
     filters: [],
+    showFilters: true,
   };
 
   readonly #defaultHealthCheck = {
@@ -283,27 +288,32 @@ export class DefaultConfigService {
     'applications-filters': this.#defaultApplications.filters,
     'applications-interval': this.#defaultApplications.interval,
     'applications-lock-columns': this.#defaultApplications.lockColumns,
+    'applications-show-filters': this.#defaultApplications.showFilters,
     'partitions-columns': this.#defaultPartitions.columns,
     'partitions-options': this.#defaultPartitions.options,
     'partitions-filters': this.#defaultPartitions.filters,
     'partitions-interval': this.#defaultPartitions.interval,
     'partitions-lock-columns': this.#defaultPartitions.lockColumns,
+    'partitions-show-filters': this.#defaultPartitions.showFilters,
     'sessions-columns': this.#defaultSessions.columns,
     'sessions-options': this.#defaultSessions.options,
     'sessions-filters': this.#defaultSessions.filters,
     'sessions-interval': this.#defaultSessions.interval,
     'sessions-lock-columns': this.#defaultSessions.lockColumns,
+    'sessions-show-filters': this.#defaultSessions.showFilters,
     'results-columns': this.#defaultResults.columns,
     'results-options': this.#defaultResults.options,
     'results-filters': this.#defaultResults.filters,
     'results-interval': this.#defaultResults.interval,
     'results-lock-columns': this.#defaultResults.lockColumns,
+    'results-show-filters': this.#defaultResults.showFilters,
     'tasks-columns': this.#defaultTasks.columns,
     'tasks-options': this.#defaultTasks.options,
     'tasks-filters': this.#defaultTasks.filters,
     'tasks-interval': this.#defaultTasks.interval,
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
     'tasks-lock-columns': this.#defaultTasks.lockColumns,
+    'tasks-show-filters': this.#defaultTasks.showFilters,
     'healthcheck-interval': this.#defaultHealthCheck.interval,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],

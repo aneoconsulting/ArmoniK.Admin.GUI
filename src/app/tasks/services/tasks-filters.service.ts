@@ -192,6 +192,14 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     return this.defaultFilters;
   }
 
+  saveShowFilters(showFilters: boolean): void {
+    this.tableService.saveShowFilters('tasks-show-filters', showFilters);
+  }
+
+  restoreShowFilters(): boolean {
+    return this.tableService.restoreShowFilters('tasks-show-filters') ?? true;
+  }
+
   retrieveLabel(filterFor: TaskFilterFor, filterField: TaskFilterField): string {
     switch (filterFor) {
     case 'root':

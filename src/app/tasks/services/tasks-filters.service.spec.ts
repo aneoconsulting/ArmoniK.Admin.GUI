@@ -13,7 +13,11 @@ describe('TasksFilterService', () => {
     saveFilters: jest.fn(),
     resetFilters: jest.fn(),
     restoreFilters: jest.fn(),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn((): boolean | null => showFilters),
   };
+
+  const showFilters = false;
 
   const filterAnd: FiltersAnd<number, number> = [{
     field: 1,
@@ -53,6 +57,7 @@ describe('TasksFilterService', () => {
     service.restoreFilters();
     expect(spyRestoreFilters).toHaveBeenCalledWith('tasks-filters', service.filtersDefinitions);
   });
+
   test('the service must call resetFilters from Table Service', () => {
     const spyRestoreFilters = jest.spyOn(mockTableService, 'resetFilters');
     const mockDefaultFilters = new DefaultConfigService().defaultTasks.filters;
@@ -60,6 +65,23 @@ describe('TasksFilterService', () => {
     expect(spyRestoreFilters).toHaveBeenCalledWith('tasks-filters');
     expect(service.resetFilters()).toEqual(mockDefaultFilters);
   });
+
+  it('should save showFilters', () => {
+    service.saveShowFilters(true);
+    expect(mockTableService.saveShowFilters).toHaveBeenCalledWith('applications-show-filters', true);
+  });
+
+  describe('restoreShowFilters', () => {
+    it('should restore showFilters', () => {
+      expect(service.restoreShowFilters()).toBe(showFilters);
+    });
+
+    it('should restore default showFilters if it cannot restore', () => {
+      mockTableService.restoreShowFilters.mockReturnValueOnce(null);
+      expect(service.restoreShowFilters()).toBe(true);
+    });
+  });
+
   test('the service must return filtersDefinitions', () =>{
     expect(service.retrieveFiltersDefinitions()).toEqual(service.filtersDefinitions);
   });

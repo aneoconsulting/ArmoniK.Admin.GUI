@@ -44,7 +44,12 @@
     </mat-toolbar-row>
   
     <mat-toolbar-row class="filters">
-      <app-filters-toolbar [filters]="line.filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+      <app-filters-toolbar 
+        [filters]="line.filters"
+        [showFilters]="line.showFilters ?? true"
+        (filtersChange)="onFiltersChange($event)" 
+        (showFiltersChange)="onShowFiltersChange($event)"
+      />
     </mat-toolbar-row>
   </mat-toolbar>
   

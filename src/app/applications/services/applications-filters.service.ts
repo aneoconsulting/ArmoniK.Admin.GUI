@@ -60,6 +60,14 @@ export class ApplicationsFiltersService implements FiltersServiceInterface<Appli
     return this.defaultFilters;
   }
 
+  saveShowFilters(showFilters: boolean): void {
+    this.tableService.saveShowFilters('applications-show-filters', showFilters);
+  }
+
+  restoreShowFilters(): boolean {
+    return this.tableService.restoreShowFilters('applications-show-filters') ?? this.defaultConfigService.defaultApplications.showFilters;
+  }
+
   retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
     switch (filterFor) {
     case 'root':

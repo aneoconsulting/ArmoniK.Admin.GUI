@@ -38,6 +38,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   filters: F;
   filters$: Subject<F>;
+  showFilters: boolean;
 
   options: O;
 
@@ -76,6 +77,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   initFilters() {
     this.filters = this.line.filters as F;
+    this.showFilters = this.line.showFilters ?? this.defaultConfig.showFilters;
     this.filters$ = new BehaviorSubject(this.filters);
   }
 
@@ -160,6 +162,12 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.line.filters = [];
     this.lineChange.emit();
     this.filters$.next([] as unknown as F);
+  }
+
+  onShowFiltersChange(value: boolean) {
+    this.showFilters = value;
+    this.line.showFilters = value;
+    this.lineChange.emit();
   }
 
   onColumnsChange(data: K[]) {
