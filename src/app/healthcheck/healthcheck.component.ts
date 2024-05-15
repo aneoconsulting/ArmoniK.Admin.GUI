@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Observable, Subject, catchError, merge, of, startWith, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, of, startWith, switchMap } from 'rxjs';
 import { HealthCheckGrpcService } from '@app/healthcheck/services/healthcheck-grpc.service';
 import { ServiceHealth } from '@app/healthcheck/types';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -17,7 +17,7 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-healthcheck',
   standalone: true,
   template: `
-  <button mat-button [matMenuTriggerFor]="switchLanguage" i18n-matTooltip matTooltip="Healthchecks" [disabled]="!data">
+  <button mat-button [matMenuTriggerFor]="switchLanguage" i18n-matTooltip [disabled]="!data">
     <mat-icon matListItemIcon [fontIcon]="getIcon('healthcheck')" aria-hidden="true"/>
     <span [style]="{'color':getColor(globalStatus)}" [matTooltip]="getToolTip(globalStatus)">&#10687;</span>
   </button>
@@ -51,9 +51,7 @@ export class HealthCheckComponent implements AfterViewInit {
   readonly iconsService = inject(IconsService);
 
   intervalValue: number = 5;
-  loading: boolean = true;
 
-  refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this.autoRefreshService.createInterval(this.interval, this.stopInterval);
@@ -62,40 +60,38 @@ export class HealthCheckComponent implements AfterViewInit {
   globalStatus: HealthStatusEnum = HealthStatusEnum.HEALTH_STATUS_ENUM_UNSPECIFIED;
 
   ngAfterViewInit(): void {
-    merge(this.interval$, this.refresh).pipe(
+    this.interval$.pipe(
       startWith({}),
       switchMap(() => {
-        this.loading = true;
-        return this.healthcheckGrpcService.list$().pipe(catchError((error) => {
-          console.error(error);
-          this.notificationService.error($localize`Unable to get service health data`);
-          return of(null);
-        }));
+        return this.healthcheckGrpcService.list$();
+      }),
+      catchError((error) => {
+        console.error(error);
+        this.notificationService.error($localize`Unable to get service health data`);
+        this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_UNSPECIFIED;
+        return of(null);
       })
     ).subscribe((data) => {
-      this.loading = false;
       this.data = data?.services ?? undefined;
       this.setGlobalStatus();
     });
     this.handleAutoRefreshStart();
   }
 
-  handleAutoRefreshStart() {
+  private handleAutoRefreshStart() {
     this.interval.next(this.intervalValue);
   }
 
   setGlobalStatus() {
     if (this.data) {
       this.data.forEach((service) => {
-        if (this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY) {
-          if (service.healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY) {
-            this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY;
-          } else if (service.healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED) {
-            this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED;
-            return;
-          } else {
-            this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_HEALTHY;
-          }
+        if (service.healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY) {
+          this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY;
+          return;
+        } else if(service.healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED) {
+          this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED;
+        } else if(this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY && this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED) {
+          this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_HEALTHY;
         }
       });
     }
