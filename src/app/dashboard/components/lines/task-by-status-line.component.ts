@@ -17,7 +17,7 @@ import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
+import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';

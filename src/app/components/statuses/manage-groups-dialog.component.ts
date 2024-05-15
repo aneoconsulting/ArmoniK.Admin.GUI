@@ -12,8 +12,8 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { IconsService } from '@services/icons.service';
-import { AddStatusesGroupDialogComponent } from '../dashboard/components/add-statuses-group-dialog.component';
-import { EditStatusesGroupDialogComponent } from '../dashboard/components/edit-status-group-dialog.component';
+import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
+import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
 
 @Component({
   templateUrl: './manage-groups-dialog.component.html',
@@ -25,8 +25,6 @@ ul {
 }
 
 .groups {
-  margin-top: 1rem;
-
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 2rem;
@@ -50,6 +48,19 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.addGroup button {
+  display: flex;
+  flex-direction: column;
+  min-height: 5rem;
+  width: 80%;
+}
+
+.addGroup button mat-icon {
+  transform: scale(1.5);
+  margin: 0 !important;
+  margin-top: 0.5rem !important;
 }
 
 .groups ul li mat-icon {

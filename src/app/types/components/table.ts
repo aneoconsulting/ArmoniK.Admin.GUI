@@ -8,7 +8,7 @@ import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/ty
 import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';
 import { SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
 import { TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
-import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
+import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
