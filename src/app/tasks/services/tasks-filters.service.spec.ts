@@ -68,7 +68,7 @@ describe('TasksFilterService', () => {
 
   it('should save showFilters', () => {
     service.saveShowFilters(true);
-    expect(mockTableService.saveShowFilters).toHaveBeenCalledWith('applications-show-filters', true);
+    expect(mockTableService.saveShowFilters).toHaveBeenCalledWith('tasks-show-filters', true);
   });
 
   describe('restoreShowFilters', () => {
