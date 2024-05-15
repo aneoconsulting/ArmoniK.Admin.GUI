@@ -16,19 +16,11 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-healthcheck',
   standalone: true,
-  template: `
-  <button mat-button [matMenuTriggerFor]="switchLanguage" i18n-matTooltip [disabled]="!data">
-    <mat-icon matListItemIcon [fontIcon]="getIcon('healthcheck')" aria-hidden="true"/>
-    <span [style]="{'color':getColor(globalStatus)}" [matTooltip]="getToolTip(globalStatus)">&#10687;</span>
-  </button>
-  <mat-menu #switchLanguage="matMenu">
-    <div class="services" *ngFor="let service of data" mat-menu-item [matTooltip]="service.message">
-      {{service.name}}
-      <span class="service-health" [style]="{'color':getColor(service.healthy)}">&#10687;</span>
-    </div>
-  </mat-menu>
-  `,
+  templateUrl: './healthcheck.component.html',
   styles: [`
+  button {
+    font-size: 22px;
+  }
   `],
   imports: [
     MatIconModule,
