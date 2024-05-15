@@ -63,7 +63,8 @@ describe('SessionsLineComponent', () => {
     displayedColumns: displayedColumns.map(c => c.key),
     filters: [],
     interval: 20,
-    options: options
+    options: options,
+    showFilters: false,
   };
 
   const nameLine = {
@@ -132,6 +133,7 @@ describe('SessionsLineComponent', () => {
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
       expect(component.intervalValue).toEqual(10);
       expect(component.options).toEqual(defaultConfigService.defaultSessions.options);
+      expect(component.showFilters).toEqual(line.showFilters);
     });
   });
 
@@ -352,6 +354,20 @@ describe('SessionsLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.line.showFilters).toEqual(newShowFilters);
     });
   });
 });
