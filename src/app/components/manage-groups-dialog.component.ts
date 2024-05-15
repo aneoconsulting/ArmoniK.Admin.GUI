@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
@@ -46,7 +47,9 @@ ul {
 }
 
 .addGroup {
-  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .groups ul li mat-icon {
@@ -112,7 +115,8 @@ ul {
     MatDialogModule,
     MatToolbarModule,
     MatIconModule,
-    DragDropModule
+    DragDropModule,
+    MatTooltipModule,
   ]
 })
 export class ManageGroupsDialogComponent implements OnInit {

@@ -28,10 +28,11 @@
         </li>
       </ul>
     </li>
-    <button class="addGroup" mat-stroked-button (click)="openAddStatusGroupModal()">
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
-      <span i18n="Open a modal on click">Add a group</span>
-    </button>
+    <div class="addGroup">
+      <button mat-fab (click)="openAddStatusGroupModal()" matTooltip="Add a group">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
+      </button>
+    </div>
   </ul>
 </mat-dialog-content>
 
