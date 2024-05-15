@@ -152,6 +152,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   onShowFiltersChange(value: boolean) {
+    this.showFilters = value;
     this.filtersService.saveShowFilters(value);
   }
   
