@@ -54,6 +54,16 @@ article > .mat-mdc-menu-item-text {
   min-width: 20em !important;
 }
 
+.services .mat-mdc-menu-item-text {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.services .mat-mdc-menu-item-text span {
+  margin-left: 0.5rem !important;
+}
+
 app-table-column-header {
   display: flex;
   align-items: center;

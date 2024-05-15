@@ -57,8 +57,6 @@ export class DefaultConfigService {
   readonly #defaultSidebar: Sidebar[] = [
     'profile',
     'divider',
-    'healthcheck',
-    'divider',
     'dashboard',
     'divider',
     'applications',
@@ -188,10 +186,6 @@ export class DefaultConfigService {
     filters: [],
   };
 
-  readonly #defaultHealthCheck = {
-    interval: 10,
-  };
-
   readonly #availableLanguages = ['en', 'fr'];
   readonly #defaultLanguage = window.location.href.includes('fr') ? 'fr' : 'en';
 
@@ -263,10 +257,6 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
-  get healthCheck() {
-    return structuredClone(this.#defaultHealthCheck);
-  }
-
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -304,7 +294,6 @@ export class DefaultConfigService {
     'tasks-interval': this.#defaultTasks.interval,
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
     'tasks-lock-columns': this.#defaultTasks.lockColumns,
-    'healthcheck-interval': this.#defaultHealthCheck.interval,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
   };
