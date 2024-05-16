@@ -40,6 +40,7 @@ describe('HealthCheckComponent', () => {
 
   const mockNotificationService = {
     error: jest.fn(),
+    success: jest.fn(),
   };
 
   const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -162,6 +163,13 @@ describe('HealthCheckComponent', () => {
 
     it('should return unspecified message', () => {
       expect(component.getToolTip(HealthStatusEnum.HEALTH_STATUS_ENUM_UNSPECIFIED)).toEqual('No data available for the services');
+    });
+  });
+
+  describe('onMessageCopy', () => {
+    it('should notify the user', () => {
+      component.onMessageCopy();
+      expect(mockNotificationService.success).toHaveBeenCalled();
     });
   });
 });

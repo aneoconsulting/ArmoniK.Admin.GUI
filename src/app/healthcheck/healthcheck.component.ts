@@ -1,5 +1,6 @@
 import { HealthStatusEnum } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor } from '@angular/common';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,8 +19,13 @@ import { NotificationService } from '@services/notification.service';
   standalone: true,
   templateUrl: './healthcheck.component.html',
   styles: [`
-  button {
+  .health-color {
     font-size: 22px;
+  }
+
+  .health-status {
+    display: flex;
+    align-items: center;
   }
   `],
   imports: [
@@ -27,8 +33,10 @@ import { NotificationService } from '@services/notification.service';
     MatMenuModule,
     MatTooltipModule,
     NgFor,
+    NgIf,
     MatSnackBarModule,
     MatButtonModule,
+    ClipboardModule,
   ],
   providers: [
     HealthCheckGrpcService,
@@ -117,5 +125,9 @@ export class HealthCheckComponent implements AfterViewInit {
     default:
       return $localize`No data available for the services`;
     }
+  }
+
+  onMessageCopy() {
+    this.notificationService.success($localize`Message copied to clipboard`);
   }
 }
