@@ -1,27 +1,21 @@
 {
-  "name": "armonik-docs",
+  "name": "docus-starter",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prepare": "nuxi prepare",
     "dev": "nuxi dev",
     "build": "nuxi build",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
-    "lint": "eslint --cache .",
-    "lint:fix": "eslint --cache --fix .",
-    "lint:md": "markdownlint . && case-police ./**/*.md",
-    "lint:md:fix": "markdownlint . --fix && case-police --fix ./**/*.md"
-  },
-  "dependencies": {
-    "@aneoconsultingfr/armonik-docs-theme": "^0.6.13",
-    "mermaid": "^10.3.1",
-    "nuxt": "^3.6.5"
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "@nuxt/eslint-config": "^0.3.8",
-    "case-police": "^0.6.1",
-    "eslint": "^9.0.0",
-    "markdownlint-cli": "^0.35.0"
+    "@nuxt-themes/docus": "latest",
+    "@nuxt/devtools": "^1.3.1",
+    "@nuxt/eslint-config": "^0.3.13",
+    "@nuxtjs/plausible": "^1.0.0",
+    "@types/node": "^20.12.12",
+    "eslint": "^9.3.0",
+    "nuxt": "^3.11.2"
   }
 }

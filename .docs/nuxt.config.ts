@@ -1,25 +1,11 @@
-const baseURL = process.env.NODE_ENV === 'production' ? '/ArmoniK/' : '/'
-
 export default defineNuxtConfig({
-  app: {
-    baseURL,
-    head: {
-      link: [
-        {
-          rel: 'icon',
-          type: 'image/ico',
-          href: `${baseURL}favicon.ico`
-        }
-      ]
-    }
-  },
+  // https://github.com/nuxt-themes/docus
+  extends: ['@nuxt-themes/docus'],
+  devtools: { enabled: true },
 
-  extends: '@aneoconsultingfr/armonik-docs-theme',
-
-  runtimeConfig: {
-    public: {
-      siteName: 'ArmoniK.Admin.GUI',
-      siteDescription: 'Monitor and manage an ArmoniK cluster'
-    }
-  }
+  modules: [
+    // Remove it if you don't use Plausible analytics
+    // https://github.com/nuxt-modules/plausible
+    '@nuxtjs/plausible'
+  ]
 })

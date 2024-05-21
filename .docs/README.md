@@ -1,29 +1,57 @@
-# ArmoniK Docs
+# Docus Starter
 
-Docs for ArmoniK.Admin.GUI
+Starter template for [Docus](https://docus.dev).
 
-## Installation
+## Clone
 
-> Be aware to be in the .docs folder
-
-```bash
-pnpm install
-```
-
-> If you don't have pnpm installed, you can install it with the following command: `npm install -g pnpm`
-
-## Usage
-
-To run the docs locally, run the following command:
+Clone the repository (using `nuxi`):
 
 ```bash
-pnpm run dev
+npx nuxi init -t themes/docus
 ```
 
-To build the docs, run the following command:
+## Setup
+
+Install dependencies:
 
 ```bash
-pnpm run generate
+yarn install
 ```
 
-For more information, check out the [armonik-docs-theme documentation](https://aneoconsulting.github.io/armonik-docs-theme).
+## Development
+
+```bash
+yarn dev
+```
+
+## Edge Side Rendering
+
+Can be deployed to Vercel Functions, Netlify Functions, AWS, and most Node-compatible environments.
+
+Look at all the available presets [here](https://v3.nuxtjs.org/guide/deploy/presets).
+
+```bash
+yarn build
+```
+
+## Static Generation
+
+Use the `generate` command to build your application.
+
+The HTML files will be generated in the .output/public directory and ready to be deployed to any static compatible hosting.
+
+```bash
+yarn generate
+```
+
+## Preview build
+
+You might want to preview the result of your build locally, to do so, run the following command:
+
+```bash
+yarn preview
+```
+
+---
+
+For a detailed explanation of how things work, check out [Docus](https://docus.dev).
