@@ -9,6 +9,15 @@ export default defineAppConfig({
       dir: '.docs/content',
       repo: 'ArmoniK',
       owner: 'aneoconsulting'
-    }
+    },
+    main: {
+      fluid: true,
+    },
+    header: {
+      logo: false,
+      showLinkIcon: true,
+      exclude: [],
+      fluid: true,
+    },
   }
 })

@@ -21,6 +21,8 @@ section {
 }
 
 .right {
+  display: flex;
+  align-items: center;
   max-width: 33%;
 }
 </style>
