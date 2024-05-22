@@ -1,28 +1,36 @@
 <template>
   <section>
-    <div class="left">
+    <div class="left" :style="`width:${left}%`">
       <slot name="left" />
     </div>
-    <div class="right">
+    <div class="right" :style="`width:${right}%`">
       <slot name="right" />
     </div>
   </section>
 </template>
+
+<script setup>
+const props = defineProps({
+  left: Number,
+  right: Number,
+});
+
+if (!props.left && !props.right) {
+  props.left = 50;
+  props.right = 50;
+} else if (!props.right) {
+  props.right = 100 - props.left;
+} else if (!props.left) {
+  props.left = 100 - props.right;
+}
+
+</script>
 
 <style scoped>
 section {
   display: flex;
   width: 100%;
   justify-content: space-between;
-}
-
-.left {
-  max-width: 66%;
-}
-
-.right {
-  display: flex;
   align-items: center;
-  max-width: 33%;
 }
 </style>
