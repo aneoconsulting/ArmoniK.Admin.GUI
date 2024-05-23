@@ -1,9 +1,9 @@
 <template>
   <section>
-    <div class="left" :style="`width:${left}%`">
+    <div :style="`width:${left}%`">
       <slot name="left" />
     </div>
-    <div class="right" :style="`width:${right}%`">
+    <div :style="`width:${right}%`">
       <slot name="right" />
     </div>
   </section>

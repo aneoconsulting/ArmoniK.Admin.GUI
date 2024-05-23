@@ -1,12 +1,16 @@
-<template class="center">
-  <slot></slot>
+<template>
+  <article>
+    <slot></slot>
+  </article>
 </template>
 
 <style scoped>
-.center {
+article {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  width: 100%;
+  padding: none;
+  margin: none;
 }
 </style>
