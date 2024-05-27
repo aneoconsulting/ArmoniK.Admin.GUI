@@ -1,9 +1,9 @@
 <template>
   <section>
-    <div :style="`width:${left}%`">
+    <div id="left">
       <slot name="left" />
     </div>
-    <div :style="`width:${right}%`">
+    <div id="right">
       <slot name="right" />
     </div>
   </section>
@@ -11,17 +11,24 @@
 
 <script setup>
 const props = defineProps({
-  left: Number,
-  right: Number,
+  left: String,
+  right: String,
+  justifyRight: String,
 });
 
-if (!props.left && !props.right) {
-  props.left = 50;
-  props.right = 50;
+const justifyRight = props.justifyRight || 'center';
+let right = 50;
+let left = 50;
+
+if (props.left && props.right) {
+  left = `${Number(props.left)}%`;
+  right = `${Number(props.right)}%`;
 } else if (!props.right) {
-  props.right = 100 - Number(props.left);
+  left = `${Number(props.left)}%`;
+  right = `${100 - Number(props.left)}%`;
 } else if (!props.left) {
-  props.left = 100 - Number(props.right);
+  right = `${Number(props.right)}%`;
+  left = `${100 - Number(props.right)}%`;
 }
 
 </script>
@@ -32,5 +39,15 @@ section {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+}
+
+#left {
+  width: v-bind('left');
+}
+
+#right {
+  width: v-bind('right');
+  display: flex;
+  justify-content: v-bind('justifyRight');
 }
 </style>

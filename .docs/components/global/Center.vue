@@ -13,4 +13,8 @@ article {
   padding: none;
   margin: none;
 }
+
+article * {
+  margin: auto;
+}
 </style>
