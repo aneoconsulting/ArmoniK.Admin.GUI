@@ -1,17 +1,6 @@
-<h2 mat-dialog-title i18n="Dialog title">Manage Groups</h2>
+<h2 mat-dialog-title i18n="Dialog title">Manage Statuses Groups</h2>
 
 <mat-dialog-content>
-  <mat-toolbar>
-    <app-actions-toolbar>
-      <app-actions-toolbar-group>
-        <button mat-stroked-button (click)="openAddStatusGroupModal()">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
-          <span i18n="Open a modal on click">Add a group</span>
-        </button>
-      </app-actions-toolbar-group>
-    </app-actions-toolbar>
-  </mat-toolbar>
-
   <ul class="groups" cdkDropListGroup>
     <li *ngFor="let group of groups">
       <div class="group-header">
@@ -19,13 +8,11 @@
           {{ group.name }}
         </h3>
         <div class="group-header-actions">
-          <button mat-icon-button (click)="openEditStatusGroupModal(group)">
+          <button mat-icon-button (click)="openEditStatusGroupModal(group)" i18n-matTooltip="Edit the group" matTooltip="Edit">
             <mat-icon [fontIcon]="getIcon('edit')"/>
-            <span class="sr-only" i18n="Edit the group">Edit {{ group.name }}</span>
           </button>
-          <button mat-icon-button (click)="onDelete(group)">
+          <button mat-icon-button (click)="onDelete(group)" i18n-matTooltip="Delete the group" matTooltip="Delete">
             <mat-icon [fontIcon]="getIcon('delete')"/>
-            <span class="sr-only" i18n="Delete the group">Delete {{ group.name }}</span>
           </button>
         </div>
       </div>
@@ -39,6 +26,12 @@
         </li>
       </ul>
     </li>
+    <div class="addGroup">
+      <button mat-stroked-button (click)="openAddStatusGroupModal()">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
+        <span i18n="Open a modal on click">Add a group</span>
+      </button>
+    </div>
   </ul>
 </mat-dialog-content>
 
