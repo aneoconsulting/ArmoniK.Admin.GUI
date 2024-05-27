@@ -1,19 +1,19 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormStatusesGroupComponent } from './form-statuses-group.component';
-import { AddStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../types';
+import { EditStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../../dashboard/types';
 
 @Component({
-  selector: 'app-add-statuses-group-dialog',
+  selector: 'app-edit-statuses-group-dialog',
   template: `
-<h2 mat-dialog-title i18n="Dialog title">Add a group</h2>
+<h2 mat-dialog-title i18n="Dialog title">Edit a Group</h2>
 
 <app-form-statuses-group
-  [group]="null"
+  [group]="group"
   [statuses]="statuses"
   (cancelChange)="onNoClick()"
   (submitChange)="onSubmit($event)"
-></app-form-statuses-group>
+/>
   `,
   styles: [`
   `],
@@ -25,15 +25,17 @@ import { AddStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../
     MatDialogModule,
   ]
 })
-export class AddStatusesGroupDialogComponent implements OnInit {
+export class EditStatusesGroupDialogComponent implements OnInit {
+  group: TasksStatusesGroup;
   statuses: StatusLabeled[] = [];
 
   constructor(
-    public _dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup>,
-    @Inject(MAT_DIALOG_DATA) public data: AddStatusGroupDialogData,
+    public _dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup>,
+    @Inject(MAT_DIALOG_DATA) public data: EditStatusGroupDialogData,
   ) {}
 
   ngOnInit(): void {
+    this.group = {...this.data.group};
     this.statuses = this.data.statuses;
   }
 
