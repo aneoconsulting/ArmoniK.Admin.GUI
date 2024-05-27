@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
-import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
+import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { TaskByStatusLineComponent } from './task-by-status-line.component';

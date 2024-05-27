@@ -7,7 +7,7 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { StatusLabeled, TasksStatusesGroup } from '../../dashboard/types';
+import { StatusLabeled, TasksStatusesGroup } from '../types';
 
 @Component({
   selector: 'app-form-statuses-group',

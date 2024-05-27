@@ -6,8 +6,8 @@ import { Observable, of } from 'rxjs';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { IconsService } from '@services/icons.service';
 import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
-import { DashboardIndexService } from '../../dashboard/services/dashboard-index.service';
-import { TasksStatusesGroup } from '../../dashboard/types';
+import { DashboardIndexService } from '../dashboard/services/dashboard-index.service';
+import { TasksStatusesGroup } from '../dashboard/types';
 
 describe('ManageGroupsDialogComponent', () => {
   let component: ManageGroupsDialogComponent;
