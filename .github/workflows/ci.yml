@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
-      - run: npm i -g @antfu/ni
+      - run: npm i -g pnpm
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
@@ -28,10 +28,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: nci
+        run: pnpm i
 
       - name: Lint
-        run: nr lint
+        run: pnpm lint
 
   test:
     name: Test
@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       
-      - run: npm i -g @antfu/ni
+      - run: npm i -g pnpm
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
@@ -48,10 +48,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: nci
+        run: pnpm i
 
       - name: Test
-        run: nr test
+        run: pnpm test
 
   coverage:
     name: Coverage
@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       
-      - run: npm i -g @antfu/ni
+      - run: npm i -g pnpm
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
@@ -68,10 +68,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: nci
+        run: pnpm i
 
       - name: Test
-        run: nr test-coverage-ci
+        run: pnpm test-coverage-ci
 
       - name: Coverage
         if: always()
@@ -90,7 +90,7 @@ jobs:
       
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
-      - run: npm i -g @antfu/ni
+      - run: npm i -g pnpm
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
@@ -99,9 +99,9 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: nci
+        run: pnpm i
 
       - name: Build
-        run: nr build
+        run: pnpm build
 
  
