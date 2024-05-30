@@ -1,23 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Page } from '@app/types/pages';
 
 @Injectable()
 export class IconsService {
-  readonly pageIcons: Record<Page, string> = {
-    'applications': 'apps',
-    'partitions': 'donut_small',
-    'sessions': 'workspaces',
-    'tasks': 'adjust',
-    'results': 'workspace_premium',
-    'submitter': 'api',
-    'dashboard': 'dashboard',
-    'profile': 'account_circle',
-    'healthcheck': 'monitor_heart'
-    // TODO: rename page to 'permissions' (or endpoint)
-    // 'general': 'public',
-    // 'events': 'send',
-  };
-
   readonly icons: Record<string, string> = {
     'refresh': 'refresh',
     'auto-refresh': 'autorenew',
@@ -92,14 +76,10 @@ export class IconsService {
     const icon = this.icons[name];
 
     if (!icon) {
-      throw new Error(`Icon '${name}' not found`);
+      return this.icons['default'];
     }
 
     return this.icons[name];
-  }
-
-  getPageIcon(name: Page) {
-    return this.pageIcons[name];
   }
 
   getAllIcons() {

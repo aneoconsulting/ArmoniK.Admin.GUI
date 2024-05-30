@@ -188,7 +188,7 @@ describe('SessionsTableComponent', () => {
   });
 
   it('should get page icon', () => {
-    expect(component.getPageIcon('sessions')).toEqual('workspaces');
+    expect(component.getIcon('sessions')).toEqual('workspaces');
   });
 
   it('should create session id query params', () => {

@@ -4,7 +4,6 @@ import { Subject, map, of } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { Page } from '../pages';
 import { GrpcService } from '../services';
 
 export type ShowActionButton = {
@@ -47,10 +46,6 @@ export abstract class AppShowComponent<T extends object, E extends GrpcService> 
   private _shareURLService = inject(ShareUrlService);
   private _notificationService = inject(NotificationService);
   private _route = inject(ActivatedRoute);
-
-  getPageIcon(page: Page): string {
-    return this._iconsService.getPageIcon(page);
-  }
 
   getIcon(name: string): string {
     return this._iconsService.getIcon(name);

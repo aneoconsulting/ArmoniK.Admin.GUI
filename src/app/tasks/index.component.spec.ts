@@ -243,10 +243,6 @@ describe('Tasks Index Component', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('tasks')).toEqual('adjust');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });

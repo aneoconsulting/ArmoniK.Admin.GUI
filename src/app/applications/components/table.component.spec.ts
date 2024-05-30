@@ -367,7 +367,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get page icon', () => {
-    expect(component.getPageIcon('applications')).toEqual('apps');
+    expect(component.getIcon('applications')).toEqual('apps');
   });
 
   describe('actions', () => {
