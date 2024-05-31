@@ -1,3 +1,4 @@
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Line, LineType } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, CustomColumn, RawColumnKey } from './data';
@@ -21,6 +22,20 @@ export type FiltersDialogResult<T extends number, U extends number | null = null
 export interface AutoRefreshDialogData {
   value: number
 }
+
+export type TaskStatusColored = {
+  status: TaskStatus;
+  color: string;
+  tooltip?: string;
+  queryParams?: Record<string, string>;
+  statusCount?: number;
+};
+
+export interface ViewTasksByStatusDialogData {
+  statusesCounts: TaskStatusColored[]
+}
+
+export type ViewTasksByStatusDialogResult = Record<string, never>;
 
 export interface ViewObjectDialogData {
   title: string;

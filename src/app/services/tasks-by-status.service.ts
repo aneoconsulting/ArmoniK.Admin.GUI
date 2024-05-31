@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { TasksStatusesGroup } from '@app/dashboard/types';
+import { TaskStatusColored } from '@app/types/dialog';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
@@ -12,16 +12,16 @@ export class TasksByStatusService {
   #defaultConfigService = inject(DefaultConfigService);
   #storageService = inject(StorageService);
 
-  readonly defaultStatuses: TasksStatusesGroup[] = this.#defaultConfigService.defaultTasksByStatus;
-  restoreStatuses(table: TableTasksByStatus): TasksStatusesGroup[] {
-    return this.#storageService.getItem<TasksStatusesGroup[]>(`${table}-${this.#key}`, true) as TasksStatusesGroup[] | null ?? this.defaultStatuses;
+  readonly defaultStatuses: TaskStatusColored[] = this.#defaultConfigService.defaultTasksByStatus;
+  restoreStatuses(table: TableTasksByStatus): TaskStatusColored[] {
+    return this.#storageService.getItem<TaskStatusColored[]>(`${table}-${this.#key}`, true) as TaskStatusColored[] | null ?? this.defaultStatuses;
   }
   /**
    * Save colors corresponding to tasks statuses for applications, sessions or partitions
    * @param table a type TableTasksByStatus object 
    * @param statuses array of TaskStatusColored objects
    */
-  saveStatuses(table: TableTasksByStatus, statuses: TasksStatusesGroup[]): void {
+  saveStatuses(table: TableTasksByStatus, statuses: TaskStatusColored[]): void {
     this.#storageService.setItem(`${table}-${this.#key}`, statuses);
   }
 }
