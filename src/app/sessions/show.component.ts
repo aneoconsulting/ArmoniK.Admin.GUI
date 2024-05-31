@@ -29,7 +29,7 @@ import { SessionRaw } from './types';
   selector: 'app-sessions-show',
   template: `
 <app-show-page [id]="data?.sessionId ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('sessions')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
   `,
@@ -88,21 +88,21 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcServ
     {
       id: 'tasks',
       name: $localize`See tasks`,
-      icon: this.getPageIcon('tasks'),
+      icon: this.getIcon('tasks'),
       link: '/tasks',
       queryParams: {},
     },
     {
       id: 'results',
       name: $localize`See results`,
-      icon: this.getPageIcon('results'),
+      icon: this.getIcon('results'),
       link: '/results',
       queryParams: {},
     },
     {
       id: 'partitions',
       name: $localize`See partitions`,
-      icon: this.getPageIcon('partitions'),
+      icon: this.getIcon('partitions'),
       link: '/partitions',
       queryParams: {},
     },

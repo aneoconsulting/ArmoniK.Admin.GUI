@@ -3,12 +3,13 @@
  *
  * A sidebar is build using a list of SidebarItems.
  */
+const ALL_SIDEBAR_LINKS = ['profile', 'dashboard', 'applications', 'sessions', 'partitions', 'results', 'tasks', 'healthcheck', 'divider'] as const;
 
+export type Sidebar = typeof ALL_SIDEBAR_LINKS[number];
 
-export type SidebarLinkName = 'profile' | 'dashboard' | 'applications' | 'sessions' | 'partitions' | 'results'  | 'tasks' | 'healthcheck' ;
-export type SidebarDivider = 'divider';
-
-export type Sidebar = SidebarLinkName | SidebarDivider;
+export function isSideBar(value: string): value is Sidebar {
+  return ALL_SIDEBAR_LINKS.includes(value as Sidebar);
+}
 
 export type SidebarLinkItem = {
   type: 'link';

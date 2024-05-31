@@ -10,7 +10,6 @@ import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTableComponent, AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -237,10 +236,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
-  }
-
-  getPageIcon(page: Page): string {
-    return this.iconsService.getPageIcon(page);
   }
 
   onCopiedSessionId(data: SessionData) {
