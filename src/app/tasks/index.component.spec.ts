@@ -112,6 +112,8 @@ describe('Tasks Index Component', () => {
     urlTemplate: 'https://localhost:4200/taskId=%taskId',
   };
 
+  const defaultShowFilters = false;
+
   const mockTasksIndexService = {
     restoreViewInLogs: jest.fn(() => defaultViewInLogs),
     saveViewInLogs: jest.fn(),
@@ -133,6 +135,8 @@ describe('Tasks Index Component', () => {
     restoreFilters: jest.fn(() => []),
     saveFilters: jest.fn(),
     resetFilters: jest.fn(() => []),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn(() => defaultShowFilters),
   };
   
   const mockShareUrlService = {
@@ -580,6 +584,20 @@ describe('Tasks Index Component', () => {
 
     it('should save view in logs', () => {
       expect(mockTasksIndexService.saveViewInLogs).toHaveBeenCalledWith(newViewInLogs.serviceIcon, newViewInLogs.serviceName, newViewInLogs.urlTemplate);
+    });
+  });
+
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(mockTaskFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
 });

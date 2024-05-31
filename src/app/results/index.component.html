@@ -1,5 +1,5 @@
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"/>
   <span i18n="Page title"> Results </span>
 </app-page-header>
 
@@ -25,7 +25,12 @@
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+    <app-filters-toolbar 
+      [filters]="filters"
+      [showFilters]="showFilters"
+      (filtersChange)="onFiltersChange($event)" 
+      (showFiltersChange)="onShowFiltersChange($event)"
+    />
   </mat-toolbar-row>
 </mat-toolbar>
 

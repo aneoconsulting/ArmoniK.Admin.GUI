@@ -41,6 +41,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
 
   filters: F;
   filters$: Subject<F>;
+  showFilters: boolean;
 
   intervalValue = 0;
   sharableURL = '';
@@ -73,6 +74,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
 
   private initFilters() {
     this.filters = this.filtersService.restoreFilters();
+    this.showFilters = this.filtersService.restoreShowFilters();
     this.filters$ = new BehaviorSubject(this.filters);
   }
 
@@ -142,6 +144,11 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.filters = this.filtersService.resetFilters();
     this.options.pageIndex = 0;
     this.filters$.next([] as unknown as F);
+  }
+
+  onShowFiltersChange(value: boolean) {
+    this.showFilters = value;
+    this.filtersService.saveShowFilters(value);
   }
   
   onLockColumnsChange() {

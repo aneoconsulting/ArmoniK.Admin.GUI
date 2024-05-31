@@ -1,65 +1,70 @@
 <app-page-header [sharableURL]="sharableURL">
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
-    <span i18n="Page title"> Tasks </span>
-  </app-page-header>
-  
-  <mat-toolbar>
-    <mat-toolbar-row>
-      <app-table-index-actions-toolbar
-        [loading]="isLoading"
-        [refreshTooltip]="autoRefreshTooltip()"
-        [intervalValue]="intervalValue"
-        [columnsLabels]="columnsLabels"
-        [displayedColumns]="displayedColumnsKeys"
-        [availableColumns]="availableColumns"
-        [lockColumns]="lockColumns"
-        (refresh)="onRefresh()"
-        (intervalValueChange)="onIntervalValueChange($event)"
-        (displayedColumnsChange)="onColumnsChange($event)"
-        (resetColumns)="onColumnsReset()"
-        (resetFilters)="onFiltersReset()"
-        (lockColumnsChange)="onLockColumnsChange()"
-        (addToDashboard)="onAddToDashboard()"
-        >
-          <ng-container extra-buttons-right>
-            <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
-              <mat-icon matListIcon aria-hidden="true" fontIcon="stop"></mat-icon>
-              <span i18n> Cancel Tasks </span>
-            </button>
-          </ng-container>
-          <ng-container extra-menu-items>
-          <button mat-menu-item (click)="manageViewInLogs()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"></mat-icon>
-            <span i18n appNoWrap>
-              Manage View in Logs
-            </span>
-          </button>
-          <button mat-menu-item (click)="addCustomColumn()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>
-            <span i18n appNoWrap>
-              Manage Custom Columns
-            </span>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"/>
+  <span i18n="Page title"> Tasks </span>
+</app-page-header>
+
+<mat-toolbar>
+  <mat-toolbar-row>
+    <app-table-index-actions-toolbar
+      [loading]="isLoading"
+      [refreshTooltip]="autoRefreshTooltip()"
+      [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels"
+      [displayedColumns]="displayedColumnsKeys"
+      [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
+      (refresh)="onRefresh()"
+      (intervalValueChange)="onIntervalValueChange($event)"
+      (displayedColumnsChange)="onColumnsChange($event)"
+      (resetColumns)="onColumnsReset()"
+      (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
+      (addToDashboard)="onAddToDashboard()"
+      >
+        <ng-container extra-buttons-right>
+          <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">
+            <mat-icon matListIcon aria-hidden="true" fontIcon="stop"/>
+            <span i18n> Cancel Tasks </span>
           </button>
         </ng-container>
-      </app-table-index-actions-toolbar>
-    </mat-toolbar-row>
-  
-    <mat-toolbar-row class="filters">
-      <app-filters-toolbar [filters]="filters" [customColumns]="customColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  
-  <app-tasks-table
-    [filters$]="filters$"
-    [displayedColumns]="displayedColumns"
-    [lockColumns]="lockColumns"
-    [options]="options"
-    [serviceName]="serviceName"
-    [serviceIcon]="serviceIcon"
-    [urlTemplate]="urlTemplate"
-    [refresh$]="refresh$"
-    [loading$]="isLoading$"
-    (selectionChange)="onSelectionChange($event)"
-    (retries)="onRetries($event)"
-  ></app-tasks-table>
+        <ng-container extra-menu-items>
+        <button mat-menu-item (click)="manageViewInLogs()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('find-logs')"/>
+          <span i18n appNoWrap>
+            Manage View in Logs
+          </span>
+        </button>
+        <button mat-menu-item (click)="addCustomColumn()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"/>
+          <span i18n appNoWrap>
+            Manage Custom Columns
+          </span>
+        </button>
+      </ng-container>
+    </app-table-index-actions-toolbar>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar 
+      [filters]="filters"
+      [showFilters]="showFilters"
+      (filtersChange)="onFiltersChange($event)" 
+      (showFiltersChange)="onShowFiltersChange($event)"
+    />
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<app-tasks-table
+  [filters$]="filters$"
+  [displayedColumns]="displayedColumns"
+  [lockColumns]="lockColumns"
+  [options]="options"
+  [serviceName]="serviceName"
+  [serviceIcon]="serviceIcon"
+  [urlTemplate]="urlTemplate"
+  [refresh$]="refresh$"
+  [loading$]="isLoading$"
+  (selectionChange)="onSelectionChange($event)"
+  (retries)="onRetries($event)"
+/>
   

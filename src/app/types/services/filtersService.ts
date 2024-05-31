@@ -29,6 +29,9 @@ export interface FiltersServiceInterface<F extends RawFilters, E extends Filters
   restoreFilters(): F;
 
   resetFilters(): F;
+  
+  saveShowFilters(showFilters: boolean): void;
+  restoreShowFilters(): boolean;
 
   retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
 }

@@ -25,6 +25,7 @@ export type Line = {
   displayedColumns?: RawColumnKey[],
   customColumns?: CustomColumn[],
   lockColumns?: boolean;
+  showFilters?: boolean;
 };
 
 export type TasksStatusesGroup = {

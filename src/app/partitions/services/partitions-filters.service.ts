@@ -73,6 +73,14 @@ export class PartitionsFiltersService implements FiltersServiceInterface<Partiti
     return this.defaultFilters;
   }
 
+  saveShowFilters(showFilters: boolean): void {
+    this.tableService.saveShowFilters('partitions-show-filters', showFilters);
+  }
+
+  restoreShowFilters(): boolean {
+    return this.tableService.restoreShowFilters('partitions-show-filters') ?? true;
+  }
+
   retrieveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
     switch (filterFor) {
     case 'root':

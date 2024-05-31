@@ -1,47 +1,52 @@
 <app-page-header [sharableURL]="sharableURL">
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
-    <span i18n="Page title"> Sessions </span>
-  </app-page-header>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"/>
+  <span i18n="Page title"> Sessions </span>
+</app-page-header>
 
-  <mat-toolbar>
-    <mat-toolbar-row>
-      <app-table-index-actions-toolbar
-        [loading]="isLoading"
-        [refreshTooltip]="autoRefreshTooltip()"
-        [intervalValue]="intervalValue"
-        [columnsLabels]="columnsLabels"
-        [displayedColumns]="displayedColumnsKeys"
-        [availableColumns]="availableColumns"
-        [lockColumns]="lockColumns"
-        (refresh)="onRefresh()"
-        (intervalValueChange)="onIntervalValueChange($event)"
-        (displayedColumnsChange)="onColumnsChange($event)"
-        (resetColumns)="onColumnsReset()"
-        (resetFilters)="onFiltersReset()"
-        (lockColumnsChange)="onLockColumnsChange()"
-        (addToDashboard)="onAddToDashboard()"
-      >
-        <ng-container extra-menu-items>
-          <button mat-menu-item (click)="addCustomColumn()">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>
-            <span i18n appNoWrap>
-              Manage Custom Columns
-            </span>
-          </button>
-        </ng-container>
-      </app-table-index-actions-toolbar>
-    </mat-toolbar-row>
+<mat-toolbar>
+  <mat-toolbar-row>
+    <app-table-index-actions-toolbar
+      [loading]="isLoading"
+      [refreshTooltip]="autoRefreshTooltip()"
+      [intervalValue]="intervalValue"
+      [columnsLabels]="columnsLabels"
+      [displayedColumns]="displayedColumnsKeys"
+      [availableColumns]="availableColumns"
+      [lockColumns]="lockColumns"
+      (refresh)="onRefresh()"
+      (intervalValueChange)="onIntervalValueChange($event)"
+      (displayedColumnsChange)="onColumnsChange($event)"
+      (resetColumns)="onColumnsReset()"
+      (resetFilters)="onFiltersReset()"
+      (lockColumnsChange)="onLockColumnsChange()"
+      (addToDashboard)="onAddToDashboard()"
+    >
+      <ng-container extra-menu-items>
+        <button mat-menu-item (click)="addCustomColumn()">
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>
+          <span i18n appNoWrap>
+            Manage Custom Columns
+          </span>
+        </button>
+      </ng-container>
+    </app-table-index-actions-toolbar>
+  </mat-toolbar-row>
 
-    <mat-toolbar-row class="filters">
-      <app-filters-toolbar [filters]="filters" [customColumns]="customColumns" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-    </mat-toolbar-row>
-  </mat-toolbar>
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar 
+      [filters]="filters"
+      [showFilters]="showFilters"
+      (filtersChange)="onFiltersChange($event)" 
+      (showFiltersChange)="onShowFiltersChange($event)"
+    />
+  </mat-toolbar-row>
+</mat-toolbar>
 
-  <app-sessions-table
-    [filters$]="filters$"
-    [displayedColumns]="displayedColumns"
-    [lockColumns]="lockColumns"
-    [options]="options"
-    [refresh$]="refresh$"
-    [loading$]="isLoading$"
-  />
+<app-sessions-table
+  [filters$]="filters$"
+  [displayedColumns]="displayedColumns"
+  [lockColumns]="lockColumns"
+  [options]="options"
+  [refresh$]="refresh$"
+  [loading$]="isLoading$"
+/>
