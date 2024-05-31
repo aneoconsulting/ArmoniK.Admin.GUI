@@ -17,10 +17,14 @@ describe('PartitionsFilterService', () => {
     }
   ]];
 
+  const showFilters = false;
+
   const mockTableService = {
     saveFilters: jest.fn(),
     restoreFilters: jest.fn((): PartitionRawFilters | undefined => storedFilters),
     resetFilters: jest.fn(),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn((): boolean | null => showFilters),
   };
 
   beforeEach(() => {
@@ -69,6 +73,22 @@ describe('PartitionsFilterService', () => {
 
     it('should return default filters', () => {
       expect(service.resetFilters()).toEqual(service.defaultFilters);
+    });
+  });
+
+  it('should save showFilters', () => {
+    service.saveShowFilters(true);
+    expect(mockTableService.saveShowFilters).toHaveBeenCalledWith('partitions-show-filters', true);
+  });
+
+  describe('restoreShowFilters', () => {
+    it('should restore showFilters', () => {
+      expect(service.restoreShowFilters()).toBe(showFilters);
+    });
+
+    it('should restore default showFilters if it cannot restore', () => {
+      mockTableService.restoreShowFilters.mockReturnValueOnce(null);
+      expect(service.restoreShowFilters()).toBe(true);
     });
   });
 

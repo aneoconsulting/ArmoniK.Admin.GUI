@@ -68,7 +68,8 @@ describe('ApplicationsLineComponent', () => {
     displayedColumns: displayedColumns.map(c => c.key),
     filters: [],
     interval: 20,
-    options: options
+    options: options,
+    showFilters: false
   };
 
   const nameLine = {
@@ -125,6 +126,7 @@ describe('ApplicationsLineComponent', () => {
       expect(component.loading).toBeTruthy();
       expect(component.filters).toBe(line.filters);
       expect(intervalSpy).toHaveBeenCalledWith(line.interval);
+      expect(component.showFilters).toEqual(line.showFilters);
     });
 
     it('should init with default values', () => {
@@ -322,6 +324,20 @@ describe('ApplicationsLineComponent', () => {
       const spy = jest.spyOn(component.lineChange, 'emit');
       component.onLockColumnsChange();
       expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.line.showFilters).toEqual(newShowFilters);
     });
   });
 });

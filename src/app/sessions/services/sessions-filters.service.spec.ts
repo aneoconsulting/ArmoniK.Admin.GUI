@@ -13,6 +13,8 @@ describe('SessionsFilterService', () => {
     saveFilters: jest.fn(),
     resetFilters: jest.fn(),
     restoreFilters: jest.fn(),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn((): boolean | null => showFilters),
   };
 
   const sessionFilter: SessionRawFilters = [[{
@@ -21,6 +23,8 @@ describe('SessionsFilterService', () => {
     operator: 1,
     value: 'Dummy'
   }]];
+
+  const showFilters = false;
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -52,6 +56,22 @@ describe('SessionsFilterService', () => {
     const result = service.resetFilters();
     expect(mockTableService.resetFilters).toHaveBeenCalledWith('sessions-filters');
     expect(result).toEqual(mockDefaultFilters);
+  });
+
+  it('should save showFilters', () => {
+    service.saveShowFilters(true);
+    expect(mockTableService.saveShowFilters).toHaveBeenCalledWith('sessions-show-filters', true);
+  });
+
+  describe('restoreShowFilters', () => {
+    it('should restore showFilters', () => {
+      expect(service.restoreShowFilters()).toBe(showFilters);
+    });
+
+    it('should restore default showFilters if it cannot restore', () => {
+      mockTableService.restoreShowFilters.mockReturnValueOnce(null);
+      expect(service.restoreShowFilters()).toBe(true);
+    });
   });
 
   test('the service must return filtersDefinitions', () => {

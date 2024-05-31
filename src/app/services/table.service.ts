@@ -108,6 +108,20 @@ export class TableService {
   }
 
   /**
+   * Save show filters to the storage
+   */
+  saveShowFilters(key: `${Scope}-show-filters`, showFilters: boolean): void {
+    this._tableStorageService.save(key, showFilters);
+  }
+
+  /**
+   * Restore show filters from the storage
+   */
+  restoreShowFilters(key: `${Scope}-show-filters`): boolean {
+    return this._tableStorageService.restore(key) as boolean;
+  }
+
+  /**
    * Save columns to the local storage
    */
   saveColumns(key: `${Scope}-columns` | `${CustomScope}-custom-columns`, columns: string[]): void {

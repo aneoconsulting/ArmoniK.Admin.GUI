@@ -86,6 +86,7 @@ export class IconsService {
     'healthcheck': 'monitor_heart',
     'menu': 'menu',
     'menu-open': 'menu_open',
+    'filter': 'filter_list',
   };
 
   getIcon(name: string): string {

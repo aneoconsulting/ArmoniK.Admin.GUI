@@ -240,4 +240,17 @@ describe('TaskByStatusLineComponent', () => {
   it('should return the filters', () => {
     expect(component.taskByStatusFilters).toEqual(filters);
   });
+
+  describe('onShowFiltersChange', () => {
+    it('should update showFilters', () => {
+      component.onShowFiltersChange(true);
+      expect(component.line.showFilters).toBeTruthy();
+    });
+
+    it('should emit on showFilters change', () => {
+      const spyLineChange = jest.spyOn(component.lineChange, 'emit');
+      component.onShowFiltersChange(true);
+      expect(spyLineChange).toHaveBeenCalled();
+    });
+  });
 });
