@@ -7,7 +7,6 @@ import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -50,7 +49,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   actions: ActionTable<ApplicationData>[] = [
     {
       label: $localize`See session`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       action$: this.seeSessions$
     },
   ];
@@ -76,8 +75,8 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     };
   }
 
-  getPageIcon(name: Page): string {
-    return this.iconsService.getPageIcon(name);
+  getIcon(name: string): string {
+    return this.iconsService.getIcon(name);
   }
 
   createViewSessionsQueryParams(name: string, version: string) {

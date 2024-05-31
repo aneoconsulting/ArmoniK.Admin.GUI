@@ -231,10 +231,6 @@ describe('Sessions Index Component', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('sessions')).toEqual('workspaces');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });

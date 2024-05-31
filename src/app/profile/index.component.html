@@ -1,5 +1,5 @@
 <app-page-header [sharableURL]="sharableURL">
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('profile')"></mat-icon>
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('profile')"></mat-icon>
     <span>
       <span i18n="Page title"> Profile from </span>
       <span> {{ user.username }} </span>
@@ -37,7 +37,7 @@
         <ng-container *ngFor="let group of groupedPermissions()">
           <div class="permission">
             <h3>
-              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon(group.name)"></mat-icon>
+              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(group.name)"></mat-icon>
               {{ group.name }}
             </h3>
             <ul>
