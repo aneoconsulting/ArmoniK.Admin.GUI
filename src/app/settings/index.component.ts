@@ -1,5 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -145,6 +146,7 @@ export class IndexComponent implements OnInit {
   #notificationService = inject(NotificationService);
   #navigationService = inject(NavigationService);
   #storageService = inject(StorageService);
+  httpClient = inject(HttpClient);
 
   ngOnInit(): void {
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
@@ -234,6 +236,12 @@ export class IndexComponent implements OnInit {
       this.#storageService.removeItem(key);
     }
 
+    this.httpClient.get<string>('/static/gui_configuration').subscribe(data => {
+      if (data && Object.keys(data).length !== 0) {
+        this.#storageService.importData(data as string, false, false);
+      }
+    });
+
     this.#notificationService.success('All data cleared');
   }
 
@@ -285,19 +293,23 @@ export class IndexComponent implements OnInit {
 
     reader.onload = () => {
       const data = reader.result as string;
-      this.#storageService.importData(data);
-      this.keys = this.#sortKeys(this.#storageService.restoreKeys());
-
-      const hasSidebarKey = this.keys.has('navigation-sidebar');
-
-      // Update sidebar
-      if (hasSidebarKey) {
-        this.sidebar = this.#navigationService.restoreSidebar();
-        this.#navigationService.updateSidebar(this.sidebar);
+      try {
+        this.#storageService.importData(data);
+        this.keys = this.#sortKeys(this.#storageService.restoreKeys());
+  
+        const hasSidebarKey = this.keys.has('navigation-sidebar');
+  
+        // Update sidebar
+        if (hasSidebarKey) {
+          this.sidebar = this.#navigationService.restoreSidebar();
+          this.#navigationService.updateSidebar(this.sidebar);
+        }
+  
+        this.#notificationService.success('Settings imported');
+      } catch (e) {
+        console.warn(e);
+        this.#notificationService.error('Settings could not be imported.');
       }
-
-
-      this.#notificationService.success('Settings imported');
 
       form.reset();
     };

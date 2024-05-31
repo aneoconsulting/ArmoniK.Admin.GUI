@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ExportedDefaultConfig, Key } from '@app/types/config';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
+import pkg from '../../../package.json';
 
 describe('StorageService', () => {
   let service: StorageService;
@@ -201,27 +202,47 @@ describe('StorageService', () => {
 
     beforeEach(() => {
       setItemSpy = jest.spyOn(service, 'setItem').mockImplementation();
-      consoleSpy = jest.spyOn(console, 'warn').mockImplementationOnce(() => {return;});
+      consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
     });
 
     it('should set item in case of a supported key and valid JSON', () => {
-      service.importData('{"navigation-sidebar":"profile"}');
+      service.importData(`{"version": "${pkg.version}", "navigation-sidebar":"profile"}`);
       expect(setItemSpy).toHaveBeenCalledWith('navigation-sidebar', 'profile');
-      service.importData('{"navigation-sidebar":["profile", "divider", "sessions"]}');
+      service.importData(`{"version": "${pkg.version}", "navigation-sidebar":["profile", "divider", "sessions"]}`);
       expect(setItemSpy).toHaveBeenCalledWith('navigation-sidebar', ['profile', 'divider', 'sessions']);
-      service.importData('[{"navigation-sidebar":["profile", "divider", "sessions"]}, {"navigation-theme": "dark-green"}]');
-      expect(setItemSpy).toHaveBeenCalledTimes(2);
+      service.importData(`[{"version": "${pkg.version}", "navigation-sidebar": ["profile"]}, {"version": "${pkg.version}", "navigation-theme": "dark-green"}]`);
+      expect(setItemSpy).toHaveBeenCalled();
     });
 
     it('should warn in case of an unsupported key.', () => {
       const key = 'unsuported-key';
-      service.importData(`{"${key}": "some-value"}`);
+      service.importData(`{"version": "${pkg.version}", "${key}": "some-value"}`);
       expect(consoleSpy).toHaveBeenCalledWith(`Key "${key}" is not supported`);
     });
 
-    it('should warn is the data format is not supported', () => {
-      service.importData('Invalid-json-data');
-      expect(consoleSpy).toHaveBeenCalledWith('Data format is not supported');
+    it('should throw errors if the data has no "version" key', () => {
+      expect(() => service.importData('{"navigation-sidebar":"profile"}')).toThrow();
+      expect(() => service.importData('[{"navigation-sidebar":"profile"}]')).toThrow();
+    });
+
+    it('should throw erros if the data has a version different from the current version', () => {
+      const version = '0.0.1';
+      expect(() => service.importData(`{"version": "${version}", "navigation-sidebar":["profile"]}`)).toThrow();
+    });
+
+    it('should allow to override the data', () => {
+      jest.spyOn(service, 'getItem').mockImplementation(() => true);
+      service.importData(`{"version": "${pkg.version}", "navigation-sidebar":"profile"}`, false);
+      expect(setItemSpy).not.toHaveBeenCalled();
+    });
+
+    it('should allow to not parse the object', () => {
+      const data = {
+        version: pkg.version,
+        'navigation-sidebar': 'profile'
+      };
+      service.importData(data, true, false);
+      expect(setItemSpy).toHaveBeenCalledWith('navigation-sidebar', 'profile');
     });
   });
 

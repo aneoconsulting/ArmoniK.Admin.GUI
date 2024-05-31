@@ -17,12 +17,16 @@ import { FiltersDialogComponent } from './filters-dialog.component';
   styles: [`
 .filters-toolbar {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
 
+.filters-list {
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
-.filters-toolbar-text {
+.filters-list-text {
   font-size: 1rem;
   font-weight: 400;
 
@@ -30,7 +34,7 @@ import { FiltersDialogComponent } from './filters-dialog.component';
   text-align: end;
 }
 
-.filters-toolbar-and {
+.filters-list-and {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -40,6 +44,17 @@ import { FiltersDialogComponent } from './filters-dialog.component';
 
 button {
   align-self: flex-start;
+}
+
+.manage-filters {
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+.manage-filters mat-icon {
+  transform: scale(1.5);
 }
   `],
   standalone: true,
@@ -59,22 +74,48 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   #dialog = inject(MatDialog);
   #viewContainerRef = inject(ViewContainerRef);
 
-  @Input({ required: true }) filters: FiltersOr<T, U> = [];
+  hasFilters = false;
+  hasOneOrFilter = false;
+
+  private _filters: FiltersOr<T, U> = [];
+  
+  @Input({ required: true }) set filters(entry: FiltersOr<T, U>) {
+    this._filters = entry;
+    this.setHasFilters();
+    this.setHasOneOrFilter();
+  }
+  
+  get filters(): FiltersOr<T, U> {
+    return this._filters;
+  }
+
   @Input() customColumns: CustomColumn[] | undefined;
+  @Input() showFilters = true;
 
   @Output() filtersChange: EventEmitter<FiltersOr<T, U>> = new EventEmitter<FiltersOr<T, U>>();
+  @Output() showFiltersChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
   }
 
-  showFilters(): boolean {
+  toggleShow(): void {
+    this.showFilters = !this.showFilters;
+    this.showFiltersChange.emit(this.showFilters);
+  }
+
+  setHasOneOrFilter(): void {
+    this.hasOneOrFilter = this.filters.length === 1;
+  }
+
+  setHasFilters(): void {
     for(let i=0; i < this.filters.length; i++) {
       if (this.filters[i].length !== 0) {
-        return true;
+        this.hasFilters = true;
+        return;
       }
     }
-    return false;
+    this.hasFilters = false;
   }
 
   openFiltersDialog(): void {
@@ -88,12 +129,21 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(!result) {
-        return;
+      if(result) {
+        if (this.isFilterNull(result)) {
+          this.filters = [];
+        } else {
+          this.filters = result;
+        }
+        this.setHasFilters();
+        this.setHasOneOrFilter();
+        this.filtersChange.emit(this.filters);
       }
-
-      this.filtersChange.emit(result);
     });
+  }
+
+  isFilterNull(result: FiltersDialogResult<T, U>): boolean {
+    return result[0][0].field === null && result[0][0].for === null && result[0][0].operator === null && result[0][0].value === null;
   }
 
   trackByFilter(index: number, filtersAnd: FiltersAnd<T, U>): string {

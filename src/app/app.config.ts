@@ -56,12 +56,13 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
     ),
     httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_configuration').pipe(
       tap((data) => {
-        if (data) {
-          storageService.importConfigurationFromServer(data);
+        if (data && Object.keys(data).length !== 0) {
+          storageService.importData(data, false, false);
         }
       }),
-      catchError(() => {
-        console.warn('Server Config not found. Using default configuration.');
+      catchError((e) => {
+        console.warn('Server Config not found or invalid. Using default configuration.');
+        console.error(e);
         return of();
       })
     ),

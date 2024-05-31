@@ -80,6 +80,8 @@ describe('Application component', () => {
 
   const intervalRefreshSubject = new Subject<number>();
 
+  const defaultShowFilters = false;
+
   const mockApplicationIndexService = {
     availableTableColumns: displayedColumns,
     columnsLabels: {
@@ -114,6 +116,8 @@ describe('Application component', () => {
     restoreFilters: jest.fn(() => sampleFiltersOr),
     saveFilters: jest.fn(),
     resetFilters: jest.fn(),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn(() => defaultShowFilters)
   };
 
   const mockAutoRefreshService = {
@@ -265,6 +269,20 @@ describe('Application component', () => {
     it('should call applications index service saveLockColumns', () => {
       component.onLockColumnsChange();
       expect(mockApplicationIndexService.saveLockColumns).toHaveBeenCalledWith(component.lockColumns);
+    });
+  });
+  
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(mockApplicationsFilterService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
 });

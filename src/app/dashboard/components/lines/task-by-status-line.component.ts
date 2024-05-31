@@ -17,11 +17,11 @@ import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
+import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
@@ -199,6 +199,11 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();
+  }
+
+  onShowFiltersChange(value: boolean) {
+    this.line.showFilters = value;
+    this.lineChange.emit();
   }
 
   get taskByStatusFilters() {
