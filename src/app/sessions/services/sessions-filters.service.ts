@@ -158,6 +158,14 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     return this.defaultFilters;
   }
 
+  saveShowFilters(showFilters: boolean): void {
+    this.tableService.saveShowFilters('sessions-show-filters', showFilters);
+  }
+
+  restoreShowFilters(): boolean {
+    return this.tableService.restoreShowFilters('sessions-show-filters') ?? true;
+  }
+
   retrieveLabel(filterFor: SessionFilterFor, filterField: SessionFilterField): string {
     switch (filterFor) {
     case 'root':

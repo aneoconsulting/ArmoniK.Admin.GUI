@@ -20,9 +20,6 @@ describe('TableService', () => {
     restore: jest.fn(),
     remove: jest.fn()
   };
-  const saveSpy = jest.spyOn(tableStorageMock, 'save');
-  const restoreSpy = jest.spyOn(tableStorageMock, 'restore');
-  const removeSpy = jest.spyOn(tableStorageMock, 'remove');
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -41,7 +38,7 @@ describe('TableService', () => {
 
   it('saveInterval should call TableStorageService.save', () => {
     service.saveIntervalValue('applications-interval', 2);
-    expect(saveSpy).toHaveBeenCalledWith('applications-interval', 2);
+    expect(tableStorageMock.save).toHaveBeenCalledWith('applications-interval', 2);
   });
 
   describe('restoreIntervalValue', () => {
@@ -73,17 +70,17 @@ describe('TableService', () => {
 
   test('saveLockColumns should call TableStorageService.save', () => {
     service.saveLockColumns('applications-lock-columns', true);
-    expect(saveSpy).toHaveBeenCalledWith('applications-lock-columns', true);
+    expect(tableStorageMock.save).toHaveBeenCalledWith('applications-lock-columns', true);
   });
 
   test('restoreLockColumns should call TableStorageService.retore', () => {
     service.restoreLockColumns('applications-lock-columns');
-    expect(restoreSpy).toHaveBeenCalledWith('applications-lock-columns');
+    expect(tableStorageMock.restore).toHaveBeenCalledWith('applications-lock-columns');
   });
 
   it('saveOptions should call TableStorageService.save', () => {
     service.saveOptions('applications-options', 1);
-    expect(saveSpy).toHaveBeenCalledWith('applications-options', 1);
+    expect(tableStorageMock.save).toHaveBeenCalledWith('applications-options', 1);
   });
 
   describe('restoreOptions', () => {
@@ -180,7 +177,7 @@ describe('TableService', () => {
         value: 'someData',
         for: 'root'
       }]]);
-      expect(saveSpy).toHaveBeenCalledWith('applications-filters', [[{
+      expect(tableStorageMock.save).toHaveBeenCalledWith('applications-filters', [[{
         field: 1,
         operator: 0,
         value: 'someData',
@@ -264,27 +261,27 @@ describe('TableService', () => {
 
   it('should call TableStorageService.remove when reseting a filter', () => {
     service.resetFilters('applications-filters');
-    expect(removeSpy).toHaveBeenCalledWith('applications-filters');
+    expect(tableStorageMock.remove).toHaveBeenCalledWith('applications-filters');
   });
 
   it('should call TableStorageService.save when saving columns', () => {
     service.saveColumns('applications-columns', ['name', 'id', 'duration']);
-    expect(saveSpy).toHaveBeenCalledWith('applications-columns', ['name', 'id', 'duration']);
+    expect(tableStorageMock.save).toHaveBeenCalledWith('applications-columns', ['name', 'id', 'duration']);
   });
 
   it('should call TableStorageService.restore when restoring columns', () => {
     service.restoreColumns('applications-columns');
-    expect(restoreSpy).toHaveBeenCalledWith('applications-columns');
+    expect(tableStorageMock.restore).toHaveBeenCalledWith('applications-columns');
   });
 
   it('should call TableStorageService.relive when reseting columns', () => {
     service.resetColumns('applications-columns');
-    expect(removeSpy).toHaveBeenCalledWith('applications-columns');
+    expect(tableStorageMock.remove).toHaveBeenCalledWith('applications-columns');
   });
 
   it('should call TableStorageService.save when saving views in logs', () => {
     service.saveViewInLogs('tasks-view-in-logs', 'some-icon', 'the-service-name', 'myUrlTemplate');
-    expect(saveSpy).toHaveBeenCalledWith('tasks-view-in-logs', {
+    expect(tableStorageMock.save).toHaveBeenCalledWith('tasks-view-in-logs', {
       serviceIcon: 'some-icon',
       serviceName: 'the-service-name',
       urlTemplate: 'myUrlTemplate'
@@ -293,6 +290,16 @@ describe('TableService', () => {
 
   it('should call TableStorageService.restore when restoring columns', () => {
     service.restoreViewInLogs('tasks-view-in-logs');
-    expect(restoreSpy).toHaveBeenCalledWith('tasks-view-in-logs');
+    expect(tableStorageMock.restore).toHaveBeenCalledWith('tasks-view-in-logs');
+  });
+
+  it('should call TableStorageService.save when saving showFilters', () => {
+    service.saveShowFilters('applications-show-filters', true);
+    expect(tableStorageMock.save).toHaveBeenCalledWith('applications-show-filters', true);
+  });
+
+  it('should call TableStorageService.restore when restoring showFilters', () => {
+    service.restoreShowFilters('applications-show-filters');
+    expect(tableStorageMock.restore).toHaveBeenCalledWith('applications-show-filters');
   });
 });

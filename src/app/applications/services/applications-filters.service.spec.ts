@@ -8,10 +8,15 @@ import { ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
 
 describe('ApplicationsFiltersService', () => {
   let service: ApplicationsFiltersService;
+
+  const showFilters = false;
+
   const mockTableService = {
     saveFilters: jest.fn(),
     restoreFilters: jest.fn(),
-    resetFilters: jest.fn()
+    resetFilters: jest.fn(),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn((): boolean | null => showFilters),
   };
 
   const defaultFilterDefinition: ApplicationsFiltersDefinition[] = [
@@ -87,6 +92,22 @@ describe('ApplicationsFiltersService', () => {
 
   it('should return filters definitions', () => {
     expect(service.filtersDefinitions).toEqual(defaultFilterDefinition);
+  });
+
+  it('should save showFilters', () => {
+    service.saveShowFilters(true);
+    expect(mockTableService.saveShowFilters).toHaveBeenCalledWith('applications-show-filters', true);
+  });
+
+  describe('restoreShowFilters', () => {
+    it('should restore showFilters', () => {
+      expect(service.restoreShowFilters()).toBe(showFilters);
+    });
+
+    it('should restore default showFilters if it cannot restore', () => {
+      mockTableService.restoreShowFilters.mockReturnValueOnce(null);
+      expect(service.restoreShowFilters()).toBe(true);
+    });
   });
 
   describe('retrieveLabel', () => {

@@ -4,6 +4,7 @@ export type ScopeConfig<C, O, F> = {
   columns: C[];
   options: O;
   filters: F;
+  showFilters: boolean;
 };
 
 export type CustomScope = 'sessions' | 'tasks';
@@ -24,7 +25,8 @@ export type Key =
   'tasks-view-in-logs' |
   'healthcheck-interval' |
   `${CustomScope}-custom-columns` |
-  `${Scope}-${Element}`;
+  `${Scope}-${Element}` |
+  `${Scope}-show-filters`;
 
 export type ExportedDefaultConfig = {
   [key in Key]: unknown;

@@ -102,6 +102,8 @@ describe('Sessions Index Component', () => {
     urlTemplate: 'https://localhost:4200/sessionId=%sessionId',
   };
 
+  const defaultShowFilters = false;
+
   const mockSessionsIndexService = {
     restoreViewInLogs: jest.fn(() => defaultViewInLogs),
     saveViewInLogs: jest.fn(),
@@ -123,6 +125,8 @@ describe('Sessions Index Component', () => {
     restoreFilters: jest.fn(() => []),
     saveFilters: jest.fn(),
     resetFilters: jest.fn(() => []),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn(() => defaultShowFilters),
   };
   
   const mockShareUrlService = {
@@ -474,6 +478,21 @@ describe('Sessions Index Component', () => {
 
     it('should save custom columns', () => {
       expect(mockSessionsIndexService.saveCustomColumns).toHaveBeenCalledWith(newCustomColumns);
+    });
+  });
+
+  
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(mockSessionFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
 });

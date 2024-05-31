@@ -87,6 +87,14 @@ export class ResultsFiltersService implements FiltersServiceInterface<ResultRawF
     return this.defaultFilters;
   }
 
+  saveShowFilters(showFilters: boolean): void {
+    this.tableService.saveShowFilters('results-show-filters', showFilters);
+  }
+
+  restoreShowFilters(): boolean {
+    return this.tableService.restoreShowFilters('results-show-filters') ?? true;
+  }
+
   retrieveLabel(filterFor: FilterFor<ResultRawEnumField, null>, filterField:  ResultFilterField): string {
     switch (filterFor) {
     case 'root':
