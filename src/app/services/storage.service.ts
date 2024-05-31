@@ -104,17 +104,10 @@ export class StorageService implements Storage {
     const parsedData = parse ? JSON.parse(data as string) as Record<string, string> : data as Record<string, string>;
 
     if (Array.isArray(parsedData)) {
-      let dataToImport: string | object | undefined = undefined;
-
-      parsedData.forEach((data) => {
-        if (data['version'] && (data['version']).slice(0, -1) === pkg.version.slice(0, -1)) {
-          dataToImport = data;
-        }
-      });
+      const dataToImport = parsedData.filter(d => d['version'] && (d['version']).slice(0, -1) === pkg.version.slice(0, -1))[0] as Record<string, string>;
 
       if (dataToImport !== undefined) {
-        const dataObject = parse ? JSON.parse(dataToImport) as Record<string, string> : dataToImport as Record<string, string>;
-        this.#importDataObject(dataObject, override);
+        this.#importDataObject(dataToImport, override);
       } else {
         throw new Error('No data found for the current version');
       }
@@ -131,12 +124,12 @@ export class StorageService implements Storage {
    * The JSON keys must be of type [key](../types/config.ts)
    * @param data - JSON data.
    */
-  #importDataObject(data: Record<string, string>, override: boolean = true) {
+  #importDataObject(data: Record<string, string>, override: boolean) {
     const defaultKeys = Object.keys(this.#defaultConfigService.exportedDefaultConfig) as Key[];
     const keys = Object.keys(data);
     for (const key of keys) {
       // We only import keys that are supported.
-      if (defaultKeys.includes(key as Key) && data[key] !== undefined && data[key] !== null && (override || !this.getItem(key as Key))) {
+      if (defaultKeys.includes(key as Key) && (override || !this.getItem(key as Key)) && data[key] !== undefined && data[key] !== null) {
         this.setItem(key as Key, data[key]);
       } else if (key !== 'version') {
         console.warn(`Key "${key}" is not supported`);
