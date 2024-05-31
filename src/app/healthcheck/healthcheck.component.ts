@@ -84,16 +84,15 @@ export class HealthCheckComponent implements AfterViewInit {
 
   setGlobalStatus() {
     if (this.data) {
-      this.data.forEach((service) => {
-        if (service.healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY) {
-          this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY;
-          return;
-        } else if(service.healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED) {
-          this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED;
-        } else if(this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY && this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED) {
+      let statusCount = 0;
+      while (statusCount < this.data.length && this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_UNHEALTHY) {
+        if (this.data[statusCount].healthy === HealthStatusEnum.HEALTH_STATUS_ENUM_HEALTHY && this.globalStatus !== HealthStatusEnum.HEALTH_STATUS_ENUM_DEGRADED) {
           this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_HEALTHY;
+        } else if (this.data[statusCount].healthy !== HealthStatusEnum.HEALTH_STATUS_ENUM_HEALTHY) {
+          this.globalStatus = this.data[statusCount].healthy;
         }
-      });
+        statusCount++;
+      }
     }
   }
 
