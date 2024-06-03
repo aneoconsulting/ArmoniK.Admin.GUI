@@ -129,8 +129,10 @@ export class StorageService implements Storage {
     const keys = Object.keys(data);
     for (const key of keys) {
       // We only import keys that are supported.
-      if (defaultKeys.includes(key as Key) && (override || !this.getItem(key as Key)) && data[key] !== undefined && data[key] !== null) {
-        this.setItem(key as Key, data[key]);
+      if (defaultKeys.includes(key as Key)) {
+        if ((override || !this.getItem(key as Key)) && data[key] !== undefined && data[key] !== null) {
+          this.setItem(key as Key, data[key]);
+        }
       } else if (key !== 'version') {
         console.warn(`Key "${key}" is not supported`);
       }

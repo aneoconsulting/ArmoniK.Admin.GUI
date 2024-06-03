@@ -1,12 +1,13 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { Line, TasksStatusesGroup } from '@app/dashboard/types';
+import { Line } from '@app/dashboard/types';
 import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from '@app/results/types';
 import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
 import { TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
+import { TaskStatusColored } from '@app/types/dialog';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
 import { Theme } from '@app/types/themes';
@@ -18,7 +19,7 @@ export class DefaultConfigService {
 
   readonly #defaultDashboardLines: Line[] = [
     {
-      name: $localize`Tasks by statuses`,
+      name: $localize`Tasks by status`,
       type: 'CountStatus',
       interval: 5,
       hideGroupsHeader: false,
@@ -89,25 +90,21 @@ export class DefaultConfigService {
     showFilters: true,
   };
 
-  readonly #defaultTasksByStatus: TasksStatusesGroup[] = [
+  readonly #defaultTasksByStatus: TaskStatusColored[] = [
     {
-      name: 'Completed',
-      statuses: [TaskStatus.TASK_STATUS_COMPLETED],
+      status: TaskStatus.TASK_STATUS_COMPLETED,
       color: '#4caf50',
     },
     {
-      name: 'Error',
-      statuses: [TaskStatus.TASK_STATUS_ERROR],
+      status: TaskStatus.TASK_STATUS_ERROR,
       color: '#ff0000',
     },
     {
-      name: 'Timeout',
-      statuses: [TaskStatus.TASK_STATUS_TIMEOUT],
+      status: TaskStatus.TASK_STATUS_TIMEOUT,
       color: '#ff6944',
     },
     {
-      name: 'Retried',
-      statuses: [TaskStatus.TASK_STATUS_RETRIED],
+      status: TaskStatus.TASK_STATUS_RETRIED,
       color: '#ff9800',
     }
   ];
@@ -230,7 +227,7 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultApplications);
   }
 
-  get defaultTasksByStatus(): TasksStatusesGroup[] {
+  get defaultTasksByStatus(): TaskStatusColored[] {
     return structuredClone(this.#defaultTasksByStatus);
   }
 

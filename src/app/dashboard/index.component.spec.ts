@@ -93,10 +93,6 @@ describe('IndexComponent', () => {
     expect(component.getIcon('vertical-split')).toEqual('vertical_split');
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('dashboard')).toEqual('dashboard');
-  });
-
   it('should open Fab', () => {
     component.openFab();
     expect(component.showFabActions).toBeTruthy();

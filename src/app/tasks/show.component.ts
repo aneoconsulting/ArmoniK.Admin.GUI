@@ -24,7 +24,7 @@ import { TaskRaw } from './types';
   selector: 'app-tasks-show',
   template: `
 <app-show-page [id]="data?.id ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
   `,
@@ -66,14 +66,14 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
     {
       id: 'session',
       name: $localize`See session`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       area: 'left',
       link: '/sessions',
     },
     {
       id: 'results',
       name: $localize`See results`,
-      icon: this.getPageIcon('results'),
+      icon: this.getIcon('results'),
       area: 'left',
       link: '/results',
       queryParams: {}
@@ -81,7 +81,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
     {
       id: 'partition',
       name: $localize`See partition`,
-      icon: this.getPageIcon('partitions'),
+      icon: this.getIcon('partitions'),
       area: 'left',
       link: '/partitions',
     },

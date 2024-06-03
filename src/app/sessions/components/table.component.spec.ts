@@ -5,9 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
-import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
+import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -102,42 +102,29 @@ describe('SessionsTableComponent', () => {
   };
 
   const mockTasksByStatusService = {
-    restoreStatuses: jest.fn(() => defaultStatusesGroups),
+    restoreStatuses: jest.fn(),
     saveStatuses: jest.fn()
   };
 
-  const defaultStatusesGroups: TasksStatusesGroup[] = [
+  const matDialogReturn: TaskStatusColored[] = [
     {
-      name: 'Completed',
-      statuses: [TaskStatus.TASK_STATUS_COMPLETED],
-      color: '#4caf50',
+      color: 'red',
+      status: TaskStatus.TASK_STATUS_CANCELLING,
     },
     {
-      name: 'Error',
-      statuses: [TaskStatus.TASK_STATUS_ERROR],
-      color: '#ff0000',
+      color: 'blue',
+      status: TaskStatus.TASK_STATUS_CREATING,
     },
+    {
+      color: 'green',
+      status: TaskStatus.TASK_STATUS_RETRIED
+    }
   ];
-
-  const mockDialogReturn: ManageGroupsDialogResult = {
-    groups: [
-      {
-        name: 'Timeout',
-        statuses: [TaskStatus.TASK_STATUS_TIMEOUT],
-        color: '#ff6944',
-      },
-      {
-        name: 'Retried',
-        statuses: [TaskStatus.TASK_STATUS_RETRIED],
-        color: '#ff9800',
-      }
-    ]
-  };
 
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed: jest.fn(() => of(mockDialogReturn))
+        afterClosed: jest.fn(() => of(matDialogReturn))
       };
     })
   };
@@ -188,7 +175,7 @@ describe('SessionsTableComponent', () => {
   });
 
   it('should get page icon', () => {
-    expect(component.getPageIcon('sessions')).toEqual('workspaces');
+    expect(component.getIcon('sessions')).toEqual('workspaces');
   });
 
   it('should create session id query params', () => {
@@ -727,12 +714,12 @@ describe('SessionsTableComponent', () => {
       component.personalizeTasksByStatus();
     });
 
-    it('should update statusesGroups', () => {
-      expect(component.statusesGroups).toEqual([...mockDialogReturn.groups]);
+    it('should update tasks statuses', () => {
+      expect(component.tasksStatusesColored).toEqual(matDialogReturn);
     });
 
     it('should call tasksByStatus service',() => {
-      expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith(component.table, component.statusesGroups);
+      expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith(component.table, matDialogReturn);
     });
   });
 

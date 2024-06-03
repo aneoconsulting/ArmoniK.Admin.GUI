@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { Page } from '@app/types/pages';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
@@ -9,7 +8,7 @@ import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { UserService } from '@services/user.service';
-import { PermissionGroup } from './types';
+import { Group, PermissionGroup, isGroup } from './types';
 
 @Component({
   selector: 'app-profile-index',
@@ -75,10 +74,6 @@ export class IndexComponent implements OnInit {
     return this.#iconsService.getIcon(name);
   }
 
-  getPageIcon(name: Page) {
-    return this.#iconsService.getPageIcon(name);
-  }
-
   groupedPermissions(): PermissionGroup[] {
     const permissions = this.#userService.user.permissions;
 
@@ -89,13 +84,15 @@ export class IndexComponent implements OnInit {
 
       const groupIndex = groups.findIndex(g => g.name === group.toLocaleLowerCase());
 
-      if (groupIndex === -1) {
-        groups.push({
-          name: group.toLowerCase() as Page,
-          permissions: [name],
-        });
-      } else {
-        groups[groupIndex].permissions.push(name);
+      if (isGroup(group.toLowerCase())) {
+        if (groupIndex === -1) {
+          groups.push({
+            name: group.toLowerCase() as Group,
+            permissions: [name],
+          });
+        } else {
+          groups[groupIndex].permissions.push(name);
+        }
       }
     }
 
