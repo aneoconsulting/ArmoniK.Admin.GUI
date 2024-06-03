@@ -17,7 +17,7 @@ import { FilterInput, FilterInputOutput, FilterInputType, MaybeNull } from '@app
   styles: [`
 mat-form-field {
   width: 100%;
-};
+}
 `],
   standalone: true,
   imports: [
