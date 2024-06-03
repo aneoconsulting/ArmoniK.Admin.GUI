@@ -57,7 +57,7 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
       sortable: true,
     },
     {
-      name: $localize`Tasks by Statuses`,
+      name: $localize`Tasks by Status`,
       key: 'count',
       type: 'count',
       sortable: false

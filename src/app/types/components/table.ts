@@ -3,17 +3,17 @@ import { Component, Input, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
 import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
 import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';
 import { SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
 import { TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
-import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
+import { ViewTasksByStatusDialogComponent } from '@components/view-tasks-by-status-dialog.component';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { TableColumn } from '../column.type';
 import { ArmonikData, DataRaw, GrpcResponse, IndexListOptions, RawColumnKey } from '../data';
+import { TaskStatusColored, ViewTasksByStatusDialogData } from '../dialog';
 import { RawFilters } from '../filters';
 import { GrpcService } from '../services';
 import { IndexServiceInterface } from '../services/indexService';
@@ -154,24 +154,24 @@ export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C ex
   readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
 
-  statusesGroups: TasksStatusesGroup[];
+  tasksStatusesColored: TaskStatusColored[] = [];
   abstract table: TableTasksByStatus;
 
   ngOnInit(): void {
-    this.statusesGroups = this.tasksByStatusService.restoreStatuses(this.table);
+    this.tasksStatusesColored = this.tasksByStatusService.restoreStatuses(this.table);
   }
 
   personalizeTasksByStatus() {
-    const dialogRef = this.dialog.open<ManageGroupsDialogComponent, ManageGroupsDialogData, ManageGroupsDialogResult>(ManageGroupsDialogComponent, {
+    const dialogRef = this.dialog.open<ViewTasksByStatusDialogComponent, ViewTasksByStatusDialogData>(ViewTasksByStatusDialogComponent, {
       data: {
-        groups: [...this.statusesGroups],
+        statusesCounts: this.tasksStatusesColored,
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.statusesGroups = result.groups;
-        this.tasksByStatusService.saveStatuses(this.table, this.statusesGroups);
+        this.tasksStatusesColored = result;
+        this.tasksByStatusService.saveStatuses(this.table, result);
       }
     });
   }
