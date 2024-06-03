@@ -68,9 +68,9 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
         if (taskField && filter.operator !== null && filter.value !== null) {
           const key = this.filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
           params[key] = filter.value?.toString();
-          params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
         }
       });
+      params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
     });
     return params;
   }

@@ -1,9 +1,9 @@
 import { Component, Input, inject } from '@angular/core';
 import { Subject, Subscription, switchMap } from 'rxjs';
-import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
 
 @Component({
@@ -11,9 +11,9 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
   template: `
 <app-view-tasks-by-status
   [defaultQueryParams]="queryParams"
+  [statuses]="statuses"
   [loading]="loading"
-  [statusesGroups]="statusesGroups"
-  [statusesCount]="statusesCount"
+  [statusesCounts]="statusesCounts"
 >
 </app-view-tasks-by-status>
   `,
@@ -32,20 +32,20 @@ export class CountTasksByStatusComponent {
   @Input({ required: true }) queryParams: Record<string, string> = {};
   @Input({ required: true }) refresh: Subject<void>;
 
-  @Input({ required: true }) set statusesGroups(entries: TasksStatusesGroup[]) {
-    this._statusesGroups = entries;
+  @Input({ required: true }) set statuses(entries: TaskStatusColored[]) {
+    this._statuses = entries;
     if (this.refresh) {
       this.refresh.next();
     }
   }
 
-  private _statusesGroups: TasksStatusesGroup[] = [];
+  private _statuses: TaskStatusColored[] = [];
 
-  get statusesGroups(): TasksStatusesGroup[] {
-    return this._statusesGroups;
+  get statuses(): TaskStatusColored[] {
+    return this._statuses;
   }
 
-  statusesCount: StatusCount[] | null = [];
+  statusesCounts: StatusCount[] | null = null;
 
   loading = true;
 
@@ -54,12 +54,20 @@ export class CountTasksByStatusComponent {
   subscription = new Subscription();
 
   @Input({ required: true }) set filters(entries: TaskSummaryFilters) {
+    this.statusesCounts = null;
+    this._filters = entries;
     this.refresh.pipe(
       switchMap(() => this.#tasksGrpcService.countByStatus$(entries)),
     ).subscribe(response => {
       this.loading = false;
-      this.statusesCount = response.status ?? null;
+      this.statusesCounts = response.status ?? null;
     });
     this.refresh.next();
+  }
+
+  private _filters: TaskSummaryFilters;
+
+  get filters(): TaskSummaryFilters {
+    return this._filters;
   }
 }
