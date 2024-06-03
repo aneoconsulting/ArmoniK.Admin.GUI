@@ -1,26 +1,24 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { Observable, Subject, of } from 'rxjs';
-import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { TaskStatusColored } from '@app/types/dialog';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
 describe('CountTasksByStatusComponent', () => {
 
   let component: CountTasksByStatusComponent;
 
-  const statusesGroups: TasksStatusesGroup[] = [
+  const statuses: TaskStatusColored[] = [
     {
-      name: 'Completed',
-      statuses: [TaskStatus.TASK_STATUS_COMPLETED],
-      color: '#4caf50',
+      status: TaskStatus.TASK_STATUS_CREATING,
+      color: 'blue'
     },
     {
-      name: 'Error',
-      statuses: [TaskStatus.TASK_STATUS_ERROR, TaskStatus.TASK_STATUS_TIMEOUT],
-      color: '#ff0000',
+      status: TaskStatus.TASK_STATUS_CANCELLED,
+      color: 'red'
     },
   ];
 
@@ -54,7 +52,7 @@ describe('CountTasksByStatusComponent', () => {
 
     component.refresh = refresh$;
     component.filters = filters;
-    component.statusesGroups = statusesGroups;
+    component.statuses = statuses;
   });
 
   it('Should run', () => {
@@ -63,7 +61,7 @@ describe('CountTasksByStatusComponent', () => {
 
   describe('setting statuses', () => {
     it('should set statusesGroups', () => {
-      expect(component.statusesGroups).toEqual(statusesGroups);
+      expect(component.statuses).toEqual(statuses);
     });
 
     it('should refresh counts', () => {
@@ -72,6 +70,10 @@ describe('CountTasksByStatusComponent', () => {
   });
 
   describe('setting filters', () => {
+    it('should set filters', () => {
+      expect(component.filters).toEqual(filters);
+    });
+
     it('should subscribe to refresh', () => {
       expect(refresh$.observed).toBeTruthy();
     });
@@ -82,15 +84,19 @@ describe('CountTasksByStatusComponent', () => {
   });
 
   describe('Refreshing', () => {
+    beforeEach(() => {
+      component.statusesCounts = null;
+    });
+
     it('should update statusesCounts', () => {
       component.refresh.next();
-      expect(component.statusesCount).toEqual(finalStatusesCount);
+      expect(component.statusesCounts).toEqual(finalStatusesCount);
     });
 
     it('should set null if there is no response status', () => {
       mockTasksGrpcService.countByStatus$.mockReturnValue(of({ status: undefined }));
       component.refresh.next();
-      expect(component.statusesCount).toBeNull();
+      expect(component.statusesCounts).toBeNull();
     });
   });
 });

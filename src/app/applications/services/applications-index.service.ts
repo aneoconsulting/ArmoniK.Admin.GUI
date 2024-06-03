@@ -37,7 +37,7 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
       sortable: true,
     },
     {
-      name: $localize`Tasks by Statuses`,
+      name: $localize`Tasks by Status`,
       key: 'count',
       type: 'count',
       sortable: false

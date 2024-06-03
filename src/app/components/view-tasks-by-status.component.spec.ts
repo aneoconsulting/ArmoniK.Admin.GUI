@@ -1,7 +1,8 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { StatusCount } from '@app/tasks/types';
+import { TaskStatusColored } from '@app/types/dialog';
 import { ViewTasksByStatusComponent } from './view-tasks-by-status.component';
 
 describe('ViewTasksByStatusComponent', () => {
@@ -13,16 +14,14 @@ describe('ViewTasksByStatusComponent', () => {
     '1-options-1-1': 'applicationName'
   };
 
-  const initialStatusesGroups: TasksStatusesGroup[] = [
+  const initialStatuses: TaskStatusColored[] = [
     {
-      name: 'Completed',
-      statuses: [TaskStatus.TASK_STATUS_COMPLETED],
-      color: 'green',
+      status: TaskStatus.TASK_STATUS_CANCELLED,
+      color: 'red'
     },
     {
-      name: 'Error',
-      statuses: [TaskStatus.TASK_STATUS_ERROR, TaskStatus.TASK_STATUS_TIMEOUT],
-      color: 'red',
+      status: TaskStatus.TASK_STATUS_PROCESSING,
+      color: 'blue'
     },
   ];
 
@@ -40,34 +39,32 @@ describe('ViewTasksByStatusComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     component.defaultQueryParams = defaultQueryParams;
-    component.statusesGroups = initialStatusesGroups;
+    component.statuses = initialStatuses;
   });
 
   it('Should run', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('createQueryParams', () => {
-    it('should return the params in a record', () => {
-      expect(component.createQueryParams(initialStatusesGroups[0])).toEqual({
-        ...defaultQueryParams,
-        '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
-        '1-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString()
-      });
-    });
-
-    it('should return the params in a record without any query params', () => {
-      component.defaultQueryParams = {};
-      expect(component.createQueryParams(initialStatusesGroups[0])).toEqual({
-        '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
-      });
+  test('createQueryParams should return the params in a record', () => {
+    expect(component.createQueryParams(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
+      ...defaultQueryParams,
+      '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
+      '1-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString()
     });
   });
 
-  it('should complete the missing fields of a group', () => {
-    expect(component.completeGroup(initialStatusesGroups[0]))
+  test('tooltip should get the label of a status ', () => {
+    expect(component.tooltip(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
+  });
+
+  test('completeStatus should complete the missing fields of a status', () => {
+    expect(component.completeStatus({status: TaskStatus.TASK_STATUS_COMPLETED, color: 'green'}))
       .toEqual({
-        ...initialStatusesGroups[0],
+        status: TaskStatus.TASK_STATUS_COMPLETED,
+        color: 'green',
+        statusCount: 0,
+        tooltip: 'Completed',
         queryParams: {
           ...defaultQueryParams,
           '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
@@ -77,40 +74,68 @@ describe('ViewTasksByStatusComponent', () => {
   });
 
   it('should handle statuses on init', () => {
-    expect(component.statusesGroups).toEqual([
+    expect(component.statuses).toEqual([
       {
-        ...initialStatusesGroups[0],
+        status: TaskStatus.TASK_STATUS_CANCELLED,
+        color: 'red',
+        statusCount: 0,
+        tooltip: 'Cancelled',
         queryParams: {
           ...defaultQueryParams,
-          '0-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString(),
-          '1-root-2-0': TaskStatus.TASK_STATUS_COMPLETED.toString()
+          '0-root-2-0': TaskStatus.TASK_STATUS_CANCELLED.toString(),
+          '1-root-2-0': TaskStatus.TASK_STATUS_CANCELLED.toString()
         }
       },
       {
-        ...initialStatusesGroups[1],
+        status: TaskStatus.TASK_STATUS_PROCESSING,
+        color: 'blue',
+        statusCount: 0,
+        tooltip: 'Processing',
         queryParams: {
-          '0-root-1-0': 'sessionId',
-          '0-root-2-0': TaskStatus.TASK_STATUS_ERROR.toString(),
-          '1-root-1-0': 'sessionId',
-          '1-root-2-0': TaskStatus.TASK_STATUS_TIMEOUT.toString(),
-          '2-options-1-1': 'applicationName',
-          '2-root-2-0': TaskStatus.TASK_STATUS_ERROR.toString(),
-          '3-options-1-1': 'applicationName',
-          '3-root-2-0': TaskStatus.TASK_STATUS_TIMEOUT.toString()
+          ...defaultQueryParams,
+          '0-root-2-0': TaskStatus.TASK_STATUS_PROCESSING.toString(),
+          '1-root-2-0': TaskStatus.TASK_STATUS_PROCESSING.toString()
         }
       }
     ]);
   });
 
-  it('should update the statusCount for each group', () => {
-    const completedStatusCount = 5;
-    const errorStatusCount = 10;
-    const timeoutStatusCount = 15;
-    component.statusesCount = [
-      { status: TaskStatus.TASK_STATUS_COMPLETED, count: completedStatusCount },
-      { status: TaskStatus.TASK_STATUS_ERROR, count: errorStatusCount },
-      { status: TaskStatus.TASK_STATUS_TIMEOUT, count: timeoutStatusCount },
+  it('should update statusesCounts', () => {
+    const statusesCounts: StatusCount[] = [
+      {
+        status: TaskStatus.TASK_STATUS_CANCELLED,
+        count: 10
+      }
     ];
-    expect(component.statusesGroups.map(group => group.statusCount)).toEqual([completedStatusCount, errorStatusCount + timeoutStatusCount]);
+    component.statusesCounts = statusesCounts;
+    expect(component.statuses.map(status => status.statusCount)).toEqual([10, 0]);
+  });
+
+  it('should update statuses on new statuses', () => {
+    const newStatuses: TaskStatusColored[] = [
+      {
+        status: TaskStatus.TASK_STATUS_CANCELLED,
+        color: 'green'
+      }
+    ];
+    component.statuses = newStatuses;
+    expect(component.statuses).toEqual([
+      {
+        status: TaskStatus.TASK_STATUS_CANCELLED,
+        color: 'green',
+        statusCount: 0,
+        tooltip: 'Cancelled',
+        queryParams: {
+          ...defaultQueryParams,
+          '0-root-2-0': TaskStatus.TASK_STATUS_CANCELLED.toString(),
+          '1-root-2-0': TaskStatus.TASK_STATUS_CANCELLED.toString()
+        }
+      }
+    ]);
+  });
+
+  test('trackByCount should return the status', () => {
+    expect(component.trackByCount(0, {status: TaskStatus.TASK_STATUS_COMPLETED, color: 'red'}))
+      .toEqual(TaskStatus.TASK_STATUS_COMPLETED);
   });
 });
