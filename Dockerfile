@@ -8,7 +8,7 @@ COPY package.json ./
 COPY pnpm-lock.yaml ./
 COPY .npmrc ./
 
-RUN pnpm i
+RUN pnpm i --ignore-scripts --frozen-lockfile
 
 COPY src ./src
 COPY tsconfig.app.json tsconfig.json tsconfig.spec.json ./
