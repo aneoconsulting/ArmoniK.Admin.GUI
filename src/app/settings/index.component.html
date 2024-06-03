@@ -62,7 +62,7 @@
           Delete data stored in your browser by this application. This will reset behavior and settings to their default values.
         </p>
   
-        <form (submit)="onSubmitStorage($event)">
+        <form (submit)="onSubmitStorage($event)" #storageForm>
   
           <ul *ngIf="keys.size; else noKey">
             <li *ngFor="let key of keys; trackBy:trackByKey">
@@ -74,10 +74,16 @@
   
           <div class="actions storage between">
             <div class="actions selection">
-              <button mat-flat-button color="warn" type="submit" i18n="Form" [disabled]="selectedKeys.size === 0">Clear</button>
-              <button mat-stroked-button type="reset" i18n="Form" [disabled]="selectedKeys.size === 0">Reset Selection</button>
+              <button mat-flat-button color="warn" type="submit" i18n="Form" [disabled]="selectedKeys.size === 0">
+                Clear
+              </button>
+              <button mat-stroked-button type="reset" i18n="Form" (click)="storageForm.reset();selectedKeys.clear()" [disabled]="selectedKeys.size === 0">
+                Reset Selection
+              </button>
             </div>
-            <button mat-stroked-button type="button" i18n="Form" (click)="clearAll()" [disabled]="keys.size === 0">Clear All</button>
+            <button mat-stroked-button type="button" i18n="Form" (click)="clearAll()" [disabled]="keys.size === 0">
+              Clear All
+            </button>
           </div>
         </form>
       </app-page-section>
