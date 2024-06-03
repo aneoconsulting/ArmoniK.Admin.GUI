@@ -111,8 +111,8 @@ export class IndexComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getPageIcon() {
-    return this.#iconsService.getPageIcon('healthcheck');
+  getIcon() {
+    return this.#iconsService.getIcon('healthcheck');
   }
 
   getColor(healthy: HealthStatusEnum) {

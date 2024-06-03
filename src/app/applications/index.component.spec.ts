@@ -180,7 +180,7 @@ describe('Application component', () => {
   });
 
   it('should get page icon', () => {
-    expect(component.getPageIcon('applications')).toEqual('apps');
+    expect(component.getIcon('applications')).toEqual('apps');
   });
 
   it('should refresh', () => {

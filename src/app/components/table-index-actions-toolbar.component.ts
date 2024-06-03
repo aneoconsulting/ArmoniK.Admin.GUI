@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ColumnKey, RawColumnKey } from '@app/types/data';
-import { Page } from '@app/types/pages';
 import { IconsService } from '@services/icons.service';
 import { TableActionsToolbarComponent } from './table-actions-toolbar.component';
 
@@ -35,8 +34,8 @@ export class TableIndexActionsToolbarComponent<T extends object, O extends objec
   @Output() lockColumnsChange = new EventEmitter<void>();
   @Output() addToDashboard = new EventEmitter<void>();
 
-  getPageIcon(string: Page): string {
-    return this.iconsService.getPageIcon(string);
+  getIcon(value: string): string {
+    return this.iconsService.getIcon(value);
   }
 
   onRefresh(): void {

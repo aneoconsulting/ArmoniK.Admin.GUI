@@ -21,7 +21,7 @@ import { PartitionRaw } from './types';
   selector: 'app-partitions-show',
   template: `
 <app-show-page [id]="data?.id ?? ''" [data$]="data$" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('partitions')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>
   `,
@@ -54,7 +54,7 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpc
     {
       id: 'sessions',
       name: $localize`See sessions`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       link: '/sessions',
       queryParams: {},
       area: 'left'
@@ -62,7 +62,7 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpc
     {
       id: 'tasks',
       name: $localize`See tasks`,
-      icon: this.getPageIcon('tasks'),
+      icon: this.getIcon('tasks'),
       link: '/tasks',
       queryParams: {},
       area: 'left'

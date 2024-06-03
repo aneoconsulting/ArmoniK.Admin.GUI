@@ -75,10 +75,6 @@ describe('ShowComponent', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('results')).toEqual('workspace_premium');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });
