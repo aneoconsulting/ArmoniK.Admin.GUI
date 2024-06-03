@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -43,7 +42,6 @@ mat-dialog-content {
   standalone: true,
   providers: [],
   imports: [
-    NgIf,
     ReactiveFormsModule,
     MatIconModule,
     MatDialogModule,

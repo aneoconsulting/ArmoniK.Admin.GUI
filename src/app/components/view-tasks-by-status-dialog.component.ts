@@ -1,6 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor } from '@angular/common';
 import { Component, Inject, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -54,7 +53,6 @@ import { IconsService } from '@services/icons.service';
     TasksStatusesService,
   ],
   imports: [
-    NgFor,
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -145,9 +143,5 @@ export class ViewTasksByStatusDialogComponent implements OnInit {
     }
 
     moveItemInArray(this.statusesCounts, event.previousIndex, event.currentIndex);
-  }
-
-  trackByStatus(_: number, status: TaskStatus) {
-    return status;
   }
 }

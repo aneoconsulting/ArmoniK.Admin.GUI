@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,8 +14,6 @@ import { ShowActionButton } from '@app/types/components/show';
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     RouterModule,
     MatButtonModule,
     MatIconModule

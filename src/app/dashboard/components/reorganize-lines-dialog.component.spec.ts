@@ -120,8 +120,4 @@ describe('ReorganizeLinesDialogComponent', () => {
     component.onEditNameLine(component.lines[1], 1);
     expect(component.lines[1].name).toEqual('newLineName');
   });
-
-  it('should track by line', () => {
-    expect(component.trackByLine(0, component.lines[0])).toEqual('line10');
-  });
 });

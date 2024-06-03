@@ -1,5 +1,4 @@
 import { FilterStatusOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -13,21 +12,23 @@ import { SpinnerComponent } from './spinner.component';
 @Component({
   selector: 'app-view-tasks-by-status',
   template: `
-<app-spinner *ngIf="loading; else data"></app-spinner>
-
-<ng-template #data>
-  <ng-container *ngFor="let status of statuses; let index = index; trackBy:trackByCount">
-    <a mat-button
-      [matTooltip]="status.tooltip"
-      [routerLink]="['/tasks']"
-      [queryParams]="status.queryParams"
-      [style]="'color: ' + status.color"
-    >
-    {{ status.statusCount }}
-    </a>
-    <span *ngIf="index !== statuses.length - 1">|</span>
-  </ng-container>
-</ng-template>
+  @if(loading) {
+    <app-spinner/>
+  } @else {
+    @for (status of statuses; track status) {
+      <a mat-button
+        [matTooltip]="status.tooltip"
+        [routerLink]="['/tasks']"
+        [queryParams]="status.queryParams"
+        [style]="'color: ' + status.color"
+      >
+      {{ status.statusCount }}
+      </a>
+      @if (!$last) {
+        |
+      }
+    }
+  }
     `,
   styles: [`
 .mdc-button {
@@ -39,8 +40,6 @@ import { SpinnerComponent } from './spinner.component';
     TasksStatusesService
   ],
   imports: [
-    NgIf,
-    NgFor,
     RouterModule,
     SpinnerComponent,
     MatTooltipModule,
@@ -113,9 +112,5 @@ export class ViewTasksByStatusComponent {
   tooltip(status: TaskStatus): string {
     const statusLabel = this.tasksStatusesService.statusToLabel(status);
     return statusLabel;
-  }
-
-  trackByCount(_: number, status: TaskStatusColored): TaskStatus {
-    return status.status;
   }
 }

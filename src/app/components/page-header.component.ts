@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ShareUrlComponent } from './share-url.component';
 
@@ -25,7 +24,6 @@ import { ShareUrlComponent } from './share-url.component';
   standalone: true,
   providers: [],
   imports: [
-    NgIf,
     ShareUrlComponent
   ]
 })

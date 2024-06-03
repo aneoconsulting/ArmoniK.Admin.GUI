@@ -195,10 +195,6 @@ describe('IndexComponent', () => {
     expect(mockDashboardIndexService.saveLines).toHaveBeenCalledWith(component.lines);
   });
 
-  it('should track by line', () => {
-    expect(component.trackByLine(0, component.lines[0])).toEqual('line10');
-  });
-
   describe('getLineIcon', () => {
     it('should get Tasks Icon', () => {
       expect(component.getLineIcon('Tasks')).toEqual('adjust');

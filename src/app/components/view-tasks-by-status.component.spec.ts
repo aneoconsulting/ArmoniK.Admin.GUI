@@ -133,9 +133,4 @@ describe('ViewTasksByStatusComponent', () => {
       }
     ]);
   });
-
-  test('trackByCount should return the status', () => {
-    expect(component.trackByCount(0, {status: TaskStatus.TASK_STATUS_COMPLETED, color: 'red'}))
-      .toEqual(TaskStatus.TASK_STATUS_COMPLETED);
-  });
 });

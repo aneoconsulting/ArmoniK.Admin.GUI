@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -6,9 +5,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-table-loading',
   template: `
-  <div class="loading-shade" *ngIf="loading">
-    <mat-spinner strokeWidth="4" diameter="40"></mat-spinner>
+  @if (loading) {
+    <div class="loading-shade">
+    <mat-spinner strokeWidth="4" diameter="40"/>
   </div>
+  }
   `,
   styles: [`
   .loading-shade {
@@ -26,7 +27,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   `],
   standalone: true,
   imports: [
-    NgIf,
     MatProgressSpinnerModule
   ]
 })

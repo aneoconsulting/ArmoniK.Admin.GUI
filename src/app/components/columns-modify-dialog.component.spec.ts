@@ -86,15 +86,15 @@ describe('', () => {
 
   describe('Getting available columns', () => {
     it('should return every column without the "options." prefix', () => {
-      expect(component.availableColumns()).toEqual(['actions', 'duration', 'name']);
+      expect(component.availableColumns).toEqual(['actions', 'duration', 'name']);
     });
   
     it('should return every column with the "options." prefix', () => {
-      expect(component.availableOptionsColumns()).toEqual(['options.task_id']);
+      expect(component.availableOptionsColumns).toEqual(['options.task_id']);
     });
 
     it('should return every custom column', () => {
-      expect(component.availableCustomColumns()).toEqual(['options.options.FastCompute']);
+      expect(component.availableCustomColumns).toEqual(['options.options.FastCompute']);
     });
   });
 
@@ -138,9 +138,5 @@ describe('', () => {
   test('onNoClick should call dialogref.close', () => {
     component.onNoClick();
     expect(mockMatDialogRef.close).toHaveBeenCalled();
-  });
-
-  test('should return the column key as a string', () => {
-    expect(component.trackByColumn(0, 'actions')).toEqual('actions');
   });
 });

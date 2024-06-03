@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +11,6 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
   styles: [''],
   standalone: true,
   imports: [
-    NgFor,
     MatDialogModule,
     MatButtonModule,
     MatAutocompleteModule,

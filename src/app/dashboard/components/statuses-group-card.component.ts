@@ -1,5 +1,4 @@
 import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
@@ -46,8 +45,6 @@ ul li a {
     FiltersService,
   ],
   imports: [
-    NgFor,
-    NgIf,
     RouterModule,
     MatCardModule,
   ]

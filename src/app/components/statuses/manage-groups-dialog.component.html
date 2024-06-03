@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
   <ul class="groups" cdkDropListGroup>
-    <li *ngFor="let group of groups">
+    @for (group of groups; track group) {
       <div class="group-header">
         <h3 [style]="'color:' + group.color">
           {{ group.name }}
@@ -20,12 +20,14 @@
           (cdkDropListDropped)="onDrop($event)"
           [cdkDropListData]="group.statuses"
         >
-        <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
-          <span>{{ statusToLabel(status) }}</span>
-        </li>
+        @for (status of group.statuses; track status) {
+          <li cdkDrag class="task-status">
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
+            <span>{{ statusToLabel(status) }}</span>
+          </li>
+        }
       </ul>
-    </li>
+    }
     <div class="addGroup">
       <button mat-stroked-button (click)="openAddStatusGroupModal()">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>

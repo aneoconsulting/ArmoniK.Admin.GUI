@@ -1,4 +1,3 @@
-import { NgForOf, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -81,8 +80,6 @@ app-actions-toolbar {
     MatMenuModule,
     MatButtonModule,
     StatusesGroupCardComponent,
-    NgIf,
-    NgForOf
   ]
 })
 export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestroy {

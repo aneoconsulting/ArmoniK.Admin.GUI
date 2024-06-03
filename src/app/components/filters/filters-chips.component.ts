@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
@@ -22,8 +21,6 @@ import { UtilsService } from '@services/utils.service';
   `],
   standalone: true,
   imports: [
-    NgFor,
-    NgIf,
     MatChipsModule,
   ],
   providers: [
@@ -87,9 +84,5 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
       resultString += `${seconds}s`;
     }
     return resultString;
-  }
-
-  trackByFilter(_: number, filter: Filter<T, U>): string {
-    return filter.field?.toString() ?? '';
   }
 }

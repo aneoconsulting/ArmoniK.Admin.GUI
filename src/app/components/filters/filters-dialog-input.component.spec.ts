@@ -130,13 +130,6 @@ describe('FiltersDialogInputComponent', () => {
     }
   });
 
-  it('should track by selected', () => {
-    const item = {
-      value: 'selected'
-    };
-    expect(component.trackBySelect(0, item)).toBe(item.value);
-  });
-
   describe('onDurationChange', () => {
     const inputEvent = {
       target: {

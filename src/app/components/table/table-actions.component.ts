@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,8 +20,6 @@ import { IconsService } from '@services/icons.service';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    NgIf,
-    NgFor,
     MatMenuModule
   ]
 })

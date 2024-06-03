@@ -3,9 +3,11 @@
       <mat-form-field appearance="outline">
         <mat-label for="name" i18n="Name of the external service"> Name </mat-label>
         <input matInput id="name" type="text" formControlName="name" i18n-placeholder="Placeholder" placeholder="Name of the service" required>
-         <mat-error *ngIf="serviceForm.get('name')?.hasError('required')" i18n="Input error">
-        Name is <strong>required</strong>
-        </mat-error>
+        @if (serviceForm.get('name')?.hasError('required')) {
+          <mat-error i18n="Input error">
+            Name is <strong>required</strong>
+          </mat-error>
+        }
       </mat-form-field>
 
       <div class="icon">
@@ -19,9 +21,11 @@
       <mat-form-field class="grid-span-2" appearance="outline">
         <mat-label for="url" i18n="URL of the external service"> URL </mat-label>
         <input matInput id="url" type="url" formControlName="url" i18n-placeholder="Placeholder" placeholder="URL of the service" required>
-         <mat-error *ngIf="serviceForm.get('url')?.hasError('required')" i18n="Input error">
-        URL is <strong>required</strong>
-        </mat-error>
+        @if (serviceForm.get('url')?.hasError('required')) {
+          <mat-error i18n="Input error">
+            URL is <strong>required</strong>
+          </mat-error>
+        }
       </mat-form-field>
     </mat-dialog-content>
 

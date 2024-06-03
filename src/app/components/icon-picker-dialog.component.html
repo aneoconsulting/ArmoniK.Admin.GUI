@@ -1,17 +1,22 @@
-<button *ngIf="!icon" mat-button (click)="$event.preventDefault();" [matMenuTriggerFor]="menu">
-  <span i18n="Button to open the icon picker">Icon</span>
-</button>
-<button *ngIf="icon" mat-icon-button (click)="$event.preventDefault();" [matMenuTriggerFor]="menu">
-  <mat-icon [fontIcon]="getIcon(icon)" />
-</button>
+@if(icon) {
+  <button mat-icon-button (click)="$event.preventDefault();" [matMenuTriggerFor]="menu">
+    <mat-icon [fontIcon]="getIcon(icon)" />
+  </button>
+} @else {
+  <button mat-button (click)="$event.preventDefault();" [matMenuTriggerFor]="menu">
+    <span i18n="Button to open the icon picker">Icon</span>
+  </button>
+}
 <mat-menu #menu="matMenu" yPosition="below">
   <mat-form-field style="width: 100%;" subscriptSizing="dynamic" (click)="$event.stopPropagation();" (keydown.enter)="selectFirst()">
     <mat-label i18n="Input label">Icon</mat-label>
     <input matInput [formControl]="iconFormControl" placeholder="Search icon" />
   </mat-form-field>
   <article mat-menu-item style="background-color: transparent;" disableRipple>
-    <button mat-icon-button *ngFor="let icon of filteredIcons" (click)="selectIcon(icon)" [matTooltip]="icon">
-      <mat-icon [fontIcon]="getIcon(icon)" />
-    </button>
+    @for(icon of filteredIcons; track icon) {
+      <button mat-icon-button (click)="selectIcon(icon)" [matTooltip]="icon">
+        <mat-icon [fontIcon]="getIcon(icon)" />
+      </button>
+    }
   </article>
 </mat-menu>

@@ -1,4 +1,4 @@
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,8 +22,6 @@ import { ShowActionAreaComponent } from './show-action-area.component';
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     CommonModule,
     MatIconModule,
     MatButtonModule,

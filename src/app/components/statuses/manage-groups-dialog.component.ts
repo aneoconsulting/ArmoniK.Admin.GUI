@@ -1,6 +1,5 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { NgFor } from '@angular/common';
 import { Component, Inject, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -121,7 +120,6 @@ ul {
   imports: [
     ActionsToolbarComponent,
     ActionsToolbarGroupComponent,
-    NgFor,
     MatButtonModule,
     MatDialogModule,
     MatToolbarModule,

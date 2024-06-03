@@ -27,24 +27,28 @@
       </div>
   
       <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
-        <li cdkDrag *ngFor="let item of sidebar; let index = index; trackBy:trackBySidebarItem">
-          <div class="sidebar-item-drag">
-            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="findSidebarItem(item).icon ?? 'horizontal_rule'"></mat-icon>
-          </div>
-  
-          <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
-            <mat-select [value]="item" (valueChange)="onSidebarItemChange(index, $event)">
-              <mat-option *ngFor="let sidebarItem of getSidebarItems(); trackBy:trackByItem" [value]="sidebarItem.value">
-                {{ sidebarItem.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-  
-          <button mat-icon-button (click)="onRemoveSidebarItem(index)">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"/>
-          </button>
-        </li>
+        @for(item of sidebar; track item) {
+          <li cdkDrag>
+            <div class="sidebar-item-drag">
+              <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="findSidebarItem(item).icon ?? 'horizontal_rule'"></mat-icon>
+            </div>
+    
+            <mat-form-field appearance="outline" subscriptSizing="dynamic">
+              <mat-label i18n="Sidebar item label"> Sidebar item </mat-label>
+              <mat-select [value]="item" (valueChange)="onSidebarItemChange($index, $event)">
+                @for (sidebarItem of getSidebarItems(); track sidebarItem) {
+                  <mat-option [value]="sidebarItem.value">
+                    {{ sidebarItem.name }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+    
+            <button mat-icon-button (click)="onRemoveSidebarItem($index)">
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"/>
+            </button>
+          </li>
+        }
         <button class="add-sidebar-item" mat-stroked-button (click)="onAddSidebarItem()">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
           <span i18n> Add an item </span>
@@ -63,14 +67,19 @@
         </p>
   
         <form (submit)="onSubmitStorage($event)" #storageForm>
-  
-          <ul *ngIf="keys.size; else noKey">
-            <li *ngFor="let key of keys; trackBy:trackByKey">
+          @if (keys.size) {
+            @for (key of keys; track key) {
               <mat-checkbox [name]="key" (change)="updateKeySelection($event)">
                 {{ key }}
               </mat-checkbox>
-            </li>
-          </ul>
+            }
+          } @else {
+            <p>
+              <em i18n="No key">
+                No data stored in your browser.
+              </em>
+            </p>
+          }
   
           <div class="actions storage between">
             <div class="actions selection">
@@ -129,11 +138,3 @@
       </app-page-section>
     </section>
   </main>
-  
-  <ng-template #noKey>
-    <p>
-      <em i18n="No key">
-        No data stored in your browser.
-      </em>
-    </p>
-  </ng-template>

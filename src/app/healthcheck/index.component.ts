@@ -1,5 +1,4 @@
 import { HealthStatusEnum } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -48,8 +47,6 @@ import { ServiceHealth } from './types';
     PageHeaderComponent,
     MatButtonModule,
     MatIconModule,
-    NgIf,
-    NgFor,
     MatCardModule,
     MatTooltipModule,
     MatToolbarModule,

@@ -470,14 +470,4 @@ describe('ShowCardContentComponent', () => {
       expect(component.keys).toEqual([]);
     });
   });
-
-  it('trackByKey', () => {
-    const key = 'key';
-    expect(component.trackByKey(0, key)).toBe(key);
-  });
-
-  it('trackByItem', () => {
-    expect(component.trackByItem(0, 1)).toEqual('1');
-    expect(component.trackByItem(0, undefined)).toEqual('undefined');
-  });
 });

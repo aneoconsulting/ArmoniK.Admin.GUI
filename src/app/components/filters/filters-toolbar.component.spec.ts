@@ -3,7 +3,7 @@ import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { FiltersAnd, FiltersOr } from '@app/types/filters';
+import { FiltersOr } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersToolbarComponent } from './filters-toolbar.component';
 
@@ -140,15 +140,5 @@ describe('FiltersToolbarComponent', () => {
       value: null
     }]];
     expect(component.isFilterNull(nullFilter)).toBeTruthy();
-  });
-
-  it('should track by filter', () => {
-    const filterAnd: FiltersAnd<number, number> = [{
-      field: 1,
-      for: 'root',
-      operator: 1,
-      value: 'someValue'
-    }];
-    expect(component.trackByFilter(0, filterAnd)).toEqual('01');
   });
 });

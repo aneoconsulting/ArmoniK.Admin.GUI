@@ -1,5 +1,5 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,7 +30,6 @@ span {
     ShowCardComponent,
     ShowActionsComponent,
     CommonModule,
-    NgIf,
     MatIconModule,
     ClipboardModule,
     MatButtonModule
