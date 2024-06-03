@@ -11,7 +11,6 @@ import { ShareUrlService } from '@services/share-url.service';
 import { TableColumn } from '../column.type';
 import { CustomColumn, IndexListOptions, RawColumnKey, RawCustomColumnKey } from '../data';
 import { RawFilters } from '../filters';
-import { Page } from '../pages';
 import { FiltersServiceInterface } from '../services/filtersService';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 import { TableType } from '../table';
@@ -96,10 +95,6 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
 
   updateDisplayedColumns(): void {
     this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>);
-  }
-
-  getPageIcon(name: Page): string {
-    return this.iconsService.getPageIcon(name);
   }
 
   getIcon(name: string): string {

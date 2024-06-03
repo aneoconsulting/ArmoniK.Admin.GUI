@@ -69,10 +69,6 @@ describe('ShowComponent', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('partitions')).toEqual('donut_small');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });

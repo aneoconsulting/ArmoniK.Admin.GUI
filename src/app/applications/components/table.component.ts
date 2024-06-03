@@ -7,7 +7,6 @@ import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -50,7 +49,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   actions: ActionTable<ApplicationData>[] = [
     {
       label: $localize`See session`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       action$: this.seeSessions$
     },
   ];
@@ -76,8 +75,8 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     };
   }
 
-  getPageIcon(name: Page): string {
-    return this.iconsService.getPageIcon(name);
+  getIcon(name: string): string {
+    return this.iconsService.getIcon(name);
   }
 
   createViewSessionsQueryParams(name: string, version: string) {
@@ -100,14 +99,12 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
           if (!(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
           !(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
             const filterLabel = this.#createQueryParamFilterKey(filter, index);
-            if (filterLabel && filter.value) {
-              params[filterLabel] = filter.value.toString();
-              params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
-              params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
-            }
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
+
           }
         });
-
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
       });
       return params;
     }

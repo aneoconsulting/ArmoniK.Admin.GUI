@@ -40,7 +40,7 @@ describe('TableDashboardActionsToolbarComponent', () => {
   });
 
   it('should get icon', () => {
-    expect(component.getPageIcon('sessions')).toEqual('workspaces');
+    expect(component.getIcon('sessions')).toEqual('workspaces');
   });
 
   it('should emit refresh', () => {

@@ -10,7 +10,6 @@ import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTableComponent, AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -239,10 +238,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     return this.iconsService.getIcon(name);
   }
 
-  getPageIcon(page: Page): string {
-    return this.iconsService.getPageIcon(page);
-  }
-
   onCopiedSessionId(data: SessionData) {
     this.copyService.copy(data.raw.sessionId);
     this.notificationService.success('Session ID copied to clipboard');
@@ -265,12 +260,10 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
         filterAnd.forEach(filter => {
           if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
             const filterLabel = this.#createTaskByStatusLabel(filter, index);
-            if (filterLabel && filter.value) {
-              params[filterLabel] = filter.value.toString();
-              params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
-            }
+            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
           }
         });
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
       });
       return params;
     }

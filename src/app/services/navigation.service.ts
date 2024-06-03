@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ExternalService } from '@app/types/external-service';
-import { Sidebar, SidebarItem, SidebarItems } from '@app/types/navigation';
+import { Sidebar, SidebarItem, SidebarItems, isSideBar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
@@ -84,7 +84,7 @@ export class NavigationService {
   restoreSidebar(): Sidebar[] {
     const sidebar = this.#storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.#defaultConfigService.defaultSidebar;
 
-    return sidebar;
+    return sidebar.filter(element => isSideBar(element));
   }
 
   saveSidebar(sidebar: Sidebar[]) {

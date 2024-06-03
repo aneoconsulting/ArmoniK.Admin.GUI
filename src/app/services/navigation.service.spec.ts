@@ -70,7 +70,7 @@ describe('NavigationService', () => {
 
     it('Should restore the stored sideBar', () => {
       storedSideBar = ['applications', 'dashboard', 'divider', 'sessions'];
-      expect(service.restoreSidebar()).toBe(storedSideBar);
+      expect(service.restoreSidebar()).toEqual(storedSideBar);
     });
 
     it('Should restore default config sideBar if none is stored', () => {

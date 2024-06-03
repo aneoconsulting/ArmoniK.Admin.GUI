@@ -132,7 +132,7 @@ describe('IndexComponent', () => {
   });
 
   it('should get pageIcon', () => {
-    expect(component.getPageIcon()).toEqual('monitor_heart');
+    expect(component.getIcon()).toEqual('monitor_heart');
   });
 
   describe('getColor', () => {

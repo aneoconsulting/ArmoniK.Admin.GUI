@@ -60,6 +60,23 @@ describe('DashboardIndexService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should get statuses label', () => {
+    expect(service.statuses().sort((a, b) => Number(a.value) - Number(b.value))).toEqual([
+      { value: '0', name: 'Unspecified' },
+      { value: '1', name: 'Creating' },
+      { value: '2', name: 'Submitted' },
+      { value: '3', name: 'Dispatched' },
+      { value: '4', name: 'Completed' },
+      { value: '5', name: 'Error' },
+      { value: '6', name: 'Timeout' },
+      { value: '7', name: 'Cancelling' },
+      { value: '8', name: 'Cancelled' },
+      { value: '9', name: 'Processing' },
+      { value: '10', name: 'Processed' },
+      { value: '11', name: 'Retried' }
+    ]);
+  });
+
   it('should restore lines', () => {
     expect(service.restoreLines()).toEqual(lines);
   });
