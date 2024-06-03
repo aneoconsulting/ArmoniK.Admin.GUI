@@ -239,27 +239,12 @@ export class IndexComponent implements OnInit {
   onSubmitStorage(event: SubmitEvent): void {
     event.preventDefault();
 
-    const form = event.target as HTMLFormElement;
-
-    if (!form) {
-      return;
-    }
-
-    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-
-    const checkboxesArray = Array.from(checkboxes) as HTMLInputElement[];
-    const keys: Key[] = [];
-
-    for (const checkbox of checkboxesArray) {
-      if (checkbox.checked) {
-        keys.push(checkbox.name as Key);
-      }
-    }
-
-    for (const key of keys) {
+    for (const key of this.selectedKeys) {
       this.keys.delete(key);
       this.#storageService.removeItem(key);
     }
+
+    this.selectedKeys.clear();
 
     this.#notificationService.success('Data cleared');
   }
