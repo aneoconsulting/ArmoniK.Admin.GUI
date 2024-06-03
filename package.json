@@ -20,17 +20,17 @@
   "dependencies": {
     "@aneoconsultingfr/armonik.api.angular": "^3.17.1",
     "@angular-material-components/datetime-picker": "^16.0.1",
-    "@angular/animations": "^16.2.12",
+    "@angular/animations": "^17.3.10",
     "@angular/cdk": "16.2.14",
-    "@angular/common": "^16.2.12",
-    "@angular/compiler": "^16.2.12",
-    "@angular/core": "^16.2.12",
-    "@angular/forms": "^16.2.12",
+    "@angular/common": "^17.3.10",
+    "@angular/compiler": "^17.3.10",
+    "@angular/core": "^17.3.10",
+    "@angular/forms": "^17.3.10",
     "@angular/material": "16.2.14",
     "@angular/material-luxon-adapter": "^16.2.14",
-    "@angular/platform-browser": "^16.2.12",
-    "@angular/platform-browser-dynamic": "^16.2.12",
-    "@angular/router": "^16.2.12",
+    "@angular/platform-browser": "^17.3.10",
+    "@angular/platform-browser-dynamic": "^17.3.10",
+    "@angular/router": "^17.3.10",
     "@ngx-grpc/common": "^3.1.2",
     "@ngx-grpc/core": "^3.1.2",
     "@ngx-grpc/grpc-web-client": "^3.1.2",
@@ -42,15 +42,15 @@
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^16.2.14",
+    "@angular-devkit/build-angular": "^17.3.8",
     "@angular-eslint/builder": "17.5.2",
     "@angular-eslint/eslint-plugin": "17.5.2",
     "@angular-eslint/eslint-plugin-template": "17.5.2",
     "@angular-eslint/schematics": "17.5.2",
     "@angular-eslint/template-parser": "17.5.2",
-    "@angular/cli": "~16.2.14",
-    "@angular/compiler-cli": "^16.2.12",
-    "@angular/localize": "16.2.12",
+    "@angular/cli": "~17.3.8",
+    "@angular/compiler-cli": "^17.3.10",
+    "@angular/localize": "17.3.10",
     "@types/google-protobuf": "^3.15.12",
     "@types/jest": "^29.5.12",
     "@types/luxon": "^3.4.2",
@@ -68,6 +68,6 @@
     "ng-extract-i18n-merge": "2.11.2",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "~5.1.6"
+    "typescript": "~5.4.5"
   }
 }

@@ -117,13 +117,13 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "armonik-admin-gui:build:production"
+              "buildTarget": "armonik-admin-gui:build:production"
             },
             "development": {
-              "browserTarget": "armonik-admin-gui:build:development,en"
+              "buildTarget": "armonik-admin-gui:build:development,en"
             },
             "fr": {
-              "browserTarget": "armonik-admin-gui:build:development,fr"
+              "buildTarget": "armonik-admin-gui:build:development,fr"
             }
           },
           "defaultConfiguration": "development"
