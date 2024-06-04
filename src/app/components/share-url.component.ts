@@ -10,9 +10,9 @@ import { IconsService } from '@services/icons.service';
   template: `
 <button mat-icon-button i18n-aria-label aria-label="Share" [cdkCopyToClipboard]="sharableURL" (cdkCopyToClipboardCopied)="onCopied()" [disabled]="copied" matTooltip="Copy Page URL" i18n-matTooltip>
   @if (copied) {
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('share')"/>
-  } @else {
     <mat-icon aria-hidden="true" [fontIcon]="getIcon('done')"/>
+  } @else {
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('share')"/>
   }
 </button>
   `,
