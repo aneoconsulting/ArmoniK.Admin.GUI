@@ -4,9 +4,9 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
+import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -75,31 +75,44 @@ describe('TasksTableComponent', () => {
     cancel$: jest.fn(() => of({})),
   };
 
-  const matDialogData: TaskStatusColored[] = [
+  const defaultStatusesGroups: TasksStatusesGroup[] = [
     {
-      color: 'red',
-      status: TaskStatus.TASK_STATUS_CANCELLING,
+      name: 'Completed',
+      statuses: [TaskStatus.TASK_STATUS_COMPLETED],
+      color: '#4caf50',
     },
     {
-      color: 'blue',
-      status: TaskStatus.TASK_STATUS_CREATING,
+      name: 'Error',
+      statuses: [TaskStatus.TASK_STATUS_ERROR],
+      color: '#ff0000',
     },
-    {
-      color: 'green',
-      status: TaskStatus.TASK_STATUS_RETRIED
-    }
   ];
+
+  const mockDialogReturn: ManageGroupsDialogResult = {
+    groups: [
+      {
+        name: 'Timeout',
+        statuses: [TaskStatus.TASK_STATUS_TIMEOUT],
+        color: '#ff6944',
+      },
+      {
+        name: 'Retried',
+        statuses: [TaskStatus.TASK_STATUS_RETRIED],
+        color: '#ff9800',
+      }
+    ]
+  };
 
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed: jest.fn(() => of(matDialogData))
+        afterClosed: jest.fn(() => of(mockDialogReturn))
       };
     })
   };
 
   const mockTasksByStatusService = {
-    restoreStatuses: jest.fn(),
+    restoreStatuses: jest.fn(() => defaultStatusesGroups),
     saveStatuses: jest.fn()
   };
 
@@ -237,12 +250,12 @@ describe('TasksTableComponent', () => {
       component.personalizeTasksByStatus();
     });
 
-    it('should update tasks statuses', () => {
-      expect(component.tasksStatusesColored).toEqual(matDialogData);
+    it('should update statusesGroup', () => {
+      expect(component.statusesGroups).toEqual(mockDialogReturn.groups);
     });
 
     it('should call tasksByStatus service',() => {
-      expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith(component.table, matDialogData);
+      expect(mockTasksByStatusService.saveStatuses).toHaveBeenCalledWith(component.table, component.statusesGroups);
     });
   });
 

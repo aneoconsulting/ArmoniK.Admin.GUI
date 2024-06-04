@@ -1,44 +1,40 @@
-import { FilterStatusOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, Input, inject } from '@angular/core';
+
+import { FilterStatusOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesGroup } from '@app/dashboard/types';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount } from '@app/tasks/types';
-import { TaskStatusColored } from '@app/types/dialog';
 import { SpinnerComponent } from './spinner.component';
 
 @Component({
   selector: 'app-view-tasks-by-status',
   template: `
-  @if(loading) {
-    <app-spinner/>
+  @if (loading) {
+    <app-spinner />
   } @else {
-    @for (status of statuses; track status) {
+    @for (group of statusesGroups; track group.name) {
       <a mat-button
-        [matTooltip]="status.tooltip"
+        [matTooltip]="group.name"
         [routerLink]="['/tasks']"
-        [queryParams]="status.queryParams"
-        [style]="'color: ' + status.color"
+        [queryParams]="group.queryParams"
+        [style]="'color: ' + group.color"
       >
-      {{ status.statusCount }}
+        {{ group.statusCount ?? 0 }}
       </a>
       @if (!$last) {
-        |
+        <span>|</span>
       }
     }
   }
-    `,
+  `,
   styles: [`
 .mdc-button {
   min-width: 0;
 }
     `],
   standalone: true,
-  providers: [
-    TasksStatusesService
-  ],
   imports: [
     RouterModule,
     SpinnerComponent,
@@ -47,70 +43,71 @@ import { SpinnerComponent } from './spinner.component';
   ],
 })
 export class ViewTasksByStatusComponent {
-  readonly tasksStatusesService = inject(TasksStatusesService);
-
   @Input({ required: true }) loading = true;
   @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
 
-  @Input({ required: true }) set statuses(entries: TaskStatusColored[]) {
-    const statuses: Required<TaskStatusColored>[] = [];
-    entries.forEach(entry => {
-      statuses.push(this.completeStatus(entry));
-    });
-    this._statuses = statuses;
-  }
-
-  @Input({ required: true }) set statusesCounts(entries: StatusCount[] | null) {
-    if (entries) {
-      this.statuses.forEach(status => {
-        const statusCount = entries.find(entry => entry.status === status.status);
-        status.statusCount = statusCount?.count ?? 0;
-      });
-    }
+  @Input() set statusesGroups(entries: TasksStatusesGroup[]) {
+    this._statusesGroups = entries.map(group => this.completeGroup(group));
   }
 
   private _statusesGroups: TasksStatusesGroup[] = [];
 
-  private _statuses: Required<TaskStatusColored>[] = [];
-
-  get statuses(): Required<TaskStatusColored>[] {
-    return this._statuses;
+  get statusesGroups(): TasksStatusesGroup[] {
+    return this._statusesGroups;
   }
 
-  createQueryParams(status: TaskStatus): Record<string, string> {
-    const taskStatusQueryParams = this.#createQueryParamsStatusKey(status);
-    return {
-      ...this.defaultQueryParams,
-      ...taskStatusQueryParams
-    };
-  }
-
-  #createQueryParamsStatusKey(status: TaskStatus): Record<string, string> {
-    const filterGroup = Object.keys(this.defaultQueryParams).map(keys => keys[0]); // The first character of the key represents the filter "Or Group"
-    const taskStatusQueryParams: Record<string, string> = {};
-    filterGroup.forEach(groupId => {
-      taskStatusQueryParams[`${groupId}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`] = status.toString();
+  @Input() set statusesCount(entries: StatusCount[] | null) {
+    this.statusesGroups.forEach(group => group.statusCount = 0);
+    entries?.forEach((entry) => {
+      this.statusesGroups.forEach(group => {
+        if (group.statuses.includes(entry.status) && group.statusCount !== undefined) {
+          group.statusCount += entry.count;
+        }
+      });
     });
+  }
+
+  createQueryParams(group: TasksStatusesGroup) {
+    const queryOrs = Object.keys(this.defaultQueryParams).map(key => key[0]).filter((key, index, self) => self.indexOf(key) === index);
+    const queryParamsKeys = Object.keys(this.defaultQueryParams);
+    const queryParamsValues = Object.values(this.defaultQueryParams);
+    const taskStatusQueryParams: Record<string, string> = {};
+    let orGroups = 0;
+
+    if (queryOrs.length !== 0) {
+      queryOrs.forEach(or => {
+        group.statuses.forEach(status => {
+          taskStatusQueryParams[this.#createQueryParamKeyOr(orGroups)] = status.toString();
+          queryParamsKeys.forEach((key, index) => {
+            if (key.startsWith(or)) {
+              taskStatusQueryParams[`${orGroups}${key.slice(1)}`] = queryParamsValues[index];
+            }
+          });
+          orGroups++;
+        });
+      });
+    } else {
+      group.statuses.forEach((status, index) => {
+        taskStatusQueryParams[this.#createQueryParamKeyOr(index)] = status.toString();
+      });
+    }
+    
     return taskStatusQueryParams;
   }
 
-  /**
-   * Create a status that can be used by the component by filling its missing fields
-   * @param incompleteStatus initial status to transform
-   * @returns the complete status
-   */
-  completeStatus(incompleteStatus: TaskStatusColored) {
-    return {
-      status: incompleteStatus.status,
-      color: incompleteStatus.color,
-      queryParams: this.createQueryParams(incompleteStatus.status),
-      tooltip: this.tooltip(incompleteStatus.status),
-      statusCount: 0
-    };
+  #createQueryParamKeyOr(index: number) {
+    return `${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS}-${FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL}`;
   }
 
-  tooltip(status: TaskStatus): string {
-    const statusLabel = this.tasksStatusesService.statusToLabel(status);
-    return statusLabel;
+  /**
+   * Create a group that can be used by the component by filling its missing fields
+   * @param group initial group to transform
+   * @returns the complete status
+   */
+  completeGroup(group: TasksStatusesGroup): TasksStatusesGroup {
+    return {
+      queryParams: this.createQueryParams(group),
+      ...group,
+    };
   }
 }

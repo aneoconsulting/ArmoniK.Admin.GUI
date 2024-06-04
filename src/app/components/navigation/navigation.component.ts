@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
 import { ExternalService } from '@app/types/external-service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -86,6 +87,7 @@ main {
     MatTooltipModule,
     MatDialogModule,
     ChangeLanguageButtonComponent,
+    HealthCheckComponent,
   ]
 })
 export class NavigationComponent implements OnInit{

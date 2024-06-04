@@ -4,15 +4,13 @@
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
   }
-  @if (sideBarOpened) {
-    <button mat-icon-button (click)="toggleSideBar()">
-      <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
-    </button>
-  } @else {
-    <button mat-icon-button (click)="toggleSideBar()">
+  <button mat-icon-button (click)="toggleSideBar()">
+    @if (sideBarOpened) {
       <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
-    </button>
-  }
+    } @else {
+      <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
+    }
+  </button>
   <div class="title">
     <span>ArmoniK</span>
     <span> - </span>
@@ -24,6 +22,7 @@
   </div>
   <div class="spacer"></div>
   <app-change-language-button />
+  <app-healthcheck />
   <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
     <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
     <span i18n="Button to view external services">
