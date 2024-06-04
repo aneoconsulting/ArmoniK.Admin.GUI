@@ -1,0 +1,19 @@
+<button mat-button [matMenuTriggerFor]="switchLanguage" i18n-matTooltip [disabled]="!data">
+  <mat-icon matListItemIcon [fontIcon]="getIcon('healthcheck')" aria-hidden="true" />
+  <span class="health-color" [style]="{'color':getColor(globalStatus)}"
+    [matTooltip]="getToolTip(globalStatus)">&#10687;</span>
+</button>
+<mat-menu #switchLanguage="matMenu">
+  <div mat-menu-item class="services" *ngFor="let service of data; let index = index" [matTooltip]="service.message"
+    matTooltipPosition="right" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
+    [tabindex]="index">
+    {{service.name}}
+    <div class="health-status">
+      <span class="health-color" [style]="{'color':getColor(service.healthy)}">&#10687;</span>
+      <button mat-icon-button [disabled]="!service.message" [cdkCopyToClipboard]="service.message"
+        (click)="$event.stopPropagation(); onMessageCopy()">
+        <mat-icon [fontIcon]="getIcon('copy')" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</mat-menu>
