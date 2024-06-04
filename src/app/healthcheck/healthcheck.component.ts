@@ -1,6 +1,5 @@
 import { HealthStatusEnum } from '@aneoconsultingfr/armonik.api.angular';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,8 +31,6 @@ import { NotificationService } from '@services/notification.service';
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
-    NgFor,
-    NgIf,
     MatSnackBarModule,
     MatButtonModule,
     ClipboardModule,

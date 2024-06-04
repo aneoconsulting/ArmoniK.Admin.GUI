@@ -4,16 +4,17 @@
     [matTooltip]="getToolTip(globalStatus)">&#10687;</span>
 </button>
 <mat-menu #switchLanguage="matMenu">
-  <div mat-menu-item class="services" *ngFor="let service of data; let index = index" [matTooltip]="service.message"
-    matTooltipPosition="right" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
-    [tabindex]="index">
-    {{service.name}}
-    <div class="health-status">
-      <span class="health-color" [style]="{'color':getColor(service.healthy)}">&#10687;</span>
-      <button mat-icon-button [disabled]="!service.message" [cdkCopyToClipboard]="service.message"
-        (click)="$event.stopPropagation(); onMessageCopy()">
-        <mat-icon [fontIcon]="getIcon('copy')" aria-hidden="true" />
-      </button>
+  @for (service of data; track service.name) {
+    <div mat-menu-item class="services" [matTooltip]="service.message" matTooltopPosition="right" 
+    (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" [tabindex]="$index">
+      {{service.name}}
+      <section class="health-status">
+        <span class="health-color" [style]="{'color':getColor(service.healthy)}">&#10687;</span>
+        <button mat-icon-button [disabled]="!service.message" [cdkCopyToClipboard]="service.message"
+          (click)="$event.stopPropagation(); onMessageCopy()">
+          <mat-icon [fontIcon]="getIcon('copy')" aria-hidden="true" />
+        </button>
+      </section>
     </div>
-  </div>
+  }
 </mat-menu>
