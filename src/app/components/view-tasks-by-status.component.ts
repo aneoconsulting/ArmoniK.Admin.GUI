@@ -1,7 +1,7 @@
 
 import { FilterStatusOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, WritableSignal, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, WritableSignal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';

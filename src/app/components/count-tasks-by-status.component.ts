@@ -13,7 +13,7 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
   [defaultQueryParams]="queryParams"
   [loading]="loading"
   [statusesGroups]="statusesGroups"
-  [statusesCount]="statusesCount"
+  [statusesCount]="statusesCount()"
 >
 </app-view-tasks-by-status>
   `,
@@ -45,7 +45,7 @@ export class CountTasksByStatusComponent {
     return this._statusesGroups;
   }
 
-  statusesCount: StatusCount[] | null = [];
+  statusesCount = signal<StatusCount[]>([]);
 
   loading = signal(true);
 
@@ -57,7 +57,9 @@ export class CountTasksByStatusComponent {
     this.refresh.pipe(
       switchMap(() => this.#tasksGrpcService.countByStatus$(entries)),
     ).subscribe(response => {
-      this.statusesCount = response.status ?? null;
+      if (response.status && response.status !== this.statusesCount()){
+        this.statusesCount.set(response.status);
+      }
       this.loading.set(false);
     });
     this.refresh.next();
