@@ -3,30 +3,32 @@
 <mat-dialog-content>
   <ul class="groups" cdkDropListGroup>
     @for (group of groups; track group) {
-      <div class="group-header">
-        <h3 [style]="'color:' + group.color">
-          {{ group.name }}
-        </h3>
-        <div class="group-header-actions">
-          <button mat-icon-button (click)="openEditStatusGroupModal(group)" i18n-matTooltip="Edit the group" matTooltip="Edit">
-            <mat-icon [fontIcon]="getIcon('edit')"/>
-          </button>
-          <button mat-icon-button (click)="onDelete(group)" i18n-matTooltip="Delete the group" matTooltip="Delete">
-            <mat-icon [fontIcon]="getIcon('delete')"/>
-          </button>
+      <li>
+        <div class="group-header">
+          <h3 [style]="'color:' + group.color">
+            {{ group.name }}
+          </h3>
+          <div class="group-header-actions">
+            <button mat-icon-button (click)="openEditStatusGroupModal(group)" i18n-matTooltip="Edit the group" matTooltip="Edit">
+              <mat-icon [fontIcon]="getIcon('edit')"/>
+            </button>
+            <button mat-icon-button (click)="onDelete(group)" i18n-matTooltip="Delete the group" matTooltip="Delete">
+              <mat-icon [fontIcon]="getIcon('delete')"/>
+            </button>
+          </div>
         </div>
-      </div>
-      <ul cdkDropList
-          (cdkDropListDropped)="onDrop($event)"
-          [cdkDropListData]="group.statuses"
-        >
-        @for (status of group.statuses; track status) {
-          <li cdkDrag class="task-status">
-            <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
-            <span>{{ statusToLabel(status) }}</span>
-          </li>
-        }
-      </ul>
+        <ul cdkDropList
+            (cdkDropListDropped)="onDrop($event)"
+            [cdkDropListData]="group.statuses"
+          >
+          @for (status of group.statuses; track status) {
+            <li cdkDrag class="task-status">
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
+              <span>{{ statusToLabel(status) }}</span>
+            </li>
+          }
+        </ul>
+      </li>
     }
     <div class="addGroup">
       <button mat-stroked-button (click)="openAddStatusGroupModal()">
