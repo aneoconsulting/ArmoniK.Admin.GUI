@@ -5,38 +5,28 @@
         <!-- Key -->
         <span class="key">{{ pretty(key) }}</span>
         <span>: </span>
-  
-        <!-- String -->
+        <!-- Value -->
         @if (isString(findValue(key))) {
           <span>{{ findValue(key) }}</span>
-        }
-  
-        <!-- Number -->
-        @else if (isNumber(findValue(key)) && !isStatus(key)) {
+        } @else if (isNumber(findValue(key)) && !isStatus(key)) {
           <span>{{ findValue(key) }}</span>
-        }
-        <!-- Status -->
-        @else if (isStatus(key)) {
+        } @else if (isStatus(key)) {  
           <span>{{ statusToLabel(key) }}</span>
-        }
-        <!-- Timestamp -->
-        @else if (isTimestamp(findValue(key))) {
+        } @else if (isTimestamp(findValue(key))) {
           <span>{{ toTimestamp(key) }}</span>
-        }
-        <!-- Duration -->
-        @else if (isDuration(findValue(key))) {
+        } @else if (isDuration(findValue(key))) {
           <span >{{ toTime(key) }}</span>
-        }
-        <!-- Is null or undefined -->
-        @else {
+        } @else {
           <span>-</span>
         }
       </p>
     } @else if (isArray(findValue(key))) {
       <!-- Array -->
-      @for (item of findArray(key); track $index) {
-        <li>{{ item }}</li>
-      }
+      <ul class="array-list">
+        @for (item of findArray(key); track $index) {
+          <li>{{ item }}</li>
+        }
+      </ul>
     } @else {
       <!-- Object -->
       <app-show-card-content [data]="findObject(key)" [statuses]="statuses"/>
