@@ -238,7 +238,7 @@ describe('TaskByStatusLineComponent', () => {
   });
 
   it('should return the filters', () => {
-    expect(component.taskByStatusFilters()).toEqual(filters);
+    expect(component.taskByStatusFilters).toEqual(filters);
   });
 
   describe('onShowFiltersChange', () => {
