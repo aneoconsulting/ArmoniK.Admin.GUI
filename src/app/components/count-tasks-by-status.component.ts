@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, signal } from '@angular/core';
 import { Subject, Subscription, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
@@ -13,7 +13,7 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
   [defaultQueryParams]="queryParams"
   [statuses]="statuses"
   [loading]="loading"
-  [statusesCounts]="statusesCounts"
+  [statusesCounts]="statusesCounts()"
 >
 </app-view-tasks-by-status>
   `,
@@ -45,22 +45,22 @@ export class CountTasksByStatusComponent {
     return this._statuses;
   }
 
-  statusesCounts: StatusCount[] | null = null;
+  statusesCounts = signal<StatusCount[] | null>(null);
 
-  loading = true;
+  loading = signal(true);
 
   #tasksGrpcService = inject(TasksGrpcService);
 
   subscription = new Subscription();
 
   @Input({ required: true }) set filters(entries: TaskSummaryFilters) {
-    this.statusesCounts = null;
+    this.statusesCounts.set(null);
     this._filters = entries;
     this.refresh.pipe(
       switchMap(() => this.#tasksGrpcService.countByStatus$(entries)),
     ).subscribe(response => {
-      this.loading = false;
-      this.statusesCounts = response.status ?? null;
+      this.statusesCounts.set(response.status ?? null);
+      this.loading.set(false);
     });
     this.refresh.next();
   }

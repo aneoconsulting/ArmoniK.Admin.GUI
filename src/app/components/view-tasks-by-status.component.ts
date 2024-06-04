@@ -1,6 +1,6 @@
 import { FilterStatusOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { NgFor, NgIf } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
@@ -12,8 +12,9 @@ import { SpinnerComponent } from './spinner.component';
 
 @Component({
   selector: 'app-view-tasks-by-status',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-<app-spinner *ngIf="loading; else data"></app-spinner>
+<app-spinner *ngIf="loading(); else data"></app-spinner>
 
 <ng-template #data>
   <ng-container *ngFor="let status of statuses; let index = index; trackBy:trackByCount">
@@ -50,7 +51,7 @@ import { SpinnerComponent } from './spinner.component';
 export class ViewTasksByStatusComponent {
   readonly tasksStatusesService = inject(TasksStatusesService);
 
-  @Input({ required: true }) loading = true;
+  @Input({ required: true }) loading: WritableSignal<boolean> = signal(true);
   @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
 
   @Input({ required: true }) set statuses(entries: TaskStatusColored[]) {

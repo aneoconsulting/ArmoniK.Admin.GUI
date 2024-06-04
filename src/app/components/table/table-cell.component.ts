@@ -1,5 +1,5 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavigationExtras, Params, Router, RouterModule } from '@angular/router';
@@ -17,6 +17,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
 @Component({
   selector: 'app-table-cell',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './table-cell.component.html',
   imports: [
     EmptyCellPipe,

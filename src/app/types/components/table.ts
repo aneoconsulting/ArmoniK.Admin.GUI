@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, WritableSignal, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
 import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
@@ -52,7 +52,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   @Input({ required: true }) options: O;
   @Input({ required: true }) filters$: Subject<F>;
   @Input({ required: true }) refresh$: Subject<void>;
-  @Input({ required: true }) loading$: Subject<boolean>;
+  @Input({ required: true }) loading: WritableSignal<boolean>;
   @Input() lockColumns = false;
   
   data: ArmonikData<R>[] = [];
@@ -83,7 +83,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     this.refresh$.pipe(
       switchMap(
         () => {
-          this.loading$.next(true);
+          this.loading.set(true);
           const options = structuredClone(this.options);
           const filters = structuredClone(this.filters);
 
@@ -111,7 +111,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         this.afterDataCreation(data);
       } else {
         this.newData(data);
-        this.loading$.next(false);
+        this.loading.set(false);
       }
     });
     this.refresh$.next();
