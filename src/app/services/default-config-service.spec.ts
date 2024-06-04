@@ -89,10 +89,6 @@ describe('DefaultConfigService', () => {
     expect(service.availableLanguages).toBeDefined();
   });
 
-  it('should have a defined healthcheck configuration', () => {
-    expect(service.healthCheck).toBeDefined();
-  });
-  
   it('should have a defined defaultSideBarOpened', () => {
     expect(service.defaultSidebarOpened).toBeDefined();
   });

@@ -5,9 +5,9 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input,
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ArmonikDataType, DataRaw, IndexListOptions, RawColumnKey, Status } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
 import { StatusesServiceI } from '@app/types/services';
 import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -60,7 +60,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   // Optional inputs
   @Input({ required: false }) actions: ActionTable<D>[];
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
-  @Input({ required: false }) tasksStatusesColored: TaskStatusColored[] = [];
+  @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: R, b: R) => boolean) | undefined;
 
   @Output() columnDrop = new EventEmitter<K[]>();

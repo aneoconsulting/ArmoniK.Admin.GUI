@@ -5,9 +5,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavigationExtras, Params, Router, RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
+import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, RawColumnKey, SessionData, Status } from '@app/types/data';
-import { TaskStatusColored } from '@app/types/dialog';
 import { StatusesServiceI } from '@app/types/services';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -59,7 +59,7 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
 
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
   @Input({ required: false }) isSelected: boolean = false;
-  @Input({ required: false }) tasksStatusesColored: TaskStatusColored[] = [];
+  @Input({ required: false }) statusesGroups: TasksStatusesGroup[] = [];
 
   @Output() changeSelection = new EventEmitter<void>();
 

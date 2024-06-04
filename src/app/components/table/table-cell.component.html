@@ -28,7 +28,7 @@
 <ng-container *ngIf="column.type === 'count'">
     <app-count-tasks-by-status
       [refresh]="refreshStatuses"
-      [statuses]="tasksStatusesColored"
+      [statusesGroups]="statusesGroups"
       [queryParams]="queryTasksParams"
       [filters]="countFilters"
     />
