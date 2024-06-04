@@ -1,4 +1,4 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
@@ -96,7 +96,7 @@ export const appConfig: ApplicationConfig = {
     },
     provideRouter(routes),
     importProvidersFrom(BrowserAnimationsModule),
-    importProvidersFrom(HttpClientModule),
+    provideHttpClient(),
     importProvidersFrom(GrpcCoreModule.forRoot()),
     importProvidersFrom(GrpcWebClientModule.forRoot({ settings: { host: '' } }))
   ]

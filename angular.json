@@ -36,13 +36,14 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular/build:application",
           "options": {
             "preserveSymlinks": true,
             "localize": true,
-            "outputPath": "dist/admin",
+            "outputPath": {
+              "base": "dist/admin"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -71,7 +72,8 @@
               "src/styles.css",
               "src/themes.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "en": {
@@ -100,9 +102,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -111,19 +111,19 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "armonik-admin-gui:build:production"
+              "buildTarget": "armonik-admin-gui:build:production"
             },
             "development": {
-              "browserTarget": "armonik-admin-gui:build:development,en"
+              "buildTarget": "armonik-admin-gui:build:development,en"
             },
             "fr": {
-              "browserTarget": "armonik-admin-gui:build:development,fr"
+              "buildTarget": "armonik-admin-gui:build:development,fr"
             }
           },
           "defaultConfiguration": "development"
