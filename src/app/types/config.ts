@@ -23,7 +23,6 @@ export type Key =
   'sessions-tasks-by-status' |
   'partitions-tasks-by-status' |
   'tasks-view-in-logs' |
-  'healthcheck-interval' |
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
   `${Scope}-show-filters`;
