@@ -11,7 +11,7 @@
 
 <mat-menu #menu="matMenu">
   @for (action of actions; track action.label) {
-    @if (actions[0].condition && actions[0].condition(element) || !actions[0].condition) {
+    @if (action.condition && action.condition(element) || !action.condition) {
       <button mat-menu-item (click)="action.action$.next(element)">
       <mat-icon [fontIcon]="getIcon(action.icon)"/>
       <p>{{ action.label }}</p>
