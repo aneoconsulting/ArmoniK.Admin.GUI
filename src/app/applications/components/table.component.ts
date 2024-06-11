@@ -1,10 +1,11 @@
 import { ApplicationRawEnumField, FilterStringOperator, ListApplicationsResponse, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
@@ -35,7 +36,9 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     TableComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements AfterViewInit {
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters>
+  implements AfterViewInit, OnInit {
+  scope: Scope = 'applications';
   table: TableTasksByStatus = 'applications';
   
   readonly grpcService = inject(ApplicationsGrpcService);
@@ -53,6 +56,10 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       action$: this.seeSessions$
     },
   ];
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();

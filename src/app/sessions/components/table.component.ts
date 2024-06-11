@@ -1,6 +1,6 @@
 import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { AfterViewInit, Component, EventEmitter, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Params, Router, RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
@@ -8,6 +8,7 @@ import { Subject, map, mergeAll } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTableComponent, AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import {  ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
@@ -42,7 +43,8 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
     MatDialogModule,
   ]
 })
-export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters>  implements AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> {
+export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> 
+  implements OnInit, AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> {
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
@@ -54,6 +56,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
 
+  scope: Scope = 'sessions'; 
   table: TableTasksByStatus = 'sessions';
 
   dataRaw: SessionRaw[];
@@ -136,6 +139,10 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       condition: (element: SessionData) => this.statusesService.canDelete(element.raw.status)
     }
   ];
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
