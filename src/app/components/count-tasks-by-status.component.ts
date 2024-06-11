@@ -86,7 +86,7 @@ export class CountTasksByStatusComponent {
   }
 
   #setId(filter: TaskSummaryFilters) {
-    if (filter[0] && filter[0][0] && filter[0][0].value) {
+    if (filter[0]?.[0]?.value) {
       this.id = filter[0][0].value.toString();
     } else {
       this.id = undefined;
