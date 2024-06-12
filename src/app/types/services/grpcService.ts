@@ -53,7 +53,6 @@ export interface GrpcCountByStatusInterface<R extends RawFilters> {
 
 export abstract class GrpcTableService<K extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   abstract readonly sortFields: Record<K, F>;
-  abstract readonly defaultSortField: F;
   
   abstract readonly grpcClient: GrpcClient;
   abstract readonly filterService: FiltersServiceInterface<RawFilters, F>;
@@ -78,7 +77,7 @@ export abstract class GrpcTableService<K extends DataFieldKey, O extends IndexLi
    * The sort field can be either an option, custom or basic enum field.
    * Since the parent class cannot make the difference between two enum field (for example taskSummaryField and sessionRawField), you have to implement it yourself.
    */
-  abstract createSortField(field: F): ListRequestSortField;
+  abstract createSortField(field: K): ListRequestSortField;
 
   /**
    * The filter field can be either an option, custom or basic enum field.
@@ -97,8 +96,7 @@ export abstract class GrpcTableService<K extends DataFieldKey, O extends IndexLi
    */
   createListRequest(options: O, filters: FiltersOr<F, FO>) {
     const requestFilter = this.createFilters(filters, this.filterService.filtersDefinitions as FilterDefinition<F, FO>[]);
-    const sortField = this.createSortField(this.sortFields[options.sort.active as K] ?? this.defaultSortField);
-    console.log(sortField);
+    const sortField = this.createSortField(options.sort.active as K);
 
     return {
       page: options.pageIndex,

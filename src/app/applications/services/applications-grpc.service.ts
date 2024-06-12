@@ -12,7 +12,6 @@ export class ApplicationsGrpcService extends GrpcTableService<ApplicationRawFiel
   readonly filterService = inject(ApplicationsFiltersService);
   readonly grpcClient = inject(ApplicationsClient);
 
-  readonly defaultSortField = ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME;
   readonly sortFields: Record<ApplicationRawFieldKey, ApplicationRawEnumField> = {
     'name': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
     'namespace': ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE,
@@ -25,8 +24,8 @@ export class ApplicationsGrpcService extends GrpcTableService<ApplicationRawFiel
     return this.grpcClient.listApplications(request);
   }
 
-  createSortField(field: ApplicationRawEnumField): ListApplicationSortField {
-    if (field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME) {
+  createSortField(field: ApplicationRawFieldKey): ListApplicationSortField {
+    if (field === 'name') {
       return {
         fields: [
           {

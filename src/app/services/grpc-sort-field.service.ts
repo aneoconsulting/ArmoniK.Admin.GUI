@@ -1,5 +1,6 @@
-import { SessionField, SessionRawEnumField, SessionTaskOptionEnumField, TaskField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { TaskOptionsFieldKey } from '@app/tasks/types';
+import { SessionField, TaskField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionRawFieldKey } from '@app/sessions/types';
+import { TaskOptionsFieldKey, TaskSummaryFieldKey } from '@app/tasks/types';
 
 export type GrpcSortOptionalFields = TaskField.AsObject | SessionField.AsObject;
 
@@ -18,7 +19,7 @@ export class GrpcSortFieldService {
   };
 
   buildSortField<F extends GrpcSortOptionalFields> (
-    field: TaskSummaryEnumField | TaskOptionEnumField | SessionRawEnumField | SessionTaskOptionEnumField | undefined,
+    field: SessionRawFieldKey | TaskSummaryFieldKey | TaskOptionsFieldKey,
     buildField: () => F): F
   {
     if (field?.toString().startsWith('options.options.')) {
@@ -27,7 +28,7 @@ export class GrpcSortFieldService {
           field: field.toString().replace('options.options.', '')
         }
       } as F;
-    } else if (field?.toString().startsWith('options.')) {
+    } else if (this.sortOptionsFields[field as TaskOptionsFieldKey]) {
       return {
         taskOptionField: {
           field: this.sortOptionsFields[field.toString().replace('options.', '') as TaskOptionsFieldKey]

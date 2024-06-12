@@ -18,7 +18,6 @@ export class SessionsGrpcService extends GrpcTableService<SessionRawFieldKey, Se
   readonly tasksGrpcService = inject(TasksGrpcService);
   readonly sortFieldService = new GrpcSortFieldService();
 
-  readonly defaultSortField = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT;
   readonly sortFields: Record<SessionRawFieldKey, SessionRawEnumField> = {
     'sessionId': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
     'status': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
@@ -39,13 +38,13 @@ export class SessionsGrpcService extends GrpcTableService<SessionRawFieldKey, Se
     return this.grpcClient.listSessions(listSessionsRequest);
   }
 
-  createSortField(field: SessionRawEnumField): ListDefaultSortField {
+  createSortField(field: SessionRawFieldKey): ListDefaultSortField {
     return {
       field: this.sortFieldService.buildSortField(field,
         () => {
           return {
             sessionRawField: {
-              field: field
+              field: this.sortFields[field] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT
             }
           } as SessionField;
         }

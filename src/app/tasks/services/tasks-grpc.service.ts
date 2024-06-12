@@ -6,7 +6,7 @@ import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, 
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskOptionsFieldKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
 export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
@@ -15,7 +15,6 @@ export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, Task
   readonly grpcClient = inject(TasksClient);
   readonly sortFieldService = inject(GrpcSortFieldService);
 
-  readonly defaultSortField = TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT;
   readonly sortFields: Record<TaskSummaryFieldKey, TaskSummaryEnumField> = {
     id: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
     sessionId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
@@ -76,13 +75,13 @@ export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, Task
     return this.grpcClient.countTasksByStatus(request);
   }
 
-  createSortField(field: TaskSummaryEnumField): ListDefaultSortField {
+  createSortField(field: TaskSummaryFieldKey | TaskOptionsFieldKey): ListDefaultSortField {
     return {
       field: this.sortFieldService.buildSortField(field,
         () => {
           return {
             taskSummaryField: {
-              field: field
+              field: this.sortFields[field as TaskSummaryFieldKey] ?? TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT
             }
           } as TaskField;
         }

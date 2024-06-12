@@ -14,7 +14,6 @@ export class PartitionsGrpcService extends GrpcTableService<PartitionRawFieldKey
   readonly filterService = inject(PartitionsFiltersService);
   readonly grpcClient = inject(PartitionsClient);
 
-  readonly defaultSortField = PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID;
   readonly sortFields: Record<PartitionRawFieldKey, PartitionRawEnumField> = {
     'id': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
     'parentPartitionIds': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS,
@@ -38,11 +37,11 @@ export class PartitionsGrpcService extends GrpcTableService<PartitionRawFieldKey
     return this.grpcClient.getPartition(getPartitionRequest);
   }
 
-  createSortField(field: PartitionRawEnumField): ListDefaultSortField {
+  createSortField(field: PartitionRawFieldKey): ListDefaultSortField {
     return {
       field: {
         partitionRawField: {
-          field
+          field: this.sortFields[field as PartitionRawFieldKey] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
         }
       }
     };

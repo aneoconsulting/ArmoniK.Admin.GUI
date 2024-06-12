@@ -11,8 +11,6 @@ import { ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } from '../ty
 export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
   implements GrpcGetInterface<GetResultResponse> {
 
-  readonly defaultSortField = ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID;
-
   readonly filterService = inject(ResultsFiltersService);
   readonly grpcClient = inject(ResultsClient);
 
@@ -40,11 +38,11 @@ export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, Resu
     return this.grpcClient.getResult(getResultRequest);
   }
 
-  createSortField(field: ResultRawEnumField): ListDefaultSortField {
+  createSortField(field: ResultRawFieldKey): ListDefaultSortField {
     return {
       field: {
         resultRawField: {
-          field: field
+          field: this.sortFields[field as ResultRawFieldKey] ?? ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
         }
       }
     };
