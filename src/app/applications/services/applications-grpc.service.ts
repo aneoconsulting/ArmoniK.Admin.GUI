@@ -40,14 +40,16 @@ export class ApplicationsGrpcService extends GrpcTableService<ApplicationRawFiel
           }
         ]
       };
-    } else {
+    } else if (this.sortFields[field]) {
       return {
         fields: [{
           applicationField: {
-            field: field
+            field: this.sortFields[field]
           }
         }]
       };
+    } else {
+      return this.createSortField('name');
     }
   }
 

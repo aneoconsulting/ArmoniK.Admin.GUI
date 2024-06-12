@@ -65,7 +65,6 @@ describe('ApplicationsGrpcService', () => {
 
   const mockApplicationsClient = {
     listApplications: jest.fn(),
-    getApplication: jest.fn(),
   };
 
   beforeEach(() => {
@@ -90,11 +89,18 @@ describe('ApplicationsGrpcService', () => {
       pageSize: options.pageSize,
       sort: {
         direction: 1,
-        fields: [{
-          applicationField: {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+        fields: [
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+            }
+          },
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+            }
           }
-        }]
+        ]
       },
       filters: {
         or: [
@@ -133,6 +139,26 @@ describe('ApplicationsGrpcService', () => {
     }));
   });
 
+  it('should sort with only one field and not two if not sorting by "name"', () => {
+    options.sort.active = 'version';
+    service.list$(options, []);
+    expect(mockApplicationsClient.listApplications).toHaveBeenCalledWith(new ListApplicationsRequest({
+      page: options.pageIndex,
+      pageSize: options.pageSize,
+      sort: {
+        direction: 1,
+        fields: [
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+            }
+          }
+        ]
+      },
+      filters: {or: []}
+    }));
+  });
+
   it('should throw on invalid filters', () => {
     const filters: ApplicationRawFilters = [[{
       field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE,
@@ -158,11 +184,18 @@ describe('ApplicationsGrpcService', () => {
       pageSize: options.pageSize,
       sort: {
         direction: 1,
-        fields: [{
-          applicationField: {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+        fields: [
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+            }
+          },
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+            }
           }
-        }]
+        ]
       },
       filters: {}
     }));
