@@ -21,13 +21,13 @@ export class GrpcSortFieldService {
     field: TaskSummaryEnumField | TaskOptionEnumField | SessionRawEnumField | SessionTaskOptionEnumField | undefined,
     buildField: () => F): F
   {
-    if (field && field.toString().startsWith('options.options.')) {
+    if (field?.toString().startsWith('options.options.')) {
       return {
         taskOptionGenericField: {
           field: field.toString().replace('options.options.', '')
         }
       } as F;
-    } else if (field && field.toString().startsWith('options.')) {
+    } else if (field?.toString().startsWith('options.')) {
       return {
         taskOptionField: {
           field: this.sortOptionsFields[field.toString().replace('options.', '') as TaskOptionsFieldKey]
