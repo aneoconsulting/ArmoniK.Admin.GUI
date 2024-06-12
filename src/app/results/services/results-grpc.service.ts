@@ -42,7 +42,7 @@ export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, Resu
     return {
       field: {
         resultRawField: {
-          field: this.sortFields[field as ResultRawFieldKey] ?? ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
+          field: this.sortFields[field] ?? ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
         }
       }
     };

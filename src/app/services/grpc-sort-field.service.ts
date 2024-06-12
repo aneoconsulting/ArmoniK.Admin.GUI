@@ -28,10 +28,10 @@ export class GrpcSortFieldService {
           field: field.toString().replace('options.options.', '')
         }
       } as F;
-    } else if (this.sortOptionsFields[field as TaskOptionsFieldKey]) {
+    } else if (this.sortOptionsFields[field.replace('options.', '') as TaskOptionsFieldKey]) {
       return {
         taskOptionField: {
-          field: this.sortOptionsFields[field.toString().replace('options.', '') as TaskOptionsFieldKey]
+          field: this.sortOptionsFields[field.replace('options.', '') as TaskOptionsFieldKey]
         }
       } as F;
     } else {

@@ -41,7 +41,7 @@ export class PartitionsGrpcService extends GrpcTableService<PartitionRawFieldKey
     return {
       field: {
         partitionRawField: {
-          field: this.sortFields[field as PartitionRawFieldKey] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
+          field: this.sortFields[field] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
         }
       }
     };
