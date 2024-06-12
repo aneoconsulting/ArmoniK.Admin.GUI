@@ -3,24 +3,22 @@ import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, map } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TaskOptions } from '@app/tasks/types';
 import { Filter, FilterType } from '@app/types/filters';
-import { ListOptionsSort } from '@app/types/options';
-import { GrpcCancelInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
+import { GrpcCancelInterface, GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
+import { FilterField, buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
-import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionRaw, SessionRawField, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsGrpcService implements GrpcListInterface<SessionsClient, SessionRawListOptions, SessionRawFilters, SessionRawFieldKey, SessionRawEnumField, SessionTaskOptionEnumField>, GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
+export class SessionsGrpcService extends GrpcTableService<SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField>
+  implements GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
   readonly filterService = inject(SessionsFiltersService);
   readonly grpcClient = inject(SessionsClient);
   readonly tasksGrpcService = inject(TasksGrpcService);
-  readonly utilsService = inject(UtilsService<SessionRawEnumField, SessionTaskOptionEnumField>);
   readonly sortFieldService = new GrpcSortFieldService();
 
+  readonly defaultSortField = SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT;
   readonly sortFields: Record<SessionRawFieldKey, SessionRawEnumField> = {
     'sessionId': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
     'status': SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
@@ -37,28 +35,63 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
   };
 
   list$(options: SessionRawListOptions, filters: SessionRawFilters): Observable<ListSessionsResponse> {
-    const requestFilters = this.utilsService.createFilters<SessionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
-    const sortField = this.sortFieldService.buildSortField<SessionRaw, SessionField>(options.sort, 
-      (sort: ListOptionsSort<SessionRaw & TaskOptions>) => {
-        return {
-          sessionRawField: {
-            field: this.sortFields[sort.active as SessionRawFieldKey] ?? SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT
-          }
-        } as SessionField;
-      }
-    );
-
-    const listSessionsRequest = new ListSessionsRequest({
-      page: options.pageIndex,
-      pageSize: options.pageSize,
-      sort: {
-        direction: sortDirections[options.sort.direction],
-        field: sortField
-      },
-      filters: requestFilters
-    });
-
+    const listSessionsRequest = new ListSessionsRequest(this.createListRequest(options, filters) as ListSessionsRequest);
     return this.grpcClient.listSessions(listSessionsRequest);
+  }
+
+  createSortField(field: SessionRawEnumField): ListDefaultSortField {
+    return {
+      field: this.sortFieldService.buildSortField(field,
+        () => {
+          return {
+            sessionRawField: {
+              field: field
+            }
+          } as SessionField;
+        }
+      )
+    };
+  }
+
+  createFilterField(field: SessionRawEnumField | SessionTaskOptionEnumField | string, isForRoot?: boolean, isCustom?: boolean): FilterField {
+    if (isForRoot) {
+      return {
+        sessionRawField: {
+          field: field as SessionRawEnumField
+        }
+      };
+    } else if (isCustom) {
+      return {
+        taskOptionGenericField: {
+          field: field as string
+        }
+      };
+    } else {
+      return {
+        taskOptionField: {
+          field: field as SessionTaskOptionEnumField
+        }
+      };
+    }
+  }
+
+  buildFilter(type: FilterType, filterField: FilterField, filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>): SessionFilterField.AsObject {
+    switch (type) {
+    case 'string':
+      return buildStringFilter(filterField, filter) as SessionFilterField.AsObject;
+    case 'status':
+      return buildStatusFilter(filterField, filter) as SessionFilterField.AsObject;
+    case 'date':
+      return buildDateFilter(filterField, filter) as SessionFilterField.AsObject;
+    case 'number':
+      return buildNumberFilter(filterField, filter) as SessionFilterField.AsObject;
+    case 'array':
+      return buildArrayFilter(filterField, filter) as SessionFilterField.AsObject;
+    case 'boolean':
+      return buildBooleanFilter(filterField, filter) as SessionFilterField.AsObject;
+    default:
+      throw new Error(`Type ${type} not supported`);
+    }
   }
 
   get$(sessionId: string): Observable<GetSessionResponse> {
@@ -107,49 +140,6 @@ export class SessionsGrpcService implements GrpcListInterface<SessionsClient, Se
     });
 
     return this.grpcClient.deleteSession(deleteSessionRequest);
-  }
-
-  #buildFilterField(filter: Filter<SessionRawEnumField, SessionTaskOptionEnumField>) {
-    return (type: FilterType, field: SessionRawField | SessionTaskOptionEnumField, isForRoot: boolean, isCustom: boolean) => {
-      let filterField: SessionFilterField.AsObject['field'];
-
-      if (isForRoot) {
-        filterField = {
-          sessionRawField: {
-            field: field as SessionRawEnumField
-          }
-        };
-      } else if (isCustom) {
-        filterField = {
-          taskOptionGenericField: {
-            field: field as string
-          }
-        };
-      } else {
-        filterField = {
-          taskOptionField: {
-            field: field as SessionTaskOptionEnumField
-          }
-        };
-      }
-
-      switch (type) {
-      case 'string':
-        return buildStringFilter(filterField, filter) as SessionFilterField.AsObject;
-      case 'status':
-        return buildStatusFilter(filterField, filter) as SessionFilterField.AsObject;
-      case 'date':
-        return buildDateFilter(filterField, filter) as SessionFilterField.AsObject;
-      case 'number':
-        return buildNumberFilter(filterField, filter) as SessionFilterField.AsObject;
-      case 'array':
-        return buildArrayFilter(filterField, filter) as SessionFilterField.AsObject;
-      case 'boolean':
-        return buildBooleanFilter(filterField, filter) as SessionFilterField.AsObject;
-      default:
-        throw new Error(`Type ${type} not supported`);
-      }
-    };
   }
 
   getTaskData$(sessionId: string, active: 'createdAt' | 'endedAt', direction: SortDirection) {

@@ -1,4 +1,4 @@
-import { FilterStringOperator, ListResultsResponse, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ListResultsResponse, ResultRawEnumField, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
@@ -12,7 +12,7 @@ import { ResultsFiltersService } from '../services/results-filters.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '../types';
 
 @Component({
   selector: 'app-results-table',
@@ -32,7 +32,8 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFilters, ResultRawListOptions }
     TableComponent,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> implements AfterViewInit {
+export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
+  implements AfterViewInit {
   readonly grpcService = inject(ResultsGrpcService);
   readonly indexService = inject(ResultsIndexService);
   readonly statusesService = inject(ResultsStatusesService);
