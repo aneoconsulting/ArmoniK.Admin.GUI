@@ -1,4 +1,4 @@
-import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { AfterViewInit, Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +20,7 @@ import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-sta
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -42,7 +42,8 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
     MatDialogModule,
   ]
 })
-export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters>  implements AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> {
+export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField> 
+  implements AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField> {
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();

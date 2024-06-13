@@ -16,7 +16,7 @@ import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
@@ -35,7 +35,8 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     TableComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements AfterViewInit {
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions, ApplicationRawEnumField>
+  implements AfterViewInit {
   table: TableTasksByStatus = 'applications';
   
   readonly grpcService = inject(ApplicationsGrpcService);

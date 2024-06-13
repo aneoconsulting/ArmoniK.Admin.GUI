@@ -87,6 +87,12 @@ describe('TasksGrpcService', () => {
         field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
         operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
         value: '2313893210'
+      },
+      {
+        field: null,
+        for: 'root',
+        operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_LESS_THAN_OR_EQUAL,
+        value: 29
       }
     ]
   ];

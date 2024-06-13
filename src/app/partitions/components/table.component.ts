@@ -10,7 +10,7 @@ import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-partitions-table',
@@ -27,7 +27,8 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     TableComponent,
   ]
 })
-export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements AfterViewInit {
+export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField>
+  implements AfterViewInit {
   
   readonly grpcService = inject(PartitionsGrpcService);
   readonly indexService = inject(PartitionsIndexService);
