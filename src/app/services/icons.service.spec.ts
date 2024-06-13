@@ -13,6 +13,14 @@ describe('IconsService', () => {
     it('Should return the default icon if the icon is invalid', () => {
       expect(service.getIcon('invalid-icon')).toEqual('radio_button_unchecked');
     });
+
+    it('should return the default icon if the icon is null', () => {
+      expect(service.getIcon(null)).toEqual('radio_button_unchecked');
+    });
+
+    it('should return the default icon if the icon is undefined', () => {
+      expect(service.getIcon(undefined)).toEqual('radio_button_unchecked');
+    });
   });
 
   describe('getAllIcons', () => {

@@ -173,7 +173,7 @@ export class IndexComponent implements OnInit {
     this.sidebar = this.#navigationService.restoreSidebar();
   }
 
-  getIcon(name: string): string {
+  getIcon(name: string | null): string {
     return this.#iconsService.getIcon(name);
   }
 

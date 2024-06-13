@@ -382,7 +382,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   orderByDuration(data: SessionRaw[]) {
-    data = data.sort((a, b) => {
+    data = data.toSorted((a, b) => {
       if (this.options.sort.direction === 'asc') {
         return Number(a.duration?.seconds) - Number(b.duration?.seconds);
       } else {

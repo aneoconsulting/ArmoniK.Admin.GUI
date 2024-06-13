@@ -9,7 +9,6 @@
   
   <main>
     <app-page-section class="sidebar">
-      <!-- TODO: use in a dialog -->
       <app-page-section-header icon="format_list_bulleted">
         <span i18n="Section title"> Sidebar </span>
       </app-page-section-header>
@@ -29,7 +28,7 @@
       <ul class="sidebar-items" cdkDropList (cdkDropListDropped)="drop($event)">
         <li cdkDrag *ngFor="let item of sidebar; let index = index; trackBy:trackBySidebarItem">
           <div class="sidebar-item-drag">
-            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="findSidebarItem(item).icon ?? 'horizontal_rule'"></mat-icon>
+            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="getIcon(findSidebarItem(item).id)"></mat-icon>
           </div>
   
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
