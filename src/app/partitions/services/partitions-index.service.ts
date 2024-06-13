@@ -6,7 +6,6 @@ import { TableService } from '@services/table.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '../types';
 
 @Injectable()
-// TODO: re-add app-index-service
 export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);

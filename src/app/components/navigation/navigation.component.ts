@@ -153,7 +153,6 @@ export class NavigationComponent implements OnInit{
   greeting() {
     const hour = new Date().getHours();
     const username = this.#userService.user ? this.#userService.user.username : '';
-    // TODO: localize with params
     if (hour < 12) {
       return $localize`Good morning` + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
