@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { catchError, merge, of, tap } from 'rxjs';
+import { CacheService } from '@services/cache.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -80,6 +81,7 @@ export const appConfig: ApplicationConfig = {
     StorageService,
     NavigationService,
     EnvironmentService,
+    CacheService,
     {
       provide: Window,
       useValue: window

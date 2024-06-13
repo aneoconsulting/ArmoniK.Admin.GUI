@@ -1,14 +1,16 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
 import { FiltersEnums, FiltersOptionsEnums, ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { TableColumn } from '../column.type';
+import { Scope } from '../config';
 import { ArmonikData, DataRaw, GrpcResponse, IndexListOptions, RawColumnKey } from '../data';
 import { FiltersOr } from '../filters';
 import { DataFieldKey, GrpcTableService } from '../services/grpcService';
@@ -55,14 +57,32 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   total: number = 0;
   filters: FiltersOr<F, FO> = [] as FiltersOr<F, FO>;
 
+  abstract scope: Scope;
+
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
   }
 
   abstract readonly grpcService: GrpcTableService<D, O, F, FO>;
   abstract readonly indexService: IndexServiceInterface<C, O>;
+  readonly cacheService = inject(CacheService);
   readonly filtersService = inject(FiltersService);
   readonly notificationService = inject(NotificationService);
+
+  initTable() {
+    this.loadFromCache();
+  }
+
+  loadFromCache() {
+    const cachedResponse = this.cacheService.get(this.scope);
+    if (cachedResponse) {
+      const cachedData = this.computeGrpcData(cachedResponse);
+      this.total = cachedResponse.total;
+      if (cachedData) {
+        this.newData(cachedData);
+      }
+    }
+  }
 
   list$(options: O, filters: FiltersOr<F, FO>): Observable<GrpcResponse> {
     return this.grpcService.list$(options, filters);
@@ -95,6 +115,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
       map(entries => {
         this.total = entries?.total ?? 0;
         if (entries) {
+          this.cacheService.save(this.scope, entries);
           return this.computeGrpcData(entries) ?? [];
         }
         return [];
@@ -143,14 +164,20 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   selector: 'app-results-table',
   template: '',
 })
-export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> extends AbstractTableComponent<R, C, D, O, F, FO> implements OnInit {
+export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null>
+  extends AbstractTableComponent<R, C, D, O, F, FO> {
   readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
 
   statusesGroups: TasksStatusesGroup[];
   abstract table: TableTasksByStatus;
 
-  ngOnInit(): void {
+  override initTable(): void {
+    this.initStatuses();
+    this.loadFromCache();
+  }
+
+  initStatuses() {
     this.statusesGroups = this.tasksByStatusService.restoreStatuses(this.table);
   }
 

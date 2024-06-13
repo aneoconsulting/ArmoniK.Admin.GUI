@@ -1,10 +1,11 @@
 import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { AfterViewInit, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
@@ -32,7 +33,9 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryList
   ]
 })
 export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
-  implements AfterViewInit {
+  implements OnInit, AfterViewInit {
+  scope: Scope = 'tasks';
+
   @Input({ required: false }) set serviceIcon(entry: string | null) {
     if (entry) {
       this._serviceIcon = entry;
@@ -119,6 +122,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       condition: (element: TaskData) => this.canCancelTask(element.raw),
     },
   ];
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();

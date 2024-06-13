@@ -1,8 +1,9 @@
 import { FilterStringOperator, ListResultsResponse, ResultRawEnumField, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -33,10 +34,15 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions 
   ]
 })
 export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
-  implements AfterViewInit {
+  implements OnInit, AfterViewInit {
+  scope: Scope = 'results';
   readonly grpcService = inject(ResultsGrpcService);
   readonly indexService = inject(ResultsIndexService);
   readonly statusesService = inject(ResultsStatusesService);
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
