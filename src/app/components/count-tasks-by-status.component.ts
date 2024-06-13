@@ -5,6 +5,7 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.component';
+import { CacheService } from '@services/cache.service';
 
 @Component({
   selector: 'app-count-tasks-by-status',
@@ -39,6 +40,7 @@ export class CountTasksByStatusComponent {
     }
   }
 
+  id: string | undefined;
   private _statusesGroups: TasksStatusesGroup[] = [];
 
   get statusesGroups(): TasksStatusesGroup[] {
@@ -50,16 +52,44 @@ export class CountTasksByStatusComponent {
   loading = true;
 
   #tasksGrpcService = inject(TasksGrpcService);
+  readonly cacheService = inject(CacheService);
 
   subscription = new Subscription();
 
   @Input({ required: true }) set filters(entries: TaskSummaryFilters) {
+    this.initCount(entries);
     this.refresh.pipe(
       switchMap(() => this.#tasksGrpcService.countByStatus$(entries)),
     ).subscribe(response => {
       this.loading = false;
       this.statusesCount = response.status ?? null;
+      this.saveData();
     });
     this.refresh.next();
+  }
+
+  initCount(filters: TaskSummaryFilters) {
+    this.#setId(filters);
+    this.loadFromCache();
+  }
+
+  loadFromCache() {
+    if (this.id) {
+      this.statusesCount = this.cacheService.getStatuses(this.id) ?? null;
+    }
+  }
+
+  saveData() {
+    if (this.id && this.statusesCount) {
+      this.cacheService.saveStatuses(this.id, this.statusesCount);
+    }
+  }
+
+  #setId(filter: TaskSummaryFilters) {
+    if (filter[0]?.[0]?.value) {
+      this.id = filter[0][0].value.toString();
+    } else {
+      this.id = undefined;
+    }
   }
 }

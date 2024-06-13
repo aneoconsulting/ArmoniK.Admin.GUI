@@ -1,8 +1,9 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { PartitionData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -28,12 +29,17 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
   ]
 })
 export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField>
-  implements AfterViewInit {
+  implements OnInit, AfterViewInit {
   
   readonly grpcService = inject(PartitionsGrpcService);
   readonly indexService = inject(PartitionsIndexService);
   
+  scope: Scope = 'partitions';
   table: TableTasksByStatus = 'partitions';
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
