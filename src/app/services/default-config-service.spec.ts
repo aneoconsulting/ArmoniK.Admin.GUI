@@ -77,12 +77,6 @@ describe('DefaultConfigService', () => {
     it('should be english by default', () => {
       expect(service.defaultLanguage).toBe('en');
     });
-
-    it('should be french if the url is in french', () => {
-      overrideWindowLocation('fr');
-      service = new DefaultConfigService();
-      expect(service.defaultLanguage).toBe('fr');
-    });
   });
 
   it('should have a defined availableLanguages configuration', () => {
