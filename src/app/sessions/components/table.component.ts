@@ -258,16 +258,17 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     } else {
       const params: Record<string, string> = {};
       this.filters.forEach((filterAnd, index) => {
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
         filterAnd.forEach(filter => {
-          if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+          if (filter.field !== SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
             const filterLabel = this.#createTaskByStatusLabel(filter, index);
             if (filterLabel && filter.value) {
               params[filterLabel] = filter.value.toString();
-              params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
             }
           }
         });
       });
+      console.log(params);
       return params;
     }
   }

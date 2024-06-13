@@ -64,12 +64,14 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
     }
     const params: Record<string, string> = {};
     this.filters.forEach((filtersAnd, index) => {
+      params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
       filtersAnd.forEach((filter) => {
-        const taskField = this.#partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
-        if (taskField && filter.operator !== null && filter.value !== null) {
-          const key = this.filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
-          params[key] = filter.value?.toString();
-          params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
+        if (filter.field !== PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
+          const taskField = this.#partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
+          if (taskField && filter.operator !== null && filter.value !== null) {
+            const key = this.filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
+            params[key] = filter.value?.toString();
+          }
         }
       });
     });
