@@ -1,5 +1,4 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor } from '@angular/common';
 import { Component, EventEmitter, Inject, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -62,7 +61,6 @@ import { Line } from '../types';
     IconsService,
   ],
   imports: [
-    NgFor,
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
@@ -127,9 +125,5 @@ export class ReorganizeLinesDialogComponent implements OnInit {
         this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
       }
     });
-  }
-
-  trackByLine(index: number, line: Line): string {
-    return line.name + index;
   }
 }

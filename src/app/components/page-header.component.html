@@ -1,5 +1,7 @@
 <div class="page-header">
-    <h1> <ng-content></ng-content> </h1>
-  
-    <app-share-url *ngIf="sharableURL" [sharableURL]="sharableURL"> </app-share-url>
-  </div>
+  <h1> <ng-content></ng-content> </h1>
+
+  @if (sharableURL) {
+    <app-share-url [sharableURL]="sharableURL"/>
+  }
+</div>

@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,8 +38,6 @@ span {
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     FiltersDialogAndComponent,
     MatButtonModule,
     MatMenuModule,

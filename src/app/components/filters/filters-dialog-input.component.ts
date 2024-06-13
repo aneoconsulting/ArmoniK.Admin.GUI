@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -21,8 +21,6 @@ mat-form-field {
 `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     MatFormFieldModule,
     MatInputModule,
     NgxMatTimepickerModule,
@@ -149,9 +147,5 @@ export class FiltersDialogInputComponent implements OnInit {
     } else {
       return booleans.filter(bool => bool.toLowerCase().includes(value.toLowerCase()));
     }
-  }
-
-  trackBySelect(_: number, item: { value: string }): string {
-    return item.value;
   }
 }

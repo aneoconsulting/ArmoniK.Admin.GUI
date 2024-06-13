@@ -6,20 +6,26 @@
     <mat-form-field appearance="outline">
       <mat-label for="name" i18n="Name of the statuses group"> Name </mat-label>
       <input matInput id="name" type="text" formControlName="name" i18n-placeholder="Placeholder" placeholder="Name of your line" required i18n="Input error">
-      <mat-error *ngIf="lineForm.get('name')?.hasError('required')">
-      Name is <strong>required</strong>
-      </mat-error>
+      @if (lineForm.get('name')?.hasError('required')) {
+        <mat-error i18n="Error message">
+          Name is <strong>required</strong>
+        </mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label i18n="Input label">Type</mat-label>
       <input matInput [matAutocomplete]="autoStatus" formControlName="type" required>
       <mat-autocomplete (optionSelected)="onTypeSelected($event)" #autoStatus>
-        <mat-option *ngFor="let option of (filteredTypes | async)" [value]="option">{{ option }}</mat-option>
+        @for (option of filteredTypes | async; track option) {
+          <mat-option [value]="option">{{ option }}</mat-option>
+        }
       </mat-autocomplete>
-      <mat-error *ngIf="lineForm.get('type')?.hasError('invalid')">
-        Type is <strong>invalid</strong>
-      </mat-error>
+      @if (lineForm.get('type')?.hasError('required')) {
+        <mat-error i18n="Error message">
+          Type is <strong>required</strong>
+        </mat-error>
+      }
     </mat-form-field>
 
   </mat-dialog-content>

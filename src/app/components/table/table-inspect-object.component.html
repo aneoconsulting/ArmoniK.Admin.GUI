@@ -1,6 +1,7 @@
 <button mat-icon-button matTooltip="View" i18n-matTooltip (click)="onViewObject()" [disabled]="!isObjectDefined" aria-label="view" i18n-aria-label>
-    <ng-container *ngIf="isObjectDefined">
-      <mat-icon [fontIcon]="getIcon('view')"></mat-icon>
-    </ng-container>
-    <mat-icon *ngIf="!isObjectDefined" [fontIcon]="getIcon('view-off')"></mat-icon>
+    @if (isObjectDefined) {
+      <mat-icon [fontIcon]="getIcon('view')"/>
+    } @else {
+      <mat-icon [fontIcon]="getIcon('view-off')"/>
+    }
   </button>

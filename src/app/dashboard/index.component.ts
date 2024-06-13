@@ -1,5 +1,4 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -105,9 +104,6 @@ import { Line, LineType } from './types';
     TasksStatusesService,
   ],
   imports: [
-    NgFor,
-    NgIf,
-    JsonPipe,
     PageHeaderComponent,
     PageSectionComponent,
     SpinnerComponent,
@@ -276,9 +272,5 @@ export class IndexComponent implements OnInit {
   onSaveChange() {
     this.hasOnlyOneLine = this.lines.length === 1;
     this.#dashboardIndexService.saveLines(this.lines);
-  }
-
-  trackByLine(index: number, line: Line): string {
-    return line.name + index;
   }
 }

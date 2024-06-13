@@ -1,4 +1,4 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -29,8 +29,6 @@ mat-dialog-content {
   providers: [],
   imports: [
     MatDialogModule,
-    NgIf,
-    NgFor,
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -89,10 +87,6 @@ export class AddLineDialogComponent implements OnInit {
 
   onCancel(): void {
     this._dialogRef.close();
-  }
-
-  trackByType(_: number, item: LineType) {
-    return item;
   }
 
   onTypeSelected(event: MatAutocompleteSelectedEvent) {

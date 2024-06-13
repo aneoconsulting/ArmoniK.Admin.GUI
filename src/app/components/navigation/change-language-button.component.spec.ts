@@ -78,8 +78,4 @@ describe('ChangeLanguageButtonComponent', () => {
   it('should get route', () => {
     expect(component.getRoute()).toEqual('/my-route');
   });
-
-  it('should track by language', () => {
-    expect(component.trackByLanguage(0, 'en')).toEqual('en');
-  });
 });

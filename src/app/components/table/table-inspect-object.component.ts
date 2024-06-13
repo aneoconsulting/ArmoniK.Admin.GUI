@@ -1,4 +1,4 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -18,7 +18,6 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    NgIf,
     CommonModule
   ],
   providers: [],

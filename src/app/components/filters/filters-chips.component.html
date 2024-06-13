@@ -1,12 +1,14 @@
 <mat-chip-listbox>
-  <ng-container *ngFor="let filter of filtersAnd; let last = last; trackBy:trackByFilter">
-   <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected">
-     <span *ngIf="filter.field;else noField"> {{ content(filter) }} </span>
-   </mat-chip>
-   <span class="text" *ngIf="!last">AND</span>
- </ng-container>
+  @for(filter of filtersAnd; track filter.field) {
+    <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected">
+      @if(filter.field) {
+        <span>{{ content(filter) }}</span>
+      } @else {
+        <span i18n>No field</span>
+      }
+    </mat-chip>
+    @if(!$last) {
+      <span class="text" i18n>AND</span>
+    }
+  }
 </mat-chip-listbox>
-
-<ng-template #noField>
- <span i18n>No field</span>
-</ng-template>

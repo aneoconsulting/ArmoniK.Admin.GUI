@@ -18,9 +18,11 @@
     <mat-form-field appearance="outline" class="url-service">
       <mat-label for="urlTemplate" i18n="URL Template"> URL Template </mat-label>
       <input matInput id="urlTemplate" type="url" formControlName="urlTemplate" i18n-placeholder="Placeholder" placeholder="URL of the service" required>
-      <mat-error *ngIf="viewInLogsForm.get('urlTemplate')?.hasError('required')" i18n="Input error">
-      URL is <strong>required</strong>
-      </mat-error>
+      @if (viewInLogsForm.get('urlTemplate')?.hasError('pattern')) {
+        <mat-error i18n="Input error">
+          URL is <strong>invalid</strong>
+        </mat-error>
+      }
     </mat-form-field>
   </form>
 </mat-dialog-content>

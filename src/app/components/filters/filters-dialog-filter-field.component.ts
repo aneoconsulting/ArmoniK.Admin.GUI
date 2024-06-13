@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -31,8 +31,6 @@ span {
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     KeyValuePipe,
     MatFormFieldModule,
     MatSelectModule,

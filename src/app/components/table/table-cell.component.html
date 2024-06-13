@@ -1,45 +1,39 @@
-<!-- Simple and Customs -->
-<ng-container *ngIf="column.type === undefined">
-  {{ value | emptyCell }}
-</ng-container>
-<!-- Object -->
-<ng-container *ngIf="column.type === 'object'">
-  <app-table-inspect-object [object]="handleNestedKeys(element)" [label]="column.name" />
- </ng-container>
-<!-- link -->
-<ng-container *ngIf="column.type === 'link'">
-  <button mat-button (click)="navigate()">
-    {{ value | emptyCell }}
-  </button>
-</ng-container>
-<!-- Duration -->
-<ng-container *ngIf="column.type === 'duration'">
-  {{ durationValue | duration | emptyCell }}
-</ng-container>
-<!-- Date -->
-<ng-container *ngIf="column.type === 'date'">
-  {{ dateValue | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
-</ng-container>
-<!-- Status -->
-<ng-container *ngIf="column.type === 'status'">
-  {{ statusLabel() }}
-</ng-container>
-<!-- Count Tasks by Statuses -->
-<ng-container *ngIf="column.type === 'count'">
+@switch (column.type) {
+  @case ('object') {
+    <app-table-inspect-object [object]="handleNestedKeys(element)" [label]="column.name" />
+  }
+  @case ('link') {
+    <button mat-button (click)="navigate()">
+      {{ value | emptyCell }}
+    </button>
+  }
+  @case ('duration') {
+    {{ durationValue | duration | emptyCell }}
+  }
+  @case ('date') {
+    {{ dateValue | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
+  }
+  @case ('status') {
+    {{ statusLabel() }}
+  }
+  @case ('count') {
     <app-count-tasks-by-status
       [refresh]="refreshStatuses"
       [statusesGroups]="statusesGroups"
       [queryParams]="queryTasksParams"
       [filters]="countFilters"
     />
-</ng-container>
-<!-- Selection --> 
-<ng-container *ngIf="column.type === 'select'">
-  <mat-checkbox
-    (click)="$event.stopPropagation()"
-    (change)="$event ? onSelectionChange() : null"
-    (keydown.enter)="$event ? onSelectionChange() : null"
-    [checked]="isSelected"
-    [aria-label]="checkboxLabel()"
-  />
-</ng-container>
+  }
+  @case ('select') {
+    <mat-checkbox
+      (click)="$event.stopPropagation()"
+      (change)="$event ? onSelectionChange() : null"
+      (keydown.enter)="$event ? onSelectionChange() : null"
+      [checked]="isSelected"
+      [aria-label]="checkboxLabel()"
+    />
+  }
+  @default {
+    {{ value | emptyCell }}
+  }
+}

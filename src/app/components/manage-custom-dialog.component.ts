@@ -1,5 +1,4 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -24,8 +23,6 @@ import { CustomColumn } from '@app/types/data';
     MatInputModule,
     MatButtonModule,
     MatChipsModule,
-    NgFor,
-    NgIf,
     MatIconModule
   ]
 })

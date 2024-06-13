@@ -4,20 +4,22 @@
   <p i18n="Dialog description">Drag and drop lines to update the order</p>
 
   <div class="lines" cdkDropList (cdkDropListDropped)="onDrop($event)">
-    <div class="line" *ngFor="let line of lines; let index = index" cdkDrag>
-      <div class="line-name">
-        <mat-icon mat-icon aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
-        <span class="line-name">{{ line.name }}</span>
-      </div>
-      <div clas="line-actions">
-        <button mat-icon-button (click)="onEditNameLine(line, index)" i18n-matTooltip matTooltip="Edit Line">
-          <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-        </button>
-        <button mat-icon-button (click)="onDeleteLine(line)" i18n-matTooltip matTooltip="Delete Line">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-        </button>
-      </div>
-    </div>
+    @for (line of lines; track line) {
+      <article class="line" cdkDrag>
+        <div class="line-name">
+          <mat-icon mat-icon aria-hidden="true" i18n-aria-label aria-label="Drag status" [fontIcon]="getIcon('drag')"></mat-icon>
+          <span class="line-name">{{ line.name }}</span>
+        </div>
+        <div clas="line-actions">
+          <button mat-icon-button (click)="onEditNameLine(line, $index)" i18n-matTooltip matTooltip="Edit Line">
+            <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
+          </button>
+          <button mat-icon-button (click)="onDeleteLine(line)" i18n-matTooltip matTooltip="Delete Line">
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
+          </button>
+        </div>
+      </article>
+    }
   </div>
 </mat-dialog-content>
 

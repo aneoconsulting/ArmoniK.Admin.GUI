@@ -176,8 +176,4 @@ describe('FormStatusesGroupComponent', () => {
     component.onCancel();
     expect(spyCancel).toHaveBeenCalled();
   });
-
-  it('should track by status', () => {
-    expect(component.trackByStatus(0, { value: 'value', name: 'name'})).toEqual('value');
-  });
 });

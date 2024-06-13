@@ -1,22 +1,21 @@
-<button *ngIf="actions.length > 1" mat-icon-button [matMenuTriggerFor]="menu"
-aria-label="Actions" i18n-aria-label>
-<mat-icon fontIcon="more_vert" />
-</button>
-<mat-menu #menu="matMenu">
-<ng-container *ngFor="let action of actions">
-  <button mat-menu-item
-    *ngIf="action.condition ? action.condition(element) : true"   
-    (click)="action.action$.next(element)"
-  >
-    <mat-icon [fontIcon]="getIcon(action.icon)"/>
-    <p>{{ action.label }}</p>
+@if (actions.length > 1) {
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions" i18n-aria-label>
+    <mat-icon fontIcon="more_vert" />
   </button>
-</ng-container>
+} @else if (actions[0].condition && actions[0].condition(element) || !actions[0].condition) {
+  <button mat-button (click)="actions[0].action$.next(element)">
+    <mat-icon>{{ actions[0].icon }}</mat-icon>
+    <p>{{ actions[0].label }}</p>
+  </button>
+}
+
+<mat-menu #menu="matMenu">
+  @for (action of actions; track action.label) {
+    @if (action.condition && action.condition(element) || !action.condition) {
+      <button mat-menu-item (click)="action.action$.next(element)">
+      <mat-icon [fontIcon]="getIcon(action.icon)"/>
+      <p>{{ action.label }}</p>
+    </button>
+    }
+  }
 </mat-menu>
-<button mat-button
-  *ngIf="actions.length === 1 && (actions[0].condition ? actions[0].condition(element) : true)"   
-  (click)="actions[0].action$.next(element)"
->
-  <mat-icon>{{ actions[0].icon }}</mat-icon>
-  <p>{{ actions[0].label }}</p>
-</button>

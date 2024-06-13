@@ -1,5 +1,4 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -102,8 +101,6 @@ mat-dialog-actions {
   standalone: true,
   providers: [],
   imports: [
-    NgFor,
-    NgIf,
     ActionsToolbarComponent,
     ActionsToolbarGroupComponent,
     DragDropModule,
@@ -178,9 +175,5 @@ export class ManageExternalServicesDialogComponent implements OnInit {
 
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.externalServices, event.previousIndex, event.currentIndex);
-  }
-
-  trackByService(_: number, externalService: ExternalService): string {
-    return externalService.name + externalService.url;
   }
 }

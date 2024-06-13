@@ -2,30 +2,34 @@
 
 <mat-dialog-content>
   <ul class="groups" cdkDropListGroup>
-    <li *ngFor="let group of groups">
-      <div class="group-header">
-        <h3 [style]="'color:' + group.color">
-          {{ group.name }}
-        </h3>
-        <div class="group-header-actions">
-          <button mat-icon-button (click)="openEditStatusGroupModal(group)" i18n-matTooltip="Edit the group" matTooltip="Edit">
-            <mat-icon [fontIcon]="getIcon('edit')"/>
-          </button>
-          <button mat-icon-button (click)="onDelete(group)" i18n-matTooltip="Delete the group" matTooltip="Delete">
-            <mat-icon [fontIcon]="getIcon('delete')"/>
-          </button>
+    @for (group of groups; track group) {
+      <li>
+        <div class="group-header">
+          <h3 [style]="'color:' + group.color">
+            {{ group.name }}
+          </h3>
+          <div class="group-header-actions">
+            <button mat-icon-button (click)="openEditStatusGroupModal(group)" i18n-matTooltip="Edit the group" matTooltip="Edit">
+              <mat-icon [fontIcon]="getIcon('edit')"/>
+            </button>
+            <button mat-icon-button (click)="onDelete(group)" i18n-matTooltip="Delete the group" matTooltip="Delete">
+              <mat-icon [fontIcon]="getIcon('delete')"/>
+            </button>
+          </div>
         </div>
-      </div>
-      <ul cdkDropList
-          (cdkDropListDropped)="onDrop($event)"
-          [cdkDropListData]="group.statuses"
-        >
-        <li *ngFor="let status of group.statuses" cdkDrag class="task-status">
-          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
-          <span>{{ statusToLabel(status) }}</span>
-        </li>
-      </ul>
-    </li>
+        <ul cdkDropList
+            (cdkDropListDropped)="onDrop($event)"
+            [cdkDropListData]="group.statuses"
+          >
+          @for (status of group.statuses; track status) {
+            <li cdkDrag class="task-status">
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')"/>
+              <span>{{ statusToLabel(status) }}</span>
+            </li>
+          }
+        </ul>
+      </li>
+    }
     <div class="addGroup">
       <button mat-stroked-button (click)="openAddStatusGroupModal()">
         <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>

@@ -1,5 +1,4 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,8 +35,6 @@ mat-dialog-content {
   providers: [
   ],
   imports: [
-    NgIf,
-    NgFor,
     MatDialogModule,
     MatButtonModule,
     MatCheckboxModule,
@@ -121,9 +118,5 @@ export class FormStatusesGroupComponent implements OnInit {
 
   onCancel() {
     this.cancelChange.emit();
-  }
-
-  trackByStatus(_: number, item: { value: string, name: string }) {
-    return item.value;
   }
 }

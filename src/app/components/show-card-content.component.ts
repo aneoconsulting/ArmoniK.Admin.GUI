@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 
@@ -23,11 +22,6 @@ app-show-card-content {
 }
   `],
   standalone: true,
-  providers: [],
-  imports: [
-    NgFor,
-    NgIf,
-  ]
 })
 export class ShowCardContentComponent<T extends object> implements OnChanges {
   @Input({ required: true }) data: T | T[] | null = null;
@@ -200,19 +194,5 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     const status = Number((this.data as unknown as Data)[key]);
 
     return this.statuses[status] ? this.statuses[status] : '-';
-  }
-
-  /**
-   * Used for a for-loop angular element.
-   */
-  trackByKey(index: number, key: string): string {
-    return key;
-  }
-
-  /**
-   * Used for a for-loop angular element.
-   */
-  trackByItem(index: number, item: unknown): string {
-    return String(item);
   }
 }

@@ -59,10 +59,6 @@ describe('FormNameLineComponent', () => {
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
-  it('should track by options', () => {
-    expect(component.trackByType(0, 'Applications')).toEqual('Applications');
-  });
-
   it('should select type', () => {
     component.onTypeSelected({option: {value: 'Applications'}} as MatAutocompleteSelectedEvent);
     expect(component.lineForm.value.type).toEqual('Applications');

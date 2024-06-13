@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
@@ -22,8 +21,6 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     MatGridListModule,
     MatDialogModule,
     MatButtonModule,
@@ -34,12 +31,45 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
   columns: RawColumnKey[] = [];
   columnsLabels: Record<ColumnKey<T, O>, string>;
 
+  _availableColumns: (keyof T | 'actions')[] = [];
+
+  set availableColumns(value: RawColumnKey[]) {
+    this._availableColumns = value.filter(column => !column.toString().includes('.')).sort((a, b) => a.toString().localeCompare(b.toString())) as (keyof T | 'actions')[];
+  }
+
+  get availableColumns(): (keyof T | 'actions')[] {
+    return this._availableColumns;
+  }
+
+  _availableOptionsColumns: PrefixedOptions<O>[] = [];
+
+  set availableOptionsColumns(value: RawColumnKey[]) {
+    this._availableOptionsColumns = value.filter(column => !this.isCustomColumn(column as ColumnKey<T, O>) && column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
+  }
+
+  get availableOptionsColumns(): PrefixedOptions<O>[] {
+    return this._availableOptionsColumns;
+  }
+
+  _availableCustomColumns: CustomColumn[] = [];
+
+  set availableCustomColumns(value: RawColumnKey[]) {
+    this._availableCustomColumns = value.filter(column => this.isCustomColumn(column as ColumnKey<T, O>)).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
+  }
+
+  get availableCustomColumns(): CustomColumn[] {
+    return this._availableCustomColumns;
+  }
+
   constructor(public dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>, @Inject(MAT_DIALOG_DATA) public data: ColumnsModifyDialogData<T, O>){}
 
   ngOnInit(): void {
     // Create a copy in order to not modify the original array
     this.columns = Array.from(this.data.currentColumns);
     this.columnsLabels = this.data.columnsLabels;
+    this.availableColumns = this.data.availableColumns;
+    this.availableOptionsColumns = this.data.availableColumns;
+    this.availableCustomColumns = this.data.availableColumns;
   }
 
   optionsColumnValue(column: string): string {
@@ -52,35 +82,6 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
 
   isCustomColumn(column: ColumnKey<T, O>): boolean {
     return column.toString().startsWith('options.options.');
-  }
-
-  /**
-   * Get the available columns (all the columns that can be added)
-   * Sort the columns alphabetically
-   */
-  availableColumns(): (keyof T | 'actions')[] {
-    const columns = this.data.availableColumns.filter(column => !column.toString().includes('.')).sort((a, b) => a.toString().localeCompare(b.toString())) as (keyof T | 'actions')[];
-
-    return columns;
-  }
-
-  /**
-   * Get every Options column
-   * Sort the columns alphabetically
-   */
-  availableOptionsColumns(): PrefixedOptions<O>[] {
-    const columns = this.data.availableColumns.filter(column => !this.isCustomColumn(column as ColumnKey<T, O>) && column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
-
-    return columns;
-  }
-
-  /**
-   * Get every custom column
-   * Sort the columns alphabetically
-   */
-  availableCustomColumns(): CustomColumn[] {
-    const columns = this.data.availableColumns.filter(column => this.isCustomColumn(column as ColumnKey<T, O>)).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
-    return columns;
   }
 
   /**
@@ -107,9 +108,5 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
-
-  trackByColumn(_: number, column: ColumnKey<T, O>): string {
-    return column.toString();
   }
 }

@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +17,6 @@ import { StorageService } from '@services/storage.service';
     MatMenuModule,
     MatTooltipModule,
     MatIconModule,
-    NgFor,
     MatButtonModule
   ]
 })
@@ -58,9 +56,5 @@ export class ChangeLanguageButtonComponent implements OnInit {
 
   getRoute() {
     return this.#router.url;
-  }
-
-  trackByLanguage(_: number, language: string) {
-    return language;
   }
 }

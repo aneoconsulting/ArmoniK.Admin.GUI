@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -6,7 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-page-section-header',
   template: `
 <h2>
-  <mat-icon *ngIf="icon" matListItemIcon aria-hidden="true" [fontIcon]="icon"></mat-icon>
+  @if (icon) {
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="icon"/>
+  }
   <span>
     <ng-content></ng-content>
   </span>
@@ -23,7 +24,6 @@ h2 {
   standalone: true,
   providers: [],
   imports: [
-    NgIf,
     MatIconModule
   ]
 })
