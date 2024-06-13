@@ -191,8 +191,8 @@ export class DefaultConfigService {
     showFilters: true,
   };
 
-  readonly #availableLanguages = ['en', 'fr'];
-  readonly #defaultLanguage = window.location.href.includes('fr') ? 'fr' : 'en';
+  readonly #availableLanguages = ['en'];
+  readonly #defaultLanguage = 'en';
 
   readonly #defaultTasksViewInLogs = {
     serviceName: null,

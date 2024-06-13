@@ -53,7 +53,7 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) group: TasksStatusesGroup;
   @Input({ required: true }) hideGroupHeaders: boolean;
   @Input({ required: true }) data: StatusCount[] = [];
-  @Input({required: true}) filters: TaskSummaryFilters;
+  @Input({ required: true }) filters: TaskSummaryFilters;
 
   #tasksStatusesService = inject(TasksStatusesService);
   #filtersService = inject(FiltersService);
@@ -78,9 +78,9 @@ export class StatusesGroupCardComponent {
   }
 
   createQueryParamManyStatuses() {
-    const params: { [key: string]: string | number | Date | boolean | null} = {};
+    const params: { [key: string]: string | number | Date | boolean | null } = {};
     let orGroup = 0;
-    
+
     if (this.filters.length !== 0) {
       this.group.statuses.forEach((status) => {
         this.filters.forEach((filterAnd) => {
@@ -95,18 +95,18 @@ export class StatusesGroupCardComponent {
     } else {
       this.group.statuses.forEach((status, index) => params[this.#createQueryParamKeyOr(index)] = status);
     }
-    
+
     return params;
   }
 
   createQueryParam(status: TaskStatus) {
-    if(this.filters.length === 0) {
+    if (this.filters.length === 0) {
       return {
         [this.#createQueryParamKey()]: status,
       };
     }
     else {
-      const params: { [key: string]: string | number | Date | boolean | null} = {};
+      const params: { [key: string]: string | number | Date | boolean | null } = {};
 
       this.filters.forEach((filterAnd, index) => {
         params[this.#createQueryParamKeyOr(index)] = status;
@@ -121,11 +121,11 @@ export class StatusesGroupCardComponent {
   }
 
   #createQueryParamKey(): string {
-    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 
   #createQueryParamKeyOr(orGroup: number): string {
-    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root' , FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 
   #createQueryParamFilterKey(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number): string | null {

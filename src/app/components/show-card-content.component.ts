@@ -63,11 +63,11 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
   }
 
   hasLength(value: unknown): boolean {
-    return value != undefined && (value as unknown as unknown[]).length > 0;
+    return value != undefined && (value as unknown[]).length > 0;
   }
 
   toArray(value: unknown): unknown[] {
-    return value as unknown as unknown[];
+    return value as unknown[];
   }
 
   isObject(value: unknown): boolean {

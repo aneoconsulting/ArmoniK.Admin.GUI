@@ -15,7 +15,6 @@ export type SidebarLinkItem = {
   type: 'link';
   id: string;
   display: string;
-  icon: string;
   route: string;
 };
 
@@ -23,7 +22,6 @@ export type SidebarDividerItem = {
   type: 'divider';
   id: 'divider';
   display: string;
-  icon: null;
   route: null;
 };
 

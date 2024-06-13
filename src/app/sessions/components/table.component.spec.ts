@@ -8,6 +8,7 @@ import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -146,6 +147,12 @@ describe('SessionsTableComponent', () => {
     navigate: jest.fn()
   };
 
+  const cachedSession = { sessions: [{ sessionId: 'session1' }, { sessionId: 'session2' }] as SessionRaw[], total: 2 };
+  const mockCacheService = {
+    get: jest.fn(() => cachedSession),
+    save: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -154,6 +161,7 @@ describe('SessionsTableComponent', () => {
         { provide: SessionsGrpcService, useValue: mockSessionsGrpcService },
         SessionsStatusesService,
         FiltersService,
+        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService},
@@ -175,12 +183,65 @@ describe('SessionsTableComponent', () => {
     };
     component.refresh$ = new Subject();
     component.loading$ = new Subject();
-    component.ngAfterViewInit();
     component.ngOnInit();
+    component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('initialisation', () =>{
+    it('should load cached data from cachedService', () => {
+      expect(mockCacheService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    beforeEach(() => {
+      component.loadFromCache();
+    });
+
+    it('should update total data with cached one', () => {
+      expect(component.total).toEqual(cachedSession.total);
+    });
+
+    it('should update data with cached one', () => {
+      const map1 = new Map();
+      const map2 = new Map();
+      map1.set('sessionId', {'0-root-1-0': 'session1'});
+      map2.set('sessionId', {'0-root-1-0': 'session2'});
+      expect(component.data).toEqual([
+        {
+          raw: {
+            sessionId: 'session1'
+          },
+          queryParams: map1,
+          resultsQueryParams: {
+            '0-root-1-0': 'session1'
+          },
+          queryTasksParams: {
+            '0-root-1-0': 'session1'
+          },
+          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]],
+          value$: expect.any(Subject)
+        },
+        {
+          raw: {
+            sessionId: 'session2'
+          },
+          queryParams: map2,
+          resultsQueryParams: {
+            '0-root-1-0': 'session2'
+          },
+          queryTasksParams: {
+            '0-root-1-0': 'session2'
+          },
+          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]],
+          value$: expect.any(Subject)
+        },
+      ]);
+    });
   });
 
   it('should return columns keys', () => {
@@ -375,6 +436,11 @@ describe('SessionsTableComponent', () => {
         value$: expect.any(Subject)
       }
     ]);
+  });
+
+  it('should cache received data', () => {
+    component.refresh$.next();
+    expect(mockCacheService.get).toHaveBeenCalled();
   });
 
   it('should have an empty data if it cannot compute GrpcData', () => {

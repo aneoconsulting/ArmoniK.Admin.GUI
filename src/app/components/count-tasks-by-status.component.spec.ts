@@ -1,10 +1,11 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { Observable, Subject, of } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
+import { CacheService } from '@services/cache.service';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
 describe('CountTasksByStatusComponent', () => {
@@ -35,20 +36,27 @@ describe('CountTasksByStatusComponent', () => {
 
   const filters: TaskSummaryFilters = [[{
     for: 'options',
-    field: 1,
-    value: 'myValue',
-    operator: 2
+    field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
+    value: 'sessionId',
+    operator: 0
   }]];
 
   const refresh$ = new Subject<void>();
   const refreshSpy = jest.spyOn(refresh$, 'next');
+
+  const cachedData: StatusCount[] = [{ status: TaskStatus.TASK_STATUS_CREATING, count: 3 }];
+  const mockCacheService = {
+    getStatuses: jest.fn((): StatusCount[] | undefined => cachedData),
+    saveStatuses: jest.fn()
+  };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         CountTasksByStatusComponent,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        TasksFiltersService
+        TasksFiltersService,
+        { provide: CacheService, useValue: mockCacheService }
       ]
     }).inject(CountTasksByStatusComponent);
 
@@ -59,6 +67,21 @@ describe('CountTasksByStatusComponent', () => {
 
   it('Should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('initCount', () => {
+    it('should set id', () => {
+      expect(component.id).toEqual(filters[0][0].value);
+    });
+
+    it('should load data', () => {
+      expect(mockCacheService.getStatuses).toHaveBeenCalled();
+    });
+
+    it('should not set id if there is no filter value', () => {
+      component.initCount([]);
+      expect(component.id).toEqual(undefined);
+    });
   });
 
   describe('setting statuses', () => {
@@ -91,6 +114,19 @@ describe('CountTasksByStatusComponent', () => {
       mockTasksGrpcService.countByStatus$.mockReturnValue(of({ status: undefined }));
       component.refresh.next();
       expect(component.statusesCount).toBeNull();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    it('should load cached data', () => {
+      component.loadFromCache();
+      expect(component.statusesCount).toEqual(cachedData);
+    });
+
+    it('should load a null value if there is no cache', () => {
+      mockCacheService.getStatuses.mockReturnValueOnce(undefined);
+      component.loadFromCache();
+      expect(component.statusesCount).toEqual(null);
     });
   });
 });

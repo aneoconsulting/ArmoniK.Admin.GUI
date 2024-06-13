@@ -31,12 +31,7 @@ export class ChangeLanguageButtonComponent implements OnInit {
   languageButtonTip = $localize`Change language`;
 
   ngOnInit(): void {
-    const storedLanguage: string | null = this.#storageService.getItem('language');
-    const urlLanguage = this.getLanguageFromUrl();
-    if (storedLanguage && urlLanguage && storedLanguage !== urlLanguage) {
-      window.location.replace('/admin/' + storedLanguage + this.getRoute());
-    }
-    this.selectedLanguage = storedLanguage ?? urlLanguage ?? this.#defaultConfigService.defaultLanguage;
+    this.selectedLanguage = this.#defaultConfigService.defaultLanguage;
     this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
   }
   

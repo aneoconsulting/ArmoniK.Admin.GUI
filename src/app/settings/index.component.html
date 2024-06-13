@@ -29,7 +29,7 @@
       @for (item of sidebar; track item+$index) {
         <li cdkDrag>
           <div class="sidebar-item-drag">
-            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="findSidebarItem(item).icon ?? 'horizontal_rule'"></mat-icon>
+            <mat-icon cdkDragHandle aria-hidden="true" [fontIcon]="getIcon(findSidebarItem(item).id)"></mat-icon>
           </div>
   
           <mat-form-field appearance="outline" subscriptSizing="dynamic">

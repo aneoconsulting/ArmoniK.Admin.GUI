@@ -51,26 +51,6 @@ describe('ChangeLanguageButtonComponent', () => {
   });
 
   describe('on init', () => {
-
-    it('should get Language from StorageService', () => {
-      mockStorageService.getItem.mockImplementationOnce(() => 'fr');
-      component.ngOnInit();
-      expect(component.selectedLanguage).toEqual('fr');
-    });
-
-    it('should get Language from URL', () => {
-      mockStorageService.getItem.mockImplementationOnce(() => null);
-      overrideLocation('admin/fr');
-      component.ngOnInit();
-      expect(component.selectedLanguage).toEqual('fr');
-    });
-
-    it('should redirect to stored Language if there is a conflict with URL language', () => {
-      mockStorageService.getItem.mockImplementationOnce(() => 'en');
-      overrideLocation('admin/fr');
-      component.ngOnInit();
-      expect(jestReplace).toHaveBeenCalledWith('/admin/en/my-route');
-    });
   
     it('should get Language from default config', () => {
       mockStorageService.getItem.mockImplementationOnce(() => null);

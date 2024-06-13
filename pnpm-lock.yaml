@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aneoconsultingfr/armonik.api.angular':
-        specifier: ^3.17.1
-        version: 3.17.1(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)
+        specifier: ^3.18.0
+        version: 3.18.0(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)
       '@angular-material-components/datetime-picker':
         specifier: ^16.0.1
         version: 16.0.1(@angular/cdk@18.0.1(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@angular/forms@18.0.1(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@18.0.1(@angular/animations@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1))(@angular/material@18.0.1(@angular/animations@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/cdk@18.0.1(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@angular/forms@18.0.1(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@angular/platform-browser@18.0.1(@angular/animations@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1))(@angular/platform-browser@18.0.1(@angular/animations@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(rxjs@7.8.1))(@angular/platform-browser@18.0.1(@angular/animations@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4)))
@@ -167,8 +167,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@aneoconsultingfr/armonik.api.angular@3.17.1':
-    resolution: {integrity: sha512-HSY+i/YiZW2/zkb6D8y8fSfx0pDdIrhbN3cyfv0QriXEK5SYPk2N6NEIKGxqZlX7H02xwkDChusIX3ITljvfUw==}
+  '@aneoconsultingfr/armonik.api.angular@3.18.0':
+    resolution: {integrity: sha512-ARCOOlPHsmNcfZenJJ9mUDJC69FdINqWno6fG5kKBkwoadplsCu2ZcFmA8GlaPlxI/mmitJ5gTOwlcEjDSvlsA==}
     peerDependencies:
       '@angular/common': ^16.2.1
       '@angular/core': ^16.2.1
@@ -3597,6 +3597,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
@@ -3819,6 +3820,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
@@ -5171,6 +5173,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rimraf@5.0.7:
@@ -6057,7 +6060,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@aneoconsultingfr/armonik.api.angular@3.17.1(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)':
+  '@aneoconsultingfr/armonik.api.angular@3.18.0(@angular/common@18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)':
     dependencies:
       '@angular/common': 18.0.1(@angular/core@18.0.1(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1)
       '@angular/core': 18.0.1(rxjs@7.8.1)(zone.js@0.14.4)

@@ -24,7 +24,7 @@ export class EditExternalServiceDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.externalService = Object.assign({}, this.data.externalService);
+    this.externalService = {...this.data.externalService};
   }
 
   onSubmit(result: ExternalService) {

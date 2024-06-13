@@ -1,19 +1,18 @@
 import { GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionFilterField, PartitionRawEnumField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FilterType } from '@app/types/filters';
-import { GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { buildArrayFilter, buildNumberFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
-import { UtilsService } from '@services/utils.service';
+import { Filter, FilterType } from '@app/types/filters';
+import { GrpcGetInterface, GrpcTableService, ListDefaultSortField, RequestFilterField } from '@app/types/services/grpcService';
+import { FilterField, buildArrayFilter, buildNumberFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { PartitionsFiltersService } from './partitions-filters.service';
-import { PartitionRawFieldKey, PartitionRawFilter, PartitionRawFilters, PartitionRawListOptions } from '../types';
+import { PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
 
 @Injectable()
-export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient, PartitionRawListOptions, PartitionRawFilters, PartitionRawFieldKey, PartitionRawEnumField>, GrpcGetInterface<GetPartitionResponse> {
+export class PartitionsGrpcService extends GrpcTableService<PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField>
+  implements GrpcGetInterface<GetPartitionResponse> {
   readonly filterService = inject(PartitionsFiltersService);
   readonly grpcClient = inject(PartitionsClient);
-  readonly utilsService = inject(UtilsService<PartitionRawEnumField>);
 
   readonly sortFields: Record<PartitionRawFieldKey, PartitionRawEnumField> = {
     'id': PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
@@ -26,26 +25,11 @@ export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient
   };
 
   list$(options: PartitionRawListOptions, filters: PartitionRawFilters): Observable<ListPartitionsResponse> {
-    const requestFilters = this.utilsService.createFilters<PartitionFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
-
-    const listPartitionsRequest = new ListPartitionsRequest({
-      page: options.pageIndex,
-      pageSize: options.pageSize,
-      sort: {
-        direction: sortDirections[options.sort.direction],
-        field: {
-          partitionRawField: {
-            field: this.sortFields[options.sort.active] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
-          }
-        }
-      },
-      filters: requestFilters
-    });
-
+    const listPartitionsRequest = new ListPartitionsRequest(this.createListRequest(options, filters) as ListPartitionsRequest);
     return this.grpcClient.listPartitions(listPartitionsRequest);
   }
 
-  get$(id: string) :Observable<GetPartitionResponse> {
+  get$(id: string): Observable<GetPartitionResponse> {
     const getPartitionRequest = new GetPartitionRequest({
       id
     });
@@ -53,26 +37,35 @@ export class PartitionsGrpcService implements GrpcListInterface<PartitionsClient
     return this.grpcClient.getPartition(getPartitionRequest);
   }
 
-  #buildFilterField(filter: PartitionRawFilter) {
-    return (type: FilterType, field: PartitionRawEnumField) => {
-
-      const filterField = {
+  createSortField(field: PartitionRawFieldKey): ListDefaultSortField {
+    return {
+      field: {
         partitionRawField: {
-          field
+          field: this.sortFields[field] ?? PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID
         }
-      } satisfies PartitionFilterField.AsObject['field'];
-
-      switch (type) {
-      case 'string':
-        return buildStringFilter(filterField, filter) as PartitionFilterField.AsObject;
-      case 'number':
-        return buildNumberFilter(filterField, filter) as PartitionFilterField.AsObject;
-      case 'array':
-        return buildArrayFilter(filterField, filter) as PartitionFilterField.AsObject;
-      default: {
-        throw new Error(`Type ${type} not supported`);
-      }
       }
     };
+  }
+
+  createFilterField(field: PartitionRawEnumField) {
+    return {
+      partitionRawField: {
+        field
+      }
+    } satisfies PartitionFilterField.AsObject['field'];
+  }
+
+  buildFilter(type: FilterType, filterField: FilterField, filter: Filter<PartitionRawEnumField, null>): RequestFilterField {
+    switch (type) {
+    case 'string':
+      return buildStringFilter(filterField, filter) as PartitionFilterField.AsObject;
+    case 'number':
+      return buildNumberFilter(filterField, filter) as PartitionFilterField.AsObject;
+    case 'array':
+      return buildArrayFilter(filterField, filter) as PartitionFilterField.AsObject;
+    default: {
+      throw new Error(`Type ${type} not supported`);
+    }
+    }
   }
 }

@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angu
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditNameLineData, EditNameLineResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
+import { EditNameLineData, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
 import { Line } from '../types';
@@ -108,7 +108,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   }
 
   onEditNameLine(line: Line, index: number) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
       data: {
         name: line.name
       }

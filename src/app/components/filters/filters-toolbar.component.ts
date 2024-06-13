@@ -106,13 +106,14 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   }
 
   setHasFilters(): void {
-    for(let i=0; i < this.filters.length; i++) {
-      if (this.filters[i].length !== 0) {
-        this.hasFilters = true;
-        return;
-      }
-    }
     this.hasFilters = false;
+    let i = 0;
+    while (i !== this.filters.length && !this.hasFilters) {
+      if (this.filters[i]?.length !== 0) {
+        this.hasFilters = true;
+      }
+      i++;
+    }
   }
 
   openFiltersDialog(): void {
