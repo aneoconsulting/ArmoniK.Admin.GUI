@@ -96,14 +96,14 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     } else {
       const params: Record<string, string> = {};
       this.filters.forEach((filterAnd, index) => {
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
         filterAnd.forEach(filter => {
-          if (!(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
-          !(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+          if ((filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
+          (filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
             const filterLabel = this.#createQueryParamFilterKey(filter, index);
             if (filterLabel && filter.value) {
               params[filterLabel] = filter.value.toString();
-              params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
-              params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
             }
           }
         });
@@ -114,7 +114,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   }
 
   #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
-    if (filter.field !== null && filter.operator !== null) {
+    if (filter.field !== null && filter.operator !== null && filter.value !== null) {
       const taskField = this.#applicationsToTaskField(filter.field as ApplicationRawEnumField); // We transform it into an options filter for a task
       if (!taskField) return null;
       return this.filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 
