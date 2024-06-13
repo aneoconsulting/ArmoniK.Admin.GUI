@@ -1,4 +1,4 @@
-import { AsyncPipe, KeyValuePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -31,8 +31,6 @@ span {
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     KeyValuePipe,
     MatFormFieldModule,
     MatSelectModule,
@@ -156,7 +154,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   retrieveStatusLabel(status: MaybeNull<number>): string {
     if (this.allStatuses !== undefined) {
-      const foundStatus = status ? this.allStatuses[status as number] : undefined;
+      const foundStatus = status ? this.allStatuses[status] : undefined;
       if (foundStatus !== undefined) {
         return foundStatus.value;
       } else {
@@ -177,7 +175,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       return null;
     }
     const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
-    return key !== undefined ? key : null;
+    return key ?? null;
   }
 
   onPropertyChange() {

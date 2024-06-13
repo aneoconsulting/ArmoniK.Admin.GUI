@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,7 +18,7 @@ import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
-import { TaskRaw } from './types';
+import { TaskRaw, TaskSummaryFieldKey, TaskSummaryListOptions } from './types';
 
 @Component({
   selector: 'app-tasks-show',
@@ -52,7 +52,7 @@ import { TaskRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface {
+export class ShowComponent extends AppShowComponent<TaskRaw, TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface {
 
   cancel$ = new Subject<void>();
 

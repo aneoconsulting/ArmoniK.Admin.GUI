@@ -19,9 +19,9 @@
     >
 
     <mat-autocomplete autoActiveFirstOption  #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-      <mat-option *ngFor="let option of options" [value]="option">
-        {{ option }}
-      </mat-option>
+      @for (option of options; track option) {
+        <mat-option value="{{ option }}" i18n="Option Input"> {{ option }} </mat-option>
+      }
     </mat-autocomplete>
   </mat-form-field>
 

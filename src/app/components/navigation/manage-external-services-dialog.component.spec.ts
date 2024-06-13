@@ -142,8 +142,4 @@ describe('ManageExternalServicesDialogComponent', () => {
       }
     ]);
   });
-
-  it('should track by service', () => {
-    expect(component.trackByService(0, externalService)).toEqual('servicenewUrl');
-  });
 });

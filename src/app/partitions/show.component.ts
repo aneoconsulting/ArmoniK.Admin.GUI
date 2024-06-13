@@ -1,4 +1,4 @@
-import { FilterArrayOperator, FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterStringOperator, PartitionRawEnumField, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,7 +15,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
-import { PartitionRaw } from './types';
+import { PartitionRaw, PartitionRawFieldKey, PartitionRawListOptions } from './types';
 
 @Component({
   selector: 'app-partitions-show',
@@ -46,7 +46,7 @@ import { PartitionRaw } from './types';
     MatIconModule
   ]
 })
-export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
+export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField> implements OnInit, AfterViewInit, ShowActionInterface {
   protected override _grpcService = inject(PartitionsGrpcService);
   private _filtersService = inject(FiltersService);
 

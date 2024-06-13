@@ -71,16 +71,17 @@ export class IconsService {
     'menu': 'menu',
     'menu-open': 'menu_open',
     'filter': 'filter_list',
+    'divider': 'horizontal_rule',
   };
 
-  getIcon(name: string): string {
-    const icon = this.icons[name];
-
-    if (!icon) {
-      return this.icons['default'];
+  getIcon(name: string | null | undefined): string {
+    if (name) {
+      const icon = this.icons[name];
+      if (icon) {
+        return icon;
+      }
     }
-
-    return this.icons[name];
+    return this.icons['default'];
   }
 
   getAllIcons() {

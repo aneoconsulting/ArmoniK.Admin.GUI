@@ -1,5 +1,6 @@
 <mat-card>
-    <mat-card-header *ngIf="!hideGroupHeaders">
+  @if (!hideGroupHeaders) {
+    <mat-card-header>
       <mat-card-title>
         <a routerLink="/tasks" [queryParams]="createQueryParamManyStatuses()" [style]="'color:' + group.color + '; text-decoration: none'">
           {{ group.name }}
@@ -9,9 +10,11 @@
         </span>
       </mat-card-title>
     </mat-card-header>
-    <mat-card-content>
-      <ul>
-        <li *ngFor="let status of group.statuses">
+  }
+  <mat-card-content>
+    <ul>
+      @for (status of group.statuses; track status) {
+        <li>
           <a routerLink="/tasks" [queryParams]="createQueryParam(status)">
             <span>
               {{ statusToLabel(status) }}
@@ -21,7 +24,8 @@
             </span>
           </a>
         </li>
-      </ul>
-    </mat-card-content>
-  </mat-card>
+      }
+    </ul>
+  </mat-card-content>
+</mat-card>
   

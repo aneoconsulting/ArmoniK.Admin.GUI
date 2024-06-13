@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -75,8 +75,6 @@ main {
     IconsService,
   ],
   imports: [
-    NgIf,
-    NgFor,
     AsyncPipe,
     RouterModule,
     ThemeSelectorComponent,
@@ -110,6 +108,7 @@ export class NavigationComponent implements OnInit{
   coreVersion = this.#versionsService.core;
   settingsItem = $localize`Settings`;
 
+  sidebar = this.#navigationService.currentSidebar;
   sideBarOpened = true;
   
   isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
@@ -146,14 +145,9 @@ export class NavigationComponent implements OnInit{
     return this.#iconsService.getIcon(name);
   }
 
-  getSidebar() {
-    return this.#navigationService.currentSidebar;
-  }
-
   greeting() {
     const hour = new Date().getHours();
     const username = this.#userService.user ? this.#userService.user.username : '';
-    // TODO: localize with params
     if (hour < 12) {
       return $localize`Good morning` + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
@@ -161,10 +155,6 @@ export class NavigationComponent implements OnInit{
     } else {
       return $localize`Good evening` + (username !== '' ? ', ' + username : '');
     }
-  }
-
-  trackByService(_: number, service: ExternalService) {
-    return service.name + service.url;
   }
 
   toggleSideBar() {

@@ -1,4 +1,3 @@
-import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -16,9 +15,6 @@ pre {
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
-    JsonPipe,
     ShowCardContentComponent,
     MatCardModule,
     MatProgressSpinnerModule

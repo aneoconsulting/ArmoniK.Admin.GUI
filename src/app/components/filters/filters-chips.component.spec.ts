@@ -145,27 +145,6 @@ describe('FiltersChipsComponent', () => {
     expect(component.content(filter)).toEqual('other has no value');
   });
 
-  it('should track by filter', () => {
-    const filter: Filter<number, number> = {
-      field: 4,
-      for: 'root',
-      operator: 1,
-      value: 2
-    };
-    expect(component.trackByFilter(0, filter)).toEqual('4');
-  });
-
-  it('should track by filter event with null field', () => {
-    const filter: Filter<number, number> = {
-      field: null,
-      for: 'root',
-      operator: 1,
-      value: 2
-    };
-    
-    expect(component.trackByFilter(0, filter)).toEqual('');
-  });
-
   it('should show a duration appropriately', () => {
     const filter: Filter<number, number> = {
       field: 1,

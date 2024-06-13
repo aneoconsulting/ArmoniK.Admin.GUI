@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -47,8 +46,6 @@ import { Group, PermissionGroup, isGroup } from './types';
     QueryParamsService,
   ],
   imports: [
-    NgFor,
-    NgIf,
     PageHeaderComponent,
     PageSectionComponent,
     PageSectionHeaderComponent,

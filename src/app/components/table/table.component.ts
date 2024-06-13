@@ -1,6 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -26,8 +25,6 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
     MatPaginatorModule,
     TableEmptyDataComponent,
     DragDropModule,
-    NgFor,
-    NgIf,
     MatTableModule,
     MatSortModule,
     TableActionsComponent,

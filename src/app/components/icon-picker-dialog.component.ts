@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,8 +23,6 @@ article {
     IconsService
   ],
   imports: [
-    NgFor,
-    NgIf,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,

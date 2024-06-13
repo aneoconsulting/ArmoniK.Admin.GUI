@@ -1,8 +1,9 @@
 <mat-card>
   <mat-card-content>
-    <mat-spinner *ngIf="!data" strokeWidth="4" diameter="40"/>
-    <ng-container *ngIf="data">
+    @if (data) {
       <app-show-card-content [data]="data" [statuses]="statuses"/>
-    </ng-container>
+    } @else {
+      <mat-spinner strokeWidth="4" diameter="40"/>
+    }
   </mat-card-content>
 </mat-card>

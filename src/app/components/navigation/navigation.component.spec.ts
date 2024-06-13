@@ -125,7 +125,7 @@ describe('NavigationComponent', () => {
   });
 
   it('should get sideBar', () => {
-    expect(component.getSidebar()).toEqual(currentSidebar);
+    expect(component.sidebar).toEqual(currentSidebar);
   });
   
   it('should greet correctly', () => {
@@ -144,15 +144,6 @@ describe('NavigationComponent', () => {
     expect(component.greeting()).toEqual('Good morning, user');
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T12:00:00'));
     expect(component.greeting()).toEqual('Good afternoon, user');
-  });
-
-  it('should track by service', () => {
-    const externalService = {
-      name: 'service',
-      url: 'url',
-      icon: 'main'
-    } as ExternalService;
-    expect(component.trackByService(0, externalService)).toEqual('serviceurl');
   });
 
   describe('toggle sidebar', () => {

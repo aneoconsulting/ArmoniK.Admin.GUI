@@ -1,4 +1,4 @@
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -21,7 +21,6 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
   imports: [
     EmptyCellPipe,
     RouterModule,
-    NgIf,
     TableInspectObjectComponent,
     DurationPipe,
     DatePipe,

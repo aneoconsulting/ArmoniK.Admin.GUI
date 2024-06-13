@@ -1,17 +1,17 @@
 import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FilterType } from '@app/types/filters';
-import { GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
-import { UtilsService } from '@services/utils.service';
+import { Filter, FilterType } from '@app/types/filters';
+import { GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
+import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { ResultsFiltersService } from './results-filters.service';
-import {  ResultRawFieldKey, ResultRawFilter, ResultRawFilters, ResultRawListOptions } from '../types';
+import { ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsGrpcService implements GrpcListInterface<ResultsClient, ResultRawListOptions, ResultRawFilters, ResultRawFieldKey, ResultRawEnumField>, GrpcGetInterface<GetResultResponse> {
+export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
+  implements GrpcGetInterface<GetResultResponse> {
+
   readonly filterService = inject(ResultsFiltersService);
-  readonly utilsService = inject(UtilsService<ResultRawEnumField>);
   readonly grpcClient = inject(ResultsClient);
 
   readonly sortFields: Record<ResultRawFieldKey, ResultRawEnumField> = {
@@ -26,23 +26,7 @@ export class ResultsGrpcService implements GrpcListInterface<ResultsClient, Resu
   };
 
   list$(options: ResultRawListOptions, filters: ResultRawFilters): Observable<ListResultsResponse> {
-
-    const requestFilters = this.utilsService.createFilters<ResultFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
-
-    const listResultRequest = new ListResultsRequest({
-      page: options.pageIndex,
-      pageSize: options.pageSize,
-      sort: {
-        direction: sortDirections[options.sort.direction],
-        field: {
-          resultRawField: {
-            field: this.sortFields[options.sort.active] ?? ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
-          }
-        }
-      },
-      filters: requestFilters
-    });
-
+    const listResultRequest = new ListResultsRequest(this.createListRequest(options, filters) as ListResultsRequest);
     return this.grpcClient.listResults(listResultRequest);
   }
 
@@ -54,28 +38,37 @@ export class ResultsGrpcService implements GrpcListInterface<ResultsClient, Resu
     return this.grpcClient.getResult(getResultRequest);
   }
 
-  #buildFilterField(filter: ResultRawFilter) {
-    return (type: FilterType, field: ResultRawEnumField) => {
-
-      const filterField = {
+  createSortField(field: ResultRawFieldKey): ListDefaultSortField {
+    return {
+      field: {
         resultRawField: {
-          field: field as ResultRawEnumField
+          field: this.sortFields[field] ?? ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID
         }
-      } satisfies ResultFilterField.AsObject['field'];
-
-      switch (type) {
-      case 'string':
-        return buildStringFilter(filterField, filter) as ResultFilterField.AsObject;
-      case 'date':
-        return buildDateFilter(filterField, filter) as ResultFilterField.AsObject;
-      case 'status':
-        return buildStatusFilter(filterField, filter) as ResultFilterField.AsObject;
-      case 'number':
-        return buildNumberFilter(filterField, filter) as ResultFilterField.AsObject;
-      default: {
-        throw new Error(`Type ${type} not supported`);
-      }
       }
     };
+  }
+
+  createFilterField(field: ResultRawEnumField): FilterField {
+    return {
+      resultRawField: {
+        field: field
+      }
+    } satisfies ResultFilterField.AsObject['field'];
+  }
+
+  buildFilter(type: FilterType, filterField: FilterField, filter: Filter<ResultRawEnumField>) {
+    switch (type) {
+    case 'string':
+      return buildStringFilter(filterField, filter) as ResultFilterField.AsObject;
+    case 'date':
+      return buildDateFilter(filterField, filter) as ResultFilterField.AsObject;
+    case 'status':
+      return buildStatusFilter(filterField, filter) as ResultFilterField.AsObject;
+    case 'number':
+      return buildNumberFilter(filterField, filter) as ResultFilterField.AsObject;
+    default: {
+      throw new Error(`Type ${type} not supported`);
+    }
+    }
   }
 }

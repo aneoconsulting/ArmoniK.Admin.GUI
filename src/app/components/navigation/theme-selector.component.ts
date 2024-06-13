@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,8 +18,6 @@ import { StorageService } from '@services/storage.service';
   providers: [
   ],
   imports: [
-    NgFor,
-    NgIf,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,

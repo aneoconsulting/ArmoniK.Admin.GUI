@@ -1,5 +1,4 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -134,8 +133,6 @@ main {
     NotificationService,
   ],
   imports: [
-    NgFor,
-    NgIf,
     PageHeaderComponent,
     PageSectionComponent,
     PageSectionHeaderComponent,
@@ -173,7 +170,7 @@ export class IndexComponent implements OnInit {
     this.sidebar = this.#navigationService.restoreSidebar();
   }
 
-  getIcon(name: string): string {
+  getIcon(name: string | null): string {
     return this.#iconsService.getIcon(name);
   }
 
@@ -346,22 +343,6 @@ export class IndexComponent implements OnInit {
     };
 
     reader.readAsText(file);
-  }
-
-  trackByKey(_: number, key: string): string {
-    return key;
-  }
-
-  trackBySidebarItem(index: number, item: Sidebar): string {
-    if (item === 'divider') return 'divider' + index;
-
-    return item;
-  }
-
-  trackByItem(index: number, item: { name: string, value: Sidebar }): string {
-    if (item.value === 'divider') return 'divider' + index;
-
-    return item.value;
   }
 
   drop(event: CdkDragDrop<SidebarItem[]>) {

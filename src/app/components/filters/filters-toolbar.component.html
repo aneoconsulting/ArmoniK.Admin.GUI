@@ -3,40 +3,47 @@
     <mat-icon aria-hidden="true" [fontIcon]="getIcon('filter')"/>
     <span i18n="User will be able the create or delete filters">Manage filters</span>
   </button>
-
-  <ng-container *ngIf="hasFilters">
-    <button mat-icon-button *ngIf="showFilters" matTooltip="Hide filters" (click)="toggleShow()" [disabled]="hasOneOrFilter">
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-up')"/>
-    </button>
-    <button mat-icon-button *ngIf="!showFilters" matTooltip="Show filters" (click)="toggleShow()" [disabled]="hasOneOrFilter">
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"/>
-    </button>
+  @if (hasFilters) {
+    @if (showFilters) {
+      <button mat-icon-button matTooltip="Hide filters" (click)="toggleShow()" [disabled]="hasOneOrFilter">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-up')"/>
+      </button>
+    } @else {
+      <button mat-icon-button matTooltip="Show filters" (click)="toggleShow()" [disabled]="hasOneOrFilter">
+        <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"/>
+      </button>
+    }
 
     <div class="filters-list">
-      <ng-container *ngIf="showFilters">
-        <ng-container *ngFor="let filtersAnd of filters; let first = first; trackBy: trackByFilter">
+      @if (showFilters) {
+        @for(filtersAnd of filters; track filtersAnd; let first = $first) {
           <div class="filters-list-and">
-            <span class="filters-list-text" *ngIf="first" i18n="Filter condition">
-              Where
-            </span>
-            <span class="filters-list-text" *ngIf="!first && showFilters" i18n="Filter condition">
-              Or
-            </span>
+            @if(first) {
+              <span class="filters-list-text" i18n="Filter condition">
+                Where
+              </span>
+            } @else {
+              <span class="filters-list-text" i18n="Filter condition">
+                Or
+              </span>
+            }
             <app-filters-chips [filtersAnd]="filtersAnd"/>
           </div>
-        </ng-container>
-      </ng-container>
-      <ng-container *ngIf="!showFilters">
+        
+        }
+      } @else {
         <div class="filters-list-and">
           <span class="filters-list-text" i18n="Filter condition">
             Where
           </span>
           <app-filters-chips [filtersAnd]="filters[0]"/>
-          <span  *ngIf="!hasOneOrFilter" class="filters-list-text" i18n="Filter condition">
-            Or ...
-          </span>
+          @if(!hasOneOrFilter) {
+            <span class="filters-list-text" i18n="Filter condition">
+              Or ...
+            </span>
+          }
         </div>
-      </ng-container>
+      }
     </div>
-  </ng-container>
+  }
 </div>

@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewContainerRef, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomColumn } from '@app/types/data';
 import { FiltersDialogData, FiltersDialogResult } from '@app/types/dialog';
-import { FiltersAnd, FiltersOr } from '@app/types/filters';
+import { FiltersOr } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters/filters-chips.component';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogComponent } from './filters-dialog.component';
@@ -59,8 +58,6 @@ button {
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     FiltersChipsComponent,
     FiltersDialogComponent,
     MatButtonModule,
@@ -109,13 +106,14 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   }
 
   setHasFilters(): void {
-    for(let i=0; i < this.filters.length; i++) {
-      if (this.filters[i].length !== 0) {
-        this.hasFilters = true;
-        return;
-      }
-    }
     this.hasFilters = false;
+    let i = 0;
+    while (i !== this.filters.length && !this.hasFilters) {
+      if (this.filters[i]?.length !== 0) {
+        this.hasFilters = true;
+      }
+      i++;
+    }
   }
 
   openFiltersDialog(): void {
@@ -144,9 +142,5 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
 
   isFilterNull(result: FiltersDialogResult<T, U>): boolean {
     return result[0][0].field === null && result[0][0].for === null && result[0][0].operator === null && result[0][0].value === null;
-  }
-
-  trackByFilter(index: number, filtersAnd: FiltersAnd<T, U>): string {
-    return index.toString() + filtersAnd.length.toString();
   }
 }

@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
@@ -66,9 +67,16 @@ describe('TasksTableComponent', () => {
     copy: jest.fn()
   };
 
+  const tasks = { tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 };
   const mockTasksGrpcService = {
-    list$: jest.fn(() => of({ tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 })),
+    list$: jest.fn(() => of(tasks)),
     cancel$: jest.fn(() => of({})),
+  };
+
+  const cachedtasks = { tasks: [{ id: 'task1' }, { id: 'task2' }], total: 2 };
+  const mockCacheService = {
+    get: jest.fn(() => cachedtasks),
+    save: jest.fn(),
   };
 
   beforeEach(() => {
@@ -79,6 +87,7 @@ describe('TasksTableComponent', () => {
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         TasksStatusesService,
         FiltersService,
+        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
       ]
@@ -97,11 +106,51 @@ describe('TasksTableComponent', () => {
     };
     component.refresh$ = new Subject();
     component.loading$ = new Subject();
+    component.ngOnInit();
     component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('initialisation', () => {
+    it('should load cached data from cachedService', () => {
+      expect(mockCacheService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    beforeEach(() => {
+      component.loadFromCache();
+    });
+
+    it('should update total data with cached one', () => {
+      expect(component.total).toEqual(cachedtasks.total);
+    });
+
+    it('should update data with cached one', () => {
+      expect(component.data).toEqual([
+        {
+          raw: {
+            id: 'task1'
+          },
+          resultsQueryParams: {
+            '1-root-3-0': 'task1'
+          },
+          value$: expect.any(Subject)
+        },
+        {
+          raw: {
+            id: 'task2'
+          },
+          resultsQueryParams: {
+            '1-root-3-0': 'task2'
+          },
+          value$: expect.any(Subject)
+        },
+      ]);
+    });
   });
 
   it('should update data on refresh', () => {
@@ -135,6 +184,11 @@ describe('TasksTableComponent', () => {
         value$: expect.any(Subject)
       }
     ]);
+  });
+
+  it('should cache received data', () => {
+    component.refresh$.next();
+    expect(mockCacheService.get).toHaveBeenCalled();
   });
 
   it('should return columns keys', () => {
