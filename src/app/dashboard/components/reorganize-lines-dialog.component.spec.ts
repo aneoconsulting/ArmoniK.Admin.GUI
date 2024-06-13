@@ -3,7 +3,6 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
-import { EditNameLineResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { ReorganizeLinesDialogComponent } from './reorganize-lines-dialog.component';
 import { Line } from '../types';
@@ -38,7 +37,7 @@ describe('ReorganizeLinesDialogComponent', () => {
     }
   ];
 
-  let dialogRef$: Observable<EditNameLineResult>;
+  let dialogRef$: Observable<string>;
   const mockMatDialog = {
     open: jest.fn(() => {
       return {

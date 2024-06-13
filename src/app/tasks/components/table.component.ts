@@ -15,7 +15,7 @@ import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -32,8 +32,8 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> 
-  implements AfterViewInit, OnInit {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
+  implements OnInit, AfterViewInit {
   scope: Scope = 'tasks';
 
   @Input({ required: false }) set serviceIcon(entry: string | null) {

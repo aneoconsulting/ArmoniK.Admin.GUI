@@ -1,4 +1,4 @@
-import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -21,7 +21,7 @@ import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-sta
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -43,8 +43,8 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFilters, SessionRawListOptio
     MatDialogModule,
   ]
 })
-export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> 
-  implements OnInit, AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> {
+export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField> 
+  implements OnInit, AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField> {
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
@@ -264,16 +264,17 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     } else {
       const params: Record<string, string> = {};
       this.filters.forEach((filterAnd, index) => {
+        params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
         filterAnd.forEach(filter => {
-          if (!(filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+          if (filter.field !== SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
             const filterLabel = this.#createTaskByStatusLabel(filter, index);
             if (filterLabel && filter.value) {
               params[filterLabel] = filter.value.toString();
-              params[`${index}-root-${TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = sessionId;
             }
           }
         });
       });
+      console.log(params);
       return params;
     }
   }
@@ -387,7 +388,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   orderByDuration(data: SessionRaw[]) {
-    data = data.sort((a, b) => {
+    data = data.toSorted((a, b) => {
       if (this.options.sort.direction === 'asc') {
         return Number(a.duration?.seconds) - Number(b.duration?.seconds);
       } else {

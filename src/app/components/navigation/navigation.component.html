@@ -7,7 +7,6 @@
       *ngIf="isHandset$ | async">
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
-    <!-- TODO: Add the logo -->
     <button mat-icon-button *ngIf="!sideBarOpened" (click)="toggleSideBar()">
       <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
     </button>
@@ -89,7 +88,7 @@
           </ng-container>
           <ng-container *ngIf="item.type !== 'divider'">
             <a mat-list-item [routerLink]="item.route" routerLinkActive="navbar-item-selected">
-              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="item.icon"></mat-icon>
+              <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(item.id)"></mat-icon>
               <span matListItemTitle> {{ item.display}} </span>
             </a>
           </ng-container>

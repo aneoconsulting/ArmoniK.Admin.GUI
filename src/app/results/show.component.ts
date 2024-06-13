@@ -1,3 +1,4 @@
+import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,7 +14,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
-import { ResultsStatusesService } from './services/results-statuses.service';import { ResultRaw } from './types';
+import { ResultsStatusesService } from './services/results-statuses.service';import { ResultRaw, ResultRawFieldKey, ResultRawListOptions } from './types';
 
 
 @Component({
@@ -45,7 +46,7 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
     MatIconModule,
   ]
 })
-export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
+export class ShowComponent extends AppShowComponent<ResultRaw, ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField> implements OnInit, AfterViewInit, ShowActionInterface {
 
   protected override _grpcService = inject(ResultsGrpcService);
   private _resultsStatusesService = inject(ResultsStatusesService);

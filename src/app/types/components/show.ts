@@ -1,10 +1,12 @@
 import { inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, map, of } from 'rxjs';
+import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { GrpcService } from '../services';
+import { IndexListOptions } from '../data';
+import { DataFieldKey, GrpcTableService } from '../services/grpcService';
 
 export type ShowActionButton = {
   id: string;
@@ -34,7 +36,7 @@ export interface ShowActionInterface {
   actionButtons: ShowActionButton[];
 }
 
-export abstract class AppShowComponent<T extends object, E extends GrpcService> {
+export abstract class AppShowComponent<T extends object, K extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   id: string;
   sharableURL: string = '';
   refresh = new Subject<void>();
@@ -42,7 +44,7 @@ export abstract class AppShowComponent<T extends object, E extends GrpcService> 
   data$: Subject<T> = new Subject<T>();
 
   private _iconsService = inject(IconsService);
-  protected _grpcService: E;
+  protected _grpcService: GrpcTableService<K, O, F, FO>;
   private _shareURLService = inject(ShareUrlService);
   private _notificationService = inject(NotificationService);
   private _route = inject(ActivatedRoute);

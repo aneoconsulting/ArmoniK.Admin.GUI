@@ -1,33 +1,30 @@
 <h2 mat-dialog-title i18n="Dialog title"> Manage View in Logs </h2>
-
-
-  <!-- TODO: ajouter les consignes %taskId pour l'usage -->
-  <mat-dialog-content>
-    <p class="manage-presentation">Create a Log View to have access to logs of a task.</p>
-    <p class="manage-presentation">The URL format should be: http://URL?id=<strong>%taskId</strong>.</p>
-    <form [formGroup]="viewInLogsForm" (ngSubmit)="onSubmit()">
-      <article class="service-decoration">
-        <mat-form-field appearance="outline">
-          <mat-label for="serviceName" i18n> Service Name </mat-label>
-          <input matInput id="serviceName" type="text" formControlName="serviceName" i18n-placeholder="Placeholder" placeholder="Name of the service" required>
-        </mat-form-field>
-  
-        <div class="preview">
-          <span i18n> Icon: </span>
-          <app-icon-picker  [icon]="icon" (iconChange)="onIconChange($event)"/>
-        </div>
-      </article>
-
-      <mat-form-field appearance="outline" class="url-service">
-        <mat-label for="urlTemplate" i18n="URL Template"> URL Template </mat-label>
-        <input matInput id="urlTemplate" type="url" formControlName="urlTemplate" i18n-placeholder="Placeholder" placeholder="URL of the service" required>
-        <mat-error *ngIf="viewInLogsForm.get('urlTemplate')?.hasError('required')" i18n="Input error">
-        URL is <strong>required</strong>
-        </mat-error>
+<mat-dialog-content>
+  <p class="manage-presentation">Create a Log View to have access to logs of a task.</p>
+  <p class="manage-presentation">The URL format should be: http://URL?id=<strong>%taskId</strong>.</p>
+  <form [formGroup]="viewInLogsForm" (ngSubmit)="onSubmit()">
+    <article class="service-decoration">
+      <mat-form-field appearance="outline">
+        <mat-label for="serviceName" i18n> Service Name </mat-label>
+        <input matInput id="serviceName" type="text" formControlName="serviceName" i18n-placeholder="Placeholder" placeholder="Name of the service" required>
       </mat-form-field>
-    </form>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onNoClick()" type="button" i18n="Dialog action"> Cancel </button>
-    <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="!viewInLogsForm.valid" i18n="Dialog action"> Confirm </button>
-  </mat-dialog-actions>
+
+      <div class="preview">
+        <span i18n> Icon: </span>
+        <app-icon-picker  [icon]="icon" (iconChange)="onIconChange($event)"/>
+      </div>
+    </article>
+
+    <mat-form-field appearance="outline" class="url-service">
+      <mat-label for="urlTemplate" i18n="URL Template"> URL Template </mat-label>
+      <input matInput id="urlTemplate" type="url" formControlName="urlTemplate" i18n-placeholder="Placeholder" placeholder="URL of the service" required>
+      <mat-error *ngIf="viewInLogsForm.get('urlTemplate')?.hasError('required')" i18n="Input error">
+      URL is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()" type="button" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button (click)="onSubmit()" color="primary" [disabled]="!viewInLogsForm.valid" i18n="Dialog action"> Confirm </button>
+</mat-dialog-actions>

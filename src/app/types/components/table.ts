@@ -2,12 +2,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
-import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
-import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';
-import { SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
-import { TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
+import { FiltersEnums, FiltersOptionsEnums, ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
+import { TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
@@ -16,8 +12,8 @@ import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-sta
 import { TableColumn } from '../column.type';
 import { Scope } from '../config';
 import { ArmonikData, DataRaw, GrpcResponse, IndexListOptions, RawColumnKey } from '../data';
-import { RawFilters } from '../filters';
-import { GrpcService } from '../services';
+import { FiltersOr } from '../filters';
+import { DataFieldKey, GrpcTableService } from '../services/grpcService';
 import { IndexServiceInterface } from '../services/indexService';
 
 export interface SelectableTable<D extends DataRaw> {
@@ -28,7 +24,7 @@ export interface SelectableTable<D extends DataRaw> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   /**
    * Modify environment before fetching the data.
    * It is required for computing values that are not directly returned by the API (example: sessions durations).
@@ -49,17 +45,17 @@ export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKe
   template: '',
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) displayedColumns: TableColumn<C>[] = [];
   @Input({ required: true }) options: O;
-  @Input({ required: true }) filters$: Subject<F>;
+  @Input({ required: true }) filters$: Subject<FiltersOr<F, FO>>;
   @Input({ required: true }) refresh$: Subject<void>;
   @Input({ required: true }) loading$: Subject<boolean>;
   @Input() lockColumns = false;
   
   data: ArmonikData<R>[] = [];
   total: number = 0;
-  filters: F = [] as unknown as F;
+  filters: FiltersOr<F, FO> = [] as FiltersOr<F, FO>;
 
   abstract scope: Scope;
 
@@ -67,7 +63,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     return this.displayedColumns.map(c => c.key);
   }
 
-  abstract readonly grpcService: GrpcService;
+  abstract readonly grpcService: GrpcTableService<D, O, F, FO>;
   abstract readonly indexService: IndexServiceInterface<C, O>;
   readonly cacheService = inject(CacheService);
   readonly filtersService = inject(FiltersService);
@@ -88,11 +84,8 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     }
   }
 
-  list$(options: O, filters: F): Observable<GrpcResponse> {
-    return this.grpcService.list$(
-      options as TaskSummaryListOptions & SessionRawListOptions & ApplicationRawListOptions & ResultRawListOptions & PartitionRawListOptions,
-      filters as SessionRawFilters & TaskSummaryFilters & PartitionRawFilters & ApplicationRawFilters & ResultRawFilters
-    );
+  list$(options: O, filters: FiltersOr<F, FO>): Observable<GrpcResponse> {
+    return this.grpcService.list$(options, filters);
   }
 
   subscribeToData() {
@@ -167,11 +160,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   abstract createNewLine(entry: R): ArmonikData<R>;
 }
 
-@Component({
-  selector: 'app-results-table',
-  template: '',
-})
-export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> extends AbstractTableComponent<R, C, O, F> {
+export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> extends AbstractTableComponent<R, C, D, O, F, FO> {
   readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
 

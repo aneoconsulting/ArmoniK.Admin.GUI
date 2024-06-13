@@ -1,4 +1,4 @@
-import { FilterStringOperator, ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionTaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,7 +23,7 @@ import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRaw } from './types';
+import { SessionRaw, SessionRawFieldKey, SessionRawListOptions } from './types';
 
 @Component({
   selector: 'app-sessions-show',
@@ -60,7 +60,9 @@ import { SessionRaw } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent extends AppShowComponent<SessionRaw, SessionsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
+export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField>
+  implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
+
   cancel$ = new Subject<void>();
   pause$ = new Subject<void>();
   resume$ = new Subject<void>();
