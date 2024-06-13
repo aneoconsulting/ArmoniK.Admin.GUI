@@ -51,7 +51,7 @@ export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, Resu
   createFilterField(field: ResultRawEnumField): FilterField {
     return {
       resultRawField: {
-        field: field as ResultRawEnumField
+        field: field
       }
     } satisfies ResultFilterField.AsObject['field'];
   }

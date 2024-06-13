@@ -41,9 +41,9 @@ export class TableURLService {
     const keys = this.getQueryParamKeys();
 
     for (const key of keys) {
-      const match = key.match(extractValues);
+      const match = extractValues.exec(key);
       const order = match?.groups?.['order'] as string ?? null;
-      const for_ = match?.groups?.['for'] as FilterFor<T, U> ?? null;
+      const for_ = match?.groups?.['for'] ?? null;
       const field = match?.groups?.['field'] ? Number(match?.groups?.['field']) : null as T | U | null;
       const operator = match?.groups?.['operator'] as string ?? null;
 

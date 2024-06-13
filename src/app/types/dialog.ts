@@ -50,8 +50,6 @@ export type EditNameLineData = {
   name: string;
 };
 
-export type EditNameLineResult = string;
-
 export type ReorganizeLinesDialogData = {
   lines: Line[];
 };

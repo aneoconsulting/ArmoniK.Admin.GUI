@@ -37,8 +37,8 @@
     "resolveJsonModule": true,
     "useDefineForClassFields": false,
     "lib": [
-      "ES2022",
-      "dom"
+      "ES2023",
+      "dom",
     ]
   },
   "angularCompilerOptions": {
