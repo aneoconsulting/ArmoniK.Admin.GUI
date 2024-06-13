@@ -160,7 +160,12 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   abstract createNewLine(entry: R): ArmonikData<R>;
 }
 
-export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> extends AbstractTableComponent<R, C, D, O, F, FO> {
+@Component({
+  selector: 'app-results-table',
+  template: '',
+})
+export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null>
+  extends AbstractTableComponent<R, C, D, O, F, FO> {
   readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
 
