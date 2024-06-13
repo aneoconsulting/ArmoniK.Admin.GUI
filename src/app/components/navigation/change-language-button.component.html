@@ -1,4 +1,4 @@
-<button mat-button [matMenuTriggerFor]="switchLanguage" [matTooltip]="languageButtonTip">
+<button mat-button [matMenuTriggerFor]="switchLanguage" [matTooltip]="languageButtonTip" [disabled]="availableLanguages.length === 0">
   <mat-icon matListItemIcon [fontIcon]="getIcon('language')" aria-hidden="true"/>
   <span>{{selectedLanguage.toLocaleUpperCase()}}</span>
 </button>
