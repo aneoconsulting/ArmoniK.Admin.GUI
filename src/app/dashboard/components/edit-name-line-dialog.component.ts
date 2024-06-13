@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
+import { EditNameLineData } from '@app/types/dialog';
 
 @Component({
   selector: 'app-edit-name-line-dialog',
@@ -22,7 +22,7 @@ export class EditNameLineDialogComponent implements OnInit  {
   nameForm: FormGroup;
 
   constructor(
-    public _dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult>,
+    public _dialogRef: MatDialogRef<EditNameLineDialogComponent, string>,
     @Inject(MAT_DIALOG_DATA) public data: EditNameLineData,
   ) {}
 

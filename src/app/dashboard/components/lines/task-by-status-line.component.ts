@@ -12,7 +12,7 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
+import { EditNameLineData } from '@app/types/dialog';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
@@ -160,7 +160,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onEditNameLine(value: string) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData>(EditNameLineDialogComponent, {
       data: {
         name: value
       }

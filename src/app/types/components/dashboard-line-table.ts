@@ -11,7 +11,7 @@ import { NotificationService } from '@services/notification.service';
 import { TableColumn } from '../column.type';
 import { ScopeConfig } from '../config';
 import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
-import { EditNameLineData, EditNameLineResult } from '../dialog';
+import { EditNameLineData } from '../dialog';
 import { RawFilters } from '../filters';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 
@@ -132,7 +132,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   onEditNameLine() {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
       data: {
         name: this.line.name
       }
