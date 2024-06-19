@@ -34,16 +34,22 @@ export class AutoCompleteComponent implements OnInit {
     this.filteredOptions = signal(this._options);
   }
 
-  @Input({ required: false }) value: string | null;
+  @Input({ required: false }) set value(entry: string | null) {
+    this._value = entry ?? '';
+    if (this.formControl) {
+      this.formControl.setValue(this._value);
+    }
+  }
 
   @Output() valueChange = new EventEmitter<string>();
 
   _options: string[];
+  _value: string;
   filteredOptions: WritableSignal<string[]>;
   formControl: FormControl<string>;
 
   ngOnInit(): void {
-    this.formControl = new FormControl<string>(this.value ?? '', { nonNullable: true });
+    this.formControl = new FormControl<string>(this._value, { nonNullable: true });
   }
 
   onInputChange() {
