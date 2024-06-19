@@ -107,26 +107,26 @@ describe('CountTasksByStatusComponent', () => {
   describe('Refreshing', () => {
     it('should update statusesCounts', () => {
       component.refresh.next();
-      expect(component.statusesCount).toEqual(finalStatusesCount);
+      expect(component.statusesCount()).toEqual(finalStatusesCount);
     });
 
     it('should set null if there is no response status', () => {
       mockTasksGrpcService.countByStatus$.mockReturnValue(of({ status: undefined }));
       component.refresh.next();
-      expect(component.statusesCount).toBeNull();
+      expect(component.statusesCount()).toEqual([]);
     });
   });
 
   describe('loadFromCache', () => {
     it('should load cached data', () => {
       component.loadFromCache();
-      expect(component.statusesCount).toEqual(cachedData);
+      expect(component.statusesCount()).toEqual(cachedData);
     });
 
     it('should load a null value if there is no cache', () => {
       mockCacheService.getStatuses.mockReturnValueOnce(undefined);
       component.loadFromCache();
-      expect(component.statusesCount).toEqual(null);
+      expect(component.statusesCount()).toEqual([]);
     });
   });
 });
