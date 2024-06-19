@@ -33,7 +33,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 export class FiltersDialogAndComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
-  @Input() customColumns: CustomColumn[] | undefined;
+  @Input() customColumns: CustomColumn[];
 
   @Output() removeChange: EventEmitter<Filter<T, U>> = new EventEmitter<Filter<T, U>>();
 

@@ -49,7 +49,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
   #dialogRef = inject(MatDialogRef<FiltersDialogComponent<T, U>>);
 
   filtersOr: FiltersOr<T, U> = [];
-  customColumns: CustomColumn[] | undefined;
+  customColumns: CustomColumn[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FiltersDialogData<T, U>){}
 
@@ -59,7 +59,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
     } else {
       this.filtersOr = structuredClone(this.data.filtersOr);
     }
-    this.customColumns = this.data.customColumns;
+    this.customColumns = this.data.customColumns ?? [];
   }
 
   onAdd() {
