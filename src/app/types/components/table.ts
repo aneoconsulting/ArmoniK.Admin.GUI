@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, map, merge, of, switchMap } from 'rxjs';
 import { FiltersEnums, FiltersOptionsEnums, ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
@@ -136,9 +136,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
       this.data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
       entries.forEach((entry, index) => {
         const value = this.data[index];
-        if (value && this.isDataRawEqual(value.raw, entry)) {
-          this.data[index].value$?.next(entry);
-        } else {
+        if (!value || !this.isDataRawEqual(value.raw, entry)) {
           this.data.splice(index, 1, this.createNewLine(entry));
         }
       });
