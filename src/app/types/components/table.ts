@@ -96,7 +96,6 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     this.refresh$.pipe(
       switchMap(
         () => {
-          console.log('new')
           this.loading$.next(true);
           const options = structuredClone(this.options);
           const filters = structuredClone(this.filters);
