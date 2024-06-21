@@ -1,5 +1,5 @@
 import { FilterStringOperator, GetTaskResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
@@ -23,7 +23,7 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data()?.id ?? ''" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
@@ -50,7 +50,8 @@ import { TaskRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface, OnDestroy {
 
@@ -105,6 +106,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
     this.getIdByRoute();
     const cancelSubscription = this.cancel$.subscribe(() => this.cancel());
     this.subscriptions.add(cancelSubscription);
+    this.refresh.next();
   }
 
   ngOnDestroy(): void {

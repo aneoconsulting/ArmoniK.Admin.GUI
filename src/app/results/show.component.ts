@@ -1,5 +1,5 @@
 import { GetResultResponse } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
@@ -19,7 +19,7 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data()?.resultId ?? ''" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
@@ -43,7 +43,8 @@ import { ResultRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
 
@@ -66,12 +67,13 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
   ];
 
   ngOnInit(): void {
+    this.getIdByRoute();
     this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
-    this.getIdByRoute();
+    this.refresh.next();
   }
 
   ngOnDestroy() {

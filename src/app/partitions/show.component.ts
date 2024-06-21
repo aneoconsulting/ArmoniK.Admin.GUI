@@ -1,5 +1,5 @@
 import { FilterArrayOperator, FilterStringOperator, GetPartitionResponse, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
@@ -19,7 +19,7 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="data()?.id ?? ''" [data]="data()" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>
@@ -43,7 +43,8 @@ import { PartitionRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
   readonly grpcService = inject(PartitionsGrpcService);
@@ -69,12 +70,13 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionRe
   ];
 
   ngOnInit(): void {
+    this.getIdByRoute();
     this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
-    this.getIdByRoute();
+    this.refresh.next();
   }
 
   ngOnDestroy(): void {

@@ -1,5 +1,5 @@
 import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -28,7 +28,7 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data()?.sessionId ?? ''" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -58,7 +58,8 @@ import { SessionRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionResponse>
   implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface, OnDestroy {
@@ -154,6 +155,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   ];
 
   ngOnInit(): void {
+    this.getIdByRoute();
     this.sharableURL = this.getSharableUrl();
   }
 
@@ -161,7 +163,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     this.subscribeToData();
     this.subscribeToDuration();
     this.subscribeToInteractions();
-    this.getIdByRoute();
+    this.refresh.next();
   }
 
   ngOnDestroy(): void {
@@ -217,7 +219,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
           seconds: (Number(this.upperDate.seconds) - Number(this.lowerDate.seconds)).toString(),
           nanos: Math.abs(this.upperDate.nanos - this.lowerDate.nanos)
         };
-        this.data.set(data);
+        this.data.set({...data});
       }
     });
 
