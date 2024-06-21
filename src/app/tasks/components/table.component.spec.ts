@@ -131,7 +131,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             id: 'task1'
@@ -156,7 +156,7 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           id: 'task1'
@@ -214,7 +214,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 

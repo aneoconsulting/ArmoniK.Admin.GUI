@@ -393,7 +393,7 @@ describe('SessionsTableComponent', () => {
     map1.set('sessionId', {'0-root-1-0': 'session1'});
     map2.set('sessionId', {'0-root-1-0': 'session2'});
     map3.set('sessionId', {'0-root-1-0': 'session3'});
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           sessionId: 'session1'
@@ -447,7 +447,7 @@ describe('SessionsTableComponent', () => {
   it('should have an empty data if it cannot compute GrpcData', () => {
     jest.spyOn(component, 'computeGrpcData').mockReturnValue(undefined);
     component.refresh$.next();
-    expect(component.data).toEqual([]);
+    expect(component.data()).toEqual([]);
   });
 
   it('should prepare data before fetching', () => {
@@ -586,7 +586,7 @@ describe('SessionsTableComponent', () => {
       component.options.sort.direction = 'asc';
       component.options.pageSize = 2;
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.length).toEqual(2);
+      expect(component.data().length).toEqual(2);
     });
   });
 
@@ -686,7 +686,7 @@ describe('SessionsTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 

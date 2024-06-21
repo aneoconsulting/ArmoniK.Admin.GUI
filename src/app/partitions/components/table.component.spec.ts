@@ -1,5 +1,6 @@
 import { FilterNumberOperator, FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
@@ -142,7 +143,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -167,7 +168,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             id: 'partition1',
@@ -198,7 +199,7 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual<PartitionData[]>([
+    expect(component.data()).toEqual<PartitionData[]>([
       {
         raw: {
           id: 'partition1',
@@ -265,7 +266,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
