@@ -1,4 +1,5 @@
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
@@ -102,7 +103,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
