@@ -212,7 +212,7 @@ describe('SessionsTableComponent', () => {
       const map2 = new Map();
       map1.set('sessionId', {'0-root-1-0': 'session1'});
       map2.set('sessionId', {'0-root-1-0': 'session2'});
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             sessionId: 'session1'
