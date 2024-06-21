@@ -1,8 +1,7 @@
-import { FilterArrayOperator, FilterStringOperator, PartitionRawEnumField, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { FilterArrayOperator, FilterStringOperator, GetPartitionResponse, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, map, switchMap } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -15,12 +14,12 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
-import { PartitionRaw, PartitionRawFieldKey, PartitionRawListOptions } from './types';
+import { PartitionRaw } from './types';
 
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="data?.id ?? ''" [data$]="data$" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data()?.id ?? ''" [data]="data()" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
   <span i18n="Page title">Partition</span>
 </app-show-page>
@@ -46,9 +45,9 @@ import { PartitionRaw, PartitionRawFieldKey, PartitionRawListOptions } from './t
     MatIconModule
   ]
 })
-export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField> implements OnInit, AfterViewInit, ShowActionInterface {
-  protected override _grpcService = inject(PartitionsGrpcService);
-  private _filtersService = inject(FiltersService);
+export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
+  readonly grpcService = inject(PartitionsGrpcService);
+  private readonly filtersService = inject(FiltersService);
 
   actionButtons: ShowActionButton[] = [
     {
@@ -74,31 +73,31 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, PartitionRawFi
   }
 
   ngAfterViewInit(): void {
-    this.refresh.pipe(
-      switchMap(() => {
-        return this._grpcService.get$(this.id);
-      }),
-      map((data) => {
-        return data.partition ?? null;
-      }),
-      catchError(error => this.handleError(error))
-    ).subscribe((data) => {
-      if (data) {
-        this.data = data;
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'sessions', this.partitionsKey, this.data.id);
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.id);
-        this.data$.next(data);
-      }
-    });
-
+    this.subscribeToData();
     this.getIdByRoute();
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe();
+  }
+
+  getDataFromResponse(data: GetPartitionResponse): PartitionRaw | undefined {
+    return data.partition;
+  }
+
+  afterDataFetching(): void {
+    const data = this.data();
+    if (data) {
+      this.filtersService.createFilterQueryParams(this.actionButtons, 'sessions', this.partitionsKey, data.id);
+      this.filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, data.id);
+    }
+  }
+
   get partitionsKey() {
-    return this._filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
+    return this.filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
   }
 
   get tasksKey() {
-    return this._filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
+    return this.filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
   }
 }

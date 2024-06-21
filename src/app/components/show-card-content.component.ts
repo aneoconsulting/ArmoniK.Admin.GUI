@@ -1,5 +1,8 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { DurationPipe } from '@pipes/duration.pipe';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 
 type Data = {
   [key: string]: string | string[] | Data;
@@ -21,13 +24,25 @@ app-show-card-content {
   margin: 0;
 }
   `],
-  standalone: true,
+  imports: [
+    DurationPipe,
+    DatePipe,
+    EmptyCellPipe,
+  ],
+  standalone: true
 })
 export class ShowCardContentComponent<T extends object> implements OnChanges {
-  @Input({ required: true }) data: T | T[] | null = null;
+  @Input({ required: true }) set data(entry: T | T[] | null) {
+    this._data = entry as Data;
+  }
   @Input({ required: true }) statuses: Record<number, string> = [];
 
   keys: string[] = [];
+  private _data: Data;
+
+  get data(): Data {
+    return this._data;
+  }
 
   ngOnChanges() {
     if (this.data) {
@@ -46,12 +61,12 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
-  isString(value: unknown): boolean {
-    return typeof value === 'string';
+  isString(key: string): boolean {
+    return typeof this.data[key] === 'string';
   }
 
-  isNumber(value: unknown): boolean {
-    return typeof value === 'number';
+  isNumber(key: string): boolean {
+    return typeof this.data[key] === 'number';
   }
 
   isStatus(key: string): boolean {
@@ -62,6 +77,10 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return Array.isArray(value);
   }
 
+  isTimestamp(key: string): boolean {
+    return this.data[key] instanceof Timestamp;
+  }
+
   hasLength(value: unknown): boolean {
     return value != undefined && (value as unknown[]).length > 0;
   }
@@ -70,35 +89,25 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
     return value as unknown[];
   }
 
-  isObject(value: unknown): boolean {
-    return typeof value === 'object' && !this.isArray(value) && !this.isDuration(value) && !this.isTimestamp(value);
+  isObject(key: string): boolean {
+    return typeof this.data[key] === 'object' && !this.isArray(this.data[key]) && !this.isDuration(key) && !this.isTimestamp(key);
   }
 
-  isDuration(value: unknown): boolean {
-    return value instanceof Duration;
+  isDuration(key: string): boolean {
+    const duration = this.data[key] as unknown as Duration;
+    return !Number.isNaN(duration?.nanos) && !!duration?.seconds;
   }
 
-  isTimestamp(value: unknown): boolean {
-    return value instanceof Timestamp;
-  }
-
-  /**
-   * Search for a string in the component JSON data.
-   * @param key the key of the JSON data you are looking for.
-   * @returns the string, or "-" if not found.
-   */
-  findValue(key: string) {
-    if (!this.data) {
-      return '-';
+  toDate(key: string): Date | undefined {
+    if (this.data) {
+      const timestamp = this.data[key] as unknown as Timestamp;
+      return timestamp.toDate();
     }
+    return undefined;
+  }
 
-    const value = (this.data as unknown as Data)[key];
-
-    if (value === null || value === undefined) {
-      return '-';
-    }
-
-    return value;
+  toDuration(key: string) {
+    return this.data[key] as unknown as Duration ?? null;
   }
 
   /**
@@ -111,7 +120,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
       return [];
     }
 
-    const value = (this.data as unknown as Data)[key];
+    const value = this.data[key];
 
     if (value === null || value === undefined) {
       return [];
@@ -130,7 +139,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
       return {};
     }
 
-    const value = (this.data as unknown as Data)[key];
+    const value = this.data[key];
 
     if (value === null || value === undefined) {
       return {};
@@ -150,7 +159,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
       return '-';
     }
 
-    const value = (this.data as unknown as Data)[key] as unknown as Duration;
+    const value = this.data[key] as unknown as Duration;
 
     if (!value || value.seconds === undefined || value.nanos === undefined 
     || (value.seconds === '0' && value.nanos === 0)) {
@@ -171,7 +180,7 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
       return '-';
     }
 
-    const value = new Timestamp((this.data as unknown as Data)[key] as Data);
+    const value = new Timestamp(this.data[key] as Data);
 
     if (value.seconds === undefined || value.nanos === undefined 
     || (value.seconds === '0' && value.nanos === 0)) {
@@ -186,13 +195,13 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
    * @param key the key of the status
    * @returns the label if found, "-" if not
    */
-  statusToLabel(key: string): string {
-    if (!this.data || !this.statuses) {
-      return '-';
+  statusToLabel(key: string) {
+    if (this.data && this.statuses) {
+      const label = this.statuses[Number(this.data[key])];
+      if (label) {
+        return label;
+      }
     }
-
-    const status = Number((this.data as unknown as Data)[key]);
-
-    return this.statuses[status] ? this.statuses[status] : '-';
+    return null;
   }
 }

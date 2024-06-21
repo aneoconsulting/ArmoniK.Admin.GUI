@@ -1,12 +1,11 @@
-import { inject } from '@angular/core';
+import { inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, map, of } from 'rxjs';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
+import { Observable, Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { IndexListOptions } from '../data';
-import { DataFieldKey, GrpcTableService } from '../services/grpcService';
+import { DataRaw } from '../data';
+import { GetResponse, GrpcGetInterface } from '../services/grpcService';
 
 export type ShowActionButton = {
   id: string;
@@ -36,29 +35,55 @@ export interface ShowActionInterface {
   actionButtons: ShowActionButton[];
 }
 
-export abstract class AppShowComponent<T extends object, K extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
+export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse> {
   id: string;
   sharableURL: string = '';
   refresh = new Subject<void>();
-  data: T | null;
-  data$: Subject<T> = new Subject<T>();
+  data = signal<T | null>(null);
+  subscriptions = new Subscription();
 
-  private _iconsService = inject(IconsService);
-  protected _grpcService: GrpcTableService<K, O, F, FO>;
-  private _shareURLService = inject(ShareUrlService);
-  private _notificationService = inject(NotificationService);
-  private _route = inject(ActivatedRoute);
+  private readonly iconsService = inject(IconsService);
+  abstract readonly grpcService: GrpcGetInterface<R>;
+  private readonly shareURLService = inject(ShareUrlService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly route = inject(ActivatedRoute);
 
   getIcon(name: string): string {
-    return this._iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onRefresh() {
     this.refresh.next();
   }
 
+  subscribeToData() {
+    const refreshSubscription = this.refresh.pipe(
+      switchMap(() => {
+        return this.get$();
+      }),
+      map((data) => this.getDataFromResponse(data) ?? null),
+      catchError((error) => this.handleError(error))
+    ).subscribe((data) => {
+      this.data.set(data);
+      this.afterDataFetching();
+    });
+    this.subscriptions.add(refreshSubscription);
+  }
+
+  private get$(): Observable<R> {
+    return this.grpcService.get$(this.id);
+  }
+
+  unsubscribe() {
+    this.subscriptions.unsubscribe();
+  }
+
+  abstract getDataFromResponse(data: R): T | undefined;
+
+  abstract afterDataFetching(): void;
+
   getIdByRoute() {
-    this._route.params.pipe(
+    this.route.params.pipe(
       map(params => params['id']),
     ).subscribe(id => {
       this.id = id;
@@ -73,14 +98,14 @@ export abstract class AppShowComponent<T extends object, K extends DataFieldKey,
   }
 
   getSharableUrl() {
-    return this._shareURLService.generateSharableURL(null, null);
+    return this.shareURLService.generateSharableURL(null, null);
   }
 
   error(message: string) {
-    return this._notificationService.error(message);
+    return this.notificationService.error(message);
   }
 
   success(message: string) {
-    return this._notificationService.success(message);
+    return this.notificationService.success(message);
   }
 }

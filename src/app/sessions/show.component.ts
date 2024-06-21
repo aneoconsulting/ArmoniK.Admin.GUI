@@ -1,10 +1,10 @@
-import { FilterStringOperator, ResultRawEnumField, SessionRawEnumField, SessionTaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
-import { Subject, catchError, map, switchMap } from 'rxjs';
+import { Subject, map, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
@@ -23,12 +23,12 @@ import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRaw, SessionRawFieldKey, SessionRawListOptions } from './types';
+import { SessionRaw } from './types';
 
 @Component({
   selector: 'app-sessions-show',
   template: `
-<app-show-page [id]="data?.sessionId ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+<app-show-page [id]="data()?.sessionId ?? ''" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
   <span i18n="Page title"> Session </span>
 </app-show-page>
@@ -60,8 +60,8 @@ import { SessionRaw, SessionRawFieldKey, SessionRawListOptions } from './types';
     MatIconModule,
   ]
 })
-export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField>
-  implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface {
+export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionResponse>
+  implements OnInit, AfterViewInit, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface, OnDestroy {
 
   cancel$ = new Subject<void>();
   pause$ = new Subject<void>();
@@ -75,11 +75,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
   lowerDate: Timestamp | undefined;
   upperDate: Timestamp | undefined;
 
-  private _sessionsStatusesService = inject(SessionsStatusesService);
-  protected override _grpcService = inject(SessionsGrpcService);
-  private _filtersService = inject(FiltersService);
-  private router = inject(Router);
-
+  private readonly sessionsStatusesService = inject(SessionsStatusesService);
+  readonly grpcService = inject(SessionsGrpcService);
+  private readonly filtersService = inject(FiltersService);
+  private readonly router = inject(Router);
 
   canPause$ = new Subject<boolean>();
   canResume$ = new Subject<boolean>();
@@ -159,86 +158,106 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
   }
 
   ngAfterViewInit(): void {
-    this.refresh.pipe(
-      switchMap(() => {
-        return this._grpcService.get$(this.id);
-      }),
-      map((data) => {
-        return data.session ?? null;
-      }),
-      catchError(error => this.handleError(error))
-    ).subscribe((data) => {
-      if (data) {
-        this.data = data;
-        this.lowerDuration$.next();
-        this.upperDuration$.next();
-        this.data$.next(data);
-        this._filtersService.createFilterPartitionQueryParams(this.actionButtons, this.data.partitionIds);
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, this.data.sessionId);
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, this.data.sessionId);
-        this.canPause$.next(!this._sessionsStatusesService.canPause(this.data.status));
-        this.canResume$.next(!this._sessionsStatusesService.canResume(this.data.status));
-        this.canCancel$.next(!this._sessionsStatusesService.canCancel(this.data.status));
-        this.canClose$.next(!this._sessionsStatusesService.canClose(this.data.status));
-      }
-    });
-
+    this.subscribeToData();
+    this.subscribeToDuration();
+    this.subscribeToInteractions();
     this.getIdByRoute();
-    this.cancel$.subscribe(() => {
-      this.cancel();
-    });
+  }
 
-    this.pause$.subscribe(() => {
-      this.pause();
-    });
+  ngOnDestroy(): void {
+    this.unsubscribe();
+  }
 
-    this.resume$.subscribe(() => {
-      this.resume();
-    });
+  getDataFromResponse(data: GetSessionResponse): SessionRaw | undefined {
+    return data.session;
+  }
 
-    this.delete$.subscribe(() => {
-      this.delete();
-    });
+  afterDataFetching(): void {
+    const data = this.data();
+    if (data) {
+      this.lowerDuration$.next();
+      this.upperDuration$.next();
+      this.filtersService.createFilterPartitionQueryParams(this.actionButtons, data.partitionIds);
+      this.filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey(), data.sessionId);
+      this.filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey(), data.sessionId);
+      this.canPause$.next(!this.sessionsStatusesService.canPause(data.status));
+      this.canResume$.next(!this.sessionsStatusesService.canResume(data.status));
+      this.canCancel$.next(!this.sessionsStatusesService.canCancel(data.status));
+      this.canClose$.next(!this.sessionsStatusesService.canClose(data.status));
+    }  
+  }
 
-    this.close$.subscribe(() => {
-      this.close();
-    });
+  get statuses() {
+    return this.sessionsStatusesService.statuses;
+  }
 
-    this.lowerDuration$.pipe(
+  subscribeToDuration() {
+    const lowerDurationSubscription = this.lowerDuration$.pipe(
       switchMap(() => {
-        return this._grpcService.getTaskData$(this.id, 'createdAt', 'asc').pipe(map(d => d.date));
+        return this.grpcService.getTaskData$(this.id, 'createdAt', 'asc').pipe(map(d => d.date));
       })
     ).subscribe((data) => {
       this.lowerDate = data;
       this.computeDuration$.next();
     });
 
-    this.upperDuration$.pipe(
+    const upperDurationSubscription = this.upperDuration$.pipe(
       switchMap(() => {
-        return this._grpcService.getTaskData$(this.id, 'endedAt', 'desc').pipe(map(d => d.date));
+        return this.grpcService.getTaskData$(this.id, 'endedAt', 'desc').pipe(map(d => d.date));
       })
     ).subscribe((data) => {
       this.upperDate = data;
       this.computeDuration$.next();
     });
 
-    this.computeDuration$.subscribe(() => {
-      if (this.data && this.lowerDate && this.upperDate) {
-        this.data.duration = {
+    const computeDurationSubscription = this.computeDuration$.subscribe(() => {
+      const data = this.data();
+      if (data && this.lowerDate && this.upperDate) {
+        data.duration = {
           seconds: (Number(this.upperDate.seconds) - Number(this.lowerDate.seconds)).toString(),
           nanos: Math.abs(this.upperDate.nanos - this.lowerDate.nanos)
         };
+        this.data.set(data);
       }
     });
+
+    this.subscriptions.add(lowerDurationSubscription);
+    this.subscriptions.add(upperDurationSubscription);
+    this.subscriptions.add(computeDurationSubscription);
   }
 
-  get statuses() {
-    return this._sessionsStatusesService.statuses;
+  subscribeToInteractions() {
+    const cancelSubscription = this.cancel$.subscribe(() => {
+      this.cancel();
+    });
+
+    const pauseSubscription = this.pause$.subscribe(() => {
+      this.pause();
+    });
+
+    const resumeSubscription = this.resume$.subscribe(() => {
+      this.resume();
+    });
+
+    const deleteSubscription = this.delete$.subscribe(() => {
+      this.delete();
+    });
+
+    const closeSubscription = this.close$.subscribe(() => {
+      this.close();
+    });
+
+    this.subscriptions.add(cancelSubscription);
+    this.subscriptions.add(pauseSubscription);
+    this.subscriptions.add(resumeSubscription);
+    this.subscriptions.add(deleteSubscription);
+    this.subscriptions.add(closeSubscription);
   }
 
   cancel(): void {
-    if(this.data?.sessionId) {
-      this._grpcService.cancel$(this.data.sessionId).subscribe({
+    const data = this.data();
+    if(data?.sessionId) {
+      this.grpcService.cancel$(data.sessionId).subscribe({
         complete: () => {
           this.success('Session canceled');
           this.refresh.next();
@@ -252,8 +271,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
   }
 
   pause(): void {
-    if(this.data?.sessionId) {
-      this._grpcService.pause$(this.data.sessionId).subscribe({
+    const data = this.data();
+    if(data?.sessionId) {
+      this.grpcService.pause$(data.sessionId).subscribe({
         complete: () => {
           this.success('Session paused');
           this.refresh.next();
@@ -267,8 +287,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
   }
 
   resume(): void {
-    if(this.data?.sessionId) {
-      this._grpcService.resume$(this.data.sessionId).subscribe({
+    const data = this.data();
+    if(data?.sessionId) {
+      this.grpcService.resume$(data.sessionId).subscribe({
         complete: () => {
           this.success('Session resumed');
           this.refresh.next();
@@ -282,8 +303,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
   }
 
   close(): void {
-    if(this.data?.sessionId) {
-      this._grpcService.close$(this.data.sessionId).subscribe({
+    const data = this.data();
+    if(data?.sessionId) {
+      this.grpcService.close$(data.sessionId).subscribe({
         complete: () => {
           this.success('Session closed');
           this.refresh.next();
@@ -297,8 +319,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
   }
 
   delete(): void {
-    if(this.data?.sessionId) {
-      this._grpcService.delete$(this.data.sessionId).subscribe({
+    const data = this.data();
+    if(data?.sessionId) {
+      this.grpcService.delete$(data.sessionId).subscribe({
         complete: () => {
           this.success('Session deleted');
           this.router.navigate(['/sessions']);
@@ -311,11 +334,11 @@ export class ShowComponent extends AppShowComponent<SessionRaw, SessionRawFieldK
     }
   }
 
-  get resultsKey() {
-    return this._filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
+  resultsKey() {
+    return this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
   }
 
-  get tasksKey() {
-    return this._filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
+  tasksKey() {
+    return this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID);
   }
 }
