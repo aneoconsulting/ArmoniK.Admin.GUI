@@ -131,15 +131,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   }
 
   protected newData(entries: R[]) {
-    if (entries.length !== 0) {
-      const data: ArmonikData<R>[] = [];
-      entries.forEach((entry) => {
-        data.push(this.createNewLine(entry));
-      });
-      this.data.set(data);
-    } else {
-      this.data.set([]);
-    }
+    this.data.set(entries.map(entry => this.createNewLine(entry)));
   }
 
   onDrop(columnsKeys: C[]) {
