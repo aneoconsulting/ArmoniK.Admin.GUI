@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterType, FilterValueOptions, MaybeNull } from '@app/types/filters';
+import { Filter, FilterInput, FilterType, FilterValueOptions } from '@app/types/filters';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
@@ -134,12 +134,10 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     this.labelledStatuses = Object.values(this.allStatuses).map(status => status.value);
   }
 
-  retrieveStatusKey(status: MaybeNull<string>) {
-    if (status) {
-      const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
-      if (key) {
-        return key;
-      }
+  retrieveStatusKey(status: string) {
+    const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
+    if (key) {
+      return key;
     }
     return null;
   }
@@ -151,12 +149,14 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       if (customField) {
         this._filter.for = 'custom';
         this._filter.field = value;
+        this.filter.operator = null;
       }
     } else {
       const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
       if (for_) {
         this._filter.for = for_;
         this._filter.field = field.index as T | U;
+        this.filter.operator = null;
       }
     }
     this.setType();

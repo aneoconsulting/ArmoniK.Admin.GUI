@@ -1,6 +1,5 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,7 +27,6 @@ mat-form-field {
     NgxMatNativeDateModule,
     AsyncPipe,
     MatAutocompleteModule,
-    ReactiveFormsModule,
     MatButtonModule,
     AutoCompleteComponent
   ],
@@ -38,9 +36,7 @@ export class FiltersDialogInputComponent {
   @Input({ required: true }) statuses: string[];
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
-  booleanFormControl: FormControl<string | null>;
   booleans = ['true', 'false'];
-
   actualDate = new Date();
   duration: {[key: number]: string} = {};
 
