@@ -1,0 +1,11 @@
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
+  <mat-label>{{ label ?? defaultLabel }}</mat-label>
+  <input matInput [matAutocomplete]="autocomplete" [formControl]="formControl" (input)="onInputChange()">
+  <mat-autocomplete (optionSelected)="onInputChange()" #autocomplete>
+    @for (option of filteredOptions(); track option) {
+      <mat-option [value]="option">
+        {{ option }}
+      </mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>
