@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { Subject, Subscription, switchMap } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
@@ -14,7 +14,7 @@ import { CacheService } from '@services/cache.service';
   [defaultQueryParams]="queryParams"
   [loading]="loading"
   [statusesGroups]="statusesGroups"
-  [statusesCount]="statusesCount"
+  [statusesCount]="statusesCount()"
 >
 </app-view-tasks-by-status>
   `,
@@ -47,7 +47,7 @@ export class CountTasksByStatusComponent {
     return this._statusesGroups;
   }
 
-  statusesCount: StatusCount[] | null = [];
+  statusesCount: WritableSignal<StatusCount[]> = signal([]);
 
   loading = true;
 
@@ -62,8 +62,8 @@ export class CountTasksByStatusComponent {
       switchMap(() => this.#tasksGrpcService.countByStatus$(entries)),
     ).subscribe(response => {
       this.loading = false;
-      this.statusesCount = response.status ?? null;
-      this.saveData();
+      this.statusesCount.set(response.status ?? []);
+      this.saveData(response.status);
     });
     this.refresh.next();
   }
@@ -75,13 +75,13 @@ export class CountTasksByStatusComponent {
 
   loadFromCache() {
     if (this.id) {
-      this.statusesCount = this.cacheService.getStatuses(this.id) ?? null;
+      this.statusesCount.set(this.cacheService.getStatuses(this.id) ?? []);
     }
   }
 
-  saveData() {
-    if (this.id && this.statusesCount) {
-      this.cacheService.saveStatuses(this.id, this.statusesCount);
+  saveData(data: StatusCount[] | undefined) {
+    if (this.id && data) {
+      this.cacheService.saveStatuses(this.id, data);
     }
   }
 

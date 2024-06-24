@@ -171,7 +171,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
         }
         this.sessionEndedDates = [];
         this.sessionCreationDates = [];
-        this.loading$.next(false);
+        this.loading.set(false);
       }
     });
     
@@ -224,7 +224,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       });
     } else {
       this.newData(data);
-      this.loading$.next(false);
+      this.loading.set(false);
     }
   }
 
