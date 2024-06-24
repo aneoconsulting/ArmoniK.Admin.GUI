@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, WritableSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,19 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-autocomplete',
   standalone: true,
-  template: `
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label i18n="Input label">Value</mat-label>
-      <input matInput [matAutocomplete]="autocomplete" [formControl]="formControl" (input)="onInputChange()">
-      <mat-autocomplete (optionSelected)="onInputChange()" #autocomplete>
-        @for (option of filteredOptions(); track option) {
-          <mat-option [value]="option">
-            {{ option }}
-          </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-  `,
+  templateUrl: 'auto-complete.component.html',
   imports: [
     MatFormFieldModule,
     MatAutocompleteModule,
@@ -29,27 +17,51 @@ import { MatInputModule } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AutoCompleteComponent implements OnInit {
-  @Input({ required: true }) set options(entries: string[] | null) {
-    this._options = entries ?? [];
-    this.filteredOptions = signal(this._options);
+  @Input({ required: true }) set options(entries: string[]) {
+    this._options = entries;
+    this.filteredOptions.set(this._options);
+    this.hasOneOption = this._options.length === 1;
+    if (this.formControl) {
+      this.formControlStatus();
+    }
   }
 
-  @Input({ required: false }) set value(entry: string | null) {
-    this._value = entry ?? '';
+  @Input({ required: false }) set value(entry: string | number | null | undefined) {
+    this._value = entry?.toString() ?? '';
     if (this.formControl) {
       this.formControl.setValue(this._value);
     }
   }
 
+  @Input({ required: false }) label: string | null;
+  defaultLabel = $localize`Value`;
+
   @Output() valueChange = new EventEmitter<string>();
 
-  _options: string[];
-  _value: string;
-  filteredOptions: WritableSignal<string[]>;
+  private _options: string[];
+  private _value: string;
+  hasOneOption: boolean = false;
+  filteredOptions = signal<string[]>([]);
   formControl: FormControl<string>;
 
   ngOnInit(): void {
-    this.formControl = new FormControl<string>(this._value, { nonNullable: true });
+    this.checkOptions();
+    this.formControl = new FormControl<string>({value: this._value, disabled: this.hasOneOption}, { nonNullable: true });
+  }
+
+  checkOptions() {
+    if (this.hasOneOption) {
+      this.value = this._options[0];
+    }
+  }
+
+  formControlStatus() {
+    if (this.hasOneOption) {
+      this.formControl.disable();
+      this.formControl.setValue(this._options[0]);
+    } else {
+      this.formControl.enable();
+    }
   }
 
   onInputChange() {

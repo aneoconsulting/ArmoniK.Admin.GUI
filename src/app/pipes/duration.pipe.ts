@@ -3,7 +3,7 @@ import { Duration } from '@ngx-grpc/well-known-types';
 
 @Pipe({ name: 'duration', standalone: true })
 export class DurationPipe  implements PipeTransform {
-  transform(value: Duration | null) {
+  transform(value: Duration | null | undefined) {
     if (!value) {
       return null;
     }
@@ -23,7 +23,6 @@ export class DurationPipe  implements PipeTransform {
     const minutesStr = minutes > 0 ? `${minutes}m ` : '';
     const secondsStr = secondsRemaining > 0 ? `${secondsRemaining}s ` : '';
     const millisStr = millis > 0 ? `${Math.trunc(millis)}ms` : '';
-
     return `${hoursStr}${minutesStr}${secondsStr}${millisStr}`.trim();
   }
 }

@@ -86,17 +86,14 @@ describe('ShowComponent', () => {
     });
 
     it('should update data on success', () => {
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(component.data).toEqual(returnedPartition);
-      expect(spy).toHaveBeenCalledWith(returnedPartition);
+      expect(component.data()).toEqual(returnedPartition);
     });
 
     it('should not update data if there is none', () => {
       mockPartitionsGrpcService.get$.mockImplementationOnce(() => of({}));
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(spy).not.toHaveBeenCalled();
+      expect(component.data()).toEqual(null);
     });
 
     it('should catch errors', () => {
@@ -132,6 +129,16 @@ describe('ShowComponent', () => {
       const error = 'error message';
       component.error(error);
       expect(mockNotificationService.error).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('on destroy', () => {
+    beforeEach(() => {
+      component.ngOnDestroy();
+    });
+
+    it('should unsubscribe from subjects', () => {
+      expect(component.subscriptions.closed).toBeTruthy();
     });
   });
 });

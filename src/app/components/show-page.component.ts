@@ -4,7 +4,6 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
 import { ShowActionButton } from '@app/types/components/show';
 import { DataRaw } from '@app/types/data';
 import { NotificationService } from '@services/notification.service';
@@ -37,7 +36,7 @@ span {
 })
 export class ShowPageComponent<T extends DataRaw>{
   @Input({ required: true }) id: string | null = null;
-  @Input({ required: true }) data$: Subject<T>;
+  @Input({required: true }) data: T | null;
   @Input() statuses: Record<number, string> = [];
   @Input() sharableURL: string | null = null;
   @Input({ required: true }) actionsButton: ShowActionButton[];

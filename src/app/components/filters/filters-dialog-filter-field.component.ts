@@ -38,7 +38,7 @@ span {
     AsyncPipe,
     FormsModule,
     ReactiveFormsModule,
-    AutoCompleteComponent
+    AutoCompleteComponent,
   ],
   providers: [
     FiltersService,
