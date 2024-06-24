@@ -1,7 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Subject } from 'rxjs';
 import { DataRaw } from '@app/types/data';
 import { ShowCardContentComponent } from './show-card-content.component';
 
@@ -20,13 +19,7 @@ pre {
     MatProgressSpinnerModule
   ]
 })
-export class ShowCardComponent<T extends DataRaw> implements OnInit {
-  @Input({ required: true }) data$: Subject<T>;
+export class ShowCardComponent<T extends DataRaw> {
+  @Input({ required: true }) data: T | null;
   @Input() statuses: Record<number, string> = [];
-
-  data: T | null = null;
-
-  ngOnInit(): void {
-    this.data$.subscribe(data => this.data = data);
-  }
 }
