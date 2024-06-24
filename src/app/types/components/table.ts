@@ -128,7 +128,6 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         this.loading$.next(false);
       }
     });
-    this.refresh$.next();
   }
 
   protected newData(entries: R[]) {

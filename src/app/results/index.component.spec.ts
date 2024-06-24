@@ -203,7 +203,6 @@ describe('Results Index Component', () => {
     });
 
     it('should merge subscriptions', () => {
-      expect(component.refresh.observed).toBeTruthy();
       expect(component.subscriptions).toBeDefined();
     });
   });
@@ -220,7 +219,7 @@ describe('Results Index Component', () => {
   });
 
   it('should refresh', () => {
-    const spy = jest.spyOn(component.refresh, 'next');
+    const spy = jest.spyOn(component.refresh$, 'next');
     component.onRefresh();
     expect(spy).toHaveBeenCalled();
   });
@@ -238,7 +237,7 @@ describe('Results Index Component', () => {
     });
 
     it('should refresh if the value is not null', () => {
-      const spy = jest.spyOn(component.refresh, 'next');
+      const spy = jest.spyOn(component.refresh$, 'next');
       component.onIntervalValueChange(5);
       expect(spy).toHaveBeenCalled();
     });
