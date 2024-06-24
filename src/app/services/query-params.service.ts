@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IndexListOptions } from '@app/types/data';
-import { FilterInputValueDate, MaybeNull, RawFilters } from '@app/types/filters';
+import { MaybeNull, RawFilters } from '@app/types/filters';
 import { QueryParamsOptions } from '@app/types/query-params';
 
 @Injectable()
@@ -16,8 +16,8 @@ export class QueryParamsService {
     return queryParamsOptions;
   }
 
-  createFilters<F extends RawFilters>(filtersOr: F): Record<string, MaybeNull<string | number | FilterInputValueDate | boolean | null>> | null {
-    const queryParamsFilters: Record<string, MaybeNull<string | number | FilterInputValueDate | boolean | null>> = {};
+  createFilters<F extends RawFilters>(filtersOr: F): Record<string, MaybeNull<string | number | Date | boolean | null>> | null {
+    const queryParamsFilters: Record<string, MaybeNull<string | number | Date | boolean | null>> = {};
 
     let i = 0;
     for (const filtesrsAnd of filtersOr) {
