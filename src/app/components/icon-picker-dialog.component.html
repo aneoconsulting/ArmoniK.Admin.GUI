@@ -10,10 +10,10 @@
 <mat-menu #menu="matMenu" yPosition="below">
   <mat-form-field style="width: 100%;" subscriptSizing="dynamic" (click)="$event.stopPropagation();" (keydown.enter)="selectFirst()">
     <mat-label i18n="Input label">Icon</mat-label>
-    <input matInput [formControl]="iconFormControl" placeholder="Search icon" />
+    <input matInput [formControl]="iconFormControl" (input)="filterIcons()" placeholder="Search icon" />
   </mat-form-field>
   <article mat-menu-item style="background-color: transparent;" disableRipple>
-    @for(icon of filteredIcons; track icon) {
+    @for(icon of filteredIcons(); track icon) {
       <button mat-icon-button (click)="selectIcon(icon)" [matTooltip]="icon">
         <mat-icon [fontIcon]="getIcon(icon)" />
       </button>
