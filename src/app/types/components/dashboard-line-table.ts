@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { EditNameLineDialogComponent } from '@app/dashboard/components/edit-name-line-dialog.component';
@@ -33,8 +33,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  loading: boolean = true;
-  loading$: Subject<boolean> = new BehaviorSubject(true);
+  loading = signal(false);
 
   filters: F;
   filters$: Subject<F>;
@@ -92,9 +91,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   mergeSubscriptions() {
     const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.loading$.subscribe((value) => this.loading = value);
     this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
   }
 
   unsubscribe() {
