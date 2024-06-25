@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, first, map, of, switchMap } from 'rxjs';
 import { FiltersEnums, FiltersOptionsEnums, ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
@@ -74,14 +74,16 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   }
 
   loadFromCache() {
-    const cachedResponse = this.cacheService.get(this.scope);
-    if (cachedResponse) {
-      const cachedData = this.computeGrpcData(cachedResponse);
-      this.total = cachedResponse.total;
-      if (cachedData) {
-        this.newData(cachedData);
+    this.refresh$.pipe(first()).subscribe(() => {
+      const cachedResponse = this.cacheService.get(this.scope);
+      if (cachedResponse) {
+        const cachedData = this.computeGrpcData(cachedResponse);
+        this.total = cachedResponse.total;
+        if (cachedData) {
+          this.newData(cachedData);
+        }
       }
-    }
+    });
   }
 
   list$(options: O, filters: FiltersOr<F, FO>): Observable<GrpcResponse> {
