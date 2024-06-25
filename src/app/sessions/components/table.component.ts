@@ -274,7 +274,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
           }
         });
       });
-      console.log(params);
       return params;
     }
   }

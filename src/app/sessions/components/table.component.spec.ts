@@ -625,6 +625,7 @@ describe('SessionsTableComponent', () => {
 
   describe('compute duration', () => {
     it('should not compute if the ended and created array have not the same length as the dataRaw array', () => {
+      component.loading.set(true); // We are mocking the fact that the component is loading
       component.computeDuration$.next();
       expect(component.loading()).toBeTruthy();
     });
