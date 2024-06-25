@@ -86,7 +86,7 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
     return this._filters;
   }
 
-  @Input() customColumns: CustomColumn[] | undefined;
+  @Input() customColumns: CustomColumn[];
   @Input() showFilters = true;
 
   @Output() filtersChange: EventEmitter<FiltersOr<T, U>> = new EventEmitter<FiltersOr<T, U>>();

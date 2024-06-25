@@ -1,32 +1,16 @@
-import { Subject } from 'rxjs';
 import { ResultRaw } from '@app/results/types';
 import { ShowCardComponent } from './show-card.component';
 
 describe('ShowCardComponent', () => {
 
-  let component: ShowCardComponent<ResultRaw>;
+  const statuses = { 1: 'status' };
+  const data: ResultRaw = {} as ResultRaw;
+  const component = new ShowCardComponent<ResultRaw>();
 
-  const subject = new Subject<ResultRaw>();
-
-  beforeEach(() => {
-    component = new ShowCardComponent();
-    component.data$ = subject;
-    component.statuses = { 1: 'status' };
-    component.ngOnInit();
-  });
+  component.data = data;
+  component.statuses = statuses;
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should subscribe to data$', () => {
-    expect(subject.observed).toBeTruthy();
-  });
-
-  it('should update data', () => {
-    const result = { name: 'result' } as ResultRaw;
-    subject.next(result);
-    expect(component.data).toEqual(result);
-  });
-
 });

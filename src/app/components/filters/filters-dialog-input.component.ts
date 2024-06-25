@@ -1,6 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
-import { Observable, map, startWith } from 'rxjs';
-import { FilterInput, FilterInputOutput, FilterInputType, MaybeNull } from '@app/types/filters';
+import { FilterInput } from '@app/types/filters';
+import { AutoCompleteComponent } from '@components/auto-complete.component';
 
 @Component({
   selector: 'app-filters-dialog-input',
@@ -28,70 +27,41 @@ mat-form-field {
     NgxMatNativeDateModule,
     AsyncPipe,
     MatAutocompleteModule,
-    ReactiveFormsModule,
     MatButtonModule,
+    AutoCompleteComponent
   ],
 })
-export class FiltersDialogInputComponent implements OnInit {
+export class FiltersDialogInputComponent {
   @Input({ required: true }) input: FilterInput;
-  @Input({ required: true }) statusFormControl: FormControl<string | null>;
-  @Input({ required: true }) filteredStatuses: Observable<string[]>;
+  @Input({ required: true }) statuses: string[];
+  @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
-  booleanFormControl: FormControl<string | null>;
-  filteredBooleans: Observable<string[]>;
-
-  // Maybe we will need to emit the type of value in order to be able to correctly handle the value.
-  // Créer des types en fonction du type de champ
-  @Output() valueChange: EventEmitter<FilterInputOutput> = new EventEmitter<FilterInputOutput>();
+  booleans = ['true', 'false'];
   actualDate = new Date();
   duration: {[key: number]: string} = {};
 
-  ngOnInit(): void {
-    this.booleanFormControl = new FormControl<string | null>(this.input.value as unknown as string);
-    this.filteredBooleans = this.booleanFormControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterBoolean(value))
-    );
+  private emit(value: string) {
+    this.valueChange.emit(value);
   }
 
-  onStringChange(event: Event): void {
-    this.valueChange.emit({
-      type: 'string',
-      value: (event.target as HTMLInputElement).value,
-    });
-  }
-
-  onNumberChange(event: Event): void {
-    const value = Number((event.target as HTMLInputElement).value);
-    if (isNaN(value)) return;
-    this.valueChange.emit({
-      type: 'number',
-      value: value,
-    });
+  onChange(event: Event): void {
+    this.emit((event.target as HTMLInputElement).value);
   }
 
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
-    this.valueChange.emit({
-      type: 'date',
-      value: event.value?.getTime() ? (event.value?.getTime() / 1000) : null,
-    });
+    if (event.value) {
+      this.emit(`${event.value.getTime() / 1000}`);
+    } else {
+      this.emit('');
+    }
   }
 
-  onBooleanChange(): void {
-    const value = this.booleanFormControl.value;
-    this.valueChange.emit({
-      type: 'boolean',
-      value: value?.toLowerCase() === 'true',
-    });
+  onBooleanChange(value: string): void {
+    this.emit(`${value?.toLowerCase() === 'true'}`);
   }
 
-  onStatusChange(): void {
-    const formValue = this.statusFormControl.value;
-
-    this.valueChange.emit({
-      type: 'status',
-      value: formValue,
-    });
+  onStatusChange(value: string) {
+    this.emit(value);
   }
 
   onDurationChange(event: Event, index: number) {
@@ -104,27 +74,7 @@ export class FiltersDialogInputComponent implements OnInit {
       + (getMinutes ?? 0) * 60 
       + (getSeconds ?? 0);
 
-    this.valueChange.emit({
-      type: 'duration',
-      value: durationSeconds
-    });
-  }
-
-  getInputType(): FilterInputType  {
-    switch (this.input.type) {
-    case 'string':
-      return 'string';
-    case 'number':
-      return 'number';
-    case 'date':
-      return 'date';
-    case 'array':
-      return 'string';
-    case 'status':
-      return 'status';
-    default:
-      return 'string';
-    }
+    this.emit(durationSeconds.toString());
   }
 
   getDurationInputValue(searchItem: string): number | undefined {
@@ -137,15 +87,6 @@ export class FiltersDialogInputComponent implements OnInit {
       return !isNaN(Number(this.input.value)) ? Math.floor(((Number(this.input.value))%3600)%60) : undefined;
     default:
       return undefined;
-    }
-  }
-
-  private _filterBoolean(value: MaybeNull<string>): string[] {
-    const booleans = ['true', 'false'];
-    if (value === null) {
-      return booleans;
-    } else {
-      return booleans.filter(bool => bool.toLowerCase().includes(value.toLowerCase()));
     }
   }
 }

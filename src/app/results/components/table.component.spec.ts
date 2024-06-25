@@ -1,4 +1,5 @@
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
@@ -102,7 +103,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -127,7 +128,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             resultId: 'result1'
@@ -146,7 +147,7 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           resultId: 'result1'
@@ -195,7 +196,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 

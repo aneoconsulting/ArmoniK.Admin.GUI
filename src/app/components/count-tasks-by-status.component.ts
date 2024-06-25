@@ -64,7 +64,7 @@ export class CountTasksByStatusComponent {
     ).subscribe(response => {
       this.loading = false;
       this.statusesCount.set(response.status ?? []);
-      this.saveData();
+      this.saveData(response.status);
     });
     this.refresh.next();
   }
@@ -80,9 +80,9 @@ export class CountTasksByStatusComponent {
     }
   }
 
-  saveData() {
-    if (this.id && this.statusesCount()) {
-      this.cacheService.saveStatuses(this.id, this.statusesCount());
+  saveData(data: StatusCount[] | undefined) {
+    if (this.id && data) {
+      this.cacheService.saveStatuses(this.id, data);
     }
   }
 

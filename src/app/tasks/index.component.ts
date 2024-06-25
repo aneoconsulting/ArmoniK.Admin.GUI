@@ -125,7 +125,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummaryColumnKe
     this.tasksGrpcService.cancel$(tasksIds).subscribe({
       complete: () => {
         this.notificationService.success('Tasks canceled');
-        this.refresh.next();
+        this.refresh$.next();
       },
       error: (error) => {
         console.error(error);

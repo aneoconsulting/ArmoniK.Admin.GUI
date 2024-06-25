@@ -36,70 +36,32 @@ export type Filter<T extends number, U extends number | null = null> = {
   operator: MaybeNull<number>
 };
 
-// Value of a filter input.
-export type FilterInputValueString = MaybeNull<string>;
-export type FilterInputValueNumber = MaybeNull<number>;
-export type FilterInputValueDate = MaybeNull<Date>;
-export type FilterInputValueDuration = MaybeNull<number>;
-export type FilterInputValueBoolean = MaybeNull<boolean>;
-
 // Input for a filter input.
 export interface FilterInputString {
   type: 'string' | 'array';
-  value: FilterInputValueString;
+  value: MaybeNull<string>;
 }
 export interface FilterInputNumber {
   type: 'number';
-  value: FilterInputValueNumber;
+  value: MaybeNull<number>;
 }
 export interface FilterInputDate {
   type: 'date';
-  value: FilterInputValueDate;
+  value: MaybeNull<Date>;
 }
 export interface FilterInputStatus {
   type: 'status';
   value: MaybeNull<string>;
-  statuses: FilterValueOptions;
 }
 export interface FilterInputBoolean {
-  type: 'boolean';
-  value: FilterInputValueBoolean;
-}
-
-export interface FilterInputDuration {
-  type: 'duration';
-  value: FilterInputValueDuration
-}
-export type FilterInput = FilterInputString | FilterInputNumber | FilterInputDate | FilterInputStatus | FilterInputDuration | FilterInputBoolean;
-
-export type FilterInputValue = FilterInput['value'];
-export type FilterInputType = FilterInput['type'];
-
-
-export interface FilterInputOutputString {
-  type: 'string' | 'array';
-  value: MaybeNull<string>;
-}
-export interface FilterInputOutputNumber {
-  type: 'number';
-  value: MaybeNull<number>;
-}
-export interface FilterInputOutputDate {
-  type: 'date';
-  value: MaybeNull<number>;
-}
-
-export interface FilterInputOutputStatus {
-  type: 'status';
-  value: MaybeNull<string>;
-}
-export interface FilterInputOutputDuration {
-  type: 'duration';
-  value: MaybeNull<number>
-}
-export interface FilterInputOutputBoolean {
   type: 'boolean';
   value: MaybeNull<boolean>;
 }
 
-export type FilterInputOutput = FilterInputOutputString | FilterInputOutputNumber | FilterInputOutputDate | FilterInputOutputDuration | FilterInputOutputStatus | FilterInputOutputBoolean;
+export interface FilterInputDuration {
+  type: 'duration';
+  value: MaybeNull<number>;
+}
+export type FilterInput = FilterInputString | FilterInputNumber | FilterInputDate | FilterInputStatus | FilterInputDuration | FilterInputBoolean;
+
+export type FilterInputValue = FilterInput['value'];

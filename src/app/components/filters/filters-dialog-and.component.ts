@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomColumn } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
@@ -22,9 +22,9 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
   standalone: true,
   imports: [
     FiltersDialogFilterFieldComponent,
-    MatMenuModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
   ],
   providers: [
     IconsService,
@@ -33,7 +33,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
 export class FiltersDialogAndComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filter: Filter<T, U>;
-  @Input() customColumns: CustomColumn[] | undefined;
+  @Input() customColumns: CustomColumn[];
 
   @Output() removeChange: EventEmitter<Filter<T, U>> = new EventEmitter<Filter<T, U>>();
 

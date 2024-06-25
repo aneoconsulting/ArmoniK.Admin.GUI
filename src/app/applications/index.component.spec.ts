@@ -184,7 +184,7 @@ describe('Application component', () => {
   });
 
   it('should refresh', () => {
-    const spyRefresh = jest.spyOn(component.refresh, 'next');
+    const spyRefresh = jest.spyOn(component.refresh$, 'next');
     component.onRefresh();
     expect(spyRefresh).toHaveBeenCalled();
   });

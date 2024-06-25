@@ -1,56 +1,57 @@
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
-import { lastValueFrom } from 'rxjs';
-import { AddLineDialogResult } from '@app/types/dialog';
+import { AddLineDialogData, AddLineDialogResult } from '@app/types/dialog';
 import { AddLineDialogComponent } from './add-line-dialog.component';
+import { LineType } from '../types';
 
 describe('FormNameLineComponent', () => {
   const mockDialogRef = {
     close: jest.fn()
   } as unknown as MatDialogRef<AddLineDialogComponent, AddLineDialogResult>;
 
-  const component = new AddLineDialogComponent(mockDialogRef, {
+  const data: AddLineDialogData = {
     name: 'line',
     type: 'Applications'
+  };
+
+  let component: AddLineDialogComponent;
+
+  beforeEach(() => {
+    component= new AddLineDialogComponent(mockDialogRef, data);
   });
-  component.ngOnInit();
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should init', () => {
-    expect(component.lineForm.value.name).toEqual('line');
-    expect(component.lineForm.value.type).toEqual('Applications');
-  });
+  describe('initialisation', () => {
+    it('should init type', () => {
+      expect(component.type).toEqual('Applications');
+    });
 
-  it('should update filteredTypes', () => {
-    component.lineForm.controls.type.setValue('ions');
-    lastValueFrom(component.filteredTypes).then(types => {
-      expect(types).toEqual(['Applications', 'Sessions', 'Partitions']);
+    it('should init validType', () => {
+      expect(component.isValidType).toBeTruthy();
+    });
+
+    it('should init formGroup name value', () => {
+      expect(component.formGroup.value.name).toEqual('line');
     });
   });
 
-  describe('onSubmit', () => {
-    it('should submit if there is a valid type value', () => {
-      component.lineForm.value.name = 'line';
-      component.lineForm.value.type = 'applications';
-      component.onSubmit();
-      expect(mockDialogRef.close).toHaveBeenCalledWith({name: 'line', type: 'Applications'});
+  describe('initialisation without data', () => {
+    beforeEach(() => {
+      component = new AddLineDialogComponent(mockDialogRef);
     });
 
-    it('should submit even if there is no name', () => {
-      component.lineForm.value.name = null;
-      component.lineForm.value.type = 'applications';
-      component.onSubmit();
-      expect(mockDialogRef.close).toHaveBeenCalledWith({name: '', type: 'Applications'});
+    it('should init type', () => {
+      expect(component.type).toBeUndefined();
     });
-  
-    it('should set error if there is no valid type value', () => {
-      component.lineForm.value.name = 'line';
-      component.lineForm.value.type = 'invalid';
-      component.onSubmit();
-      expect(component.lineForm.controls.type.hasError('invalid')).toBeTruthy();
+
+    it('should init validType', () => {
+      expect(component.validType).toBeFalsy();
+    });
+
+    it('should init formGroup name', () => {
+      expect(component.formGroup.value.name).toEqual(null);
     });
   });
 
@@ -59,28 +60,50 @@ describe('FormNameLineComponent', () => {
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
-  it('should select type', () => {
-    component.onTypeSelected({option: {value: 'Applications'}} as MatAutocompleteSelectedEvent);
-    expect(component.lineForm.value.type).toEqual('Applications');
-  });
-
-  describe('filterType', () => {
-    it('should filter the types', () => {
-      expect(component['filterType']('ions')).toEqual(['Applications', 'Sessions', 'Partitions']);
+  describe('isValidType', () => {
+    it('should return true if it finds a type', () => {
+      expect(component.isValidType('Applications')).toBeTruthy();
     });
 
-    it('should return all types if no filter', () => {
-      expect(component['filterType'](null)).toEqual(component.types);
+    it('should return false if it does not find a type', () => {
+      expect(component.isValidType('Invalid')).toBeFalsy();
     });
   });
 
-  describe('getType', () => {
-    it('should get a type', () => {
-      expect(component['getType']('applications')).toEqual('Applications');
+  describe('onSubmit', () => {
+    it('should submit if there is a valid type value', () => {
+      component.formGroup.value.name = 'line';
+      component.onSubmit();
+      expect(mockDialogRef.close).toHaveBeenCalledWith({name: 'line', type: 'Applications'});
     });
 
-    it('should get undefined if no type', () => {
-      expect(component['getType'](null)).toBeUndefined();
+    it('should submit even if there is no name', () => {
+      component.formGroup.controls.name.setValue(null);
+      component.onSubmit();
+      expect(mockDialogRef.close).toHaveBeenCalledWith({name: '', type: 'Applications'});
+    });
+
+    it('should not submit if there is a invalid type value', () => {
+      component.formGroup.value.name = 'line';
+      component.type = 'Invalid' as LineType;
+      component.validType = component.isValidType(component.type);
+      component.onSubmit();
+      expect(mockDialogRef.close).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('onTypeChange', () => {
+    const newType: LineType = 'Results';
+    beforeEach(() => {
+      component.onTypeChange(newType);
+    });
+
+    it('should set component type',() => {
+      expect(component.type).toEqual(newType);
+    });
+
+    it('should valid the type', () => {
+      expect(component.validType).toBeTruthy();
     });
   });
 });
