@@ -5,17 +5,6 @@
   >
 </app-filters-dialog-filter-field>
 
-<button mat-icon-button aria-label="More options" mat-tooltip="More options" [matMenuTriggerFor]="menu">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
+<button mat-icon-button (click)="onRemove()" matTooltip="Remove filter">
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
 </button>
-
-<mat-menu #menu="matMenu">
-  <button mat-menu-item (click)="onClear()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('clear')"></mat-icon>
-    <span i18n>Clear</span>
-  </button>
-  <button mat-menu-item (click)="onRemove()">
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-    <span i18n>Remove</span>
-  </button>
-</mat-menu>

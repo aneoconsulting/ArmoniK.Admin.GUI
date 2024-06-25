@@ -2,13 +2,13 @@
   @default {
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label i18n="Input label">Value</mat-label>
-      <input matInput [type]="getInputType()" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onStringChange($event)">
+      <input matInput i18n-placeholder placeholder="Value" [value]="input.value" (change)="onChange($event)">
     </mat-form-field>
   }
   @case ('number') {
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label i18n="Input label">Value</mat-label>
-      <input matInput type="number" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onNumberChange($event)">
+      <input matInput type="number" i18n-placeholder placeholder="Value" [value]="input.value" (change)="onChange($event)">
     </mat-form-field>
   }
   @case ('date') {
@@ -26,30 +26,10 @@
     </mat-form-field>
   }
   @case ('status') {
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label i18n="Input label">Value</mat-label>
-      <input matInput [matAutocomplete]="autoStatus" [formControl]="statusFormControl" (input)="onStatusChange()">
-      <mat-autocomplete (optionSelected)="onStatusChange()" #autoStatus>
-        @for (option of filteredStatuses | async; track option) {
-          <mat-option [value]="option">
-            {{ option }}
-          </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
+    <app-autocomplete [options]="statuses" [value]="input.value" (valueChange)="onStatusChange($event)" />
   }
   @case ('boolean') {
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label i18n="Input label">Value</mat-label>
-      <input matInput [matAutocomplete]="autoBoolean" [formControl]="booleanFormControl" (input)="onStatusChange()">
-      <mat-autocomplete (optionSelected)="onBooleanChange()" #autoBoolean>
-        @for (option of filteredBooleans | async; track option) {
-          <mat-option [value]="option">
-            {{ option }}
-          </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
+    <app-autocomplete [options]="booleans" [value]="input.value ? 'true' : 'false'" (valueChange)="onBooleanChange($event)" />
   }
   @case ('duration') {
     <mat-form-field id="durationForm" appearance="outline" subscriptSizing="dynamic">

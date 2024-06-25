@@ -50,7 +50,7 @@ span {
 export class FiltersDialogOrComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filtersOr: Filter<T, U>[];
-  @Input() customColumns: CustomColumn[] | undefined;
+  @Input() customColumns: CustomColumn[];
 
   @Output() removeChange: EventEmitter<Filter<T, U>[]> = new EventEmitter<Filter<T, U>[]>();
 
