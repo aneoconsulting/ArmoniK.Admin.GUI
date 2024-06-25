@@ -1,5 +1,6 @@
 import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -182,7 +183,7 @@ describe('SessionsTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -211,7 +212,7 @@ describe('SessionsTableComponent', () => {
       const map2 = new Map();
       map1.set('sessionId', {'0-root-1-0': 'session1'});
       map2.set('sessionId', {'0-root-1-0': 'session2'});
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             sessionId: 'session1'
@@ -392,7 +393,7 @@ describe('SessionsTableComponent', () => {
     map1.set('sessionId', {'0-root-1-0': 'session1'});
     map2.set('sessionId', {'0-root-1-0': 'session2'});
     map3.set('sessionId', {'0-root-1-0': 'session3'});
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           sessionId: 'session1'
@@ -446,7 +447,7 @@ describe('SessionsTableComponent', () => {
   it('should have an empty data if it cannot compute GrpcData', () => {
     jest.spyOn(component, 'computeGrpcData').mockReturnValue(undefined);
     component.refresh$.next();
-    expect(component.data).toEqual([]);
+    expect(component.data()).toEqual([]);
   });
 
   it('should prepare data before fetching', () => {
@@ -487,12 +488,6 @@ describe('SessionsTableComponent', () => {
       component.displayedColumns.push({key: 'duration', name: 'Duration', sortable: true});
       component.afterDataCreation(sessionData.sessions);
       expect(spy).toHaveBeenCalledTimes(sessionData.sessions.length);
-    });
-
-    it('should stop loading', () => {
-      const spy = jest.spyOn(component.loading$, 'next');
-      component.afterDataCreation(sessionData.sessions);
-      expect(spy).toHaveBeenCalledWith(false);
     });
   });
 
@@ -578,20 +573,20 @@ describe('SessionsTableComponent', () => {
     it('should order ascendantly', () => {
       component.options.sort.direction = 'asc';
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.map(d => d.raw.sessionId)).toEqual(['smallest', 'middle', 'biggest']);
+      expect(component.data().map(d => d.raw.sessionId)).toEqual(['smallest', 'middle', 'biggest']);
     });
 
     it('should order descendently', () => {
       component.options.sort.direction = 'desc';
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.map(d => d.raw.sessionId)).toEqual(['biggest', 'middle', 'smallest']);
+      expect(component.data().map(d => d.raw.sessionId)).toEqual(['biggest', 'middle', 'smallest']);
     });
 
     it('should slice data to have a length equal to the page size', () => {
       component.options.sort.direction = 'asc';
       component.options.pageSize = 2;
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.length).toEqual(2);
+      expect(component.data().length).toEqual(2);
     });
   });
 
@@ -630,9 +625,9 @@ describe('SessionsTableComponent', () => {
 
   describe('compute duration', () => {
     it('should not compute if the ended and created array have not the same length as the dataRaw array', () => {
-      const spy = jest.spyOn(component.loading$, 'next');
+      component.loading.set(true); // We are mocking the fact that the component is loading
       component.computeDuration$.next();
-      expect(spy).not.toHaveBeenCalled();
+      expect(component.loading()).toBeTruthy();
     });
 
     it('should compute the duration for a session', () => {
@@ -640,7 +635,7 @@ describe('SessionsTableComponent', () => {
       component.dataRaw = [{sessionId: 'sessionId'}] as SessionRaw[];
       component.durationSubscription(taskCreatedAt, 'created');
       component.durationSubscription(taskEndedAt, 'ended');
-      const selectedData = component.data.map(d => {
+      const selectedData = component.data().map(d => {
         return { sessionId: d.raw.sessionId, duration: d.raw.duration };
       });
       expect(selectedData).toEqual(
@@ -692,7 +687,7 @@ describe('SessionsTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
