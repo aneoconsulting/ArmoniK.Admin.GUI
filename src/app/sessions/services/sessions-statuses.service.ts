@@ -23,7 +23,7 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
   }
 
   canPause(status: SessionStatus): boolean {
-    return status !== SessionStatus.SESSION_STATUS_PAUSED && status !== SessionStatus.SESSION_STATUS_CANCELLED && status !== SessionStatus.SESSION_STATUS_CLOSED;
+    return status === SessionStatus.SESSION_STATUS_RUNNING;
   }
 
   canResume(status: SessionStatus): boolean {
