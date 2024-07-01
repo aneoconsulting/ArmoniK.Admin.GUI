@@ -19,7 +19,6 @@ import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
-import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
 
@@ -128,7 +127,6 @@ main {
   `],
   standalone: true,
   providers: [
-    ShareUrlService,
     QueryParamsService,
     NotificationService,
   ],
@@ -148,7 +146,7 @@ main {
   ]
 })
 export class IndexComponent implements OnInit {
-  sharableURL = '';
+  sharableURL = null;
   fileName: string | undefined;
   keys: Set<Key> = new Set();
   selectedKeys: Set<Key> = new Set();
@@ -157,15 +155,12 @@ export class IndexComponent implements OnInit {
 
   readonly dialog = inject(MatDialog);
   #iconsService = inject(IconsService);
-  #shareURLService = inject(ShareUrlService);
   #notificationService = inject(NotificationService);
   #navigationService = inject(NavigationService);
   #storageService = inject(StorageService);
   httpClient = inject(HttpClient);
 
   ngOnInit(): void {
-    this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
-
     this.keys = this.#sortKeys(this.#storageService.restoreKeys());
     this.sidebar = this.#navigationService.restoreSidebar();
   }
