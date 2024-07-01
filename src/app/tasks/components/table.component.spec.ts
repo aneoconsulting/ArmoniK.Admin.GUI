@@ -138,8 +138,7 @@ describe('TasksTableComponent', () => {
           },
           resultsQueryParams: {
             '1-root-3-0': 'task1'
-          },
-          value$: expect.any(Subject)
+          }
         },
         {
           raw: {
@@ -147,8 +146,7 @@ describe('TasksTableComponent', () => {
           },
           resultsQueryParams: {
             '1-root-3-0': 'task2'
-          },
-          value$: expect.any(Subject)
+          }
         },
       ]);
     });
@@ -163,8 +161,7 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task1'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
@@ -172,8 +169,7 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task2'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
@@ -181,8 +177,7 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task3'
-        },
-        value$: expect.any(Subject)
+        }
       }
     ]);
   });

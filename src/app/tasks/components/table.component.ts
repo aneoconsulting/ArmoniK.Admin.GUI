@@ -143,7 +143,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return {
       raw: entry,
       resultsQueryParams: this.createResultsQueryParams(entry.id),
-      value$: new Subject<TaskSummary>()
     };
   }
 
