@@ -447,7 +447,7 @@ describe('TasksTableComponent', () => {
 
     it('should return false if two taskSummaries are differents', () => {
       const task1 = { id: 'task' } as TaskSummary;
-      const task2 = { id: 'task' } as TaskSummary;
+      const task2 = { id: 'task1' } as TaskSummary;
       expect(component.isDataRawEqual(task1, task2)).toBeFalsy();
     });
   });
