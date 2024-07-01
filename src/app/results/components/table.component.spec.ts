@@ -10,7 +10,7 @@ import { ResultsTableComponent } from './table.component';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRawColumnKey, ResultRawFilters } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: ResultsTableComponent;
@@ -217,6 +217,20 @@ describe('TasksTableComponent', () => {
     const result = component.createSessionIdQueryParams(sessionId);
     expect(result).toEqual({
       '1-root-1-0': sessionId
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two resultRaws are the same', () => {
+      const result1 = { resultId: 'result' } as ResultRaw;
+      const result2 = {...result1} as ResultRaw;
+      expect(component.isDataRawEqual(result1, result2)).toBeTruthy();
+    });
+
+    it('should return false if two resultRaws are differents', () => {
+      const result1 = { resultId: 'result' } as ResultRaw;
+      const result2 = { resultId: 'result1' } as ResultRaw;
+      expect(component.isDataRawEqual(result1, result2)).toBeFalsy();
     });
   });
 });

@@ -446,4 +446,18 @@ describe('TasksTableComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions'], { queryParams: component.createViewSessionsQueryParams(data.name, data.version) });
     });
   });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two ApplicationRaws are the same', () => {
+      const application1 = { name: 'application', version: '0.1.2' } as ApplicationRaw;
+      const application2 = {...application1} as ApplicationRaw;
+      expect(component.isDataRawEqual(application1, application2)).toBeTruthy();
+    });
+
+    it('should return false if two ApplicationRaws are differents', () => {
+      const application1 = { name: 'application', version: '0.1.2'} as ApplicationRaw;
+      const application2 = { name: 'application', version: '0.1.3'} as ApplicationRaw;
+      expect(component.isDataRawEqual(application1, application2)).toBeFalsy();
+    });
+  });
 });

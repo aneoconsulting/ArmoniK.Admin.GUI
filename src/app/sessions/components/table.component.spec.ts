@@ -895,4 +895,18 @@ describe('SessionsTableComponent', () => {
       expect(mockSessionsGrpcService.delete$).toHaveBeenCalledWith(sessionData.raw.sessionId);
     });
   });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two sessionRaws are the same', () => {
+      const session1 = { sessionId: 'session' } as SessionRaw;
+      const session2 = {...session1} as SessionRaw;
+      expect(component.isDataRawEqual(session1, session2)).toBeTruthy();
+    });
+
+    it('should return false if two sessionRaws are differents', () => {
+      const session1 = { sessionId: 'session' } as SessionRaw;
+      const session2 = { sessionId: 'session1' } as SessionRaw;
+      expect(component.isDataRawEqual(session1, session2)).toBeFalsy();
+    });
+  });
 });
