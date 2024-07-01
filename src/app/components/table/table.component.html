@@ -1,5 +1,5 @@
 <app-table-container>
-  <table mat-table [dataSource]="data" matSort [matSortActive]="options.sort.active"
+  <table mat-table [dataSource]="data" matSort [matSortActive]="options.sort.active" [trackBy]="trackByElement"
   [matSortDirection]="options.sort.direction" matSortDisableClear recycleRows cdkDropList
   cdkDropListOrientation="horizontal" [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)"
   i18n-aria-label aria-label="Data Table">
