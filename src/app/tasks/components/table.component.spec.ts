@@ -432,4 +432,18 @@ describe('TasksTableComponent', () => {
       expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.raw.id}`, '_blank');
     });
   });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two taskSummaries are the same', () => {
+      const task1 = { id: 'task' } as TaskSummary;
+      const task2 = {...task1} as TaskSummary;
+      expect(component.isDataRawEqual(task1, task2)).toBeTruthy();
+    });
+
+    it('should return false if two taskSummaries are differents', () => {
+      const task1 = { id: 'task' } as TaskSummary;
+      const task2 = { id: 'task1' } as TaskSummary;
+      expect(component.isDataRawEqual(task1, task2)).toBeFalsy();
+    });
+  });
 });

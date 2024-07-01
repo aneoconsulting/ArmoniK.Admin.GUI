@@ -364,4 +364,18 @@ describe('TasksTableComponent', () => {
       });
     });
   });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two partitionRaws are the same', () => {
+      const partition1 = { id: 'partition' } as PartitionRaw;
+      const partition2 = { ...partition1 } as PartitionRaw;
+      expect(component.isDataRawEqual(partition1, partition2)).toBeTruthy();
+    });
+
+    it('should return false if two partitionRaws are differents', () => {
+      const partition1 = { id: 'partition' } as PartitionRaw;
+      const partition2 = { id: 'partition2' } as PartitionRaw;
+      expect(component.isDataRawEqual(partition1, partition2)).toBeFalsy();
+    });
+  });
 });
