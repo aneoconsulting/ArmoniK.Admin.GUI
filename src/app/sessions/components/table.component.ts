@@ -237,7 +237,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       resultsQueryParams: this.createResultsQueryParams(entry.sessionId),
       queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
       filters: this.countTasksByStatusFilters(entry.sessionId),
-      value$: new Subject<SessionRaw>()
     };
   }
 

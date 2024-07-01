@@ -178,8 +178,7 @@ describe('TasksTableComponent', () => {
           },
           filters: [[
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
-          ]],
-          value$: expect.any(Subject)
+          ]]
         },
         {
           raw: {
@@ -190,8 +189,7 @@ describe('TasksTableComponent', () => {
           },
           filters: [[
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
-          ]],
-          value$: expect.any(Subject)
+          ]]
         },
       ]);
     });
@@ -209,8 +207,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -221,8 +218,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -233,8 +229,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition3' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       }
     ]);
   });

@@ -3,8 +3,6 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Subject } from 'rxjs';
-import { ResultRaw } from '@app/results/types';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
@@ -38,8 +36,7 @@ describe('TableComponent', () => {
       } as unknown as SessionRaw,
       filters: [],
       queryTasksParams: {},
-      resultsQueryParams: {},
-      value$: new Subject(),
+      resultsQueryParams: {}
     },
     {
       raw: {
@@ -47,8 +44,7 @@ describe('TableComponent', () => {
       } as unknown as SessionRaw,
       filters: [],
       queryTasksParams: {},
-      resultsQueryParams: {},
-      value$: new Subject(),
+      resultsQueryParams: {}
     }
   ];
 
@@ -247,7 +243,7 @@ describe('TableComponent', () => {
 
     it('should track a result', () => {
       const resultId = 'result';
-      const result = {raw: {resultId: resultId, name: 'resultName'} as ResultRaw} as unknown as SessionData;
+      const result = {raw: {resultId: resultId, name: 'resultName'}} as unknown as SessionData;
       expect(component.trackByElement(0, result)).toEqual(resultId);
     });
 

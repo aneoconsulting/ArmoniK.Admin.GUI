@@ -224,8 +224,7 @@ describe('SessionsTableComponent', () => {
           queryTasksParams: {
             '0-root-1-0': 'session1'
           },
-          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]],
-          value$: expect.any(Subject)
+          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]]
         },
         {
           raw: {
@@ -238,8 +237,7 @@ describe('SessionsTableComponent', () => {
           queryTasksParams: {
             '0-root-1-0': 'session2'
           },
-          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]],
-          value$: expect.any(Subject)
+          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]]
         },
       ]);
     });
@@ -405,8 +403,7 @@ describe('SessionsTableComponent', () => {
         queryTasksParams: {
           '0-root-1-0': 'session1'
         },
-        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]],
-        value$: expect.any(Subject)
+        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]]
       },
       {
         raw: {
@@ -419,8 +416,7 @@ describe('SessionsTableComponent', () => {
         queryTasksParams: {
           '0-root-1-0': 'session2'
         },
-        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]],
-        value$: expect.any(Subject)
+        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]]
       },
       {
         raw: {
@@ -433,8 +429,7 @@ describe('SessionsTableComponent', () => {
         queryTasksParams: {
           '0-root-1-0': 'session3'
         },
-        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session3'}]],
-        value$: expect.any(Subject)
+        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session3'}]]
       }
     ]);
   });
