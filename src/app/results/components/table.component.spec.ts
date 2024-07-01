@@ -132,14 +132,12 @@ describe('TasksTableComponent', () => {
         {
           raw: {
             resultId: 'result1'
-          },
-          value$: expect.any(Subject)
+          }
         },
         {
           raw: {
             resultId: 'result2'
-          },
-          value$: expect.any(Subject)
+          }
         },
       ]);
     });
