@@ -2,7 +2,6 @@ import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
-import { Subject } from 'rxjs';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey } from '@app/sessions/types';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
@@ -78,7 +77,6 @@ describe('TableCellComponent', () => {
     }).inject(TableCellComponent);
 
     component.statusesService = new SessionsStatusesService();
-    component.value$ = new Subject<DataRaw>();
     component.column = column;
     component.element = element as ArmonikData<DataRaw>;
   });
@@ -121,7 +119,7 @@ describe('TableCellComponent', () => {
       sortable: false,
     };
     const spy = jest.spyOn(component.refreshStatuses, 'next');
-    component.value$.next(element.raw);
+    component.element = element as ArmonikData<DataRaw>;
     expect(spy).toHaveBeenCalled();
   });
 
@@ -244,21 +242,6 @@ describe('TableCellComponent', () => {
     it('should tip to select if it is unselected', () => {
       component.isSelected = false;
       expect(component.checkboxLabel()).toEqual('Select Task session-id');
-    });
-  });
-
-  describe('Update values', () => {
-    const newValue = { id: 'new-id' } as unknown as DataRaw;
-
-    it('should update value', () => {
-      component.value$.next(newValue);
-      expect(component.element.raw).toEqual(newValue);
-    });
-
-    it('should handle nested keys', () => {
-      const spy = jest.spyOn(component, 'handleNestedKeys');
-      component.value$.next(newValue);
-      expect(spy).toHaveBeenCalled();
     });
   });
 
