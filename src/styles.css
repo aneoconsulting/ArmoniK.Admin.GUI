@@ -103,3 +103,30 @@ app-table-index-actions-toolbar, app-table-dashboard-actions-toolbar {
 input[type="file"] {
   display: none;
 }
+
+#loading-app {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 25px;
+  text-align: center;
+  background-color: white;
+  cursor: none;
+}
+
+#error {
+  background-color: #f4433677;
+  border: 1px solid #f44336;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+#mouse-effect {
+  position: absolute;
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+}
