@@ -3,7 +3,7 @@
     <app-actions-toolbar>
       <app-actions-toolbar-group>
         <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"/>
-        @if (loadTasksStatus) {
+        @if (loading) {
           <app-spinner/>
         }
       </app-actions-toolbar-group>
@@ -59,7 +59,7 @@
   @for (group of line.taskStatusesGroups; track group.name) {
     <app-statuses-group-card
       [group]="group"
-      [data]="data"
+      [data]="data()"
       [hideGroupHeaders]="line.hideGroupsHeader ?? false"
       [filters]="taskByStatusFilters"
     />

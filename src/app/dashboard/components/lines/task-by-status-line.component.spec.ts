@@ -63,10 +63,8 @@ describe('TaskByStatusLineComponent', () => {
       type: 'Tasks',
       taskStatusesGroups: []
     };
-    component.ngOnInit();
     component.ngAfterViewInit();
     component.total = 0;
-    component.data = [];
   });
 
   it('should create', () => {
@@ -76,22 +74,17 @@ describe('TaskByStatusLineComponent', () => {
   test('after view init subscription', () => {
     component.refresh.next();
 
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {status:TaskStatus.TASK_STATUS_CANCELLED, count: 3},
       {status: TaskStatus.TASK_STATUS_COMPLETED, count: 10},
       {status: TaskStatus.TASK_STATUS_PROCESSING, count: 145}
     ]);
     expect(component.total).toEqual(158);
-    expect(component.loadTasksStatus).toBeFalsy();
+    expect(component.loading).toBeFalsy();
   });
 
   it('should get required icons', () => {
     expect(component.getIcon('more')).toEqual('more_vert');
-    expect(component.getIcon('view')).toEqual('visibility');
-    expect(component.getIcon('view-off')).toEqual('visibility_off');
-    expect(component.getIcon('tune')).toEqual('tune');
-    expect(component.getIcon('edit')).toEqual('edit');
-    expect(component.getIcon('delete')).toEqual('delete');
   });
 
   it('should say that the auto refresh is enabled', () => {

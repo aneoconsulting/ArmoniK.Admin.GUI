@@ -1,5 +1,5 @@
 import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
@@ -47,7 +47,8 @@ ul li a {
   imports: [
     RouterModule,
     MatCardModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatusesGroupCardComponent {
   @Input({ required: true }) group: TasksStatusesGroup;
