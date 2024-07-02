@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {  MatIconModule } from '@angular/material/icon';
@@ -21,6 +21,7 @@ import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
+import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
@@ -80,42 +81,39 @@ app-actions-toolbar {
     MatMenuModule,
     MatButtonModule,
     StatusesGroupCardComponent,
+    TableDashboardActionsToolbarComponent,
   ]
 })
-export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestroy {
-  readonly #dialog = inject(MatDialog);
-  readonly #autoRefreshService = inject(AutoRefreshService);
-  readonly #iconsService = inject(IconsService);
-  readonly #taskGrpcService = inject(TasksGrpcService);
+export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
+  readonly dialog = inject(MatDialog);
+  readonly autoRefreshService = inject(AutoRefreshService);
+  readonly iconsService = inject(IconsService);
+  readonly taskGrpcService = inject(TasksGrpcService);
 
   @Input({ required: true }) line: Line;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
   total: number;
-  loadTasksStatus = false;
-  data: StatusCount[] = [];
+  loading = false;
+  data = signal<StatusCount[]>([]);
 
   refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   subscriptions: Subscription = new Subscription();
-  interval$: Observable<number> = this.#autoRefreshService.createInterval(this.interval, this.stopInterval);
-
-  ngOnInit(): void {
-    this.loadTasksStatus = true;
-  }
+  interval$: Observable<number> = this.autoRefreshService.createInterval(this.interval, this.stopInterval);
 
   ngAfterViewInit() {
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
-      tap(() => (this.loadTasksStatus = true)),
-      switchMap(() => this.#taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
+      tap(() => (this.loading = true)),
+      switchMap(() => this.taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
     ).subscribe((data) => {
       if (data.status) {
-        this.data = data.status;
+        this.data.set(data.status);
         this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-        this.loadTasksStatus = false;
+        this.loading = false;
       }
     });
     this.subscriptions.add(mergeSubscription);
@@ -126,11 +124,11 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   autoRefreshTooltip(): string {
-    return this.#autoRefreshService.autoRefreshTooltip(this.line.interval);
+    return this.autoRefreshService.autoRefreshTooltip(this.line.interval);
   }
 
   onRefresh() {
@@ -139,7 +137,6 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
 
   onIntervalValueChange(value: number) {
     this.line.interval = value;
-
     if(value === 0) {
       this.stopInterval.next();
     } else {
@@ -157,7 +154,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onEditNameLine(value: string) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData>(EditNameLineDialogComponent, {
       data: {
         name: value
       }
@@ -176,7 +173,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onManageGroupsDialog() {
-    const dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult> = this.#dialog.open<ManageGroupsDialogComponent, ManageGroupsDialogData, ManageGroupsDialogResult>(ManageGroupsDialogComponent, {
+    const dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult> = this.dialog.open<ManageGroupsDialogComponent, ManageGroupsDialogData, ManageGroupsDialogResult>(ManageGroupsDialogComponent, {
       data: {
         groups: this.line.taskStatusesGroups ?? [],
       }
