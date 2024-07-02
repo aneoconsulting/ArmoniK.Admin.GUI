@@ -1,29 +1,35 @@
 import { TestBed } from '@angular/core/testing';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ColumnKey } from '@app/types/data';
+import { TaskOptions, TaskSummary } from '@app/tasks/types';
+import { ColumnKey, CustomColumn, PrefixedOptions } from '@app/types/data';
 import { ColumnsModifyDialogData } from '@app/types/dialog';
 import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
 
 describe('', () => {
-  let component: ColumnsModifyDialogComponent<object, object>;
+  let component: ColumnsModifyDialogComponent<TaskSummary, TaskOptions>;
 
   const mockMatDialogRef = {
     close: jest.fn()
-  } as unknown as MatDialogRef<ColumnsModifyDialogComponent<object, object>>;
+  } as unknown as MatDialogRef<ColumnsModifyDialogComponent<TaskSummary, TaskOptions>>;
+
+  const currentColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'createdAt'];
+  const columnsLabels = {
+    'id': 'ID',
+    'createdAt': 'Creation time',
+    'options.engineType': 'Engine Type',
+    'options.partitionId': 'Partition Ids',
+    'actions': 'Actions'
+  } as Record<ColumnKey<TaskSummary, TaskOptions>, string>;
+  const columns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'createdAt', 'actions'];
+  const optionsColumns: PrefixedOptions<TaskOptions>[] = ['options.engineType', 'options.partitionId'];
+  const customColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.EngineReady'];
 
   const mockMatDialogData = {
-    currentColumns: ['id', 'created_time'],
-    columnsLabels: {
-      'id': 'ID',
-      'created_time': 'Creation time',
-      'name': 'Name',
-      'duration': 'Duration',
-      'options.task_id': 'Task ID',
-      'actions': 'Actions'
-    } as Record<ColumnKey<object, object>, string>,
-    availableColumns: ['name', 'duration', 'options.task_id', 'actions', 'options.options.FastCompute']
-  } as ColumnsModifyDialogData<object, object>;
+    currentColumns: currentColumns,
+    columnsLabels: columnsLabels,
+    availableColumns: [...columns, ...optionsColumns, ...customColumns]
+  } as ColumnsModifyDialogData<TaskSummary, TaskOptions>;
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
@@ -40,102 +46,68 @@ describe('', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('on init', () => {
-    it('should load columns', () => {
+  describe('initialisation', () => {
+    it('should get current columns', () => {
       expect(component.columns).toEqual(mockMatDialogData.currentColumns);
     });
 
-    it('should copy the columns', () => {
+    it('should copy current columns', () => {
       expect(component.columns).not.toBe(mockMatDialogData.currentColumns);
     });
 
-    it('should load columns labels', () => {
-      expect(component.columnsLabels).toEqual(mockMatDialogData.columnsLabels);
+    it('should set and sort alphabetically the "normal" columns', () => {
+      expect(component.availableColumns).toEqual(columns.sort((a: string, b: string) => a.localeCompare(b)));
+    });
+
+    it('should set and sort alphabetically the "options" columns', () => {
+      expect(component.availableOptionsColumns).toEqual(optionsColumns.sort((a: string, b: string) => a.localeCompare(b)));
+    });
+
+    it('should set, sort alphabetically and map the "customs" columns', () => {
+      expect(component.availableCustomColumns).toEqual(customColumns.sort((a: string, b: string) => a.localeCompare(b)).map(c => c.replace('options.options.', '')));
     });
   });
 
-  test('optionsColumnValue should add "options." to any provided string', () => {
-    expect(component.optionsColumnValue('nameColumn')).toEqual('options.nameColumn');
-  });
-
-  describe('columnToLabel', () => {
-    it('should get the label of the specified column', () => {
-      expect(component.columnToLabel('name' as ColumnKey<object, object>))
-        .toEqual('Name');
-    });
-
-    it('should return the stringified key in case of non-existing label', () => {
-      expect(component.columnToLabel('nonExistingLabel' as ColumnKey<object, object>))
-        .toEqual('nonExistingLabel');
-    });
-
-    it('should remove the "options.options." key from custom columns', () => {
-      expect(component.columnToLabel('options.options.FastCompute')).toEqual('FastCompute');
-    });
+  test('toCustom should turn a string into a custom column', () => {
+    const value = 'column';
+    expect(component.toCustom(value)).toEqual(`options.options.${value}`);
   });
 
   describe('isCustomColumn', () => {
-    it('should be true in case of a custom column', () => {
-      expect(component.isCustomColumn('options.options.FastCompute')).toBeTruthy();
+    it('should return true in case of a custom column', () => {
+      expect(component.isCustomColumn(customColumns[0])).toBeTruthy();
     });
 
-    it('should be false in case of a non-custom column', () => {
-      expect(component.isCustomColumn('actions')).toBeFalsy();
-    });
-  });
-
-  describe('Getting available columns', () => {
-    it('should return every column without the "options." prefix', () => {
-      expect(component.availableColumns).toEqual(['actions', 'duration', 'name']);
-    });
-  
-    it('should return every column with the "options." prefix', () => {
-      expect(component.availableOptionsColumns).toEqual(['options.task_id']);
-    });
-
-    it('should return every custom column', () => {
-      expect(component.availableCustomColumns).toEqual(['options.options.FastCompute']);
-    });
-  });
-
-  describe('updateColumn', () => {
-    it('should push a new column', () => {
-      component.updateColumn({checked: true} as MatCheckboxChange, 'duration' as ColumnKey<object, object>);
-      expect(component.columns).toEqual(['id', 'created_time', 'duration']);
-    });
-
-    it('should remove a column if parameter is unchecked', () => {
-      component.updateColumn({checked: false} as MatCheckboxChange, 'id' as ColumnKey<object, object>);
-      expect(component.columns).toEqual(['created_time']);
-    });
-
-    it('should not push a column that is already in the column list', () => {
-      component.updateColumn({checked: true} as MatCheckboxChange, 'id' as ColumnKey<object, object>);
-      expect(component.columns).toEqual(['id', 'created_time']);
-    });
-
-    it('should not push a column that is not in the available columns', () => {
-      component.updateColumn({checked: true} as MatCheckboxChange, 'someColumn' as ColumnKey<object, object>);
-      expect(component.columns).toEqual(['id', 'created_time']);
-    });
-
-    it('should not do remove a column that is not in the column list', () => {
-      component.updateColumn({checked: false} as MatCheckboxChange, 'someColumn' as ColumnKey<object, object>);
-      expect(component.columns).toEqual(['id', 'created_time']);
+    it('should return false in case of a normal column', () => {
+      expect(component.isCustomColumn(columns[0])).toBeFalsy();
     });
   });
 
   describe('isSelected', () => {
-    it('should return true if a column is selected', () => {
-      expect(component.isSelected('id' as ColumnKey<object, object>)).toBeTruthy();
+    it('should return true in case of a selected normal column', () => {
+      expect(component.isSelected(currentColumns[0])).toBeTruthy();
     });
 
-    it('should return false if a column is not selected', () => {
-      expect(component.isSelected('duration' as ColumnKey<object, object>)).toBeFalsy();
+    it('should return false in case of unselected normal column', () => {
+      expect(component.isSelected(optionsColumns[0])).toBeFalsy();
     });
   });
 
-  test('onNoClick should call dialogref.close', () => {
+  describe('updateColumn', () => {
+    it('should add a column on check', () => {
+      const checkEvent = { checked: true } as MatCheckboxChange;
+      component.updateColumn(checkEvent, optionsColumns[1]);
+      expect(component.columns).toContain(optionsColumns[1]);
+    });
+
+    it('should add a column on unchecked', () => {
+      const checkEvent = { checked: false } as MatCheckboxChange;
+      component.updateColumn(checkEvent, 'id');
+      expect(component.columns).not.toContain('id');
+    });
+  });
+
+  it('should close on "No Click"', () => {
     component.onNoClick();
     expect(mockMatDialogRef.close).toHaveBeenCalled();
   });

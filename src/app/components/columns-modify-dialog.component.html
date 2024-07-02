@@ -5,41 +5,42 @@
 
   <div class="columns">
     @for(column of availableColumns; track column) {
-      <mat-checkbox [value]="column.toString()" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
-        {{ columnToLabel(column) }}
-      </mat-checkbox>
+    <mat-checkbox (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+      {{ columnsLabels[column] }}
+    </mat-checkbox>
     }
   </div>
 
   @if (availableOptionsColumns.length) {
-    <h2 i18n>
-      Options
-    </h2>
-  
-    <div class="columns">
-      @for(column of availableOptionsColumns; track column) {
-        <mat-checkbox [value]="optionsColumnValue(column)" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
-          {{ columnToLabel(column) }}
-        </mat-checkbox>
-      }
-    </div>
+  <h2 i18n>
+    Options
+  </h2>
+
+  <div class="columns">
+    @for(column of availableOptionsColumns; track column) {
+    <mat-checkbox (change)="updateColumn($event, column)"
+      [checked]="isSelected(column)">
+      {{ columnsLabels[column] }}
+    </mat-checkbox>
+    }
+  </div>
   }
 
   @if (availableCustomColumns.length) {
-    <h2 i18n>
-      Custom Columns
-    </h2>
-  
-    <div class="columns">
-      @for(column of availableCustomColumns; track column) {
-        <mat-checkbox [value]="column" (change)="updateColumn($event, column)" [checked]="isSelected(column)">
-          {{ columnToLabel(column) }}
-        </mat-checkbox>
-      }
-    </div>
+  <h2 i18n>
+    Custom Columns
+  </h2>
+
+  <div class="columns">
+    @for(column of availableCustomColumns; track column) {
+    <mat-checkbox (change)="updateColumn($event, toCustom(column))" [checked]="isSelected(toCustom(column))">
+      {{ column }}
+    </mat-checkbox>
+    }
+  </div>
   }
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-  <button mat-flat-button [mat-dialog-close]="columns" color="primary" i18n="Dialog action"> Confirm </button>
-</mat-dialog-actions>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+    <button mat-flat-button [mat-dialog-close]="columns" color="primary" i18n="Dialog action"> Confirm </button>
+  </mat-dialog-actions>
