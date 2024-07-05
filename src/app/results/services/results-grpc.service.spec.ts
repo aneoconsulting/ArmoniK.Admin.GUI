@@ -37,6 +37,12 @@ describe('ResultsGrpcService', () => {
         for: 'root',
         operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_LESS_THAN,
         value: 100
+      },
+      {
+        field: null,
+        for: 'root',
+        operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_LESS_THAN_OR_EQUAL,
+        value: 29
       }
     ]
   ];

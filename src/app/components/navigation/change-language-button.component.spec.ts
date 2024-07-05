@@ -43,7 +43,7 @@ describe('ChangeLanguageButtonComponent', () => {
         {provide: StorageService, useValue: mockStorageService}
       ]
     }).inject(ChangeLanguageButtonComponent);
-
+    component.ngOnInit();
   });
 
   it('should run', () => {
@@ -51,27 +51,6 @@ describe('ChangeLanguageButtonComponent', () => {
   });
 
   describe('on init', () => {
-
-    it('should get Language from StorageService', () => {
-      mockStorageService.getItem.mockImplementationOnce(() => 'fr');
-      component.ngOnInit();
-      expect(component.selectedLanguage).toEqual('fr');
-    });
-
-    it('should get Language from URL', () => {
-      mockStorageService.getItem.mockImplementationOnce(() => null);
-      overrideLocation('admin/fr');
-      component.ngOnInit();
-      expect(component.selectedLanguage).toEqual('fr');
-    });
-
-    it('should redirect to stored Language if there is a conflict with URL language', () => {
-      mockStorageService.getItem.mockImplementationOnce(() => 'en');
-      overrideLocation('admin/fr');
-      component.ngOnInit();
-      expect(jestReplace).toHaveBeenCalledWith('/admin/en/my-route');
-    });
-  
     it('should get Language from default config', () => {
       mockStorageService.getItem.mockImplementationOnce(() => null);
       overrideLocation('admin/undefined');
@@ -99,7 +78,20 @@ describe('ChangeLanguageButtonComponent', () => {
     expect(component.getRoute()).toEqual('/my-route');
   });
 
-  it('should track by language', () => {
-    expect(component.trackByLanguage(0, 'en')).toEqual('en');
+  describe('getLanguageFromUrl', () => {
+    it('should not get language from url if it is not found', () => {
+      overrideLocation('admin');
+      expect(component.getLanguageFromUrl()).toBeUndefined();
+    });
+
+    it('should get language from url', () => {
+      overrideLocation('en/admin');
+      expect(component.getLanguageFromUrl()).toEqual('en');
+    });
+
+    it('should not get a language from url that is not saved', () => {
+      overrideLocation('fr/admin');
+      expect(component.getLanguageFromUrl()).toBeUndefined();
+    });
   });
 });

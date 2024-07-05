@@ -1,12 +1,12 @@
 <app-page-header [sharableURL]="sharableURL">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('applications')"></mat-icon>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('applications')"/>
   <span matListItemTitle i18n="Page title"> Applications </span>
 </app-page-header>
 
 <mat-toolbar>
   <mat-toolbar-row>
     <app-table-index-actions-toolbar
-      [loading]="isLoading"
+      [loading]="loading()"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels"
@@ -25,7 +25,12 @@
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
+    <app-filters-toolbar 
+      [filters]="filters"
+      [showFilters]="showFilters"
+      (filtersChange)="onFiltersChange($event)" 
+      (showFiltersChange)="onShowFiltersChange($event)"
+    />
   </mat-toolbar-row>
 </mat-toolbar>
 
@@ -35,5 +40,5 @@
   [lockColumns]="lockColumns"
   [options]="options"
   [refresh$]="refresh$"
-  [loading$]="isLoading$"
+  [loading]="loading"
 />

@@ -1,8 +1,8 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, inject } from '@angular/core';
-import { Subject } from 'rxjs';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { PartitionData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -10,7 +10,7 @@ import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-partitions-table',
@@ -27,12 +27,18 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters, PartitionRawL
     TableComponent,
   ]
 })
-export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements AfterViewInit {
+export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField>
+  implements OnInit, AfterViewInit {
   
   readonly grpcService = inject(PartitionsGrpcService);
   readonly indexService = inject(PartitionsIndexService);
   
+  scope: Scope = 'partitions';
   table: TableTasksByStatus = 'partitions';
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
@@ -51,7 +57,6 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
       raw: entry,
       queryTasksParams: this.createTasksByStatusQueryParams(entry.id),
       filters: this.countTasksByStatusFilters(entry.id),
-      value$: new Subject<PartitionRaw>()
     };
   }
 
@@ -63,12 +68,14 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
     }
     const params: Record<string, string> = {};
     this.filters.forEach((filtersAnd, index) => {
+      params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
       filtersAnd.forEach((filter) => {
-        const taskField = this.#partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
-        if (taskField && filter.operator !== null && filter.value !== null) {
-          const key = this.filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
-          params[key] = filter.value?.toString();
-          params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = partition;
+        if (filter.field !== PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) {
+          const taskField = this.#partitionToTaskFilter(filter.field as PartitionRawEnumField | null);
+          if (taskField && filter.operator !== null && filter.value !== null) {
+            const key = this.filtersService.createQueryParamsKey(index, 'options', filter.operator, taskField);
+            params[key] = filter.value?.toString();
+          }
         }
       });
     });

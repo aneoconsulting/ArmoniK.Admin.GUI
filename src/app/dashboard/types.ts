@@ -1,4 +1,4 @@
-import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ApplicationRaw, ApplicationRawFilters } from '@app/applications/types';
 import { PartitionRaw } from '@app/partitions/types';
 import { ResultRaw } from '@app/results/types';
@@ -12,7 +12,7 @@ export type LineType = TableType | 'CountStatus';
 export type Summary = TaskSummary | ApplicationRaw | PartitionRaw | SessionRaw | ResultRaw;
 export type SummaryOptions = TaskOptions;
 export type FiltersEnums = ApplicationRawEnumField | PartitionRawEnumField | SessionRawEnumField | TaskSummaryEnumField | ResultRawEnumField;
-export type FiltersOptionsEnums = TaskOptionEnumField | null;
+export type FiltersOptionsEnums = SessionTaskOptionEnumField | TaskOptionEnumField | null;
 
 export type Line = {
   name: string,
@@ -25,6 +25,7 @@ export type Line = {
   displayedColumns?: RawColumnKey[],
   customColumns?: CustomColumn[],
   lockColumns?: boolean;
+  showFilters?: boolean;
 };
 
 export type TasksStatusesGroup = {

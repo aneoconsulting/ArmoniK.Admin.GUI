@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +20,6 @@ import { SpinnerComponent } from './spinner.component';
   standalone: true,
   providers: [],
   imports: [
-    NgIf,
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
     ColumnsButtonComponent,

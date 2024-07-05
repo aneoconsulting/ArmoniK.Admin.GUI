@@ -1,13 +1,13 @@
 import { ApplicationRawEnumField, FilterStringOperator, ListApplicationsResponse, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { ApplicationData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
-import { Page } from '@app/types/pages';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -17,7 +17,7 @@ import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '../types';
 
 @Component({
   selector: 'app-application-table',
@@ -36,7 +36,9 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters, Applica
     TableComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements AfterViewInit {
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions, ApplicationRawEnumField>
+  implements OnInit, AfterViewInit {
+  scope: Scope = 'applications';
   table: TableTasksByStatus = 'applications';
   
   readonly grpcService = inject(ApplicationsGrpcService);
@@ -50,10 +52,14 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   actions: ActionTable<ApplicationData>[] = [
     {
       label: $localize`See session`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       action$: this.seeSessions$
     },
   ];
+
+  ngOnInit(): void {
+    this.initTable();
+  }
 
   ngAfterViewInit(): void {
     this.subscribeToData();
@@ -72,12 +78,11 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       raw: entry,
       queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
       filters: this.countTasksByStatusFilters(entry.name, entry.version),
-      value$: new Subject<ApplicationRaw>()
     };
   }
 
-  getPageIcon(name: Page): string {
-    return this.iconsService.getPageIcon(name);
+  getIcon(name: string): string {
+    return this.iconsService.getIcon(name);
   }
 
   createViewSessionsQueryParams(name: string, version: string) {
@@ -96,14 +101,14 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     } else {
       const params: Record<string, string> = {};
       this.filters.forEach((filterAnd, index) => {
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
+        params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
         filterAnd.forEach(filter => {
-          if (!(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
-          !(filter.field === ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
+          if ((filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL) && 
+          (filter.field !== ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE || filter.operator !== FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
             const filterLabel = this.#createQueryParamFilterKey(filter, index);
             if (filterLabel && filter.value) {
               params[filterLabel] = filter.value.toString();
-              params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = name;
-              params[`${index}-options-${TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = version;
             }
           }
         });
@@ -114,7 +119,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   }
 
   #createQueryParamFilterKey(filter: Filter<ApplicationRawEnumField, null>, orGroup: number): string | null {
-    if (filter.field !== null && filter.operator !== null) {
+    if (filter.field !== null && filter.operator !== null && filter.value !== null) {
       const taskField = this.#applicationsToTaskField(filter.field as ApplicationRawEnumField); // We transform it into an options filter for a task
       if (!taskField) return null;
       return this.filtersService.createQueryParamsKey<TaskOptionEnumField>(orGroup, 'options', filter.operator, taskField); 

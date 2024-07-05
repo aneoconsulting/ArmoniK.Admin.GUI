@@ -1,9 +1,11 @@
 import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
 import { TaskData } from '@app/types/data';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
@@ -66,9 +68,16 @@ describe('TasksTableComponent', () => {
     copy: jest.fn()
   };
 
+  const tasks = { tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 };
   const mockTasksGrpcService = {
-    list$: jest.fn(() => of({ tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 })),
+    list$: jest.fn(() => of(tasks)),
     cancel$: jest.fn(() => of({})),
+  };
+
+  const cachedtasks = { tasks: [{ id: 'task1' }, { id: 'task2' }], total: 2 };
+  const mockCacheService = {
+    get: jest.fn(() => cachedtasks),
+    save: jest.fn(),
   };
 
   beforeEach(() => {
@@ -79,6 +88,7 @@ describe('TasksTableComponent', () => {
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         TasksStatusesService,
         FiltersService,
+        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
       ]
@@ -96,7 +106,8 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
+    component.ngOnInit();
     component.ngAfterViewInit();
   });
 
@@ -104,17 +115,53 @@ describe('TasksTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('initialisation', () => {
+    it('should load cached data from cachedService', () => {
+      expect(mockCacheService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    beforeEach(() => {
+      component.loadFromCache();
+    });
+
+    it('should update total data with cached one', () => {
+      expect(component.total).toEqual(cachedtasks.total);
+    });
+
+    it('should update data with cached one', () => {
+      expect(component.data()).toEqual([
+        {
+          raw: {
+            id: 'task1'
+          },
+          resultsQueryParams: {
+            '1-root-3-0': 'task1'
+          }
+        },
+        {
+          raw: {
+            id: 'task2'
+          },
+          resultsQueryParams: {
+            '1-root-3-0': 'task2'
+          }
+        },
+      ]);
+    });
+  });
+
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           id: 'task1'
         },
         resultsQueryParams: {
           '1-root-3-0': 'task1'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
@@ -122,8 +169,7 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task2'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
@@ -131,10 +177,14 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task3'
-        },
-        value$: expect.any(Subject)
+        }
       }
     ]);
+  });
+
+  it('should cache received data', () => {
+    component.refresh$.next();
+    expect(mockCacheService.get).toHaveBeenCalled();
   });
 
   it('should return columns keys', () => {
@@ -159,7 +209,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -380,6 +430,20 @@ describe('TasksTableComponent', () => {
       component.urlTemplate = 'https://myurl.com?taskId=%taskId';
       component.actions[4].action$.next(task);
       expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.raw.id}`, '_blank');
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two taskSummaries are the same', () => {
+      const task1 = { id: 'task' } as TaskSummary;
+      const task2 = {...task1} as TaskSummary;
+      expect(component.isDataRawEqual(task1, task2)).toBeTruthy();
+    });
+
+    it('should return false if two taskSummaries are differents', () => {
+      const task1 = { id: 'task' } as TaskSummary;
+      const task2 = { id: 'task1' } as TaskSummary;
+      expect(component.isDataRawEqual(task1, task2)).toBeFalsy();
     });
   });
 });

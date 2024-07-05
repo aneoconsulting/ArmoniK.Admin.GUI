@@ -1,4 +1,4 @@
-import { DatePipe, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -21,7 +21,6 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
   imports: [
     EmptyCellPipe,
     RouterModule,
-    NgIf,
     TableInspectObjectComponent,
     DurationPipe,
     DatePipe,
@@ -30,9 +29,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status>{  
-  @Input({ required: true }) value$: Subject<DataRaw>;
-
+export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status>{
   @Input({ required: true }) set column(entry: TableColumn<K>) {
     this._column = entry;
     if (entry.key === 'count') {
@@ -44,15 +41,11 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
     if (entry) {
-      this.value$.subscribe((entry: DataRaw) => {
-        this._element.raw = entry;
-        this._value = this.handleNestedKeys(this._element);
-        if (this.column.key === 'count') {
-          this.refreshStatuses.next();
-        }
-      });
       this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
       this.createLink();
+      if (this.column.key === 'count') {
+        this.refreshStatuses.next();
+      }
     }
   }
 

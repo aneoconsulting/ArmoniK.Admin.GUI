@@ -1,5 +1,4 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { JsonPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +10,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
-import { Page } from '@app/types/pages';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
@@ -106,9 +104,6 @@ import { Line, LineType } from './types';
     TasksStatusesService,
   ],
   imports: [
-    NgFor,
-    NgIf,
-    JsonPipe,
     PageHeaderComponent,
     PageSectionComponent,
     SpinnerComponent,
@@ -158,22 +153,18 @@ export class IndexComponent implements OnInit {
     return this.#iconsService.getIcon(name);
   }
 
-  getPageIcon(name: Page): string {
-    return this.#iconsService.getPageIcon(name);
-  }
-
   getLineIcon(name: LineType): string {
     switch (name) {
     case 'Tasks':
-      return this.#iconsService.getPageIcon('tasks');
+      return this.#iconsService.getIcon('tasks');
     case 'Applications':
-      return this.#iconsService.getPageIcon('applications');
+      return this.#iconsService.getIcon('applications');
     case 'Partitions':
-      return this.#iconsService.getPageIcon('partitions');
+      return this.#iconsService.getIcon('partitions');
     case 'Results':
-      return this.#iconsService.getPageIcon('results');
+      return this.#iconsService.getIcon('results');
     case 'Sessions':
-      return this.#iconsService.getPageIcon('sessions');
+      return this.#iconsService.getIcon('sessions');
     case 'CountStatus':
       return this.#iconsService.getIcon('task-by-status');
     default:
@@ -281,9 +272,5 @@ export class IndexComponent implements OnInit {
   onSaveChange() {
     this.hasOnlyOneLine = this.lines.length === 1;
     this.#dashboardIndexService.saveLines(this.lines);
-  }
-
-  trackByLine(index: number, line: Line): string {
-    return line.name + index;
   }
 }

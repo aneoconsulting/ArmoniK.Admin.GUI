@@ -4,26 +4,33 @@
   <p i18n="Dialog description">
     Bookmark your favorite external services to access them quickly from the navigation bar.
   </p>
-  <ul *ngIf="externalServices.length" class="external-services" cdkDropList (cdkDropListDropped)="onDrop($event)">
-    <li *ngFor="let externalService of externalServices; trackBy:trackByService" cdkDrag>
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')" cdkDragHandle></mat-icon>
-      <a mat-flat-button [href]="externalService.url" target="_blank" rel="noopener noreferrer" [matTooltip]="externalService.url" class="name">
-          <mat-icon *ngIf="externalService.icon" aria-hidden="true" [fontIcon]="getIcon(externalService.icon)"></mat-icon>
-          <span>{{ externalService.name }}</span>
-      </a>
-      <div class="actions">
-        <button mat-icon-button (click)="editExternalService(externalService)" [attr.aria-label]="'Edit the external service ' + externalService.name" [matTooltip]="'Edit ' + externalService.name">
-          <mat-icon [fontIcon]="getIcon('edit')"></mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="deleteExternalService(externalService)" [attr.aria-label]="'Delete the external service ' + externalService.name" [matTooltip]="'Delete ' + externalService.name">
-          <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
-        </button>
-      </div>
-    </li>
-  </ul>
-  <div *ngIf="!externalServices.length" class="empty" i18n="Empty state">
-    No external services added yet. Start by adding a service.
-  </div>
+  @if (externalServices.length) {
+    <ul class="external-services" cdkDropList (cdkDropListDropped)="onDrop($event)">
+      @for (externalService of externalServices; track externalService.url) {
+        <li cdkDrag>
+          <mat-icon aria-hidden="true" [fontIcon]="getIcon('drag')" cdkDragHandle/>
+          <a mat-flat-button [href]="externalService.url" target="_blank" rel="noopener noreferrer" [matTooltip]="externalService.url" class="name">
+            @if (externalService.icon) {
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon(externalService.icon)"/>
+            }
+            <span>{{ externalService.name }}</span>
+          </a>
+          <div class="actions">
+            <button mat-icon-button (click)="editExternalService(externalService)" [attr.aria-label]="'Edit the external service ' + externalService.name" [matTooltip]="'Edit ' + externalService.name">
+              <mat-icon [fontIcon]="getIcon('edit')"></mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteExternalService(externalService)" [attr.aria-label]="'Delete the external service ' + externalService.name" [matTooltip]="'Delete ' + externalService.name">
+              <mat-icon [fontIcon]="getIcon('delete')"></mat-icon>
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  } @else {
+    <div class="empty" i18n="Empty state">
+      No external services added yet. Start by adding a service.
+    </div>
+  }
 </mat-dialog-content>
 
 <mat-dialog-actions>
@@ -34,6 +41,6 @@
 
   <div>
     <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
-    <button mat-flat-button [mat-dialog-close]="externalServices" color="primary" i18n="Dialog action"> Valider </button>
+    <button mat-flat-button [mat-dialog-close]="externalServices" color="primary" i18n="Dialog action"> Confirm </button>
   </div>
 </mat-dialog-actions>

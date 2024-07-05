@@ -12,7 +12,7 @@ export class VersionsService {
   }
 
   private handleNullableVersion(version: string | null = null): string {
-    return version === null ? this.VERSION_NOT_FOUND : version;
+    return version ?? this.VERSION_NOT_FOUND;
   }
 
   private fixVersion(version: number[]): string {

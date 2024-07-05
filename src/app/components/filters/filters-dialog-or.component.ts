@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,8 +38,6 @@ span {
   `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     FiltersDialogAndComponent,
     MatButtonModule,
     MatMenuModule,
@@ -53,7 +50,7 @@ span {
 export class FiltersDialogOrComponent<T extends number, U extends number | null = null> {
   @Input({ required: true }) first: boolean;
   @Input({ required: true }) filtersOr: Filter<T, U>[];
-  @Input() customColumns: CustomColumn[] | undefined;
+  @Input() customColumns: CustomColumn[];
 
   @Output() removeChange: EventEmitter<Filter<T, U>[]> = new EventEmitter<Filter<T, U>[]>();
 

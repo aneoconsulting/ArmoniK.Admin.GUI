@@ -75,10 +75,6 @@ describe('ShowComponent', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('results')).toEqual('workspace_premium');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });
@@ -101,10 +97,8 @@ describe('ShowComponent', () => {
     });
 
     it('should update data on success', () => {
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(component.data).toEqual(returnedResult);
-      expect(spy).toHaveBeenCalledWith(returnedResult);
+      expect(component.data()).toEqual(returnedResult);
     });
 
     it(('should set link if sessionId is not the same as ownerTaskId'), () => {
@@ -122,9 +116,8 @@ describe('ShowComponent', () => {
 
     it('should not update data if there is none', () => {
       mockResultsGrpcService.get$.mockImplementationOnce(() => of({}));
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(spy).not.toHaveBeenCalled();
+      expect(component.data()).toEqual(null);
     });
 
     it('should catch errors', () => {

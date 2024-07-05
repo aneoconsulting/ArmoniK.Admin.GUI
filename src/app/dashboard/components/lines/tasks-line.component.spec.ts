@@ -64,7 +64,8 @@ describe('TasksLineComponent', () => {
     displayedColumns: [...displayedColumns.map(c => c.key), ...customColumns],
     filters: [],
     interval: 20,
-    options: options
+    options: options,
+    showFilters: false,
   };
 
   const nameLine = {
@@ -146,6 +147,13 @@ describe('TasksLineComponent', () => {
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
       expect(component.intervalValue).toEqual(10);
       expect(component.options).toEqual(defaultConfigService.defaultTasks.options);
+      expect(component.showFilters).toEqual(line.showFilters);
+    });
+
+    it('should init with default showFilters', () => {
+      component.line.showFilters = undefined as unknown as boolean;
+      component.ngOnInit();
+      expect(component.showFilters).toEqual(defaultConfigService.defaultTasks.showFilters);
     });
   });
 
@@ -352,6 +360,7 @@ describe('TasksLineComponent', () => {
     });
 
     it('should notify on error', () => {
+      jest.spyOn(console, 'error').mockImplementation(() => {});
       mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error('error')));
       component.cancelTasks(['1', '2']);
       expect(mockNotificationService.error).toHaveBeenCalled();
@@ -413,6 +422,20 @@ describe('TasksLineComponent', () => {
 
     it('should update line custom columns', () => {
       expect(component.line.customColumns).toEqual(newCustom);
+    });
+  });
+
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.line.showFilters).toEqual(newShowFilters);
     });
   });
 });

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ExternalService } from '@app/types/external-service';
-import { Sidebar, SidebarItem, SidebarItems } from '@app/types/navigation';
+import { Sidebar, SidebarItem, SidebarItems, isSideBar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
@@ -14,64 +14,48 @@ export class NavigationService {
       type: 'link',
       id: 'profile',
       display: $localize`Profile`,
-      // TODO: Use icons from IconsService
-      icon: 'account_circle',
       route: '/profile',
-    },
-    {
-      type: 'link',
-      id: 'healthcheck',
-      display: $localize`HealthChecks`,
-      icon: 'monitor_heart',
-      route: '/healthcheck'
     },
     {
       type: 'link',
       id: 'dashboard',
       display: $localize`Dashboard`,
-      icon: 'dashboard',
       route: '/dashboard',
     },
     {
       type: 'link',
       id: 'applications',
       display: $localize`Applications`,
-      icon: 'apps',
       route: '/applications',
     },
     {
       type: 'link',
       id: 'partitions',
       display: $localize`Partitions`,
-      icon: 'donut_small',
       route: '/partitions',
     },
     {
       type: 'link',
       id: 'sessions',
       display: $localize`Sessions`,
-      icon: 'workspaces',
       route: '/sessions',
     },
     {
       type: 'link',
       id: 'tasks',
       display: $localize`Tasks`,
-      icon: 'adjust',
       route: '/tasks',
     },
     {
       type: 'link',
       id: 'results',
       display: $localize`Results`,
-      icon: 'workspace_premium',
       route: '/results',
     },
     {
       type: 'divider',
       id: 'divider',
       display: $localize`Divider`,
-      icon: null,
       route: null,
     },
   ];
@@ -84,7 +68,7 @@ export class NavigationService {
   restoreSidebar(): Sidebar[] {
     const sidebar = this.#storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.#defaultConfigService.defaultSidebar;
 
-    return sidebar;
+    return sidebar.filter(element => isSideBar(element));
   }
 
   saveSidebar(sidebar: Sidebar[]) {

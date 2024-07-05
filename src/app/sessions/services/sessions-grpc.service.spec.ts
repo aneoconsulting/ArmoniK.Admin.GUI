@@ -127,6 +127,12 @@ describe('SessionsGrpcService', () => {
         field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION,
         operator: FilterBooleanOperator.FILTER_BOOLEAN_OPERATOR_IS,
         value: true
+      },
+      {
+        field: null,
+        for: 'root',
+        operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_LESS_THAN_OR_EQUAL,
+        value: 29
       }
     ]
   ];

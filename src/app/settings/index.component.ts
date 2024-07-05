@@ -1,8 +1,9 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor, NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -20,6 +21,7 @@ import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
+import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
 
 @Component({
   selector: 'app-settings-index',
@@ -54,6 +56,7 @@ main {
 
 .add-sidebar-item {
   margin-top: 1rem;
+  width: 66%;
 }
 
 .storage ul {
@@ -82,11 +85,24 @@ main {
 }
 
 .actions {
-  margin-top: 1rem;
-
   display: flex;
-  flex-direction: row;
   gap: 1rem;
+}
+
+.between {
+  justify-content: space-between;
+}
+
+.storage {
+  margin-top: 1rem;
+}
+
+.import {
+  margin-top: 1rem;
+}
+
+.navbar {
+  margin-bottom: 1rem;
 }
 
 .cdk-drag-preview {
@@ -117,8 +133,6 @@ main {
     NotificationService,
   ],
   imports: [
-    NgFor,
-    NgIf,
     PageHeaderComponent,
     PageSectionComponent,
     PageSectionHeaderComponent,
@@ -137,14 +151,17 @@ export class IndexComponent implements OnInit {
   sharableURL = '';
   fileName: string | undefined;
   keys: Set<Key> = new Set();
+  selectedKeys: Set<Key> = new Set();
 
   sidebar: Sidebar[] = [];
 
+  readonly dialog = inject(MatDialog);
   #iconsService = inject(IconsService);
   #shareURLService = inject(ShareUrlService);
   #notificationService = inject(NotificationService);
   #navigationService = inject(NavigationService);
   #storageService = inject(StorageService);
+  httpClient = inject(HttpClient);
 
   ngOnInit(): void {
     this.sharableURL = this.#shareURLService.generateSharableURL(null, null);
@@ -153,7 +170,7 @@ export class IndexComponent implements OnInit {
     this.sidebar = this.#navigationService.restoreSidebar();
   }
 
-  getIcon(name: string): string {
+  getIcon(name: string | null): string {
     return this.#iconsService.getIcon(name);
   }
 
@@ -161,7 +178,16 @@ export class IndexComponent implements OnInit {
     this.sidebar = this.#navigationService.restoreSidebar();
   }
 
-  onResetToDefaultSidebar(): void {
+  onClearSideBar(): void {
+    const dialogRef = this.dialog.open<ClearAllDialogComponent>(ClearAllDialogComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.clearSideBar();
+      }
+    });
+  }
+
+  clearSideBar(): void {
     this.sidebar = Array.from(this.#navigationService.defaultSidebar);
   }
 
@@ -199,42 +225,52 @@ export class IndexComponent implements OnInit {
     this.sidebar[index] = value;
   }
 
+  updateKeySelection(event: MatCheckboxChange): void {
+    if (this.selectedKeys.has(event.source.name as Key)) {
+      this.selectedKeys.delete(event.source.name as Key);
+    } else {
+      this.selectedKeys.add(event.source.name as Key);
+    }
+  }
 
   onSubmitStorage(event: SubmitEvent): void {
     event.preventDefault();
 
-    const form = event.target as HTMLFormElement;
-
-    if (!form) {
-      return;
-    }
-
-    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
-
-    const checkboxesArray = Array.from(checkboxes) as HTMLInputElement[];
-    const keys: Key[] = [];
-
-    for (const checkbox of checkboxesArray) {
-      if (checkbox.checked) {
-        keys.push(checkbox.name as Key);
-      }
-    }
-
-    for (const key of keys) {
+    for (const key of this.selectedKeys) {
       this.keys.delete(key);
       this.#storageService.removeItem(key);
     }
+
+    this.selectedKeys.clear();
 
     this.#notificationService.success('Data cleared');
   }
 
   clearAll(): void {
+    const dialogRef = this.dialog.open<ClearAllDialogComponent>(ClearAllDialogComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.#clearAll();
+        this.#getServerConfig();
+        this.#notificationService.success('All data cleared');
+      }
+    });
+  }
+
+  #clearAll(): void {
     for (const key of this.keys) {
       this.keys.delete(key);
       this.#storageService.removeItem(key);
     }
+  }
 
-    this.#notificationService.success('All data cleared');
+  #getServerConfig() {
+    this.httpClient.get<string>('/static/gui_configuration').subscribe(data => {
+      if (data && Object.keys(data).length !== 0) {
+        this.#storageService.importData(data as string, false, false);
+      }
+    });
   }
 
   exportData(): void {
@@ -285,40 +321,28 @@ export class IndexComponent implements OnInit {
 
     reader.onload = () => {
       const data = reader.result as string;
-      this.#storageService.importData(data);
-      this.keys = this.#sortKeys(this.#storageService.restoreKeys());
-
-      const hasSidebarKey = this.keys.has('navigation-sidebar');
-
-      // Update sidebar
-      if (hasSidebarKey) {
-        this.sidebar = this.#navigationService.restoreSidebar();
-        this.#navigationService.updateSidebar(this.sidebar);
+      try {
+        this.#storageService.importData(data);
+        this.keys = this.#sortKeys(this.#storageService.restoreKeys());
+  
+        const hasSidebarKey = this.keys.has('navigation-sidebar');
+  
+        // Update sidebar
+        if (hasSidebarKey) {
+          this.sidebar = this.#navigationService.restoreSidebar();
+          this.#navigationService.updateSidebar(this.sidebar);
+        }
+  
+        this.#notificationService.success('Settings imported');
+      } catch (e) {
+        console.warn(e);
+        this.#notificationService.error('Settings could not be imported.');
       }
-
-
-      this.#notificationService.success('Settings imported');
 
       form.reset();
     };
 
     reader.readAsText(file);
-  }
-
-  trackByKey(_: number, key: string): string {
-    return key;
-  }
-
-  trackBySidebarItem(index: number, item: Sidebar): string {
-    if (item === 'divider') return 'divider' + index;
-
-    return item;
-  }
-
-  trackByItem(index: number, item: { name: string, value: Sidebar }): string {
-    if (item.value === 'divider') return 'divider' + index;
-
-    return item.value;
   }
 
   drop(event: CdkDragDrop<SidebarItem[]>) {

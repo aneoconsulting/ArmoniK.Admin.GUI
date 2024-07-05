@@ -1,49 +1,44 @@
-<ng-container *ngIf="!isArray(data) && keys.length > 0">
-    <div *ngFor="let key of keys; trackBy:trackByKey">
-  
+@if (!isArray(data) && keys.length > 0) {
+  @for(key of keys; track key) {  
+    @if (!isArray(data[key]) && !isObject(key)) {
       <p>
         <!-- Key -->
-        <span class="key">{{ pretty(key) }}</span>
-  
-        <span>: </span>
-  
-        <!-- String -->
-        <span *ngIf="isString(findValue(key))">{{ findValue(key) }}</span>
-  
-        <!-- Number -->
-        <span *ngIf="isNumber(findValue(key)) && !isStatus(key)">{{ findValue(key) }}</span>
-  
-        <!-- Status -->
-        <span *ngIf="isStatus(key)">{{ statusToLabel(key) }}</span>
-  
-        <!-- Timestamp -->
-        <span *ngIf="isTimestamp(findValue(key))">{{ toTimestamp(key) }}</span>
-  
-        <!-- Duration -->
-        <span *ngIf="isDuration(findValue(key))">{{ toTime(key) }}</span>
-  
-        <!-- Is null or undefined -->
-        <span *ngIf="findValue(key) === null || findValue(key) === undefined">-</span>
+        <span class="key">{{ pretty(key) }}: </span>
+        <!-- Value -->
+        @if (isStatus(key)) {  
+          <span>{{ statusToLabel(key) | emptyCell }}</span>
+        } @else if (isString(key) || isNumber(key)) {
+          <span>{{ data[key] | emptyCell }}</span>
+        } @else if (isTimestamp(key)) {
+          <span>{{ toDate(key) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell}}</span>
+        } @else if (isDuration(key)) {
+          <span >{{ toDuration(key) | duration | emptyCell }}</span>
+        } @else {
+          <span>-</span>
+        }
       </p>
-  
+    } @else if (isArray(data[key])) {
       <!-- Array -->
-      <ul *ngIf="isArray(findValue(key))">
-        <li *ngFor="let item of findArray(key); trackBy:trackByItem">{{ item }}</li>
+      <span class="key">{{ pretty(key) }}:</span>
+      <ul class="array-list">
+        @for (item of findArray(key); track $index) {
+          <li>{{ item }}</li>
+        }
       </ul>
-  
+    } @else {
       <!-- Object -->
-      <app-show-card-content *ngIf="isObject(findValue(key))" [data]="findObject(key)" [statuses]="statuses"></app-show-card-content>
-  
-    </div>
-  </ng-container>
-  <ng-container *ngIf="data && isArray(data) && hasLength(data)">
-    <ul class="array-list">
-      <li *ngFor="let item of toArray(data); trackBy:trackByItem">{{ item }}</li>
-    </ul>
-  </ng-container>
-  
-  <ng-container *ngIf="(!isArray(data) && keys.length === 0) || (isArray(data) && !hasLength(data))">
-    <p>
-      <em>No data</em>
-    </p>
-  </ng-container>
+      <span class="key">{{ pretty(key) }}:</span>
+      <app-show-card-content [data]="findObject(key)" [statuses]="statuses"/>
+    }
+  }
+} @else if (isArray(data) && hasLength(data)) {
+  <ul class="array-list">
+    @for (item of toArray(data); track $index) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+} @else {
+  <p>
+    <em>No data</em>
+  </p>
+}

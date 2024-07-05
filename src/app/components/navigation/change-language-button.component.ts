@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +17,6 @@ import { StorageService } from '@services/storage.service';
     MatMenuModule,
     MatTooltipModule,
     MatIconModule,
-    NgFor,
     MatButtonModule
   ]
 })
@@ -33,23 +31,19 @@ export class ChangeLanguageButtonComponent implements OnInit {
   languageButtonTip = $localize`Change language`;
 
   ngOnInit(): void {
-    const storedLanguage: string | null = this.#storageService.getItem('language');
-    const urlLanguage = this.getLanguageFromUrl();
-    if (storedLanguage && urlLanguage && storedLanguage !== urlLanguage) {
-      window.location.replace('/admin/' + storedLanguage + this.getRoute());
-    }
-    this.selectedLanguage = storedLanguage ?? urlLanguage ?? this.#defaultConfigService.defaultLanguage;
+    this.selectedLanguage = this.#defaultConfigService.defaultLanguage;
     this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
   }
   
   getLanguageFromUrl(): string | undefined {
     const location = window.location.pathname.split('/');
-    let urlLanguage: undefined | string = undefined; 
-    this.#defaultConfigService.availableLanguages.every(language => {
+    let urlLanguage: undefined | string = undefined;
+    let i = 0;
+    while (i < this.#defaultConfigService.availableLanguages.length && !urlLanguage) {
+      const language = this.#defaultConfigService.availableLanguages[i];
       urlLanguage = location.find(path => path === language);
-      if (urlLanguage) return false; // break loop
-      return true;
-    });
+      i++;
+    }
     return urlLanguage;
   }
 
@@ -63,9 +57,5 @@ export class ChangeLanguageButtonComponent implements OnInit {
 
   getRoute() {
     return this.#router.url;
-  }
-
-  trackByLanguage(_: number, language: string) {
-    return language;
   }
 }

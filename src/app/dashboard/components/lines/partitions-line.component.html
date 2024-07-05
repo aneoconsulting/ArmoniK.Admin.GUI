@@ -1,7 +1,7 @@
 <mat-toolbar>
   <mat-toolbar-row>
     <app-table-dashboard-actions-toolbar
-      [loading]="loading"
+      [loading]="loading()"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels"
@@ -20,7 +20,12 @@
     </app-table-dashboard-actions-toolbar>
   </mat-toolbar-row>
   <mat-toolbar-row class="filters">
-    <app-filters-toolbar [filters]="filters" (filtersChange)="onFiltersChange($event)"/>
+    <app-filters-toolbar 
+      [filters]="filters"
+      [showFilters]="showFilters"
+      (filtersChange)="onFiltersChange($event)" 
+      (showFiltersChange)="onShowFiltersChange($event)"
+    />
   </mat-toolbar-row>
 </mat-toolbar>
 <app-partitions-table
@@ -29,5 +34,5 @@
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [refresh$]="refresh$"
-  [loading$]="loading$"
+  [loading]="loading"
 />

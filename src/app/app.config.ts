@@ -1,10 +1,11 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { catchError, merge, of, tap } from 'rxjs';
+import { CacheService } from '@services/cache.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
@@ -56,12 +57,13 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
     ),
     httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_configuration').pipe(
       tap((data) => {
-        if (data) {
-          storageService.importConfigurationFromServer(data);
+        if (data && Object.keys(data).length !== 0) {
+          storageService.importData(data, false, false);
         }
       }),
-      catchError(() => {
-        console.warn('Server Config not found. Using default configuration.');
+      catchError((e) => {
+        console.warn('Server Config not found or invalid. Using default configuration.');
+        console.error(e);
         return of();
       })
     ),
@@ -79,6 +81,7 @@ export const appConfig: ApplicationConfig = {
     StorageService,
     NavigationService,
     EnvironmentService,
+    CacheService,
     {
       provide: Window,
       useValue: window
@@ -95,7 +98,7 @@ export const appConfig: ApplicationConfig = {
     },
     provideRouter(routes),
     importProvidersFrom(BrowserAnimationsModule),
-    importProvidersFrom(HttpClientModule),
+    provideHttpClient(),
     importProvidersFrom(GrpcCoreModule.forRoot()),
     importProvidersFrom(GrpcWebClientModule.forRoot({ settings: { host: '' } }))
   ]

@@ -1,11 +1,13 @@
 import { FilterNumberOperator, FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { PartitionData } from '@app/types/data';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
@@ -62,8 +64,9 @@ describe('TasksTableComponent', () => {
     copy: jest.fn()
   };
 
+  const partitions = { partitions: [{ id: 'partition1' }, { id: 'partition2', }, { id: 'partition3', }], total: 3 };
   const mockPartitionsGrpcService = {
-    list$: jest.fn(() => of({ partitions: [{ id: 'partition1' }, { id: 'partition2', }, { id: 'partition3', }], total: 3 })),
+    list$: jest.fn(() => of(partitions)),
     cancel$: jest.fn(() => of({})),
   };
 
@@ -108,6 +111,12 @@ describe('TasksTableComponent', () => {
     saveStatuses: jest.fn()
   };
 
+  const cachedPartitions = { partitions: [{ id: 'partition1' }, { id: 'partition2', }], total: 2 };
+  const mockCacheService = {
+    get: jest.fn(() => cachedPartitions),
+    save: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -115,6 +124,7 @@ describe('TasksTableComponent', () => {
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
         FiltersService,
+        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: MatDialog, useValue: mockMatDialog },
@@ -133,7 +143,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -142,9 +152,52 @@ describe('TasksTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('initialisation', () => {
+    it('should load cached data from cachedService', () => {
+      expect(mockCacheService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    beforeEach(() => {
+      component.loadFromCache();
+    });
+
+    it('should update total data with cached one', () => {
+      expect(component.total).toEqual(cachedPartitions.total);
+    });
+
+    it('should update data with cached one', () => {
+      expect(component.data()).toEqual([
+        {
+          raw: {
+            id: 'partition1',
+          } as PartitionRaw,
+          queryTasksParams: {
+            '0-options-4-0': 'partition1',
+          },
+          filters: [[
+            { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
+          ]]
+        },
+        {
+          raw: {
+            id: 'partition2',
+          } as PartitionRaw,
+          queryTasksParams: {
+            '0-options-4-0': 'partition2',
+          },
+          filters: [[
+            { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
+          ]]
+        },
+      ]);
+    });
+  });
+
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual<PartitionData[]>([
+    expect(component.data()).toEqual<PartitionData[]>([
       {
         raw: {
           id: 'partition1',
@@ -154,8 +207,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -166,8 +218,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -178,10 +229,14 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition3' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       }
     ]);
+  });
+
+  it('should cache received data', () => {
+    component.refresh$.next();
+    expect(mockCacheService.get).toHaveBeenCalled();
   });
 
   it('should return columns keys', () => {
@@ -206,7 +261,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -307,6 +362,20 @@ describe('TasksTableComponent', () => {
         '1-options-3-2': '2',
         '1-options-4-0': partitionId,
       });
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two partitionRaws are the same', () => {
+      const partition1 = { id: 'partition' } as PartitionRaw;
+      const partition2 = { ...partition1 } as PartitionRaw;
+      expect(component.isDataRawEqual(partition1, partition2)).toBeTruthy();
+    });
+
+    it('should return false if two partitionRaws are differents', () => {
+      const partition1 = { id: 'partition' } as PartitionRaw;
+      const partition2 = { id: 'partition2' } as PartitionRaw;
+      expect(component.isDataRawEqual(partition1, partition2)).toBeFalsy();
     });
   });
 });

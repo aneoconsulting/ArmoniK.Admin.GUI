@@ -104,10 +104,6 @@ describe('AppShowComponent', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('sessions')).toEqual('workspaces');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });
@@ -125,17 +121,14 @@ describe('AppShowComponent', () => {
     });
 
     it('should update data on success', () => {
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(component.data).toEqual(returnedSession);
-      expect(spy).toHaveBeenCalledWith(returnedSession);
+      expect(component.data()).toEqual(returnedSession);
     });
 
     it('should not update data if there is none', () => {
       mockSessionsGrpcService.get$.mockImplementationOnce(() => of({}));
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(spy).not.toHaveBeenCalled();
+      expect(component.data()).toEqual(null);
     });
 
     it('should catch errors', () => {
@@ -189,7 +182,7 @@ describe('AppShowComponent', () => {
       component.lowerDate = taskCreatedAt.date;
       component.upperDate = taskEndedAt.date;
       component.computeDuration$.next();
-      expect(component.data?.duration).toEqual({
+      expect(component.data()?.duration).toEqual({
         seconds: '1000',
         nanos: 0
       });
@@ -253,7 +246,7 @@ describe('AppShowComponent', () => {
   });
 
   it('should get resultKeys', () => {
-    expect(component.resultsKey).toEqual('0-root-1-0');
+    expect(component.resultsKey()).toEqual('0-root-1-0');
   });
 
 
@@ -374,6 +367,16 @@ describe('AppShowComponent', () => {
       mockSessionsGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
       component.actionButtons.find(button => button.id === 'delete')?.action$?.next();
       expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('on destroy', () => {
+    beforeEach(() => {
+      component.ngOnDestroy();
+    });
+
+    it('should unsubscribe from subjects', () => {
+      expect(component.subscriptions.closed).toBeTruthy();
     });
   });
 });

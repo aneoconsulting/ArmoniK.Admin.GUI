@@ -1,60 +1,68 @@
 <mat-toolbar>
-    <mat-toolbar-row>
-      <app-actions-toolbar>
-        <app-actions-toolbar-group>
-          <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"></app-refresh-button>
-          <app-spinner *ngIf="loadTasksStatus"></app-spinner>
-        </app-actions-toolbar-group>
-  
-        <app-actions-toolbar-group>
-          <app-auto-refresh-button [intervalValue]="line.interval" (intervalValueChange)="onIntervalValueChange($event)"></app-auto-refresh-button>
-  
-          <button  mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
-            <mat-icon class="add-button" aria-hidden="true" [fontIcon]="getIcon('more')"></mat-icon>
+  <mat-toolbar-row>
+    <app-actions-toolbar>
+      <app-actions-toolbar-group>
+        <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"/>
+        @if (loadTasksStatus) {
+          <app-spinner/>
+        }
+      </app-actions-toolbar-group>
+
+      <app-actions-toolbar-group>
+        <app-auto-refresh-button [intervalValue]="line.interval" (intervalValueChange)="onIntervalValueChange($event)"/>
+
+        <button  mat-icon-button [matMenuTriggerFor]="menu" aria-label="Show more options" i18n-aria-label matTooltip="More Options" i18n-matTooltip>
+          <mat-icon class="add-button" aria-hidden="true" [fontIcon]="getIcon('more')"/>
+        </button>
+
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="onToggleGroupsHeader()">
+            <mat-icon aria-hidden="true" [fontIcon]="line.hideGroupsHeader ? getIcon('view') : getIcon('view-off')"/>
+            <span i18n>
+              Toggle Groups Header
+            </span>
           </button>
-  
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onToggleGroupsHeader()">
-              <mat-icon aria-hidden="true" [fontIcon]="line.hideGroupsHeader ? getIcon('view') : getIcon('view-off')"></mat-icon>
+          <button mat-menu-item (click)="onManageGroupsDialog()">
+            <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"/>
+            <span i18n>
+              Manage Groups
+            </span>
+          </button>
+          <button mat-menu-item (click)="onEditNameLine(line.name)">
+            <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"/>
               <span i18n>
-                Toggle Groups Header
+                Edit name line
               </span>
-            </button>
-            <button mat-menu-item (click)="onManageGroupsDialog()">
-              <mat-icon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
+          </button>
+          <button mat-menu-item (click)="onDeleteLine(line)">
+              <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"/>
               <span i18n>
-                Manage Groups
+                Delete line
               </span>
-            </button>
-            <button mat-menu-item (click)="onEditNameLine(line.name)">
-              <mat-icon aria-hidden="true"  [fontIcon]="getIcon('edit')"></mat-icon>
-                <span i18n>
-                  Edit name line
-                </span>
-            </button>
-            <button mat-menu-item (click)="onDeleteLine(line)">
-                <mat-icon aria-hidden="true" [fontIcon]="getIcon('delete')"></mat-icon>
-                <span i18n>
-                  Delete line
-                </span>
-            </button>
-          </mat-menu>
-          </app-actions-toolbar-group>
-      </app-actions-toolbar>
-    </mat-toolbar-row>
+          </button>
+        </mat-menu>
+      </app-actions-toolbar-group>
+    </app-actions-toolbar>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row class="filters">
+    <app-filters-toolbar 
+      [filters]="line.filters"
+      [showFilters]="line.showFilters ?? true"
+      (filtersChange)="onFiltersChange($event)" 
+      (showFiltersChange)="onShowFiltersChange($event)"
+    />
+  </mat-toolbar-row>
+</mat-toolbar>
   
-    <mat-toolbar-row class="filters">
-      <app-filters-toolbar [filters]="line.filters" (filtersChange)="onFiltersChange($event)"></app-filters-toolbar>
-    </mat-toolbar-row>
-  </mat-toolbar>
-  
-  <div class="groups">
+<div class="groups">
+  @for (group of line.taskStatusesGroups; track group.name) {
     <app-statuses-group-card
-    *ngFor="let group of line.taskStatusesGroups"
-    [group]="group"
-    [data]="data"
-    [hideGroupHeaders]="line.hideGroupsHeader ?? false"
-    [filters]="taskByStatusFilters"
-    ></app-statuses-group-card>
-  </div>
+      [group]="group"
+      [data]="data"
+      [hideGroupHeaders]="line.hideGroupsHeader ?? false"
+      [filters]="taskByStatusFilters"
+    />
+  }
+</div>
   

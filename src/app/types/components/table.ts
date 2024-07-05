@@ -1,21 +1,19 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
-import { ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
-import { PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRawFilters, ResultRawListOptions } from '@app/results/types';
-import { SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
-import { TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
-import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
+import { Observable, Subject, catchError, first, map, of, switchMap } from 'rxjs';
+import { FiltersEnums, FiltersOptionsEnums, ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
+import { TaskSummaryFilters } from '@app/tasks/types';
+import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { TableColumn } from '../column.type';
+import { Scope } from '../config';
 import { ArmonikData, DataRaw, GrpcResponse, IndexListOptions, RawColumnKey } from '../data';
-import { RawFilters } from '../filters';
-import { GrpcService } from '../services';
+import { FiltersOr } from '../filters';
+import { DataFieldKey, GrpcTableService } from '../services/grpcService';
 import { IndexServiceInterface } from '../services/indexService';
 
 export interface SelectableTable<D extends DataRaw> {
@@ -26,7 +24,7 @@ export interface SelectableTable<D extends DataRaw> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   /**
    * Modify environment before fetching the data.
    * It is required for computing values that are not directly returned by the API (example: sessions durations).
@@ -47,32 +45,49 @@ export interface AbstractTableComponent<R extends DataRaw, C extends RawColumnKe
   template: '',
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+export abstract class AbstractTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) displayedColumns: TableColumn<C>[] = [];
   @Input({ required: true }) options: O;
-  @Input({ required: true }) filters$: Subject<F>;
+  @Input({ required: true }) filters$: Subject<FiltersOr<F, FO>>;
   @Input({ required: true }) refresh$: Subject<void>;
-  @Input({ required: true }) loading$: Subject<boolean>;
+  @Input({ required: true }) loading: WritableSignal<boolean>;
   @Input() lockColumns = false;
   
-  data: ArmonikData<R>[] = [];
+  data: WritableSignal<ArmonikData<R>[]> = signal([]);
   total: number = 0;
-  filters: F = [] as unknown as F;
+  filters: FiltersOr<F, FO> = [] as FiltersOr<F, FO>;
+
+  abstract scope: Scope;
 
   get columnKeys() {
     return this.displayedColumns.map(c => c.key);
   }
 
-  abstract readonly grpcService: GrpcService;
+  abstract readonly grpcService: GrpcTableService<D, O, F, FO>;
   abstract readonly indexService: IndexServiceInterface<C, O>;
+  readonly cacheService = inject(CacheService);
   readonly filtersService = inject(FiltersService);
   readonly notificationService = inject(NotificationService);
 
-  list$(options: O, filters: F): Observable<GrpcResponse> {
-    return this.grpcService.list$(
-      options as TaskSummaryListOptions & SessionRawListOptions & ApplicationRawListOptions & ResultRawListOptions & PartitionRawListOptions,
-      filters as SessionRawFilters & TaskSummaryFilters & PartitionRawFilters & ApplicationRawFilters & ResultRawFilters
-    );
+  initTable() {
+    this.loadFromCache();
+  }
+
+  loadFromCache() {
+    this.refresh$.pipe(first()).subscribe(() => {
+      const cachedResponse = this.cacheService.get(this.scope);
+      if (cachedResponse) {
+        const cachedData = this.computeGrpcData(cachedResponse);
+        this.total = cachedResponse.total;
+        if (cachedData) {
+          this.newData(cachedData);
+        }
+      }
+    });
+  }
+
+  list$(options: O, filters: FiltersOr<F, FO>): Observable<GrpcResponse> {
+    return this.grpcService.list$(options, filters);
   }
 
   subscribeToData() {
@@ -83,7 +98,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     this.refresh$.pipe(
       switchMap(
         () => {
-          this.loading$.next(true);
+          this.loading.set(true);
           const options = structuredClone(this.options);
           const filters = structuredClone(this.filters);
 
@@ -102,6 +117,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
       map(entries => {
         this.total = entries?.total ?? 0;
         if (entries) {
+          this.cacheService.save(this.scope, entries);
           return this.computeGrpcData(entries) ?? [];
         }
         return [];
@@ -111,26 +127,13 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         this.afterDataCreation(data);
       } else {
         this.newData(data);
-        this.loading$.next(false);
+        this.loading.set(false);
       }
     });
-    this.refresh$.next();
   }
 
   protected newData(entries: R[]) {
-    if (entries.length !== 0) {
-      this.data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
-      entries.forEach((entry, index) => {
-        const value = this.data[index];
-        if (value && this.isDataRawEqual(value.raw, entry)) {
-          this.data[index].value$?.next(entry);
-        } else {
-          this.data.splice(index, 1, this.createNewLine(entry));
-        }
-      });
-    } else {
-      this.data = [];
-    }
+    this.data.set(entries.map(entry => this.createNewLine(entry)));
   }
 
   onDrop(columnsKeys: C[]) {
@@ -150,14 +153,20 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   selector: 'app-results-table',
   template: '',
 })
-export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> extends AbstractTableComponent<R, C, O, F> implements OnInit {
+export abstract class AbstractTaskByStatusTableComponent<R extends DataRaw, C extends RawColumnKey, D extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null>
+  extends AbstractTableComponent<R, C, D, O, F, FO> {
   readonly tasksByStatusService = inject(TasksByStatusService);
   readonly dialog = inject(MatDialog);
 
   statusesGroups: TasksStatusesGroup[];
   abstract table: TableTasksByStatus;
 
-  ngOnInit(): void {
+  override initTable(): void {
+    this.initStatuses();
+    this.loadFromCache();
+  }
+
+  initStatuses() {
     this.statusesGroups = this.tasksByStatusService.restoreStatuses(this.table);
   }
 

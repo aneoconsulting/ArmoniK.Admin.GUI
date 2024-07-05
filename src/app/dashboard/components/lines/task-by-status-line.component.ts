@@ -1,4 +1,3 @@
-import { NgForOf, NgIf } from '@angular/common';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -12,16 +11,16 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { EditNameLineData, EditNameLineResult } from '@app/types/dialog';
+import { EditNameLineData } from '@app/types/dialog';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { ManageGroupsDialogComponent } from '@components/manage-groups-dialog.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
+import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
@@ -81,8 +80,6 @@ app-actions-toolbar {
     MatMenuModule,
     MatButtonModule,
     StatusesGroupCardComponent,
-    NgIf,
-    NgForOf
   ]
 })
 export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestroy {
@@ -160,7 +157,7 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
   }
 
   onEditNameLine(value: string) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData>(EditNameLineDialogComponent, {
       data: {
         name: value
       }
@@ -199,6 +196,11 @@ export class TaskByStatusLineComponent implements OnInit, AfterViewInit,OnDestro
     this.line.filters = value as [];
     this.lineChange.emit();
     this.refresh.next();
+  }
+
+  onShowFiltersChange(value: boolean) {
+    this.line.showFilters = value;
+    this.lineChange.emit();
   }
 
   get taskByStatusFilters() {

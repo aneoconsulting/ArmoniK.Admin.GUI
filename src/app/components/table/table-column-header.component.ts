@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,7 +11,6 @@ import { IconsService } from '@services/icons.service';
   templateUrl: './table-column-header.component.html',
   standalone: true,
   imports: [
-    NgIf,
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,

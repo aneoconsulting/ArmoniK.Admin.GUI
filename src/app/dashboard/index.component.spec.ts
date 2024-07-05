@@ -93,10 +93,6 @@ describe('IndexComponent', () => {
     expect(component.getIcon('vertical-split')).toEqual('vertical_split');
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('dashboard')).toEqual('dashboard');
-  });
-
   it('should open Fab', () => {
     component.openFab();
     expect(component.showFabActions).toBeTruthy();
@@ -197,10 +193,6 @@ describe('IndexComponent', () => {
   it('should save on change', () => {
     component.onSaveChange();
     expect(mockDashboardIndexService.saveLines).toHaveBeenCalledWith(component.lines);
-  });
-
-  it('should track by line', () => {
-    expect(component.trackByLine(0, component.lines[0])).toEqual('line10');
   });
 
   describe('getLineIcon', () => {

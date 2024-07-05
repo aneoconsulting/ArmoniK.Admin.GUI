@@ -1,10 +1,8 @@
-import { NgFor } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
 import { AutoRefreshDialogData } from '@app/types/dialog';
+import { AutoCompleteComponent } from './auto-complete.component';
 
 @Component({
   selector: 'app-auto-refresh-dialog',
@@ -12,51 +10,35 @@ import { AutoRefreshDialogData } from '@app/types/dialog';
   styles: [''],
   standalone: true,
   imports: [
-    NgFor,
     MatDialogModule,
     MatButtonModule,
-    MatAutocompleteModule,
-    MatInputModule
+    AutoCompleteComponent,
   ]
 })
-export class AutoRefreshDialogComponent implements OnInit {
-  options = [$localize`:Dialog disabled@@autoRefreshDialog:Disabled`, 5, 10, 30, 60, 300, 600, 1800, 3600];
+export class AutoRefreshDialogComponent {
+  options = [$localize`:Dialog disabled@@autoRefreshDialog:Disabled`, '5', '10', '30', '60', '300', '600', '1800', '3600'];
 
   value = 0;
 
-  constructor(public dialogRef: MatDialogRef<AutoRefreshDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AutoRefreshDialogData){}
-
-  ngOnInit(): void {
+  constructor(public dialogRef: MatDialogRef<AutoRefreshDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: AutoRefreshDialogData){
     this.value = this.data.value;
   }
 
-  onNumberChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this._setValue(target.value);
-  }
+  onNumberChange(value: string) {
+    if (value.length === 0 || value === 'Disabled') {
+      this.value = 0;
+    }
 
-  onOptionSelected(event: MatAutocompleteSelectedEvent) {
-    const value = event.option.value;
+    const number = Number(value);
 
-    this._setValue(value);
+    if (Number.isNaN(number)) {
+      this.value = 0;
+    } else {
+      this.value = number;
+    }
   }
 
   onNoClick(): void {
     this.dialogRef.close();
-  }
-
-  private _setValue(value: number | string | null) {
-    if (!value || value === 'Disabled') {
-      this.value = 0;
-    }
-
-    value = Number(value);
-
-    if (Number.isNaN(value)) {
-      this.value = 0;
-    }
-    else {
-      this.value = value;
-    }
   }
 }

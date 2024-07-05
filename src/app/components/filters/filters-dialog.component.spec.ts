@@ -116,8 +116,4 @@ describe('FiltersDialogComponent', () => {
   it('should get icon', () => {
     expect(component.getIcon('add')).toEqual('add');
   });
-
-  it('should track by filter', () => {
-    expect(component.trackByFilter(0, filterAnd1)).toEqual('01');
-  });
 });

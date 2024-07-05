@@ -75,10 +75,6 @@ describe('AppShowComponent', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('tasks')).toEqual('adjust');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });
@@ -101,17 +97,13 @@ describe('AppShowComponent', () => {
     });
 
     it('should update data on success', () => {
-      const spy = jest.spyOn(component.data$, 'next');
-      component.refresh.next();
-      expect(component.data).toEqual(returnedTask);
-      expect(spy).toHaveBeenCalledWith(returnedTask);
+      expect(component.data()).toEqual(returnedTask);
     });
 
-    it('should not update data if there is none', () => {
+    it('should not update data if none is fetched', () => {
       mockTasksGrpcService.get$.mockImplementationOnce(() => of({}));
-      const spy = jest.spyOn(component.data$, 'next');
       component.refresh.next();
-      expect(spy).not.toHaveBeenCalled();
+      expect(component.data()).toEqual(null);
     });
 
     it('should catch errors', () => {
@@ -180,13 +172,23 @@ describe('AppShowComponent', () => {
   });
 
   it('should get resultKeys', () => {
-    expect(component.resultsKey).toEqual('1-root-3-0');
+    expect(component.resultsKey()).toEqual('1-root-3-0');
   });
 
   describe('actions', () => {
     it('should cancel a task', () => {
       component.actionButtons.find(button => button.id === 'cancel')?.action$?.next();
       expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
+    });
+  });
+
+  describe('on destroy', () => {
+    beforeEach(() => {
+      component.ngOnDestroy();
+    });
+
+    it('should unsubscribe from subjects', () => {
+      expect(component.subscriptions.closed).toBeTruthy();
     });
   });
 });

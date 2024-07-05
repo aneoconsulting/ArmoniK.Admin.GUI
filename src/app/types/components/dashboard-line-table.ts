@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { EditNameLineDialogComponent } from '@app/dashboard/components/edit-name-line-dialog.component';
@@ -11,7 +11,7 @@ import { NotificationService } from '@services/notification.service';
 import { TableColumn } from '../column.type';
 import { ScopeConfig } from '../config';
 import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
-import { EditNameLineData, EditNameLineResult } from '../dialog';
+import { EditNameLineData } from '../dialog';
 import { RawFilters } from '../filters';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 
@@ -33,11 +33,11 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  loading: boolean = true;
-  loading$: Subject<boolean> = new BehaviorSubject(true);
+  loading = signal(false);
 
   filters: F;
   filters$: Subject<F>;
+  showFilters: boolean;
 
   options: O;
 
@@ -76,6 +76,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   initFilters() {
     this.filters = this.line.filters as F;
+    this.showFilters = this.line.showFilters ?? this.defaultConfig.showFilters;
     this.filters$ = new BehaviorSubject(this.filters);
   }
 
@@ -90,9 +91,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   mergeSubscriptions() {
     const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.loading$.subscribe((value) => this.loading = value);
     this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
   }
 
   unsubscribe() {
@@ -130,7 +129,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   onEditNameLine() {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
       data: {
         name: this.line.name
       }
@@ -160,6 +159,12 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.line.filters = [];
     this.lineChange.emit();
     this.filters$.next([] as unknown as F);
+  }
+
+  onShowFiltersChange(value: boolean) {
+    this.showFilters = value;
+    this.line.showFilters = value;
+    this.lineChange.emit();
   }
 
   onColumnsChange(data: K[]) {

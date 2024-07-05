@@ -1,8 +1,8 @@
-import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { FilterStringOperator, GetTaskResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, catchError, map, switchMap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
@@ -23,8 +23,8 @@ import { TaskRaw } from './types';
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="data?.id ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('tasks')"></mat-icon>
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
   `,
@@ -50,15 +50,16 @@ import { TaskRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface {
+export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface, OnDestroy {
 
   cancel$ = new Subject<void>();
 
-  private _tasksStatusesService = inject(TasksStatusesService);
-  private _filtersService = inject(FiltersService);
-  protected override _grpcService = inject(TasksGrpcService);
+  private readonly tasksStatusesService = inject(TasksStatusesService);
+  private readonly filtersService = inject(FiltersService);
+  readonly grpcService = inject(TasksGrpcService);
 
   canCancel$ = new Subject<boolean>();
 
@@ -66,14 +67,14 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
     {
       id: 'session',
       name: $localize`See session`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       area: 'left',
       link: '/sessions',
     },
     {
       id: 'results',
       name: $localize`See results`,
-      icon: this.getPageIcon('results'),
+      icon: this.getIcon('results'),
       area: 'left',
       link: '/results',
       queryParams: {}
@@ -81,7 +82,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
     {
       id: 'partition',
       name: $localize`See partition`,
-      icon: this.getPageIcon('partitions'),
+      icon: this.getIcon('partitions'),
       area: 'left',
       link: '/partitions',
     },
@@ -101,34 +102,37 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   }
 
   ngAfterViewInit(): void {
-    this.refresh.pipe(
-      switchMap(() => {
-        return this._grpcService.get$(this.id);
-      }),
-      map((data) => {
-        return data.task ?? null;
-      }),
-      catchError(error => this.handleError(error))
-    ).subscribe((data) => {
-      if (data) {
-        this.data = data;
-        this.data$.next(data);
-        this.setLink('session', 'sessions', data.sessionId);
-        if (data.options) {
-          this.setLink('partition', 'partitions', data.options.partitionId);
-        }
-        this._filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey, data.id);
-        this.canCancel$.next(this._tasksStatusesService.taskNotEnded(this.data.status));
-      }
-    });
-
+    this.subscribeToData();
     this.getIdByRoute();
-    this.cancel$.subscribe(() => this.cancel());
-  } 
+    const cancelSubscription = this.cancel$.subscribe(() => this.cancel());
+    this.subscriptions.add(cancelSubscription);
+    this.refresh.next();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe();
+  }
+
+  getDataFromResponse(data: GetTaskResponse): TaskRaw | undefined {
+    return data.task;  
+  }
+
+  afterDataFetching(): void {
+    const data = this.data();
+    if (data) {
+      this.setLink('session', 'sessions', data.sessionId);
+      if (data.options) {
+        this.setLink('partition', 'partitions', data.options.partitionId);
+      }
+      this.filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey(), data.id);
+      this.canCancel$.next(!this.tasksStatusesService.taskNotEnded(data.status));
+    }
+  }
   
   cancel(): void {
-    if(this.data) {
-      this._grpcService.cancel$([this.data.id]).subscribe({
+    const data = this.data();
+    if(data) {
+      this.grpcService.cancel$([data.id]).subscribe({
         complete: () => {
           this.success('Task canceled');
           this.refresh.next();
@@ -140,8 +144,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
     }
   }
 
-  get resultsKey() {
-    return this._filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+  resultsKey() {
+    return this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
   }
 
   setLink(actionId: string, baseLink: string, id: string) {
@@ -152,6 +156,6 @@ export class ShowComponent extends AppShowComponent<TaskRaw, TasksGrpcService> i
   }
 
   get statuses() {
-    return this._tasksStatusesService.statuses;
+    return this.tasksStatusesService.statuses;
   }
 }

@@ -1,6 +1,8 @@
-import { NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnChanges } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
+import { DurationPipe } from '@pipes/duration.pipe';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 
 type Data = {
   [key: string]: string | string[] | Data;
@@ -22,23 +24,27 @@ app-show-card-content {
   margin: 0;
 }
   `],
-  standalone: true,
-  providers: [],
   imports: [
-    NgFor,
-    NgIf,
-  ]
+    DurationPipe,
+    DatePipe,
+    EmptyCellPipe,
+  ],
+  standalone: true
 })
-export class ShowCardContentComponent<T extends object> implements OnChanges {
-  @Input({ required: true }) data: T | T[] | null = null;
-  @Input({ required: true }) statuses: Record<number, string> = [];
-
-  keys: string[] = [];
-
-  ngOnChanges() {
-    if (this.data) {
+export class ShowCardContentComponent<T extends object> {
+  @Input({ required: true }) set data(entry: T | T[] | null) {
+    this._data = entry as Data;
+    if (entry) {
       this.keys = Object.keys(this.data).sort((a, b) => a.toString().localeCompare(b.toString()));
     }
+  }
+  @Input({ required: true }) statuses: Record<number, string> = [];
+
+  keys: (keyof Data)[] = [];
+  private _data: Data;
+
+  get data(): Data {
+    return this._data;
   }
 
   /**
@@ -48,63 +54,62 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
    * @param key string to format
    * @returns formatted string
    */
-  pretty(key: string): string {
-    return key.replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
+  pretty(key: keyof Data): string {
+    return key.toString().replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
-  isString(value: unknown): boolean {
-    return typeof value === 'string';
+  isString(key: keyof Data): boolean {
+    return typeof this.data[key] === 'string';
   }
 
-  isNumber(value: unknown): boolean {
-    return typeof value === 'number';
+  isNumber(key: keyof Data): boolean {
+    return typeof this.data[key] === 'number';
   }
 
-  isStatus(key: string): boolean {
-    return key.toLowerCase().includes('status');
+  isStatus(key: keyof Data): boolean {
+    return key.toString().toLowerCase().includes('status');
   }
 
   isArray(value: unknown): boolean {
     return Array.isArray(value);
   }
 
+  isTimestamp(key: keyof Data): boolean {
+    return this.data[key] instanceof Timestamp;
+  }
+
   hasLength(value: unknown): boolean {
-    return value != undefined && (value as unknown as unknown[]).length > 0;
+    return (value as unknown[])?.length > 0;
   }
 
   toArray(value: unknown): unknown[] {
-    return value as unknown as unknown[];
+    return value as unknown[];
   }
 
-  isObject(value: unknown): boolean {
-    return typeof value === 'object' && !this.isArray(value) && !this.isDuration(value) && !this.isTimestamp(value);
+  isObject(key: keyof Data): boolean {
+    return typeof this.data[key] === 'object' && !this.isArray(this.data[key]) && !this.isDuration(key) && !this.isTimestamp(key);
   }
 
-  isDuration(value: unknown): boolean {
-    return value instanceof Duration;
+  isDuration(key: keyof Data): boolean {
+    const duration = this.data[key] as unknown as Duration;
+    return !Number.isNaN(duration?.nanos) && !!duration?.seconds;
   }
 
-  isTimestamp(value: unknown): boolean {
-    return value instanceof Timestamp;
-  }
-
-  /**
-   * Search for a string in the component JSON data.
-   * @param key the key of the JSON data you are looking for.
-   * @returns the string, or "-" if not found.
-   */
-  findValue(key: string) {
-    if (!this.data) {
-      return '-';
+  toDate(key: keyof Data): Date | undefined {
+    if (this.data) {
+      const timestamp = this.data[key] as unknown as Timestamp;
+      if (timestamp) {
+        return timestamp.toDate();
+      }
     }
+    return undefined;
+  }
 
-    const value = (this.data as unknown as Data)[key];
-
-    if (value === null || value === undefined) {
-      return '-';
+  toDuration(key: keyof Data) {
+    if (this.data?.[key]) {
+      return new Duration(this.data[key] as Partial<Duration.AsObject>);
     }
-
-    return value;
+    return null;
   }
 
   /**
@@ -112,18 +117,14 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
    * @param key the key of the JSON data you are looking for.
    * @returns the array, or an empty array if not found.
    */
-  findArray(key: string): string[] {
-    if (!this.data) {
-      return [];
+  findArray(key: keyof Data): string[] {
+    if (this.data) {
+      const value = this.data[key];
+      if (value !== null && value !== undefined) {
+        return value as string[];
+      }
     }
-
-    const value = (this.data as unknown as Data)[key];
-
-    if (value === null || value === undefined) {
-      return [];
-    }
-
-    return value as string[];
+    return [];
   }
 
   /**
@@ -131,60 +132,14 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
    * @param key the key of the JSON data you are looking for.
    * @returns the object, or an empty object if not found.
    */
-  findObject(key: string): Data {
-    if (!this.data) {
-      return {};
+  findObject(key: keyof Data): Data {
+    if (this.data) {
+      const value = this.data[key];
+      if (value !== null && value !== undefined) {
+        return value as Data;
+      }
     }
-
-    const value = (this.data as unknown as Data)[key];
-
-    if (value === null || value === undefined) {
-      return {};
-    }
-
-    return value as Data;
-  }
-
-  /**
-   * Turns a stored JSON data into a string of Time.
-   * The JSON data is of type Duration.
-   * @param key the key of the JSON time you are looking for.
-   * @returns "seconds+s nanos+s" if found, "-" if not. 
-   */
-  toTime(key: string): string {
-    if (!this.data) {
-      return '-';
-    }
-
-    const value = (this.data as unknown as Data)[key] as unknown as Duration;
-
-    if (!value || value.seconds === undefined || value.nanos === undefined 
-    || (value.seconds === '0' && value.nanos === 0)) {
-      return '-';
-    }
-
-    return `${value.seconds}s ${value.nanos}ns`;
-  }
-
-  /**
-   * Turns a stored JSON data into a TimeStamp.
-   * The JSON data is of type Duration.
-   * @param key the key of the JSON time you are looking for.
-   * @returns a Date if found, "-" if not.
-   */
-  toTimestamp(key: string): string | Date {
-    if (!this.data) {
-      return '-';
-    }
-
-    const value = new Timestamp((this.data as unknown as Data)[key] as Data);
-
-    if (value.seconds === undefined || value.nanos === undefined 
-    || (value.seconds === '0' && value.nanos === 0)) {
-      return '-';
-    }
-
-    return value.toDate();
+    return {};
   }
 
   /**
@@ -192,27 +147,13 @@ export class ShowCardContentComponent<T extends object> implements OnChanges {
    * @param key the key of the status
    * @returns the label if found, "-" if not
    */
-  statusToLabel(key: string): string {
-    if (!this.data || !this.statuses) {
-      return '-';
+  statusToLabel(key: keyof Data) {
+    if (this.data && this.statuses) {
+      const label = this.statuses[Number(this.data[key])];
+      if (label) {
+        return label;
+      }
     }
-
-    const status = Number((this.data as unknown as Data)[key]);
-
-    return this.statuses[status] ? this.statuses[status] : '-';
-  }
-
-  /**
-   * Used for a for-loop angular element.
-   */
-  trackByKey(index: number, key: string): string {
-    return key;
-  }
-
-  /**
-   * Used for a for-loop angular element.
-   */
-  trackByItem(index: number, item: unknown): string {
-    return String(item);
+    return null;
   }
 }

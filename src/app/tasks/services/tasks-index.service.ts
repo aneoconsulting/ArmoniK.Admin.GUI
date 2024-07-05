@@ -46,7 +46,9 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
     {
       name: $localize`Session ID`,
       key: 'sessionId',
+      type: 'link',
       sortable: true,
+      link: '/sessions',
     },
     {
       name: $localize`Acquired at`,
@@ -219,7 +221,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       sortable: true,
     },
     {
-      name: $localize`Parition Id`,
+      name: $localize`Partition Id`,
       key: 'options.partitionId',
       sortable: true,
     }

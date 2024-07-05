@@ -1,5 +1,6 @@
 import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -8,6 +9,7 @@ import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -146,6 +148,12 @@ describe('SessionsTableComponent', () => {
     navigate: jest.fn()
   };
 
+  const cachedSession = { sessions: [{ sessionId: 'session1' }, { sessionId: 'session2' }] as SessionRaw[], total: 2 };
+  const mockCacheService = {
+    get: jest.fn(() => cachedSession),
+    save: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -154,6 +162,7 @@ describe('SessionsTableComponent', () => {
         { provide: SessionsGrpcService, useValue: mockSessionsGrpcService },
         SessionsStatusesService,
         FiltersService,
+        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService},
@@ -174,13 +183,64 @@ describe('SessionsTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
-    component.ngAfterViewInit();
+    component.loading = signal(false);
     component.ngOnInit();
+    component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('initialisation', () =>{
+    it('should load cached data from cachedService', () => {
+      expect(mockCacheService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    beforeEach(() => {
+      component.loadFromCache();
+    });
+
+    it('should update total data with cached one', () => {
+      expect(component.total).toEqual(cachedSession.total);
+    });
+
+    it('should update data with cached one', () => {
+      const map1 = new Map();
+      const map2 = new Map();
+      map1.set('sessionId', {'0-root-1-0': 'session1'});
+      map2.set('sessionId', {'0-root-1-0': 'session2'});
+      expect(component.data()).toEqual([
+        {
+          raw: {
+            sessionId: 'session1'
+          },
+          queryParams: map1,
+          resultsQueryParams: {
+            '0-root-1-0': 'session1'
+          },
+          queryTasksParams: {
+            '0-root-1-0': 'session1'
+          },
+          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]]
+        },
+        {
+          raw: {
+            sessionId: 'session2'
+          },
+          queryParams: map2,
+          resultsQueryParams: {
+            '0-root-1-0': 'session2'
+          },
+          queryTasksParams: {
+            '0-root-1-0': 'session2'
+          },
+          filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]]
+        },
+      ]);
+    });
   });
 
   it('should return columns keys', () => {
@@ -188,7 +248,7 @@ describe('SessionsTableComponent', () => {
   });
 
   it('should get page icon', () => {
-    expect(component.getPageIcon('sessions')).toEqual('workspaces');
+    expect(component.getIcon('sessions')).toEqual('workspaces');
   });
 
   it('should create session id query params', () => {
@@ -331,7 +391,7 @@ describe('SessionsTableComponent', () => {
     map1.set('sessionId', {'0-root-1-0': 'session1'});
     map2.set('sessionId', {'0-root-1-0': 'session2'});
     map3.set('sessionId', {'0-root-1-0': 'session3'});
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           sessionId: 'session1'
@@ -343,8 +403,7 @@ describe('SessionsTableComponent', () => {
         queryTasksParams: {
           '0-root-1-0': 'session1'
         },
-        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]],
-        value$: expect.any(Subject)
+        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session1'}]]
       },
       {
         raw: {
@@ -357,8 +416,7 @@ describe('SessionsTableComponent', () => {
         queryTasksParams: {
           '0-root-1-0': 'session2'
         },
-        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]],
-        value$: expect.any(Subject)
+        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session2'}]]
       },
       {
         raw: {
@@ -371,16 +429,20 @@ describe('SessionsTableComponent', () => {
         queryTasksParams: {
           '0-root-1-0': 'session3'
         },
-        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session3'}]],
-        value$: expect.any(Subject)
+        filters: [[{for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'session3'}]]
       }
     ]);
+  });
+
+  it('should cache received data', () => {
+    component.refresh$.next();
+    expect(mockCacheService.get).toHaveBeenCalled();
   });
 
   it('should have an empty data if it cannot compute GrpcData', () => {
     jest.spyOn(component, 'computeGrpcData').mockReturnValue(undefined);
     component.refresh$.next();
-    expect(component.data).toEqual([]);
+    expect(component.data()).toEqual([]);
   });
 
   it('should prepare data before fetching', () => {
@@ -421,12 +483,6 @@ describe('SessionsTableComponent', () => {
       component.displayedColumns.push({key: 'duration', name: 'Duration', sortable: true});
       component.afterDataCreation(sessionData.sessions);
       expect(spy).toHaveBeenCalledTimes(sessionData.sessions.length);
-    });
-
-    it('should stop loading', () => {
-      const spy = jest.spyOn(component.loading$, 'next');
-      component.afterDataCreation(sessionData.sessions);
-      expect(spy).toHaveBeenCalledWith(false);
     });
   });
 
@@ -512,20 +568,20 @@ describe('SessionsTableComponent', () => {
     it('should order ascendantly', () => {
       component.options.sort.direction = 'asc';
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.map(d => d.raw.sessionId)).toEqual(['smallest', 'middle', 'biggest']);
+      expect(component.data().map(d => d.raw.sessionId)).toEqual(['smallest', 'middle', 'biggest']);
     });
 
     it('should order descendently', () => {
       component.options.sort.direction = 'desc';
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.map(d => d.raw.sessionId)).toEqual(['biggest', 'middle', 'smallest']);
+      expect(component.data().map(d => d.raw.sessionId)).toEqual(['biggest', 'middle', 'smallest']);
     });
 
     it('should slice data to have a length equal to the page size', () => {
       component.options.sort.direction = 'asc';
       component.options.pageSize = 2;
       component.orderByDuration(sessionsWithDuration);
-      expect(component.data.length).toEqual(2);
+      expect(component.data().length).toEqual(2);
     });
   });
 
@@ -564,9 +620,9 @@ describe('SessionsTableComponent', () => {
 
   describe('compute duration', () => {
     it('should not compute if the ended and created array have not the same length as the dataRaw array', () => {
-      const spy = jest.spyOn(component.loading$, 'next');
+      component.loading.set(true); // We are mocking the fact that the component is loading
       component.computeDuration$.next();
-      expect(spy).not.toHaveBeenCalled();
+      expect(component.loading()).toBeTruthy();
     });
 
     it('should compute the duration for a session', () => {
@@ -574,7 +630,7 @@ describe('SessionsTableComponent', () => {
       component.dataRaw = [{sessionId: 'sessionId'}] as SessionRaw[];
       component.durationSubscription(taskCreatedAt, 'created');
       component.durationSubscription(taskEndedAt, 'ended');
-      const selectedData = component.data.map(d => {
+      const selectedData = component.data().map(d => {
         return { sessionId: d.raw.sessionId, duration: d.raw.duration };
       });
       expect(selectedData).toEqual(
@@ -626,7 +682,7 @@ describe('SessionsTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -832,6 +888,20 @@ describe('SessionsTableComponent', () => {
       const action = component.actions[7];
       action.action$.next(sessionData);
       expect(mockSessionsGrpcService.delete$).toHaveBeenCalledWith(sessionData.raw.sessionId);
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two sessionRaws are the same', () => {
+      const session1 = { sessionId: 'session' } as SessionRaw;
+      const session2 = {...session1} as SessionRaw;
+      expect(component.isDataRawEqual(session1, session2)).toBeTruthy();
+    });
+
+    it('should return false if two sessionRaws are differents', () => {
+      const session1 = { sessionId: 'session' } as SessionRaw;
+      const session2 = { sessionId: 'session1' } as SessionRaw;
+      expect(component.isDataRawEqual(session1, session2)).toBeFalsy();
     });
   });
 });

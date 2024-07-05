@@ -95,6 +95,8 @@ describe('Partitions Index Component', () => {
     urlTemplate: 'https://localhost:4200/taskId=%taskId',
   };
 
+  const defaultShowFilters = false;
+
   const mockPartitionsIndexService = {
     restoreViewInLogs: jest.fn(() => defaultViewInLogs),
     saveViewInLogs: jest.fn(),
@@ -114,6 +116,8 @@ describe('Partitions Index Component', () => {
     restoreFilters: jest.fn(() => []),
     saveFilters: jest.fn(),
     resetFilters: jest.fn(() => []),
+    saveShowFilters: jest.fn(),
+    restoreShowFilters: jest.fn(() => defaultShowFilters),
   };
   
   const mockShareUrlService = {
@@ -198,7 +202,6 @@ describe('Partitions Index Component', () => {
     });
 
     it('should merge subscriptions', () => {
-      expect(component.refresh.observed).toBeTruthy();
       expect(component.subscriptions).toBeDefined();
     });
   });
@@ -210,16 +213,12 @@ describe('Partitions Index Component', () => {
     });
   });
 
-  it('should get page icon', () => {
-    expect(component.getPageIcon('partitions')).toEqual('donut_small');
-  });
-
   it('should get icons', () => {
     expect(component.getIcon('refresh')).toEqual('refresh');
   });
 
   it('should refresh', () => {
-    const spy = jest.spyOn(component.refresh, 'next');
+    const spy = jest.spyOn(component.refresh$, 'next');
     component.onRefresh();
     expect(spy).toHaveBeenCalled();
   });
@@ -237,7 +236,7 @@ describe('Partitions Index Component', () => {
     });
 
     it('should refresh if the value is not null', () => {
-      const spy = jest.spyOn(component.refresh, 'next');
+      const spy = jest.spyOn(component.refresh$, 'next');
       component.onIntervalValueChange(5);
       expect(spy).toHaveBeenCalled();
     });
@@ -428,6 +427,20 @@ describe('Partitions Index Component', () => {
         options: defaultOptions,
         filters: [],
       });
+    });
+  });
+  
+  describe('onShowFiltersChange', () => {
+    it('should update show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(component.showFilters).toEqual(newShowFilters);
+    });
+
+    it('should save show filters', () => {
+      const newShowFilters = true;
+      component.onShowFiltersChange(newShowFilters);
+      expect(mockTaskFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
 });

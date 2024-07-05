@@ -1,12 +1,11 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { NgFor } from '@angular/common';
 import { Component, EventEmitter, Inject, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditNameLineData, EditNameLineResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
+import { EditNameLineData, ReorganizeLinesDialogData, ReorganizeLinesDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
 import { Line } from '../types';
@@ -62,7 +61,6 @@ import { Line } from '../types';
     IconsService,
   ],
   imports: [
-    NgFor,
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
@@ -110,7 +108,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   }
 
   onEditNameLine(line: Line, index: number) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, EditNameLineResult> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, EditNameLineResult>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
       data: {
         name: line.name
       }
@@ -127,9 +125,5 @@ export class ReorganizeLinesDialogComponent implements OnInit {
         this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
       }
     });
-  }
-
-  trackByLine(index: number, line: Line): string {
-    return line.name + index;
   }
 }

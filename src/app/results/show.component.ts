@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
+import { GetResultResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, map, switchMap } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { NotificationService } from '@services/notification.service';
@@ -13,14 +13,14 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
-import { ResultsStatusesService } from './services/results-statuses.service';import { ResultRaw } from './types';
-
+import { ResultsStatusesService } from './services/results-statuses.service';
+import { ResultRaw } from './types';
 
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="data?.resultId ?? ''" [data$]="data$" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('results')"></mat-icon>
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
   <span i18n="Page title"> Result </span>
 </app-show-page>
   `,
@@ -43,59 +43,61 @@ import { ResultsStatusesService } from './services/results-statuses.service';imp
   imports: [
     ShowPageComponent,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShowComponent extends AppShowComponent<ResultRaw, ResultsGrpcService> implements OnInit, AfterViewInit, ShowActionInterface {
+export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
 
-  protected override _grpcService = inject(ResultsGrpcService);
-  private _resultsStatusesService = inject(ResultsStatusesService);
+  readonly grpcService = inject(ResultsGrpcService);
+  private readonly resultsStatusesService = inject(ResultsStatusesService);
 
   actionButtons: ShowActionButton[] = [
     {
       id: 'session',
       name: $localize`See session`,
-      icon: this.getPageIcon('sessions'),
+      icon: this.getIcon('sessions'),
       link: '/sessions'
     },
     {
       id: 'task',
       name: $localize`See owner task`,
-      icon: this.getPageIcon('tasks'),
+      icon: this.getIcon('tasks'),
       link: '/tasks'
     }
   ];
 
   ngOnInit(): void {
+    this.getIdByRoute();
     this.sharableURL = this.getSharableUrl();
   }
 
   ngAfterViewInit(): void {
-    this.refresh.pipe(
-      switchMap(() => {
-        return this._grpcService.get$(this.id);
-      }),
-      map((data) => {
-        return data.result ?? null;
-      }),
-      catchError(error => this.handleError(error))
-    ).subscribe((data) => {
-      if (data) {
-        this.data = data;
-        this.setLink('session', 'sessions', data.sessionId);
-        if(data.sessionId === data.ownerTaskId) {
-          this.actionButtons = this.actionButtons.filter(element => element.id !== 'task');
-        } else {
-          this.setLink('task', 'tasks', data.ownerTaskId);
-        }
-        this.data$.next(data);
-      }
-    });
+    this.subscribeToData();
+    this.refresh.next();
+  }
 
-    this.getIdByRoute();
+  ngOnDestroy() {
+    this.unsubscribe();
+  }
+
+  getDataFromResponse(data: GetResultResponse): ResultRaw | undefined {
+    return data.result;
+  }
+
+  afterDataFetching(): void {
+    const data = this.data();
+    if (data) {
+      this.setLink('session', 'sessions', data.sessionId);
+      if(!data.ownerTaskId || data.sessionId === data.ownerTaskId) {
+        this.actionButtons = this.actionButtons.filter(element => element.id !== 'task');
+      } else {
+        this.setLink('task', 'tasks', data.ownerTaskId);
+      }
+    }
   }
 
   get statuses() {
-    return this._resultsStatusesService.statuses;
+    return this.resultsStatusesService.statuses;
   }
 
   setLink(actionId: string, baseLink: string, id: string) {

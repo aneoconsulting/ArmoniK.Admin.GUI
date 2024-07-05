@@ -1,15 +1,11 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Component, Inject } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { Observable, map, startWith } from 'rxjs';
 import { AddLineDialogData, AddLineDialogResult } from '@app/types/dialog';
-import { MaybeNull } from '@app/types/filters';
+import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { LineType } from '../types';
 
 @Component({
@@ -29,61 +25,39 @@ mat-dialog-content {
   providers: [],
   imports: [
     MatDialogModule,
-    NgIf,
-    NgFor,
-    MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatSelectModule,
-    MatAutocompleteModule,
-    AsyncPipe,
+    AutoCompleteComponent,
   ]
 })
-export class AddLineDialogComponent implements OnInit {
-
+export class AddLineDialogComponent {
+  type: LineType | undefined;
   types: LineType[] = ['CountStatus', 'Applications', 'Sessions', 'Tasks', 'Partitions', 'Results'];
-  filteredTypes: Observable<LineType[]>;
+  typeLabel = $localize`Type`;
+  validType: boolean;
 
-  lineForm = new FormGroup({
-    name: new FormControl('', [
-      Validators.required,
-    ]),
-    type: new FormControl('', [
-      Validators.required
-    ])
+  formGroup = new FormGroup({
+    name: new FormControl<string>('')
   });
 
   constructor(
     public _dialogRef: MatDialogRef<AddLineDialogComponent, AddLineDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data?: AddLineDialogData,
-  ) {}
-
-  ngOnInit(): void {
-    if(this.data?.name && this.data?.type) {
-      this.lineForm.setValue({
-        name: this.data.name,
-        type: this.data.type
-      });
-    }
-
-    this.filteredTypes = this.lineForm.controls.type.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filterType(value))
-    );
+  ) {
+    this.type = this.data?.type;
+    this.validType = this.isValidType(this.type ?? '');
+    this.formGroup.controls.name.setValue(this.data?.name ?? null);
   }
 
   onSubmit() {
-    const type = this.getType(this.lineForm.value.type);
-    if (type) {
-      const result = {
-        name: this.lineForm.value.name ?? '',
-        type: type
-      } as AddLineDialogResult;
+    if (this.validType) {
+      const result: AddLineDialogResult = {
+        name: this.formGroup.getRawValue().name ?? '',
+        type: this.type as LineType
+      };
       this._dialogRef.close(result);
-    } else {
-      this.lineForm.controls.type.setErrors({ invalid: true });
     }
   }
 
@@ -91,20 +65,14 @@ export class AddLineDialogComponent implements OnInit {
     this._dialogRef.close();
   }
 
-  trackByType(_: number, item: LineType) {
-    return item;
+  onTypeChange(value: string) {
+    if (this.isValidType(value)) {
+      this.type = value as LineType;
+      this.validType = true;
+    }
   }
 
-  onTypeSelected(event: MatAutocompleteSelectedEvent) {
-    this.lineForm.controls.type.setValue(event.option.value);
-  }
-
-  private filterType(value: MaybeNull<string>): LineType[] {
-    const filterValue = value?.toLowerCase();
-    return this.types.filter(type => type.toLowerCase().includes(filterValue ?? ''));
-  }
-
-  private getType(type: string | null | undefined): LineType | undefined {
-    return type ? this.types.find(t => t.toLowerCase() === type.toLowerCase()) : undefined;
+  isValidType(value: string) {
+    return this.types.includes(value as LineType);
   }
 }

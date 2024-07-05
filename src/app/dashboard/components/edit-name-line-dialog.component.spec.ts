@@ -1,11 +1,10 @@
 import { MatDialogRef } from '@angular/material/dialog';
-import { EditNameLineResult } from '@app/types/dialog';
 import { EditNameLineDialogComponent } from './edit-name-line-dialog.component';
 
 describe('', () => {
   const mockMatDialogRef = {
     close: jest.fn()
-  } as unknown as MatDialogRef<EditNameLineDialogComponent, EditNameLineResult>;
+  } as unknown as MatDialogRef<EditNameLineDialogComponent, string>;
 
   const defaultName = 'Tasks';
 

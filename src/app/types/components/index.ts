@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
@@ -11,7 +11,6 @@ import { ShareUrlService } from '@services/share-url.service';
 import { TableColumn } from '../column.type';
 import { CustomColumn, IndexListOptions, RawColumnKey, RawCustomColumnKey } from '../data';
 import { RawFilters } from '../filters';
-import { Page } from '../pages';
 import { FiltersServiceInterface } from '../services/filtersService';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 import { TableType } from '../table';
@@ -35,19 +34,18 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   lockColumns: boolean = false;
   columnsLabels: Record<K, string> = {} as Record<K, string>;
 
-  isLoading = true;
-  isLoading$: Subject<boolean> = new BehaviorSubject<boolean>(true);
+  loading = signal(false);
 
   options: O;
 
   filters: F;
   filters$: Subject<F>;
+  showFilters: boolean;
 
   intervalValue = 0;
   sharableURL = '';
 
   refresh$: Subject<void> = new Subject<void>();
-  refresh: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this.autoRefreshService.createInterval(this.interval, this.stopInterval);
@@ -74,6 +72,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
 
   private initFilters() {
     this.filters = this.filtersService.restoreFilters();
+    this.showFilters = this.filtersService.restoreShowFilters();
     this.filters$ = new BehaviorSubject(this.filters);
   }
 
@@ -82,10 +81,9 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   mergeSubscriptions() {
-    const mergeSubscription = merge(this.refresh, this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
+    const mergeSubscription = merge(this.interval$).subscribe(() => this.refresh$.next());
     this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
+    this.handleAutoRefreshStart();
   }
 
   unsubscribe() {
@@ -96,16 +94,12 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>);
   }
 
-  getPageIcon(name: Page): string {
-    return this.iconsService.getPageIcon(name);
-  }
-
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
   }
 
   onRefresh() {
-    this.refresh.next();
+    this.refresh$.next();
   }
 
   onIntervalValueChange(value: number) {
@@ -115,7 +109,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
       this.stopInterval.next();
     } else {
       this.interval.next(value);
-      this.refresh.next();
+      this.refresh$.next();
     }
 
     this.indexService.saveIntervalValue(value);
@@ -148,6 +142,11 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.options.pageIndex = 0;
     this.filters$.next([] as unknown as F);
   }
+
+  onShowFiltersChange(value: boolean) {
+    this.showFilters = value;
+    this.filtersService.saveShowFilters(value);
+  }
   
   onLockColumnsChange() {
     this.lockColumns = !this.lockColumns;
@@ -159,6 +158,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   handleAutoRefreshStart() {
+    this.refresh$.next();
     if (this.intervalValue === 0) {
       this.stopInterval.next();
     } else {

@@ -2,18 +2,16 @@ import { CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, Cou
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
-import { ListOptionsSort } from '@app/types/options';
-import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, GrpcListInterface } from '@app/types/services/grpcService';
-import { buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter, sortDirections } from '@services/grpc-build-request.service';
+import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
+import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
-import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskOptions, TaskSummary, TaskSummaryField, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskOptionsFieldKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSummaryListOptions, TaskSummaryFilters, TaskSummaryFieldKey, TaskSummaryEnumField, TaskOptionEnumField>, GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField> {
+export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
+  implements GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFilters> {
   readonly filterService = inject(TasksFiltersService);
-  readonly utilsService = inject(UtilsService<TaskSummaryEnumField, TaskOptionEnumField>);
   readonly grpcClient = inject(TasksClient);
   readonly sortFieldService = inject(GrpcSortFieldService);
 
@@ -46,28 +44,7 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
   };
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {
-
-    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
-    const sortField = this.sortFieldService.buildSortField(options.sort, 
-      (sort: ListOptionsSort<TaskSummary & TaskOptions>) => {
-        return {
-          taskSummaryField: {
-            field: this.sortFields[sort.active as TaskSummaryFieldKey] ?? TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT
-          }
-        } as TaskField;
-      }
-    );
-
-    const listTasksRequest = new ListTasksRequest({
-      page: options.pageIndex,
-      pageSize: options.pageSize,
-      sort: {
-        direction: sortDirections[options.sort.direction],
-        field: sortField
-      },
-      filters: requestFilters
-    });
-
+    const listTasksRequest = new ListTasksRequest(this.createListRequest(options, filters) as ListTasksRequest);
     return this.grpcClient.listTasks(listTasksRequest);
   }
 
@@ -89,7 +66,7 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
 
   countByStatus$(filters: TaskSummaryFilters): Observable<CountTasksByStatusResponse> {
 
-    const requestFilters = this.utilsService.createFilters<TaskFilterField.AsObject>(filters, this.filterService.filtersDefinitions, this.#buildFilterField);
+    const requestFilters = this.createFilters(filters, this.filterService.filtersDefinitions) as { or: { and: TaskFilterField.AsObject[] }[] };
 
     const request = new CountTasksByStatusRequest({
       filters: requestFilters
@@ -98,42 +75,54 @@ export class TasksGrpcService implements GrpcListInterface<TasksClient, TaskSumm
     return this.grpcClient.countTasksByStatus(request);
   }
 
-  #buildFilterField(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>) {
-    return (type: FilterType, field: TaskSummaryField, isForRoot: boolean, isCustom: boolean) => {
-
-      let filterField: TaskFilterField.AsObject['field'];
-      if (isForRoot) {
-        filterField = {
-          taskSummaryField: {
-            field: field as TaskSummaryEnumField
-          }
-        };
-      } else if (isCustom) {
-        filterField = {
-          taskOptionGenericField: {
-            field: field as string
-          }
-        };
-      } else {
-        filterField = {
-          taskOptionField: {
-            field: field as TaskOptionEnumField
-          }
-        };
-      }
-
-      switch (type) {
-      case 'string':
-        return buildStringFilter(filterField, filter) as TaskFilterField.AsObject;
-      case 'status':
-        return buildStatusFilter(filterField, filter) as TaskFilterField.AsObject;
-      case 'number':
-        return buildNumberFilter(filterField, filter) as TaskFilterField.AsObject;
-      case 'date':
-        return buildDateFilter(filterField, filter) as TaskFilterField.AsObject;
-      default:
-        throw new Error(`Type ${type} not supported`);
-      }
+  createSortField(field: TaskSummaryFieldKey | TaskOptionsFieldKey): ListDefaultSortField {
+    return {
+      field: this.sortFieldService.buildSortField(field,
+        () => {
+          return {
+            taskSummaryField: {
+              field: this.sortFields[field as TaskSummaryFieldKey] ?? TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT
+            }
+          } as TaskField;
+        }
+      )
     };
+  }
+
+  createFilterField(field: TaskSummaryEnumField | TaskOptionEnumField | string, isForRoot?: boolean | undefined, isCustom?: boolean | undefined): FilterField {
+    if (isForRoot) {
+      return {
+        taskSummaryField: {
+          field: field as TaskSummaryEnumField
+        }
+      };
+    } else if (isCustom) {
+      return {
+        taskOptionGenericField: {
+          field: field as string
+        }
+      };
+    } else {
+      return {
+        taskOptionField: {
+          field: field as TaskOptionEnumField
+        }
+      };
+    }
+  }
+
+  buildFilter(type: FilterType, filterField: FilterField, filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>): TaskFilterField.AsObject {
+    switch (type) {
+    case 'string':
+      return buildStringFilter(filterField, filter) as TaskFilterField.AsObject;
+    case 'status':
+      return buildStatusFilter(filterField, filter) as TaskFilterField.AsObject;
+    case 'number':
+      return buildNumberFilter(filterField, filter) as TaskFilterField.AsObject;
+    case 'date':
+      return buildDateFilter(filterField, filter) as TaskFilterField.AsObject;
+    default:
+      throw new Error(`Type ${type} not supported`);
+    }
   }
 }

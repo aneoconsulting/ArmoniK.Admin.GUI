@@ -1,10 +1,11 @@
 import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { AfterViewInit, Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
+import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
@@ -14,7 +15,7 @@ import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -31,7 +32,10 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListO
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> implements AfterViewInit {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
+  implements OnInit, AfterViewInit {
+  scope: Scope = 'tasks';
+
   @Input({ required: false }) set serviceIcon(entry: string | null) {
     if (entry) {
       this._serviceIcon = entry;
@@ -119,6 +123,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     },
   ];
 
+  ngOnInit(): void {
+    this.initTable();
+  }
+
   ngAfterViewInit(): void {
     this.subscribeToData();
   }
@@ -135,7 +143,6 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return {
       raw: entry,
       resultsQueryParams: this.createResultsQueryParams(entry.id),
-      value$: new Subject<TaskSummary>()
     };
   }
 

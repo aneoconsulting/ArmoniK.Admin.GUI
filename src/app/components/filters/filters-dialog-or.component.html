@@ -1,18 +1,19 @@
-<span *ngIf="first" i18n="Filter condition">Where</span>
-<span *ngIf="!first" i18n="Filter condition">Or</span>
-
+@if (first) {
+  <span i18n="Filter condition">Where</span>
+} @else {
+  <span i18n="Filter condition">Or</span>
+}
 <div class="filters">
   <div class="filters-and">
-    <ng-container *ngFor="let filtersAnd of filtersOr; let index = index">
+    @for(filtersAnd of filtersOr; track filtersAnd) {
       <app-filters-dialog-and
-        [first]="index === 0"
+        [first]="$first"
         [filter]="filtersAnd"
         [customColumns]="customColumns"
         (removeChange)="onRemoveAnd($event)"
       >
       </app-filters-dialog-and>
-    </ng-container>
-
+    }
     <button mat-button (click)="onAdd()" style="width: fit-content;">
       <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"></mat-icon>
       <span i18n>Add an And Filter</span>

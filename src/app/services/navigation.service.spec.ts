@@ -17,28 +17,24 @@ describe('NavigationService', () => {
       type: 'link',
       id: 'applications',
       display: 'Applications',
-      icon: 'apps',
       route: '/applications'
     },
     {
       type: 'divider',
       id: 'divider',
       display: 'Divider',
-      icon: null,
       route: null
     },
     {
       type: 'link',
       id: 'sessions',
       display: 'Sessions',
-      icon: 'workspaces',
       route: '/sessions'
     },
     {
       type: 'link',
       id: 'sessions',
       display: 'Sessions',
-      icon: 'workspaces',
       route: '/sessions'
     }
   ];
@@ -70,7 +66,7 @@ describe('NavigationService', () => {
 
     it('Should restore the stored sideBar', () => {
       storedSideBar = ['applications', 'dashboard', 'divider', 'sessions'];
-      expect(service.restoreSidebar()).toBe(storedSideBar);
+      expect(service.restoreSidebar()).toEqual(storedSideBar);
     });
 
     it('Should restore default config sideBar if none is stored', () => {

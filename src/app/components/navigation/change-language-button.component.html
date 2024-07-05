@@ -1,9 +1,9 @@
-<button mat-button [matMenuTriggerFor]="switchLanguage" [matTooltip]="languageButtonTip">
+<button mat-button [matMenuTriggerFor]="switchLanguage" [matTooltip]="languageButtonTip" [disabled]="availableLanguages.length === 0">
   <mat-icon matListItemIcon [fontIcon]="getIcon('language')" aria-hidden="true"/>
   <span>{{selectedLanguage.toLocaleUpperCase()}}</span>
 </button>
 <mat-menu #switchLanguage="matMenu">
-  <ng-container *ngFor="let language of availableLanguages; trackBy:trackByLanguage">
+  @for (language of availableLanguages; track language) {
     <a mat-menu-item [href]="'/admin/' + language + getRoute()" (click)="setLanguage(language)">{{language.toLocaleUpperCase()}}</a>
-  </ng-container>
+  }
 </mat-menu>

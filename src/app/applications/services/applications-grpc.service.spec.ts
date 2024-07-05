@@ -1,6 +1,6 @@
-import { ApplicationRawEnumField, ApplicationsClient, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, ApplicationsClient, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, ListApplicationsRequest } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { FilterDefinitionRootString } from '@app/types/filter-definition';
+import { ListOptionsSort } from '@app/types/options';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationsGrpcService } from './applications-grpc.service';
@@ -9,59 +9,71 @@ import { ApplicationRaw, ApplicationRawFilters, ApplicationRawListOptions } from
 describe('ApplicationsGrpcService', () => {
   let service: ApplicationsGrpcService;
 
-  const mockApplicationFiltersService = {
-    filtersDefinitions: [
+  const filters: ApplicationRawFilters = [
+    [
       {
+        field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
         for: 'root',
-        field: 1,
-        type: 'string'
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+        value: 'applicationId'
+      },
+    ],
+    [
+      {
+        field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+        value: 100
       },
       {
+        field: null,
         for: 'root',
-        field: 2,
-        type: 'number'
-      } as unknown as FilterDefinitionRootString<ApplicationRawEnumField>
+        operator: FilterNumberOperator.FILTER_NUMBER_OPERATOR_LESS_THAN_OR_EQUAL,
+        value: 29
+      }
     ]
-  };
-  
-  const mockApplicationsClient = {
-    listApplications: jest.fn().mockImplementation((data) => data)
-  };
+  ];
 
   const options: ApplicationRawListOptions = {
-    pageIndex: 0,
+    pageIndex: 2,
     pageSize: 10,
     sort: {
-      active: 'version',
+      active: 'name',
       direction: 'asc'
     }
   };
 
-  const correctfilters: ApplicationRawFilters = [[
-    {
-      field: 1,
-      for: 'root',
-      operator: 0,
-      value: 'someValue'
-    }
-  ]];
+  const mockApplicationsFiltersService = {
+    filtersDefinitions: [
+      {
+        for: 'root',
+        field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+        type: 'string'
+      },
+      {
+        for: 'root',
+        field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
+        type: 'string',
+      },
+      {
+        for: 'root',
+        field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE,
+        type: 'status',
+      },
+    ],
+  };
 
-  const uncorrectfilters: ApplicationRawFilters = [[
-    {
-      field: 2,
-      for: 'root',
-      operator: 0,
-      value: 123
-    }
-  ]];
+  const mockApplicationsClient = {
+    listApplications: jest.fn(),
+  };
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         ApplicationsGrpcService,
-        UtilsService<ApplicationRawEnumField>,
-        { provide: ApplicationsClient, useValue: mockApplicationsClient },
-        { provide: ApplicationsFiltersService, useValue: mockApplicationFiltersService }
+        UtilsService,
+        { provide: ApplicationsFiltersService, useValue: mockApplicationsFiltersService },
+        { provide: ApplicationsClient, useValue: mockApplicationsClient }
       ]
     }).inject(ApplicationsGrpcService);
   });
@@ -70,122 +82,122 @@ describe('ApplicationsGrpcService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should create a request without filters', () => {
-    const listResult = new ListApplicationsRequest({
-      page: 0,
-      pageSize: 10,
+  it('should list applications', () => {
+    service.list$(options, filters);
+    expect(mockApplicationsClient.listApplications).toHaveBeenCalledWith(new ListApplicationsRequest({
+      page: options.pageIndex,
+      pageSize: options.pageSize,
       sort: {
         direction: 1,
-        fields: [{
-          applicationField: {
-            field: 2
-          }
-        }]
-      },
-      filters: {or: []}
-    });
-    expect(service.list$(options, [])).toEqual(listResult);
-  });
-
-  it('should create a request with filters', () => {
-    const listResult = new ListApplicationsRequest({
-      page: 0,
-      pageSize: 10,
-      sort: {
-        direction: 1,
-        fields: [{
-          applicationField: {
-            field: 2
-          }
-        }]
-      },
-      filters: { or: [{
-        and: [{
-          field: {
+        fields: [
+          {
             applicationField: {
-              field: 1
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
             }
           },
-          filterString: {
-            value: 'someValue',
-            operator: 0 as FilterStringOperator
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+            }
           }
-        }]
-      }]}
-    });
-    expect(service.list$(options, correctfilters)).toEqual(listResult);
+        ]
+      },
+      filters: {
+        or: [
+          {
+            and: [
+              {
+                field: {
+                  applicationField: {
+                    field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+                  }
+                },
+                filterString: {
+                  operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+                  value: 'applicationId'
+                }
+              },
+            ]
+          },
+          {
+            and: [
+              {
+                field: {
+                  applicationField: {
+                    field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+                  }
+                },
+                filterString: {
+                  operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+                  value: '100'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }));
   });
 
-  it('should throw error in case on unexpected type', () => {
-    expect(() => {service.list$(options, uncorrectfilters);}).toThrow('Type number not supported');
-  });
-
-  it('should throw error in case on unexpected sort field', () => {
-    options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw;
-    expect(() => {service.list$(options, []);}).toThrow('Sort field "unexpected" not supported');
-  });
-
-  describe('getSortFieldsArray', () => {
-    const requestObject = {
-      page: 0,
-      pageSize: 10,
+  it('should sort with only one field and not two if not sorting by "name"', () => {
+    options.sort.active = 'version';
+    service.list$(options, []);
+    expect(mockApplicationsClient.listApplications).toHaveBeenCalledWith(new ListApplicationsRequest({
+      page: options.pageIndex,
+      pageSize: options.pageSize,
       sort: {
         direction: 1,
-        fields: [] as {applicationField: {field: ApplicationRawEnumField}}[],
+        fields: [
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+            }
+          }
+        ]
       },
       filters: {or: []}
+    }));
+  });
+
+  it('should throw on invalid filters', () => {
+    const filters: ApplicationRawFilters = [[{
+      field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE,
+      for: 'root',
+      operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+      value: 0
+    }]];
+    expect(() => service.list$(options, filters)).toThrow('Type status not supported');
+  });
+
+  it('should have a default sort field direction', () => {
+    const options: ApplicationRawListOptions = {
+      pageIndex: 10,
+      pageSize: 10,
+      sort: {
+        active: null,
+        direction: 'asc'
+      } as unknown as ListOptionsSort<ApplicationRaw>
     };
-
-    it('should create the correct sorting field for "name"', () => {
-      options.sort.active = 'name';
-      requestObject.sort.fields = [
-        {
-          applicationField: {
-            field: 1
+    service.list$(options, [[]]);
+    expect(mockApplicationsClient.listApplications).toHaveBeenCalledWith(new ListApplicationsRequest({
+      page: options.pageIndex,
+      pageSize: options.pageSize,
+      sort: {
+        direction: 1,
+        fields: [
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME
+            }
+          },
+          {
+            applicationField: {
+              field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION
+            }
           }
-        },
-        {
-          applicationField: {
-            field: 2
-          }
-        }
-      ];
-      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
-    });
-
-    it('should create the correct sorting field for "version"', () => {
-      options.sort.active = 'version';
-      requestObject.sort.fields = [{
-        applicationField: {
-          field: 2
-        }
-      }];
-      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
-    });
-  
-    it('should create the correct sorting field for "namespace"', () => {
-      options.sort.active = 'namespace';
-      requestObject.sort.fields = [{
-        applicationField: {
-          field: 3
-        }
-      }];
-      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
-    });
-  
-    it('should create the correct sorting field for "service"', () => {
-      options.sort.active = 'service';
-      requestObject.sort.fields = [{
-        applicationField: {
-          field: 4
-        }
-      }];
-      expect(service.list$(options, [])).toEqual(new ListApplicationsRequest(requestObject));
-    });
-
-    it('should throw error in case of an unexpected sort field', () => {
-      options.sort.active = 'unexpected' as unknown as keyof ApplicationRaw;
-      expect(() => {service.list$(options, []);}).toThrow('Sort field "unexpected" not supported');
-    });
+        ]
+      },
+      filters: {}
+    }));
   });
 });

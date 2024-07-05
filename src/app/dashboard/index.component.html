@@ -1,5 +1,5 @@
 <app-page-header [sharableURL]="sharableURL">
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getPageIcon('dashboard')"></mat-icon>
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('dashboard')"></mat-icon>
     <span i18n="Page title"> Dashboard </span>
   </app-page-header>
   
@@ -8,49 +8,58 @@
       <mat-icon [fontIcon]="getIcon('settings')"></mat-icon>
     </button>
     <!-- TODO: add an animtation, https://angular.io/guide/animations -->
-    <div class="fab-actions" *ngIf="showFabActions">
-      <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
-        <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
-      </button>
-      <button *ngIf="!hasOnlyOneLine" mat-mini-fab matTooltip="Reorganize Lines" i18n-matTooltip (click)="onReorganizeLinesDialog()">
-        <mat-icon [fontIcon]="getIcon('list')"></mat-icon>
-      </button>
-      <button mat-mini-fab matTooltip="Split Lines" i18n-matTooltip (click)="onSplitLinesDialog()">
-        <mat-icon [fontIcon]="getIcon('vertical-split')"></mat-icon>
-      </button>
-    </div>
+    @if (showFabActions) {
+      <div class="fab-actions">
+        <button mat-mini-fab matTooltip="Add a Line" i18n-matTooltip (click)="onAddLineDialog()">
+          <mat-icon [fontIcon]="getIcon('add')"></mat-icon>
+        </button>
+        @if (!hasOnlyOneLine) {
+          <button mat-mini-fab matTooltip="Reorganize Lines" i18n-matTooltip (click)="onReorganizeLinesDialog()">
+            <mat-icon [fontIcon]="getIcon('list')"></mat-icon>
+          </button>
+        }
+        <button mat-mini-fab matTooltip="Split Lines" i18n-matTooltip (click)="onSplitLinesDialog()">
+          <mat-icon [fontIcon]="getIcon('vertical-split')"></mat-icon>
+        </button>
+      </div>
+    }
   </div>
   
-  <div *ngIf="lines.length === 0" class="no-line">
+  @if (lines.length === 0) {
+    <div class="no-line">
       <em i18n>
         Your dashboard is empty, add a line to start monitoring your tasks.
       </em>
-  
       <button mat-raised-button color="primary" (click)="onAddLineDialog()">Add a line</button>
-  </div>
+    </div>
+  }
   
   <main class="lines" [style]="'grid-template-columns: repeat(' + columns + ', 1fr);'">
-    <app-page-section *ngFor="let line of lines; let index = index; trackBy:trackByLine">
-      <app-page-section-header [icon]="getLineIcon(line.type)">
-        <span [id]="line.type + '-' + index" i18n="Section title">{{ line.name }}</span>
-      </app-page-section-header>
-      <ng-container *ngIf="line.type === 'CountStatus'">
-        <app-dashboard-task-status-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-task-status-line>
-      </ng-container>
-      <ng-container *ngIf="line.type === 'Applications'">
-        <app-dashboard-applications-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-applications-line>
-      </ng-container>
-      <ng-container *ngIf="line.type === 'Results'">
-        <app-dashboard-results-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-results-line>
-      </ng-container>
-      <ng-container *ngIf="line.type === 'Partitions'">
-        <app-dashboard-partitions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
-      </ng-container>
-      <ng-container *ngIf="line.type === 'Sessions'">
-        <app-dashboard-sessions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
-      </ng-container>
-      <ng-container *ngIf="line.type === 'Tasks'">
-        <app-dashboard-tasks-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
-      </ng-container>
-    </app-page-section>
+    @for (line of lines; track line.name+line.type) {
+      <app-page-section>
+        <app-page-section-header [icon]="getLineIcon(line.type)">
+          <span [id]="line.type + '-' + $index" i18n="Section title">{{ line.name }}</span>
+        </app-page-section-header>
+        @switch (line.type) {
+          @case ('CountStatus') {
+            <app-dashboard-task-status-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-task-status-line>
+          }
+          @case ('Applications') {
+            <app-dashboard-applications-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-applications-line>
+          }
+          @case ('Results') {
+            <app-dashboard-results-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"></app-dashboard-results-line>
+          }
+          @case ('Partitions') {
+            <app-dashboard-partitions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
+          }
+          @case ('Sessions') {
+            <app-dashboard-sessions-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
+          }
+          @case ('Tasks') {
+            <app-dashboard-tasks-line [line]="line" (lineChange)="onSaveChange()" (lineDelete)="onDeleteLine($event)"/>
+          }
+        }
+      </app-page-section>
+    }
   </main>

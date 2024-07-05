@@ -1,4 +1,4 @@
-import { KeyValuePipe, NgForOf, NgIf } from '@angular/common';
+import { KeyValuePipe } from '@angular/common';
 import { Component, Inject, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -28,8 +28,6 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
   `],
   standalone: true,
   imports: [
-    NgForOf,
-    NgIf,
     KeyValuePipe,
     FiltersDialogOrComponent,
     FiltersDialogInputComponent,
@@ -51,7 +49,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
   #dialogRef = inject(MatDialogRef<FiltersDialogComponent<T, U>>);
 
   filtersOr: FiltersOr<T, U> = [];
-  customColumns: CustomColumn[] | undefined;
+  customColumns: CustomColumn[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FiltersDialogData<T, U>){}
 
@@ -61,7 +59,7 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
     } else {
       this.filtersOr = structuredClone(this.data.filtersOr);
     }
-    this.customColumns = this.data.customColumns;
+    this.customColumns = this.data.customColumns ?? [];
   }
 
   onAdd() {
@@ -91,9 +89,5 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
 
   getIcon(name: string): string {
     return this.#iconsService.getIcon(name);
-  }
-
-  trackByFilter(index: number, filters: Filter<T, U>[]): string {
-    return index.toString() + filters.length.toString();
   }
 }

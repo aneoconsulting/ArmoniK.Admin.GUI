@@ -1,14 +1,16 @@
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
+import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { ResultsTableComponent } from './table.component';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRawColumnKey, ResultRawFilters } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: ResultsTableComponent;
@@ -64,9 +66,16 @@ describe('TasksTableComponent', () => {
     copy: jest.fn()
   };
 
+  const results = { results: [{ resultId: 'result1' }, { resultId: 'result2' }, { resultId: 'result3' }], total: 3 };
   const mockResultsGrpcService = {
-    list$: jest.fn(() => of({ results: [{ resultId: 'result1' }, { resultId: 'result2' }, { resultId: 'result3' }], total: 3 })),
+    list$: jest.fn(() => of(results)),
     cancel$: jest.fn(() => of({})),
+  };
+
+  const cachedResults = { results: [{ resultId: 'result1' }, { resultId: 'result2' }], total: 2 };
+  const mockCacheService = {
+    get: jest.fn(() => cachedResults),
+    save: jest.fn()
   };
 
   beforeEach(() => {
@@ -77,6 +86,7 @@ describe('TasksTableComponent', () => {
         { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
         ResultsStatusesService,
         FiltersService,
+        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
       ]
@@ -93,7 +103,8 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
+    component.ngOnInit();
     component.ngAfterViewInit();
   });
 
@@ -101,28 +112,61 @@ describe('TasksTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('initialisation', () => {
+    it('should load cached data', () => {
+      expect(mockCacheService.get).toHaveBeenCalled();
+    });
+  });
+
+  describe('loadFromCache', () => {
+    beforeEach(() => {
+      component.loadFromCache();
+    });
+
+    it('should update total data with cached one', () => {
+      expect(component.total).toEqual(cachedResults.total);
+    });
+
+    it('should update data with cached one', () => {
+      expect(component.data()).toEqual([
+        {
+          raw: {
+            resultId: 'result1'
+          }
+        },
+        {
+          raw: {
+            resultId: 'result2'
+          }
+        },
+      ]);
+    });
+  });
+
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           resultId: 'result1'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
           resultId: 'result2'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
           resultId: 'result3'
-        },
-        value$: expect.any(Subject)
+        }
       }
     ]);
+  });
+
+  it('should cache received data', () => {
+    component.refresh$.next();
+    expect(mockCacheService.get).toHaveBeenCalled();
   });
 
   it('should return columns keys', () => {
@@ -147,7 +191,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -168,6 +212,20 @@ describe('TasksTableComponent', () => {
     const result = component.createSessionIdQueryParams(sessionId);
     expect(result).toEqual({
       '1-root-1-0': sessionId
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two resultRaws are the same', () => {
+      const result1 = { resultId: 'result' } as ResultRaw;
+      const result2 = {...result1} as ResultRaw;
+      expect(component.isDataRawEqual(result1, result2)).toBeTruthy();
+    });
+
+    it('should return false if two resultRaws are differents', () => {
+      const result1 = { resultId: 'result' } as ResultRaw;
+      const result2 = { resultId: 'result1' } as ResultRaw;
+      expect(component.isDataRawEqual(result1, result2)).toBeFalsy();
     });
   });
 });

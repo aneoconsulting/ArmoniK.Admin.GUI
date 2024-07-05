@@ -1,7 +1,6 @@
 
 import { FilterStatusOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { NgFor, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
@@ -12,22 +11,24 @@ import { SpinnerComponent } from './spinner.component';
 @Component({
   selector: 'app-view-tasks-by-status',
   template: `
-<app-spinner *ngIf="loading; else data"></app-spinner>
-
-<ng-template #data>
-  <ng-container *ngFor="let group of statusesGroups; let index = index;">
-    <a mat-button
-      [matTooltip]="group.name"
-      [routerLink]="['/tasks']"
-      [queryParams]="group.queryParams"
-      [style]="'color: ' + group.color"
-    >
-      {{ group.statusCount ?? 0 }}
-    </a>
-    <span *ngIf="index !== statusesGroups.length - 1">|</span>
-  </ng-container>
-</ng-template>
-    `,
+  @if (loading) {
+    <app-spinner />
+  } @else {
+    @for (group of statusesGroups; track group.name) {
+      <a mat-button
+        [matTooltip]="group.name"
+        [routerLink]="['/tasks']"
+        [queryParams]="group.queryParams"
+        [style]="'color: ' + group.color"
+      >
+        {{ group.statusCount ?? 0 }}
+      </a>
+      @if (!$last) {
+        <span>|</span>
+      }
+    }
+  }
+  `,
   styles: [`
 .mdc-button {
   min-width: 0;
@@ -35,13 +36,12 @@ import { SpinnerComponent } from './spinner.component';
     `],
   standalone: true,
   imports: [
-    NgIf,
-    NgFor,
     RouterModule,
     SpinnerComponent,
     MatTooltipModule,
     MatButtonModule
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewTasksByStatusComponent {
   @Input({ required: true }) loading = true;

@@ -19,6 +19,7 @@
     },
     "rootDir": "./",
     "outDir": "./dist/out-tsc",
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -27,7 +28,6 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
@@ -35,11 +35,10 @@
     "target": "ES2022",
     "module": "ES2022",
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false,
     "lib": [
-      "ES2022",
-      "dom"
+      "ES2023",
+      "dom",
     ]
   },
   "angularCompilerOptions": {
