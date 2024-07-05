@@ -3,10 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - 'main'
+    tags:
+      - '*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
