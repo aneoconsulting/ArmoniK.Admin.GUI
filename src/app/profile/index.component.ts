@@ -1,11 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
 import { IconsService } from '@services/icons.service';
 import { QueryParamsService } from '@services/query-params.service';
-import { ShareUrlService } from '@services/share-url.service';
 import { UserService } from '@services/user.service';
 import { Group, PermissionGroup, isGroup } from './types';
 
@@ -42,7 +41,6 @@ import { Group, PermissionGroup, isGroup } from './types';
   `],
   standalone: true,
   providers: [
-    ShareUrlService,
     QueryParamsService,
   ],
   imports: [
@@ -52,16 +50,11 @@ import { Group, PermissionGroup, isGroup } from './types';
     MatIconModule,
   ]
 })
-export class IndexComponent implements OnInit {
-  sharableURL = '';
+export class IndexComponent {
+  sharableURL = null;
 
   #userService = inject(UserService);
-  #shareUrlService = inject(ShareUrlService);
   #iconsService = inject(IconsService);
-
-  ngOnInit(): void {
-    this.sharableURL = this.#shareUrlService.generateSharableURL(null, null);
-  }
 
   get user() {
     return this.#userService.user;
