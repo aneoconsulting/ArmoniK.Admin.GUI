@@ -1,4 +1,5 @@
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
@@ -9,7 +10,7 @@ import { ResultsTableComponent } from './table.component';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRawColumnKey, ResultRawFilters } from '../types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: ResultsTableComponent;
@@ -102,7 +103,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -127,18 +128,16 @@ describe('TasksTableComponent', () => {
     });
 
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             resultId: 'result1'
-          },
-          value$: expect.any(Subject)
+          }
         },
         {
           raw: {
             resultId: 'result2'
-          },
-          value$: expect.any(Subject)
+          }
         },
       ]);
     });
@@ -146,24 +145,21 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           resultId: 'result1'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
           resultId: 'result2'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
           resultId: 'result3'
-        },
-        value$: expect.any(Subject)
+        }
       }
     ]);
   });
@@ -195,7 +191,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -216,6 +212,20 @@ describe('TasksTableComponent', () => {
     const result = component.createSessionIdQueryParams(sessionId);
     expect(result).toEqual({
       '1-root-1-0': sessionId
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two resultRaws are the same', () => {
+      const result1 = { resultId: 'result' } as ResultRaw;
+      const result2 = {...result1} as ResultRaw;
+      expect(component.isDataRawEqual(result1, result2)).toBeTruthy();
+    });
+
+    it('should return false if two resultRaws are differents', () => {
+      const result1 = { resultId: 'result' } as ResultRaw;
+      const result2 = { resultId: 'result1' } as ResultRaw;
+      expect(component.isDataRawEqual(result1, result2)).toBeFalsy();
     });
   });
 });

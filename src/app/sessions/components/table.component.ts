@@ -171,7 +171,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
         }
         this.sessionEndedDates = [];
         this.sessionCreationDates = [];
-        this.loading$.next(false);
+        this.loading.set(false);
       }
     });
     
@@ -224,7 +224,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       });
     } else {
       this.newData(data);
-      this.loading$.next(false);
+      this.loading.set(false);
     }
   }
 
@@ -237,7 +237,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       resultsQueryParams: this.createResultsQueryParams(entry.sessionId),
       queryTasksParams: this.createTasksByStatusQueryParams(entry.sessionId),
       filters: this.countTasksByStatusFilters(entry.sessionId),
-      value$: new Subject<SessionRaw>()
     };
   }
 
@@ -274,7 +273,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
           }
         });
       });
-      console.log(params);
       return params;
     }
   }

@@ -43,7 +43,7 @@ describe('ChangeLanguageButtonComponent', () => {
         {provide: StorageService, useValue: mockStorageService}
       ]
     }).inject(ChangeLanguageButtonComponent);
-
+    component.ngOnInit();
   });
 
   it('should run', () => {
@@ -51,7 +51,6 @@ describe('ChangeLanguageButtonComponent', () => {
   });
 
   describe('on init', () => {
-  
     it('should get Language from default config', () => {
       mockStorageService.getItem.mockImplementationOnce(() => null);
       overrideLocation('admin/undefined');
@@ -77,5 +76,22 @@ describe('ChangeLanguageButtonComponent', () => {
 
   it('should get route', () => {
     expect(component.getRoute()).toEqual('/my-route');
+  });
+
+  describe('getLanguageFromUrl', () => {
+    it('should not get language from url if it is not found', () => {
+      overrideLocation('admin');
+      expect(component.getLanguageFromUrl()).toBeUndefined();
+    });
+
+    it('should get language from url', () => {
+      overrideLocation('en/admin');
+      expect(component.getLanguageFromUrl()).toEqual('en');
+    });
+
+    it('should not get a language from url that is not saved', () => {
+      overrideLocation('fr/admin');
+      expect(component.getLanguageFromUrl()).toBeUndefined();
+    });
   });
 });

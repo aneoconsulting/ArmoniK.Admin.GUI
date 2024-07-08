@@ -1,6 +1,5 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
-import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
@@ -58,7 +57,6 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
       raw: entry,
       queryTasksParams: this.createTasksByStatusQueryParams(entry.id),
       filters: this.countTasksByStatusFilters(entry.id),
-      value$: new Subject<PartitionRaw>()
     };
   }
 

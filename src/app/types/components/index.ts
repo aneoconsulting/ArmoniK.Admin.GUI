@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
@@ -34,8 +34,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   lockColumns: boolean = false;
   columnsLabels: Record<K, string> = {} as Record<K, string>;
 
-  isLoading = true;
-  isLoading$: Subject<boolean> = new BehaviorSubject<boolean>(true);
+  loading = signal(false);
 
   options: O;
 
@@ -83,9 +82,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
 
   mergeSubscriptions() {
     const mergeSubscription = merge(this.interval$).subscribe(() => this.refresh$.next());
-    const loadingSubscription = this.isLoading$.subscribe(isLoading => this.isLoading = isLoading);
     this.subscriptions.add(mergeSubscription);
-    this.subscriptions.add(loadingSubscription);
     this.handleAutoRefreshStart();
   }
 

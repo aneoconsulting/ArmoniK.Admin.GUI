@@ -37,12 +37,13 @@ export class ChangeLanguageButtonComponent implements OnInit {
   
   getLanguageFromUrl(): string | undefined {
     const location = window.location.pathname.split('/');
-    let urlLanguage: undefined | string = undefined; 
-    this.#defaultConfigService.availableLanguages.every(language => {
+    let urlLanguage: undefined | string = undefined;
+    let i = 0;
+    while (i < this.#defaultConfigService.availableLanguages.length && !urlLanguage) {
+      const language = this.#defaultConfigService.availableLanguages[i];
       urlLanguage = location.find(path => path === language);
-      if (urlLanguage) return false; // break loop
-      return true;
-    });
+      i++;
+    }
     return urlLanguage;
   }
 

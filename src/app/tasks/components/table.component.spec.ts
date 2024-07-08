@@ -1,5 +1,6 @@
 import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
@@ -105,7 +106,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -130,15 +131,14 @@ describe('TasksTableComponent', () => {
     });
 
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             id: 'task1'
           },
           resultsQueryParams: {
             '1-root-3-0': 'task1'
-          },
-          value$: expect.any(Subject)
+          }
         },
         {
           raw: {
@@ -146,8 +146,7 @@ describe('TasksTableComponent', () => {
           },
           resultsQueryParams: {
             '1-root-3-0': 'task2'
-          },
-          value$: expect.any(Subject)
+          }
         },
       ]);
     });
@@ -155,15 +154,14 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual([
+    expect(component.data()).toEqual([
       {
         raw: {
           id: 'task1'
         },
         resultsQueryParams: {
           '1-root-3-0': 'task1'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
@@ -171,8 +169,7 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task2'
-        },
-        value$: expect.any(Subject)
+        }
       },
       {
         raw: {
@@ -180,8 +177,7 @@ describe('TasksTableComponent', () => {
         },
         resultsQueryParams: {
           '1-root-3-0': 'task3'
-        },
-        value$: expect.any(Subject)
+        }
       }
     ]);
   });
@@ -213,7 +209,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -434,6 +430,20 @@ describe('TasksTableComponent', () => {
       component.urlTemplate = 'https://myurl.com?taskId=%taskId';
       component.actions[4].action$.next(task);
       expect(spy).toHaveBeenCalledWith(`https://myurl.com?taskId=${task.raw.id}`, '_blank');
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two taskSummaries are the same', () => {
+      const task1 = { id: 'task' } as TaskSummary;
+      const task2 = {...task1} as TaskSummary;
+      expect(component.isDataRawEqual(task1, task2)).toBeTruthy();
+    });
+
+    it('should return false if two taskSummaries are differents', () => {
+      const task1 = { id: 'task' } as TaskSummary;
+      const task2 = { id: 'task1' } as TaskSummary;
+      expect(component.isDataRawEqual(task1, task2)).toBeFalsy();
     });
   });
 });

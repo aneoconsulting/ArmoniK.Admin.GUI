@@ -221,7 +221,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       sortable: true,
     },
     {
-      name: $localize`Parition Id`,
+      name: $localize`Partition Id`,
       key: 'options.partitionId',
       sortable: true,
     }

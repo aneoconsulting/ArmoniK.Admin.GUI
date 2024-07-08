@@ -1,5 +1,6 @@
 import { ApplicationRawEnumField, FilterStringOperator, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -156,7 +157,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -181,7 +182,7 @@ describe('TasksTableComponent', () => {
     });
     
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             name: 'application1',
@@ -194,8 +195,7 @@ describe('TasksTableComponent', () => {
           filters: [[
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application1' },
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version1' }
-          ]],
-          value$: expect.any(Subject)
+          ]]
         },
         {
           raw: {
@@ -209,8 +209,7 @@ describe('TasksTableComponent', () => {
           filters: [[
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application2' },
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version2' }
-          ]],
-          value$: expect.any(Subject)
+          ]]
         }
       ]);
     });
@@ -218,7 +217,7 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual<ApplicationData[]>([
+    expect(component.data()).toEqual<ApplicationData[]>([
       {
         raw: {
           name: 'application1',
@@ -231,8 +230,7 @@ describe('TasksTableComponent', () => {
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application1' },
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version1' }
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -246,8 +244,7 @@ describe('TasksTableComponent', () => {
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application2' },
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version2' }
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -261,8 +258,7 @@ describe('TasksTableComponent', () => {
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application3' },
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version3' }
-        ]],
-        value$: expect.any(Subject)
+        ]]
       }
     ]);
   });
@@ -294,7 +290,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -443,6 +439,20 @@ describe('TasksTableComponent', () => {
       };
       component.actions[0].action$.next({raw: data} as ApplicationData);
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions'], { queryParams: component.createViewSessionsQueryParams(data.name, data.version) });
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two ApplicationRaws are the same', () => {
+      const application1 = { name: 'application', version: '0.1.2' } as ApplicationRaw;
+      const application2 = {...application1} as ApplicationRaw;
+      expect(component.isDataRawEqual(application1, application2)).toBeTruthy();
+    });
+
+    it('should return false if two ApplicationRaws are differents', () => {
+      const application1 = { name: 'application', version: '0.1.2'} as ApplicationRaw;
+      const application2 = { name: 'application', version: '0.1.3'} as ApplicationRaw;
+      expect(component.isDataRawEqual(application1, application2)).toBeFalsy();
     });
   });
 });

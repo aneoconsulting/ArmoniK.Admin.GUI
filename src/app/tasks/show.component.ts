@@ -125,7 +125,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
         this.setLink('partition', 'partitions', data.options.partitionId);
       }
       this.filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey(), data.id);
-      this.canCancel$.next(this.tasksStatusesService.taskNotEnded(data.status));
+      this.canCancel$.next(!this.tasksStatusesService.taskNotEnded(data.status));
     }
   }
   
