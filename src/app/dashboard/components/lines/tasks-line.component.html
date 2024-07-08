@@ -1,7 +1,7 @@
 <mat-toolbar>
   <mat-toolbar-row>
     <app-table-dashboard-actions-toolbar
-      [loading]="loading"
+      [loading]="loading()"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels"
@@ -54,7 +54,7 @@
   [displayedColumns]="displayedColumns"
   [lockColumns]="lockColumns"
   [refresh$]="refresh$"
-  [loading$]="loading$"
+  [loading]="loading"
   [serviceIcon]="serviceIcon"
   [serviceName]="serviceName"
   [urlTemplate]="urlTemplate"

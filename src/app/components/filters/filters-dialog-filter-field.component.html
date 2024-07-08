@@ -3,30 +3,8 @@
 } @else {
   <span i18n="Filter condition">And</span>
 }
-<mat-form-field appearance="outline" subscriptSizing="dynamic">
-  <mat-label i18n="Label input">Property</mat-label>
-  <input matInput [matAutocomplete]="autoProperty" [formControl]="propertyFormControl" (input)="onPropertyChange()">
-  <mat-autocomplete #autoProperty 
-    (optionSelected)="onPropertyChange()"
-    >
-    @for(property of filteredProperties | async; track property) {
-      <mat-option [value]="property">
-        {{ property }}
-      </mat-option>
-    }
-  </mat-autocomplete>
-</mat-form-field>
+<app-autocomplete [options]="labelledProperties" [value]="columnValue" (valueChange)="onPropertyChange($event)" />
 
-<mat-form-field appearance="outline" subscriptSizing="dynamic">
-  <mat-label i18n="Label input">Operator</mat-label>
-  <input matInput [matAutocomplete]="autoOperators" [formControl]="operatorFormControl" (input)="onOperatorChange()">
-  <mat-autocomplete #autoOperators (optionSelected)="onOperatorChange()">
-    @for (operator of filteredOperators | async; track operator) {
-      <mat-option [value]="operator">
-        {{ operator }}
-      </mat-option>
-    }
-  </mat-autocomplete>
-</mat-form-field>
+<app-autocomplete [options]="labelledOperators" [value]="operatorLabel" (valueChange)="onOperatorChange($event)" />
 
-<app-filters-dialog-input [input]="findInput(filter)" [statusFormControl]="statusFormControl" [filteredStatuses]="filteredStatuses" (valueChange)="onInputChange($event)"/>
+<app-filters-dialog-input [input]="input" [statuses]="labelledStatuses" (valueChange)="onInputChange($event)"/>

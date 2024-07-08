@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { lastValueFrom } from 'rxjs';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterInputOutput, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterType } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field.component';
 
@@ -89,7 +88,6 @@ describe('FiltersDialogFilterFieldComponent', () => {
   ];
 
   const customList: CustomColumn[] = ['options.options.test', 'options.options.fastCompute', 'options.options.column'];
-  const customLabels: string[] = ['test', 'fastCompute', 'column'];
 
   const defaultFilter: Filter<number, number> = {
     field: 1,
@@ -114,9 +112,9 @@ describe('FiltersDialogFilterFieldComponent', () => {
       operator: 0,
       value: 'someValue'
     };
+    component.filter = defaultFilter;
     component.first = true;
     component.customColumns = customList;
-    component.ngOnInit();
   });
 
   it('should run', () => {
@@ -130,14 +128,22 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should return the label of the custom column', () => {
       const customColumn = 'fastCompute';
-      component.filter.for = 'custom';
-      component.filter.field = customColumn;
+      component.filter = {
+        for: 'custom',
+        field: customColumn,
+        operator: null,
+        value: null
+      };
       expect(component.columnValue).toEqual(customColumn);
     });
 
     it('should return an empty string if there is no for nor field', () => {
-      component.filter.field = null;
-      component.filter.for = null;
+      component.filter = {
+        for: null,
+        field: null,
+        operator: null,
+        value: null
+      };
       expect(component.columnValue).toEqual('');
     });
   });
@@ -146,89 +152,9 @@ describe('FiltersDialogFilterFieldComponent', () => {
     expect(component.filtersDefinitions).toEqual(filterDefinitions);
   });
 
-  describe('filteredProperties', () => {
-    it('should map', () => {
-      component.propertyFormControl.setValue('at');
-      lastValueFrom(component.filteredProperties).then((value) => {
-        expect(value).toEqual(['status', 'Start to End duration', 'Created at']);
-      });
-    });
-
-    it('should filter properly', () => {
-      expect(component['_filterProperties']('at')).toEqual(['status', 'Start to End duration', 'Created at']);
-    });
-
-    it('should return all the list in case of null value', () => {
-      expect(component['_filterProperties'](null).sort((a, b) => a.toString().localeCompare(b.toString())))
-        .toEqual([...Object.values(propertiesLabel), ...customLabels].sort((a, b) => a.toString().localeCompare(b.toString())));
-    });
-  });
-
-  describe('filteredOperators', () => {
-    it('should map', () => {
-      component.operatorFormControl.setValue('no');
-      lastValueFrom(component.filteredOperators).then((value) => {
-        expect(value).toEqual(['Not Equal']);
-      });
-    });
-
-    it('should filter properly', () => {
-      expect(component['_filterOperators']('no')).toEqual(['Not Equal']);
-    });
-
-    it('should return all the list in case of null value', () => {
-      expect(component['_filterOperators'](null)).toEqual(['Equal', 'Not Equal']);
-    });
-  });
-
-  describe('filteredStatuses', () => {
-    it('should map', () => {
-      component.statusFormControl.setValue('ed');
-      lastValueFrom(component.filteredStatuses).then((value) => {
-        expect(value).toEqual(['Submitted', 'Ended']);
-      });
-    });
-
-    it('should filter properly', () => {
-      expect(component['_filterStatuses']('ed')).toEqual(['Submitted', 'Ended']);
-    });
-
-    it('should return all the list in case of null value', () => {
-      expect(component['_filterStatuses'](null)).toEqual(allStatuses.map(status => status.value));
-    });
-  });
-
-  describe('retrieveStatusKey', () => {
-    it('should retrieve the key of the status', () => {
-      expect(component.retrieveStatusKey(allStatuses[0].value)).toEqual(0);
-    });
-
-    it('should return null if no label is provided', () => {
-      expect(component.retrieveStatusKey(null)).toEqual(null);
-    });
-
-    it('should return null if the label does not exists', () => {
-      expect(component.retrieveStatusKey('Unexisting')).toEqual(null);
-    });
-  });
-
-  describe('retrieveStatusLabel', () => {
-    it('should retrieve status label', () => {
-      expect(component.retrieveStatusLabel(1)).toEqual('Submitted');
-    });
-    it('should retrieve empty status label when no status is found', () => {
-      expect(component.retrieveStatusLabel(null)).toEqual('');
-    });
-    it('should return empty string if allStatus is undefined', () => {
-      component.allStatuses = undefined as unknown as FilterValueOptions;
-      expect(component.retrieveStatusLabel(1)).toEqual('');
-    });
-  });
-
   describe('onPropertyChange', () => {
     it('should update filter', () => {
-      component.propertyFormControl.setValue('Created at');
-      component.onPropertyChange();
+      component.onPropertyChange('Created at');
       expect(component.filter).toEqual({
         for: 'root',
         field: 7,
@@ -238,15 +164,12 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
 
     it('should not update anything if the field does not exists', () => {
-      component.filter = defaultFilter;
-      component.propertyFormControl.setValue('Unexisting');
-      component.onPropertyChange();
+      component.onPropertyChange('Unexisting');
       expect(component.filter).toEqual(defaultFilter);
     });
 
     it('should handle custom fields', () => {
-      component.propertyFormControl.setValue('test');
-      component.onPropertyChange();
+      component.onPropertyChange('test');
       expect(component.filter).toEqual({
         for: 'custom',
         field: 'test',
@@ -256,318 +179,80 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
   });
 
-  it('should retrieve the label', () => {
-    component.retrieveLabel(filterDefinitions[0]);
-    expect(mockDataFiltersService.retrieveLabel).toHaveBeenCalledWith(
-      filterDefinitions[0].for,
-      filterDefinitions[0].field
-    );
+  describe('retrieveStatusKey', () => {
+    beforeEach(() => {
+      component.allStatuses = allStatuses;
+    });
+
+    it('should retrieve the key of the status', () => {
+      expect(component.retrieveStatusKey(allStatuses[1].value)).toEqual(1);
+    });
+
+    it('should return null if the label does not exists', () => {
+      expect(component.retrieveStatusKey('Unexisting')).toEqual(null);
+    });
   });
 
   describe('on operator change', () => {
     it('should change the operator of the filter', () => {
-      component.operatorFormControl.setValue('Equal');
-      component.onOperatorChange();
+      component.onOperatorChange('Equal');
       expect(component.filter.operator).toEqual(0);
     });
 
     it('should set the operator to null if the key does not exists', () => {
-      component.operatorFormControl.setValue('Unexisting');
-      component.onOperatorChange();
+      component.onOperatorChange('Unexisting');
       expect(component.filter.operator).toBeNull();
     });
   });
 
   describe('onInputChange', () => {
     it('should change the filter value on string input', () => {
-      const inputEvent = {
-        type: 'string',
-        value: 'someStringValue'
-      } as unknown as FilterInputOutput;
-      component.onInputChange(inputEvent);
-      expect(component.filter.value).toEqual('someStringValue');
+      component.onPropertyChange(propertiesLabel[2]);
+      const value = 'someStringValue';
+      component.onInputChange(value);
+      expect(component.filter.value).toEqual(value);
     });
 
     it('should change the filter value on number input', () => {
-      const inputEvent = {
-        type: 'number',
-        value: '4'
-      } as unknown as FilterInputOutput;
-      component.onInputChange(inputEvent);
-      expect(component.filter.value).toEqual(4);
+      component.onPropertyChange(propertiesLabel[4]);
+      const value = 4;
+      component.onInputChange(value.toString());
+      expect(component.filter.value).toEqual(value);
     });
 
-    it('should change the filter value to null if the number input is incorrect', () => {
-      const inputEvent = {
-        type: 'number',
-        value: 'someNotNumberValue'
-      } as unknown as FilterInputOutput;
-      component.onInputChange(inputEvent);
+    it('should set the filter value to null in case of NaN number value', () => {
+      component.onInputChange(propertiesLabel[4]);
+      const value = 'NaN';
+      component.onInputChange(value);
       expect(component.filter.value).toBeNull();
     });
-
+  
     it('should change the filter value to date if one is passed', () => {
-      const inputEvent = {
-        type: 'date',
-        value: 95603
-      } as unknown as FilterInputOutput;
-      component.onInputChange(inputEvent);
-      expect(component.filter.value).toEqual(95603);
+      component.onPropertyChange(propertiesLabel[7]);
+      const value = '95603';
+      component.onInputChange(value);
+      expect(component.filter.value).toEqual(value);
     });
 
     it('should change the filter value to a duration if one is passed', () => {
-      const inputEvent = {
-        type: 'duration',
-        value: 94350
-      } as unknown as FilterInputOutput;
-      component.onInputChange(inputEvent);
-      expect(component.filter.value).toEqual(94350);
-    });
-
-    it('should set the duration value to null if it is not a number', () => {
-      const inputEvent = {
-        type: 'duration',
-        value: 'someNotNumberValue'
-      } as unknown as FilterInputOutput;
-      component.onInputChange(inputEvent);
-      expect(component.filter.value).toBeNull();
+      component.onPropertyChange(propertiesLabel[6]);
+      const value = 94350;
+      component.onInputChange(value.toString());
+      expect(component.filter.value).toEqual(value);
     });
 
     it('should change the filter value to status if one status is passed', () => {
-      const inputEvent: FilterInputOutput = {
-        type: 'status',
-        value: 'Submitted'
-      };
-      component.onInputChange(inputEvent);
+      component.onPropertyChange(propertiesLabel[1]);
+      const status = 'Submitted';
+      component.onInputChange(status);
       expect(component.filter.value).toEqual(1);
     });
 
     it('should change the filter value to boolean if one boolean is passed', () => {
-      const inputEvent: FilterInputOutput = {
-        type: 'boolean',
-        value: true
-      };
-      component.onInputChange(inputEvent);
-      expect(component.filter.value).toEqual(true);
-    });
-  });
-
-  describe('findInput', () => {
-    describe('input filter of type number', () => {
-      it('should return a number filterinput', () => {
-        const numberFilter: Filter<number, number> = {
-          field: 4,
-          for: 'root',
-          operator: 1,
-          value: 1
-        };
-
-        expect(component.findInput(numberFilter)).toEqual({
-          type: 'number',
-          value: 1
-        });
-      });
-
-      it('should return a filterInput with a null value in case of a string value', () => {
-        const numberFilter: Filter<number, number> = {
-          field: 4,
-          for: 'root',
-          operator: 1,
-          value: 'someNaN'
-        };
-
-        expect(component.findInput(numberFilter)).toEqual({
-          type: 'number',
-          value: null
-        });
-      });
-    });
-
-    describe('input filter of type string', () => {
-      it('should return a string filterinput', () => {
-        const stringFilter: Filter<number, number> = {
-          field: 2,
-          for: 'options',
-          operator: 1,
-          value: 'myStringValue'
-        };
-
-        expect(component.findInput(stringFilter)).toEqual({
-          type: 'string',
-          value: 'myStringValue'
-        });
-      });
-
-      it('should return a filterInput with a null value in case of any falsy filter value', () => {
-        const stringFilter: Filter<number, number> = {
-          field: 2,
-          for: 'options',
-          operator: 1,
-          value: null
-        };
-
-        expect(component.findInput(stringFilter)).toEqual({
-          type: 'string',
-          value: null
-        });
-      });
-    });
-
-    describe('input filter of type array', () => {
-      it('should return a string filterinput', () => {
-        const arrayFilter: Filter<number, number> = {
-          field: 3,
-          for: 'root',
-          operator: 1,
-          value: 'myStringValue'
-        };
-
-        expect(component.findInput(arrayFilter)).toEqual({
-          type: 'array',
-          value: 'myStringValue'
-        });
-      });
-
-      it('should return a filterInput with a null value in case of any falsy filter value', () => {
-        const arrayFilter: Filter<number, number> = {
-          field: 3,
-          for: 'root',
-          operator: 1,
-          value: null
-        };
-
-        expect(component.findInput(arrayFilter)).toEqual({
-          type: 'array',
-          value: null
-        });
-      });
-
-      it('should return a boolean filteValue', () => {
-        const booleanFilter: Filter<number, number> = {
-          field: 8,
-          for: 'root',
-          operator: 1,
-          value: true
-        };
-
-        expect(component.findInput(booleanFilter)).toEqual({
-          type: 'boolean',
-          value: true
-        });
-      });
-    });
-
-    describe('input filter of type status', () => {
-      it('should return a status filterinput', () => {
-        const statusFilter: Filter<number, number> = {
-          field: 1,
-          for: 'root',
-          operator: 1,
-          value: 'myStatus'
-        };
-
-        expect(component.findInput(statusFilter)).toEqual({
-          type: 'status',
-          value: 'myStatus',
-          statuses: allStatuses
-        });
-      });
-
-      it('should return a filterInput with a null value in case of any falsy filter value', () => {
-        const statusFilter: Filter<number, number> = {
-          field: 1,
-          for: 'root',
-          operator: 1,
-          value: null
-        };
-
-        expect(component.findInput(statusFilter)).toEqual({
-          type: 'status',
-          value: null,
-          statuses: allStatuses
-        });
-      });
-    });
-
-    it('should throw an error in case of an unknown type', () => {
-      const unknownFilter: Filter<number, number> = {
-        field: 5,
-        for: 'root',
-        operator: 1,
-        value: 1
-      };
-      expect(() => { component.findInput(unknownFilter); }).toThrowError(
-        'Unknown type unknownType'
-      );
-    });
-
-    describe('input filter of type date', () => {
-      it('should return a date', () => {
-        const dateFilter: Filter<number, number> = {
-          for: 'root',
-          field: 7,
-          operator: 1,
-          value: 1703085190
-        };
-        expect(component.findInput(dateFilter)).toEqual({
-          type: 'date',
-          value: new Date(1703085190000)
-        });
-      });
-
-      it('should return null if there is no date', () => {
-        const dateFilter: Filter<number, number> = {
-          for: 'root',
-          field: 7,
-          operator: 1,
-          value: null
-        };
-        expect(component.findInput(dateFilter)).toEqual({
-          type: 'date',
-          value: null
-        });
-      });
-    });
-
-    describe('input filter of type duration', () => {
-      it('should return a filterinput with a duration in seconds', () => {
-        const durationFilter: Filter<number, number> = {
-          field: 6,
-          for: 'options',
-          operator: 1,
-          value: 94350
-        };
-        expect(component.findInput(durationFilter)).toEqual({
-          type: 'duration',
-          value: 94350
-        });
-      });
-    });
-
-    it('should return a null filterInput if the duration is not existing', () => {
-      const durationFilter: Filter<number, number> = {
-        field: 6,
-        for: 'options',
-        operator: 1,
-        value: null
-      };
-      expect(component.findInput(durationFilter)).toEqual({
-        type: 'duration',
-        value: null
-      });
-    });
-
-    it('should return a filter of type string for a custom', () => {
-      const customFilter: Filter<number, number> = {
-        field: 'fastCompute',
-        for: 'custom',
-        operator: 0,
-        value: null
-      };
-      expect(component.findInput(customFilter)).toEqual({
-        type: 'string',
-        value: null
-      });
+      component.onPropertyChange(propertiesLabel[8]);
+      const value = 'true';
+      component.onInputChange(value);
+      expect(component.filter.value).toEqual(value);
     });
   });
 
@@ -579,7 +264,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'someValue'
       };
-      expect(component.findType(filter)).toEqual('number');
+      component.filter = filter;
+      expect(component.findType()).toEqual('number');
     });
 
     it('should return type string if the field is null', () => {
@@ -589,7 +275,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'someValue'
       };
-      expect(component.findType(filter)).toEqual('string');
+      component.filter = filter;
+      expect(component.findType()).toEqual('string');
     });
 
     it('should return type string if the definition does not exists', () => {
@@ -599,7 +286,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'someValue'
       };
-      expect(component.findType(filter)).toEqual('string');
+      component.filter = filter;
+      expect(component.findType()).toEqual('string');
     });
   });
 
@@ -611,7 +299,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'myStatus'
       };
-      expect(component.findStatuses(statusFilter)).toEqual(allStatuses);
+      component.filter = statusFilter;
+      expect(component.findStatuses()).toEqual(allStatuses);
     });
 
     it('should return an empty status list if the filter has no field', () => {
@@ -621,7 +310,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'myStatus'
       };
-      expect(component.findStatuses(statusFilter)).toEqual([]);
+      component.filter = statusFilter;
+      expect(component.findStatuses()).toEqual([]);
     });
 
     it('should return an empty status list if the filter definition does not exists', () => {
@@ -631,7 +321,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'myStatus'
       };
-      expect(component.findStatuses(statusFilter)).toEqual([]);
+      component.filter = statusFilter;
+      expect(component.findStatuses()).toEqual([]);
     });
 
     it('should return an empty status list if the filter is not of type status', () => {
@@ -641,7 +332,8 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'someValue'
       };
-      expect(component.findStatuses(notAStatusFilter)).toEqual([]);
+      component.filter = notAStatusFilter;
+      expect(component.findStatuses()).toEqual([]);
     });
   });
 
@@ -653,89 +345,91 @@ describe('FiltersDialogFilterFieldComponent', () => {
         operator: 1,
         value: 'myStatus'
       };
-      expect(component.findOperator(filter)).toEqual(new FiltersService()['filterNumberOperators']);
+      component.filter = filter;
+      expect(component.findOperators()).toEqual(new FiltersService()['filterNumberOperators']);
     });
   });
 
-  describe('hasOneOperator', () => {
-    it('should be false if the filter has more than one operator', () => {
-      component.allOperators = {
-        0: 'equal',
-        1: 'not equal'
-      };
-      expect(component.hasOneOperator).toBeFalsy();
+  describe('setInput', () => {
+    const filter: Filter<number, number> = {
+      for: 'root',
+      field: 0,
+      operator: 1,
+      value: '1'
+    };
+
+    beforeEach(() => {
+      component.filter = filter;
     });
 
-    it('should be true if the filter has only one operator', () => {
-      component.allOperators = {
-        0: 'is'
-      };
-      expect(component.hasOneOperator).toBeTruthy();
-    });
-  });
-
-  describe('disableOperator', () => {
-    it('should set the first filter operator as the operator', () => {
-      component.allOperators = {
-        0: 'equal',
-        1: 'not equal'
-      };
-      component.disableOperator();
-      expect(component.filter.operator).toEqual(0);
+    it('should handle strings', () => {
+      component.type = 'string';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'string',
+        value: filter.value
+      });
     });
 
-    it('should disable operator form control', () => {
-      component.disableOperator();
-      expect(component.operatorFormControl.disabled).toBeTruthy();
-    });
-  });
-
-  describe('enableOperator', () => {
-    it('should enable operator form control', () => {
-      component.enableOperator();
-      expect(component.operatorFormControl.enabled).toBeTruthy();
+    it('should handle numbers', () => {
+      component.type = 'number';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'number',
+        value: Number(filter.value)
+      });
     });
 
-    it('should set filter operator to null if it is not kept', () => {
-      component.enableOperator();
-      expect(component.filter.operator).toBeNull();
+    it('should handle arrays', () => {
+      component.type = 'array';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'array',
+        value: filter.value
+      });
     });
 
-    it('should does not modify the filter operator if it is kept', () => {
-      component.filter.operator = 1;
-      component.enableOperator(true);
-      expect(component.filter.operator).toEqual(1);
-    });
-  });
-
-  describe('handleOperatorState', () => {
-    it('should enable operator if there is more than one operator', () => {
-      const spy = jest.spyOn(component, 'enableOperator');
-      component.allOperators = {
-        0: 'equal',
-        1: 'not equal'
-      };
-      component.handleOperatorState(false);
-      expect(spy).toHaveBeenCalledWith(false);
+    it('should handle statuses', () => {
+      component.allStatuses = allStatuses;
+      component.type = 'status';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'status',
+        value: 'Submitted'
+      });
     });
 
-    it('should disable operator if there is only one operator', () => {
-      const spy = jest.spyOn(component, 'disableOperator');
-      component.allOperators = {
-        0: 'equal',
-      };
-      component.handleOperatorState();
-      expect(spy).toHaveBeenCalled();
+    it('should handle dates', () => {
+      component.type = 'date';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'date',
+        value: new Date(Number(filter.value) * 1000)
+      });
     });
 
-    it('should set the label of the selected operator', () => {
-      component.allOperators = {
-        0: 'equal',
-        1: 'not equal'
-      };
-      component.filter.operator = 0;
-      component.handleOperatorState(true);
-      expect(component.operatorFormControl.value).toEqual('equal');
+    it('should handle durations', () => {
+      component.type = 'duration';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'duration',
+        value: filter.value
+      });
+    });
+
+    it('should handle booleans', () => {
+      component.type = 'boolean';
+      component.setInput();
+      expect(component.input).toEqual({
+        type: 'boolean',
+        value: filter.value
+      });
+    });
+
+    it('should throw an error in case of unknown type', () => {
+      const type = 'unknown' as FilterType;
+      component.type = type;
+      expect(() => component.setInput()).toThrow(`Unknown type ${type}`);
     });
   });
 });

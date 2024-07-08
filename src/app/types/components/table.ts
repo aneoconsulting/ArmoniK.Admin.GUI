@@ -1,7 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
+import { Observable, Subject, catchError, first, map, of, switchMap } from 'rxjs';
 import { FiltersEnums, FiltersOptionsEnums, ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
@@ -50,10 +50,10 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   @Input({ required: true }) options: O;
   @Input({ required: true }) filters$: Subject<FiltersOr<F, FO>>;
   @Input({ required: true }) refresh$: Subject<void>;
-  @Input({ required: true }) loading$: Subject<boolean>;
+  @Input({ required: true }) loading: WritableSignal<boolean>;
   @Input() lockColumns = false;
   
-  data: ArmonikData<R>[] = [];
+  data: WritableSignal<ArmonikData<R>[]> = signal([]);
   total: number = 0;
   filters: FiltersOr<F, FO> = [] as FiltersOr<F, FO>;
 
@@ -74,14 +74,16 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   }
 
   loadFromCache() {
-    const cachedResponse = this.cacheService.get(this.scope);
-    if (cachedResponse) {
-      const cachedData = this.computeGrpcData(cachedResponse);
-      this.total = cachedResponse.total;
-      if (cachedData) {
-        this.newData(cachedData);
+    this.refresh$.pipe(first()).subscribe(() => {
+      const cachedResponse = this.cacheService.get(this.scope);
+      if (cachedResponse) {
+        const cachedData = this.computeGrpcData(cachedResponse);
+        this.total = cachedResponse.total;
+        if (cachedData) {
+          this.newData(cachedData);
+        }
       }
-    }
+    });
   }
 
   list$(options: O, filters: FiltersOr<F, FO>): Observable<GrpcResponse> {
@@ -96,7 +98,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
     this.refresh$.pipe(
       switchMap(
         () => {
-          this.loading$.next(true);
+          this.loading.set(true);
           const options = structuredClone(this.options);
           const filters = structuredClone(this.filters);
 
@@ -125,26 +127,13 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
         this.afterDataCreation(data);
       } else {
         this.newData(data);
-        this.loading$.next(false);
+        this.loading.set(false);
       }
     });
-    this.refresh$.next();
   }
 
   protected newData(entries: R[]) {
-    if (entries.length !== 0) {
-      this.data = this.data.filter(d => entries.find(entry => this.isDataRawEqual(entry, d.raw)));
-      entries.forEach((entry, index) => {
-        const value = this.data[index];
-        if (value && this.isDataRawEqual(value.raw, entry)) {
-          this.data[index].value$?.next(entry);
-        } else {
-          this.data.splice(index, 1, this.createNewLine(entry));
-        }
-      });
-    } else {
-      this.data = [];
-    }
+    this.data.set(entries.map(entry => this.createNewLine(entry)));
   }
 
   onDrop(columnsKeys: C[]) {

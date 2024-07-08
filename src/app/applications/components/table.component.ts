@@ -78,7 +78,6 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
       raw: entry,
       queryTasksParams: this.createTasksByStatusQueryParams(entry.name, entry.version),
       filters: this.countTasksByStatusFilters(entry.name, entry.version),
-      value$: new Subject<ApplicationRaw>()
     };
   }
 

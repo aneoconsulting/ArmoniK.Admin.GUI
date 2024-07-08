@@ -1,7 +1,6 @@
 import { FilterStringOperator, ListResultsResponse, ResultRawEnumField, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ResultData } from '@app/types/data';
@@ -67,7 +66,6 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
   createNewLine(entry: ResultRaw): ResultData {
     return {
       raw: entry,
-      value$: new Subject<ResultRaw>(),
     };
   }
 }

@@ -59,9 +59,7 @@ export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
    * @returns true if status corresponds to TaskStatus.TASK_STATUS_PROCESSED number
    */
   taskNotEnded(taskStatus: TaskStatus) {
-    return taskStatus !== TaskStatus.TASK_STATUS_DISPATCHED && taskStatus !== TaskStatus.TASK_STATUS_PROCESSED
-    && taskStatus !== TaskStatus.TASK_STATUS_RETRIED && taskStatus !== TaskStatus.TASK_STATUS_TIMEOUT
-    && taskStatus !== TaskStatus.TASK_STATUS_CANCELLED && taskStatus !== TaskStatus.TASK_STATUS_CANCELLING
-    && taskStatus !== TaskStatus.TASK_STATUS_ERROR && taskStatus !== TaskStatus.TASK_STATUS_COMPLETED;
+    return taskStatus === TaskStatus.TASK_STATUS_PROCESSING || taskStatus === TaskStatus.TASK_STATUS_CREATING || taskStatus === TaskStatus.TASK_STATUS_SUBMITTED 
+    || taskStatus === TaskStatus.TASK_STATUS_DISPATCHED || taskStatus === TaskStatus.TASK_STATUS_RETRIED;
   }
 }

@@ -5,16 +5,20 @@ import { IconPickerDialogComponent } from './icon-picker-dialog.component';
 describe('IconPickerDialogComponent', () => {
   let component: IconPickerDialogComponent;
 
+  const icons: string[] = ['session', 'application', 'tasks', 'remove', 'add', 'arrow'];
+  const mockIconsService = {
+    getIcon: jest.fn((value: string) => icons.find((icon) => icon === value)),
+    getAllIcons: jest.fn(() => icons)
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         IconPickerDialogComponent,
-        IconsService,
+        { provide: IconsService, useValue: mockIconsService },
       ]
     }).inject(IconPickerDialogComponent);
-
     component.icon = 'icon';
-    component.ngOnInit();
   });
 
   it('should create', () => {
@@ -23,37 +27,31 @@ describe('IconPickerDialogComponent', () => {
 
   describe('filerIcons', () => {
     it('should filter icons', () => {
-      component.filterIcons('icon');
-      expect(component.filteredIcons).toEqual(['icon']);
+      component.iconFormControl.setValue('ion');
+      component.filterIcons();
+      expect(component.filteredIcons()).toEqual(['session', 'application']);
     });
 
-    it('should disaplay all icons by default', () => {
-      component.filterIcons(null);
-      expect(component.filteredIcons).toEqual(component.icons);
+    it('should display all icons by default', () => {
+      expect(component.filteredIcons()).toEqual(icons);
     });
   });
 
   it('should get an icon', () => {
-    expect(component.getIcon('icon')).toEqual('palette');
+    expect(component.getIcon('session')).toEqual('session');
   });
 
-  it('should select first', () => {
-    component.filteredIcons = ['icon', 'newIcon'];
+  test('selectFirst should select first icon of the list', () => {
     const spy = jest.spyOn(component.iconChange, 'next');
     component.selectFirst();
-    expect(spy).toHaveBeenCalledWith(component.filteredIcons[0]);
+    expect(spy).toHaveBeenCalledWith(icons[0]);
   });
 
   describe('selectIcon', () => {
-    it('should emit a new icon', () => {
+    it('should emit an icon', () => {
       const spy = jest.spyOn(component.iconChange, 'next');
       component.selectIcon('newIcon');
       expect(spy).toHaveBeenCalledWith('newIcon');
     });
-  });
-
-  it('should filter icon on input change', () => {
-    component.iconFormControl.setValue('icon');
-    expect(component.filteredIcons).toEqual(['icon']);
   });
 });

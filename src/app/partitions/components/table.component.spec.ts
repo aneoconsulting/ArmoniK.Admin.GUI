@@ -1,5 +1,6 @@
 import { FilterNumberOperator, FilterStringOperator, PartitionRawEnumField, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
@@ -142,7 +143,7 @@ describe('TasksTableComponent', () => {
       }
     };
     component.refresh$ = new Subject();
-    component.loading$ = new Subject();
+    component.loading = signal(false);
     component.ngOnInit();
     component.ngAfterViewInit();
   });
@@ -167,7 +168,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should update data with cached one', () => {
-      expect(component.data).toEqual([
+      expect(component.data()).toEqual([
         {
           raw: {
             id: 'partition1',
@@ -177,8 +178,7 @@ describe('TasksTableComponent', () => {
           },
           filters: [[
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
-          ]],
-          value$: expect.any(Subject)
+          ]]
         },
         {
           raw: {
@@ -189,8 +189,7 @@ describe('TasksTableComponent', () => {
           },
           filters: [[
             { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
-          ]],
-          value$: expect.any(Subject)
+          ]]
         },
       ]);
     });
@@ -198,7 +197,7 @@ describe('TasksTableComponent', () => {
 
   it('should update data on refresh', () => {
     component.refresh$.next();
-    expect(component.data).toEqual<PartitionData[]>([
+    expect(component.data()).toEqual<PartitionData[]>([
       {
         raw: {
           id: 'partition1',
@@ -208,8 +207,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition1' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -220,8 +218,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition2' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       },
       {
         raw: {
@@ -232,8 +229,7 @@ describe('TasksTableComponent', () => {
         },
         filters: [[
           { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'partition3' },
-        ]],
-        value$: expect.any(Subject)
+        ]]
       }
     ]);
   });
@@ -265,7 +261,7 @@ describe('TasksTableComponent', () => {
 
     it('should send empty data', () => {
       component.refresh$.next();
-      expect(component.data).toEqual([]);
+      expect(component.data()).toEqual([]);
     });
   });
 
@@ -366,6 +362,20 @@ describe('TasksTableComponent', () => {
         '1-options-3-2': '2',
         '1-options-4-0': partitionId,
       });
+    });
+  });
+
+  describe('isDataRawEqual', () => {
+    it('should return true if two partitionRaws are the same', () => {
+      const partition1 = { id: 'partition' } as PartitionRaw;
+      const partition2 = { ...partition1 } as PartitionRaw;
+      expect(component.isDataRawEqual(partition1, partition2)).toBeTruthy();
+    });
+
+    it('should return false if two partitionRaws are differents', () => {
+      const partition1 = { id: 'partition' } as PartitionRaw;
+      const partition2 = { id: 'partition2' } as PartitionRaw;
+      expect(component.isDataRawEqual(partition1, partition2)).toBeFalsy();
     });
   });
 });

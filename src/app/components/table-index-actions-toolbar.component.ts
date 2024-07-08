@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ColumnKey, RawColumnKey } from '@app/types/data';
@@ -13,7 +13,8 @@ import { TableActionsToolbarComponent } from './table-actions-toolbar.component'
     TableActionsToolbarComponent,
     MatMenuModule,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableIndexActionsToolbarComponent<T extends object, O extends object> {
   readonly iconsService = inject(IconsService);
