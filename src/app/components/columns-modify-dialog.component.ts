@@ -30,34 +30,36 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 export class ColumnsModifyDialogComponent<T extends object,O extends object> implements OnInit {
   columns: RawColumnKey[] = [];
   columnsLabels: Record<ColumnKey<T, O>, string>;
+  
+  private _availableColumns: (keyof T | 'actions')[] = [];
+  private _availableOptionsColumns: PrefixedOptions<O>[] = [];
+  private _availableCustomColumns: string[] = [];
 
-  _availableColumns: (keyof T | 'actions')[] = [];
+  /* Setters */
 
   set availableColumns(value: RawColumnKey[]) {
     this._availableColumns = value.filter(column => !column.toString().includes('.')).sort((a, b) => a.toString().localeCompare(b.toString())) as (keyof T | 'actions')[];
   }
 
-  get availableColumns(): (keyof T | 'actions')[] {
-    return this._availableColumns;
-  }
-
-  _availableOptionsColumns: PrefixedOptions<O>[] = [];
-
   set availableOptionsColumns(value: RawColumnKey[]) {
     this._availableOptionsColumns = value.filter(column => !this.isCustomColumn(column as ColumnKey<T, O>) && column.toString().startsWith('options.')).sort((a, b) => a.toString().localeCompare(b.toString())) as PrefixedOptions<O>[];
+  }
+
+  set availableCustomColumns(value: RawColumnKey[]) {
+    this._availableCustomColumns = value.filter(column => this.isCustomColumn(column as ColumnKey<T, O>)).sort((a, b) => a.toString().localeCompare(b.toString())).map((column) => column.replace('options.options.', ''));
+  }
+
+  /* Getters */
+
+  get availableColumns(): (keyof T | 'actions')[] {
+    return this._availableColumns;
   }
 
   get availableOptionsColumns(): PrefixedOptions<O>[] {
     return this._availableOptionsColumns;
   }
 
-  _availableCustomColumns: CustomColumn[] = [];
-
-  set availableCustomColumns(value: RawColumnKey[]) {
-    this._availableCustomColumns = value.filter(column => this.isCustomColumn(column as ColumnKey<T, O>)).sort((a, b) => a.toString().localeCompare(b.toString())) as CustomColumn[];
-  }
-
-  get availableCustomColumns(): CustomColumn[] {
+  get availableCustomColumns(): string[] {
     return this._availableCustomColumns;
   }
 
@@ -65,23 +67,23 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
 
   ngOnInit(): void {
     // Create a copy in order to not modify the original array
-    this.columns = Array.from(this.data.currentColumns);
+    this.columns = [...this.data.currentColumns];
     this.columnsLabels = this.data.columnsLabels;
     this.availableColumns = this.data.availableColumns;
     this.availableOptionsColumns = this.data.availableColumns;
     this.availableCustomColumns = this.data.availableColumns;
   }
 
-  optionsColumnValue(column: string): string {
-    return `options.${column}`;
-  }
-
-  columnToLabel(column: ColumnKey<T, O>): string {
-    return !this.isCustomColumn(column) ? this.columnsLabels[column] ?? column.toString() : column.toString().replace('options.options.', '');
+  toCustom(column: string): CustomColumn {
+    return `options.options.${column}`;
   }
 
   isCustomColumn(column: ColumnKey<T, O>): boolean {
     return column.toString().startsWith('options.options.');
+  }
+
+  isSelected(column: ColumnKey<T, O>): boolean {
+    return this.columns.includes(column as RawColumnKey);
   }
 
   /**
@@ -97,13 +99,6 @@ export class ColumnsModifyDialogComponent<T extends object,O extends object> imp
     } else if(this.columns.includes(column as RawColumnKey)) {
       this.columns = this.columns.filter(currentColumn => currentColumn !== column);
     }
-  }
-
-  /**
-   * Check if a column is selected
-   */
-  isSelected(column: ColumnKey<T, O>): boolean {
-    return this.data.currentColumns.includes(column as RawColumnKey);
   }
 
   onNoClick(): void {
