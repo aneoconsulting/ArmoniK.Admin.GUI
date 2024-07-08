@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -13,7 +13,6 @@ import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
-import { ExternalService } from '@app/types/external-service';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -21,7 +20,7 @@ import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
-import { ManageExternalServicesDialogComponent } from './manage-external-services-dialog.component';
+import { ExternalServicesComponent } from './external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import pkg from '../../../../package.json';
 
@@ -88,14 +87,13 @@ main {
     MatDialogModule,
     ChangeLanguageButtonComponent,
     HealthCheckComponent,
+    ExternalServicesComponent,
   ]
 })
 export class NavigationComponent implements OnInit{
   version = this.getVersion();
-  externalServices: ExternalService[];
 
   #breakpointObserver = inject(BreakpointObserver);
-  #dialog = inject(MatDialog);
   #navigationService = inject(NavigationService);
   #userService = inject(UserService);
   #iconsService = inject(IconsService);
@@ -118,23 +116,7 @@ export class NavigationComponent implements OnInit{
     );
 
   ngOnInit(): void {
-    this.externalServices = this.#navigationService.restoreExternalServices();
     this.sideBarOpened = this.#navigationService.restoreSideBarOpened();
-  }
-
-  manageExternalServices() {
-    const dialogRef = this.#dialog.open(ManageExternalServicesDialogComponent, {
-      data: {
-        externalServices: this.externalServices,
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.externalServices = result;
-        this.#navigationService.saveExternalServices(this.externalServices);
-      }
-    });
   }
 
   getVersion(): string {
