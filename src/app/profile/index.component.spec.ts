@@ -1,18 +1,12 @@
 import { User } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { IconsService } from '@services/icons.service';
-import { ShareUrlService } from '@services/share-url.service';
 import { UserService } from '@services/user.service';
 import { IndexComponent } from './index.component';
 import { PermissionGroup } from './types';
 
 describe('IndexComponent', () => {
   let component: IndexComponent;
-
-  const returnedUrl = 'some-url';
-  const mockShareUrlService = {
-    generateSharableURL: jest.fn(() => returnedUrl),
-  };
 
   const user: User.AsObject = {
     username: 'ArmoniK',
@@ -28,22 +22,18 @@ describe('IndexComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         IndexComponent,
-        { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: UserService, useValue: mockUserService },
         IconsService
       ]
     }).inject(IndexComponent);
-    component.ngOnInit();
   });
 
   it('should create', () => {
     expect(component).toBeDefined();
   });
 
-  describe('Initialisation', () => {
-    it('should init the sharableUrl', () => {
-      expect(component.sharableURL).toBe(returnedUrl);
-    });
+  it('should have a null sharabkeurl', () => {
+    expect(component.sharableURL).toBe(null);
   });
 
   it('should allows to get user', () => {
