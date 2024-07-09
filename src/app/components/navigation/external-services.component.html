@@ -7,7 +7,7 @@
     </button>
   } @else {
     @for(service of externalServices; track service.name) {
-      <button mat-icon-button [matTooltip]="service.name" (click)="navigate(service.url)">
+      <button mat-icon-button color="accent" [matTooltip]="service.name" (click)="navigate(service.url)">
         <mat-icon [fontIcon]="getIcon(service.icon)"/>
       </button>
     }

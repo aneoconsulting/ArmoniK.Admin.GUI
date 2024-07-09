@@ -45,7 +45,6 @@ export class ExternalServicesComponent implements OnInit {
 
   set externalServices(entries: ExternalService[] | undefined) {
     if (entries) {
-      console.log(entries);
       this._externalServices = entries;
       this.hasService = entries.length > 0;
     }
