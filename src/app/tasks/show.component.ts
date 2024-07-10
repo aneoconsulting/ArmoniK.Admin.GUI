@@ -45,11 +45,11 @@ import { TaskRaw } from './types';
     NotificationService,
     MatSnackBar,
     FiltersService,
-    GrpcSortFieldService
+    GrpcSortFieldService,
   ],
   imports: [
     ShowPageComponent,
-    MatIconModule
+    MatIconModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
