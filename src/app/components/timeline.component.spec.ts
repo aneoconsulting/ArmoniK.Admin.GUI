@@ -1,9 +1,10 @@
 import { Timestamp } from '@ngx-grpc/well-known-types';
+import { TimeKeys } from '@app/types/data';
 import { TimeLineComponent } from './timeline.component';
 
 describe('TimeLineComponent', () => {
   const component = new TimeLineComponent;
-  const timeKeys = ['createdAt', 'processedAt', 'endedAt'];
+  const timeKeys: TimeKeys[] = ['createdAt', 'processedAt', 'endedAt'];
   const timestamps = {
     createdAt: new Timestamp({seconds: '13434980'}),
     submittedAt: new Timestamp({seconds: '13434982'}),
@@ -12,7 +13,7 @@ describe('TimeLineComponent', () => {
   };
 
   beforeEach(() => {
-    component.keys = {...timeKeys};
+    component.keys = [...timeKeys];
     component.timestamps = {...timestamps};
   });
 
@@ -29,10 +30,10 @@ describe('TimeLineComponent', () => {
   });
 
   it('should set timestamps according timeKeys', () => {
-    expect(component.timestamps).toEqual({
-      createdAt: timestamps.createdAt,
-      processedAt: timestamps.processedAt,
-      endedAt: timestamps.endedAt
+    expect(component.dates).toEqual({
+      createdAt: timestamps.createdAt.toDate(),
+      processedAt: timestamps.processedAt.toDate(),
+      endedAt: timestamps.endedAt.toDate()
     });
   });
 

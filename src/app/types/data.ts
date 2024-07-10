@@ -16,6 +16,8 @@ export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | T
 
 export type CustomColumn = `options.options.${string}`;
 
+export type TimeKeys = `${string}At`;
+
 export interface ArmonikData<T extends DataRaw> {
   raw: T,
   queryParams?: Map<ColumnKey<T>, Params>;

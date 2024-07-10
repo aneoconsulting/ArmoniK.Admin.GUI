@@ -1,10 +1,10 @@
 <mat-stepper #stepper>
-  @for (key of timeKeys; track key) {
+  @for (key of keys; track key) {
   <mat-step [editable]="false" [completed]="true">
     <ng-template matStepLabel>
       <article>
-        <p>{{prettyKey(key)}}</p>
-        <p>{{dates[key] | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell}}</p>
+        <p>{{ prettyKeys[$index] }}</p>
+        <p>{{ dates[key] | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}</p>
       </article>
     </ng-template>
   </mat-step>

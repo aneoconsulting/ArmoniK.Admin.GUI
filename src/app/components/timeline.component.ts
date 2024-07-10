@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatStepperModule } from '@angular/material/stepper';
 import { Timestamp } from '@ngx-grpc/well-known-types';
+import { TimeKeys } from '@app/types/data';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
-import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-timeline',
@@ -25,28 +25,30 @@ import { IconsService } from '@services/icons.service';
     MatIconModule,
     EmptyCellPipe,
     DatePipe
-  ],
-  providers: [
-    IconsService
   ]
 })
 export class TimeLineComponent {
-  readonly iconsService = inject(IconsService);
+  dates: {[key: TimeKeys]: Date | undefined} = {};
+  private _keys: TimeKeys[];
+  prettyKeys: string[];
 
-  dates: {[key: string]: Date | undefined} = {};
+  @Input({ required: true }) set keys(entries: TimeKeys[]) {
+    this._keys = entries;
+    console.log(entries);
+    this.prettyKeys = entries.map(key => this.prettyKey(key));
+  }
 
-  @Input({ required: true }) timeKeys: string[];
-  @Input({ required: false }) set data(entries: {[key: string]: Timestamp}) {
-    this.timeKeys.forEach(key => {
+  @Input({ required: true }) set timestamps(entries: {[key: TimeKeys]: Timestamp}) {
+    this.keys.forEach(key => {
       this.dates[key] = entries[key]?.toDate();
     });
   }
 
-  prettyKey(key: string) {
-    return `${key[0].toLocaleUpperCase()}${key.slice(1, -2)}`;
+  get keys(): TimeKeys[] {
+    return this._keys;
   }
 
-  getIcon(name: string) {
-    return this.iconsService.getIcon(name);
+  prettyKey(key: TimeKeys) {
+    return `${key[0].toLocaleUpperCase()}${key.slice(1, -2)}`;
   }
 }
