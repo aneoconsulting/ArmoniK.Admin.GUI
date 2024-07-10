@@ -1,10 +1,12 @@
 import { FilterStringOperator, GetTaskResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
+import { TimeLineComponent } from '@components/timeline.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
@@ -17,6 +19,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
+import { TasksIndexService } from './services/tasks-index.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
 import { TaskRaw } from './types';
 
@@ -27,6 +30,10 @@ import { TaskRaw } from './types';
   <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
   <span i18n="Page title"> Task </span>
 </app-show-page>
+<div>
+  <h2>Timeline</h2>
+  <app-timeline [timeKeys]="timeKeys" [data]="timestamps()" />
+</div>
   `,
   styles: [`
   `],
@@ -46,10 +53,13 @@ import { TaskRaw } from './types';
     MatSnackBar,
     FiltersService,
     GrpcSortFieldService,
+    TimeLineComponent,
+    TasksIndexService,
   ],
   imports: [
     ShowPageComponent,
     MatIconModule,
+    TimeLineComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -57,6 +67,10 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
 
   cancel$ = new Subject<void>();
 
+  timeKeys = ['createdAt', 'submittedAt', 'receivedAt', 'acquiredAt', 'fetchedAt', 'processedAt', 'endedAt'];
+  timestamps = signal<{[key: string]: Timestamp}>({});
+
+  private readonly tasksIndexService = inject(TasksIndexService);
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly filtersService = inject(FiltersService);
   readonly grpcService = inject(TasksGrpcService);
@@ -126,7 +140,16 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
       }
       this.filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey(), data.id);
       this.canCancel$.next(!this.tasksStatusesService.taskNotEnded(data.status));
+      this.setTimestamp(data);
     }
+  }
+
+  setTimestamp(data: TaskRaw) {
+    const timestamps: {[key: string]: Timestamp} = {};
+    this.timeKeys.forEach(key => {
+      timestamps[key] = data[key as keyof TaskRaw] as Timestamp;
+    });
+    this.timestamps.set(timestamps);
   }
   
   cancel(): void {
