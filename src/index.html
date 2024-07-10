@@ -13,14 +13,17 @@
 </head>
 <body class="mat-typography">
   <app-root>
-    <div id="loading">
-      Loading...
-    </div>
-    <div id="error" style="display: none;">
-      Loading failed. Please see the console for details. <kbd>F12</kbd> to open DevTools.
-
-      <div id="error-message"></div>
-    </div>
+    <section id="loading-app">
+      <div id="loading">
+        Loading...
+      </div>
+      <div id="error" style="display: none;">
+        <p>Loading failed. Please see the console for details. <kbd>F12</kbd> to open DevTools.</p>
+  
+        <div id="error-message"></div>
+      </div>
+      <div id="mouse-effect"></div>
+    </section>
   </app-root>
 </body>
 </html>
