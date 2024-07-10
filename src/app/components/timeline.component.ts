@@ -34,7 +34,6 @@ export class TimeLineComponent {
 
   @Input({ required: true }) set keys(entries: TimeKeys[]) {
     this._keys = entries;
-    console.log(entries);
     this.prettyKeys = entries.map(key => this.prettyKey(key));
   }
 
