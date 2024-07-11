@@ -39,10 +39,7 @@ import { IconsService } from '@services/icons.service';
 })
 export class InspectionToolbarComponent {
   private readonly iconsService = inject(IconsService);
+  readonly refreshIcon = this.iconsService.getIcon('refresh');
 
   @Output() refresh = new Subject<void>();
-
-  getIcon(name: string) {
-    return this.iconsService.getIcon(name);
-  }
 }
