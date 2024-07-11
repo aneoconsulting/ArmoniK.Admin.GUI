@@ -51,6 +51,27 @@ describe('ShowCardContentComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  describe('initialisation', () => {
+    it('should have set data', () => {
+      expect(component.data).toEqual(data);
+    });
+
+    it('should not erase data if a null value is passed', () => {
+      component.data = null;
+      expect(component.data).toEqual(data);
+    });
+
+    it('should set every keys of data', () => {
+      expect(component.keys).toEqual(Object.keys(data).toSorted((a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase())));
+    });
+
+    it('should set wanted keys', () => {
+      const keys = ['array', 'duration', 'empty', 'emptyArray', 'number'];
+      component.keys = keys;
+      expect(component.keys).toEqual(keys);
+    });
+  });
+
   describe('isString', () => {
     it('Should return true when a string is provided', () => {
       expect(component.isString('string')).toBeTruthy();
@@ -359,7 +380,7 @@ describe('ShowCardContentComponent', () => {
     });
 
     it('should return undefined if there is no data', () => {
-      component.data = undefined as unknown as SandBox;
+      component['_data'] = undefined as unknown as Data;
       expect(component.toDate('time')).toBeUndefined();
     });
   });
@@ -370,7 +391,7 @@ describe('ShowCardContentComponent', () => {
     });
 
     it('should return null if the data is undefined', () => {
-      component.data = undefined as unknown as SandBox;
+      component['_data'] = undefined as unknown as Data;
       expect(component.toDuration('duration')).toBeNull();
     });
   });

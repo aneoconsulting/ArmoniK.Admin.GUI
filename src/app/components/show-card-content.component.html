@@ -1,44 +1,52 @@
-@if (!isArray(data) && keys.length > 0) {
-  @for(key of keys; track key) {  
-    @if (!isArray(data[key]) && !isObject(key)) {
-      <p>
-        <!-- Key -->
-        <span class="key">{{ pretty(key) }}: </span>
-        <!-- Value -->
-        @if (isStatus(key)) {  
-          <span>{{ statusToLabel(key) | emptyCell }}</span>
-        } @else if (isString(key) || isNumber(key)) {
-          <span>{{ data[key] | emptyCell }}</span>
-        } @else if (isTimestamp(key)) {
-          <span>{{ toDate(key) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell}}</span>
-        } @else if (isDuration(key)) {
-          <span >{{ toDuration(key) | duration | emptyCell }}</span>
-        } @else {
-          <span>-</span>
-        }
-      </p>
-    } @else if (isArray(data[key])) {
-      <!-- Array -->
-      <span class="key">{{ pretty(key) }}:</span>
-      <ul class="array-list">
-        @for (item of findArray(key); track $index) {
-          <li>{{ item }}</li>
-        }
-      </ul>
-    } @else {
-      <!-- Object -->
-      <span class="key">{{ pretty(key) }}:</span>
-      <app-show-card-content [data]="findObject(key)" [statuses]="statuses"/>
+<section>
+  @if (!isArray(data) && keys.length > 0) {
+    @for(key of keys; track key) {  
+      @if (!isArray(data[key]) && !isObject(key)) {
+        <p>
+          <!-- Key -->
+          <span class="key">{{ pretty(key) }}: </span>
+          <!-- Value -->
+          <mat-chip>
+            @if (isStatus(key)) {  
+              <span>{{ statusToLabel(key) | emptyCell }}</span>
+            } @else if (isString(key) || isNumber(key)) {
+              <span>{{ data[key] | emptyCell }}</span>
+            } @else if (isTimestamp(key)) {
+              <span>{{ toDate(key) | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell}}</span>
+            } @else if (isDuration(key)) {
+              <span >{{ toDuration(key) | duration | emptyCell }}</span>
+            } @else {
+              <span>-</span>
+            }
+          </mat-chip>
+        </p>
+      } @else if (isArray(data[key])) {
+        <!-- Array -->
+        <article>
+          <span class="key">{{ pretty(key) }}:</span>
+          <ul class="array-list">
+            @for (item of findArray(key); track $index) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        </article>
+      } @else {
+        <!-- Object -->
+        <article>
+          <span class="key">{{ pretty(key) }}:</span>
+          <app-show-card-content [data]="findObject(key)" [statuses]="statuses"/>
+        </article>
+      }
     }
+  } @else if (isArray(data) && hasLength(data)) {
+    <ul class="array-list">
+      @for (item of toArray(data); track $index) {
+        <li>{{ item }}</li>
+      }
+    </ul>
+  } @else {
+    <p class="no-data">
+      <em>No data</em>
+    </p>
   }
-} @else if (isArray(data) && hasLength(data)) {
-  <ul class="array-list">
-    @for (item of toArray(data); track $index) {
-      <li>{{ item }}</li>
-    }
-  </ul>
-} @else {
-  <p>
-    <em>No data</em>
-  </p>
-}
+</section>

@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
@@ -12,39 +13,85 @@ type Data = {
   selector: 'app-show-card-content',
   templateUrl: './show-card-content.component.html',
   styles: [`
-app-show-card-content {
-  display: block;
-  margin-left: 1rem;
+section {
+  margin: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
 
+section > * {
+  margin-bottom: 1rem;
+}
+
+article {
+  grid-column: 1 / 4;
+  display: flex;
+  flex-direction: column;
+}
+
+app-show-card-content {
   border-left: 1px solid #eee;
   padding-left: 1rem;
+  margin-left: 1rem;
+}
+
+p {
+  width: fit-content;
+}
+
+.no-data {
+  grid-column: 1 / 4;
+  width: 100%;
+  text-align: center;
 }
 
 .array-list {
   margin: 0;
+}
+
+.key {
+  font-weight: bold;
 }
   `],
   imports: [
     DurationPipe,
     DatePipe,
     EmptyCellPipe,
+    MatChipsModule,
   ],
   standalone: true
 })
 export class ShowCardContentComponent<T extends object> {
   @Input({ required: true }) set data(entry: T | T[] | null) {
-    this._data = entry as Data;
     if (entry) {
-      this.keys = Object.keys(this.data).sort((a, b) => a.toString().localeCompare(b.toString()));
+      this._data = entry as Data;
+      if (this._keys.length === 0) {
+        this.setDefaultKeys();
+      }
     }
   }
   @Input({ required: true }) statuses: Record<number, string> = [];
 
-  keys: (keyof Data)[] = [];
-  private _data: Data;
+  @Input({ required: false }) set keys(entries: (keyof Data)[]) {
+    if (entries.length !== 0) {
+      this._keys = entries;
+    }
+  }
+
+  private _keys: (keyof Data)[] = [];
+  private _data: Data = {};
 
   get data(): Data {
     return this._data;
+  }
+
+  get keys(): (keyof Data)[] {
+    return this._keys;
+  }
+
+  setDefaultKeys() {
+    this._keys = Object.keys(this.data).sort((a, b) => a.toString().localeCompare(b.toString()));
   }
 
   /**
