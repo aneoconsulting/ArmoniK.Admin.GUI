@@ -48,6 +48,12 @@ import { IconsService } from '@services/icons.service';
       align-items: center;
       justify-content: space-between;
     }
+
+    .no-data {
+      text-align: center;
+      margin: 1rem;
+      font-style: italic;
+    }
   `]
 })
 export class InspectListComponent {
@@ -62,7 +68,7 @@ export class InspectListComponent {
   }
   @Input({ required: false }) redirectLink: string | undefined;
 
-  get list() {
+  get list(): string[] {
     return this._list;
   }
 }
