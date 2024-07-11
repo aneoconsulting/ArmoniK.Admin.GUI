@@ -1,0 +1,14 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <section>
+      <button mat-flat-button color="primary" i18n-matTooltip matTooltip="Refresh Data">
+        <mat-icon [fontIcon]="getIcon('refresh')" />
+        Refresh
+      </button>
+      <ng-content select="[actions]" />
+    </section>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <ng-content select="[bonus-actions]" />
+  </mat-toolbar-row>
+</mat-toolbar>
