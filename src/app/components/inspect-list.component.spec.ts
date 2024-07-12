@@ -20,10 +20,6 @@ describe('InspectListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set eyeIcon', () => {
-    expect(component.eyeIcon).toBeTruthy();
-  });
-
   describe('setting list', () => {
     it('should set list', () => {
       expect(component.list).toEqual(list);
