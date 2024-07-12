@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { IconsService } from '@services/icons.service';
 import { InspectListComponent } from './inspect-list.component';
 
 describe('InspectListComponent', () => {
@@ -9,8 +8,7 @@ describe('InspectListComponent', () => {
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        InspectListComponent,
-        IconsService,
+        InspectListComponent
       ]
     }).inject(InspectListComponent);
     component.list = list;
