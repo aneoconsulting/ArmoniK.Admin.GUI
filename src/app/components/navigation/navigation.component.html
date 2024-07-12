@@ -23,29 +23,7 @@
   <div class="spacer"></div>
   <app-change-language-button />
   <app-healthcheck />
-  <button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
-    <span i18n="Button to view external services">
-      External Services
-    </span>
-  </button>
-  <mat-menu #external_services="matMenu">
-    @for (service of externalServices; track service.url) {
-      <a mat-menu-item [href]="service.url" target="_blank" rel="noopener noreferrer">
-        @if (service.icon) {
-          <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(service.icon)"/>
-        }
-        <span>{{ service.name }}</span>
-      </a>
-    }
-    @if (externalServices.length) {
-      <mat-divider></mat-divider>
-    }
-    <button mat-menu-item (click)="manageExternalServices()">
-      <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tune')"></mat-icon>
-      <span i18n="Button">Manage services</span>
-    </button>
-  </mat-menu>
+  <app-external-services />
   <button mat-button class="version" [matMenuTriggerFor]="versionMenu" matTooltip="More Infos" i18n-matTooltip>
     <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
     <span>
