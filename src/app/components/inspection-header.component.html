@@ -1,0 +1,12 @@
+<app-page-header [sharableURL]="sharableURL">
+  <ng-content title />
+  <span>{{ id }}</span> 
+  <button mat-icon-button [cdkCopyToClipboard]="id ?? ''" (cdkCopyToClipboardCopied)="onCopyId()">
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')" />
+  </button>
+  @if(status) {
+    <mat-chip color="accent" highlighted right>
+      <span id="status">{{ status }}</span>
+    </mat-chip>
+  }
+</app-page-header>

@@ -20,6 +20,11 @@ import { ShareUrlComponent } from './share-url.component';
   align-items: center;
   gap: 1rem;
 }
+
+#header-right {
+  display: flex;
+  align-items: center;
+}
   `],
   standalone: true,
   providers: [],
