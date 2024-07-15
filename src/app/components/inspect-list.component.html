@@ -7,22 +7,20 @@
     @if (list.length === 0) {
       <span class="no-data">No data</span>
     } @else {
-      <ul>
-        @for(item of list; track item) {
-          <li>
-            @if(redirectLink) {
-              <button mat-button [routerLink]="'/' + redirectLink + '/' + item">
-                <span>{{item}}</span>
-              </button>
-            } @else {
+      @for(item of list; track item) {
+        <div class="item">
+          @if(redirectLink) {
+            <button mat-button [routerLink]="'/' + redirectLink + '/' + item">
               <span>{{item}}</span>
-            }
-          </li>
-          @if(!$last) {
-            <mat-divider />
+            </button>
+          } @else {
+            <span>{{item}}</span>
           }
+        </div>
+        @if(!$last) {
+          <mat-divider />
         }
-      </ul>
+      }
     }
   </mat-card>
 </section>

@@ -35,17 +35,13 @@ import { RouterModule } from '@angular/router';
       font-style: italic;
     }
 
-    ul {
-      margin: 0;
-    }
-
-    li {
-      list-style-position: initial;
-      padding: 0.5rem;
-    }
-
     button {
-      width: fit-content;
+      width: fit-content; 
+    }
+
+    .item {
+      width: 100%;
+      margin: 0.5rem;
     }
 
     section {
