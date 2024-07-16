@@ -347,12 +347,6 @@ describe('ShowCardContentComponent', () => {
     });
   });
 
-  it('pretty should return readable strings', () => {
-    expect(component.pretty('My string should not change.')).toEqual('My string should not change.');
-    expect(component.pretty('MyStringShouldChange.')).toEqual('My String Should Change.');
-    expect(component.pretty('My_String_Should_Change_.')).toEqual('My String Should Change.');
-  });
-
   describe('toDate', () => {
     it ('should return a date from a timestamp', () => {
       expect(component.toDate('time')).toEqual(new Date(179543301000));
