@@ -81,10 +81,4 @@ describe('InspectionComponent', () => {
   it('should retrieve an object', () => {
     expect(component.getObject(fields[2])).toEqual(data.options);
   });
-
-  it('should make a string more pretty', () => {
-    const uglyString = '_ABeautiful_String';
-    const prettyString = 'A Beautiful String';
-    expect(component.pretty(uglyString)).toEqual(prettyString);
-  });
 });

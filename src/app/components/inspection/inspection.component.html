@@ -4,7 +4,7 @@
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
-            <strong>{{ pretty(field.key) }}</strong>
+            <strong>{{ field.key | pretty }}</strong>
           </mat-expansion-panel-header>
           <app-inspection [fields]="optionsFields" [data]="getObject(field)" [line]="line" />
         </mat-expansion-panel>

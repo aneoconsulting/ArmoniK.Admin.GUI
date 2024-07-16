@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { Field } from '@app/types/column.type';
 import { DataRaw, RawColumnKey, Status } from '@app/types/data';
+import { PrettyPipe } from '@pipes/pretty.pipe';
 import { FieldContentComponent } from './field-content.component';
 
 @Component({
@@ -14,6 +15,7 @@ import { FieldContentComponent } from './field-content.component';
     MatCardModule,
     FieldContentComponent,
     JsonPipe,
+    PrettyPipe,
     MatExpansionModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -100,9 +102,5 @@ export class InspectionComponent<K extends RawColumnKey, D extends DataRaw, S ex
 
   getObject(field: Field<K>): D {
     return this.data[field.key as unknown as keyof D] as D;
-  }
-
-  pretty(key: string): string {
-    return key.toString().replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 }

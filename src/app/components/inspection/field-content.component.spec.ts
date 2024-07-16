@@ -92,10 +92,6 @@ describe('FieldContentComponent', () => {
       expect(component.value).toEqual(data.id);
     });
 
-    it('should make the key prettier', () => {
-      expect(component.prettyKey).toEqual('Id');
-    });
-
     it('should copy the raw value', () => {
       component.copy();
       expect(mockClipboard.copy).toHaveBeenCalledWith(data.id);
@@ -111,10 +107,6 @@ describe('FieldContentComponent', () => {
     beforeEach(() => {
       component.field = statusField;
       component.data = data;
-    });
-
-    it('should make the key prettier', () => {
-      expect(component.prettyKey).toEqual('Status');
     });
 
     it('should set the status', () => {
@@ -138,10 +130,6 @@ describe('FieldContentComponent', () => {
       component.data = data;
     });
 
-    it('should make the key prettier', () => {
-      expect(component.prettyKey).toEqual('Created At');
-    });
-
     it('should set the value as a date', () => {
       expect(component.date).toEqual((new Timestamp(data.createdAt)).toDate());
     });
@@ -161,10 +149,6 @@ describe('FieldContentComponent', () => {
     beforeEach(() => {
       component.field = durationField;
       component.data = data;
-    });
-
-    it('should make the key prettier', () => {
-      expect(component.prettyKey).toEqual('Creation To End Duration');
     });
 
     it('should set the value as a duration', () => {
@@ -193,10 +177,6 @@ describe('FieldContentComponent', () => {
     beforeEach(() => {
       component.field = objectField;
       component.data = data;
-    });
-
-    it('should make the key prettier', () => {
-      expect(component.prettyKey).toEqual('Options');
     });
 
     it('should set the value as an object', () => {

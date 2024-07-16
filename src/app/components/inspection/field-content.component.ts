@@ -12,6 +12,7 @@ import { ColumnType, Field } from '@app/types/column.type';
 import {  Custom, DataRaw, RawColumnKey, Status } from '@app/types/data';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { PrettyPipe } from '@pipes/pretty.pipe';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { InspectionComponent } from './inspection.component';
@@ -30,7 +31,8 @@ import { InspectionComponent } from './inspection.component';
     MatIconModule,
     RouterLink,
     InspectionComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    PrettyPipe,
   ],
   providers: [
     NotificationService,
@@ -66,7 +68,6 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
   readonly copyIcon = this.iconsService.getIcon('copy');
 
   @Input({ required: true }) set field(entry: Field<K>) {
-    this.prettyKey = this.pretty(entry.key as string);
     this._field = entry;
   }
 
@@ -92,9 +93,12 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
   @Input({ required: false }) statuses: Record<S, string>;
 
   type: ColumnType | undefined;
-  prettyKey: string;
   private _field: Field<K>;
   private _value: unknown;
+
+  get key(): string {
+    return this._field.key;
+  }
 
   get field(): Field<K> {
     return this._field;
@@ -117,10 +121,6 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
 
   get object(): TaskOptions | Custom {
     return this._value as TaskOptions | Custom;
-  }
-
-  pretty(key: string): string {
-    return key.toString().replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
   copy() {
