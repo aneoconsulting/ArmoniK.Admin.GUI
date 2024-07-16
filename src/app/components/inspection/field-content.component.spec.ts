@@ -37,10 +37,11 @@ describe('FieldContentComponent', () => {
       seconds: '1230',
       nanos: 0
     },
+    parentTaskIds: [],
     options: {
       applicationName: 'string',
     }
-  } as TaskRaw;
+  } as unknown as TaskRaw;
 
   const field: Field<TaskSummaryColumnKey> = {
     key: 'id',
@@ -66,6 +67,10 @@ describe('FieldContentComponent', () => {
     type: 'object'
   };
 
+  const arrayField: Field<TaskSummaryColumnKey> = { 
+    key: 'parentTaskIds' as TaskSummaryColumnKey
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -88,8 +93,12 @@ describe('FieldContentComponent', () => {
       component.data = data;
     });
 
-    it('should set the value', () => {
+    it('should get the value', () => {
       expect(component.value).toEqual(data.id);
+    });
+
+    it('should get the key', () => {
+      expect(component.key).toEqual(field.key);
     });
 
     it('should copy the raw value', () => {
@@ -109,8 +118,12 @@ describe('FieldContentComponent', () => {
       component.data = data;
     });
 
-    it('should set the status', () => {
+    it('should get the status', () => {
       expect(component.value).toEqual(statuses[data.status]);
+    });
+
+    it('should get the key', () => {
+      expect(component.key).toEqual(statusField.key);
     });
 
     it('should copy the status', () => {
@@ -130,8 +143,12 @@ describe('FieldContentComponent', () => {
       component.data = data;
     });
 
-    it('should set the value as a date', () => {
+    it('should get the value as a date', () => {
       expect(component.date).toEqual((new Timestamp(data.createdAt)).toDate());
+    });
+
+    it('should get the key', () => {
+      expect(component.key).toEqual(dateField.key);
     });
 
     it('should copy the date', () => {
@@ -151,8 +168,12 @@ describe('FieldContentComponent', () => {
       component.data = data;
     });
 
-    it('should set the value as a duration', () => {
+    it('should get the value as a duration', () => {
       expect(component.value).toEqual(data.creationToEndDuration);
+    });
+
+    it('should get the key', () => {
+      expect(component.key).toEqual(durationField.key);
     });
 
     it('should copy the duration', () => {
@@ -179,8 +200,12 @@ describe('FieldContentComponent', () => {
       component.data = data;
     });
 
-    it('should set the value as an object', () => {
+    it('should get the value as an object', () => {
       expect(component.object).toEqual(data.options);
+    });
+
+    it('should get the key', () => {
+      expect(component.key).toEqual(objectField.key);
     });
   });
 
@@ -211,13 +236,24 @@ describe('FieldContentComponent', () => {
     });
   });
 
-  describe('checkIfArray', () => {
+  describe('array', () => {
+    beforeEach(() => {
+      component.field = arrayField;
+      component.data = data;
+    });
+
     it('should set the type to "array" in case of an array', () => {
-      component.field = { key: 'parentTaskIds' as TaskSummaryColumnKey };
-      component.data = {
-        parentTaskIds: []
-      } as unknown as TaskRaw;
       expect(component.type).toEqual('array');
     });
+
+    it('should get the array', () => {
+      expect(component.array).toEqual(data.parentTaskIds);
+    });
+  });
+
+  it('should copy directly the provided value', () => {
+    const copyValue = 'copy';
+    component.copy(copyValue);
+    expect(mockClipboard.copy).toHaveBeenCalledWith(copyValue);
   });
 });
