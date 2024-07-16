@@ -99,6 +99,6 @@ export class InspectionComponent<K extends RawColumnKey, D extends DataRaw, S ex
   }
 
   checkObject(field: Field<K>): boolean {
-    return field.type === 'object' || field.key.replace('_', '') === 'options';
+    return field.type === 'object' || field.key.replace('_', '') === 'options'  || field.key.replace('_', '') === 'output';
   }
 }

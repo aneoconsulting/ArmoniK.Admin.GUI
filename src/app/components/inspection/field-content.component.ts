@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, Field } from '@app/types/column.type';
-import {  Custom, DataRaw, RawColumnKey, Status } from '@app/types/data';
+import { Custom, DataRaw, RawColumnKey, Status } from '@app/types/data';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -41,6 +41,7 @@ import { InspectionComponent } from './inspection.component';
   styles: [`
     .field {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 0.5rem;
     }
@@ -56,6 +57,17 @@ import { InspectionComponent } from './inspection.component';
 
     mat-icon {
       cursor: pointer;
+    }
+
+    ul {
+      flex-basis: 100%;
+      margin: 0;
+    }
+
+    li {
+      width: fit-content;
+      margin-top: 0.25rem;
+      margin-bottom: 0.25rem;
     }
   `]
 })
@@ -90,6 +102,7 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
       }
       default: {
         this._value = entry[this.field.key as unknown as keyof D];
+        this.checkIfArray();
       }
       }
     }
@@ -128,36 +141,60 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
     return this._value as TaskOptions | Custom;
   }
 
+  get array(): Array<string> {
+    return this._value as Array<string>;
+  }
+
+  /**
+   * When the type is not provided by the `field` object, for display purpose, the component has to find the correct type. 
+   * @param value  - key of the field.
+   * @returns The guessed type of the field.
+   */
   private guessType(value: string): ColumnType {
-    const key = value.replace('_', '');
-    if (key.includes('At')) {
+    const key = value.toLowerCase().replace('_', '');
+    if (key.endsWith('at')) {
       return 'date';
-    } else if (key.toLowerCase().includes('duration')) {
+    } else if (key.includes('duration') || key.includes('ttl')) {
       return 'duration';
-    } else if (key === 'options' || key === 'options.options') {
+    } else if (key === 'options' || key === 'options.options' || key === 'output') {
       return 'object';
     } else {
       return 'raw';
     }
   }
 
-  copy() {
-    switch (this.field.type) {
-    case 'date': {
-      this.clipboardCopy(this.date.toLocaleString());
-      break;
+  /**
+   * Check if the received data is an Array.
+   * If `true`, then the type is set to `array`.
+   * If `false`, the provided type does not change.
+   */
+  private checkIfArray() {
+    if (this._value instanceof Array) {
+      this.type = 'array';
     }
-    case 'duration': {
-      const durationPipe = new DurationPipe();
-      const durationString = durationPipe.transform(this.duration);
-      if (durationString) {
-        this.clipboardCopy(durationString);
+  }
+
+  copy(value?: string) {
+    if (value) {
+      this.clipboardCopy(value);
+    } else {
+      switch (this.field.type) {
+      case 'date': {
+        this.clipboardCopy(this.date.toLocaleString());
+        break;
       }
-      break;
-    }
-    default: {
-      this.clipboardCopy(this.value);
-    }
+      case 'duration': {
+        const durationPipe = new DurationPipe();
+        const durationString = durationPipe.transform(this.duration);
+        if (durationString) {
+          this.clipboardCopy(durationString);
+        }
+        break;
+      }
+      default: {
+        this.clipboardCopy(this.value);
+      }
+      }
     }
   }
 
