@@ -210,4 +210,14 @@ describe('FieldContentComponent', () => {
       expect(component.type).toEqual('raw');
     });
   });
+
+  describe('checkIfArray', () => {
+    it('should set the type to "array" in case of an array', () => {
+      component.field = { key: 'parentTaskIds' as TaskSummaryColumnKey };
+      component.data = {
+        parentTaskIds: []
+      } as unknown as TaskRaw;
+      expect(component.type).toEqual('array');
+    });
+  });
 });
