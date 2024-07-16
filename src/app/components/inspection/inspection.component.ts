@@ -24,11 +24,13 @@ import { FieldContentComponent } from './field-content.component';
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      gap: 0.5rem;
+      column-gap: 2rem;
+      row-gap: 0.5rem;
     }
 
     mat-accordion {
       flex-basis: 100%;
+      width: fit-content;
     }
   `]
 })
