@@ -15,7 +15,9 @@
     {{ value | emptyCell }}
     }
     }
-    <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" matTooltip="Copy value" />
+    @if (value) {
+      <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" matTooltip="Copy value" />
+    }
     @if (field.type === 'link' && field.link) {
     <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + value" matTooltip="Inspect data" />
     }
