@@ -12,9 +12,10 @@ export type ColumnKey<T extends object, O extends object = Record<string, never>
 
 export type FieldKey<T extends DataRaw> = keyof T;
 
-export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary | TaskOptions;
+export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary | TaskOptions | Custom;
 
 export type CustomColumn = `options.options.${string}`;
+export type Custom = {[key: CustomColumn]: string};
 
 export interface ArmonikData<T extends DataRaw> {
   raw: T,

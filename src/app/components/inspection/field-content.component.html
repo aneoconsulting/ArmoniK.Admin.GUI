@@ -1,0 +1,23 @@
+<span class="field">
+  <strong>{{ prettyKey }}: </strong>
+  <mat-chip disableRipple>
+    @switch (field.type) {
+    @case ('date') {
+    {{ date | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
+    }
+    @case('duration') {
+    {{ duration | duration | emptyCell }}
+    }
+    @case('object') {
+    {{ object | json }}
+    }
+    @default {
+    {{ value | emptyCell }}
+    }
+    }
+    <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" matTooltip="Copy value" />
+    @if (field.type === 'link' && field.link) {
+    <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + value" matTooltip="Inspect data" />
+    }
+  </mat-chip>
+</span>

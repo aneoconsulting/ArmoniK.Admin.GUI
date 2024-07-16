@@ -1,0 +1,16 @@
+<article [style]="'flex-direction:' + (line ? 'row' : 'column')">
+  @for (field of fields; track field.key) {
+    @if (field.type === 'object') {
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <strong>{{ pretty(field.key) }}</strong>
+          </mat-expansion-panel-header>
+          <app-inspection [fields]="optionsFields" [data]="getObject(field)" [line]="line" />
+        </mat-expansion-panel>
+      </mat-accordion>
+    } @else {
+      <app-field-content [field]="field" [statuses]="statuses" [data]="data" />
+    }
+  }
+</article>
