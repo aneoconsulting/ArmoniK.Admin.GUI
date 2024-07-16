@@ -128,10 +128,11 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
     return this._value as TaskOptions | Custom;
   }
 
-  private guessType(key: string): ColumnType {
+  private guessType(value: string): ColumnType {
+    const key = value.replace('_', '');
     if (key.includes('At')) {
       return 'date';
-    } else if (key.includes('duration')) {
+    } else if (key.toLowerCase().includes('duration')) {
       return 'duration';
     } else if (key === 'options' || key === 'options.options') {
       return 'object';

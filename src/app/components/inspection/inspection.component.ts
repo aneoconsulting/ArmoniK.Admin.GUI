@@ -103,4 +103,8 @@ export class InspectionComponent<K extends RawColumnKey, D extends DataRaw, S ex
   getObject(field: Field<K>): D {
     return this.data[field.key as unknown as keyof D] as D;
   }
+
+  checkObject(field: Field<K>): boolean {
+    return field.type === 'object' || field.key.replace('_', '') === 'options';
+  }
 }

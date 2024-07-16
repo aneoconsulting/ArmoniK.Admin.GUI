@@ -81,4 +81,14 @@ describe('InspectionComponent', () => {
   it('should retrieve an object', () => {
     expect(component.getObject(fields[2])).toEqual(data.options);
   });
+
+  describe('checkObject', () => {
+    it('should return true if the type is "object"', () => {
+      expect(component.checkObject({key: 'options', type: 'object'})).toBeTruthy();
+    });
+
+    it('should return true if the key is "options"', () => {
+      expect(component.checkObject({key: '_options' as TaskSummaryColumnKey})).toBeTruthy();
+    });
+  });
 });
