@@ -69,11 +69,16 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
 
   @Input({ required: true }) set field(entry: Field<K>) {
     this._field = entry;
+    if (entry.type) {
+      this.type = entry.type;
+    } else {
+      this.type = this.guessType(entry.key);
+    }
   }
 
   @Input({ required: true }) set data(entry: D | null) {
     if (entry) {
-      switch (this.field.type) {
+      switch (this.type) {
       case 'status': {
         this._value = this.statuses[entry[this.field.key as unknown as keyof D] as S];
         break;
@@ -121,6 +126,18 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
 
   get object(): TaskOptions | Custom {
     return this._value as TaskOptions | Custom;
+  }
+
+  private guessType(key: string): ColumnType {
+    if (key.includes('At')) {
+      return 'date';
+    } else if (key.includes('duration')) {
+      return 'duration';
+    } else if (key === 'options' || key === 'options.options') {
+      return 'object';
+    } else {
+      return 'raw';
+    }
   }
 
   copy() {

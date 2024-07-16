@@ -31,7 +31,7 @@ describe('FieldContentComponent', () => {
     status: TaskStatus.TASK_STATUS_CANCELLING,
     createdAt: {
       seconds: '13343490',
-      nanos: 0 
+      nanos: 0
     },
     creationToEndDuration: {
       seconds: '1230',
@@ -87,7 +87,7 @@ describe('FieldContentComponent', () => {
       component.field = field;
       component.data = data;
     });
-    
+
     it('should set the value', () => {
       expect(component.value).toEqual(data.id);
     });
@@ -181,6 +181,33 @@ describe('FieldContentComponent', () => {
 
     it('should set the value as an object', () => {
       expect(component.object).toEqual(data.options);
+    });
+  });
+
+  describe('guessType', () => {
+    it('should guess a date', () => {
+      component.field = { key: 'acquiredAt' };
+      expect(component.type).toEqual('date');
+    });
+
+    it('should guess a duration', () => {
+      component.field = { key: 'creationToEndDuration' };
+      expect(component.type).toEqual('duration');
+    });
+
+    it('should guess an object with "options"', () => {
+      component.field = { key: 'options' };
+      expect(component.type).toEqual('object');
+    });
+
+    it('should guess an object with "options.options"', () => {
+      component.field = { key: 'options.options' };
+      expect(component.type).toEqual('object');
+    });
+
+    it('should return raw if it cannot guess anything', () => {
+      component.field = { key: 'id' };
+      expect(component.type).toEqual('raw');
     });
   });
 });

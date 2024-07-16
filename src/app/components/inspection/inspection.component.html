@@ -1,6 +1,6 @@
 <article [style]="'flex-direction:' + (line ? 'row' : 'column')">
   @for (field of fields; track field.key) {
-    @if (field.type === 'object') {
+    @if (field.type === 'object' || field.key === 'options' || field.key === 'options.options') {
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
