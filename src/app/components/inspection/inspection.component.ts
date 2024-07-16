@@ -89,7 +89,7 @@ export class InspectionComponent<K extends RawColumnKey, D extends DataRaw, S ex
       return {
         key: d as K
       };
-    });
+    }).toSorted((a, b) => a.key.localeCompare(b.key));
   }
 
   getObject(field: Field<K>): D {
