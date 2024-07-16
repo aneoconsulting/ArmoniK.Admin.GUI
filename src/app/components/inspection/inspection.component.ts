@@ -20,14 +20,6 @@ import { FieldContentComponent } from './field-content.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
-    app-inspection {
-      display: block;
-      margin-left: 1rem;
-
-      border-left: 1px solid #eee;
-      padding-left: 1rem;
-    }
-
     article {
       display: flex;
       flex-wrap: wrap;
