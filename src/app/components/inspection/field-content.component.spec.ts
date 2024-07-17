@@ -250,10 +250,4 @@ describe('FieldContentComponent', () => {
       expect(component.array).toEqual(data.parentTaskIds);
     });
   });
-
-  it('should copy directly the provided value', () => {
-    const copyValue = 'copy';
-    component.copy(copyValue);
-    expect(mockClipboard.copy).toHaveBeenCalledWith(copyValue);
-  });
 });

@@ -30,7 +30,7 @@
           <li>
             <mat-chip>
               {{ item | emptyCell }}
-              <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" matTooltip="Copy value" />
+              <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="clipboardCopy(item)" matTooltip="Copy value" />
               @if (field.link) {
                 <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + item" matTooltip="Inspect data" />
                 }

@@ -174,31 +174,27 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
     }
   }
 
-  copy(value?: string) {
-    if (value) {
-      this.clipboardCopy(value);
-    } else {
-      switch (this.field.type) {
-      case 'date': {
-        this.clipboardCopy(this.date.toLocaleString());
-        break;
+  copy() {
+    switch (this.field.type) {
+    case 'date': {
+      this.clipboardCopy(this.date.toLocaleString());
+      break;
+    }
+    case 'duration': {
+      const durationPipe = new DurationPipe();
+      const durationString = durationPipe.transform(this.duration);
+      if (durationString) {
+        this.clipboardCopy(durationString);
       }
-      case 'duration': {
-        const durationPipe = new DurationPipe();
-        const durationString = durationPipe.transform(this.duration);
-        if (durationString) {
-          this.clipboardCopy(durationString);
-        }
-        break;
-      }
-      default: {
-        this.clipboardCopy(this.value);
-      }
-      }
+      break;
+    }
+    default: {
+      this.clipboardCopy(this.value);
+    }
     }
   }
 
-  private clipboardCopy(value: string) {
+  clipboardCopy(value: string) {
     this.clipboard.copy(value);
     this.notificationService.success('Value copied');
   }
