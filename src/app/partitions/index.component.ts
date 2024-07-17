@@ -29,7 +29,7 @@ import { PartitionsTableComponent } from './components/table.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
+import { PartitionRaw } from './types';
 
 @Component({
   selector: 'app-partitions-index',
@@ -71,7 +71,7 @@ import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } f
     PartitionsTableComponent
   ]
 })
-export class IndexComponent extends TableHandler<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandler<PartitionRaw, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
 
   readonly filtersService = inject(PartitionsFiltersService);
   readonly indexService = inject(PartitionsIndexService);

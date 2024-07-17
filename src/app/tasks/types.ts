@@ -9,7 +9,7 @@ export type TaskSummary = GrpcTaskSummary.AsObject;
 export type TaskSummaryColumnKey = ColumnKey<TaskSummary, TaskOptions> | 'select' | `options.options.${string}`;
 export type TaskSummaryFieldKey = FieldKey<TaskSummary>;
 export type TaskOptionsFieldKey = FieldKey<TaskOptions>;
-export type TaskSummaryListOptions = ListOptions<TaskSummary & TaskOptions>;
+export type TaskSummaryListOptions = ListOptions<TaskSummary, TaskOptions>;
 
 export type TaskSummaryField = TaskSummaryEnumField | TaskOptionEnumField | string;
 

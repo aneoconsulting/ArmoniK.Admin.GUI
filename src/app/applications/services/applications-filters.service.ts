@@ -9,7 +9,7 @@ import { ApplicationFilterField, ApplicationRawFilters, ApplicationsFiltersDefin
 @Injectable({
   providedIn: 'root'
 })
-export class ApplicationsFiltersService implements FiltersServiceInterface<ApplicationRawFilters, ApplicationRawEnumField> {
+export class ApplicationsFiltersService implements FiltersServiceInterface<ApplicationRawEnumField> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 

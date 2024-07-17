@@ -6,11 +6,11 @@ import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, 
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskOptionsFieldKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskOptions, TaskOptionsFieldKey, TaskSummary, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
-  implements GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFilters> {
+export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
+  implements GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryEnumField, TaskOptionEnumField> {
   readonly filterService = inject(TasksFiltersService);
   readonly grpcClient = inject(TasksClient);
   readonly sortFieldService = inject(GrpcSortFieldService);

@@ -1,14 +1,14 @@
-import { ApplicationFilterField, ListApplicationsResponse, ListPartitionsResponse, ListResultsResponse, ListSessionsResponse, ListTasksResponse, PartitionFilterField, ResultFilterField , ResultStatus, SessionFilterField, SessionStatus, TaskFilterField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ListApplicationsResponse, ListPartitionsResponse, ListResultsResponse, ListSessionsResponse, ListTasksResponse , ResultStatus, SessionStatus, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Params } from '@angular/router';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters , ApplicationRawListOptions} from '@app/applications/types';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters , PartitionRawListOptions} from '@app/partitions/types';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilters , ResultRawListOptions} from '@app/results/types';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters , SessionRawListOptions} from '@app/sessions/types';
-import { TaskOptions, TaskRaw, TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
+import { ApplicationRaw, } from '@app/applications/types';
+import { PartitionRaw } from '@app/partitions/types';
+import { ResultRaw } from '@app/results/types';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions, TaskRaw, TaskSummary, TaskSummaryFilters } from '@app/tasks/types';
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
-export type ColumnKey<T extends object, O extends object = Record<string, never>> = keyof T | 'actions' | PrefixedOptions<O> | CustomColumn;
+export type ColumnKey<T extends DataRaw, O extends TaskOptions | null = null> = keyof T | 'actions' | PrefixedOptions<O> | CustomColumn | 'count' | 'select';
 
 export type FieldKey<T extends DataRaw> = keyof T;
 
@@ -43,14 +43,6 @@ export interface ApplicationData extends ArmonikTaskByStatusData<ApplicationRaw>
 export interface ResultData extends ArmonikData<ResultRaw> {
 }
 
-export type RawColumnKey = SessionRawColumnKey | TaskSummaryColumnKey | ApplicationRawColumnKey | PartitionRawColumnKey | ResultRawColumnKey;
-export type RawCustomColumnKey = SessionRawColumnKey | TaskSummaryColumnKey;
-export type IndexListOptions = TaskSummaryListOptions | SessionRawListOptions | ApplicationRawListOptions | ResultRawListOptions | PartitionRawListOptions;
-
 export type Status = TaskStatus | SessionStatus | ResultStatus;
-export type IndexListFilters = SessionRawFilters | TaskSummaryFilters | PartitionRawFilters | ApplicationRawFilters | ResultRawFilters;
-
-export type DataFilterField = ApplicationFilterField.AsObject | SessionFilterField.AsObject | ResultFilterField.AsObject | PartitionFilterField.AsObject | TaskFilterField.AsObject;
-export type ArmonikDataType = ApplicationData | PartitionData | ResultData | SessionData | TaskData;
 
 export type GrpcResponse = ListApplicationsResponse | ListTasksResponse | ListSessionsResponse | ListPartitionsResponse | ListResultsResponse;

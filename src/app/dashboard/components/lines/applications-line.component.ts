@@ -1,3 +1,4 @@
+import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {  MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,7 +8,7 @@ import { ApplicationsTableComponent } from '@app/applications/components/table.c
 import { ApplicationsFiltersService } from '@app/applications/services/applications-filters.service';
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRaw } from '@app/applications/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -44,7 +45,7 @@ import { ShareUrlService } from '@services/share-url.service';
     TableDashboardActionsToolbarComponent,
   ]
 })
-export class ApplicationsLineComponent extends DashboardLineTableComponent<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> implements OnInit, AfterViewInit,OnDestroy {
+export class ApplicationsLineComponent extends DashboardLineTableComponent<ApplicationRaw, ApplicationRawEnumField> implements OnInit, AfterViewInit,OnDestroy {
   readonly indexService = inject(ApplicationsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultApplications;
 

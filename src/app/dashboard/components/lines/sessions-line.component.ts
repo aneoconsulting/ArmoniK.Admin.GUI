@@ -1,3 +1,4 @@
+import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -7,9 +8,10 @@ import { SessionsTableComponent } from '@app/sessions/components/table.component
 import { SessionsFiltersService } from '@app/sessions/services/sessions-filters.service';
 import { SessionsIndexService } from '@app/sessions/services/sessions-index.service';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
+import { SessionRaw } from '@app/sessions/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { TaskOptions } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -46,7 +48,7 @@ import { NotificationService } from '@services/notification.service';
     MatMenuModule,
   ],
 })
-export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
+export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultSessions;
 

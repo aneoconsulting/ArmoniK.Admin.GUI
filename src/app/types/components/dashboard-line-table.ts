@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output, inject, signal } from '@angular
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { EditNameLineDialogComponent } from '@app/dashboard/components/edit-name-line-dialog.component';
-import { Line } from '@app/dashboard/types';
+import { TableLine } from '@app/dashboard/types';
+import { TaskOptions } from '@app/tasks/types';
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -10,42 +11,43 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableColumn } from '../column.type';
 import { ScopeConfig } from '../config';
-import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
+import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { EditNameLineData } from '../dialog';
-import { RawFilters } from '../filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { ListOptions } from '../options';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 
 @Component({
   selector: 'app-dashboard-line-table',
   template: ''
 })
-export abstract class DashboardLineTableComponent<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> {
+export abstract class DashboardLineTableComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
   readonly autoRefreshService = inject(AutoRefreshService);
   readonly iconsService = inject(IconsService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly dialog = inject(MatDialog);
   readonly notificationService = inject(NotificationService);
 
-  abstract readonly indexService: IndexServiceInterface<K, O>;
-  abstract readonly defaultConfig: ScopeConfig<K, O, F>;
+  abstract readonly indexService: IndexServiceInterface<T, O>;
+  abstract readonly defaultConfig: ScopeConfig<T, F, O, FO>;
   
-  @Input({ required: true }) line: Line;
+  @Input({ required: true }) line: TableLine<T, O>;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
-  @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
+  @Output() lineDelete: EventEmitter<TableLine<T, O>> = new EventEmitter<TableLine<T, O>>();
 
   loading = signal(false);
 
-  filters: F;
-  filters$: Subject<F>;
+  filters: FiltersOr<F, FO>;
+  filters$: Subject<FiltersOr<F, FO>>;
   showFilters: boolean;
 
-  options: O;
+  options: ListOptions<T, O>;
 
-  displayedColumnsKeys: K[] = [];
-  displayedColumns: TableColumn<K>[] = [];
-  availableColumns: K[] = [];
+  displayedColumnsKeys: ColumnKey<T, O>[] = [];
+  displayedColumns: TableColumn<T, O>[] = [];
+  availableColumns: ColumnKey<T, O>[] = [];
   lockColumns: boolean = false;
-  columnsLabels: Record<K, string> = {} as unknown as Record<K, string>;
+  columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
 
   intervalValue: number;
 
@@ -66,7 +68,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
 
   initColumns() {
     this.availableColumns = this.indexService.availableTableColumns.map(c => c.key);
-    this.displayedColumnsKeys = this.line.displayedColumns as K[] ?? this.indexService.defaultColumns;
+    this.displayedColumnsKeys = this.line.displayedColumns ?? this.indexService.defaultColumns;
     this.updateDisplayedColumns();
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
@@ -75,7 +77,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   initFilters() {
-    this.filters = this.line.filters as F;
+    this.filters = this.line.filters as FiltersOr<F, FO>;
     this.showFilters = this.line.showFilters ?? this.defaultConfig.showFilters;
     this.filters$ = new BehaviorSubject(this.filters);
   }
@@ -86,7 +88,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   initOptions() {
-    this.options = (this.line.options as O) ?? this.defaultConfig.options;
+    this.options = (this.line.options as ListOptions<T, O>) ?? this.defaultConfig.options;
   }
 
   mergeSubscriptions() {
@@ -99,7 +101,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   }
 
   updateDisplayedColumns() {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<K>[];
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<T, O>[];
   }
 
   getIcon(name: string): string {
@@ -147,18 +149,18 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.lineDelete.emit(this.line);
   }
 
-  onFiltersChange(value: unknown[]) {
-    this.filters = value as F;
+  onFiltersChange(value: FiltersOr<F, FO>) {
+    this.filters = value;
     this.line.filters = value as [];
     this.lineChange.emit();
     this.filters$.next(this.filters);
   }
 
   onFiltersReset() {
-    this.filters = [] as unknown as F;
+    this.filters = [];
     this.line.filters = [];
     this.lineChange.emit();
-    this.filters$.next([] as unknown as F);
+    this.filters$.next([]);
   }
 
   onShowFiltersChange(value: boolean) {
@@ -167,7 +169,7 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
     this.lineChange.emit();
   }
 
-  onColumnsChange(data: K[]) {
+  onColumnsChange(data: ColumnKey<T, O>[]) {
     this.displayedColumnsKeys = data;
     this.updateDisplayedColumns();
     this.line.displayedColumns = data;
@@ -192,16 +194,16 @@ export abstract class DashboardLineTableComponent<K extends RawColumnKey, O exte
   selector: 'app-dashboard-line-table',
   template: ''
 })
-export abstract class DashboardLineCustomColumnsComponent<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters> extends DashboardLineTableComponent<K, O, F> {
-  abstract override readonly indexService: IndexServiceCustomInterface<K, O>;
+export abstract class DashboardLineCustomColumnsComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> extends DashboardLineTableComponent<T, F, O, FO> {
+  abstract override readonly indexService: IndexServiceCustomInterface<T, O>;
 
   customColumns: CustomColumn[];
 
   override initColumns() {
     this.customColumns = this.line.customColumns ?? [];
-    this.displayedColumnsKeys = [...(this.line.displayedColumns as K[] ?? this.indexService.defaultColumns)];
+    this.displayedColumnsKeys = [...(this.line.displayedColumns as ColumnKey<T, O>[] ?? this.indexService.defaultColumns)];
     this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
-    this.availableColumns.push(...this.customColumns as K[]);
+    this.availableColumns.push(...this.customColumns as ColumnKey<T, O>[]);
     this.lockColumns = this.line.lockColumns ?? false;
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
@@ -211,15 +213,15 @@ export abstract class DashboardLineCustomColumnsComponent<K extends RawColumnKey
 
   override updateDisplayedColumns(): void {
     this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.includes('options.options.')) {
-        const customColumnName = key.replaceAll('options.options.', '');
+      if (key.toString().includes('options.options.')) {
+        const customColumnName = key.toString().replaceAll('options.options.', '');
         return {
           key: key,
           name: customColumnName,
           sortable: true,
-        } as TableColumn<K>;
+        } as TableColumn<T, O>;
       } else {
-        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>;
+        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
       }
     });
   }
@@ -233,10 +235,10 @@ export abstract class DashboardLineCustomColumnsComponent<K extends RawColumnKey
       if(result) {
         const oldCustoms = this.customColumns;
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('options.options.'));
-        this.availableColumns.push(...result as K[]);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('options.options.'));
-        this.displayedColumnsKeys.push(...result.filter(column => !oldCustoms.includes(column)) as K[]);
+        this.availableColumns = this.availableColumns.filter(column => !column.toString().startsWith('options.options.'));
+        this.availableColumns.push(...result as ColumnKey<T, O>[]);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.toString().startsWith('options.options.'));
+        this.displayedColumnsKeys.push(...result.filter(column => !oldCustoms.includes(column)) as ColumnKey<T, O>[]);
         this.updateDisplayedColumns();
         this.line.displayedColumns = this.displayedColumnsKeys;
         this.line.customColumns = result;

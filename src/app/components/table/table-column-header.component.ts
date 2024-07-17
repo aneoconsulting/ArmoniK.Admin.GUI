@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, TableColumn } from '@app/types/column.type';
-import { RawColumnKey } from '@app/types/data';
+import { DataRaw } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 
 @Component({
@@ -16,7 +17,7 @@ import { IconsService } from '@services/icons.service';
     MatButtonModule,
   ]
 })
-export class TableColumnHeaderComponent<K extends RawColumnKey> {
+export class TableColumnHeaderComponent<T extends DataRaw, O extends TaskOptions | null = null> {
 
   readonly iconService = inject(IconsService);
 
@@ -24,7 +25,7 @@ export class TableColumnHeaderComponent<K extends RawColumnKey> {
   private _type: ColumnType;
   private _name: string;
 
-  @Input({ required: true }) set column(entry: TableColumn<K>) {
+  @Input({ required: true }) set column(entry: TableColumn<T, O>) {
     this._type = entry.type ?? 'raw';
     this._name = entry.name;
     if (entry.type === 'count') {

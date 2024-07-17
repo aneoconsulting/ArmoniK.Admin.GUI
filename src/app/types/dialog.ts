@@ -1,15 +1,15 @@
 import { Line, LineType } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, CustomColumn, RawColumnKey } from './data';
+import { ColumnKey, CustomColumn, DataRaw } from './data';
 import { FiltersOr } from './filters';
 
-export interface ColumnsModifyDialogData<T extends object, O extends object> {
-  currentColumns: RawColumnKey[]
-  availableColumns: RawColumnKey[]
+export interface ColumnsModifyDialogData<T extends DataRaw, O extends TaskOptions | null = null> {
+  currentColumns: ColumnKey<T, O>[]
+  availableColumns: ColumnKey<T, O>[]
   columnsLabels: Record<ColumnKey<T, O>, string>
 }
 
-export type ColumnsModifyDialogResult<T extends object, O extends object> = ColumnKey<T, O>[];
+export type ColumnsModifyDialogResult<T extends DataRaw, O extends TaskOptions | null = null> = ColumnKey<T, O>[];
 
 export interface FiltersDialogData<T extends number, U extends number | null = null> {
   filtersOr: FiltersOr<T, U>,

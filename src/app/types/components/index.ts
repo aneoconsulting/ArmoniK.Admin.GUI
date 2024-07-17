@@ -3,19 +3,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
-import { FiltersEnums } from '@app/dashboard/types';
+import { TableLine } from '@app/dashboard/types';
+import { TaskOptions } from '@app/tasks/types';
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TableColumn } from '../column.type';
-import { CustomColumn, IndexListOptions, RawColumnKey, RawCustomColumnKey } from '../data';
-import { RawFilters } from '../filters';
+import { ColumnKey, CustomColumn, DataRaw } from '../data';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { ListOptions } from '../options';
 import { FiltersServiceInterface } from '../services/filtersService';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 import { TableType } from '../table';
 
-export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOptions, F extends RawFilters, E extends FiltersEnums> {
+export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
   readonly shareUrlService = inject(ShareUrlService);
   readonly iconsService = inject(IconsService);
   readonly autoRefreshService = inject(AutoRefreshService);
@@ -23,23 +25,23 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   readonly dashboardIndexService = inject(DashboardIndexService);
   readonly router = inject(Router);
 
-  abstract readonly indexService: IndexServiceInterface<K, O>;
-  abstract readonly filtersService: FiltersServiceInterface<F, E>;
+  abstract readonly indexService: IndexServiceInterface<T, O>;
+  abstract readonly filtersService: FiltersServiceInterface<F, FO>;
 
   abstract tableType: TableType;
 
-  displayedColumns: TableColumn<K>[] = [];
-  displayedColumnsKeys: K[] = [];
-  availableColumns: K[] = [];
+  displayedColumns: TableColumn<T, O>[] = [];
+  displayedColumnsKeys: ColumnKey<T, O>[] = [];
+  availableColumns: ColumnKey<T, O>[] = [];
   lockColumns: boolean = false;
-  columnsLabels: Record<K, string> = {} as Record<K, string>;
+  columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
 
   loading = signal(false);
 
-  options: O;
+  options: ListOptions<T, O>;
 
-  filters: F;
-  filters$: Subject<F>;
+  filters: FiltersOr<F, FO>;
+  filters$: Subject<FiltersOr<F, FO>>;
   showFilters: boolean;
 
   intervalValue = 0;
@@ -91,7 +93,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>);
+    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>);
   }
 
   getIcon(name: string): string {
@@ -115,9 +117,9 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.indexService.saveIntervalValue(value);
   }
 
-  onColumnsChange(columns: K[]) {
+  onColumnsChange(columns: ColumnKey<T, O>[]) {
     if ((columns as string[]).includes('select')) {
-      columns = ['select' as K, ...columns.filter(column => column !== 'select')];
+      columns = ['select' as ColumnKey<T, O>, ...columns.filter(column => column !== 'select')];
     }
     this.displayedColumnsKeys = [...columns];
     this.updateDisplayedColumns();
@@ -129,10 +131,10 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
     this.updateDisplayedColumns();
   }
 
-  onFiltersChange(value: unknown[]) {
-    this.filters = value as F;
+  onFiltersChange(value: FiltersOr<F, FO>) {
+    this.filters = value;
 
-    this.filtersService.saveFilters(value as F);
+    this.filtersService.saveFilters(value);
     this.options.pageIndex = 0;
     this.filters$.next(this.filters);
   }
@@ -140,7 +142,7 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   onFiltersReset(): void {
     this.filters = this.filtersService.resetFilters();
     this.options.pageIndex = 0;
-    this.filters$.next([] as unknown as F);
+    this.filters$.next([]);
   }
 
   onShowFiltersChange(value: boolean) {
@@ -167,22 +169,23 @@ export abstract class TableHandler<K extends RawColumnKey, O extends IndexListOp
   }
 
   onAddToDashboard() {
-    this.dashboardIndexService.addLine({
+    this.dashboardIndexService.addLine<TableLine<T, O>>({
       name: this.tableType,
       type: this.tableType,
       interval: 10,
       filters: this.filters,
       options: this.options,
       displayedColumns: this.displayedColumnsKeys,
-      lockColumns: this.lockColumns
+      lockColumns: this.lockColumns,
+      showFilters: this.showFilters
     });
     this.router.navigate(['/dashboard']);
   }
 }
 
-export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O extends IndexListOptions, F extends RawFilters, E extends FiltersEnums> extends TableHandler<K, O, F, E> {
+export abstract class TableHandlerCustomValues<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> extends TableHandler<T, F, O, FO> {
 
-  abstract override readonly indexService: IndexServiceCustomInterface<K, O>;
+  abstract override readonly indexService: IndexServiceCustomInterface<T, O>;
 
   customColumns: CustomColumn[];
 
@@ -190,7 +193,7 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
     this.customColumns = this.indexService.restoreCustomColumns();
     this.displayedColumnsKeys = [...this.indexService.restoreColumns()];
     this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
-    this.availableColumns.push(...this.customColumns as K[]);
+    this.availableColumns.push(...this.customColumns as ColumnKey<T, O>[]);
     this.lockColumns = this.indexService.restoreLockColumns();
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
@@ -200,15 +203,15 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
 
   override updateDisplayedColumns(): void {
     this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.includes('options.options.')) {
-        const customColumnName = key.replaceAll('options.options.', '');
+      if (key.toString().includes('options.options.')) {
+        const customColumnName = key.toString().replaceAll('options.options.', '');
         return {
           key: key,
           name: customColumnName,
           sortable: true,
-        } as TableColumn<K>;
+        } as TableColumn<T, O>;
       } else {
-        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<K>;
+        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
       }
     });
   }
@@ -221,14 +224,29 @@ export abstract class TableHandlerCustomValues<K extends RawCustomColumnKey, O e
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.startsWith('options.options.'));
-        this.availableColumns.push(...result as K[]);
-        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.startsWith('options.options.'));
-        this.displayedColumnsKeys.push(...result as K[]);
+        this.availableColumns = this.availableColumns.filter(column => !column.toString().startsWith('options.options.'));
+        this.availableColumns.push(...result as ColumnKey<T, O>[]);
+        this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.toString().startsWith('options.options.'));
+        this.displayedColumnsKeys.push(...result as ColumnKey<T, O>[]);
         this.updateDisplayedColumns();
         this.indexService.saveColumns(this.displayedColumnsKeys);
         this.indexService.saveCustomColumns(this.customColumns);
       }
     });
+  }
+
+  override onAddToDashboard() {
+    this.dashboardIndexService.addLine<TableLine<T, O>>({
+      name: this.tableType,
+      type: this.tableType,
+      interval: 10,
+      filters: this.filters,
+      options: this.options,
+      displayedColumns: this.displayedColumnsKeys,
+      lockColumns: this.lockColumns,
+      showFilters: this.showFilters,
+      customColumns: this.customColumns
+    });
+    this.router.navigate(['/dashboard']);
   }
 }

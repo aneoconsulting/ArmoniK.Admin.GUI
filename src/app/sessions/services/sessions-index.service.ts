@@ -8,7 +8,7 @@ import { TableService } from '@services/table.service';
 import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsIndexService implements IndexServiceCustomInterface<SessionRawColumnKey, SessionRawListOptions> {
+export class SessionsIndexService implements IndexServiceCustomInterface<SessionRaw, TaskOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -17,7 +17,7 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
   readonly defaultOptions: SessionRawListOptions = this.defaultConfigService.defaultSessions.options;
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultSessions.interval;
 
-  readonly availableTableColumns: TableColumn<SessionRawColumnKey>[] = [
+  readonly availableTableColumns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
       name: $localize`Session ID`,
       key: 'sessionId',
@@ -191,7 +191,7 @@ export class SessionsIndexService implements IndexServiceCustomInterface<Session
   }
 
   restoreOptions(): SessionRawListOptions {
-    const options = this.tableService.restoreOptions<SessionRaw & TaskOptions>('sessions-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<SessionRaw, TaskOptions>('sessions-options', this.defaultOptions);
 
     return options;
   }

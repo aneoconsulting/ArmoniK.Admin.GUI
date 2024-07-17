@@ -9,7 +9,7 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(TasksStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);

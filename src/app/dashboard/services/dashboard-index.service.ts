@@ -11,7 +11,7 @@ export class DashboardIndexService {
   readonly defaultLines: Line[] = this.#defaultConfigService.defaultDashboardLines;
   readonly defaultSplitLines: number = this.#defaultConfigService.defaultDashboardSplitLines;
 
-  addLine(line: Line): number | void {
+  addLine<L extends Line>(line: L): number | void {
     const lines = this.restoreLines();
     lines.push(line);
     this.saveLines(lines);
