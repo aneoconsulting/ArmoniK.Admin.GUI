@@ -378,4 +378,9 @@ describe('TasksTableComponent', () => {
       expect(component.isDataRawEqual(partition1, partition2)).toBeFalsy();
     });
   });
+
+  it('should track a partition by its id', () => {
+    const partition = {raw: { id: 'partition' }} as PartitionData;
+    expect(component.trackBy(0, partition)).toEqual(partition.raw.id);
+  });
 });

@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
+import { ResultData } from '@app/types/data';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -227,5 +228,10 @@ describe('TasksTableComponent', () => {
       const result2 = { resultId: 'result1' } as ResultRaw;
       expect(component.isDataRawEqual(result1, result2)).toBeFalsy();
     });
+  });
+
+  it('should track a result by its id', () => {
+    const result = {raw: { resultId: 'result' }} as ResultData;
+    expect(component.trackBy(0, result)).toEqual(result.raw.resultId);
   });
 });
