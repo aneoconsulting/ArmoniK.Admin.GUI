@@ -6,7 +6,7 @@ import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { TaskData } from '@app/types/data';
+import { ArmonikData, TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
@@ -228,5 +228,9 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
         });
       }
     }
+  }
+
+  trackBy(index: number, item: ArmonikData<TaskSummary>) {
+    return item.raw.id;
   }
 }

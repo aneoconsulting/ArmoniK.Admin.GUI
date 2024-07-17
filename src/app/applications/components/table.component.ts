@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { ApplicationData } from '@app/types/data';
+import { ApplicationData, ArmonikData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
@@ -159,5 +159,9 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
         }
       ]
     ];
+  }
+
+  trackBy(index: number, item: ArmonikData<ApplicationRaw>) {
+    return `${item.raw.name}-${item.raw.version}`;
   }
 }
