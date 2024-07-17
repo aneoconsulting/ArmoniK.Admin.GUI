@@ -234,6 +234,11 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('should track by index', () => {
+    const index = 0;
+    expect(component.trackBy(index, data[0])).toEqual(index);
+  });
+
   it('should unsubscribe on destroy', () => {
     const sortSpy = jest.spyOn(component.sort.sortChange, 'unsubscribe');
     const paginatorSpy = jest.spyOn(component.paginator.page, 'unsubscribe');

@@ -60,8 +60,9 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: R, b: R) => boolean) | undefined;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Input({ required: false }) trackBy(index: number, item: ArmonikData<R>): number | string {
-    return `${index}-${item.raw}`;
+    return index;
   }
 
   @Output() columnDrop = new EventEmitter<K[]>();
