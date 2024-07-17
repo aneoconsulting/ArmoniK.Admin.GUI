@@ -3,7 +3,7 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { PartitionData } from '@app/types/data';
+import { ArmonikData, PartitionData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -104,5 +104,9 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
         }
       ]
     ];
+  }
+
+  trackBy(index: number, items: ArmonikData<PartitionRaw>) {
+    return items.raw.id;
   }
 }

@@ -147,6 +147,7 @@ export abstract class AbstractTableComponent<R extends DataRaw, C extends RawCol
   abstract computeGrpcData(entries: GrpcResponse): R[] | undefined;
   abstract isDataRawEqual(value: R, entry: R): boolean;
   abstract createNewLine(entry: R): ArmonikData<R>;
+  abstract trackBy(index: number, item: ArmonikData<R>): string | number;
 }
 
 @Component({

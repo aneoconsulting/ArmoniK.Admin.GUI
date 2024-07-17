@@ -1,14 +1,10 @@
-import { ResultRaw, SessionRaw } from '@aneoconsultingfr/armonik.api.angular';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { ApplicationRaw } from '@app/applications/types';
 import { TasksStatusesGroup } from '@app/dashboard/types';
-import { PartitionRaw } from '@app/partitions/types';
-import { TaskSummary } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ArmonikDataType, DataRaw, IndexListOptions, RawColumnKey, Status } from '@app/types/data';
 import { StatusesServiceI } from '@app/types/services';
@@ -44,7 +40,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   }
 
   @Input({ required: true }) set data(entries: ArmonikData<R>[]) {
-    this._data = entries;
+    this._data = entries; 
     if (this.dataComparator) {
       const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
       this.selection.clear();
@@ -64,6 +60,10 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: R, b: R) => boolean) | undefined;
 
+  @Input({ required: false }) trackBy(index: number, item: ArmonikData<R>): number | string {
+    return `${index}-${item.raw}`;
+  }
+
   @Output() columnDrop = new EventEmitter<K[]>();
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<R[]>();
@@ -72,7 +72,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  private _data: ArmonikData<R>[];
+  private _data: ArmonikData<R>[] = [];
   private _columns: TableColumn<K>[];
   private _columnsKeys: K[];
   private _isAllSelected: boolean = false;
@@ -161,25 +161,5 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
 
   onPersonnalizeTasksByStatus(): void {
     this.personnalizeTasksByStatus.emit();
-  }
-
-  /**
-   * Used to track elements in the table, making them recognizable by their ids.
-   * Prevent side effects when refreshing data.
-   * 
-   * This function might need to evolve in the future.
-   */
-  trackByElement(index: number, item: ArmonikData<R>) {
-    if ((item.raw as SessionRaw).sessionId) {
-      return (item.raw as SessionRaw).sessionId;
-    } else if ((item.raw as ResultRaw).resultId) {
-      return (item.raw as ResultRaw).resultId;
-    } else if ((item.raw as ApplicationRaw).name) {
-      return `${(item.raw as ApplicationRaw).name}-${(item.raw as ApplicationRaw).version}`;
-    } else if ((item.raw as TaskSummary | PartitionRaw).id) {
-      return (item.raw as TaskSummary | PartitionRaw).id;
-    } else {
-      return index;
-    }
   }
 }
