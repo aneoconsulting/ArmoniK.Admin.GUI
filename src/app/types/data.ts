@@ -16,21 +16,21 @@ export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | T
 
 export type CustomColumn = `options.options.${string}`;
 
-export interface ArmonikData<T extends DataRaw> {
+export interface ArmonikData<T extends DataRaw, O extends TaskOptions | null = null> {
   raw: T,
-  queryParams?: Map<ColumnKey<T>, Params>;
+  queryParams?: Map<ColumnKey<T, O>, Params>;
 }
 
-interface ArmonikTaskByStatusData<T extends DataRaw> extends ArmonikData<T>{
+interface ArmonikTaskByStatusData<T extends DataRaw, O extends TaskOptions | null = null> extends ArmonikData<T, O>{
   queryTasksParams: Record<string, string>;
   filters: TaskSummaryFilters;
 }
 
-export interface TaskData extends ArmonikData<TaskSummary> {
+export interface TaskData extends ArmonikData<TaskSummary, TaskOptions> {
   resultsQueryParams: Record<string, string>;
 }
 
-export interface SessionData extends ArmonikTaskByStatusData<SessionRaw> {
+export interface SessionData extends ArmonikTaskByStatusData<SessionRaw, TaskOptions> {
   resultsQueryParams: Record<string, string>;
 }
 

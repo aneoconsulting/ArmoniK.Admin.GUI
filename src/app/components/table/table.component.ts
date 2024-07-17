@@ -41,7 +41,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     this._columnsKeys = entries.map((entry) => entry.key);
   }
 
-  @Input({ required: true }) set data(entries: ArmonikData<T>[]) {
+  @Input({ required: true }) set data(entries: ArmonikData<T, O>[]) {
     this._data = entries;
     if (this.dataComparator) {
       const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
@@ -63,7 +63,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T>): number | string {
+  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O>): number | string {
     return index;
   }
 
@@ -75,12 +75,12 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  private _data: ArmonikData<T>[];
+  private _data: ArmonikData<T, O>[];
   private _columns: TableColumn<T, O>[];
   private _columnsKeys: ColumnKey<T, O>[];
   private _isAllSelected: boolean = false;
 
-  get data(): ArmonikData<T>[] {
+  get data(): ArmonikData<T, O>[] {
     return this._data;
   }
 

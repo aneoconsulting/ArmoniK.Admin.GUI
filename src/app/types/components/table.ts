@@ -54,7 +54,7 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
   @Input({ required: true }) loading: WritableSignal<boolean>;
   @Input() lockColumns = false;
   
-  data: WritableSignal<ArmonikData<T>[]> = signal([]);
+  data: WritableSignal<ArmonikData<T, O>[]> = signal([]);
   total: number = 0;
   filters: FiltersOr<F, FO> = [] as FiltersOr<F, FO>;
 
@@ -147,7 +147,7 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
 
   abstract computeGrpcData(entries: GrpcResponse): T[] | undefined;
   abstract isDataRawEqual(value: T, entry: T): boolean;
-  abstract createNewLine(entry: T): ArmonikData<T>;
+  abstract createNewLine(entry: T): ArmonikData<T, O>;
   abstract trackBy(index: number, item: ArmonikData<T>): string | number;
 }
 
