@@ -83,7 +83,7 @@ export class InspectionComponent<K extends RawColumnKey, D extends DataRaw, S ex
         ...field,
         key: field.key.replace('options.', '') as K,
       };
-    });
+    }).toSorted((a, b) => a.key.localeCompare(b.key));
   }
 
   private setFieldsFromData(data: D) {
