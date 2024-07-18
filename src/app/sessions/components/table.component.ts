@@ -9,7 +9,7 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTableComponent, AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import {  ColumnKey, SessionData } from '@app/types/data';
+import { ArmonikData, ColumnKey, SessionData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
@@ -410,5 +410,9 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       this.sessionsIdsComputationError.push(sessionId);
       this.notificationService.warning('Error while computing duration for session: ' + sessionId);
     }
+  }
+
+  trackBy(index: number, item: ArmonikData<SessionRaw>) {
+    return item.raw.sessionId;
   }
 }

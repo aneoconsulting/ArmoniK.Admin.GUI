@@ -3,7 +3,7 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { ResultData } from '@app/types/data';
+import { ArmonikData, ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -67,5 +67,9 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
     return {
       raw: entry,
     };
+  }
+
+  trackBy(index: number, item: ArmonikData<ResultRaw>): string | number {
+    return item.raw.resultId;
   }
 }
