@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { PrettyPipe } from '@pipes/pretty.pipe';
 
 type Data = {
   [key: string]: string | string[] | Data;
@@ -28,6 +29,7 @@ app-show-card-content {
     DurationPipe,
     DatePipe,
     EmptyCellPipe,
+    PrettyPipe,
   ],
   standalone: true
 })
@@ -45,17 +47,6 @@ export class ShowCardContentComponent<T extends object> {
 
   get data(): Data {
     return this._data;
-  }
-
-  /**
-   * Changes the syntax of a camelCase string by removing "_", place a
-   * space between each UpperCase character, and put this character in lowercase,
-   * and turn the first character to an uppercase character
-   * @param key string to format
-   * @returns formatted string
-   */
-  pretty(key: keyof Data): string {
-    return key.toString().replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 
   isString(key: keyof Data): boolean {
