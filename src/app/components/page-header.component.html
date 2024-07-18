@@ -2,6 +2,9 @@
   <h1> <ng-content></ng-content> </h1>
 
   @if (sharableURL) {
-    <app-share-url [sharableURL]="sharableURL"/>
+    <div id="header-right">
+      <ng-content select="[right]" />
+      <app-share-url [sharableURL]="sharableURL"/>
+    </div>
   }
 </div>

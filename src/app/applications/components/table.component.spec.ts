@@ -455,4 +455,9 @@ describe('TasksTableComponent', () => {
       expect(component.isDataRawEqual(application1, application2)).toBeFalsy();
     });
   });
+
+  it('should track an application by its name and version', () => {
+    const application = {raw: { name: 'application', version: '0.1.2'}} as ApplicationData;
+    expect(component.trackBy(0, application)).toEqual(`${application.raw.name}-${application.raw.version}`);
+  });
 });

@@ -904,4 +904,9 @@ describe('SessionsTableComponent', () => {
       expect(component.isDataRawEqual(session1, session2)).toBeFalsy();
     });
   });
+
+  it('should track a session by its id', () => {
+    const session = {raw: { sessionId: 'session' }} as SessionData;
+    expect(component.trackBy(0, session)).toEqual(session.raw.sessionId);
+  });
 });

@@ -446,4 +446,9 @@ describe('TasksTableComponent', () => {
       expect(component.isDataRawEqual(task1, task2)).toBeFalsy();
     });
   });
+
+  it('should track a task by its id', () => {
+    const task = { raw: { id: 'task' } } as TaskData;
+    expect(component.trackBy(0, task)).toEqual(task.raw.id);
+  });
 });
