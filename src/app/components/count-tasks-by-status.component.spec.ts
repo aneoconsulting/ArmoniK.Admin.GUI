@@ -5,7 +5,6 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
-import { CacheService } from '@services/cache.service';
 import { CountTasksByStatusComponent } from './count-tasks-by-status.component';
 
 describe('CountTasksByStatusComponent', () => {
@@ -44,19 +43,12 @@ describe('CountTasksByStatusComponent', () => {
   const refresh$ = new Subject<void>();
   const refreshSpy = jest.spyOn(refresh$, 'next');
 
-  const cachedData: StatusCount[] = [{ status: TaskStatus.TASK_STATUS_CREATING, count: 3 }];
-  const mockCacheService = {
-    getStatuses: jest.fn((): StatusCount[] | undefined => cachedData),
-    saveStatuses: jest.fn()
-  };
-
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         CountTasksByStatusComponent,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        TasksFiltersService,
-        { provide: CacheService, useValue: mockCacheService }
+        TasksFiltersService
       ]
     }).inject(CountTasksByStatusComponent);
 
@@ -72,10 +64,6 @@ describe('CountTasksByStatusComponent', () => {
   describe('initCount', () => {
     it('should set id', () => {
       expect(component.id).toEqual(filters[0][0].value);
-    });
-
-    it('should load data', () => {
-      expect(mockCacheService.getStatuses).toHaveBeenCalled();
     });
 
     it('should not set id if there is no filter value', () => {
@@ -113,19 +101,6 @@ describe('CountTasksByStatusComponent', () => {
     it('should set null if there is no response status', () => {
       mockTasksGrpcService.countByStatus$.mockReturnValue(of({ status: undefined }));
       component.refresh.next();
-      expect(component.statusesCount()).toEqual([]);
-    });
-  });
-
-  describe('loadFromCache', () => {
-    it('should load cached data', () => {
-      component.loadFromCache();
-      expect(component.statusesCount()).toEqual(cachedData);
-    });
-
-    it('should load a null value if there is no cache', () => {
-      mockCacheService.getStatuses.mockReturnValueOnce(undefined);
-      component.loadFromCache();
       expect(component.statusesCount()).toEqual([]);
     });
   });

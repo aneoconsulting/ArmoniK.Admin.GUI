@@ -7,7 +7,8 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
-import { ApplicationData } from '@app/types/data';
+import { ApplicationData, ColumnKey } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -16,12 +17,12 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsTableComponent } from './table.component';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFilters } from '../types';
+import { ApplicationRaw } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: ApplicationsTableComponent;
 
-  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ApplicationRaw>[] = [
     {
       name: 'Namespace',
       key: 'namespace',
@@ -147,7 +148,7 @@ describe('TasksTableComponent', () => {
     }).inject(ApplicationsTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.filters$ = new BehaviorSubject<ApplicationRawFilters>([]);
+    component.filters$ = new BehaviorSubject<FiltersOr<ApplicationRawEnumField>>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -301,7 +302,7 @@ describe('TasksTableComponent', () => {
   });
 
   test('onDrop should call ApplicationsIndexService', () => {
-    const newColumns: ApplicationRawColumnKey[] = ['actions', 'name', 'namespace', 'version'];
+    const newColumns: ColumnKey<ApplicationRaw>[] = ['actions', 'name', 'namespace', 'version'];
     component.onDrop(newColumns);
     expect(mockApplicationsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
@@ -454,5 +455,10 @@ describe('TasksTableComponent', () => {
       const application2 = { name: 'application', version: '0.1.3'} as ApplicationRaw;
       expect(component.isDataRawEqual(application1, application2)).toBeFalsy();
     });
+  });
+
+  it('should track an application by its name and version', () => {
+    const application = {raw: { name: 'application', version: '0.1.2'}} as ApplicationData;
+    expect(component.trackBy(0, application)).toEqual(`${application.raw.name}-${application.raw.version}`);
   });
 });

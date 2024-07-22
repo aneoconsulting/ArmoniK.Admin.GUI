@@ -1,11 +1,14 @@
-import { FilterStringOperator, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { TableLine } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { ColumnKey, CustomColumn } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -14,7 +17,7 @@ import { IndexComponent } from './index.component';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from './types';
+import { TaskOptions, TaskSummary } from './types';
 
 describe('Tasks Index Component', () => {
   let component: IndexComponent;
@@ -41,9 +44,9 @@ describe('Tasks Index Component', () => {
     navigate: jest.fn()
   };
 
-  const defaultColumns: TaskSummaryColumnKey[] = ['id', 'actions', 'createdAt', 'options'];
+  const defaultColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'actions', 'createdAt', 'options'];
   const defaultCustomColumns: CustomColumn[] = ['options.options.FastCompute'];
-  const defaultOptions: TaskSummaryListOptions = {
+  const defaultOptions: ListOptions<TaskSummary, TaskOptions> = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -51,7 +54,7 @@ describe('Tasks Index Component', () => {
       direction: 'desc'
     }
   };
-  const availableTableColumns: TableColumn<TaskSummaryColumnKey>[] = [
+  const availableTableColumns: TableColumn<TaskSummary, TaskOptions>[] = [
     {
       name: $localize`Task ID`,
       key: 'id',
@@ -287,7 +290,7 @@ describe('Tasks Index Component', () => {
   });
 
   describe('On columns change', () => {
-    const newColumns: TaskSummaryColumnKey[] = ['id', 'createdAt'];
+    const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'createdAt'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
@@ -366,7 +369,7 @@ describe('Tasks Index Component', () => {
 
   describe('On Filters Change', () => {
 
-    const newFilters: TaskSummaryFilters = [
+    const newFilters: FiltersOr<TaskSummaryEnumField, TaskOptionEnumField> = [
       [
         {
           field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
@@ -459,12 +462,14 @@ describe('Tasks Index Component', () => {
   describe('Adding table as a line to dashboard', () => {
     it('should add a line', () => {
       component.onAddToDashboard();
-      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith({
+      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith<TableLine<TaskSummary, TaskOptions>[]>({
         name: 'Tasks',
         type: 'Tasks',
         interval: 10,
+        showFilters: false,
         lockColumns: false,
         displayedColumns: [...defaultColumns, ...defaultCustomColumns],
+        customColumns: defaultCustomColumns,
         options: defaultOptions,
         filters: [],
       });

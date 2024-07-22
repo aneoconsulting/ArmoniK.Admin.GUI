@@ -6,8 +6,9 @@ import { NavigationExtras, Params, Router, RouterModule } from '@angular/router'
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ApplicationData, ArmonikData, DataRaw, PartitionData, RawColumnKey, SessionData, Status } from '@app/types/data';
+import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData, Status } from '@app/types/data';
 import { StatusesServiceI } from '@app/types/services';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -29,15 +30,15 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
   ]
 })
-export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawColumnKey, S extends Status>{
-  @Input({ required: true }) set column(entry: TableColumn<K>) {
+export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
+  @Input({ required: true }) set column(entry: TableColumn<T, O>) {
     this._column = entry;
     if (entry.key === 'count') {
       this.refreshStatuses = new Subject<void>();
     }
   }
 
-  @Input({ required: true }) set element(entry: T) {
+  @Input({ required: true }) set element(entry: ArmonikData<T, O>) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
     if (entry) {
@@ -58,8 +59,8 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
   private router = inject(Router);
 
   private _value: unknown;
-  private _element: T;
-  private _column: TableColumn<K>;
+  private _element: ArmonikData<T, O>;
+  private _column: TableColumn<T, O>;
 
   private _link: string;
   private _queryParams: Params | undefined;
@@ -126,11 +127,11 @@ export class TableCellComponent<T extends ArmonikData<DataRaw>, K extends RawCol
     }
   }
 
-  handleNestedKeys(element: T) {
+  handleNestedKeys(element: ArmonikData<T, O>) {
     if (element === undefined || element.raw === undefined) {
       return undefined;
     }
-    const keys = `${this.column.key}`.split('.') as unknown as K[];
+    const keys = this.column.key.toString().split('.');
     let resultObject: {[key: string]: object} = element.raw as unknown as {[key: string]: object};
     keys.forEach(key => {
       resultObject = resultObject[key] as {[key: string]: object};

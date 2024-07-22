@@ -1,4 +1,4 @@
-import { SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { DashboardStorageService } from '@app/dashboard/services/dashboard-stora
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { TaskOptions } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandlerCustomValues } from '@app/types/components';
 import { TableType } from '@app/types/table';
@@ -30,7 +31,7 @@ import { SessionsTableComponent } from './components/table.component';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
-import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from './types';
+import { SessionRaw } from './types';
 
 @Component({
   selector: 'app-sessions-index',
@@ -72,7 +73,7 @@ import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '.
     SessionsTableComponent
   ]
 })
-export class IndexComponent extends TableHandlerCustomValues<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters, SessionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
 

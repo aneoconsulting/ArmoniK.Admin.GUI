@@ -1,5 +1,5 @@
 import { TaskOptions } from '@app/tasks/types';
-import { DataRaw, FieldKey, RawColumnKey } from '@app/types/data';
+import { ColumnKey, DataRaw, FieldKey } from '@app/types/data';
 
 export type ColumnType = 'link' | 'count' | 'object' | 'actions' | 'date' | 'duration' | 'status' | 'select' | 'raw' | 'array';
 
@@ -9,9 +9,9 @@ export type Field<T extends DataRaw, O extends TaskOptions | null = null> = {
   link?: string;
 };
 
-export type TableColumn<K extends RawColumnKey> = {
+export type TableColumn<T extends DataRaw, O extends TaskOptions | null = null> = {
   name: string;
-  key: K;
+  key: ColumnKey<T, O>;
   type?: ColumnType;
   sortable: boolean;
   link?: string;

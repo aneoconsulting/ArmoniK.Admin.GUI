@@ -6,7 +6,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
-import { PartitionData } from '@app/types/data';
+import { ColumnKey, PartitionData } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -14,12 +15,12 @@ import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsTableComponent } from './table.component';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFilters } from '../types';
+import { PartitionRaw } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: PartitionsTableComponent;
 
-  const displayedColumns: TableColumn<PartitionRawColumnKey>[] = [
+  const displayedColumns: TableColumn<PartitionRaw>[] = [
     {
       name: 'Count',
       key: 'count',
@@ -133,7 +134,7 @@ describe('TasksTableComponent', () => {
     }).inject(PartitionsTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.filters$ = new BehaviorSubject<PartitionRawFilters>([]);
+    component.filters$ = new BehaviorSubject<FiltersOr<PartitionRawEnumField>>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -272,7 +273,7 @@ describe('TasksTableComponent', () => {
   });
 
   test('onDrop should call PartitionsIndexService', () => {
-    const newColumns: PartitionRawColumnKey[] = ['actions', 'id', 'parentPartitionIds', 'preemptionPercentage'];
+    const newColumns: ColumnKey<PartitionRaw>[] = ['actions', 'id', 'parentPartitionIds', 'preemptionPercentage'];
     component.onDrop(newColumns);
     expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
@@ -377,5 +378,10 @@ describe('TasksTableComponent', () => {
       const partition2 = { id: 'partition2' } as PartitionRaw;
       expect(component.isDataRawEqual(partition1, partition2)).toBeFalsy();
     });
+  });
+
+  it('should track a partition by its id', () => {
+    const partition = {raw: { id: 'partition' }} as PartitionData;
+    expect(component.trackBy(0, partition)).toEqual(partition.raw.id);
   });
 });

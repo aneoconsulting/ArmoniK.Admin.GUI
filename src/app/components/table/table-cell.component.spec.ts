@@ -10,7 +10,7 @@ import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } fro
 import { TableCellComponent } from './table-cell.component';
 
 describe('TableCellComponent', () => {
-  let component: TableCellComponent<ArmonikData<DataRaw>, SessionRawColumnKey, SessionStatus>;
+  let component: TableCellComponent<SessionRaw, SessionStatus, TaskOptions>;
 
   const options = {
     applicationName: 'application-name',
@@ -22,7 +22,7 @@ describe('TableCellComponent', () => {
     nanos: 0,
   });
 
-  const column: TableColumn<SessionRawColumnKey> = {
+  const column: TableColumn<SessionRaw, TaskOptions> = {
     key: 'sessionId',
     name: 'Session ID',
     sortable: true,
@@ -42,7 +42,7 @@ describe('TableCellComponent', () => {
   const queryParamsMap = new Map<SessionRawColumnKey, { [key: string]: string }>();
   queryParamsMap.set('sessionId', { sessionId: 'session-id' });
 
-  const element: SessionData = {
+  const element: ArmonikData<SessionRaw, TaskOptions> = {
     raw: {
       sessionId: 'session-id',
       status: SessionStatus.SESSION_STATUS_RUNNING,
@@ -74,11 +74,11 @@ describe('TableCellComponent', () => {
         TableCellComponent,
         { provide: Router, useValue: mockRouter }
       ]
-    }).inject(TableCellComponent);
+    }).inject(TableCellComponent<SessionRaw, SessionStatus, TaskOptions>);
 
     component.statusesService = new SessionsStatusesService();
     component.column = column;
-    component.element = element as ArmonikData<DataRaw>;
+    component.element = element;
   });
 
   it('should create', () => {
@@ -104,7 +104,7 @@ describe('TableCellComponent', () => {
   describe('simple value', () => {
     beforeEach(() => {
       component.column = column;
-      component.element = element as ArmonikData<DataRaw>;
+      component.element = element;
     });
 
     it('should set value', () => {
@@ -119,12 +119,12 @@ describe('TableCellComponent', () => {
       sortable: false,
     };
     const spy = jest.spyOn(component.refreshStatuses, 'next');
-    component.element = element as ArmonikData<DataRaw>;
+    component.element = element;
     expect(spy).toHaveBeenCalled();
   });
 
   test('undefined element should return undefined value', () => {
-    component.element = undefined as unknown as ArmonikData<DataRaw>;
+    component.element = undefined as unknown as ArmonikData<SessionRaw, TaskOptions>;
     expect(component.value).toBeUndefined();
   });
 
@@ -139,7 +139,7 @@ describe('TableCellComponent', () => {
       };
       const elementCopy = structuredClone(element);
       elementCopy.queryParams = undefined;
-      component.element = elementCopy as ArmonikData<DataRaw>;
+      component.element = elementCopy;
     });
 
     it('should set link', () => {
@@ -155,7 +155,7 @@ describe('TableCellComponent', () => {
         sortable: true,
         name: 'Duration'
       };
-      component.element = element as ArmonikData<DataRaw>;
+      component.element = element;
     });
 
     it('should set durationValue', () => {
@@ -174,7 +174,7 @@ describe('TableCellComponent', () => {
         sortable: true,
         name: 'Status'
       };
-      component.element = element as ArmonikData<DataRaw>;
+      component.element = element;
     });
 
     it('should set statusValue', () => {
@@ -191,7 +191,7 @@ describe('TableCellComponent', () => {
       column.key = 'createdAt';
       column.type = 'date';
       component.column = column;
-      component.element = element as unknown as ArmonikData<DataRaw>;
+      component.element = element;
     });
 
     it('should set dateValue', () => {
@@ -201,7 +201,7 @@ describe('TableCellComponent', () => {
     it('should return null if value is undefined', () => {
       component.element = {
         raw: {}
-      } as unknown as ArmonikData<DataRaw>;
+      } as ArmonikData<SessionRaw, TaskOptions>;
       expect(component.dateValue).toBeNull();
     });
   });
@@ -214,7 +214,7 @@ describe('TableCellComponent', () => {
         sortable: true,
         name: 'Options'
       };
-      component.element = element as unknown as ArmonikData<DataRaw>;
+      component.element = element;
     });
 
     it('should set value', () => {
@@ -225,7 +225,7 @@ describe('TableCellComponent', () => {
   describe('selection', () => {
     beforeEach(() => {
       component.column.key = 'sessionId';
-      component.element = element as unknown as ArmonikData<DataRaw>;
+      component.element = element;
     });
 
     it('should emit changeSelection', () => {
@@ -257,7 +257,7 @@ describe('TableCellComponent', () => {
     });
 
     it('should create a link with queryParams', () => {
-      component.element = element as ArmonikData<DataRaw>;
+      component.element = element;
       component.createLink();
       expect(component.link).toEqual('/sessions');
     });
@@ -266,7 +266,7 @@ describe('TableCellComponent', () => {
       const elementCopy = structuredClone(element);
       elementCopy.queryParams = undefined;
       elementCopy.raw.sessionId = 'session-id';
-      component.element = elementCopy as ArmonikData<DataRaw>;
+      component.element = elementCopy;
       component.createLink();
       expect(component.link).toEqual(`${component.column.link}/${elementCopy.raw[component.column.key as keyof DataRaw]}`);
     });

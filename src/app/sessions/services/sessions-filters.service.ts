@@ -1,4 +1,4 @@
-import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -9,7 +9,7 @@ import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionR
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawFilters, SessionRawEnumField, SessionTaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(SessionsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);

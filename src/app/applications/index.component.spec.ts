@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject, of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
+import { ColumnKey } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -11,13 +12,13 @@ import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
+import { ApplicationRaw, ApplicationRawFilters, ApplicationRawListOptions } from './types';
 
 describe('Application component', () => {
 
   let component: IndexComponent;
 
-  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ApplicationRaw>[] = [
     {
       name: 'Name',
       key: 'name',
@@ -209,7 +210,7 @@ describe('Application component', () => {
   });
 
   it('should change columns', () => {
-    const newColumns: ApplicationRawColumnKey[] = ['name', 'count', 'service'];
+    const newColumns: ColumnKey<ApplicationRaw>[] = ['name', 'count', 'service'];
     component.onColumnsChange(newColumns);
     expect(component.displayedColumnsKeys).toEqual(newColumns);
     expect(mockApplicationIndexService.saveColumns).toHaveBeenCalledWith(newColumns);

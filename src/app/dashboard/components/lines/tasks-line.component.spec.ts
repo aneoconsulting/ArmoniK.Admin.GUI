@@ -1,27 +1,30 @@
+import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of, throwError } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
-import { TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '@app/tasks/types';
+import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { ColumnKey, CustomColumn } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksLineComponent } from './tasks-line.component';
-import { Line } from '../../types';
+import { TableLine } from '../../types';
 
 describe('TasksLineComponent', () => {
   let component: TasksLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: TaskSummaryColumnKey[] = ['id', 'options.applicationName', 'actions', 'status'];
+  const defaultColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'options.applicationName', 'actions', 'status'];
   const customColumns: CustomColumn[] = ['options.options.FastCompute'];
 
-  const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
+  const displayedColumns: TableColumn<TaskSummary, TaskOptions>[] = [
     {
       key: 'id',
       name: 'ID',
@@ -49,16 +52,16 @@ describe('TasksLineComponent', () => {
     }
   ];
 
-  const options: TaskSummaryListOptions = {
+  const options: ListOptions<TaskSummary, TaskOptions> = {
     pageIndex: 0,
     pageSize: 5,
     sort: {
-      active: 'name' as TaskSummaryFieldKey,
+      active: 'id',
       direction: 'desc',
     },
   };
 
-  const line: Line = {
+  const line: TableLine<TaskSummary, TaskOptions> = {
     name: 'Tasks',
     type: 'Tasks',
     displayedColumns: [...displayedColumns.map(c => c.key), ...customColumns],
@@ -215,7 +218,7 @@ describe('TasksLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
-    const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
+    const newFilters: FiltersOr<TaskSummaryEnumField, TaskOptionEnumField> = [[{for: 'root', field: 0, operator: 1, value: 2}]];
 
     it('should update applied filters', () => {
       component.onFiltersChange(newFilters);
@@ -241,11 +244,11 @@ describe('TasksLineComponent', () => {
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: TaskSummaryColumnKey[] = ['id', 'acquiredAt', 'creationToEndDuration'];
+    const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['id', 'acquiredAt', 'creationToEndDuration'];
 
     beforeEach(() => {
-      component.displayedColumnsKeys = ['count', 'id'] as TaskSummaryColumnKey[];
-      component.line.displayedColumns = ['id', 'podReserved'] as TaskSummaryColumnKey[];
+      component.displayedColumnsKeys = ['count', 'id'] as ColumnKey<TaskSummary, TaskOptions>[];
+      component.line.displayedColumns = ['id', 'podReserved'] as ColumnKey<TaskSummary, TaskOptions>[];
     });
 
     it('should change displayedColumns', () => {
@@ -267,8 +270,8 @@ describe('TasksLineComponent', () => {
 
   describe('onColumnsReset', () => {
     beforeEach(() => {
-      component.displayedColumnsKeys = ['preemptionPercentage', 'id'] as TaskSummaryColumnKey[];
-      component.line.displayedColumns = ['count', 'actions'] as TaskSummaryColumnKey[];
+      component.displayedColumnsKeys = ['preemptionPercentage', 'id'] as ColumnKey<TaskSummary, TaskOptions>[];
+      component.line.displayedColumns = ['count', 'actions'] as ColumnKey<TaskSummary, TaskOptions>[];
     });
 
     it('should reset to default columns', () => {

@@ -1,4 +1,4 @@
-import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -7,8 +7,10 @@ import { Router } from '@angular/router';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { SessionData } from '@app/types/data';
+import { ColumnKey, SessionData } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -18,12 +20,12 @@ import { SessionsTableComponent } from './table.component';
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFilters } from '../types';
+import { SessionRaw } from '../types';
 
 describe('SessionsTableComponent', () => {
   let component: SessionsTableComponent;
 
-  const displayedColumns: TableColumn<SessionRawColumnKey>[] = [
+  const displayedColumns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
       name: 'Session ID',
       key: 'sessionId',
@@ -173,7 +175,7 @@ describe('SessionsTableComponent', () => {
     }).inject(SessionsTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.filters$ = new BehaviorSubject<SessionRawFilters>([]);
+    component.filters$ = new BehaviorSubject<FiltersOr<SessionRawEnumField, TaskOptionEnumField>>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -526,7 +528,7 @@ describe('SessionsTableComponent', () => {
 
   describe('filterHadCreatedAt', () => {
     it('should return true if the filters contain a "createdAt" filter', () => {
-      const filters: SessionRawFilters = [[{
+      const filters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [[{
         field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
         for: 'root',
         operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
@@ -773,7 +775,7 @@ describe('SessionsTableComponent', () => {
   });
 
   test('onDrop should call sessionsIndexService', () => {
-    const newColumns: SessionRawColumnKey[] = ['actions', 'sessionId', 'status'];
+    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['actions', 'sessionId', 'status'];
     component.onDrop(newColumns);
     expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
@@ -903,5 +905,10 @@ describe('SessionsTableComponent', () => {
       const session2 = { sessionId: 'session1' } as SessionRaw;
       expect(component.isDataRawEqual(session1, session2)).toBeFalsy();
     });
+  });
+
+  it('should track a session by its id', () => {
+    const session = {raw: { sessionId: 'session' }} as SessionData;
+    expect(component.trackBy(0, session)).toEqual(session.raw.sessionId);
   });
 });

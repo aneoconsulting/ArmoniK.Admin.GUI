@@ -3,15 +3,17 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
+import { ListOptions } from '@app/types/options';
 import { TableComponent } from './table.component';
 
 describe('TableComponent', () => {
-  const component = new TableComponent<SessionRawColumnKey, SessionRaw, SessionData, SessionStatus>();
+  const component = new TableComponent<SessionRaw, SessionStatus, TaskOptions>();
 
-  const columns: TableColumn<SessionRawColumnKey>[] = [
+  const columns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
       key: 'sessionId',
       name: 'Session ID',
@@ -48,7 +50,7 @@ describe('TableComponent', () => {
     }
   ];
 
-  const options: SessionRawListOptions = {
+  const options: ListOptions<SessionRaw, TaskOptions> = {
     pageIndex: 1,
     pageSize: 10,
     sort: {
@@ -234,44 +236,9 @@ describe('TableComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  describe('trackByElement', () => {
-    it('should track a session', () => {
-      const sessionId = 'session';
-      const session = {raw: {sessionId: sessionId}} as unknown as SessionData;
-      expect(component.trackByElement(0, session)).toEqual(sessionId);
-    });
-
-    it('should track a result', () => {
-      const resultId = 'result';
-      const result = {raw: {resultId: resultId, name: 'resultName'}} as unknown as SessionData;
-      expect(component.trackByElement(0, result)).toEqual(resultId);
-    });
-
-    it('should track an application', () => {
-      const applicationName = 'name';
-      const applicationVersion = 'version';
-      const application = {raw: {name: applicationName, version: applicationVersion}} as unknown as SessionData;
-      expect(component.trackByElement(0, application)).toEqual(`${applicationName}-${applicationVersion}`);
-    });
-
-    it('should track a partition', () => {
-      const partitionId = 'partition';
-      const partition = {raw: {id: partitionId}} as unknown as SessionData;
-      expect(component.trackByElement(0, partition)).toEqual(partitionId);
-    });
-
-    it('should track a task', () => {
-      const taskId = 'task';
-      const task = {raw: {id: taskId}} as unknown as SessionData;
-      expect(component.trackByElement(0, task)).toEqual(taskId);
-    });
-
-    it('should track something that has no ID field by their index', () => {
-      const sessionId = undefined;
-      const index = 0;
-      const session = {raw: {sessionId: sessionId}} as unknown as SessionData;
-      expect(component.trackByElement(index, session)).toEqual(index);
-    });
+  it('should track by index', () => {
+    const index = 0;
+    expect(component.trackBy(index, data[0])).toEqual(index);
   });
 
   it('should unsubscribe on destroy', () => {
