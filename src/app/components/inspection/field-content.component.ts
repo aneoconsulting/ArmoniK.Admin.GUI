@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, Field } from '@app/types/column.type';
-import { Custom, DataRaw, RawColumnKey, Status } from '@app/types/data';
+import { Custom, DataRaw, FieldKey, Status } from '@app/types/data';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -71,7 +71,7 @@ import { InspectionComponent } from './inspection.component';
     }
   `]
 })
-export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S extends Status> {
+export class FieldContentComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
   private readonly clipboard = inject(Clipboard);
   private readonly notificationService = inject(NotificationService);
   private readonly iconsService = inject(IconsService);
@@ -79,7 +79,7 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
   readonly viewIcon = this.iconsService.getIcon('view');
   readonly copyIcon = this.iconsService.getIcon('copy');
 
-  @Input({ required: true }) set field(entry: Field<K>) {
+  @Input({ required: true }) set field(entry: Field<T, O>) {
     this._field = entry;
     if (entry.type) {
       this.type = entry.type;
@@ -88,20 +88,20 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
     }
   }
 
-  @Input({ required: true }) set data(entry: D | null) {
+  @Input({ required: true }) set data(entry: T | O | null) {
     if (entry) {
       switch (this.type) {
       case 'status': {
-        this._value = this.statuses[entry[this.field.key as unknown as keyof D] as S];
+        this._value = this.statuses[entry[this.field.key as keyof (T | O)] as S];
         break;
       }
       case 'date': {
-        const date = new Timestamp(entry[this.field.key as unknown as keyof D] as Partial<Timestamp>);
+        const date = new Timestamp(entry[this.field.key as keyof (T | O)] as Partial<Timestamp>);
         this._value = date.toDate();
         break;
       }
       default: {
-        this._value = entry[this.field.key as unknown as keyof D];
+        this._value = entry[this.field.key as keyof (T | O)];
         this.checkIfArray();
       }
       }
@@ -111,14 +111,14 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
   @Input({ required: false }) statuses: Record<S, string>;
 
   type: ColumnType | undefined;
-  private _field: Field<K>;
+  private _field: Field<T, O>;
   private _value: unknown;
 
   get key(): string {
-    return this._field.key;
+    return this._field.key.toString();
   }
 
-  get field(): Field<K> {
+  get field(): Field<T, O> {
     return this._field;
   }
 
@@ -150,8 +150,8 @@ export class FieldContentComponent<K extends RawColumnKey, D extends DataRaw, S 
    * @param value  - key of the field.
    * @returns The guessed type of the field.
    */
-  private guessType(value: string): ColumnType {
-    const key = value.toLowerCase().replace('_', '');
+  private guessType(value: FieldKey<T & O>): ColumnType {
+    const key = value.toString().toLowerCase().replace('_', '');
     if (key.endsWith('at')) {
       return 'date';
     } else if (key.includes('duration') || key.includes('ttl')) {

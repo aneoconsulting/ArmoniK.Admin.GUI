@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
-import { DataRaw, RawColumnKey, Status } from '@app/types/data';
+import { DataRaw, Status } from '@app/types/data';
 import { InspectionComponent } from './inspection.component';
 
 @Component({
@@ -18,9 +19,9 @@ import { InspectionComponent } from './inspection.component';
   }  
   `]
 })
-export class InspectionCardComponent<K extends RawColumnKey, D extends DataRaw, S extends Status> {
+export class InspectionCardComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
   @Input({ required: false }) line: boolean;
-  @Input({ required: false }) fields: Field<K>[];
+  @Input({ required: false }) fields: Field<T, O>[];
   @Input({ required: false }) statuses: Record<S, string>;
-  @Input({ required: true }) data: D | null;
+  @Input({ required: true }) data: T | null;
 }
