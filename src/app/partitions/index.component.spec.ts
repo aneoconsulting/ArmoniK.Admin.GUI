@@ -424,6 +424,7 @@ describe('Partitions Index Component', () => {
         name: 'Partitions',
         type: 'Partitions',
         interval: 10,
+        showFilters: false,
         lockColumns: false,
         displayedColumns: defaultColumns,
         options: defaultOptions,

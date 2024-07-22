@@ -427,6 +427,7 @@ describe('Results Index Component', () => {
         name: 'Results',
         type: 'Results',
         interval: 10,
+        showFilters: false,
         lockColumns: false,
         displayedColumns: defaultColumns,
         options: defaultOptions,

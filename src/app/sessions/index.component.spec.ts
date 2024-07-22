@@ -445,6 +445,7 @@ describe('Sessions Index Component', () => {
         name: 'Sessions',
         type: 'Sessions',
         interval: 10,
+        showFilters: false,
         lockColumns: false,
         displayedColumns: [...defaultColumns, ...defaultCustomColumns],
         options: defaultOptions,

@@ -27,7 +27,7 @@ describe('QueryParamsService', () => {
     const optionsResult = {
       pageIndex:'1',
       pageSize:'10',
-      sortField:'name.service',
+      sortField:'name,service',
       sortDirection:'asc'
     };
     expect(service.createOptions(options)).toEqual(optionsResult);
