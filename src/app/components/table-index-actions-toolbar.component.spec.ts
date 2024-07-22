@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SessionRaw, SessionRawColumnKey } from '@app/sessions/types';
+import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
@@ -11,11 +11,11 @@ describe('TableDashboardActionsToolbarComponent', () => {
   const loading = true;
   const refreshTooltip = 'refreshTooltip';
   const intervalValue = 10;
-  const columnsLabels: Record<SessionRawColumnKey, string> = {
+  const columnsLabels: Record<ColumnKey<SessionRaw, TaskOptions>, string> = {
     'actions': 'Actions',
     'sessionId': 'Session ID',
     'status': 'Status',
-  } as Record<SessionRawColumnKey, string>;
+  } as Record<ColumnKey<SessionRaw, TaskOptions>, string>;
   const displayedColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions'];
   const availableColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions', 'status'];
   const lockColumns = false;
