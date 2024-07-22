@@ -46,7 +46,6 @@ export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryE
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {
     const listTasksRequest = new ListTasksRequest(this.createListRequest(options, filters) as ListTasksRequest);
-    console.log(listTasksRequest);
     return this.grpcClient.listTasks(listTasksRequest);
   }
 
