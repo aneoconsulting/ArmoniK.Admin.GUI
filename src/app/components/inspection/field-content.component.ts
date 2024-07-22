@@ -150,7 +150,7 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
    * @param value  - key of the field.
    * @returns The guessed type of the field.
    */
-  private guessType(value: FieldKey<T & O>): ColumnType {
+  private guessType(value: FieldKey<T & O> | `options.${string}`): ColumnType {
     const key = value.toString().toLowerCase().replace('_', '');
     if (key.endsWith('at')) {
       return 'date';

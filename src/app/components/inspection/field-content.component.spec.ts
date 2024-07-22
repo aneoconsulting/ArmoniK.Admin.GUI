@@ -2,7 +2,7 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { TaskRaw, TaskSummaryColumnKey } from '@app/tasks/types';
+import { TaskOptions, TaskRaw } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { Status } from '@app/types/data';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -11,7 +11,7 @@ import { NotificationService } from '@services/notification.service';
 import { FieldContentComponent } from './field-content.component';
 
 describe('FieldContentComponent', () => {
-  let component: FieldContentComponent<TaskSummaryColumnKey, TaskRaw, TaskStatus>;
+  let component: FieldContentComponent<TaskRaw, TaskStatus, TaskOptions>;
 
   const mockNotificationService = {
     success: jest.fn(),
@@ -43,32 +43,32 @@ describe('FieldContentComponent', () => {
     }
   } as unknown as TaskRaw;
 
-  const field: Field<TaskSummaryColumnKey> = {
+  const field: Field<TaskRaw, TaskOptions> = {
     key: 'id',
   };
 
-  const statusField: Field<TaskSummaryColumnKey> = {
+  const statusField: Field<TaskRaw, TaskOptions> = {
     key: 'status',
     type: 'status',
   };
 
-  const dateField: Field<TaskSummaryColumnKey> = {
+  const dateField: Field<TaskRaw, TaskOptions> = {
     key: 'createdAt',
     type: 'date',
   };
 
-  const durationField: Field<TaskSummaryColumnKey> = {
+  const durationField: Field<TaskRaw, TaskOptions> = {
     key: 'creationToEndDuration',
     type: 'duration',
   };
 
-  const objectField: Field<TaskSummaryColumnKey> = {
+  const objectField: Field<TaskRaw, TaskOptions> = {
     key: 'options',
     type: 'object'
   };
 
-  const arrayField: Field<TaskSummaryColumnKey> = { 
-    key: 'parentTaskIds' as TaskSummaryColumnKey
+  const arrayField: Field<TaskRaw, TaskOptions> = { 
+    key: 'parentTaskIds'
   };
 
   beforeEach(() => {
@@ -79,7 +79,7 @@ describe('FieldContentComponent', () => {
         IconsService,
         FieldContentComponent
       ]
-    }).inject(FieldContentComponent);
+    }).inject(FieldContentComponent<TaskRaw, TaskStatus, TaskOptions>);
     component.statuses = statuses;
   });
 
@@ -226,7 +226,7 @@ describe('FieldContentComponent', () => {
     });
 
     it('should guess an object with "options.options"', () => {
-      component.field = { key: 'options.options' };
+      component.field = { key: 'options' };
       expect(component.type).toEqual('object');
     });
 

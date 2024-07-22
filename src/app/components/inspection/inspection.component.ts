@@ -1,7 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { DataRaw, FieldKey, Status } from '@app/types/data';

@@ -1,9 +1,10 @@
-import { TaskRaw, TaskSummaryColumnKey } from '@app/tasks/types';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskOptions, TaskRaw } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { InspectionComponent } from './inspection.component';
 
 describe('InspectionComponent', () => {
-  const component = new InspectionComponent();
+  const component = new InspectionComponent<TaskRaw, TaskStatus, TaskOptions>();
 
   const data: TaskRaw = {
     id: 'taskId',
@@ -12,7 +13,7 @@ describe('InspectionComponent', () => {
     }
   } as TaskRaw;
 
-  const optionsFields: Field<TaskSummaryColumnKey>[] = [
+  const optionsFields: Field<TaskRaw, TaskOptions>[] = [
     {
       key: 'options.options',
       type: 'object'
@@ -21,11 +22,11 @@ describe('InspectionComponent', () => {
       key: 'options.options.FastCompute'
     },
     {
-      key: 'options.applicationName'
+      key: 'options.options.applicationName'
     }
   ];
 
-  const fields: Field<TaskSummaryColumnKey>[] = [
+  const fields: Field<TaskRaw, TaskOptions>[] = [
     {
       key: 'id',
       type: 'link',
@@ -74,7 +75,7 @@ describe('InspectionComponent', () => {
     it('should set data keys as fields if none are provided', () => {
       component.fields = [];
       component.data = data;
-      expect(component.fields).toEqual([{key: 'id'}, {key: 'options'}]);
+      expect(component.fields).toEqual([{ key: 'id' }, { key: 'options' }]);
     });
   });
 
@@ -84,11 +85,11 @@ describe('InspectionComponent', () => {
 
   describe('checkObject', () => {
     it('should return true if the type is "object"', () => {
-      expect(component.checkObject({key: 'options', type: 'object'})).toBeTruthy();
+      expect(component.checkObject({ key: 'options', type: 'object' })).toBeTruthy();
     });
 
     it('should return true if the key is "options"', () => {
-      expect(component.checkObject({key: '_options' as TaskSummaryColumnKey})).toBeTruthy();
+      expect(component.checkObject({ key: '_options' } as unknown as Field<TaskRaw, TaskOptions>)).toBeTruthy();
     });
   });
 });
