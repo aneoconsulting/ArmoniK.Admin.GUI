@@ -1,11 +1,11 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { TaskRaw, TaskSummaryColumnKey } from '@app/tasks/types';
+import { TaskOptions, TaskRaw } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { Status } from '@app/types/data';
 import { InspectionCardComponent } from './inspection-card.component';
 
 describe('InspectionCardComponent', () => {
-  const component = new InspectionCardComponent();
+  const component = new InspectionCardComponent<TaskRaw, TaskStatus, TaskOptions>();
 
   const data: TaskRaw = {
     id: 'taskId',
@@ -14,7 +14,7 @@ describe('InspectionCardComponent', () => {
     }
   } as TaskRaw;
 
-  const fields: Field<TaskSummaryColumnKey>[] = [
+  const fields: Field<TaskRaw, TaskOptions>[] = [
     {
       key: 'id',
       type: 'link',
