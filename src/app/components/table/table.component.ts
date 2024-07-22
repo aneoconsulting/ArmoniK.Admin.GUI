@@ -57,7 +57,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: true }) lockColumns: boolean;
 
   // Optional inputs
-  @Input({ required: false }) actions: ActionTable<T>[];
+  @Input({ required: false }) actions: ActionTable<T, O>[];
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
