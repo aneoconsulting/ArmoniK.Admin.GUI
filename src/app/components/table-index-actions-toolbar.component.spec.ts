@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { SessionRawColumnKey } from '@app/sessions/types';
-import { ColumnKey, RawColumnKey } from '@app/types/data';
+import { SessionRaw, SessionRawColumnKey } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
+import { ColumnKey } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { TableIndexActionsToolbarComponent } from './table-index-actions-toolbar.component';
 
 describe('TableDashboardActionsToolbarComponent', () => {
-  let component: TableIndexActionsToolbarComponent<object, object>;
+  let component: TableIndexActionsToolbarComponent<SessionRaw, TaskOptions>;
 
   const loading = true;
   const refreshTooltip = 'refreshTooltip';
@@ -15,8 +16,8 @@ describe('TableDashboardActionsToolbarComponent', () => {
     'sessionId': 'Session ID',
     'status': 'Status',
   } as Record<SessionRawColumnKey, string>;
-  const displayedColumns: RawColumnKey[] = ['sessionId', 'actions'];
-  const availableColumns: RawColumnKey[] = ['sessionId', 'actions', 'status'];
+  const displayedColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions'];
+  const availableColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions', 'status'];
   const lockColumns = false;
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe('TableDashboardActionsToolbarComponent', () => {
         TableIndexActionsToolbarComponent,
         IconsService
       ]
-    }).inject(TableIndexActionsToolbarComponent);
+    }).inject(TableIndexActionsToolbarComponent<SessionRaw, TaskOptions>);
     component.loading = loading;
     component.refreshTooltip = refreshTooltip;
     component.intervalValue = intervalValue;
@@ -58,7 +59,7 @@ describe('TableDashboardActionsToolbarComponent', () => {
 
   it('should emit columns change', () => {
     const spy = jest.spyOn(component.displayedColumnsChange, 'emit');
-    const columns = ['actions', 'sessionId'] as ColumnKey<object, object>[];
+    const columns = ['actions', 'sessionId'] as ColumnKey<SessionRaw, TaskOptions>[];
     component.onColumnsChange(columns);
     expect(spy).toHaveBeenCalledWith(columns);
   });

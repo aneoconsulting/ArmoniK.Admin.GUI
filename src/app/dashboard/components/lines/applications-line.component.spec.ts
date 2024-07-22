@@ -1,24 +1,27 @@
+import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
+import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { TableColumn } from '@app/types/column.type';
+import { ColumnKey } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ApplicationsLineComponent } from './applications-line.component';
-import { Line } from '../../types';
+import { TableLine } from '../../types';
 
 describe('ApplicationsLineComponent', () => {
   let component: ApplicationsLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: ApplicationRawColumnKey[] = ['name', 'count'];
+  const defaultColumns: ColumnKey<ApplicationRaw>[] = ['name', 'count'];
 
-  const displayedColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ApplicationRaw>[] = [
     {
       name: 'Name',
       key: 'name',
@@ -62,7 +65,7 @@ describe('ApplicationsLineComponent', () => {
     },
   };
 
-  const line: Line = {
+  const line: TableLine<ApplicationRaw> = {
     name: 'Tasks',
     type: 'Applications',
     displayedColumns: displayedColumns.map(c => c.key),
@@ -201,7 +204,7 @@ describe('ApplicationsLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
-    const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
+    const newFilters: FiltersOr<ApplicationRawEnumField> = [[{for: 'root', field: 0, operator: 1, value: 2}]];
 
     it('should update applied filters', () => {
       component.onFiltersChange(newFilters);

@@ -38,7 +38,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  @Input({ required: true }) set element(entry: ArmonikData<T>) {
+  @Input({ required: true }) set element(entry: ArmonikData<T, O>) {
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
     if (entry) {
@@ -59,7 +59,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
   private router = inject(Router);
 
   private _value: unknown;
-  private _element: ArmonikData<T>;
+  private _element: ArmonikData<T, O>;
   private _column: TableColumn<T, O>;
 
   private _link: string;
@@ -127,7 +127,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  handleNestedKeys(element: ArmonikData<T>) {
+  handleNestedKeys(element: ArmonikData<T, O>) {
     if (element === undefined || element.raw === undefined) {
       return undefined;
     }

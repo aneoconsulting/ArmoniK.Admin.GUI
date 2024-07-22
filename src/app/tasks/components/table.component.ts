@@ -83,22 +83,22 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   selection: string[];
 
-  copy$ = new Subject<ArmonikData<TaskSummary>>();
+  copy$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data));
 
-  seeResult$ = new Subject<ArmonikData<TaskSummary>>();
+  seeResult$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: (data as TaskData).resultsQueryParams }));
 
-  retries$ = new Subject<ArmonikData<TaskSummary>>();
+  retries$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
 
-  cancelTask$ = new Subject<ArmonikData<TaskSummary>>();
+  cancelTask$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
 
-  openViewInLogs$ = new Subject<ArmonikData<TaskSummary>>();
+  openViewInLogs$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
   
-  actions: ActionTable<TaskSummary>[] = [
+  actions: ActionTable<TaskSummary, TaskOptions>[] = [
     {
       label: $localize`Copy Task ID`,
       icon: 'copy',
@@ -113,13 +113,13 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       label: $localize`Retries`,
       icon: 'published_with_changes',
       action$: this.retries$,
-      condition: (element: ArmonikData<TaskSummary>) => this.isRetried(element.raw),
+      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.isRetried(element.raw),
     },
     {
       label: $localize`Cancel task`,
       icon: 'cancel',
       action$: this.cancelTask$,
-      condition: (element: ArmonikData<TaskSummary>) => this.canCancelTask(element.raw),
+      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.canCancelTask(element.raw),
     },
   ];
 
@@ -179,7 +179,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return null;
   }
 
-  onCopiedTaskId(element: ArmonikData<TaskSummary>) {
+  onCopiedTaskId(element: ArmonikData<TaskSummary, TaskOptions>) {
     this.clipboard.copy(element.raw.id);
     this.notificationService.success('Task ID copied to clipboard');
   }
@@ -230,7 +230,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     }
   }
 
-  trackBy(index: number, item: ArmonikData<TaskSummary>) {
+  trackBy(index: number, item: ArmonikData<TaskSummary, TaskOptions>) {
     return item.raw.id;
   }
 }

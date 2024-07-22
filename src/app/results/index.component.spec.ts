@@ -5,7 +5,9 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { ColumnKey, CustomColumn } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -14,7 +16,7 @@ import { IndexComponent } from './index.component';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
-import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
+import { ResultRaw } from './types';
 
 describe('Results Index Component', () => {
   let component: IndexComponent;
@@ -41,8 +43,8 @@ describe('Results Index Component', () => {
     navigate: jest.fn()
   };
 
-  const defaultColumns: ResultRawColumnKey[] = ['resultId', 'actions', 'createdAt', 'size'];
-  const defaultOptions: ResultRawListOptions = {
+  const defaultColumns: ColumnKey<ResultRaw>[] = ['resultId', 'actions', 'createdAt', 'size'];
+  const defaultOptions: ListOptions<ResultRaw> = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -50,7 +52,7 @@ describe('Results Index Component', () => {
       direction: 'desc'
     }
   };
-  const availableTableColumns: TableColumn<ResultRawColumnKey>[] = [
+  const availableTableColumns: TableColumn<ResultRaw>[] = [
     {
       name: $localize`Result ID`,
       key: 'resultId',
@@ -255,7 +257,7 @@ describe('Results Index Component', () => {
   });
 
   describe('On columns change', () => {
-    const newColumns: ResultRawColumnKey[] = ['resultId', 'createdAt'];
+    const newColumns: ColumnKey<ResultRaw>[] = ['resultId', 'createdAt'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
@@ -328,7 +330,7 @@ describe('Results Index Component', () => {
 
   describe('On Filters Change', () => {
 
-    const newFilters: ResultRawFilters = [
+    const newFilters: FiltersOr<ResultRawEnumField> = [
       [
         {
           field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_NAME,

@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
-import { ResultData } from '@app/types/data';
+import { ColumnKey, ResultData } from '@app/types/data';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -11,12 +11,12 @@ import { ResultsTableComponent } from './table.component';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilters } from '../types';
+import { ResultRaw, ResultRawFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: ResultsTableComponent;
 
-  const displayedColumns: TableColumn<ResultRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ResultRaw>[] = [
     {
       name: 'Result ID',
       key: 'resultId',
@@ -203,7 +203,7 @@ describe('TasksTableComponent', () => {
   });
 
   test('onDrop should call ResultsIndexService', () => {
-    const newColumns: ResultRawColumnKey[] = ['actions', 'resultId', 'status'];
+    const newColumns: ColumnKey<ResultRaw>[] = ['actions', 'resultId', 'status'];
     component.onDrop(newColumns);
     expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });

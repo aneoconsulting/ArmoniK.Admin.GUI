@@ -1,6 +1,5 @@
 import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { IndexListOptions } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { QueryParamsService } from './query-params.service';
@@ -45,7 +44,7 @@ describe('Share Url service', () => {
           }
         };
         const optionsResult = 'pageIndex=1&pageSize=10&sortField=name,service&sortDirection=asc';
-        expect(service.generateSharableURL(options as IndexListOptions, null))
+        expect(service.generateSharableURL(options as ListOptions<ApplicationRaw>, null))
           .toBe(`${urlRoot}?${optionsResult}`);
       });
       it('when field is descending', () => {
@@ -58,7 +57,7 @@ describe('Share Url service', () => {
           }
         };
         const optionsResult = 'pageIndex=1&pageSize=10&sortField=name,service&sortDirection=desc';
-        expect(service.generateSharableURL(options as IndexListOptions, null))
+        expect(service.generateSharableURL(options as ListOptions<ApplicationRaw>, null))
           .toBe(`${urlRoot}?${optionsResult}`);
       });
       it('when there is only one field', () => {
@@ -71,7 +70,7 @@ describe('Share Url service', () => {
           }
         };
         const optionsResult = 'pageIndex=1&pageSize=10&sortField=service&sortDirection=desc';
-        expect(service.generateSharableURL(options as IndexListOptions, null))
+        expect(service.generateSharableURL(options as ListOptions<ApplicationRaw>, null))
           .toBe(`${urlRoot}?${optionsResult}`);
       });
       it('when there is no field', () => {
@@ -84,7 +83,7 @@ describe('Share Url service', () => {
           }
         };
         const optionsResult = 'pageIndex=1&pageSize=10&sortDirection=desc';
-        expect(service.generateSharableURL(options as IndexListOptions, null))
+        expect(service.generateSharableURL(options as ListOptions<ApplicationRaw>, null))
           .toBe(`${urlRoot}?${optionsResult}`);
       });
     });
@@ -188,7 +187,7 @@ describe('Share Url service', () => {
       }]];
       const optionsResult = 'pageIndex=1&pageSize=10&sortDirection=desc';
       const filterResult = '0-root-2-1=filterValue';
-      expect(service.generateSharableURL(options as IndexListOptions, filters))
+      expect(service.generateSharableURL(options as ListOptions<ApplicationRaw>, filters))
         .toBe(`${urlRoot}?${optionsResult}&${filterResult}`);
     });
   });

@@ -5,7 +5,9 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { ColumnKey, CustomColumn } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -14,7 +16,7 @@ import { IndexComponent } from './index.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from './types';
+import { PartitionRaw } from './types';
 
 describe('Partitions Index Component', () => {
   let component: IndexComponent;
@@ -41,8 +43,8 @@ describe('Partitions Index Component', () => {
     navigate: jest.fn()
   };
 
-  const defaultColumns: PartitionRawColumnKey[] = ['id', 'actions', 'podMax', 'priority'];
-  const defaultOptions: PartitionRawListOptions = {
+  const defaultColumns: ColumnKey<PartitionRaw>[] = ['id', 'actions', 'podMax', 'priority'];
+  const defaultOptions: ListOptions<PartitionRaw> = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -50,7 +52,7 @@ describe('Partitions Index Component', () => {
       direction: 'desc'
     }
   };
-  const availableTableColumns: TableColumn<PartitionRawColumnKey>[] = [
+  const availableTableColumns: TableColumn<PartitionRaw>[] = [
     {
       name: $localize`ID`,
       key: 'id',
@@ -254,7 +256,7 @@ describe('Partitions Index Component', () => {
   });
 
   describe('On columns change', () => {
-    const newColumns: PartitionRawColumnKey[] = ['id', 'count'];
+    const newColumns: ColumnKey<PartitionRaw>[] = ['id', 'count'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
@@ -325,7 +327,7 @@ describe('Partitions Index Component', () => {
   });
 
   describe('On Filters Change', () => {
-    const newFilters: PartitionRawFilters = [
+    const newFilters: FiltersOr<PartitionRawEnumField> = [
       [
         {
           field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,

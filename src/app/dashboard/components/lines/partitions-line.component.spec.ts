@@ -1,24 +1,27 @@
+import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
+import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
 import { TableColumn } from '@app/types/column.type';
+import { ColumnKey } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { PartitionsLineComponent } from './partitions-line.component';
-import { Line } from '../../types';
+import { TableLine } from '../../types';
 
 describe('PartitionsLineComponent', () => {
   let component: PartitionsLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: PartitionRawColumnKey[] = ['id', 'count'];
+  const defaultColumns: ColumnKey<PartitionRaw>[] = ['id', 'count'];
 
-  const displayedColumns: TableColumn<PartitionRawColumnKey>[] = [
+  const displayedColumns: TableColumn<PartitionRaw>[] = [
     {
       key: 'id',
       name: 'ID',
@@ -55,7 +58,7 @@ describe('PartitionsLineComponent', () => {
     },
   };
 
-  const line: Line = {
+  const line: TableLine<PartitionRaw> = {
     name: 'Tasks',
     type: 'Partitions',
     displayedColumns: displayedColumns.map(c => c.key),
@@ -193,7 +196,7 @@ describe('PartitionsLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
-    const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
+    const newFilters: FiltersOr<PartitionRawEnumField> = [[{for: 'root', field: 0, operator: 1, value: 2}]];
 
     it('should update applied filters', () => {
       component.onFiltersChange(newFilters);
