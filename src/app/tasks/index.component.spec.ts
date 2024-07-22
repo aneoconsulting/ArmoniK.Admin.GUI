@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { TableLine } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
@@ -461,13 +462,14 @@ describe('Tasks Index Component', () => {
   describe('Adding table as a line to dashboard', () => {
     it('should add a line', () => {
       component.onAddToDashboard();
-      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith({
+      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith<TableLine<TaskSummary, TaskOptions>[]>({
         name: 'Tasks',
         type: 'Tasks',
         interval: 10,
         showFilters: false,
         lockColumns: false,
         displayedColumns: [...defaultColumns, ...defaultCustomColumns],
+        customColumns: defaultCustomColumns,
         options: defaultOptions,
         filters: [],
       });
