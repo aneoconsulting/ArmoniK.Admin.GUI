@@ -1,24 +1,19 @@
 import { ApplicationFilterField, ApplicationsClient, CancelSessionResponse, CancelTasksResponse, CountTasksByStatusResponse, GetPartitionResponse, GetResultResponse, GetSessionResponse, GetTaskResponse, PartitionFilterField, PartitionsClient, ResultFilterField, ResultsClient, SessionFilterField, SessionsClient, TaskFilterField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApplicationRawFieldKey } from '@app/applications/types';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
-import { PartitionRawFieldKey } from '@app/partitions/types';
-import { ResultRawFieldKey } from '@app/results/types';
-import { SessionRawFieldKey } from '@app/sessions/types';
-import { TaskSummaryFieldKey } from '@app/tasks/types';
+import { TaskOptions } from '@app/tasks/types';
 import { FilterField, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { FiltersServiceInterface } from './filtersService';
-import { GrpcResponse, IndexListOptions } from '../data';
+import { DataRaw, FieldKey, GrpcResponse } from '../data';
 import { FilterDefinition } from '../filter-definition';
-import { Filter, FilterType, FiltersAnd, FiltersOr, RawFilters } from '../filters';
+import { Filter, FilterType, FiltersAnd, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { ListOptions } from '../options';
 
 export type GrpcClient = TasksClient | ApplicationsClient | ResultsClient | SessionsClient | PartitionsClient;
 export type GetResponse = GetTaskResponse | GetPartitionResponse | GetResultResponse | GetSessionResponse;
 export type CancelResponse = CancelSessionResponse | CancelTasksResponse;
 export type CountByStatusResponse = CountTasksByStatusResponse;
-export type DataFieldKey = SessionRawFieldKey | TaskSummaryFieldKey | ApplicationRawFieldKey | PartitionRawFieldKey | ResultRawFieldKey;
 export type RequestFilterField = TaskFilterField.AsObject | SessionFilterField.AsObject | PartitionFilterField.AsObject | ApplicationFilterField.AsObject | ResultFilterField.AsObject;
 
 export type ListDefaultSortField = {
@@ -46,16 +41,16 @@ export interface GrpcCancelManyInterface<R extends CancelResponse> {
   cancel$(ids: string[]): Observable<R>;
 }
 
-export interface GrpcCountByStatusInterface<R extends RawFilters> {
+export interface GrpcCountByStatusInterface<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   readonly grpcClient: GrpcClient;
-  countByStatus$(filters: R): Observable<CountByStatusResponse>;
+  countByStatus$(filters: FiltersOr<F, FO>): Observable<CountByStatusResponse>;
 }
 
-export abstract class GrpcTableService<K extends DataFieldKey, O extends IndexListOptions, F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
-  abstract readonly sortFields: Record<K, F>;
+export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
+  abstract readonly sortFields: Record<FieldKey<T>, F>;
   
   abstract readonly grpcClient: GrpcClient;
-  abstract readonly filterService: FiltersServiceInterface<RawFilters, F>;
+  abstract readonly filterService: FiltersServiceInterface<F, FO>;
 
   readonly utilsService = inject(UtilsService<F, FO>);
   
@@ -71,13 +66,13 @@ export abstract class GrpcTableService<K extends DataFieldKey, O extends IndexLi
    * }
    * ```
    */
-  abstract list$(options: O, filters: FiltersOr<F, FO>): Observable<GrpcResponse>;
+  abstract list$(options: ListOptions<T, O>, filters: FiltersOr<F, FO>): Observable<GrpcResponse>;
 
   /**
    * The sort field can be either an option, custom or basic enum field.
    * Since the parent class cannot make the difference between two enum field (for example taskSummaryField and sessionRawField), you have to implement it yourself.
    */
-  abstract createSortField(field: K): ListRequestSortField;
+  abstract createSortField(field: FieldKey<T & O>): ListRequestSortField;
 
   /**
    * The filter field can be either an option, custom or basic enum field.
@@ -94,9 +89,9 @@ export abstract class GrpcTableService<K extends DataFieldKey, O extends IndexLi
    * Creates the gRPC list request needed to list the required data.
    * Will transform filters before making the request. 
    */
-  createListRequest(options: O, filters: FiltersOr<F, FO>) {
+  createListRequest(options: ListOptions<T, O>, filters: FiltersOr<F, FO>) {
     const requestFilter = this.createFilters(filters, this.filterService.filtersDefinitions as FilterDefinition<F, FO>[]);
-    const sortField = this.createSortField(options.sort.active as K);
+    const sortField = this.createSortField(options.sort.active);
 
     return {
       page: options.pageIndex,

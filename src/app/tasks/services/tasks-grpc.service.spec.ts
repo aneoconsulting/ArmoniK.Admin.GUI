@@ -6,7 +6,7 @@ import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksGrpcService } from './tasks-grpc.service';
 import { TasksStatusesService } from './tasks-statuses.service';
-import { TaskFilterDefinition, TaskSummary, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskFilterDefinition, TaskOptions, TaskSummary, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 describe('TasksGrpcService', () => {
   let service: TasksGrpcService;
@@ -203,7 +203,7 @@ describe('TasksGrpcService', () => {
       sort: {
         active: null,
         direction: 'desc'
-      } as unknown as ListOptionsSort<TaskSummary>
+      } as unknown as ListOptionsSort<TaskSummary, TaskOptions>
     };
     service.list$(options, []);
     expect(mockGrpcClient.listTasks).toHaveBeenCalledWith(new ListTasksRequest({

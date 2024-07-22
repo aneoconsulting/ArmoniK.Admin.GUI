@@ -1,7 +1,6 @@
 import { ApplicationFilterField, SortDirection as ArmoniKSortDirection, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, PartitionFilterField, ResultFilterField, SessionFilterField, TaskFilterField } from '@aneoconsultingfr/armonik.api.angular';
 import { SortDirection } from '@angular/material/sort';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
-import { Filter } from '@app/types/filters';
+import { Filter, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 
 export type FilterField = SessionFilterField.AsObject['field'] | TaskFilterField.AsObject['field'] | ApplicationFilterField.AsObject['field'] | PartitionFilterField.AsObject['field'] | ResultFilterField.AsObject['field'];
 

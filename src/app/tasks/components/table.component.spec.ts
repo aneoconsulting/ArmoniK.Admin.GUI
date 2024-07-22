@@ -1,10 +1,11 @@
-import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
-import { TaskData } from '@app/types/data';
+import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -12,12 +13,12 @@ import { TasksTableComponent } from './table.component';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types';
+import { TaskOptions, TaskSummary } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
 
-  const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
+  const displayedColumns: TableColumn<TaskSummary, TaskOptions>[] = [
     {
       name: 'Task ID',
       key: 'id',
@@ -96,7 +97,7 @@ describe('TasksTableComponent', () => {
 
     component.displayedColumns = displayedColumns;
     component.selection = [];
-    component.filters$ = new BehaviorSubject<TaskSummaryFilters>([]);
+    component.filters$ = new BehaviorSubject<FiltersOr<TaskSummaryEnumField, TaskOptionEnumField>>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -231,7 +232,7 @@ describe('TasksTableComponent', () => {
       raw: {
         id: 'taskId'
       }
-    } as unknown as TaskData);
+    } as ArmonikData<TaskSummary, TaskOptions>);
     expect(mockClipBoard.copy).toHaveBeenCalledWith('taskId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
@@ -269,7 +270,7 @@ describe('TasksTableComponent', () => {
   });
 
   test('onDrop should call tasksIndexService', () => {
-    const newColumns: TaskSummaryColumnKey[] = ['actions', 'id', 'status'];
+    const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['actions', 'id', 'status'];
     component.onDrop(newColumns);
     expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });

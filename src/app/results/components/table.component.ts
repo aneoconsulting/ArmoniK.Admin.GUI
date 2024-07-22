@@ -12,7 +12,7 @@ import { ResultsFiltersService } from '../services/results-filters.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '../types';
+import { ResultRaw } from '../types';
 
 @Component({
   selector: 'app-results-table',
@@ -32,7 +32,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions 
     TableComponent,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
+export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawEnumField>
   implements OnInit, AfterViewInit {
   scope: Scope = 'results';
   readonly grpcService = inject(ResultsGrpcService);

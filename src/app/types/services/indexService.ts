@@ -1,16 +1,18 @@
+import { TaskOptions } from '@app/tasks/types';
 import { DefaultConfigService } from '@services/default-config.service';
 import { TableService } from '@services/table.service';
 import { TableColumn } from '../column.type';
-import { CustomColumn, IndexListOptions, RawColumnKey } from '../data';
+import { ColumnKey, CustomColumn, DataRaw } from '../data';
+import { ListOptions } from '../options';
 
-export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexListOptions> {
+export interface IndexServiceInterface<T extends DataRaw, O extends TaskOptions | null = null> {
   readonly defaultConfigService: DefaultConfigService;
   readonly tableService: TableService;
 
-  readonly defaultColumns: K[];
-  readonly availableTableColumns: TableColumn<K>[];
+  readonly defaultColumns: ColumnKey<T, O>[];
+  readonly availableTableColumns: TableColumn<T, O>[];
 
-  readonly defaultOptions: O;
+  readonly defaultOptions: ListOptions<T, O>;
 
   readonly defaultIntervalValue: number;
   readonly defaultLockColumns: boolean;
@@ -24,19 +26,19 @@ export interface IndexServiceInterface<K extends RawColumnKey, O extends IndexLi
   restoreLockColumns(): boolean;
 
   // Options
-  saveOptions(options: O): void;
-  restoreOptions(): O;
+  saveOptions(options: ListOptions<T, O>): void;
+  restoreOptions(): ListOptions<T, O>;
 
   // Columns
-  saveColumns(columns: K[]): void;
-  restoreColumns(): K[];
-  resetColumns(): K[];
+  saveColumns(columns: ColumnKey<T, O>[]): void;
+  restoreColumns(): ColumnKey<T, O>[];
+  resetColumns(): ColumnKey<T, O>[];
 }
 
-export interface IndexServiceCustomInterface<K extends RawColumnKey, O extends IndexListOptions> extends IndexServiceInterface<K, O> {
+export interface IndexServiceCustomInterface<T extends DataRaw, O extends TaskOptions | null = null> extends IndexServiceInterface<T, O> {
   saveCustomColumns(columns: CustomColumn[]): void;
 
   restoreCustomColumns(): CustomColumn[];
 
-  customField(column: K): string;
+  customField(column: ColumnKey<T, O>): string;
 }

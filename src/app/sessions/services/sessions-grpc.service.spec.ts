@@ -1,14 +1,17 @@
-import { CancelSessionRequest, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionRequest, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionRequest, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { lastValueFrom, of } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { ListOptionsSort } from '@app/types/options';
+import { TaskOptions } from '@app/tasks/types';
+import { FieldKey } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
-import { SessionFilterDefinition, SessionRaw, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionFilterDefinition, SessionRaw } from '../types';
 
 describe('SessionsGrpcService', () => {
   let service: SessionsGrpcService;
@@ -79,7 +82,7 @@ describe('SessionsGrpcService', () => {
     deleteSession: jest.fn(),
   };
 
-  const listOptions: SessionRawListOptions = {
+  const listOptions: ListOptions<SessionRaw, TaskOptions> = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -88,7 +91,7 @@ describe('SessionsGrpcService', () => {
     }
   };
 
-  const listFilters: SessionRawFilters = [
+  const listFilters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [
     [
       {
         field: 'options.options.FastCompute', // Custom type string
@@ -260,13 +263,13 @@ describe('SessionsGrpcService', () => {
   });
 
   it('should list by a default sort direction', () => {
-    const options: SessionRawListOptions = {
+    const options: ListOptions<SessionRaw, TaskOptions> = {
       pageIndex: 0,
       pageSize: 10,
       sort: {
-        active: null,
+        active: null as unknown as FieldKey<SessionRaw & TaskOptions>,
         direction: 'desc'
-      } as unknown as ListOptionsSort<SessionRaw>
+      }
     };
     service.list$(options, []);
     expect(mockSessionsGrpcClient.listSessions).toHaveBeenCalledWith(new ListSessionsRequest({
@@ -293,7 +296,7 @@ describe('SessionsGrpcService', () => {
   });
 
   it('should not allow some filters', () => {
-    const filters: SessionRawFilters = [
+    const filters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [
       [
         {
           for: 'root',

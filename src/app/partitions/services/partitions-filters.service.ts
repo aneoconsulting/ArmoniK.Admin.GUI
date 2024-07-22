@@ -9,7 +9,7 @@ import { PartitionFilterField, PartitionRawFilters, PartitionsFiltersDefinition 
 @Injectable({
   providedIn: 'root'
 })
-export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawFilters, PartitionRawEnumField> {
+export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawEnumField> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 

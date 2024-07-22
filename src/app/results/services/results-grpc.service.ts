@@ -5,10 +5,10 @@ import { Filter, FilterType } from '@app/types/filters';
 import { GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { ResultsFiltersService } from './results-filters.service';
-import { ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } from '../types';
+import { ResultRaw, ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
+export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnumField>
   implements GrpcGetInterface<GetResultResponse> {
 
   readonly filterService = inject(ResultsFiltersService);

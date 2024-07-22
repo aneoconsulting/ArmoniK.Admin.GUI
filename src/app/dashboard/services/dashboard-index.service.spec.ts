@@ -4,7 +4,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { DefaultConfigService } from '@services/default-config.service';
 import { DashboardIndexService } from './dashboard-index.service';
 import { DashboardStorageService } from './dashboard-storage.service';
-import { Line } from '../types';
+import { CountLine, Line } from '../types';
 
 describe('DashboardIndexService', () => {
   let service: DashboardIndexService;
@@ -30,7 +30,7 @@ describe('DashboardIndexService', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Error', color: 'red', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_TIMEOUT]}
       ],
-    },
+    } as CountLine,
     {
       name: 'line2',
       type: 'Tasks',
@@ -42,7 +42,7 @@ describe('DashboardIndexService', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Unspecified', color: 'grey', statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_RETRIED]}
       ],
-    }
+    } as CountLine
   ];
 
   beforeEach(() => {
@@ -90,7 +90,7 @@ describe('DashboardIndexService', () => {
 
   describe('Adding a line', () => {
     it('should push and save the line to the saved lines', () => {
-      const newLine: Line = {
+      const newLine: CountLine = {
         name: 'line3',
         type: 'Tasks',
         interval: 30,

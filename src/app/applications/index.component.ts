@@ -26,7 +26,7 @@ import { UtilsService } from '@services/utils.service';
 import { ApplicationsTableComponent } from './components/table.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
-import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from './types';
+import { ApplicationRaw } from './types';
 
 @Component({
   selector: 'app-applications-index',
@@ -64,7 +64,7 @@ import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptio
     ApplicationsTableComponent
   ]
 })
-export class IndexComponent extends TableHandler<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters, ApplicationRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandler<ApplicationRaw, ApplicationRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
 
   readonly filtersService = inject(ApplicationsFiltersService);
   readonly indexService = inject(ApplicationsIndexService);

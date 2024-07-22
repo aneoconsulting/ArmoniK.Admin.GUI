@@ -3,15 +3,17 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { SessionRaw, SessionRawColumnKey, SessionRawListOptions } from '@app/sessions/types';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
+import { ListOptions } from '@app/types/options';
 import { TableComponent } from './table.component';
 
 describe('TableComponent', () => {
-  const component = new TableComponent<SessionRawColumnKey, SessionRaw, SessionData, SessionStatus>();
+  const component = new TableComponent<SessionRaw, SessionStatus, TaskOptions>();
 
-  const columns: TableColumn<SessionRawColumnKey>[] = [
+  const columns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
       key: 'sessionId',
       name: 'Session ID',
@@ -48,7 +50,7 @@ describe('TableComponent', () => {
     }
   ];
 
-  const options: SessionRawListOptions = {
+  const options: ListOptions<SessionRaw, TaskOptions> = {
     pageIndex: 1,
     pageSize: 10,
     sort: {

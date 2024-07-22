@@ -1,4 +1,4 @@
-import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -6,7 +6,7 @@ import { Params, Router, RouterModule } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject, map, mergeAll } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
-import { TaskSummaryFilters } from '@app/tasks/types';
+import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTableComponent, AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, ColumnKey, SessionData } from '@app/types/data';
@@ -21,7 +21,7 @@ import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-sta
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
 import { SessionsIndexService } from '../services/sessions-index.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
-import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
@@ -43,8 +43,8 @@ import { SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawFilters,
     MatDialogModule,
   ]
 })
-export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField> 
-  implements OnInit, AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField> {
+export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> 
+  implements OnInit, AfterViewInit, AbstractTableComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> {
   @Output() cancelSession = new EventEmitter<string>();
   @Output() closeSession = new EventEmitter<string>();
   @Output() deleteSession = new EventEmitter<string>();
@@ -68,31 +68,31 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   computeDuration$ = new Subject<void>();
   sessionsIdsComputationError: string[] = [];
 
-  copy$ = new Subject<SessionData>();
+  copy$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   copySubscription = this.copy$.subscribe(data => this.onCopiedSessionId(data));
 
-  seeSessions$ = new Subject<SessionData>();
+  seeSessions$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   seeSessionsSubscription = this.seeSessions$.subscribe(data => this.router.navigate(['/sessions', data.raw.sessionId]));
 
-  seeResults$ = new Subject<SessionData>();
-  seeResultsSubscription = this.seeResults$.subscribe(data => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+  seeResults$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
+  seeResultsSubscription = this.seeResults$.subscribe(data => this.router.navigate(['/results'], { queryParams: (data as SessionData).resultsQueryParams }));
 
-  pauseSession$ = new Subject<SessionData>();
+  pauseSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   pauseSessionSubscription = this.pauseSession$.subscribe(data => this.onPause(data.raw.sessionId));
 
-  resumeSession$ = new Subject<SessionData>();
+  resumeSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   resumeSessionSubscription = this.resumeSession$.subscribe(data => this.onResume(data.raw.sessionId));
 
-  cancelSession$ = new Subject<SessionData>();
+  cancelSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
-  closeSession$ = new Subject<SessionData>();
+  closeSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   closeSessionSubscription = this.closeSession$.subscribe(data => this.onClose(data.raw.sessionId));
 
-  deleteSession$ = new Subject<SessionData>();
+  deleteSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   deleteSessionSubscription = this.deleteSession$.subscribe(data => this.onDelete(data.raw.sessionId));
 
-  actions: ActionTable<SessionData>[] = [
+  actions: ActionTable<SessionRaw, TaskOptions>[] = [
     {
       label: 'Copy session ID',
       icon: 'copy',
@@ -112,31 +112,31 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       label: 'Pause session',
       icon: this.getIcon('pause'),
       action$: this.pauseSession$,
-      condition: (element: SessionData) => this.statusesService.canPause(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canPause(element.raw.status)
     },
     {
       label: 'Resume session',
       icon: this.getIcon('play'),
       action$: this.resumeSession$,
-      condition: (element: SessionData) => this.statusesService.canResume(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canResume(element.raw.status)
     },
     {
       label: 'Cancel session',
       icon: this.getIcon('cancel'),
       action$: this.cancelSession$,
-      condition: (element: SessionData) => this.statusesService.canCancel(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canCancel(element.raw.status)
     },
     {
       label: 'Close session',
       icon: 'close',
       action$: this.closeSession$,
-      condition: (element: SessionData) => this.statusesService.canClose(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canClose(element.raw.status)
     },
     {
       label: 'Delete session',
       icon: 'delete',
       action$: this.deleteSession$,
-      condition: (element: SessionData) => this.statusesService.canDelete(element.raw.status)
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canDelete(element.raw.status)
     }
   ];
 
@@ -244,7 +244,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     return this.iconsService.getIcon(name);
   }
 
-  onCopiedSessionId(data: SessionData) {
+  onCopiedSessionId(data: ArmonikData<SessionRaw, TaskOptions>) {
     this.copyService.copy(data.raw.sessionId);
     this.notificationService.success('Session ID copied to clipboard');
   }
@@ -412,7 +412,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     }
   }
 
-  trackBy(index: number, item: ArmonikData<SessionRaw>) {
+  trackBy(index: number, item: ArmonikData<SessionRaw, TaskOptions>) {
     return item.raw.sessionId;
   }
 }
