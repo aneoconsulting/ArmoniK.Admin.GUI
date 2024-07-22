@@ -10,9 +10,9 @@ export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : n
 
 export type ColumnKey<T extends DataRaw, O extends TaskOptions | null = null> = keyof T | 'actions' | PrefixedOptions<O> | CustomColumn | 'count' | 'select';
 
-export type FieldKey<T extends DataRaw> = keyof T;
+export type FieldKey<T extends DataRaw | TaskOptions> = keyof T;
 
-export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary | TaskOptions;
+export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | TaskRaw | TaskSummary;
 
 export type CustomColumn = `options.options.${string}`;
 
