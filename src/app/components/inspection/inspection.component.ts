@@ -22,16 +22,14 @@ import { FieldContentComponent } from './field-content.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     article {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
       column-gap: 2rem;
       row-gap: 0.5rem;
+      display: grid;
     }
 
-    mat-accordion {
-      flex-basis: 100%;
-      width: fit-content;
+    p {
+      text-align: center;
+      font-style: italic;
     }
   `]
 })
@@ -84,7 +82,7 @@ export class InspectionComponent<T extends DataRaw, S extends Status, O extends 
         ...field,
         key: field.key.toString().replace('options.', '') as FieldKey<T & O>,
       };
-    }).toSorted((a, b) => a.key.toString().localeCompare(b.key.toString()));
+    });
   }
 
   private setFieldsFromData(data: T) {

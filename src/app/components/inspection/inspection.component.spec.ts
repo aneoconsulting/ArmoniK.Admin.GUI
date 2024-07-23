@@ -65,7 +65,7 @@ describe('InspectionComponent', () => {
           ...field,
           key: field.key.replace('options.', '')
         };
-      }).toSorted((a, b) => a.key.localeCompare(b.key)));
+      }));
     });
 
     it('should set data', () => {
