@@ -1,4 +1,4 @@
-import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, WritableSignal, inject, signal } from '@angular/core';
 import { Subject, Subscription, switchMap } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
@@ -28,22 +28,31 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
     ViewTasksByStatusComponent,
   ]
 })
-export class CountTasksByStatusComponent {
+export class CountTasksByStatusComponent implements OnInit {
   @Input({ required: true }) queryParams: Record<string, string> = {};
-  @Input({ required: true }) refresh: Subject<void>;
+  @Input({ required: true }) set refresh(subject: Subject<void>) {
+    this._refresh$ = subject;
+    this.initRefresh();
+  }
 
   @Input({ required: true }) set statusesGroups(entries: TasksStatusesGroup[]) {
     this._statusesGroups = entries;
     if (this.refresh) {
-      this.refresh.next();
+      this._refresh$.next();
     }
   }
 
   id: string | undefined;
   private _statusesGroups: TasksStatusesGroup[] = [];
+  private _filters: TaskSummaryFilters;
+  private _refresh$: Subject<void>;
 
   get statusesGroups(): TasksStatusesGroup[] {
     return this._statusesGroups;
+  }
+
+  get filters(): TaskSummaryFilters {
+    return this._filters;
   }
 
   statusesCount: WritableSignal<StatusCount[]> = signal([]);
@@ -55,18 +64,25 @@ export class CountTasksByStatusComponent {
   subscription = new Subscription();
 
   @Input({ required: true }) set filters(entries: TaskSummaryFilters) {
-    this.initCount(entries);
-    this.refresh.pipe(
-      switchMap(() => this.tasksGrpcService.countByStatus$(entries)),
+    this._filters = entries;
+    this._refresh$.next();
+  }
+
+  ngOnInit(): void {
+    this.initCount();
+  }
+
+  initCount() {
+    this.#setId(this.filters);
+  }
+
+  initRefresh() {
+    this._refresh$.pipe(
+      switchMap(() => this.tasksGrpcService.countByStatus$(this.filters)),
     ).subscribe(response => {
       this.loading = false;
       this.statusesCount.set(response.status ?? []);
     });
-    this.refresh.next();
-  }
-
-  initCount(filters: TaskSummaryFilters) {
-    this.#setId(filters);
   }
 
   #setId(filter: TaskSummaryFilters) {
