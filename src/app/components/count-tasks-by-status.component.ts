@@ -64,10 +64,10 @@ export class CountTasksByStatusComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initCount();
+    this.initId();
   }
 
-  initCount() {
+  initId() {
     this.#setId(this.filters);
   }
 

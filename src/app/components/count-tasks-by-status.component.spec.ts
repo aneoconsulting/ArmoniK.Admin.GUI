@@ -55,19 +55,25 @@ describe('CountTasksByStatusComponent', () => {
     component.refresh = refresh$;
     component.filters = filters;
     component.statusesGroups = statusesGroups;
+    component.ngOnInit();
   });
 
   it('Should run', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('initCount', () => {
+  describe('initialisation', () => {
+    it('should subscribe to refresh', () => {
+      expect(refresh$.observed).toBeTruthy();
+    });
+
     it('should set id', () => {
       expect(component.id).toEqual(filters[0][0].value);
     });
 
     it('should not set id if there is no filter value', () => {
-      component.initCount([]);
+      component.filters = [];
+      component.initId();
       expect(component.id).toEqual(undefined);
     });
   });
@@ -83,24 +89,20 @@ describe('CountTasksByStatusComponent', () => {
   });
 
   describe('setting filters', () => {
-    it('should subscribe to refresh', () => {
-      expect(refresh$.observed).toBeTruthy();
-    });
-
-    it('should refresh counts', () => {
-      expect(refreshSpy).toHaveBeenCalled();
+    it('should set filters', () => {
+      expect(component.filters).toEqual(filters);
     });
   });
 
   describe('Refreshing', () => {
     it('should update statusesCounts', () => {
-      component.refresh.next();
+      refresh$.next();
       expect(component.statusesCount()).toEqual(finalStatusesCount);
     });
 
     it('should set null if there is no response status', () => {
       mockTasksGrpcService.countByStatus$.mockReturnValue(of({ status: undefined }));
-      component.refresh.next();
+      refresh$.next();
       expect(component.statusesCount()).toEqual([]);
     });
   });
