@@ -1,6 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe, JsonPipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, Field } from '@app/types/column.type';
-import { Custom, DataRaw, FieldKey, Status } from '@app/types/data';
+import { Custom, DataRaw, Status } from '@app/types/data';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -38,48 +38,22 @@ import { InspectionComponent } from './inspection.component';
     NotificationService,
     IconsService
   ],
-  styles: [`
-    .field {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    mat-chip {
-      display: flex;
-      align-items: center;
-    }
-
-    mat-icon {
-      cursor: pointer;
-    }
-
-    ul {
-      flex-basis: 100%;
-      margin: 0;
-    }
-
-    li {
-      width: fit-content;
-      margin-top: 0.25rem;
-      margin-bottom: 0.25rem;
-    }
-  `]
+  styleUrl: '../../../inspections.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldContentComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
   private readonly clipboard = inject(Clipboard);
   private readonly notificationService = inject(NotificationService);
   private readonly iconsService = inject(IconsService);
 
+  type: ColumnType | undefined;
+  private _field: Field<T> | Field<O>;
+  private _value: unknown;
+
   readonly viewIcon = this.iconsService.getIcon('view');
   readonly copyIcon = this.iconsService.getIcon('copy');
 
-  @Input({ required: true }) set field(entry: Field<T, O>) {
+  @Input({ required: true }) set field(entry: Field<T> | Field<O>) {
     this._field = entry;
     if (entry.type) {
       this.type = entry.type;
@@ -88,20 +62,25 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
     }
   }
 
-  @Input({ required: true }) set data(entry: T | O | null) {
+  @Input({ required: true }) set data(entry: T  | NonNullable<O> | null) {
     if (entry) {
       switch (this.type) {
       case 'status': {
-        this._value = this.statuses[entry[this.field.key as keyof (T | O)] as S];
+        this._value = this.statuses[entry[this.field.key as keyof (T |O)] as S];
         break;
       }
       case 'date': {
-        const date = new Timestamp(entry[this.field.key as keyof (T | O)] as Partial<Timestamp>);
-        this._value = date.toDate();
+        const value = entry[this.field.key as keyof (T |O)] as Partial<Timestamp> | undefined;
+        if (value) {
+          const date = new Timestamp(value);
+          this._value = date.toDate();
+        } else {
+          this._value = undefined;
+        }
         break;
       }
       default: {
-        this._value = entry[this.field.key as keyof (T | O)];
+        this._value = entry[this.field.key as keyof (T |O)];
         this.checkIfArray();
       }
       }
@@ -110,20 +89,16 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
 
   @Input({ required: false }) statuses: Record<S, string>;
 
-  type: ColumnType | undefined;
-  private _field: Field<T, O>;
-  private _value: unknown;
-
   get key(): string {
     return this._field.key.toString();
   }
 
-  get field(): Field<T, O> {
+  get field(): Field<T> | Field<O> {
     return this._field;
   }
 
   /**
-   * Can be a string, number, status label, or Duration
+   * Can be a string, number, status label
    */
   get value(): string {
     return this._value as string;
@@ -150,7 +125,7 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
    * @param value  - key of the field.
    * @returns The guessed type of the field.
    */
-  private guessType(value: FieldKey<T & O> | `options.${string}`): ColumnType {
+  private guessType(value: keyof T | keyof O): ColumnType {
     const key = value.toString().toLowerCase().replace('_', '');
     if (key.endsWith('at')) {
       return 'date';

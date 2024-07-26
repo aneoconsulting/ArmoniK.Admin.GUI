@@ -1,10 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { TaskOptions, TaskRaw } from '@app/tasks/types';
+import { TaskRaw } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
-import { InspectionComponent } from './inspection.component';
+import { InspectionObjectComponent } from './inspection-object.component';
 
-describe('InspectionComponent', () => {
-  const component = new InspectionComponent<TaskRaw, TaskStatus, TaskOptions>();
+describe('InspectionObjectComponent', () => {
+  const component = new InspectionObjectComponent<TaskRaw, TaskStatus>();
 
   const data: TaskRaw = {
     id: 'taskId',
@@ -12,16 +12,6 @@ describe('InspectionComponent', () => {
       applicationName: 'string',
     }
   } as TaskRaw;
-
-  const optionsFields: Field<TaskOptions>[] = [
-    {
-      key: 'applicationName',
-    },
-    {
-      key: 'options',
-      type: 'object'
-    }
-  ];
 
   const fields: Field<TaskRaw>[] = [
     {
@@ -50,31 +40,36 @@ describe('InspectionComponent', () => {
   } as Record<TaskStatus, string>;
 
   beforeEach(() => {
-    component.fields = fields;
-    component.optionsFields = optionsFields;
     component.data = data;
+    component.fields = fields;
     component.statuses = statuses;
   });
 
+  it('should run', () => {
+    expect(component).toBeTruthy();
+  });
+
   describe('initialisation', () => {
-    it('should set fields without options fields', () => {
-      expect(component.fields).toEqual(fields);
-    });
-
-    it('should set optionsFields', () => {
-      expect(component.optionsFields).toEqual(optionsFields);
-    });
-
     it('should set data', () => {
       expect(component.data).toEqual(data);
     });
 
-    it('should set "options" object', () => {
-      expect(component.options).toEqual(data.options);
+    it('should set fields', () => {
+      expect(component.fields).toEqual(fields);
     });
 
     it('should set statuses', () => {
       expect(component.statuses).toEqual(statuses);
     });
+
+    it('should set data keys as fields if none are provided', () => {
+      component.fields = [];
+      component.data = data;
+      expect(component.fields).toEqual([{ key: 'id' }, { key: 'options' }]);
+    });
+  });
+
+  it('should get an object', () => {
+    expect(component.getObject(fields[2])).toEqual(data.options);
   });
 });

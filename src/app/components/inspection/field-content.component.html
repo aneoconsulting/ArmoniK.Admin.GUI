@@ -1,26 +1,26 @@
 <span class="field">
-  <p>{{ key | pretty }}: </p>
+  <p>{{ key | pretty }}:</p>
   @if (type !== 'array') {
     <mat-chip>
       @switch (type) {
       @case ('date') {
-      {{ date | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
+        {{ date | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
       }
       @case('duration') {
-      {{ duration | duration | emptyCell }}
+        {{ duration | duration | emptyCell }}
       }
       @case('object') {
-      {{ object | json }}
+        {{ object | json }}
       }
       @default {
-      {{ value | emptyCell }}
+        {{ value | emptyCell }}
       }
       }
       @if (value) {
         <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" matTooltip="Copy value" />
       }
-      @if (field.link) {
-      <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + value" matTooltip="Inspect data" />
+      @if (field.link && value) {
+        <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + value" matTooltip="Inspect data" />
       }
     </mat-chip>
   } @else {

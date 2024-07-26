@@ -14,7 +14,7 @@ describe('InspectionCardComponent', () => {
     }
   } as TaskRaw;
 
-  const fields: Field<TaskRaw, TaskOptions>[] = [
+  const fields: Field<TaskRaw>[] = [
     {
       key: 'id',
       type: 'link',
@@ -35,14 +35,24 @@ describe('InspectionCardComponent', () => {
     }
   ];
 
+  const optionsFields: Field<TaskOptions>[] = [
+    {
+      key: 'applicationName',
+    },
+    {
+      key: 'options',
+      type: 'object'
+    }
+  ];
+
   const statuses = {
     [TaskStatus.TASK_STATUS_COMPLETED]: 'Completed',
     [TaskStatus.TASK_STATUS_CANCELLING]: 'Cancelling',
   } as Record<Status, string>;
 
   beforeEach(() => {
-    component.line = true;
     component.fields = fields;
+    component.optionsFields = optionsFields;
     component.data = data;
     component.statuses = statuses;
   });
@@ -52,12 +62,12 @@ describe('InspectionCardComponent', () => {
   });
 
   describe('initialisation', () => {
-    it('should init line', () => {
-      expect(component.line).toBeTruthy();
-    });
-
     it('should init fields', () => {
       expect(component.fields).toEqual(fields);
+    });
+
+    it('should init options fields', () => {
+      expect(component.optionsFields).toEqual(optionsFields);
     });
 
     it('should init data', () => {

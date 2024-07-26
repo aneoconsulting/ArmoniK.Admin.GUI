@@ -43,31 +43,36 @@ describe('FieldContentComponent', () => {
     }
   } as unknown as TaskRaw;
 
-  const field: Field<TaskRaw, TaskOptions> = {
+  const field: Field<TaskRaw> = {
     key: 'id',
   };
 
-  const statusField: Field<TaskRaw, TaskOptions> = {
+  const statusField: Field<TaskRaw> = {
     key: 'status',
     type: 'status',
   };
 
-  const dateField: Field<TaskRaw, TaskOptions> = {
+  const dateField: Field<TaskRaw> = {
     key: 'createdAt',
     type: 'date',
   };
 
-  const durationField: Field<TaskRaw, TaskOptions> = {
+  const emptyDateField: Field<TaskRaw> = {
+    key: 'acquiredAt',
+    type: 'date'
+  };
+
+  const durationField: Field<TaskRaw> = {
     key: 'creationToEndDuration',
     type: 'duration',
   };
 
-  const objectField: Field<TaskRaw, TaskOptions> = {
+  const objectField: Field<TaskRaw> = {
     key: 'options',
     type: 'object'
   };
 
-  const arrayField: Field<TaskRaw, TaskOptions> = { 
+  const arrayField: Field<TaskRaw> = { 
     key: 'parentTaskIds'
   };
 
@@ -159,6 +164,12 @@ describe('FieldContentComponent', () => {
     it('should notify on copy', () => {
       component.copy();
       expect(mockNotificationService.success).toHaveBeenCalled();
+    });
+
+    it('should set undefined is the date is undefined too', () => {
+      component.field = emptyDateField;
+      component.data = data;
+      expect(component.date).toBeUndefined();
     });
   });
 

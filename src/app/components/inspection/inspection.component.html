@@ -1,20 +1,11 @@
-@if (this.fields.length !== 0) {
-  <article [style]="'grid-template-columns: repeat(' + (line ? 3 : 1) + ', 1fr)'">
-    @for (field of fields; track field.key) {
-      @if (checkObject(field)) {
-        <mat-accordion [style]="'grid-column: 1 / ' + (line ? 4 : 1) + ';'">
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <strong>{{ field.key | pretty }}</strong>
-            </mat-expansion-panel-header>
-            <app-inspection [fields]="field.key === 'options' ? optionsFields : undefined" [data]="getObject(field)" [line]="line" />
-          </mat-expansion-panel>
-        </mat-accordion>
-      } @else {
-        <app-field-content [field]="field" [statuses]="statuses" [data]="data" />
-      }
-    }
-  </article>
-} @else {
-  <p>No data</p>
+<app-inspection-object [fields]="fields" [statuses]="statuses" [data]="data" />
+@if(optionsFields) {
+  <mat-accordion>
+    <mat-expansion-panel id="options">
+      <mat-expansion-panel-header>
+        <strong>Options</strong>
+      </mat-expansion-panel-header>
+      <app-inspection-object [fields]="optionsFields" [statuses]="statuses" [data]="options" />
+    </mat-expansion-panel>
+  </mat-accordion>
 }
