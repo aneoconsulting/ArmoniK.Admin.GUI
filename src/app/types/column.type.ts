@@ -1,11 +1,11 @@
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, DataRaw, FieldKey } from '@app/types/data';
+import { ColumnKey, DataRaw } from '@app/types/data';
 
 export type DataType = 'raw' | 'link' | 'object' | 'date' | 'duration' | 'status' | 'array'; 
 export type ColumnType = DataType | 'count' | 'actions' | 'select';
 
-export type Field<T extends DataRaw, O extends TaskOptions | null = null> = {
-  key: FieldKey<T & O> | `options.${string}`;
+export type Field<T extends DataRaw | TaskOptions | null> = {
+  key: keyof T;
   type?: DataType;
   link?: string;
 };
