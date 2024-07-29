@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnType, Field } from '@app/types/column.type';
-import { Custom, DataRaw, Status } from '@app/types/data';
+import { DataRaw, Status } from '@app/types/data';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -112,8 +112,8 @@ export class FieldContentComponent<T extends DataRaw, S extends Status, O extend
     return this._value as Date;
   }
 
-  get object(): TaskOptions | Custom {
-    return this._value as TaskOptions | Custom;
+  get object(): object {
+    return this._value as object;
   }
 
   get array(): Array<string> {
