@@ -48,6 +48,10 @@ p, h2 {
   margin: 0;
 }
 
+app-inspection {
+  padding: 1rem;
+}
+
 mat-chip {
   display: flex;
   align-items: center;

@@ -13,11 +13,7 @@ import { InspectionComponent } from './inspection.component';
     MatCardModule,
     InspectionComponent
   ],
-  styles: [`
-  app-inspection {
-    padding: 1rem;
-  }  
-  `],
+  styleUrl: '../../../inspections.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InspectionCardComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
