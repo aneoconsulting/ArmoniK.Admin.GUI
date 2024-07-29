@@ -1,0 +1,73 @@
+#options {
+  margin-top: 0.5rem;
+}
+
+.no-data {
+  text-align: center;
+  font-style: italic;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.arrays {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.object {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 2rem;
+  row-gap: 0.5rem;
+}
+
+mat-accordion {
+  grid-column: 1 / 4;
+}
+
+.field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+p, h2 {
+  margin: 0;
+}
+
+app-inspection {
+  padding: 1rem;
+}
+
+mat-chip {
+  display: flex;
+  align-items: center;
+}
+
+mat-icon {
+  cursor: pointer;
+}
+
+ul {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+li {
+  width: fit-content;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
