@@ -44,11 +44,6 @@ import { RouterModule } from '@angular/router';
       margin: 0.5rem;
     }
 
-    section {
-      width: fit-content;
-      max-width: 100%;
-    }
-
     mat-divider {
       margin-right: 0.5rem;
     }
