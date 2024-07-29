@@ -1,16 +1,14 @@
-import { ResultRaw, SessionRaw } from '@aneoconsultingfr/armonik.api.angular';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { ApplicationRaw } from '@app/applications/types';
 import { TasksStatusesGroup } from '@app/dashboard/types';
-import { PartitionRaw } from '@app/partitions/types';
-import { TaskSummary } from '@app/tasks/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ArmonikData, ArmonikDataType, DataRaw, IndexListOptions, RawColumnKey, Status } from '@app/types/data';
+import { ArmonikData, ColumnKey, DataRaw, Status } from '@app/types/data';
+import { ListOptions } from '@app/types/options';
 import { StatusesServiceI } from '@app/types/services';
 import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
@@ -36,14 +34,14 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends ArmonikDataType, S extends Status> implements AfterViewInit, OnDestroy {
+export class TableComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> implements AfterViewInit, OnDestroy {
   // Required inputs
-  @Input({ required: true }) set columns(entries: TableColumn<K>[]) {
+  @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
   }
 
-  @Input({ required: true }) set data(entries: ArmonikData<R>[]) {
+  @Input({ required: true }) set data(entries: ArmonikData<T, O>[]) {
     this._data = entries;
     if (this.dataComparator) {
       const selection = entries.filter(entry => this.isSelected(entry.raw)).map(entry => entry.raw);
@@ -55,37 +53,42 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
 
   @Input({ required: true }) total: number;
 
-  @Input({ required: true }) options: IndexListOptions;
+  @Input({ required: true }) options: ListOptions<T, O>;
   @Input({ required: true }) lockColumns: boolean;
 
   // Optional inputs
-  @Input({ required: false }) actions: ActionTable<D>[];
+  @Input({ required: false }) actions: ActionTable<T, O>[];
   @Input({ required: false }) statusesService: StatusesServiceI<S>;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
-  @Input({ required: false }) dataComparator: ((a: R, b: R) => boolean) | undefined;
+  @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 
-  @Output() columnDrop = new EventEmitter<K[]>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O>): number | string {
+    return index;
+  }
+
+  @Output() columnDrop = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() optionsChange = new EventEmitter<never>();
-  @Output() selectionChange = new EventEmitter<R[]>();
+  @Output() selectionChange = new EventEmitter<T[]>();
   @Output() personnalizeTasksByStatus = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  private _data: ArmonikData<R>[];
-  private _columns: TableColumn<K>[];
-  private _columnsKeys: K[];
+  private _data: ArmonikData<T, O>[];
+  private _columns: TableColumn<T, O>[];
+  private _columnsKeys: ColumnKey<T, O>[];
   private _isAllSelected: boolean = false;
 
-  get data(): ArmonikData<R>[] {
+  get data(): ArmonikData<T, O>[] {
     return this._data;
   }
 
-  get columns(): TableColumn<K>[] {
+  get columns(): TableColumn<T, O>[] {
     return this._columns;
   }
 
-  get columnsKeys(): K[] {
+  get columnsKeys(): ColumnKey<T, O>[] {
     return this._columnsKeys;
   }
 
@@ -93,7 +96,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     return this._isAllSelected;
   }
 
-  selection = new SelectionModel<R>(true, []);
+  selection = new SelectionModel<T>(true, []);
 
   ngAfterViewInit(): void {
     this.sort.sortChange.subscribe(() => {
@@ -129,7 +132,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     this.selectionChange.emit(this.selection.selected);
   }
 
-  isSelected(row: R): boolean {
+  isSelected(row: T): boolean {
     return this.selection.selected.find(selectedRow => {
       if (this.dataComparator) {
         return this.dataComparator(row, selectedRow);
@@ -150,7 +153,7 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
     this.emitSelectionChange();
   }
 
-  toggleRow(data: R): void {
+  toggleRow(data: T): void {
     if (this.selection.isSelected(data)) {
       this.selection.deselect(data);
     } else {
@@ -161,25 +164,5 @@ export class TableComponent<K extends RawColumnKey, R extends DataRaw, D extends
 
   onPersonnalizeTasksByStatus(): void {
     this.personnalizeTasksByStatus.emit();
-  }
-
-  /**
-   * Used to track elements in the table, making them recognizable by their ids.
-   * Prevent side effects when refreshing data.
-   * 
-   * This function might need to evolve in the future.
-   */
-  trackByElement(index: number, item: ArmonikData<R>) {
-    if ((item.raw as SessionRaw).sessionId) {
-      return (item.raw as SessionRaw).sessionId;
-    } else if ((item.raw as ResultRaw).resultId) {
-      return (item.raw as ResultRaw).resultId;
-    } else if ((item.raw as ApplicationRaw).name) {
-      return `${(item.raw as ApplicationRaw).name}-${(item.raw as ApplicationRaw).version}`;
-    } else if ((item.raw as TaskSummary | PartitionRaw).id) {
-      return (item.raw as TaskSummary | PartitionRaw).id;
-    } else {
-      return index;
-    }
   }
 }

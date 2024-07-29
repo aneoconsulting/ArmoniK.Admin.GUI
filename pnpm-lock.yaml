@@ -71,9 +71,6 @@ importers:
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
-      zone.js:
-        specifier: ~0.14.4
-        version: 0.14.4
     devDependencies:
       '@angular-eslint/builder':
         specifier: 18.1.0

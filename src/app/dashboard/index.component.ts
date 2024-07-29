@@ -216,7 +216,7 @@ export class IndexComponent implements OnInit {
               ]
             },
           ],
-        });
+        } as Line);
         this.onSaveChange();
       }
       else {

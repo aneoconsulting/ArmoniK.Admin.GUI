@@ -10,7 +10,7 @@ import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '.
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService implements FiltersServiceInterface<ResultRawFilters, ResultRawEnumField>, FiltersServiceStatusesInterface {
+export class ResultsFiltersService implements FiltersServiceInterface<ResultRawEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(ResultsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);

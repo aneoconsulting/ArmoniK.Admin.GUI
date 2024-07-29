@@ -6,7 +6,7 @@ import { Router} from '@angular/router';
 import { Subject } from 'rxjs';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { TaskData } from '@app/types/data';
+import { ArmonikData, TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
@@ -15,7 +15,7 @@ import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions } from '../types';
+import { TaskOptions, TaskSummary } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
@@ -32,7 +32,7 @@ import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryList
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryColumnKey, TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
   implements OnInit, AfterViewInit {
   scope: Scope = 'tasks';
 
@@ -83,22 +83,22 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
 
   selection: string[];
 
-  copy$ = new Subject<TaskData>();
-  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data as TaskData));
+  copy$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
+  copyS = this.copy$.subscribe((data) => this.onCopiedTaskId(data));
 
-  seeResult$ = new Subject<TaskData>();
-  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: data.resultsQueryParams }));
+  seeResult$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
+  resultSubscription = this.seeResult$.subscribe((data) => this.router.navigate(['/results'], { queryParams: (data as TaskData).resultsQueryParams }));
 
-  retries$ = new Subject<TaskData>();
+  retries$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   retriesSubscription = this.retries$.subscribe((data) => this.onRetries(data.raw));
 
-  cancelTask$ = new Subject<TaskData>();
+  cancelTask$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   cancelTaskSubscription = this.cancelTask$.subscribe((data) => this.onCancelTask(data.raw.id));
 
-  openViewInLogs$ = new Subject<TaskData>();
+  openViewInLogs$ = new Subject<ArmonikData<TaskSummary, TaskOptions>>();
   openViewInLogsSubscription = this.openViewInLogs$.subscribe((data) => window.open(this.generateViewInLogsUrl(data.raw.id), '_blank'));
   
-  actions: ActionTable<TaskData>[] = [
+  actions: ActionTable<TaskSummary, TaskOptions>[] = [
     {
       label: $localize`Copy Task ID`,
       icon: 'copy',
@@ -113,13 +113,13 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       label: $localize`Retries`,
       icon: 'published_with_changes',
       action$: this.retries$,
-      condition: (element: TaskData) => this.isRetried(element.raw),
+      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.isRetried(element.raw),
     },
     {
       label: $localize`Cancel task`,
       icon: 'cancel',
       action$: this.cancelTask$,
-      condition: (element: TaskData) => this.canCancelTask(element.raw),
+      condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.canCancelTask(element.raw),
     },
   ];
 
@@ -179,7 +179,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     return null;
   }
 
-  onCopiedTaskId(element: TaskData) {
+  onCopiedTaskId(element: ArmonikData<TaskSummary, TaskOptions>) {
     this.clipboard.copy(element.raw.id);
     this.notificationService.success('Task ID copied to clipboard');
   }
@@ -228,5 +228,9 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
         });
       }
     }
+  }
+
+  trackBy(index: number, item: ArmonikData<TaskSummary, TaskOptions>) {
+    return item.raw.id;
   }
 }

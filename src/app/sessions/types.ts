@@ -8,7 +8,7 @@ import { ListOptions } from '@app/types/options';
 export type SessionRaw = GrpcSessionRaw.AsObject;
 export type SessionRawColumnKey = ColumnKey<SessionRaw, TaskOptions> | 'count'| `options.options.${string}`;
 export type SessionRawFieldKey = FieldKey<SessionRaw>;
-export type SessionRawListOptions = ListOptions<SessionRaw & TaskOptions>;
+export type SessionRawListOptions = ListOptions<SessionRaw, TaskOptions>;
 
 export type SessionRawField = SessionRawEnumField | SessionTaskOptionEnumField | string;
 

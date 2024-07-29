@@ -3,14 +3,14 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { PartitionData } from '@app/types/data';
+import { ArmonikData, PartitionData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { PartitionsGrpcService } from '../services/partitions-grpc.service';
 import { PartitionsIndexService } from '../services/partitions-index.service';
-import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '../types';
+import { PartitionRaw } from '../types';
 
 @Component({
   selector: 'app-partitions-table',
@@ -27,7 +27,7 @@ import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRaw
     TableComponent,
   ]
 })
-export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField>
+export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent<PartitionRaw, PartitionRawEnumField>
   implements OnInit, AfterViewInit {
   
   readonly grpcService = inject(PartitionsGrpcService);
@@ -104,5 +104,9 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
         }
       ]
     ];
+  }
+
+  trackBy(index: number, items: ArmonikData<PartitionRaw>) {
+    return items.raw.id;
   }
 }

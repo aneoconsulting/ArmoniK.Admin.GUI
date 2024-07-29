@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { SessionRawColumnKey } from '@app/sessions/types';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { IconsService } from '@services/icons.service';
 import { TableColumnHeaderComponent } from './table-column-header.component';
 
 describe('TableColumnHeaderComponent', () => {
-  let component: TableColumnHeaderComponent<SessionRawColumnKey>;
+  let component: TableColumnHeaderComponent<SessionRaw, TaskOptions>;
 
-  const initColumn: TableColumn<SessionRawColumnKey> = {
+  const initColumn: TableColumn<SessionRaw, TaskOptions> = {
     type: 'count',
     key: 'count',
     name: 'Tasks by Status',

@@ -19,9 +19,9 @@
   @case ('count') {
     <app-count-tasks-by-status
       [refresh]="refreshStatuses"
+      [filters]="countFilters"
       [statusesGroups]="statusesGroups"
       [queryParams]="queryTasksParams"
-      [filters]="countFilters"
     />
   }
   @case ('select') {

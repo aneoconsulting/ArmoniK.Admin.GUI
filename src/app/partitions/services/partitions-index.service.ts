@@ -6,7 +6,7 @@ import { TableService } from '@services/table.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawListOptions } from '../types';
 
 @Injectable()
-export class PartitionsIndexService implements IndexServiceInterface<PartitionRawColumnKey, PartitionRawListOptions> {
+export class PartitionsIndexService implements IndexServiceInterface<PartitionRaw> {
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
 
@@ -15,7 +15,7 @@ export class PartitionsIndexService implements IndexServiceInterface<PartitionRa
   readonly defaultOptions: PartitionRawListOptions = this.defaultConfigService.defaultPartitions.options;
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultPartitions.interval;
 
-  readonly availableTableColumns: TableColumn<PartitionRawColumnKey>[] = [
+  readonly availableTableColumns: TableColumn<PartitionRaw>[] = [
     {
       name: $localize`ID`,
       key: 'id',
