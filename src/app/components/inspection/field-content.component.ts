@@ -15,7 +15,6 @@ import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { PrettyPipe } from '@pipes/pretty.pipe';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
-import { InspectionComponent } from './inspection.component';
 
 @Component({
   selector: 'app-field-content',
@@ -30,7 +29,6 @@ import { InspectionComponent } from './inspection.component';
     MatButtonModule,
     MatIconModule,
     RouterLink,
-    InspectionComponent,
     MatTooltipModule,
     PrettyPipe,
   ],
