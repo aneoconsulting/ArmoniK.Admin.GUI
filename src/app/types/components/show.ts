@@ -87,6 +87,7 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
       map(params => params['id']),
     ).subscribe(id => {
       this.id = id;
+      this.refresh.next();
     });
   }
 

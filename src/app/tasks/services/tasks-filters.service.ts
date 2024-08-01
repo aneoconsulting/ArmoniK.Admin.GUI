@@ -35,6 +35,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION]: $localize`Received to End Duration`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT]: $localize`Processed at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT]: $localize`Fetched at`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID]: $localize`Payload ID`,
   };
 
   readonly optionsField: Record<TaskOptionEnumField, string> = {
@@ -133,6 +134,11 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       for: 'root',
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
       type: 'date'
+    },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
+      type: 'string'
     },
     {  
       for: 'options',

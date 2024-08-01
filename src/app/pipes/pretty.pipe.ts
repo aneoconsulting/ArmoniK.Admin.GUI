@@ -9,7 +9,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({ name: 'pretty', standalone: true })
 export class PrettyPipe implements PipeTransform {
-  transform(key: string | number) {
+  transform(key: string | number | symbol) {
     return key.toString().replaceAll('_', '').replace(/(?<!^)([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase());
   }
 }

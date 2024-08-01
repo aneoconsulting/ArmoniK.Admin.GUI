@@ -6,19 +6,19 @@
   @if (list.length === 0) {
     <span class="no-data">No data</span>
   } @else {
-    <ul>
-      @for(item of list; track item) {
-        <li>
-          <section>
+    @for(item of list; track item) {
+      <div class="item">
+        @if(redirectLink) {
+          <button mat-button [routerLink]="'/' + redirectLink + '/' + item">
             <span>{{item}}</span>
-            @if (redirectLink) {
-              <a mat-icon-button [routerLink]="'/' + redirectLink + '/' + item">
-                <mat-icon [fontIcon]="eyeIcon" />
-              </a>
-            }
-          </section>
-        </li>
+          </button>
+        } @else {
+          <span>{{item}}</span>
+        }
+      </div>
+      @if(!$last) {
+        <mat-divider />
       }
-    </ul>
+    }
   }
 </mat-card>

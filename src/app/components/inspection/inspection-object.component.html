@@ -1,0 +1,20 @@
+@if(data && !isEmpty) {
+  <article class="object">
+    @for (field of fields; track field.key) {
+      @if (field.type === 'object') {
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <strong>{{ field.key | pretty }}</strong>
+            </mat-expansion-panel-header>
+            <app-inspection-object [data]="getObject(field)" />
+          </mat-expansion-panel>
+        </mat-accordion>
+      } @else {
+        <app-field-content [field]="field" [statuses]="statuses" [data]="data" />
+      }
+    }
+  </article>
+} @else {
+  <p class="no-data">No data</p>
+}
