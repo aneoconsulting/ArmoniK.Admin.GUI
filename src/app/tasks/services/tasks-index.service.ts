@@ -174,6 +174,12 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       sortable: true,
     },
     {
+      name: $localize`Payload ID`,
+      key: 'payloadId',
+      type: 'duration',
+      sortable: true
+    },
+    {
       name: $localize`Application Name`,
       key: 'options.applicationName',
       sortable: true,

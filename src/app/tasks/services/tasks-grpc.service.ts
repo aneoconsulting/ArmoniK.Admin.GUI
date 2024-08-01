@@ -41,6 +41,7 @@ export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryE
     receivedToEndDuration: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION,
     fetchedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
     processedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
+    payloadId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
   };
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {
