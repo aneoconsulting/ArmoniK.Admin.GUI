@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
+import { MatDivider } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
-import { IconsService } from '@services/icons.service';
 
 /**
  * The inspect list component provide a way to display lists inside a Mat-Card.
@@ -19,31 +18,12 @@ import { IconsService } from '@services/icons.service';
   imports: [
     MatToolbarModule,
     MatCardModule,
-    MatIconModule,
     MatButtonModule,
-    RouterModule
-  ],
-  providers: [
-    IconsService
+    RouterModule,
+    MatDivider,
   ],
   styles: [`
     .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    ul {
-      list-style: inside;
-      margin: 0;
-    }
-
-    li {
-      list-style-position: initial;
-      padding: 0.5rem;
-    }
-
-    section {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -54,11 +34,31 @@ import { IconsService } from '@services/icons.service';
       margin: 1rem;
       font-style: italic;
     }
+
+    button {
+      width: fit-content; 
+    }
+
+    .item {
+      width: 100%;
+      margin: 0.5rem;
+    }
+
+    section {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    mat-divider {
+      margin-right: 0.5rem;
+    }
+
+    mat-toolbar {
+      padding: 1rem;
+    }
   `]
 })
 export class InspectListComponent {
-  private readonly iconsService = inject(IconsService);
-  readonly eyeIcon = this.iconsService.getIcon('view');
   private _list: string[] = [];
 
   @Input({ required: true }) set list(entries: string[] | undefined) {

@@ -1,5 +1,5 @@
-import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
-import { Subject, Subscription, switchMap } from 'rxjs';
+import { Component, Input, OnInit, WritableSignal, inject, signal } from '@angular/core';
+import { Subject, switchMap } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
@@ -28,45 +28,56 @@ import { ViewTasksByStatusComponent } from '@components/view-tasks-by-status.com
     ViewTasksByStatusComponent,
   ]
 })
-export class CountTasksByStatusComponent {
+export class CountTasksByStatusComponent implements OnInit {
+  private readonly tasksGrpcService = inject(TasksGrpcService);
+
+  id: string | undefined;
+  statusesCount: WritableSignal<StatusCount[]> = signal([]);
+  loading = true;
+
+  private _statusesGroups: TasksStatusesGroup[] = [];
+  private _filters: TaskSummaryFilters;
+  private _refresh$: Subject<void>;
+
   @Input({ required: true }) queryParams: Record<string, string> = {};
-  @Input({ required: true }) refresh: Subject<void>;
+
+  @Input({ required: true }) set refresh(subject: Subject<void>) {
+    this._refresh$ = subject;
+    this.initRefresh();
+  }
 
   @Input({ required: true }) set statusesGroups(entries: TasksStatusesGroup[]) {
     this._statusesGroups = entries;
-    if (this.refresh) {
-      this.refresh.next();
-    }
+    this._refresh$.next();
   }
-
-  id: string | undefined;
-  private _statusesGroups: TasksStatusesGroup[] = [];
 
   get statusesGroups(): TasksStatusesGroup[] {
     return this._statusesGroups;
   }
 
-  statusesCount: WritableSignal<StatusCount[]> = signal([]);
-
-  loading = true;
-
-  private readonly tasksGrpcService = inject(TasksGrpcService);
-
-  subscription = new Subscription();
+  get filters(): TaskSummaryFilters {
+    return this._filters;
+  }
 
   @Input({ required: true }) set filters(entries: TaskSummaryFilters) {
-    this.initCount(entries);
-    this.refresh.pipe(
-      switchMap(() => this.tasksGrpcService.countByStatus$(entries)),
+    this._filters = entries;
+  }
+
+  ngOnInit(): void {
+    this.initId();
+  }
+
+  initId() {
+    this.#setId(this.filters);
+  }
+
+  initRefresh() {
+    this._refresh$.pipe(
+      switchMap(() => this.tasksGrpcService.countByStatus$(this.filters)),
     ).subscribe(response => {
       this.loading = false;
       this.statusesCount.set(response.status ?? []);
     });
-    this.refresh.next();
-  }
-
-  initCount(filters: TaskSummaryFilters) {
-    this.#setId(filters);
   }
 
   #setId(filter: TaskSummaryFilters) {
