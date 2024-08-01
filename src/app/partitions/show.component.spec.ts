@@ -1,6 +1,7 @@
 import { GetPartitionResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -108,12 +109,14 @@ describe('ShowComponent', () => {
   describe('Handle errors', () => {
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      component.handleError(new Error());
+      const errorMessage = 'ErrorMessage';
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
-      component.handleError(new Error());
+      const errorMessage = 'ErrorMessage';
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });
