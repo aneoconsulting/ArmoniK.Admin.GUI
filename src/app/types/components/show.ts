@@ -5,8 +5,10 @@ import { Observable, Subject, Subscription, catchError, map, of, switchMap } fro
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Field } from '../column.type';
 import { DataRaw } from '../data';
 import { GetResponse, GrpcGetInterface } from '../services/grpcService';
+import { InspectionService } from '../services/inspectionService';
 
 export type ShowActionButton = {
   id: string;
@@ -43,11 +45,23 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
   data = signal<T | null>(null);
   subscriptions = new Subscription();
 
-  private readonly iconsService = inject(IconsService);
+  fields: Field<T>[];
+
   abstract readonly grpcService: GrpcGetInterface<R>;
+  abstract readonly inspectionService: InspectionService<T>;
+
+  private readonly iconsService = inject(IconsService);
   private readonly shareURLService = inject(ShareUrlService);
   private readonly notificationService = inject(NotificationService);
   private readonly route = inject(ActivatedRoute);
+
+  initInspection() {
+    this.sharableURL = this.getSharableUrl();
+    this.setFields();
+    this.subscribeToData();
+    this.getIdByRoute();
+    this.refresh.next();
+  }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
@@ -90,6 +104,10 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
       this.id = id;
       this.refresh.next();
     });
+  }
+
+  setFields() {
+    this.fields = this.inspectionService.fields;
   }
 
   handleError(error: GrpcStatusEvent) {
