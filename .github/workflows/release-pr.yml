@@ -3,7 +3,8 @@ name: CD Release PR
 on:
   pull_request:
     branches:
-      - main
+      - 'main'
+      - 'v**'
 
 permissions:
   contents: write

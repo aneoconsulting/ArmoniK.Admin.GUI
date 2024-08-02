@@ -1,5 +1,6 @@
 import { inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Observable, Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -62,7 +63,7 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
         return this.get$();
       }),
       map((data) => this.getDataFromResponse(data) ?? null),
-      catchError((error) => this.handleError(error))
+      catchError((error: GrpcStatusEvent) => this.handleError(error))
     ).subscribe((data) => {
       this.data.set(data);
       this.afterDataFetching();
@@ -91,7 +92,7 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
     });
   }
 
-  handleError(error: Error) {
+  handleError(error: GrpcStatusEvent) {
     this.error($localize`Could not retrieve data.`);
     console.error(error);
     return of(null);

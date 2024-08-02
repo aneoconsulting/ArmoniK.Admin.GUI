@@ -1,6 +1,7 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Observable, Subject, catchError, first, map, of, switchMap } from 'rxjs';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
@@ -108,9 +109,9 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
           }
 
           return this.list$(options, filters).pipe(
-            catchError(err => {
+            catchError((err: GrpcStatusEvent) => {
               console.error(err);
-              this.notificationService.error(err);
+              this.notificationService.error(err.statusMessage);
               return of(null);
             })
           );
