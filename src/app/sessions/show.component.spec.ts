@@ -148,6 +148,18 @@ describe('AppShowComponent', () => {
       expect(component.data()).toEqual(returnedSession);
     });
 
+    it('should set taskQueryParams', () => {
+      component.tasksQueryParams = {};
+      component.refresh.next();
+      expect(component.tasksQueryParams).toEqual({'0-root-1-0': returnedSession.sessionId});
+    });
+
+    it('should set resultsQueryParams', () => {
+      component.resultsQueryParams = {};
+      component.refresh.next();
+      expect(component.resultsQueryParams).toEqual({'0-root-1-0': returnedSession.sessionId});
+    });
+
     it('should not update data if there is none', () => {
       mockSessionsGrpcService.get$.mockImplementationOnce(() => of({}));
       component.refresh.next();
