@@ -2,7 +2,7 @@ import { Field } from '@app/types/column.type';
 import { InspectionService } from '@app/types/services/inspectionService';
 import { SessionRaw } from '../types';
 
-export class SessionInspectionService extends InspectionService<SessionRaw> {
+export class SessionsInspectionService extends InspectionService<SessionRaw> {
   readonly fields: Field<SessionRaw>[] = [
     {
       key: 'duration',

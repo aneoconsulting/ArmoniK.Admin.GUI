@@ -17,7 +17,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
-import { TaskInspectionService } from './services/tasks-inspection.service';
+import { TasksInspectionService } from './services/tasks-inspection.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
 import { TaskRaw } from './types';
 
@@ -47,7 +47,7 @@ import { TaskRaw } from './types';
     MatSnackBar,
     FiltersService,
     GrpcSortFieldService,
-    TaskInspectionService,
+    TasksInspectionService,
   ],
   imports: [
     ShowPageComponent,
@@ -60,7 +60,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   cancel$ = new Subject<void>();
 
   readonly grpcService = inject(TasksGrpcService);
-  readonly inspectionService = inject(TaskInspectionService);
+  readonly inspectionService = inject(TasksInspectionService);
 
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly filtersService = inject(FiltersService);

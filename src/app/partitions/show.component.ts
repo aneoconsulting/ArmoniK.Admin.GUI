@@ -14,7 +14,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
-import { PartitionInspectionService } from './services/partitions-inspection.service';
+import { PartitionsInspectionService } from './services/partitions-inspection.service';
 import { PartitionRaw } from './types';
 
 @Component({
@@ -49,7 +49,7 @@ import { PartitionRaw } from './types';
 })
 export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
   readonly grpcService = inject(PartitionsGrpcService);
-  readonly inspectionService = inject(PartitionInspectionService);
+  readonly inspectionService = inject(PartitionsInspectionService);
 
   private readonly filtersService = inject(FiltersService);
 

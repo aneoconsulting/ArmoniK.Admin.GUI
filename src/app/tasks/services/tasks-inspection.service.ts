@@ -2,7 +2,7 @@ import { Field } from '@app/types/column.type';
 import { InspectionService } from '@app/types/services/inspectionService';
 import { TaskOptions, TaskRaw } from '../types';
 
-export class TaskInspectionService extends InspectionService<TaskRaw> {
+export class TasksInspectionService extends InspectionService<TaskRaw> {
   readonly fields: Field<TaskRaw>[] = [
     {
       key: 'sessionId',
