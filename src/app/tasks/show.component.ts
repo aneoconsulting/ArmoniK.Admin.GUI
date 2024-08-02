@@ -1,9 +1,11 @@
 import { FilterStringOperator, GetTaskResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
-import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface } from '@app/types/components/show';
+import { Params, RouterModule } from '@angular/router';
+import { Field } from '@app/types/column.type';
+import { AppShowComponent } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -19,18 +21,39 @@ import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksInspectionService } from './services/tasks-inspection.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
-import { TaskRaw } from './types';
+import { TaskOptions, TaskRaw } from './types';
 
 @Component({
   selector: 'app-tasks-show',
   template: `
-<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
-  <span i18n="Page title"> Task </span>
+<app-show-page [id]="id" [data]="data()" [fields]="fields" [optionsFields]="optionsFields" [sharableURL]="sharableURL" [arrays]="arrays" [statuses]="statuses" (refresh)="onRefresh()" [status]="status">
+  <div class="title" title>
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
+    <span i18n="Page title"> Task </span>
+  </div>
+  <div class="actions" actions>
+    <button mat-button [routerLink]="'/sessions/' + data()?.sessionId">
+      <span i18n>See session</span>
+      <mat-icon [fontIcon]="getIcon('sessions')" />
+    </button>
+    <button mat-button [routerLink]="'/results'" [queryParams]="resultsQueryParams">
+      <span i18n>See Results</span>
+      <mat-icon [fontIcon]="getIcon('results')" />
+    </button>
+    <button mat-button [routerLink]="'/partitions/' + data()?.options?.partitionId">
+      <span i18n>See Partition</span>
+      <mat-icon [fontIcon]="getIcon('partitions')" />
+    </button>
+  </div>
+  <div bonus-actions>
+    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="canCancel">
+      <span i18n>Cancel Task</span>
+      <mat-icon [fontIcon]="this.getIcon('cancel')" />
+    </button>
+  </div>
 </app-show-page>
   `,
-  styles: [`
-  `],
+  styleUrl: '../../inspections.css',
   standalone: true,
   providers: [
     IconsService,
@@ -52,12 +75,12 @@ import { TaskRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule,
+    MatButtonModule,
+    RouterModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> implements OnInit, AfterViewInit, ShowCancellableInterface, ShowActionInterface, OnDestroy {
-
-  cancel$ = new Subject<void>();
+export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> implements OnInit, OnDestroy {
 
   readonly grpcService = inject(TasksGrpcService);
   readonly inspectionService = inject(TasksInspectionService);
@@ -65,52 +88,25 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly filtersService = inject(FiltersService);
 
-  canCancel$ = new Subject<boolean>();
+  resultsKey: string = '';
+  resultsQueryParams: Params = {};
 
-  actionButtons: ShowActionButton[] = [
-    {
-      id: 'session',
-      name: $localize`See session`,
-      icon: this.getIcon('sessions'),
-      area: 'left',
-      link: '/sessions',
-    },
-    {
-      id: 'results',
-      name: $localize`See results`,
-      icon: this.getIcon('results'),
-      area: 'left',
-      link: '/results',
-      queryParams: {}
-    },
-    {
-      id: 'partition',
-      name: $localize`See partition`,
-      icon: this.getIcon('partitions'),
-      area: 'left',
-      link: '/partitions',
-    },
-    {
-      id: 'cancel',
-      name: $localize`Cancel task`,
-      icon: this.getIcon('cancel'),
-      color: 'accent',
-      area: 'right',
-      action$: this.cancel$,
-      disabled: this.canCancel$
+  canCancel: boolean = false;
+
+  arrays: Field<TaskRaw>[] = this.inspectionService.arrays;
+  optionsFields: Field<TaskOptions>[] = this.inspectionService.optionsFields;
+
+  get status() {
+    const data: TaskRaw | null = this.data();
+    if (data) {
+      return this.statuses[data.status];
     }
-  ];
-
-  ngOnInit(): void {
-    this.sharableURL = this.getSharableUrl();
+    return undefined;
   }
 
-  ngAfterViewInit(): void {
-    this.subscribeToData();
-    this.getIdByRoute();
-    const cancelSubscription = this.cancel$.subscribe(() => this.cancel());
-    this.subscriptions.add(cancelSubscription);
-    this.refresh.next();
+  ngOnInit(): void {
+    this.resultsKey = this.filtersService.createQueryParamsKey<ResultRawEnumField>(0, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
+    this.initInspection();
   }
 
   ngOnDestroy(): void {
@@ -124,12 +120,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   afterDataFetching(): void {
     const data = this.data();
     if (data) {
-      this.setLink('session', 'sessions', data.sessionId);
-      if (data.options) {
-        this.setLink('partition', 'partitions', data.options.partitionId);
-      }
-      this.filtersService.createFilterQueryParams(this.actionButtons, 'results', this.resultsKey(), data.id);
-      this.canCancel$.next(!this.tasksStatusesService.taskNotEnded(data.status));
+      this.createResultQueryParams();
+      this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status);
     }
   }
   
@@ -148,15 +140,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
     }
   }
 
-  resultsKey() {
-    return this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-  }
-
-  setLink(actionId: string, baseLink: string, id: string) {
-    const index = this.actionButtons.findIndex(element => element.id === actionId);
-    if (index !== -1) {
-      this.actionButtons[index].link = `/${baseLink}/${id}`;
-    }
+  createResultQueryParams() {
+    this.resultsQueryParams[this.resultsKey] = this.data()?.id;
   }
 
   get statuses() {
