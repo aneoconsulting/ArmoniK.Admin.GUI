@@ -8,6 +8,7 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
+import { PartitionsInspectionService } from './services/partitions-inspection.service';
 import { ShowComponent } from './show.component';
 import { PartitionRaw } from './types';
 
@@ -49,7 +50,8 @@ describe('ShowComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService }
+        { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
+        PartitionsInspectionService,
       ]
     }).inject(ShowComponent);
     component.ngOnInit();

@@ -13,6 +13,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsGrpcService } from './services/results-grpc.service';
+import { ResultsInspectionService } from './services/results-inspection.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw } from './types';
 
@@ -38,7 +39,8 @@ import { ResultRaw } from './types';
     TableURLService,
     ResultsFiltersService,
     NotificationService,
-    MatSnackBar
+    MatSnackBar,
+    ResultsInspectionService,
   ],
   imports: [
     ShowPageComponent,
@@ -49,6 +51,8 @@ import { ResultRaw } from './types';
 export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
 
   readonly grpcService = inject(ResultsGrpcService);
+  readonly inspectionService = inject(ResultsInspectionService);
+
   private readonly resultsStatusesService = inject(ResultsStatusesService);
 
   actionButtons: ShowActionButton[] = [

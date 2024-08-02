@@ -8,6 +8,7 @@ import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
+import { TasksInspectionService } from './services/tasks-inspection.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
 import { ShowComponent } from './show.component';
 
@@ -55,7 +56,8 @@ describe('AppShowComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: TasksGrpcService, useValue: mockTasksGrpcService }
+        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
+        TasksInspectionService
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
