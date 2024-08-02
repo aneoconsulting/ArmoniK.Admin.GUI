@@ -7,6 +7,7 @@ import { Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject, map, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AppShowComponent, ShowActionButton, ShowActionInterface, ShowCancellableInterface, ShowClosableInterface } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
@@ -22,6 +23,7 @@ import { UtilsService } from '@services/utils.service';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
+import { SessionsInspectionService } from './services/sessions-inspection.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { SessionRaw } from './types';
 
@@ -54,6 +56,8 @@ import { SessionRaw } from './types';
     TasksFiltersService,
     TasksStatusesService,
     GrpcSortFieldService,
+    SessionsInspectionService,
+    TasksInspectionService,
   ],
   imports: [
     ShowPageComponent,
@@ -76,8 +80,11 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   lowerDate: Timestamp | undefined;
   upperDate: Timestamp | undefined;
 
-  private readonly sessionsStatusesService = inject(SessionsStatusesService);
   readonly grpcService = inject(SessionsGrpcService);
+  readonly inspectionService = inject(SessionsInspectionService);
+  readonly TasksInspectionService = inject(TasksInspectionService);
+
+  private readonly sessionsStatusesService = inject(SessionsStatusesService);
   private readonly filtersService = inject(FiltersService);
   private readonly router = inject(Router);
 

@@ -4,11 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Timestamp } from '@ngx-grpc/well-known-types';
 import { BehaviorSubject, Observable, lastValueFrom, of, throwError } from 'rxjs';
+import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
+import { SessionsInspectionService } from './services/sessions-inspection.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { ShowComponent } from './show.component';
 import { SessionRaw } from './types';
@@ -83,8 +85,9 @@ describe('AppShowComponent', () => {
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: SessionsGrpcService, useValue: mockSessionsGrpcService },
-        { provide: Router, useValue: mockRouter }
-
+        { provide: Router, useValue: mockRouter },
+        SessionsInspectionService,
+        TasksInspectionService,
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
