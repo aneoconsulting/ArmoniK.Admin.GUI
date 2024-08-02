@@ -36,7 +36,7 @@ export interface FiltersServiceInterface<F extends FiltersEnums, O extends Filte
 }
 
 export interface FiltersServiceOptionsInterface<F extends FiltersEnums, O extends NonNullable<FiltersOptionsEnums>> extends FiltersServiceInterface<F, O> {
-  readonly optionsField: Record<O, string>;
+  readonly optionsFields: Record<O, string>;
 }
 
 export interface FiltersServiceStatusesInterface {

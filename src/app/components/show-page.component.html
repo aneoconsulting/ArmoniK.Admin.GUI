@@ -1,11 +1,12 @@
-<app-page-header [sharableURL]="sharableURL">
-  <ng-content></ng-content>
-  <span>{{ id }}</span> 
-  <button mat-icon-button [cdkCopyToClipboard]="id ?? ''" (cdkCopyToClipboardCopied)="onCopiedTaskId()">
-    <mat-icon aria-hidden="true" fontIcon="content_copy" />
-  </button>
-</app-page-header>
+<app-inspection-header [id]="id" [status]="status" [sharableURL]="sharableURL">
+  <ng-content title select="[title]" />
+</app-inspection-header>
 
-<app-show-actions [actionsButton]="actionsButton" (refresh)="onRefresh()" />
+<app-inspection-toolbar (refresh)="onRefresh()">
+  <ng-content select="[actions]" actions />
+  <ng-content select="[bonus-actions]" bonus-actions />
+</app-inspection-toolbar>
 
-<app-show-card [data]="data" [statuses]="statuses" />
+<app-inspection-card [data]="data" [statuses]="statuses" [fields]="fields" [optionsFields]="optionsFields"/>
+
+<app-inspection-list-grid [arrays]="arrays" [data]="data">
