@@ -79,14 +79,15 @@ describe('ShowComponent', () => {
   });
 
   describe('get status', () => {
-    it('should return undefined if there is no data', () => {
-      component.data.set(null);
-      expect(component.status).toEqual(undefined);
+    it('should return the status label if there is data', () => {
+      component.refresh.next();
+      expect(component.status).toEqual('Created');
     });
 
-    it('should return the status label if there is data', () => {
-      component.data.set(returnedResult);
-      expect(component.status).toEqual('Created');
+    it('should return undefined if there is no data', () => {
+      mockResultsGrpcService.get$.mockReturnValueOnce(of(null));
+      component.refresh.next();
+      expect(component.status).toEqual(undefined);
     });
   });
 

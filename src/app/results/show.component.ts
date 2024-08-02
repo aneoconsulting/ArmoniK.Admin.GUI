@@ -1,4 +1,4 @@
-import { GetResultResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { GetResultResponse, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -69,12 +69,18 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
 
   private readonly resultsStatusesService = inject(ResultsStatusesService);
 
-  get status() {
-    const data: ResultRaw | null = this.data();
-    if (data) {
-      return this.statuses[data.status];
-    }
-    return undefined;
+  private _status: string | undefined;
+
+  set status(status: ResultStatus | undefined) {
+    this._status = status ? this.statuses[status] : undefined;
+  }
+
+  get status(): string | undefined {
+    return this._status;
+  }
+
+  get statuses() {
+    return this.resultsStatusesService.statuses;
   }
 
   ngOnInit(): void {
@@ -89,9 +95,7 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
     return data.result;
   }
 
-  afterDataFetching(): void { }
-
-  get statuses() {
-    return this.resultsStatusesService.statuses;
+  afterDataFetching(): void {
+    this.status = this.data()?.status;
   }
 }
