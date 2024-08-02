@@ -1,8 +1,11 @@
 import { FilterArrayOperator, FilterStringOperator, GetPartitionResponse, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
+import { Params, RouterModule } from '@angular/router';
+import { Field } from '@app/types/column.type';
+import { AppShowComponent } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -20,13 +23,24 @@ import { PartitionRaw } from './types';
 @Component({
   selector: 'app-partitions-show',
   template: `
-<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
-  <span i18n="Page title">Partition</span>
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [fields]="fields" [arrays]="arrays" (refresh)="onRefresh()">
+  <div class="title" title>
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
+    <span i18n="Page title">Partition</span>
+  </div>
+  <div class="actions" actions>
+  <button mat-button [routerLink]="'/sessions'" [queryParams]="sessionsQueryParams">
+      <span i18n>See Sessions</span>
+      <mat-icon [fontIcon]="getIcon('sessions')" />
+    </button>
+    <button mat-button [routerLink]="'/tasks'" [queryParams]="tasksQueryParams">
+      <span i18n>See Tasks</span>
+      <mat-icon [fontIcon]="getIcon('tasks')" />
+    </button>
+  </div>
 </app-show-page>
   `,
-  styles: [`
-  `],
+  styleUrl: '../../inspections.css',
   standalone: true,
   providers: [
     UtilsService,
@@ -44,47 +58,51 @@ import { PartitionRaw } from './types';
   ],
   imports: [
     ShowPageComponent,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule,
+    RouterModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
+export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionResponse> implements OnInit, OnDestroy {
   readonly grpcService = inject(PartitionsGrpcService);
   readonly inspectionService = inject(PartitionsInspectionService);
 
   private readonly filtersService = inject(FiltersService);
 
-  actionButtons: ShowActionButton[] = [
-    {
-      id: 'sessions',
-      name: $localize`See sessions`,
-      icon: this.getIcon('sessions'),
-      link: '/sessions',
-      queryParams: {},
-      area: 'left'
-    },
-    {
-      id: 'tasks',
-      name: $localize`See tasks`,
-      icon: this.getIcon('tasks'),
-      link: '/tasks',
-      queryParams: {},
-      area: 'left'
-    }
-  ];
+  sessionsKey: string = '';
+  sessionsQueryParams: Params = {};
+
+  tasksKey: string = '';
+  tasksQueryParams: Params = {};
+
+  arrays: Field<PartitionRaw>[] = [];
 
   ngOnInit(): void {
-    this.getIdByRoute();
-    this.sharableURL = this.getSharableUrl();
-  }
-
-  ngAfterViewInit(): void {
-    this.subscribeToData();
-    this.refresh.next();
+    this.createTasksKey();
+    this.createSessionsKey();
+    this.arrays = this.inspectionService.arrays;
+    this.initInspection();
   }
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  createSessionsKey() {
+    this.sessionsKey = this.filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
+  }
+
+  createSessionsQueryParams() {
+    this.sessionsQueryParams[this.sessionsKey] = this.data()?.id;
+  }
+  
+  createTasksKey() {
+    this.tasksKey = this.filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
+  }
+
+  createTasksQueryParams() {
+    this.tasksQueryParams[this.tasksKey] = this.data()?.id;
   }
 
   getDataFromResponse(data: GetPartitionResponse): PartitionRaw | undefined {
@@ -92,18 +110,7 @@ export class ShowComponent extends AppShowComponent<PartitionRaw, GetPartitionRe
   }
 
   afterDataFetching(): void {
-    const data = this.data();
-    if (data) {
-      this.filtersService.createFilterQueryParams(this.actionButtons, 'sessions', this.partitionsKey, data.id);
-      this.filtersService.createFilterQueryParams(this.actionButtons, 'tasks', this.tasksKey, data.id);
-    }
-  }
-
-  get partitionsKey() {
-    return this.filtersService.createQueryParamsKey<SessionRawEnumField>(0, 'root', FilterArrayOperator.FILTER_ARRAY_OPERATOR_CONTAINS, SessionRawEnumField.SESSION_RAW_ENUM_FIELD_PARTITION_IDS);
-  }
-
-  get tasksKey() {
-    return this.filtersService.createQueryParamsKey<TaskOptionEnumField>(0, 'options', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_PARTITION_ID);
+    this.createSessionsQueryParams();
+    this.createTasksQueryParams();
   }
 }

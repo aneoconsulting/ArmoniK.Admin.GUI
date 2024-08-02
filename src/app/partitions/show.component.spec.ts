@@ -55,7 +55,6 @@ describe('ShowComponent', () => {
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should create', () => {
@@ -69,6 +68,14 @@ describe('ShowComponent', () => {
 
     it('should set sharableURL', () => {
       expect(mockShareUrlService.generateSharableURL).toHaveBeenCalled();
+    });
+
+    it('should set sessionsKey', () => {
+      expect(component.sessionsKey).toEqual('0-root-3-0');
+    });
+
+    it('should set tasksKey', () => {
+      expect(component.tasksKey).toEqual('0-options-4-0');
     });
   });
 
