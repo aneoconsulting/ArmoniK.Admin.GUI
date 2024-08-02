@@ -40,7 +40,7 @@ export class InspectionHeaderComponent {
 
   private _id = '';
   
-  @Input({ required: true }) set id(entry: string | undefined) {
+  @Input({ required: true }) set id(entry: string | null) {
     if (entry) {
       this._id = entry;
     }

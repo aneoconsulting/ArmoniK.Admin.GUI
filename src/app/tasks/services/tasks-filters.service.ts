@@ -38,7 +38,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID]: $localize`Payload ID`,
   };
 
-  readonly optionsField: Record<TaskOptionEnumField, string> = {
+  readonly optionsFields: Record<TaskOptionEnumField, string> = {
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION]: $localize`Max Duration`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES]: $localize`Max Retries`,
@@ -211,7 +211,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     case 'root':
       return this.rootField[filterField as TaskSummaryEnumField];
     case 'options':
-      return this.optionsField[filterField as TaskOptionEnumField];
+      return this.optionsFields[filterField as TaskOptionEnumField];
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
@@ -229,7 +229,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       return { for: 'root', index: index };
     }
 
-    const optionsValues = Object.values(this.optionsField);
+    const optionsValues = Object.values(this.optionsFields);
     index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
     return { for: 'options', index: index };
   }
