@@ -1,8 +1,10 @@
 import { GetResultResponse } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AppShowComponent, ShowActionButton, ShowActionInterface } from '@app/types/components/show';
+import { RouterModule } from '@angular/router';
+import { AppShowComponent } from '@app/types/components/show';
 import { ShowPageComponent } from '@components/show-page.component';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -20,13 +22,24 @@ import { ResultRaw } from './types';
 @Component({
   selector: 'app-result-show',
   template: `
-<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [statuses]="statuses" [actionsButton]="actionButtons" (refresh)="onRefresh()">
-  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
-  <span i18n="Page title"> Result </span>
+<app-show-page [id]="id" [data]="data()" [status]="status" [fields]="fields" [sharableURL]="sharableURL" [statuses]="statuses" (refresh)="onRefresh()">
+  <div class="title" title>
+    <mat-icon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
+    <span i18n="Page title"> Result </span>
+  </div>
+  <div class="actions" actions>
+  <button mat-button [routerLink]="'/sessions/' + data()?.sessionId">
+    <mat-icon [fontIcon]="getIcon('sessions')"/>
+    <span i18n>See Session</span>
+  </button>
+  <button mat-button [routerLink]="'/tasks/' + data()?.ownerTaskId">
+    <mat-icon [fontIcon]="getIcon('tasks')"/>
+    <span i18n>See Owner Task</span>
+  </button>
+  </div>
 </app-show-page>
   `,
-  styles: [`
-  `],
+  styleUrl: '../../inspections.css',
   standalone: true,
   providers: [
     UtilsService,
@@ -45,39 +58,27 @@ import { ResultRaw } from './types';
   imports: [
     ShowPageComponent,
     MatIconModule,
+    MatButtonModule,
+    RouterModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, AfterViewInit, ShowActionInterface, OnDestroy {
-
+export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse> implements OnInit, OnDestroy {
   readonly grpcService = inject(ResultsGrpcService);
   readonly inspectionService = inject(ResultsInspectionService);
 
   private readonly resultsStatusesService = inject(ResultsStatusesService);
 
-  actionButtons: ShowActionButton[] = [
-    {
-      id: 'session',
-      name: $localize`See session`,
-      icon: this.getIcon('sessions'),
-      link: '/sessions'
-    },
-    {
-      id: 'task',
-      name: $localize`See owner task`,
-      icon: this.getIcon('tasks'),
-      link: '/tasks'
+  get status() {
+    const data: ResultRaw | null = this.data();
+    if (data) {
+      return this.statuses[data.status];
     }
-  ];
-
-  ngOnInit(): void {
-    this.getIdByRoute();
-    this.sharableURL = this.getSharableUrl();
+    return undefined;
   }
 
-  ngAfterViewInit(): void {
-    this.subscribeToData();
-    this.refresh.next();
+  ngOnInit(): void {
+    this.initInspection();
   }
 
   ngOnDestroy() {
@@ -88,26 +89,9 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
     return data.result;
   }
 
-  afterDataFetching(): void {
-    const data = this.data();
-    if (data) {
-      this.setLink('session', 'sessions', data.sessionId);
-      if(!data.ownerTaskId || data.sessionId === data.ownerTaskId) {
-        this.actionButtons = this.actionButtons.filter(element => element.id !== 'task');
-      } else {
-        this.setLink('task', 'tasks', data.ownerTaskId);
-      }
-    }
-  }
+  afterDataFetching(): void { }
 
   get statuses() {
     return this.resultsStatusesService.statuses;
-  }
-
-  setLink(actionId: string, baseLink: string, id: string) {
-    const index = this.actionButtons.findIndex(element => element.id === actionId);
-    if (index !== -1) {
-      this.actionButtons[index].link = `/${baseLink}/${id}`;
-    }
   }
 }

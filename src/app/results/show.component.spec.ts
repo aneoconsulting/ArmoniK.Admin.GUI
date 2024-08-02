@@ -1,4 +1,4 @@
-import { GetResultResponse } from '@aneoconsultingfr/armonik.api.angular';
+import { GetResultResponse, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
@@ -36,14 +36,11 @@ describe('ShowComponent', () => {
     id: 'resultId-12345',
     options: {
       partitionId: 'partitionId'
-    }
+    },
+    status: ResultStatus.RESULT_STATUS_CREATED
   } as unknown as ResultRaw;
   const mockResultsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({result: returnedResult} as GetResultResponse)),
-  };
-
-  const mockResultsStatusesService = {
-    statuses: []
   };
 
   beforeEach(() => {
@@ -52,7 +49,7 @@ describe('ShowComponent', () => {
         ShowComponent,
         IconsService,
         FiltersService,
-        { provide: ResultsStatusesService, useValue: mockResultsStatusesService},
+        ResultsStatusesService,
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
@@ -61,7 +58,6 @@ describe('ShowComponent', () => {
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should create', () => {
@@ -76,6 +72,22 @@ describe('ShowComponent', () => {
     it('should set sharableURL', () => {
       expect(mockShareUrlService.generateSharableURL).toHaveBeenCalled();
     });
+
+    it('should set fields', () => {
+      expect(component.fields).toEqual((new ResultsInspectionService).fields);
+    });
+  });
+
+  describe('get status', () => {
+    it('should return undefined if there is no data', () => {
+      component.data.set(null);
+      expect(component.status).toEqual(undefined);
+    });
+
+    it('should return the status label if there is data', () => {
+      component.data.set(returnedResult);
+      expect(component.status).toEqual('Created');
+    });
   });
 
   it('should get icons', () => {
@@ -88,11 +100,6 @@ describe('ShowComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should set link for action', () => {
-    component.setLink('session', 'sessions', 'sessionId-12345');
-    expect(component.actionButtons[0].link).toEqual('/sessions/sessionId-12345');
-  });
-
   describe('Getting data', () => {
     it('should fetch data on refresh', () => {
       component.refresh.next();
@@ -102,19 +109,6 @@ describe('ShowComponent', () => {
     it('should update data on success', () => {
       component.refresh.next();
       expect(component.data()).toEqual(returnedResult);
-    });
-
-    it(('should set link if sessionId is not the same as ownerTaskId'), () => {
-      const spy = jest.spyOn(component, 'setLink');
-      mockResultsGrpcService.get$.mockImplementationOnce(() => of({result: {...returnedResult, sessionId: 'sessionId', ownerTaskId: 'ownerTaskId'}}));
-      component.refresh.next();
-      expect(spy).toHaveBeenCalledWith('task', 'tasks', 'ownerTaskId');
-    });
-
-    it('should remove an action if sessionId is the same as ownerTaskId', () => {
-      mockResultsGrpcService.get$.mockImplementationOnce(() => of({result: {...returnedResult, sessionId: 'sessionId', ownerTaskId: 'sessionId'}}));
-      component.refresh.next();
-      expect(component.actionButtons.find(action => action.id === 'task')).toBeUndefined();
     });
 
     it('should not update data if there is none', () => {
@@ -162,6 +156,6 @@ describe('ShowComponent', () => {
   });
 
   it('should get statuses', () => {
-    expect(component.statuses).toEqual(mockResultsStatusesService.statuses);
+    expect(component.statuses).toEqual((new ResultsStatusesService).statuses);
   });
 });
