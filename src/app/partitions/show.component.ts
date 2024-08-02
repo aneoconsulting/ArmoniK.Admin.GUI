@@ -39,7 +39,8 @@ import { PartitionRaw } from './types';
     TableStorageService,
     NotificationService,
     MatSnackBar,
-    FiltersService
+    FiltersService,
+    PartitionsInspectionService,
   ],
   imports: [
     ShowPageComponent,
