@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Timestamp } from '@ngx-grpc/well-known-types';
-import { BehaviorSubject, Observable, lastValueFrom, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -91,7 +91,6 @@ describe('AppShowComponent', () => {
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should create', () => {
@@ -105,6 +104,26 @@ describe('AppShowComponent', () => {
 
     it('should set sharableURL', () => {
       expect(mockShareUrlService.generateSharableURL).toHaveBeenCalled();
+    });
+
+    it('should set fields', () => {
+      expect(component.fields).toEqual((new SessionsInspectionService).fields);
+    });
+
+    it('should set optionsFields', () => {
+      expect(component.optionsFields).toEqual((new TasksInspectionService).optionsFields);
+    });
+
+    it('should set arrays', () => {
+      expect(component.arrays).toEqual((new SessionsInspectionService).arrays);
+    });
+
+    it('should set tasksKey', () => {
+      expect(component.tasksKey).toEqual('0-root-1-0');
+    });
+
+    it('should set resultsKey', () => {
+      expect(component.resultsKey).toEqual('0-root-1-0');
     });
   });
 
@@ -141,31 +160,6 @@ describe('AppShowComponent', () => {
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
-    });
-
-    it('should update query params for partitions', () => {
-      component.refresh.next();
-      expect(component.actionButtons.find(button => button.id === 'partitions')?.queryParams)
-        .toEqual({
-          '0-root-1-0': 'partitionId1',
-          '1-root-1-0': 'partitionId2'
-        });
-    });
-
-    it('should update filter params for results', () => {
-      component.refresh.next();
-      expect(component.actionButtons.find(button => button.id === 'results')?.queryParams)
-        .toEqual({
-          '0-root-1-0': returnedSession.sessionId
-        });
-    });
-
-    it('should update filter params for tasks', () => {
-      component.refresh.next();
-      expect(component.actionButtons.find(button => button.id === 'tasks')?.queryParams)
-        .toEqual({
-          '0-root-1-0': returnedSession.sessionId
-        });
     });
   });
 
@@ -222,156 +216,153 @@ describe('AppShowComponent', () => {
     });
   });
 
-  describe('Cancel session', () => {
-    it('should cancel sessions', () => {
-      component.cancel();
-      expect(mockSessionsGrpcService.cancel$).toHaveBeenCalledWith(returnedSession.sessionId);
-    });
-
-    it('should notify on success', () => {
-      component.cancel();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session canceled');
-    });
-
-    it('should refresh on success', () => {
-      const spy = jest.spyOn(component.refresh, 'next');
-      component.cancel();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should log errors', () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      mockSessionsGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      component.cancel();
-      expect(errorSpy).toHaveBeenCalled();
-    });
-  });
-
   it('should get statuses', () => {
     expect(component.statuses).toEqual(sessionStatusesService.statuses);
   });
 
   it('should get resultKeys', () => {
-    expect(component.resultsKey()).toEqual('0-root-1-0');
+    expect(component.resultsKey).toEqual('0-root-1-0');
   });
 
-
-  describe('cancel action', () => {
+  describe('Cancelling', () => {
     beforeAll(() => {
       component.refresh.next(); // setting up the RUNNING status
     });
 
     it('should permit to cancel a session', () => {
-      lastValueFrom(component.actionButtons.find(button => button.id === 'cancel')?.disabled as Observable<boolean>)
-        .then(disabled => expect(disabled).toBeFalsy());
+      expect(component.disableCancel).toBeFalsy();
+    });
+
+    it('should call grpc service "cancel$" method', () => {
+      component.cancel();
+      expect(mockSessionsGrpcService.cancel$).toHaveBeenCalled();
     });
 
     it('should notify on success when cancelling a session', () => {
-      component.actionButtons.find(button => button.id === 'cancel')?.action$?.next();
+      component.cancel();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Session canceled');
     });
 
     it('should notify on errors when cancelling a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockSessionsGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
-      component.actionButtons.find(button => button.id === 'cancel')?.action$?.next();
+      component.cancel();
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
 
-  describe('Pause action', () => {
+  describe('Pausing', () => {
     beforeAll(() => {
       component.refresh.next(); // setting up the RUNNING status
     });
 
-    it('should permit to cancel a session', () => {
-      lastValueFrom(component.actionButtons.find(button => button.id === 'pause')?.disabled as Observable<boolean>)
-        .then(disabled => expect(disabled).toBeFalsy());
+    it('should permit to pause a session', () => {
+      expect(component.disablePause).toBeFalsy();
+    });
+
+    it('should call the grpc service "pause$" method', () => {
+      component.pause();
+      expect(mockSessionsGrpcService.pause$).toHaveBeenCalled();
     });
 
     it('should notify on success when pausing a session', () => {
-      component.actionButtons.find(button => button.id === 'pause')?.action$?.next();
+      component.pause();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Session paused');
     });
 
     it('should notify on errors when pausing a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockSessionsGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
-      component.actionButtons.find(button => button.id === 'pause')?.action$?.next();
+      component.pause();
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
 
-  describe('Resume action', () => {
-    beforeAll(() => {
-      component.refresh.next(); // setting up the RUNNING status
+  describe('Resuming', () => {
+    beforeEach(() => {
+      const pausedSession = {
+        sessionId: 'pausedSession',
+        partitionIds: ['partitionId1', 'partitionId2'],
+        status: SessionStatus.SESSION_STATUS_PAUSED
+      } as SessionRaw;
+      mockSessionsGrpcService.get$.mockReturnValueOnce(of(pausedSession));
+      component.data.set(pausedSession); // setting up the PAUSE status
+      component.afterDataFetching();
     });
 
-    it('should permit to cancel a session', () => {
-      lastValueFrom(component.actionButtons.find(button => button.id === 'resume')?.disabled as Observable<boolean>)
-        .then(disabled => expect(disabled).toBeTruthy());
+    it('should permit to resume a session', () => {
+      expect(component.disableResume).toBeFalsy();
+    });
+
+    it('should call the grpc service "resume$" method', () => {
+      component.resume();
+      expect(mockSessionsGrpcService.resume$).toHaveBeenCalled();
     });
 
     it('should notify on success when resuming a session', () => {
-      component.actionButtons.find(button => button.id === 'resume')?.action$?.next();
+      component.resume();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Session resumed');
     });
 
     it('should notify on errors when resuming a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockSessionsGrpcService.resume$.mockReturnValueOnce(throwError(() => new Error()));
-      component.actionButtons.find(button => button.id === 'resume')?.action$?.next();
+      component.resume();
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
 
-  describe('Close action', () => {
+  describe('Closing', () => {
     beforeAll(() => {
       component.refresh.next(); // setting up the RUNNING status
     });
 
-    it('should permit to cancel a session', () => {
-      lastValueFrom(component.actionButtons.find(button => button.id === 'close')?.disabled as Observable<boolean>)
-        .then(disabled => expect(disabled).toBeFalsy());
+    it('should permit to close a session', () => {
+      expect(component.disableClose).toBeFalsy();
+    });
+
+    it('should call the grpc service "close$" method', () => {
+      component.close();
+      expect(mockSessionsGrpcService.close$).toHaveBeenCalled();
     });
 
     it('should notify on success when closing a session', () => {
-      component.actionButtons.find(button => button.id === 'close')?.action$?.next();
+      component.close();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Session closed');
     });
 
     it('should notify on errors when closing a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockSessionsGrpcService.close$.mockReturnValueOnce(throwError(() => new Error()));
-      component.actionButtons.find(button => button.id === 'close')?.action$?.next();
+      component.close();
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
 
-  describe('Delete action', () => {
+  describe('Deleting', () => {
     beforeAll(() => {
       component.refresh.next(); // setting up the RUNNING status
     });
 
-    it('should permit to cancel a session', () => {
-      lastValueFrom(component.actionButtons.find(button => button.id === 'delete')?.disabled as Observable<boolean>)
-        .then(disabled => expect(disabled).toBeFalsy());
+    it('should call the grpc service "delete$" method', () => {
+      component.deleteSession();
+      expect(mockSessionsGrpcService.delete$).toHaveBeenCalled();
     });
 
     it('should notify on success when deleting a session', () => {
-      component.actionButtons.find(button => button.id === 'delete')?.action$?.next();
+      component.deleteSession();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Session deleted');
     });
 
     it('should navigate to sessions list page after succesfully deleting a session', () => {
-      component.actionButtons.find(button => button.id === 'delete')?.action$?.next();
+      component.deleteSession();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
     });
 
     it('should notify on errors when deleting a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockSessionsGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
-      component.actionButtons.find(button => button.id === 'delete')?.action$?.next();
+      component.deleteSession();
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
