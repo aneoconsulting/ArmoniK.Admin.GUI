@@ -1,26 +1,24 @@
-<section>
-  <mat-toolbar class="header">
-    <ng-content select="[title]"/>
-    <ng-content select="[button]"/>
-  </mat-toolbar>
-  <mat-card>
-    @if (list.length === 0) {
-      <span class="no-data">No data</span>
-    } @else {
-      @for(item of list; track item) {
-        <div class="item">
-          @if(redirectLink) {
-            <button mat-button [routerLink]="'/' + redirectLink + '/' + item">
-              <span>{{item}}</span>
-            </button>
-          } @else {
+<mat-toolbar class="header">
+  <ng-content select="[title]"/>
+  <ng-content select="[button]"/>
+</mat-toolbar>
+<mat-card>
+  @if (list.length === 0) {
+    <span class="no-data">No data</span>
+  } @else {
+    @for(item of list; track item) {
+      <div class="item">
+        @if(redirectLink) {
+          <button mat-button [routerLink]="'/' + redirectLink + '/' + item">
             <span>{{item}}</span>
-          }
-        </div>
-        @if(!$last) {
-          <mat-divider />
+          </button>
+        } @else {
+          <span>{{item}}</span>
         }
+      </div>
+      @if(!$last) {
+        <mat-divider />
       }
     }
-  </mat-card>
-</section>
+  }
+</mat-card>
