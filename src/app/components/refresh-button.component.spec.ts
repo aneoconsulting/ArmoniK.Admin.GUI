@@ -24,4 +24,8 @@ describe('RefreshButtonComponent', () => {
     component.onClick();
     expect(spyEmit).toHaveBeenCalled();
   });
+
+  it('should get icons', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
+  });
 });

@@ -52,4 +52,8 @@ describe('Auto-refresh component', () => {
     component.openModifyColumnsDialog();
     expect(intervalValueChangeSpy).toHaveBeenCalledTimes(0);
   });
+
+  it('should get icons', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
+  });
 });
