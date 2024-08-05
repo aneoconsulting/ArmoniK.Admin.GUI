@@ -30,7 +30,7 @@ describe('Auto-refresh component', () => {
         { provide: MatDialogModule, useValue: {} },
         { provide: MatButtonModule, useValue: {} },
         { provide: MatIconModule, useValue: {} },
-        { provide: IconsService, useValue: {} }
+        IconsService,
       ]
     }).inject(ColumnsButtonComponent<SessionRaw, TaskOptions>);
 
