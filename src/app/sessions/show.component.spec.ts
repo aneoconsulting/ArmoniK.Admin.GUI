@@ -18,8 +18,6 @@ import { SessionRaw } from './types';
 describe('AppShowComponent', () => {
   let component: ShowComponent;
 
-  const sessionStatusesService = new SessionsStatusesService();
-
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
@@ -58,7 +56,6 @@ describe('AppShowComponent', () => {
       nanos: 0
     } as Timestamp
   };
-
 
   const mockSessionsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({session: returnedSession} as GetSessionResponse)),
@@ -228,8 +225,17 @@ describe('AppShowComponent', () => {
     });
   });
 
-  it('should get statuses', () => {
-    expect(component.statuses).toEqual(sessionStatusesService.statuses);
+  describe('get status', () => {
+    it('should return the status label if there is data', () => {
+      component.refresh.next();
+      expect(component.status).toEqual('Running');
+    });
+
+    it('should return undefined if there is no data', () => {
+      mockSessionsGrpcService.get$.mockReturnValueOnce(of(null));
+      component.refresh.next();
+      expect(component.status).toEqual(undefined);
+    });
   });
 
   it('should get resultKeys', () => {

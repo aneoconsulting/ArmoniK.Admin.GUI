@@ -1,4 +1,4 @@
-import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -136,11 +136,19 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   resultsKey: string = '';
   resultsQueryParams: Params = {};
 
-  status: string | undefined;
-
   optionsFields: Field<TaskOptions>[];
 
   arrays: Field<SessionRaw>[];
+
+  private _status: string | undefined;
+
+  get status(): string | undefined {
+    return this._status;
+  }
+
+  set status(value: SessionStatus | undefined) {
+    this._status = value ? this.statuses[value] : undefined;
+  }
 
   ngOnInit(): void {
     this.subscribeToDuration();
@@ -161,8 +169,8 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
 
   afterDataFetching(): void {
     const data = this.data();
+    this.status = data?.status;
     if (data) {
-      this.status = this.statuses[data.status];
       this.createResultsQueryParams();
       this.createTasksQueryParams();
       this.partitionsQueryParams = this.filtersService.createFilterPartitionQueryParams(data.partitionIds);
