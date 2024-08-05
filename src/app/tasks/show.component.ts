@@ -1,4 +1,4 @@
-import { FilterStringOperator, GetTaskResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, GetTaskResponse, ResultRawEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -88,6 +88,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly filtersService = inject(FiltersService);
 
+  private _status: string | undefined;
+
   resultsKey: string = '';
   resultsQueryParams: Params = {};
 
@@ -96,12 +98,12 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   arrays: Field<TaskRaw>[] = this.inspectionService.arrays;
   optionsFields: Field<TaskOptions>[] = this.inspectionService.optionsFields;
 
-  get status() {
-    const data: TaskRaw | null = this.data();
-    if (data) {
-      return this.statuses[data.status];
-    }
-    return undefined;
+  get status(): string | undefined {
+    return this._status;
+  }
+
+  set status(value: TaskStatus | undefined) {
+    this._status = value ? this.statuses[value] : undefined;
   }
 
   ngOnInit(): void {
@@ -119,6 +121,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
 
   afterDataFetching(): void {
     const data = this.data();
+    this.status = data?.status;
     if (data) {
       this.createResultQueryParams();
       this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status);

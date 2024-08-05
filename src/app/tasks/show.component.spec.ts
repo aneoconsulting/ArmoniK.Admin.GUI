@@ -103,12 +103,15 @@ describe('AppShowComponent', () => {
 
   describe('get status', () => {
     it('should return undefined if there is no data', () => {
-      component.data.set(null);
+      mockTasksGrpcService.get$.mockReturnValueOnce(of(null));
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      component.refresh.next();
       expect(component.status).toEqual(undefined);
     });
 
     it('should return the status label if there is data', () => {
-      component.data.set(returnedTask);
+      component.status = undefined;
+      component.refresh.next();
       expect(component.status).toEqual('Processing');
     });
   });
@@ -171,8 +174,16 @@ describe('AppShowComponent', () => {
     });
   });
 
-  describe('Cancel task', () => {
-    it('should cancel tasks', () => {
+  it('should get statuses', () => {
+    expect(component.statuses).toEqual((new TasksStatusesService).statuses);
+  });
+
+  describe('cancelling', () => {
+    beforeEach(() => {
+      component.refresh.next(); // Setting the PROCESSING status.
+    });
+
+    it('should cancel a task', () => {
       component.cancel();
       expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
     });
@@ -193,21 +204,6 @@ describe('AppShowComponent', () => {
       mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       component.cancel();
       expect(errorSpy).toHaveBeenCalled();
-    });
-  });
-
-  it('should get statuses', () => {
-    expect(component.statuses).toEqual((new TasksStatusesService).statuses);
-  });
-
-  describe('cancelling', () => {
-    beforeEach(() => {
-      component.refresh.next(); // Setting the PROCESSING status.
-    });
-
-    it('should cancel a task', () => {
-      component.cancel();
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
     });
   });
 
