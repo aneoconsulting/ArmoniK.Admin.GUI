@@ -22,24 +22,7 @@ import { PartitionRaw } from './types';
 
 @Component({
   selector: 'app-partitions-show',
-  template: `
-<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [fields]="fields" [arrays]="arrays" (refresh)="onRefresh()">
-  <div class="title" title>
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('partitions')"></mat-icon>
-    <span i18n="Page title">Partition</span>
-  </div>
-  <div class="actions" actions>
-  <button mat-button [routerLink]="'/sessions'" [queryParams]="sessionsQueryParams">
-      <span i18n>See Sessions</span>
-      <mat-icon [fontIcon]="getIcon('sessions')" />
-    </button>
-    <button mat-button [routerLink]="'/tasks'" [queryParams]="tasksQueryParams">
-      <span i18n>See Tasks</span>
-      <mat-icon [fontIcon]="getIcon('tasks')" />
-    </button>
-  </div>
-</app-show-page>
-  `,
+  templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
   standalone: true,
   providers: [
