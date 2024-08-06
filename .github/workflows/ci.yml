@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
-      - run: npm install -g pnpm@9.1.4
+      - run: npm install -g pnpm@9.6.0
       - run: corepack enable
 
       - name: Setup Node
@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       
-      - run: npm install -g pnpm@9.1.4
+      - run: npm install -g pnpm@9.6.0
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       
-      - run: npm install -g pnpm@9.1.4
+      - run: npm install -g pnpm@9.6.0
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
@@ -93,7 +93,7 @@ jobs:
       
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
-      - run: npm install -g pnpm@9.1.4
+      - run: npm install -g pnpm@9.6.0
       - run: corepack enable
 
       - uses: actions/setup-node@v4 # v4
