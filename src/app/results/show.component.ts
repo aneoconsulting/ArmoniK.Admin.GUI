@@ -21,24 +21,7 @@ import { ResultRaw } from './types';
 
 @Component({
   selector: 'app-result-show',
-  template: `
-<app-show-page [id]="id" [data]="data()" [status]="status" [fields]="fields" [sharableURL]="sharableURL" [statuses]="statuses" (refresh)="onRefresh()">
-  <div class="title" title>
-    <mat-icon aria-hidden="true" [fontIcon]="getIcon('results')"></mat-icon>
-    <span i18n="Page title"> Result </span>
-  </div>
-  <div class="actions" actions>
-  <button mat-button [routerLink]="'/sessions/' + data()?.sessionId">
-    <mat-icon [fontIcon]="getIcon('sessions')"/>
-    <span i18n>See Session</span>
-  </button>
-  <button mat-button [routerLink]="'/tasks/' + data()?.ownerTaskId">
-    <mat-icon [fontIcon]="getIcon('tasks')"/>
-    <span i18n>See Owner Task</span>
-  </button>
-  </div>
-</app-show-page>
-  `,
+  templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
   standalone: true,
   providers: [
