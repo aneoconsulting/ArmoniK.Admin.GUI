@@ -25,34 +25,7 @@ import { TaskOptions, TaskRaw } from './types';
 
 @Component({
   selector: 'app-tasks-show',
-  template: `
-<app-show-page [id]="id" [data]="data()" [fields]="fields" [optionsFields]="optionsFields" [sharableURL]="sharableURL" [arrays]="arrays" [statuses]="statuses" (refresh)="onRefresh()" [status]="status">
-  <div class="title" title>
-    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tasks')"></mat-icon>
-    <span i18n="Page title"> Task </span>
-  </div>
-  <div class="actions" actions>
-    <button mat-button [routerLink]="'/sessions/' + data()?.sessionId">
-      <span i18n>See session</span>
-      <mat-icon [fontIcon]="getIcon('sessions')" />
-    </button>
-    <button mat-button [routerLink]="'/results'" [queryParams]="resultsQueryParams">
-      <span i18n>See Results</span>
-      <mat-icon [fontIcon]="getIcon('results')" />
-    </button>
-    <button mat-button [routerLink]="'/partitions/' + data()?.options?.partitionId">
-      <span i18n>See Partition</span>
-      <mat-icon [fontIcon]="getIcon('partitions')" />
-    </button>
-  </div>
-  <div bonus-actions>
-    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="canCancel">
-      <span i18n>Cancel Task</span>
-      <mat-icon [fontIcon]="this.getIcon('cancel')" />
-    </button>
-  </div>
-</app-show-page>
-  `,
+  templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
   standalone: true,
   providers: [
