@@ -21,4 +21,8 @@ export class PartitionsInspectionService extends InspectionService<PartitionRaw>
       type: 'object'
     }
   ];
+
+  readonly arrays: Field<PartitionRaw>[] = [
+    { key: 'parentPartitionIds', link: 'partitions' }
+  ];
 }

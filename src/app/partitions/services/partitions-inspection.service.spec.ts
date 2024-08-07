@@ -10,4 +10,8 @@ describe('PartitionsInspectionService', () => {
   it('should have a defined "fields"', () => {
     expect(service.fields).toBeDefined();
   });
+
+  it('should have a defined "arrays"', () => {
+    expect(service.arrays).toBeDefined();
+  });
 });
