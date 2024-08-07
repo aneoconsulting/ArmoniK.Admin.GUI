@@ -39,7 +39,8 @@ export class SessionsInspectionService extends InspectionService<SessionRaw> {
   readonly arrays: Field<SessionRaw>[] = [
     {
       key: 'partitionIds',
-      link: 'partitions'
+      link: 'partitions',
+      queryParams: '0-root-1-0'
     }
   ];
 }

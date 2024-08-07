@@ -1,6 +1,8 @@
 <mat-toolbar class="header">
   <ng-content select="[title]"/>
-  <ng-content select="[button]"/>
+  @if (queryParams) {
+    <button mat-button [routerLink]="'/' + redirectLink" [queryParams]="queryParams">See all</button>
+  }
 </mat-toolbar>
 <mat-card>
   @if (list.length === 0) {
