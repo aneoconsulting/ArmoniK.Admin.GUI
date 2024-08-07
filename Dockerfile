@@ -2,7 +2,7 @@ FROM node:lts-alpine AS build
 
 WORKDIR /usr/src/app
 
-RUN npm install --ignore-scripts -g pnpm@9.6.0
+RUN npm install --ignore-scripts -g pnpm@9.7.0
 
 COPY package.json ./
 COPY pnpm-lock.yaml ./
