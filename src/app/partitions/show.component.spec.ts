@@ -37,6 +37,7 @@ describe('ShowComponent', () => {
       partitionId: 'partitionId'
     }
   } as unknown as PartitionRaw;
+
   const mockPartitionsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({partition: returnedPartition} as GetPartitionResponse)),
   };
@@ -55,7 +56,6 @@ describe('ShowComponent', () => {
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should create', () => {
@@ -69,6 +69,14 @@ describe('ShowComponent', () => {
 
     it('should set sharableURL', () => {
       expect(mockShareUrlService.generateSharableURL).toHaveBeenCalled();
+    });
+
+    it('should set sessionsKey', () => {
+      expect(component.sessionsKey).toEqual('0-root-3-0');
+    });
+
+    it('should set tasksKey', () => {
+      expect(component.tasksKey).toEqual('0-options-4-0');
     });
   });
 
@@ -105,6 +113,16 @@ describe('ShowComponent', () => {
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('should set sessionsQueryParams', () => {
+      component.refresh.next();
+      expect(component.sessionsQueryParams).toEqual({'0-root-3-0': returnedPartition.id});
+    });
+
+    it('should set tasksQueryParams', () => {
+      component.refresh.next();
+      expect(component.tasksQueryParams).toEqual({'0-options-4-0': returnedPartition.id});
     });
   });
 
