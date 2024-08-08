@@ -1,12 +1,12 @@
 <mat-toolbar class="header">
   <ng-content select="[title]"/>
   @if (queryParams) {
-    <button mat-button [routerLink]="'/' + redirectLink" [queryParams]="queryParams">See all</button>
+    <button mat-button [routerLink]="'/' + redirectLink" [queryParams]="queryParams" i18n>See all</button>
   }
 </mat-toolbar>
 <mat-card>
   @if (list.length === 0) {
-    <span class="no-data">No data</span>
+    <span class="no-data" i18n>No data</span>
   } @else {
     @for(item of list; track item) {
       <div class="item">
