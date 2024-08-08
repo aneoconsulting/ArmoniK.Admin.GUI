@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { Observable, of } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { ReorganizeLinesDialogComponent } from './reorganize-lines-dialog.component';
-import { Line } from '../types';
+import { CountLine, Line } from '../types';
 
 describe('ReorganizeLinesDialogComponent', () => {
   let component: ReorganizeLinesDialogComponent;
@@ -22,7 +22,7 @@ describe('ReorganizeLinesDialogComponent', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Error', color: 'red', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_TIMEOUT]}
       ],
-    },
+    } as CountLine,
     {
       name: 'line2',
       type: 'Tasks',
@@ -34,7 +34,7 @@ describe('ReorganizeLinesDialogComponent', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Unspecified', color: 'grey', statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_RETRIED]}
       ],
-    }
+    } as CountLine
   ];
 
   let dialogRef$: Observable<string>;

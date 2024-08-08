@@ -1,29 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { TableActionsToolbarComponent } from './table-actions-toolbar.component';
 
 describe('TableActionsToolbarComponent', () => {
-  let component: TableActionsToolbarComponent<object, object>;
-  let fixture: ComponentFixture<TableActionsToolbarComponent<object, object>>;
+  let component: TableActionsToolbarComponent<SessionRaw, TaskOptions>;
   const mockIconService = {
     getIcon: jest.fn()
   };
   let spyOnEventEmitter: jest.SpyInstance;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    component = TestBed.configureTestingModule({
       providers: [
         TableActionsToolbarComponent,
         { provide: IconsService, useValue: mockIconService }
       ]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TableActionsToolbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    }).inject(TableActionsToolbarComponent<SessionRaw, TaskOptions>);
   });
 
   it('Should run', () => {
@@ -49,7 +44,7 @@ describe('TableActionsToolbarComponent', () => {
 
   test('onDisplayedColumnsChange should emit the provided list',() => {
     spyOnEventEmitter = jest.spyOn(component.displayedColumnsChange, 'emit');
-    const columnsKeys: ColumnKey<object, object>[] = ['actions'];
+    const columnsKeys: ColumnKey<SessionRaw, TaskOptions>[] = ['actions'];
     component.onDisplayedColumnsChange(columnsKeys);
     expect(spyOnEventEmitter).toHaveBeenCalledWith(columnsKeys);
   });

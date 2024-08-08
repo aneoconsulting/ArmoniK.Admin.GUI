@@ -29,7 +29,7 @@ import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { Line, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
+import { CountLine, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
 import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
 import { StatusesGroupCardComponent } from '../statuses-group-card.component';
 
@@ -90,9 +90,9 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   readonly iconsService = inject(IconsService);
   readonly taskGrpcService = inject(TasksGrpcService);
 
-  @Input({ required: true }) line: Line;
+  @Input({ required: true }) line: CountLine;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
-  @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
+  @Output() lineDelete: EventEmitter<CountLine> = new EventEmitter<CountLine>();
 
   total: number;
   loading = false;
@@ -168,7 +168,7 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
     });
   }
 
-  onDeleteLine(value: Line): void {
+  onDeleteLine(value: CountLine): void {
     this.lineDelete.emit(value);
   }
 

@@ -7,7 +7,7 @@ import { TableService } from '@services/table.service';
 import { TaskOptions, TaskSummary, TaskSummaryColumnKey, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksIndexService implements IndexServiceCustomInterface<TaskSummaryColumnKey, TaskSummaryListOptions> {
+export class TasksIndexService implements IndexServiceCustomInterface<TaskSummary, TaskOptions> {
   defaultConfigService = inject(DefaultConfigService);
   tableService = inject(TableService);
 
@@ -17,7 +17,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
   readonly defaultIntervalValue: number = this.defaultConfigService.defaultTasks.interval;
   readonly defaultViewInLogs = this.defaultConfigService.defaultTasksViewInLogs;
 
-  readonly availableTableColumns: TableColumn<TaskSummaryColumnKey>[] = [
+  readonly availableTableColumns: TableColumn<TaskSummary, TaskOptions>[] = [
     {
       name: $localize`Task ID`,
       key: 'id',
@@ -174,6 +174,12 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       sortable: true,
     },
     {
+      name: $localize`Payload ID`,
+      key: 'payloadId',
+      type: 'duration',
+      sortable: true
+    },
+    {
       name: $localize`Application Name`,
       key: 'options.applicationName',
       sortable: true,
@@ -264,7 +270,7 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
   }
 
   restoreOptions(): TaskSummaryListOptions {
-    const options = this.tableService.restoreOptions<TaskSummary & TaskOptions>('tasks-options', this.defaultOptions);
+    const options = this.tableService.restoreOptions<TaskSummary, TaskOptions>('tasks-options', this.defaultOptions);
 
     return options;
   }

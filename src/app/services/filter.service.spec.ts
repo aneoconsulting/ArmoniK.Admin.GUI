@@ -98,14 +98,8 @@ describe('FiltersService', () => {
 
   describe('createFilterPartitionQueryParams', () => {
     it('should return the correct query params', () => {
-      const actionsButton: ShowActionButton = {
-        id: 'partitions',
-        name: 'Partitions',
-        link: '/partitions',
-      };
       const partitionIds = ['partition1', 'partition2', 'partition3'];
-      service.createFilterPartitionQueryParams([actionsButton], partitionIds);
-      expect(actionsButton.queryParams).toEqual({
+      expect(service.createFilterPartitionQueryParams(partitionIds)).toEqual({
         '0-root-1-0': 'partition1',
         '1-root-1-0': 'partition2',
         '2-root-1-0': 'partition3',

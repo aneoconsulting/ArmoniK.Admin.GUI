@@ -1,11 +1,14 @@
 import { inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Observable, Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Field } from '../column.type';
 import { DataRaw } from '../data';
 import { GetResponse, GrpcGetInterface } from '../services/grpcService';
+import { InspectionService } from '../services/inspectionService';
 
 export type ShowActionButton = {
   id: string;
@@ -42,11 +45,23 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
   data = signal<T | null>(null);
   subscriptions = new Subscription();
 
-  private readonly iconsService = inject(IconsService);
+  fields: Field<T>[];
+
   abstract readonly grpcService: GrpcGetInterface<R>;
+  abstract readonly inspectionService: InspectionService<T>;
+
+  private readonly iconsService = inject(IconsService);
   private readonly shareURLService = inject(ShareUrlService);
   private readonly notificationService = inject(NotificationService);
   private readonly route = inject(ActivatedRoute);
+
+  initInspection() {
+    this.sharableURL = this.getSharableUrl();
+    this.setFields();
+    this.subscribeToData();
+    this.getIdByRoute();
+    this.refresh.next();
+  }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
@@ -62,7 +77,7 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
         return this.get$();
       }),
       map((data) => this.getDataFromResponse(data) ?? null),
-      catchError((error) => this.handleError(error))
+      catchError((error: GrpcStatusEvent) => this.handleError(error))
     ).subscribe((data) => {
       this.data.set(data);
       this.afterDataFetching();
@@ -87,10 +102,15 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
       map(params => params['id']),
     ).subscribe(id => {
       this.id = id;
+      this.refresh.next();
     });
   }
 
-  handleError(error: Error) {
+  setFields() {
+    this.fields = this.inspectionService.fields;
+  }
+
+  handleError(error: GrpcStatusEvent) {
     this.error($localize`Could not retrieve data.`);
     console.error(error);
     return of(null);

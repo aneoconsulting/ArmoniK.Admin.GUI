@@ -17,7 +17,7 @@ import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { ApplicationsGrpcService } from '../services/applications-grpc.service';
 import { ApplicationsIndexService } from '../services/applications-index.service';
-import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw } from '../types';
 
 @Component({
   selector: 'app-application-table',
@@ -36,7 +36,7 @@ import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, Applic
     TableComponent,
   ]
 })
-export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions, ApplicationRawEnumField>
+export class ApplicationsTableComponent extends AbstractTaskByStatusTableComponent<ApplicationRaw, ApplicationRawEnumField>
   implements OnInit, AfterViewInit {
   scope: Scope = 'applications';
   table: TableTasksByStatus = 'applications';
@@ -46,10 +46,10 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   readonly iconsService = inject(IconsService);
   readonly router = inject(Router);
 
-  seeSessions$ = new Subject<ApplicationData>();
+  seeSessions$ = new Subject<ArmonikData<ApplicationRaw>>();
   seeSessionsSubscription = this.seeSessions$.subscribe(data => this.router.navigate(['/sessions'], { queryParams: this.createViewSessionsQueryParams(data.raw.name, data.raw.version) }));
 
-  actions: ActionTable<ApplicationData>[] = [
+  actions: ActionTable<ApplicationRaw>[] = [
     {
       label: $localize`See session`,
       icon: this.getIcon('sessions'),

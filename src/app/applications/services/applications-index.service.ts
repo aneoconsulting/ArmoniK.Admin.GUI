@@ -6,7 +6,7 @@ import { TableService } from '@services/table.service';
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRawColumnKey, ApplicationRawListOptions> {
+export class ApplicationsIndexService implements IndexServiceInterface<ApplicationRaw> {
   readonly tableService = inject(TableService);
   readonly defaultConfigService = inject(DefaultConfigService);
 
@@ -15,7 +15,7 @@ export class ApplicationsIndexService implements IndexServiceInterface<Applicati
   readonly defaultIntervalValue = this.defaultConfigService.defaultApplications.interval;
   readonly defaultLockColumns = this.defaultConfigService.defaultApplications.lockColumns;
 
-  readonly availableTableColumns: TableColumn<ApplicationRawColumnKey>[] = [
+  readonly availableTableColumns: TableColumn<ApplicationRaw>[] = [
     {
       name: $localize`Name`,
       key: 'name',

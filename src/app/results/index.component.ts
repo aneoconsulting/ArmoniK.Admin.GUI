@@ -27,7 +27,7 @@ import { ResultsTableComponent } from './components/table.component';
 import { ResultsFiltersService } from './services/results-filters.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
-import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './types';
+import { ResultRaw } from './types';
 
 
 @Component({
@@ -67,7 +67,7 @@ import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from './ty
     ResultsTableComponent
   ]
 })
-export class IndexComponent extends TableHandler<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
+export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
 
   readonly filtersService = inject(ResultsFiltersService);
   readonly indexService = inject(ResultsIndexService);

@@ -1,11 +1,11 @@
 <app-table-container>
-  <table mat-table [trackBy]="trackBy" matSort [matSortActive]="options.sort.active"
+  <table mat-table [trackBy]="trackBy" matSort [matSortActive]="options.sort.active.toString()"
     [matSortDirection]="options.sort.direction" matSortDisableClear cdkDropList cdkDropListOrientation="horizontal"
     [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)" [dataSource]="data" i18n-aria-label
     aria-label="Data Table">
 
     @for (column of columns; track column.key) {
-    <ng-container [matColumnDef]="column.key">
+    <ng-container [matColumnDef]="column.key.toString()">
       <!-- Header -->
       <th mat-header-cell mat-sort-header [disabled]="!column.sortable" *matHeaderCellDef cdkDrag appNoWrap>
         <app-table-column-header [column]="column" [checked]="selection.hasValue() && isAllSelected"

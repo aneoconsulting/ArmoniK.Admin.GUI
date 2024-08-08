@@ -6,11 +6,11 @@ import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, 
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { TasksFiltersService } from './tasks-filters.service';
-import { TaskOptionsFieldKey, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
+import { TaskOptions, TaskOptionsFieldKey, TaskSummary, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, TaskSummaryListOptions, TaskSummaryEnumField, TaskOptionEnumField>
-  implements GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryFilters> {
+export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
+  implements GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryEnumField, TaskOptionEnumField> {
   readonly filterService = inject(TasksFiltersService);
   readonly grpcClient = inject(TasksClient);
   readonly sortFieldService = inject(GrpcSortFieldService);
@@ -41,6 +41,7 @@ export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, Task
     receivedToEndDuration: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION,
     fetchedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
     processedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
+    payloadId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
   };
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {

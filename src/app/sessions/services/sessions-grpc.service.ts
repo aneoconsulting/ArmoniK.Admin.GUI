@@ -1,17 +1,18 @@
-import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionField, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionField, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, map } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
+import { TaskOptions } from '@app/tasks/types';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcCancelInterface, GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
 import { FilterField, buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { SessionsFiltersService } from './sessions-filters.service';
-import { SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
+import { SessionRaw, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsGrpcService extends GrpcTableService<SessionRawFieldKey, SessionRawListOptions, SessionRawEnumField, SessionTaskOptionEnumField>
+export class SessionsGrpcService extends GrpcTableService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField>
   implements GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
   readonly filterService = inject(SessionsFiltersService);
   readonly grpcClient = inject(SessionsClient);

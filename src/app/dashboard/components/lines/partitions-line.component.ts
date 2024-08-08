@@ -1,3 +1,4 @@
+import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -6,7 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { PartitionsTableComponent } from '@app/partitions/components/table.component';
 import { PartitionsFiltersService } from '@app/partitions/services/partitions-filters.service';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
-import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
+import { PartitionRaw } from '@app/partitions/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
@@ -36,7 +37,7 @@ import { NotificationService } from '@services/notification.service';
     MatMenuModule,
   ]
 })
-export class PartitionsLineComponent extends DashboardLineTableComponent<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> implements OnInit, AfterViewInit, OnDestroy {
+export class PartitionsLineComponent extends DashboardLineTableComponent<PartitionRaw, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(PartitionsIndexService);
   readonly defaultConfig = this.defaultConfigService.defaultPartitions;
 

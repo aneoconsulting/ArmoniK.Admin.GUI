@@ -1,4 +1,4 @@
-import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -9,7 +9,7 @@ import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionR
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawFilters, SessionRawEnumField, SessionTaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(SessionsStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -30,7 +30,7 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_WORKER_SUBMISSION]: $localize`Worker Submission`,
   };
 
-  readonly optionsField: Record<SessionTaskOptionEnumField, string> = {
+  readonly optionsFields: Record<SessionTaskOptionEnumField, string> = {
     [SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
     [SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION]: $localize`Max Duration`,
     [SessionTaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES]: $localize`Max Retries`,
@@ -171,7 +171,7 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
     case 'root':
       return this.rootField[filterField as SessionRawEnumField];
     case 'options':
-      return this.optionsField[filterField as SessionTaskOptionEnumField];
+      return this.optionsFields[filterField as SessionTaskOptionEnumField];
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
@@ -189,7 +189,7 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
       return { for: 'root', index: index };
     }
 
-    const optionsValues = Object.values(this.optionsField);
+    const optionsValues = Object.values(this.optionsFields);
     index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
     return { for: 'options', index: index };
   }

@@ -9,7 +9,7 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryFilters, TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
   readonly statusService = inject(TasksStatusesService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly tableService = inject(TableService);
@@ -35,9 +35,10 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION]: $localize`Received to End Duration`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT]: $localize`Processed at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT]: $localize`Fetched at`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID]: $localize`Payload ID`,
   };
 
-  readonly optionsField: Record<TaskOptionEnumField, string> = {
+  readonly optionsFields: Record<TaskOptionEnumField, string> = {
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_UNSPECIFIED]: $localize`Unspecified`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_DURATION]: $localize`Max Duration`,
     [TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_MAX_RETRIES]: $localize`Max Retries`,
@@ -134,6 +135,11 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
       type: 'date'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
+      type: 'string'
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,
@@ -205,7 +211,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     case 'root':
       return this.rootField[filterField as TaskSummaryEnumField];
     case 'options':
-      return this.optionsField[filterField as TaskOptionEnumField];
+      return this.optionsFields[filterField as TaskOptionEnumField];
     default:
       throw new Error(`Unknown filter type: ${filterFor} ${filterField}`);
     }
@@ -223,7 +229,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       return { for: 'root', index: index };
     }
 
-    const optionsValues = Object.values(this.optionsField);
+    const optionsValues = Object.values(this.optionsFields);
     index = optionsValues.findIndex(value => value.toLowerCase() === filterField.toLowerCase());
     return { for: 'options', index: index };
   }

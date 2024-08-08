@@ -1,26 +1,30 @@
+import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { SessionsIndexService } from '@app/sessions/services/sessions-index.service';
-import { SessionRawColumnKey, SessionRawFieldKey, SessionRawListOptions } from '@app/sessions/types';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { ColumnKey, CustomColumn } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { SessionsLineComponent } from './sessions-line.component';
-import { Line } from '../../types';
+import { TableLine } from '../../types';
 
 describe('SessionsLineComponent', () => {
   let component: SessionsLineComponent;
 
   const defaultConfigService = new DefaultConfigService();
 
-  const defaultColumns: SessionRawColumnKey[] = ['sessionId', 'count'];
+  const defaultColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'count'];
   const customColumns: CustomColumn[] = ['options.options.FastCompute'];
 
-  const displayedColumns: TableColumn<SessionRawColumnKey>[] = [
+  const displayedColumns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
       key: 'sessionId',
       name: 'ID',
@@ -48,16 +52,16 @@ describe('SessionsLineComponent', () => {
     }
   ];
 
-  const options: SessionRawListOptions = {
+  const options: ListOptions<SessionRaw, TaskOptions> = {
     pageIndex: 0,
     pageSize: 5,
     sort: {
-      active: 'name' as SessionRawFieldKey,
+      active: 'sessionId',
       direction: 'desc',
     },
   };
 
-  const line: Line = {
+  const line: TableLine<SessionRaw, TaskOptions> = {
     name: 'Tasks',
     type: 'Sessions',
     displayedColumns: displayedColumns.map(c => c.key),
@@ -195,7 +199,7 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
-    const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
+    const newFilters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [[{for: 'root', field: 0, operator: 1, value: 2}]];
 
     it('should update applied filters', () => {
       component.onFiltersChange(newFilters);
@@ -221,11 +225,11 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('OnColumnsChange', () => {
-    const newColumns: SessionRawColumnKey[] = ['sessionId', 'count', 'duration'];
+    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'count', 'duration'];
 
     beforeEach(() => {
-      component.displayedColumnsKeys = ['count', 'id'] as SessionRawColumnKey[];
-      component.line.displayedColumns = ['sessionId', 'options.maxDuration'] as SessionRawColumnKey[];
+      component.displayedColumnsKeys = ['count', 'id'] as ColumnKey<SessionRaw, TaskOptions>[];
+      component.line.displayedColumns = ['sessionId', 'options.maxDuration'] as ColumnKey<SessionRaw, TaskOptions>[];
     });
 
     it('should change displayedColumns', () => {
@@ -247,8 +251,8 @@ describe('SessionsLineComponent', () => {
 
   describe('onColumnsReset', () => {
     beforeEach(() => {
-      component.displayedColumnsKeys = ['sessionId', 'createdAt'] as SessionRawColumnKey[];
-      component.line.displayedColumns = ['closedAt', 'options'] as SessionRawColumnKey[];
+      component.displayedColumnsKeys = ['sessionId', 'createdAt'] as ColumnKey<SessionRaw, TaskOptions>[];
+      component.line.displayedColumns = ['closedAt', 'options'] as ColumnKey<SessionRaw, TaskOptions>[];
     });
 
     it('should reset to default columns', () => {

@@ -3,11 +3,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject } from 'rxjs';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions } from '@app/tasks/types';
 import { IconsService } from '@services/icons.service';
 import { ColumnsButtonComponent } from './columns-button.component';
 
 describe('Auto-refresh component', () => {
-  let component: ColumnsButtonComponent<object, object>;
+  let component: ColumnsButtonComponent<SessionRaw, TaskOptions>;
   let intervalValueChangeSpy: jest.SpyInstance;
   let dialogSubject: BehaviorSubject<number | undefined>;
 
@@ -30,7 +32,7 @@ describe('Auto-refresh component', () => {
         { provide: MatIconModule, useValue: {} },
         { provide: IconsService, useValue: {} }
       ]
-    }).inject(ColumnsButtonComponent);
+    }).inject(ColumnsButtonComponent<SessionRaw, TaskOptions>);
 
     intervalValueChangeSpy = jest.spyOn(component, 'emit');
   });

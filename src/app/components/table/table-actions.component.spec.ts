@@ -1,10 +1,10 @@
+import { ApplicationRaw } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { ApplicationData } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { TableActionsComponent } from './table-actions.component';
 
 describe('TableActionsComponent', () => {
-  let component: TableActionsComponent<ApplicationData>;
+  let component: TableActionsComponent<ApplicationRaw>;
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('TableActionsComponent', () => {
         TableActionsComponent,
         IconsService
       ]
-    }).inject(TableActionsComponent<ApplicationData>);
+    }).inject(TableActionsComponent<ApplicationRaw>);
   });
 
   it('should run', () => {

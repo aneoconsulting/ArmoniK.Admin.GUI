@@ -1,15 +1,17 @@
+import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { ResultsIndexService } from '@app/results/services/results-index.service';
-import { ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '@app/results/types';
+import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '@app/results/types';
 import { TableColumn } from '@app/types/column.type';
+import { FiltersOr } from '@app/types/filters';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ResultsLineComponent } from './results-line.component';
-import { Line } from '../../types';
+import { TableLine } from '../../types';
 
 describe('ResultsLineComponent', () => {
   let component: ResultsLineComponent;
@@ -18,7 +20,7 @@ describe('ResultsLineComponent', () => {
 
   const defaultColumns: ResultRawColumnKey[] = ['name', 'resultId'];
 
-  const displayedColumns: TableColumn<ResultRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ResultRaw>[] = [
     {
       key: 'resultId',
       name: 'ID',
@@ -55,7 +57,7 @@ describe('ResultsLineComponent', () => {
     },
   };
 
-  const line: Line = {
+  const line: TableLine<ResultRaw> = {
     name: 'Tasks',
     type: 'Results',
     displayedColumns: displayedColumns.map(c => c.key),
@@ -193,7 +195,7 @@ describe('ResultsLineComponent', () => {
   });
 
   describe('onFilterChange', () => {
-    const newFilters = [[{for: 'root', field: 0, operator: 1, value: 2}]];
+    const newFilters: FiltersOr<ResultRawEnumField> = [[{for: 'root', field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT, operator: 1, value: 2}]];
 
     it('should update applied filters', () => {
       component.onFiltersChange(newFilters);

@@ -38,8 +38,8 @@ describe('InspectionHeaderComponent', () => {
       expect(component.id).toEqual(id);
     });
 
-    it('should not change "id" if a undefined value is provided', () => {
-      component.id = undefined;
+    it('should not change "id" if a null value is provided', () => {
+      component.id = null;
       expect(component.id).toEqual(id);
     });
   });
