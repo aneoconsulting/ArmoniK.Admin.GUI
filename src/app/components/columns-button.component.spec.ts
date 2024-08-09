@@ -30,7 +30,7 @@ describe('Auto-refresh component', () => {
         { provide: MatDialogModule, useValue: {} },
         { provide: MatButtonModule, useValue: {} },
         { provide: MatIconModule, useValue: {} },
-        { provide: IconsService, useValue: {} }
+        IconsService,
       ]
     }).inject(ColumnsButtonComponent<SessionRaw, TaskOptions>);
 
@@ -51,5 +51,9 @@ describe('Auto-refresh component', () => {
     dialogSubject = new BehaviorSubject<number | undefined>(undefined);
     component.openModifyColumnsDialog();
     expect(intervalValueChangeSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should get icons', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
   });
 });

@@ -27,7 +27,7 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   ]
 })
 export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | null = null> {
-  #iconsService = inject(IconsService);
+  readonly iconsService = inject(IconsService);
 
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
@@ -39,7 +39,7 @@ export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | n
   constructor(private _dialog: MatDialog) { }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   emit(result: ColumnsModifyDialogResult<T, O>): void {
