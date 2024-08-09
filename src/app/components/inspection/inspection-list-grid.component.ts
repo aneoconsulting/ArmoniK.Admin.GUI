@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { DataRaw } from '@app/types/data';
 import { InspectListComponent } from '@components/inspect-list.component';
@@ -16,14 +15,11 @@ import { PrettyPipe } from '@pipes/pretty.pipe';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InspectionListGridComponent<T extends DataRaw, O extends TaskOptions | null = null> {
-  @Input({ required: true }) data: T | null;
-  @Input({ required: true }) arrays: Field<T>[] | Field<O>[];
+export class InspectionListGridComponent<T extends DataRaw> {
+  @Input({ required: true }) data: T;
+  @Input({ required: true }) arrays: Field<T>[];
 
-  getArray(key: string | number | symbol) {
-    if (this.data) {
-      return this.data[key as keyof T] as string[];
-    }
-    return;
+  getArray(key: keyof T) {
+    return this.data[key] as string[];
   }
 }

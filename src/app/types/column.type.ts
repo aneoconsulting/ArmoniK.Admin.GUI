@@ -8,6 +8,7 @@ export type Field<T extends DataRaw | TaskOptions | null> = {
   key: keyof T;
   type?: DataType;
   link?: string;
+  queryParams?: string;
 };
 
 export type TableColumn<T extends DataRaw, O extends TaskOptions | null = null> = {
@@ -16,5 +17,4 @@ export type TableColumn<T extends DataRaw, O extends TaskOptions | null = null> 
   type?: ColumnType;
   sortable: boolean;
   link?: string;
-  queryParams?: string;
 };

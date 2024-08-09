@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
+import { Params, RouterModule } from '@angular/router';
 
 /**
  * The inspect list component provide a way to display lists inside a Mat-Card.
@@ -55,15 +55,32 @@ import { RouterModule } from '@angular/router';
 })
 export class InspectListComponent {
   private _list: string[] = [];
+  private _queryParams: Params;
 
   @Input({ required: true }) set list(entries: string[] | undefined) {
     if (entries) {
       this._list = entries;
     }
   }
+
+  @Input({ required: false }) set queryParams(entry: string | undefined) {
+    if (entry && this.list.length !== 0) {
+      this._queryParams = {};
+      const paramsKey = entry.slice(1);
+      this.list.forEach((value, index) => {
+        const key = `${index}${paramsKey}`;
+        this._queryParams[key] = value;
+      });
+    }
+  }
+
   @Input({ required: false }) redirectLink: string | undefined;
 
   get list(): string[] {
     return this._list;
+  }
+
+  get queryParams(): Params {
+    return this._queryParams;
   }
 }

@@ -106,19 +106,23 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
   readonly arrays: Field<TaskRaw>[] =  [
     {
       key: 'dataDependencies',
-      link: 'results'
+      link: 'results',
+      queryParams: '0-root-7-0'
     },
     {
       key: 'expectedOutputIds',
       link: 'results',
+      queryParams: '0-root-7-0'
     },
     {
       key: 'parentTaskIds',
       link: 'tasks',
+      queryParams: '0-root-1-0'
     },
     {
       key: 'retryOfIds',
-      link: 'tasks'
+      link: 'tasks',
+      queryParams: '0-root-1-0'
     }
   ];
 }

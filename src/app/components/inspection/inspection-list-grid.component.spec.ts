@@ -43,10 +43,5 @@ describe('InspectionListGridComponent', () => {
     it('should return the correct array', () => {
       expect(component.getArray(arrays[0].key)).toEqual(data.dataDependencies);
     });
-
-    it('should return "undefined" if there is no data', () => {
-      component.data = null;
-      expect(component.getArray(arrays[0].key)).toBeUndefined();
-    });
   });
 });
