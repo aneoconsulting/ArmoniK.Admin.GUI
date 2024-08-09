@@ -6,7 +6,7 @@ import { DataRaw } from '@app/types/data';
 import { InspectionCardComponent } from './inspection/inspection-card.component';
 import { InspectionListGridComponent } from './inspection/inspection-list-grid.component';
 import { InspectionHeaderComponent } from './inspection-header.component';
-import { InspectionJsonComponent } from './inspection-json.component';
+import { InspectionJsonComponent } from './inspection/inspection-json.component';
 import { InspectionToolbarComponent } from './inspection-toolbar.component';
 import { ShowActionsComponent } from './show-actions.component';
 import { ShowCardComponent } from './show-card.component';
