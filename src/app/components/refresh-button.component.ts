@@ -22,14 +22,14 @@ import { IconsService } from '@services/icons.service';
   ]
 })
 export class RefreshButtonComponent {
-  #iconsService = inject(IconsService);
+  readonly iconsService = inject(IconsService);
 
   @Input() tooltip = '';
 
   @Output() refreshChange: EventEmitter<void> = new EventEmitter<void>();
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   emit(): void {
