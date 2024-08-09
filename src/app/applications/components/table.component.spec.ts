@@ -61,7 +61,8 @@ describe('TasksTableComponent', () => {
     isSimpleColumn: jest.fn(),
     isNotSortableColumn: jest.fn(),
     columnToLabel: jest.fn(),
-    saveColumns: jest.fn()
+    saveColumns: jest.fn(),
+    saveOptions: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -295,10 +296,17 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should refresh data on options changes', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onOptionsChange();
-    expect(spy).toHaveBeenCalled();
+  describe('options changes', () => {
+    it('should refresh data', () => {
+      const spy = jest.spyOn(component.refresh$, 'next');
+      component.onOptionsChange();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should save options', () => {
+      component.onOptionsChange();
+      expect(mockApplicationsIndexService.saveOptions).toHaveBeenCalled();
+    });
   });
 
   test('onDrop should call ApplicationsIndexService', () => {

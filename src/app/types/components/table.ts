@@ -143,6 +143,7 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
   }
 
   onOptionsChange() {
+    this.indexService.saveOptions(this.options);
     this.refresh$.next();
   }
 
