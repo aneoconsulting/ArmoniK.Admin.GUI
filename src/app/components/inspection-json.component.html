@@ -1,0 +1,16 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <span i18n>Full JSON</span>
+      <button mat-icon-button (click)="copy()">
+        <mat-icon [fontIcon]="copyIcon" />
+      </button>
+    </mat-panel-title>
+    <mat-panel-description>
+      
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <p>&#x7b;</p>
+  <app-json [data]="data" />
+  <p>&#x7d;</p>
+</mat-expansion-panel>
