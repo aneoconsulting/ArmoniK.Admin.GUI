@@ -17,7 +17,7 @@
       }
       }
       @if (value) {
-        <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" (onKeyDown)="$event.stopPropagation();copy()" matTooltip="Copy value" />
+        <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" (keydown.enter)="$event.stopPropagation();copy()" matTooltip="Copy value" />
       }
       @if (field.link && value) {
         <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + value" matTooltip="Inspect data" />
@@ -30,7 +30,7 @@
           <li>
             <mat-chip>
               {{ item | emptyCell }}
-              <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="clipboardCopy(item)" (onKeyDown)="$event.stopPropagation();clipboardCopy(item)" matTooltip="Copy value" />
+              <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="clipboardCopy(item)" (keydown.enter)="$event.stopPropagation();clipboardCopy(item)" matTooltip="Copy value" />
               @if (field.link) {
                 <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + item" matTooltip="Inspect data" />
                 }
