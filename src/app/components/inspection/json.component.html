@@ -1,0 +1,13 @@
+@for(key of keys; track key) {
+  <section>
+  @if(isObject(key) && !isArray(key)) {
+    <p>{{ key }}: &#x7b;</p>
+    <app-json [data]="data[key]" />
+    <p>&#x7d;</p>
+  } @else if (data[key]) {
+    <p>{{key}}: {{ data[key] | json }}</p>
+  } @else {
+    <p>{{key}}: undefined</p>
+  }
+  </section>
+}
