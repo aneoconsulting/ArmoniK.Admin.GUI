@@ -1,6 +1,6 @@
 <article class="arrays">
   @for (array of arrays; track array.key) {
-    <app-inspect-list [list]="getArray(array.key)" [redirectLink]="array.link">
+    <app-inspect-list [list]="getArray(array.key)" [redirectLink]="array.link" [queryParams]="array.queryParams">
       <h2 title>{{ array.key | pretty }}</h2>
     </app-inspect-list>
   }
