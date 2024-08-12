@@ -687,11 +687,18 @@ describe('SessionsTableComponent', () => {
       expect(component.data()).toEqual([]);
     });
   });
+  
+  describe('options changes', () => {
+    it('should refresh data', () => {
+      const spy = jest.spyOn(component.refresh$, 'next');
+      component.onOptionsChange();
+      expect(spy).toHaveBeenCalled();
+    });
 
-  it('should refresh data on options changes', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onOptionsChange();
-    expect(spy).toHaveBeenCalled();
+    it('should save options', () => {
+      component.onOptionsChange();
+      expect(mockSessionsIndexService.saveOptions).toHaveBeenCalled();
+    });
   });
 
   describe('on Pause', () => {
