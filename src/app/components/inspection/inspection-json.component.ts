@@ -43,7 +43,13 @@ export class InspectionJsonComponent {
   readonly copyIcon = this.iconsService.getIcon('copy');
 
   copy() {
-    this.clipboard.copy(JSON.stringify(this.data, null, 2));
-    this.notificationService.success('Value copied to clipboard');
+    try {
+      const object = JSON.stringify(this.data, null, 2);
+      this.clipboard.copy(object);
+      this.notificationService.success('Value copied to clipboard');
+    } catch (e) {
+      console.error(e);
+      this.notificationService.error('Could not copy value');
+    }
   }
 }
