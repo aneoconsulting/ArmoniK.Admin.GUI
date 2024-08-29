@@ -14,9 +14,11 @@ const props = defineProps({
   left: String,
   right: String,
   justifyRight: String,
+  justifyLeft: String,
 });
 
 const justifyRight = props.justifyRight || 'center';
+const justifyLeft = props.justifyLeft || 'center'
 let right = 50;
 let left = 50;
 
@@ -43,6 +45,9 @@ section {
 
 #left {
   width: v-bind('left');
+  display: flex;
+  flex-direction: column;
+  justify-content: v-bind('justifyLeft');
 }
 
 #right {
