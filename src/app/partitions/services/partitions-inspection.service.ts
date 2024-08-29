@@ -23,6 +23,6 @@ export class PartitionsInspectionService extends InspectionService<PartitionRaw>
   ];
 
   readonly arrays: Field<PartitionRaw>[] = [
-    { key: 'parentPartitionIds', link: 'partitions' }
+    { key: 'parentPartitionIds', link: 'partitions', queryParams: '0-root-1-0' }
   ];
 }
