@@ -18,11 +18,14 @@ describe('InspectionJsonComponent', () => {
 
   const mockNotificationService = {
     success: jest.fn(),
+    error: jest.fn(),
   };
 
   const mockClipboard = {
     copy: jest.fn(),
   };
+
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
@@ -45,16 +48,40 @@ describe('InspectionJsonComponent', () => {
   });
 
   describe('copy', () => {
-    beforeEach(() => {
-      component.copy();
-    });
-
     it('should copy to clipboard', () => {
+      component.copy();
       expect(mockClipboard.copy).toHaveBeenCalledWith(JSON.stringify(data, null, 2));
     });
 
     it('should notify on copy', () => {
+      component.copy();
       expect(mockNotificationService.success).toHaveBeenCalled();
+    });
+
+    it('should log in case of an error', () => {
+      jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {throw new Error;});
+      component.copy();
+      expect(errorSpy).toHaveBeenCalled();
+    });
+
+    it('should notify in case of an error', () => {
+      jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {throw new Error;});
+      component.copy();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('toggleDisplay', () => {
+    it('should set display to true if it is false', () => {
+      component.display = false;
+      component.toggleDisplay();
+      expect(component.display).toBeTruthy();
+    });
+
+    it('should set display to false if it is true', () => {
+      component.display = true;
+      component.toggleDisplay();
+      expect(component.display).toBeFalsy();
     });
   });
 });
