@@ -1,0 +1,45 @@
+<span class="field">
+  <p>{{ key | pretty }}:</p>
+  @if (type !== 'array') {
+    <mat-chip>
+      @switch (type) {
+      @case ('date') {
+        {{ date | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
+      }
+      @case('duration') {
+        {{ duration | duration | emptyCell }}
+      }
+      @case('object') {
+        {{ object | json }}
+      }
+      @default {
+        {{ value | emptyCell }}
+      }
+      }
+      @if (value) {
+        <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="copy()" (keydown.enter)="$event.stopPropagation();copy()" matTooltip="Copy value" />
+      }
+      @if (field.link && value) {
+        <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + value" matTooltip="Inspect data" />
+      }
+    </mat-chip>
+  } @else {
+    @if (array.length !== 0) {
+      <ul>
+        @for (item of array; track $index) {
+          <li>
+            <mat-chip>
+              {{ item | emptyCell }}
+              <mat-icon matChipTrailingIcon [fontIcon]="copyIcon" (click)="clipboardCopy(item)" (keydown.enter)="$event.stopPropagation();clipboardCopy(item)" matTooltip="Copy value" />
+              @if (field.link) {
+                <mat-icon matChipTrailingIcon [fontIcon]="viewIcon" [routerLink]="'/' + field.link + '/' + item" matTooltip="Inspect data" />
+                }
+            </mat-chip>
+          </li>
+        }
+      </ul>
+    } @else {
+      <mat-chip>-</mat-chip>
+    }
+  }
+</span>

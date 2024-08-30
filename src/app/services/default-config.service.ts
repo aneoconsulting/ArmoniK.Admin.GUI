@@ -1,11 +1,11 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { ApplicationRawColumnKey, ApplicationRawFilters, ApplicationRawListOptions } from '@app/applications/types';
-import { Line, TasksStatusesGroup } from '@app/dashboard/types';
-import { PartitionRawColumnKey, PartitionRawFilters, PartitionRawListOptions } from '@app/partitions/types';
-import { ResultRawColumnKey, ResultRawFilters, ResultRawListOptions } from '@app/results/types';
-import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from '@app/sessions/types';
-import { TaskSummaryColumnKey, TaskSummaryFilters, TaskSummaryListOptions } from '@app/tasks/types';
+import { ApplicationRaw } from '@app/applications/types';
+import { CountLine, Line, TasksStatusesGroup } from '@app/dashboard/types';
+import { PartitionRaw } from '@app/partitions/types';
+import { ResultRaw } from '@app/results/types';
+import { SessionRaw } from '@app/sessions/types';
+import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
@@ -16,7 +16,7 @@ export class DefaultConfigService {
   readonly #defaultTheme: Theme = 'indigo-pink';
   readonly #defaultExternalServices: ExternalService[] = [];
 
-  readonly #defaultDashboardLines: Line[] = [
+  readonly #defaultDashboardLines: CountLine[] = [
     {
       name: $localize`Tasks by statuses`,
       type: 'CountStatus',
@@ -69,7 +69,7 @@ export class DefaultConfigService {
     'divider'
   ];
 
-  readonly #defaultApplications: ScopeConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> = {
+  readonly #defaultApplications: ScopeConfig<ApplicationRaw, ApplicationRawEnumField> = {
     interval: 10,
     lockColumns: false,
     columns: [
@@ -112,7 +112,7 @@ export class DefaultConfigService {
     }
   ];
 
-  readonly #defaultPartitions: ScopeConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> = {
+  readonly #defaultPartitions: ScopeConfig<PartitionRaw, PartitionRawEnumField> = {
     interval: 10,
     lockColumns: false,
     columns: [
@@ -131,7 +131,7 @@ export class DefaultConfigService {
     showFilters: true,
   };
 
-  readonly #defaultSessions: ScopeConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> = {
+  readonly #defaultSessions: ScopeConfig<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> = {
     interval: 10,
     lockColumns: false,
     columns: [
@@ -151,7 +151,7 @@ export class DefaultConfigService {
     showFilters: true,
   };
 
-  readonly #defaultResults: ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> = {
+  readonly #defaultResults: ScopeConfig<ResultRaw, ResultRawEnumField> = {
     interval: 10,
     lockColumns: false,
     columns: [
@@ -170,7 +170,7 @@ export class DefaultConfigService {
     showFilters: true,
   };
 
-  readonly #defaultTasks: ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> = {
+  readonly #defaultTasks: ScopeConfig<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> = {
     interval: 10,
     lockColumns: false,
     columns: [
@@ -226,7 +226,7 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultSidebar);
   }
 
-  get defaultApplications(): ScopeConfig<ApplicationRawColumnKey, ApplicationRawListOptions, ApplicationRawFilters> {
+  get defaultApplications(): ScopeConfig<ApplicationRaw, ApplicationRawEnumField> {
     return structuredClone(this.#defaultApplications);
   }
 
@@ -234,19 +234,19 @@ export class DefaultConfigService {
     return structuredClone(this.#defaultTasksByStatus);
   }
 
-  get defaultPartitions(): ScopeConfig<PartitionRawColumnKey, PartitionRawListOptions, PartitionRawFilters> {
+  get defaultPartitions(): ScopeConfig<PartitionRaw, PartitionRawEnumField> {
     return structuredClone(this.#defaultPartitions);
   }
 
-  get defaultSessions(): ScopeConfig<SessionRawColumnKey, SessionRawListOptions, SessionRawFilters> {
+  get defaultSessions(): ScopeConfig<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> {
     return structuredClone(this.#defaultSessions);
   }
 
-  get defaultResults(): ScopeConfig<ResultRawColumnKey, ResultRawListOptions, ResultRawFilters> {
+  get defaultResults(): ScopeConfig<ResultRaw, ResultRawEnumField> {
     return structuredClone(this.#defaultResults);
   }
 
-  get defaultTasks(): ScopeConfig<TaskSummaryColumnKey, TaskSummaryListOptions, TaskSummaryFilters> {
+  get defaultTasks(): ScopeConfig<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> {
     return structuredClone(this.#defaultTasks);
   }
 

@@ -2,7 +2,7 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { StorageService } from '@services/storage.service';
 import { DashboardStorageService } from './dashboard-storage.service';
-import { Line } from '../types';
+import { CountLine, Line } from '../types';
 
 describe('DashboardStorageService', () => {
   let service: DashboardStorageService;
@@ -24,7 +24,7 @@ describe('DashboardStorageService', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Error', color: 'red', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_TIMEOUT]}
       ],
-    },
+    } as CountLine,
     {
       name: 'line2',
       type: 'Tasks',
@@ -36,7 +36,7 @@ describe('DashboardStorageService', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Unspecified', color: 'grey', statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_RETRIED]}
       ],
-    }
+    } as CountLine
   ];
 
   beforeEach(() => {

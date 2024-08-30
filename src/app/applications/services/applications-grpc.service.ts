@@ -5,10 +5,10 @@ import { Filter, FilterType } from '@app/types/filters';
 import { GrpcTableService, ListApplicationSortField, RequestFilterField } from '@app/types/services/grpcService';
 import { FilterField, buildStringFilter } from '@services/grpc-build-request.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
-import { ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
+import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
 @Injectable()
-export class ApplicationsGrpcService extends GrpcTableService<ApplicationRawFieldKey, ApplicationRawListOptions, ApplicationRawEnumField> {
+export class ApplicationsGrpcService extends GrpcTableService<ApplicationRaw, ApplicationRawEnumField> {
   readonly filterService = inject(ApplicationsFiltersService);
   readonly grpcClient = inject(ApplicationsClient);
 

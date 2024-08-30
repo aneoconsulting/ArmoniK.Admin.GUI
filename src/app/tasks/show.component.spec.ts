@@ -1,14 +1,17 @@
-import { GetTaskResponse, TaskDetailed } from '@aneoconsultingfr/armonik.api.angular';
+import { GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
+import { TasksInspectionService } from './services/tasks-inspection.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';
 import { ShowComponent } from './show.component';
+import { TaskRaw } from './types';
 
 describe('AppShowComponent', () => {
   let component: ShowComponent;
@@ -33,15 +36,12 @@ describe('AppShowComponent', () => {
     id: 'taskId-12345',
     options: {
       partitionId: 'partitionId'
-    }
-  } as unknown as TaskDetailed;
+    },
+    status: TaskStatus.TASK_STATUS_PROCESSING
+  } as TaskRaw;
   const mockTasksGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({task: returnedTask} as GetTaskResponse)),
     cancel$: jest.fn(() => of({}))
-  };
-
-  const mockTasksStatusesService = {
-    statuses: []
   };
 
   beforeEach(() => {
@@ -50,15 +50,15 @@ describe('AppShowComponent', () => {
         ShowComponent,
         IconsService,
         FiltersService,
-        { provide: TasksStatusesService, useValue: mockTasksStatusesService},
+        TasksStatusesService,
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: TasksGrpcService, useValue: mockTasksGrpcService }
+        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
+        TasksInspectionService
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should create', () => {
@@ -73,6 +73,22 @@ describe('AppShowComponent', () => {
     it('should set sharableURL', () => {
       expect(mockShareUrlService.generateSharableURL).toHaveBeenCalled();
     });
+
+    it('should set fields', () => {
+      expect(component.fields).toEqual((new TasksInspectionService).fields);
+    });
+
+    it('should set optionsFields', () => {
+      expect(component.optionsFields).toEqual((new TasksInspectionService).optionsFields);
+    });
+
+    it('should set arrays', () => {
+      expect(component.arrays).toEqual((new TasksInspectionService).arrays);
+    });
+
+    it('should set resultsKey', () => {
+      expect(component.resultsKey).toEqual('0-root-3-0');
+    });
   });
 
   it('should get icons', () => {
@@ -85,9 +101,19 @@ describe('AppShowComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should set link for action', () => {
-    component.setLink('session', 'sessions', 'sessionId-12345');
-    expect(component.actionButtons[0].link).toEqual('/sessions/sessionId-12345');
+  describe('get status', () => {
+    it('should return undefined if there is no data', () => {
+      mockTasksGrpcService.get$.mockReturnValueOnce(of(null));
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      component.refresh.next();
+      expect(component.status).toEqual(undefined);
+    });
+
+    it('should return the status label if there is data', () => {
+      component.status = undefined;
+      component.refresh.next();
+      expect(component.status).toEqual('Processing');
+    });
   });
 
   describe('Getting data', () => {
@@ -106,6 +132,10 @@ describe('AppShowComponent', () => {
       expect(component.data()).toEqual(null);
     });
 
+    it('should set resultsQueryParams', () => {
+      expect(component.resultsQueryParams).toEqual({'0-root-3-0': returnedTask.id});
+    });
+
     it('should catch errors', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockTasksGrpcService.get$.mockReturnValueOnce(throwError(() => new Error()));
@@ -118,12 +148,14 @@ describe('AppShowComponent', () => {
   describe('Handle errors', () => {
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      component.handleError(new Error());
+      const errorMessage = 'ErrorMessage';
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
-      component.handleError(new Error());
+      const errorMessage = 'ErrorMessage';
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });
@@ -142,8 +174,16 @@ describe('AppShowComponent', () => {
     });
   });
 
-  describe('Cancel task', () => {
-    it('should cancel tasks', () => {
+  it('should get statuses', () => {
+    expect(component.statuses).toEqual((new TasksStatusesService).statuses);
+  });
+
+  describe('cancelling', () => {
+    beforeEach(() => {
+      component.refresh.next(); // Setting the PROCESSING status.
+    });
+
+    it('should cancel a task', () => {
       component.cancel();
       expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
     });
@@ -164,21 +204,6 @@ describe('AppShowComponent', () => {
       mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       component.cancel();
       expect(errorSpy).toHaveBeenCalled();
-    });
-  });
-
-  it('should get statuses', () => {
-    expect(component.statuses).toEqual(mockTasksStatusesService.statuses);
-  });
-
-  it('should get resultKeys', () => {
-    expect(component.resultsKey()).toEqual('1-root-3-0');
-  });
-
-  describe('actions', () => {
-    it('should cancel a task', () => {
-      component.actionButtons.find(button => button.id === 'cancel')?.action$?.next();
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([returnedTask.id]);
     });
   });
 

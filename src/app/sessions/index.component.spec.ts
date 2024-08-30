@@ -1,11 +1,15 @@
-import { FilterStringOperator, SessionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
+import { TableLine } from '@app/dashboard/types';
+import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { CustomColumn } from '@app/types/data';
+import { ColumnKey, CustomColumn } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -14,7 +18,7 @@ import { IndexComponent } from './index.component';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
-import { SessionRawColumnKey, SessionRawFilters, SessionRawListOptions } from './types';
+import { SessionRaw } from './types';
 
 describe('Sessions Index Component', () => {
   let component: IndexComponent;
@@ -41,9 +45,9 @@ describe('Sessions Index Component', () => {
     navigate: jest.fn()
   };
 
-  const defaultColumns: SessionRawColumnKey[] = ['sessionId', 'actions', 'createdAt', 'options'];
+  const defaultColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'actions', 'createdAt', 'options'];
   const defaultCustomColumns: CustomColumn[] = ['options.options.FastCompute'];
-  const defaultOptions: SessionRawListOptions = {
+  const defaultOptions: ListOptions<SessionRaw, TaskOptions> = {
     pageIndex: 0,
     pageSize: 10,
     sort: {
@@ -51,7 +55,7 @@ describe('Sessions Index Component', () => {
       direction: 'desc'
     }
   };
-  const availableTableColumns: TableColumn<SessionRawColumnKey>[] = [
+  const availableTableColumns: TableColumn<SessionRaw, TaskOptions>[] = [
     {
       name: $localize`Session ID`,
       key: 'sessionId',
@@ -271,7 +275,7 @@ describe('Sessions Index Component', () => {
   });
 
   describe('On columns change', () => {
-    const newColumns: SessionRawColumnKey[] = ['sessionId', 'createdAt'];
+    const newColumns: ColumnKey<SessionRaw, TaskOptions>[] = ['sessionId', 'createdAt'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
@@ -345,7 +349,7 @@ describe('Sessions Index Component', () => {
 
   describe('On Filters Change', () => {
 
-    const newFilters: SessionRawFilters = [
+    const newFilters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [
       [
         {
           field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
@@ -438,12 +442,14 @@ describe('Sessions Index Component', () => {
   describe('Adding table as a line to dashboard', () => {
     it('should add a line', () => {
       component.onAddToDashboard();
-      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith({
+      expect(mockDashboardIndexService.addLine).toHaveBeenCalledWith<TableLine<SessionRaw, TaskOptions>[]>({
         name: 'Sessions',
         type: 'Sessions',
         interval: 10,
+        showFilters: false,
         lockColumns: false,
         displayedColumns: [...defaultColumns, ...defaultCustomColumns],
+        customColumns: defaultCustomColumns,
         options: defaultOptions,
         filters: [],
       });

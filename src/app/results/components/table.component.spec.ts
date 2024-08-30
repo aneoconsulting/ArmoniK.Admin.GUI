@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
+import { ColumnKey, ResultData } from '@app/types/data';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -10,12 +11,12 @@ import { ResultsTableComponent } from './table.component';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFilters } from '../types';
+import { ResultRaw, ResultRawFilters } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: ResultsTableComponent;
 
-  const displayedColumns: TableColumn<ResultRawColumnKey>[] = [
+  const displayedColumns: TableColumn<ResultRaw>[] = [
     {
       name: 'Result ID',
       key: 'resultId',
@@ -54,7 +55,8 @@ describe('TasksTableComponent', () => {
     isSimpleColumn: jest.fn(),
     isNotSortableColumn: jest.fn(),
     columnToLabel: jest.fn(),
-    saveColumns: jest.fn()
+    saveColumns: jest.fn(),
+    saveOptions: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -195,14 +197,21 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should refresh data on options changes', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onOptionsChange();
-    expect(spy).toHaveBeenCalled();
+  describe('options changes', () => {
+    it('should refresh data', () => {
+      const spy = jest.spyOn(component.refresh$, 'next');
+      component.onOptionsChange();
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should save options', () => {
+      component.onOptionsChange();
+      expect(mockResultsIndexService.saveOptions).toHaveBeenCalled();
+    });
   });
 
   test('onDrop should call ResultsIndexService', () => {
-    const newColumns: ResultRawColumnKey[] = ['actions', 'resultId', 'status'];
+    const newColumns: ColumnKey<ResultRaw>[] = ['actions', 'resultId', 'status'];
     component.onDrop(newColumns);
     expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
@@ -227,5 +236,10 @@ describe('TasksTableComponent', () => {
       const result2 = { resultId: 'result1' } as ResultRaw;
       expect(component.isDataRawEqual(result1, result2)).toBeFalsy();
     });
+  });
+
+  it('should track a result by its id', () => {
+    const result = {raw: { resultId: 'result' }} as ResultData;
+    expect(component.trackBy(0, result)).toEqual(result.raw.resultId);
   });
 });

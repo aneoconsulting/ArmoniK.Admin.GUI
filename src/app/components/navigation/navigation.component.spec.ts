@@ -29,8 +29,6 @@ describe('NavigationComponent', () => {
   };
   const mockNavigationService = {
     currentSidebar: currentSidebar,
-    restoreExternalServices: jest.fn(),
-    saveExternalServices: jest.fn(),
     restoreSideBarOpened: jest.fn(),
     saveSideBarOpened: jest.fn(),
   };
@@ -70,10 +68,6 @@ describe('NavigationComponent', () => {
   });
 
   describe('on init', () => {
-    it('should restore external services', () => {
-      expect(mockNavigationService.restoreExternalServices).toHaveBeenCalled();
-    });
-
     it('should retore sideBarOpened', () => {
       expect(mockNavigationService.restoreSideBarOpened).toHaveBeenCalled();
     });
@@ -95,17 +89,6 @@ describe('NavigationComponent', () => {
       process.env['NODE_ENV'] = 'development';
       expect(component.getVersion()).toEqual('-dev');
     });
-  });
-
-  it('should manage external services', () => {
-    const externalServices = [{
-      name: 'service',
-      url: 'url',
-      icon: 'main'
-    }];
-    dialogRefSubject = new BehaviorSubject<ExternalService[] | null>(externalServices);
-    component.manageExternalServices();
-    expect(mockNavigationService.saveExternalServices).toHaveBeenCalledWith(externalServices);
   });
 
   it('should get icon', () => {

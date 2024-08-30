@@ -1,9 +1,14 @@
-export type ScopeConfig<C, O, F> = {
+import { TaskOptions } from '@app/tasks/types';
+import { ColumnKey, DataRaw } from './data';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from './filters';
+import { ListOptions } from './options';
+
+export type ScopeConfig<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> = {
   interval: number;
   lockColumns: boolean;
-  columns: C[];
-  options: O;
-  filters: F;
+  columns: ColumnKey<T, O>[];
+  options: ListOptions<T, O>;
+  filters: FiltersOr<F, FO>;
   showFilters: boolean;
 };
 

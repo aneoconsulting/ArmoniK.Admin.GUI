@@ -1,0 +1,45 @@
+<app-show-page [id]="id" [data]="data()" [sharableURL]="sharableURL" [status]="status" [fields]="fields" [optionsFields]="optionsFields" [arrays]="arrays" [statuses]="statuses" (refresh)="onRefresh()">
+  <div class="title" title>
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('sessions')"></mat-icon>
+    <span i18n="Page title"> Sessions </span>
+  </div>
+  <div class="actions" actions>
+    <button mat-button [routerLink]="'/tasks'" [queryParams]="tasksQueryParams">
+      <span i18n>See Tasks</span>
+      <mat-icon [fontIcon]="getIcon('tasks')" />
+    </button>
+    <button mat-button [routerLink]="'/results'" [queryParams]="resultsQueryParams">
+      <span i18n>See Results</span>
+      <mat-icon [fontIcon]="getIcon('results')" />
+    </button>
+    <button mat-button [routerLink]="'/partitions'" [queryParams]="partitionsQueryParams">
+      <span i18n>See Partition</span>
+      <mat-icon [fontIcon]="getIcon('partitions')" />
+    </button>
+  </div>
+  <div class="actions" bonus-actions>
+    @if (!disableResume) {
+      <button mat-flat-button color="accent" (click)="resume()" [disabled]="disableResume">
+        <span i18n>Resume Session</span>
+        <mat-icon [fontIcon]="this.getIcon('play')" />
+      </button>
+    } @else {
+      <button mat-flat-button color="accent" (click)="pause()" [disabled]="disablePause">
+        <span i18n>Pause Session</span>
+        <mat-icon [fontIcon]="this.getIcon('pause')" />
+      </button>
+    }
+    <button mat-flat-button color="accent" (click)="cancel()" [disabled]="disableCancel">
+      <span i18n>Cancel Session</span>
+      <mat-icon [fontIcon]="this.getIcon('cancel')" />
+    </button>
+    <button mat-flat-button color="accent" (click)="close()" [disabled]="disableClose">
+      <span i18n>Close Session</span>
+      <mat-icon [fontIcon]="this.getIcon('close')" />
+    </button>
+    <button mat-flat-button color="accent" (click)="deleteSession()">
+      <span i18n>Delete Session</span>
+      <mat-icon [fontIcon]="this.getIcon('delete')" />
+    </button>
+  </div>
+</app-show-page>

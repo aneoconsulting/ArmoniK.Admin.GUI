@@ -3,7 +3,7 @@
     @if (!isArray(data[key]) && !isObject(key)) {
       <p>
         <!-- Key -->
-        <span class="key">{{ pretty(key) }}: </span>
+        <span class="key">{{ key | pretty }}: </span>
         <!-- Value -->
         @if (isStatus(key)) {  
           <span>{{ statusToLabel(key) | emptyCell }}</span>
@@ -19,7 +19,7 @@
       </p>
     } @else if (isArray(data[key])) {
       <!-- Array -->
-      <span class="key">{{ pretty(key) }}:</span>
+      <span class="key">{{ key | pretty }}:</span>
       <ul class="array-list">
         @for (item of findArray(key); track $index) {
           <li>{{ item }}</li>
@@ -27,7 +27,7 @@
       </ul>
     } @else {
       <!-- Object -->
-      <span class="key">{{ pretty(key) }}:</span>
+      <span class="key">{{ key | pretty }}:</span>
       <app-show-card-content [data]="findObject(key)" [statuses]="statuses"/>
     }
   }

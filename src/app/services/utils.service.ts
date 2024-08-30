@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/dashboard/types';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterType, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterType, FilterValueOptions, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 
 @Injectable()
 export class UtilsService<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {

@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { ColumnKey, RawColumnKey } from '@app/types/data';
+import { TaskOptions } from '@app/tasks/types';
+import { ColumnKey, DataRaw } from '@app/types/data';
 import { IconsService } from '@services/icons.service';
 import { TableActionsToolbarComponent } from './table-actions-toolbar.component';
 
@@ -15,15 +16,15 @@ import { TableActionsToolbarComponent } from './table-actions-toolbar.component'
     MatMenuModule,
   ]
 })
-export class TableDashboardActionsToolbarComponent<T extends object, O extends object> {
+export class TableDashboardActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   readonly iconsService = inject(IconsService);
   
   @Input({ required: true }) loading: boolean;
   @Input({ required: true }) refreshTooltip: string;
   @Input({ required: true }) intervalValue: number;
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
-  @Input({ required: true }) displayedColumns: RawColumnKey[];
-  @Input({ required: true }) availableColumns: RawColumnKey[];
+  @Input({ required: true }) displayedColumns: ColumnKey<T, O>[];
+  @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
   @Input({ required: true }) lockColumns = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();

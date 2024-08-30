@@ -1,12 +1,14 @@
 import { GetPartitionResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
+import { PartitionsInspectionService } from './services/partitions-inspection.service';
 import { ShowComponent } from './show.component';
 import { PartitionRaw } from './types';
 
@@ -35,6 +37,7 @@ describe('ShowComponent', () => {
       partitionId: 'partitionId'
     }
   } as unknown as PartitionRaw;
+
   const mockPartitionsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({partition: returnedPartition} as GetPartitionResponse)),
   };
@@ -48,11 +51,11 @@ describe('ShowComponent', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
-        { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService }
+        { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
+        PartitionsInspectionService,
       ]
     }).inject(ShowComponent);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should create', () => {
@@ -66,6 +69,14 @@ describe('ShowComponent', () => {
 
     it('should set sharableURL', () => {
       expect(mockShareUrlService.generateSharableURL).toHaveBeenCalled();
+    });
+
+    it('should set sessionsKey', () => {
+      expect(component.sessionsKey).toEqual('0-root-3-0');
+    });
+
+    it('should set tasksKey', () => {
+      expect(component.tasksKey).toEqual('0-options-4-0');
     });
   });
 
@@ -103,17 +114,29 @@ describe('ShowComponent', () => {
       component.refresh.next();
       expect(spy).toHaveBeenCalled();
     });
+
+    it('should set sessionsQueryParams', () => {
+      component.refresh.next();
+      expect(component.sessionsQueryParams).toEqual({'0-root-3-0': returnedPartition.id});
+    });
+
+    it('should set tasksQueryParams', () => {
+      component.refresh.next();
+      expect(component.tasksQueryParams).toEqual({'0-options-4-0': returnedPartition.id});
+    });
   });
 
   describe('Handle errors', () => {
     it('should log errors', () => {
       const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-      component.handleError(new Error());
+      const errorMessage = 'ErrorMessage';
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
-      component.handleError(new Error());
+      const errorMessage = 'ErrorMessage';
+      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });

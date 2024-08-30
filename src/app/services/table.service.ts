@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
+import { TaskOptions } from '@app/tasks/types';
 import { CustomScope, Scope } from '@app/types/config';
 import { DataRaw, FieldKey } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
@@ -50,7 +51,7 @@ export class TableService {
   /**
    * Restore options from the storage
    */
-  restoreOptions<T extends DataRaw>(key: `${Scope}-options`, defaultOptions: ListOptions<T>): ListOptions<T> {
+  restoreOptions<T extends DataRaw, O extends TaskOptions | null = null>(key: `${Scope}-options`, defaultOptions: ListOptions<T, O>): ListOptions<T, O> {
     const storageData = this._tableStorageService.restore<T>(key) as ListOptions<T> | null;
 
     function convertValueToNumber(value: string | null): number | null {
@@ -67,11 +68,11 @@ export class TableService {
       return numberValue;
     }
 
-    const options: ListOptions<T> = {
+    const options: ListOptions<T, O> = {
       pageIndex: convertValueToNumber(this._tableURLService.getQueryParamsOptions('pageIndex')) ?? storageData?.pageIndex ?? defaultOptions?.pageIndex,
       pageSize: convertValueToNumber(this._tableURLService.getQueryParamsOptions('pageSize')) ?? storageData?.pageSize ?? defaultOptions?.pageSize,
       sort: {
-        active: this._tableURLService.getQueryParamsOptions<FieldKey<T>>('sortField') ?? storageData?.sort.active ?? defaultOptions?.sort.active,
+        active: this._tableURLService.getQueryParamsOptions<FieldKey<T & O>>('sortField') ?? storageData?.sort.active ?? defaultOptions?.sort.active,
         direction: this._tableURLService.getQueryParamsOptions<SortDirection>('sortDirection') ?? storageData?.sort.direction ?? defaultOptions?.sort.direction,
       },
     };

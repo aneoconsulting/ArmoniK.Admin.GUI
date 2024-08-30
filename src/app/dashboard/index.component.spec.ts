@@ -7,7 +7,7 @@ import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { IndexComponent } from './index.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
-import { Line, LineType } from './types';
+import { CountLine, Line, LineType } from './types';
 
 describe('IndexComponent', () => {
   let component: IndexComponent;
@@ -27,7 +27,7 @@ describe('IndexComponent', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Error', color: 'red', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_TIMEOUT]}
       ],
-    },
+    } as CountLine,
     {
       name: 'line2',
       type: 'Tasks',
@@ -39,7 +39,7 @@ describe('IndexComponent', () => {
         { name: 'Running', color: 'yellow', statuses: [TaskStatus.TASK_STATUS_CREATING, TaskStatus.TASK_STATUS_PROCESSING]},
         { name: 'Unspecified', color: 'grey', statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_RETRIED]}
       ],
-    }
+    } as CountLine
   ];
   
   const mockMatDialog = {
@@ -100,7 +100,7 @@ describe('IndexComponent', () => {
 
   describe('onAddLineDialog', () => {
     it('should add a line', () => {
-      dialogRef$ = of({name: 'New line', type: 'CountStatus'} as unknown as Line);
+      dialogRef$ = of({name: 'New line', type: 'CountStatus'} as Line);
       const newLines = structuredClone(defaultLines);
       newLines.push({
         name: 'New line',
@@ -133,7 +133,7 @@ describe('IndexComponent', () => {
             ]
           },
         ],
-      });
+      } as CountLine);
       component.onAddLineDialog();
       expect(component.lines).toEqual(newLines);
     });

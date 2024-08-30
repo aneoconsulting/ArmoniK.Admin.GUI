@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Observable, Subject, catchError, of, startWith, switchMap } from 'rxjs';
 import { HealthCheckGrpcService } from '@app/healthcheck/services/healthcheck-grpc.service';
 import { ServiceHealth } from '@app/healthcheck/types';
@@ -62,7 +63,7 @@ export class HealthCheckComponent implements AfterViewInit {
       switchMap(() => {
         return this.healthcheckGrpcService.list$();
       }),
-      catchError((error) => {
+      catchError((error: GrpcStatusEvent) => {
         console.error(error);
         this.notificationService.error($localize`Unable to get service health data`);
         this.globalStatus = HealthStatusEnum.HEALTH_STATUS_ENUM_UNSPECIFIED;

@@ -3,7 +3,7 @@ import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
-import { ResultData } from '@app/types/data';
+import { ArmonikData, ResultData } from '@app/types/data';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -12,7 +12,7 @@ import { ResultsFiltersService } from '../services/results-filters.service';
 import { ResultsGrpcService } from '../services/results-grpc.service';
 import { ResultsIndexService } from '../services/results-index.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
-import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '../types';
+import { ResultRaw } from '../types';
 
 @Component({
   selector: 'app-results-table',
@@ -32,7 +32,7 @@ import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions 
     TableComponent,
   ]
 })
-export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions, ResultRawEnumField>
+export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, ResultRawEnumField>
   implements OnInit, AfterViewInit {
   scope: Scope = 'results';
   readonly grpcService = inject(ResultsGrpcService);
@@ -67,5 +67,9 @@ export class ResultsTableComponent extends AbstractTableComponent<ResultRaw, Res
     return {
       raw: entry,
     };
+  }
+
+  trackBy(index: number, item: ArmonikData<ResultRaw>): string | number {
+    return item.raw.resultId;
   }
 }

@@ -1,11 +1,14 @@
+import { TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { IndexListOptions } from '@app/types/data';
-import { MaybeNull, RawFilters } from '@app/types/filters';
+import { TaskOptions } from '@app/tasks/types';
+import { DataRaw } from '@app/types/data';
+import { FiltersEnums, FiltersOr, MaybeNull } from '@app/types/filters';
+import { ListOptions } from '@app/types/options';
 import { QueryParamsOptions } from '@app/types/query-params';
 
 @Injectable()
 export class QueryParamsService {
-  createOptions<T extends IndexListOptions>(options: T): QueryParamsOptions {
+  createOptions<T extends DataRaw, O extends TaskOptions | null = null>(options: ListOptions<T, O>): QueryParamsOptions {
     const queryParamsOptions: QueryParamsOptions = {
       pageIndex: options.pageIndex.toString(),
       pageSize: options.pageSize.toString(),
@@ -16,7 +19,7 @@ export class QueryParamsService {
     return queryParamsOptions;
   }
 
-  createFilters<F extends RawFilters>(filtersOr: F): Record<string, MaybeNull<string | number | Date | boolean | null>> | null {
+  createFilters<F extends FiltersEnums, FO extends TaskOptionEnumField | null = null>(filtersOr: FiltersOr<F, FO>): Record<string, MaybeNull<string | number | Date | boolean | null>> | null {
     const queryParamsFilters: Record<string, MaybeNull<string | number | Date | boolean | null>> = {};
 
     let i = 0;

@@ -1,10 +1,11 @@
-import { FilterStringOperator, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TableColumn } from '@app/types/column.type';
-import { TaskData } from '@app/types/data';
+import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
+import { FiltersOr } from '@app/types/filters';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
@@ -12,12 +13,12 @@ import { TasksTableComponent } from './table.component';
 import { TasksGrpcService } from '../services/tasks-grpc.service';
 import { TasksIndexService } from '../services/tasks-index.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
-import { TaskSummary, TaskSummaryColumnKey, TaskSummaryFilters } from '../types';
+import { TaskOptions, TaskSummary } from '../types';
 
 describe('TasksTableComponent', () => {
   let component: TasksTableComponent;
 
-  const displayedColumns: TableColumn<TaskSummaryColumnKey>[] = [
+  const displayedColumns: TableColumn<TaskSummary, TaskOptions>[] = [
     {
       name: 'Task ID',
       key: 'id',
@@ -56,7 +57,8 @@ describe('TasksTableComponent', () => {
     isSimpleColumn: jest.fn(),
     isNotSortableColumn: jest.fn(),
     columnToLabel: jest.fn(),
-    saveColumns: jest.fn()
+    saveColumns: jest.fn(),
+    saveOptions: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -96,7 +98,7 @@ describe('TasksTableComponent', () => {
 
     component.displayedColumns = displayedColumns;
     component.selection = [];
-    component.filters$ = new BehaviorSubject<TaskSummaryFilters>([]);
+    component.filters$ = new BehaviorSubject<FiltersOr<TaskSummaryEnumField, TaskOptionEnumField>>([]);
     component.options = {
       pageIndex: 0,
       pageSize: 10,
@@ -212,11 +214,18 @@ describe('TasksTableComponent', () => {
       expect(component.data()).toEqual([]);
     });
   });
+  
+  describe('options changes', () => {
+    it('should refresh data', () => {
+      const spy = jest.spyOn(component.refresh$, 'next');
+      component.onOptionsChange();
+      expect(spy).toHaveBeenCalled();
+    });
 
-  it('should refresh data on options changes', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onOptionsChange();
-    expect(spy).toHaveBeenCalled();
+    it('should save options', () => {
+      component.onOptionsChange();
+      expect(mockTasksIndexService.saveOptions).toHaveBeenCalled();
+    });
   });
 
   it('should check if the task is retried', () => {
@@ -231,7 +240,7 @@ describe('TasksTableComponent', () => {
       raw: {
         id: 'taskId'
       }
-    } as unknown as TaskData);
+    } as ArmonikData<TaskSummary, TaskOptions>);
     expect(mockClipBoard.copy).toHaveBeenCalledWith('taskId');
     expect(mockNotificationService.success).toHaveBeenCalledWith('Task ID copied to clipboard');
   });
@@ -269,7 +278,7 @@ describe('TasksTableComponent', () => {
   });
 
   test('onDrop should call tasksIndexService', () => {
-    const newColumns: TaskSummaryColumnKey[] = ['actions', 'id', 'status'];
+    const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['actions', 'id', 'status'];
     component.onDrop(newColumns);
     expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
   });
@@ -445,5 +454,10 @@ describe('TasksTableComponent', () => {
       const task2 = { id: 'task1' } as TaskSummary;
       expect(component.isDataRawEqual(task1, task2)).toBeFalsy();
     });
+  });
+
+  it('should track a task by its id', () => {
+    const task = { raw: { id: 'task' } } as TaskData;
+    expect(component.trackBy(0, task)).toEqual(task.raw.id);
   });
 });

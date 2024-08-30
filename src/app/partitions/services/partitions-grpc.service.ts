@@ -5,11 +5,11 @@ import { Filter, FilterType } from '@app/types/filters';
 import { GrpcGetInterface, GrpcTableService, ListDefaultSortField, RequestFilterField } from '@app/types/services/grpcService';
 import { FilterField, buildArrayFilter, buildNumberFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { PartitionsFiltersService } from './partitions-filters.service';
-import { PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
+import { PartitionRaw, PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 
 
 @Injectable()
-export class PartitionsGrpcService extends GrpcTableService<PartitionRawFieldKey, PartitionRawListOptions, PartitionRawEnumField>
+export class PartitionsGrpcService extends GrpcTableService<PartitionRaw, PartitionRawEnumField>
   implements GrpcGetInterface<GetPartitionResponse> {
   readonly filterService = inject(PartitionsFiltersService);
   readonly grpcClient = inject(PartitionsClient);
