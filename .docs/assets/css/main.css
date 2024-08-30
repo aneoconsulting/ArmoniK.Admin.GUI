@@ -2,4 +2,17 @@ img {
   padding: 0px;
   margin: 0px;
   border-radius: 1rem;
+  margin: 0px !important;
+}
+
+p {
+  margin-top: 0px !important;
+}
+
+ul, li {
+  margin: 0px !important;
+}
+
+article {
+  margin-bottom: 1rem;
 }

@@ -18,7 +18,6 @@ const props = defineProps({
 });
 
 const justifyRight = props.justifyRight || 'center';
-const justifyLeft = props.justifyLeft || 'center'
 let right = 50;
 let left = 50;
 
@@ -32,7 +31,6 @@ if (props.left && props.right) {
   right = `${Number(props.right)}%`;
   left = `${100 - Number(props.right)}%`;
 }
-
 </script>
 
 <style scoped>
@@ -40,14 +38,10 @@ section {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: center;
 }
 
 #left {
   width: v-bind('left');
-  display: flex;
-  flex-direction: column;
-  justify-content: v-bind('justifyLeft');
 }
 
 #right {
