@@ -89,21 +89,22 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   }
 
   getDataFromResponse(data: GetTaskResponse): TaskRaw | undefined {
-    return data.task;  
+    return data.task;
   }
 
   afterDataFetching(): void {
     const data = this.data();
     this.status = data?.status;
     if (data) {
+      data.parentTaskIds = data.parentTaskIds.filter(task => task !== data.sessionId);
       this.createResultQueryParams();
       this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status);
     }
   }
-  
+
   cancel(): void {
     const data = this.data();
-    if(data) {
+    if (data) {
       this.grpcService.cancel$([data.id]).subscribe({
         complete: () => {
           this.success('Task canceled');

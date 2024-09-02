@@ -34,13 +34,19 @@ describe('AppShowComponent', () => {
 
   const returnedTask = {
     id: 'taskId-12345',
+    sessionId: 'sessionId',
     options: {
       partitionId: 'partitionId'
     },
-    status: TaskStatus.TASK_STATUS_PROCESSING
+    status: TaskStatus.TASK_STATUS_PROCESSING,
+    parentTaskIds: [
+      'sessionId',
+      'taskId-789'
+    ]
   } as TaskRaw;
+
   const mockTasksGrpcService = {
-    get$: jest.fn((): Observable<unknown> => of({task: returnedTask} as GetTaskResponse)),
+    get$: jest.fn((): Observable<unknown> => of({ task: returnedTask } as GetTaskResponse)),
     cancel$: jest.fn(() => of({}))
   };
 
@@ -104,7 +110,7 @@ describe('AppShowComponent', () => {
   describe('get status', () => {
     it('should return undefined if there is no data', () => {
       mockTasksGrpcService.get$.mockReturnValueOnce(of(null));
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(console, 'error').mockImplementation(() => { });
       component.refresh.next();
       expect(component.status).toEqual(undefined);
     });
@@ -133,11 +139,15 @@ describe('AppShowComponent', () => {
     });
 
     it('should set resultsQueryParams', () => {
-      expect(component.resultsQueryParams).toEqual({'0-root-3-0': returnedTask.id});
+      expect(component.resultsQueryParams).toEqual({ '0-root-3-0': returnedTask.id });
+    });
+
+    it('should filter the sessionID from the parent tasks IDs', () => {
+      expect(component.data()?.parentTaskIds).toEqual(returnedTask.parentTaskIds.filter(task => task !== returnedTask.sessionId));
     });
 
     it('should catch errors', () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      jest.spyOn(console, 'error').mockImplementation(() => { });
       mockTasksGrpcService.get$.mockReturnValueOnce(throwError(() => new Error()));
       const spy = jest.spyOn(component, 'handleError');
       component.refresh.next();
@@ -147,15 +157,15 @@ describe('AppShowComponent', () => {
 
   describe('Handle errors', () => {
     it('should log errors', () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
       const errorMessage = 'ErrorMessage';
-      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
+      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
       expect(errorSpy).toHaveBeenCalled();
     });
 
     it('should notify the error', () => {
       const errorMessage = 'ErrorMessage';
-      component.handleError({statusMessage: errorMessage} as GrpcStatusEvent);
+      component.handleError({ statusMessage: errorMessage } as GrpcStatusEvent);
       expect(mockNotificationService.error).toHaveBeenCalledWith('Could not retrieve data.');
     });
   });
@@ -200,7 +210,7 @@ describe('AppShowComponent', () => {
     });
 
     it('should log errors', () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
       mockTasksGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       component.cancel();
       expect(errorSpy).toHaveBeenCalled();
