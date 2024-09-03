@@ -34,8 +34,6 @@ export class FormExternalServiceComponent implements OnInit {
   @Output() cancelChange = new EventEmitter<void>();
   @Output() submitChange = new EventEmitter<ExternalService>();
 
-  icon: string = '';
-
   externalServiceForm = new FormGroup({
     icon: new FormControl(''),
     name: new FormControl('', Validators.required),
