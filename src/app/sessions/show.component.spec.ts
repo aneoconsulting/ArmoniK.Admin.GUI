@@ -2,7 +2,7 @@ import { GetSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
-import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
 import { FiltersService } from '@services/filters.service';
@@ -189,10 +189,10 @@ describe('AppShowComponent', () => {
       component.lowerDate = taskCreatedAt.date;
       component.upperDate = taskEndedAt.date;
       component.computeDuration$.next();
-      expect(component.data()?.duration).toEqual({
+      expect(component.data()?.duration).toEqual(new Duration({
         seconds: '1000',
         nanos: 0
-      });
+      }));
     });
   });
 

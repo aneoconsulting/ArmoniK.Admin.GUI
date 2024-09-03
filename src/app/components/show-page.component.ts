@@ -4,6 +4,7 @@ import { Field } from '@app/types/column.type';
 import { ShowActionButton } from '@app/types/components/show';
 import { DataRaw } from '@app/types/data';
 import { InspectionCardComponent } from './inspection/inspection-card.component';
+import { InspectionJsonComponent } from './inspection/inspection-json.component';
 import { InspectionListGridComponent } from './inspection/inspection-list-grid.component';
 import { InspectionHeaderComponent } from './inspection-header.component';
 import { InspectionToolbarComponent } from './inspection-toolbar.component';
@@ -26,6 +27,7 @@ span {
     InspectionHeaderComponent,
     InspectionListGridComponent,
     InspectionToolbarComponent,
+    InspectionJsonComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
