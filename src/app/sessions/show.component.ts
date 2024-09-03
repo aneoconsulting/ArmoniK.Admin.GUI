@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Params, Router, RouterModule } from '@angular/router';
-import { Timestamp } from '@ngx-grpc/well-known-types';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { Subject, map, switchMap } from 'rxjs';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
@@ -171,10 +171,10 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
     const computeDurationSubscription = this.computeDuration$.subscribe(() => {
       const data = this.data();
       if (data && this.lowerDate && this.upperDate) {
-        data.duration = {
+        data.duration = new Duration({
           seconds: (Number(this.upperDate.seconds) - Number(this.lowerDate.seconds)).toString(),
           nanos: Math.abs(this.upperDate.nanos - this.lowerDate.nanos)
-        };
+        });
         this.data.set(data);
       }
     });

@@ -154,23 +154,23 @@ export class IndexComponent implements OnInit {
   sidebar: Sidebar[] = [];
 
   readonly dialog = inject(MatDialog);
-  #iconsService = inject(IconsService);
-  #notificationService = inject(NotificationService);
-  #navigationService = inject(NavigationService);
-  #storageService = inject(StorageService);
-  httpClient = inject(HttpClient);
+  private readonly iconsService = inject(IconsService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly navigationService = inject(NavigationService);
+  private readonly storageService = inject(StorageService);
+  private readonly httpClient = inject(HttpClient);
 
   ngOnInit(): void {
-    this.keys = this.#sortKeys(this.#storageService.restoreKeys());
-    this.sidebar = this.#navigationService.restoreSidebar();
+    this.keys = this.sortKeys(this.storageService.restoreKeys());
+    this.sidebar = this.navigationService.restoreSidebar();
   }
 
   getIcon(name: string | null): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
-  onResetSidebar(): void {
-    this.sidebar = this.#navigationService.restoreSidebar();
+  onRestoreSidebar(): void {
+    this.sidebar = this.navigationService.restoreSidebar();
   }
 
   onClearSideBar(): void {
@@ -182,13 +182,13 @@ export class IndexComponent implements OnInit {
     });
   }
 
-  clearSideBar(): void {
-    this.sidebar = Array.from(this.#navigationService.defaultSidebar);
+  private clearSideBar(): void {
+    this.sidebar = Array.from(this.navigationService.defaultSidebar);
   }
 
   onSaveSidebar(): void {
-    this.#navigationService.saveSidebar(this.sidebar);
-    this.keys = this.#sortKeys(this.#storageService.restoreKeys());
+    this.navigationService.saveSidebar(this.sidebar);
+    this.keys = this.sortKeys(this.storageService.restoreKeys());
   }
 
   onRemoveSidebarItem(index: number): void {
@@ -200,14 +200,14 @@ export class IndexComponent implements OnInit {
   }
 
   getSidebarItems(): { name: string, value: Sidebar }[] {
-    return this.#navigationService.sidebarItems.map(item => ({
+    return this.navigationService.sidebarItems.map(item => ({
       name: item.display,
       value: item.id as Sidebar,
     }));
   }
 
   findSidebarItem(id: Sidebar): SidebarItem {
-    const item = this.#navigationService.sidebarItems.find(item => item.id === id);
+    const item = this.navigationService.sidebarItems.find(item => item.id === id);
 
     if (!item) {
       throw new Error(`Sidebar item with id "${id}" not found`);
@@ -233,12 +233,12 @@ export class IndexComponent implements OnInit {
 
     for (const key of this.selectedKeys) {
       this.keys.delete(key);
-      this.#storageService.removeItem(key);
+      this.storageService.removeItem(key);
     }
 
     this.selectedKeys.clear();
 
-    this.#notificationService.success('Data cleared');
+    this.notificationService.success('Data cleared');
   }
 
   clearAll(): void {
@@ -246,30 +246,30 @@ export class IndexComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.#clearAll();
-        this.#getServerConfig();
-        this.#notificationService.success('All data cleared');
+        this.clearAllKeys();
+        this.getServerConfig();
+        this.notificationService.success('All data cleared');
       }
     });
   }
 
-  #clearAll(): void {
+  private clearAllKeys(): void {
     for (const key of this.keys) {
       this.keys.delete(key);
-      this.#storageService.removeItem(key);
+      this.storageService.removeItem(key);
     }
   }
 
-  #getServerConfig() {
+  private getServerConfig() {
     this.httpClient.get<string>('/static/gui_configuration').subscribe(data => {
       if (data && Object.keys(data).length !== 0) {
-        this.#storageService.importData(data as string, false, false);
+        this.storageService.importData(data as string, false, false);
       }
     });
   }
 
   exportData(): void {
-    const data = JSON.stringify(this.#storageService.exportData());
+    const data = JSON.stringify(this.storageService.exportData());
 
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -281,7 +281,7 @@ export class IndexComponent implements OnInit {
     anchor.download = `${date}-${id}-settings.json`;
     anchor.click();
 
-    this.#notificationService.success('Settings exported');
+    this.notificationService.success('Settings exported');
   }
 
   onSubmitImport(event: SubmitEvent): void {
@@ -302,12 +302,12 @@ export class IndexComponent implements OnInit {
     const file = fileInput.files?.[0];
 
     if (!file) {
-      this.#notificationService.error('No file selected');
+      this.notificationService.error('No file selected');
       return;
     }
 
-    if( file.type !== 'application/json' ) {
-      this.#notificationService.error(`'${file.name}' is not a JSON file`);
+    if(file.type !== 'application/json') {
+      this.notificationService.error(`'${file.name}' is not a JSON file`);
       form.reset();
       return;
     }
@@ -317,26 +317,25 @@ export class IndexComponent implements OnInit {
     reader.onload = () => {
       const data = reader.result as string;
       try {
-        this.#storageService.importData(data);
-        this.keys = this.#sortKeys(this.#storageService.restoreKeys());
+        this.storageService.importData(data);
+        this.keys = this.sortKeys(this.storageService.restoreKeys());
   
         const hasSidebarKey = this.keys.has('navigation-sidebar');
   
         // Update sidebar
         if (hasSidebarKey) {
-          this.sidebar = this.#navigationService.restoreSidebar();
-          this.#navigationService.updateSidebar(this.sidebar);
+          this.sidebar = this.navigationService.restoreSidebar();
+          this.navigationService.updateSidebar(this.sidebar);
         }
   
-        this.#notificationService.success('Settings imported');
+        this.notificationService.success('Settings imported');
       } catch (e) {
         console.warn(e);
-        this.#notificationService.error('Settings could not be imported.');
+        this.notificationService.error('Settings could not be imported.');
       }
 
       form.reset();
     };
-
     reader.readAsText(file);
   }
 
@@ -344,7 +343,7 @@ export class IndexComponent implements OnInit {
     moveItemInArray(this.sidebar, event.previousIndex, event.currentIndex);
   }
 
-  #sortKeys(keys: Set<Key>): Set<Key> {
+  private sortKeys(keys: Set<Key>): Set<Key> {
     return new Set([...keys].sort((a, b) => a.localeCompare(b)));
   }
 
