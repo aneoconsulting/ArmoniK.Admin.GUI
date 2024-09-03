@@ -66,7 +66,6 @@ article > .mat-mdc-menu-item-text {
   width: 100%;
 }
 
-
 app-table-column-header {
   display: flex;
   align-items: center;
@@ -98,6 +97,10 @@ app-table-index-actions-toolbar, app-table-dashboard-actions-toolbar {
 
 .custom-file-upload:hover {
   background-color: rgba(189, 189, 189, 0.3);
+}
+
+[cdkDragHandle] {
+  cursor: move;
 }
 
 input[type="file"] {
