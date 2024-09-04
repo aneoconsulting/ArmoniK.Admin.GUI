@@ -1,19 +1,23 @@
-<article>
-  <mat-divider vertical />
-  @if (!hasService) {
-    <button mat-button (click)="manageExternalServices()">
-      <mat-icon aria-hidden="true" [fontIcon]="getIcon('add')"/>
-      <span i18n="Button">Add a service</span>
-    </button>
-  } @else {
-    @for(service of externalServices; track service.name) {
-      <button mat-icon-button color="accent" [matTooltip]="service.name" (click)="navigate(service.url)">
-        <mat-icon [fontIcon]="getIcon(service.icon)"/>
-      </button>
-    }
-    <button mat-icon-button (click)="manageExternalServices()" matTooltip="Manage external services">
-      <mat-icon [fontIcon]="getIcon('tune')" />
-    </button>
+<button mat-button class="external-services" [matMenuTriggerFor]="external_services" matTooltip="Access to external services">
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"/>
+  <span i18n="Button to view external services">
+    External Services
+  </span>
+</button>
+<mat-menu #external_services="matMenu">
+  @for (service of externalServices; track service.url) {
+    <a mat-menu-item [href]="service.url" target="_blank" rel="noopener noreferrer">
+      @if (service.icon) {
+        <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon(service.icon)"/>
+      }
+      <span>{{ service.name }}</span>
+    </a>
   }
-  <mat-divider vertical />
-</article>
+  @if (externalServices.length) {
+    <mat-divider/>
+  }
+  <button mat-menu-item (click)="manageExternalServices()">
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('tune')"/>
+    <span i18n="Button">Manage services</span>
+  </button>
+</mat-menu>

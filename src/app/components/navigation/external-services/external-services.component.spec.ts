@@ -1,4 +1,3 @@
-import { URL } from 'url';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
@@ -51,15 +50,6 @@ describe('ExternalServicesComponent', () => {
     it('should retrieve saved services', () => {
       expect(component.externalServices).toEqual(savedServices);
     });
-
-    it('should check if it has a service', () => {
-      expect(component.hasService).toBeTruthy();
-    });
-  });
-
-  it('should check if there is no service', () => {
-    component.externalServices = [];
-    expect(component.hasService).toBeFalsy();
   });
 
   it('should get icon', () => {
@@ -78,10 +68,6 @@ describe('ExternalServicesComponent', () => {
       expect(component.externalServices).toEqual(newServices);
     });
 
-    it('should update "hasServices"', () => {
-      expect(component.hasService).toBeTruthy();
-    });
-
     it('should save services', () => {
       expect(mockNavigationService.saveExternalServices).toHaveBeenCalled();
     });
@@ -89,15 +75,6 @@ describe('ExternalServicesComponent', () => {
 
   test('saveServices should save local services', () => {
     component.saveServices();
-    expect(mockNavigationService.saveExternalServices).toHaveBeenCalled();
-  });
-
-  it('should allow to navigate to an url', () => {
-    const windowSpy = jest.spyOn(window, 'open');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    windowSpy.mockImplementationOnce((url?: string | URL | null, target?: string | null, features?: string | undefined) => null);
-    const url = 'https://url';
-    component.navigate(url);
-    expect(windowSpy).toHaveBeenCalledWith(url, '_blank');
+    expect(mockNavigationService.saveExternalServices).toHaveBeenCalledWith(component.externalServices);
   });
 });
