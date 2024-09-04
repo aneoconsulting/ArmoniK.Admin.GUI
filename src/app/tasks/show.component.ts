@@ -96,7 +96,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
     const data = this.data();
     this.status = data?.status;
     if (data) {
-      data.parentTaskIds = data.parentTaskIds.filter(task => task !== data.sessionId);
+      data.parentTaskIds = data.parentTaskIds.filter(taskId => taskId !== data.sessionId);
       this.createResultQueryParams();
       this.canCancel = !this.tasksStatusesService.taskNotEnded(data.status);
     }
