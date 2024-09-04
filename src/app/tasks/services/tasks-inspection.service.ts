@@ -35,6 +35,9 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'duration'
     },
     {
+      key: 'createdBy',
+    },
+    {
       key: 'createdAt',
       type: 'date'
     },
