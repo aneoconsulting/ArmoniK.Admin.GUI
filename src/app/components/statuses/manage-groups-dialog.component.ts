@@ -1,6 +1,6 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -126,10 +126,15 @@ ul {
     MatIconModule,
     DragDropModule,
     MatTooltipModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ManageGroupsDialogComponent implements OnInit {
-  groups: TasksStatusesGroup[] = [];
+export class ManageGroupsDialogComponent {
+  private _groups = signal<TasksStatusesGroup[]>([]);
+
+  get groups(): TasksStatusesGroup[] {
+    return this._groups();
+  }
 
   #dialog = inject(MatDialog);
   #iconsServices = inject(IconsService);
@@ -138,10 +143,8 @@ export class ManageGroupsDialogComponent implements OnInit {
   constructor(
     public _dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data: ManageGroupsDialogData,
-  ) {}
-
-  ngOnInit(): void {
-    this.groups = this.data.groups;
+  ) {
+    this._groups.set(this.data.groups);
   }
 
   getIcon(name: string): string {
@@ -174,7 +177,7 @@ export class ManageGroupsDialogComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.groups.push(result);
+        this._groups.update(groups => [...groups, result]);
       }
     });
   }
@@ -190,9 +193,7 @@ export class ManageGroupsDialogComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         const index = this.groups.indexOf(group);
-        if (index > -1) {
-          this.groups[index] = result;
-        }
+        this._groups.update(groups => groups.map((group, i) => i === index ? result : group));
       }
     });
   }
@@ -200,7 +201,7 @@ export class ManageGroupsDialogComponent implements OnInit {
   onDelete(group: TasksStatusesGroup): void {
     const index = this.groups.indexOf(group);
     if (index > -1) {
-      this.groups.splice(index, 1);
+      this._groups.update(groups => groups.filter((group, i) => i !== index));
     }
   }
 

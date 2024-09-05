@@ -49,7 +49,6 @@ describe('ManageGroupsDialogComponent', () => {
         }}
       ]
     }).inject(ManageGroupsDialogComponent);
-    component.ngOnInit();
   });
 
   it('should run', () => {
