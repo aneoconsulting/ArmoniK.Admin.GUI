@@ -143,7 +143,7 @@ describe('AppShowComponent', () => {
     });
 
     it('should filter the sessionID from the parent tasks IDs', () => {
-      expect(component.data()?.parentTaskIds).toEqual(returnedTask.parentTaskIds.filter(task => task !== returnedTask.sessionId));
+      expect(component.data()?.parentTaskIds).toEqual(returnedTask.parentTaskIds.filter(taskId => taskId !== returnedTask.sessionId));
     });
 
     it('should catch errors', () => {
