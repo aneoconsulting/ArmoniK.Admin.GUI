@@ -21,6 +21,7 @@ export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryE
     ownerPodId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID,
     initialTaskId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID,
     status: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
+    createdBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_BY,
     createdAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
     submittedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT,
     startedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,

@@ -20,6 +20,9 @@ export class ResultsInspectionService extends InspectionService<ResultRaw> {
       type: 'date'
     },
     {
+      key: 'createdBy',
+    },
+    {
       key: 'completedAt',
       type: 'date'
     },
