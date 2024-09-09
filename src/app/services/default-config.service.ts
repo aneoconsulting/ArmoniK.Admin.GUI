@@ -117,7 +117,9 @@ export class DefaultConfigService {
     lockColumns: false,
     columns: [
       'id',
-      'count'
+      'podReserved',
+      'priority',
+      'count',
     ],
     options: {
       pageIndex: 0,
@@ -136,6 +138,8 @@ export class DefaultConfigService {
     lockColumns: false,
     columns: [
       'sessionId',
+      'status',
+      'createdAt',
       'count',
       'actions',
     ],
@@ -156,7 +160,9 @@ export class DefaultConfigService {
     lockColumns: false,
     columns: [
       'resultId',
+      'name',
       'sessionId',
+      'createdAt',
     ],
     options: {
       pageIndex: 0,

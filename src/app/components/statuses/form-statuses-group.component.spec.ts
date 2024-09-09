@@ -1,56 +1,39 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { AbstractControl, FormArray } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FormStatusesGroupComponent } from './form-statuses-group.component';
 
 describe('FormStatusesGroupComponent', () => {
-  let component: FormStatusesGroupComponent;
+  const component = new FormStatusesGroupComponent();
+
+  const statuses: { name: string, value: string }[] = [
+    { name: 'Completed', value: `${TaskStatus.TASK_STATUS_COMPLETED}` },
+    { name: 'Cancelled', value: `${TaskStatus.TASK_STATUS_CANCELLED}` },
+    { name: 'Processed', value: `${TaskStatus.TASK_STATUS_PROCESSED}` }
+  ];
 
   beforeEach(() => {
-    component = new FormStatusesGroupComponent();
+    component.statuses = statuses;
     component.group = {
       name: 'status',
-      color: 'green',
       statuses: [
         TaskStatus.TASK_STATUS_CANCELLED,
         TaskStatus.TASK_STATUS_COMPLETED
       ]
     };
+    component.ngOnInit();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('ngOnInit', () => {
-    it('should init', () => {
-      component.ngOnInit();
-      expect(component.groupForm.value).toEqual({
-        name: 'status',
-        color: 'green',
-        statuses: [8, 4]
-      });
-    });
-
-    it('should init without color', () => {
-      component.group = {name: 'status', statuses: [TaskStatus.TASK_STATUS_CANCELLED, TaskStatus.TASK_STATUS_COMPLETED]};
-      component.ngOnInit();
+  describe('on init', () => {
+    it('should complete form', () => {
       expect(component.groupForm.value).toEqual({
         name: 'status',
         color: null,
         statuses: [8, 4]
       });
-    });
-  });
-
-  it('should init without statuses', () => {
-    const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce(() => null);
-    component.ngOnInit();
-    expect(component.groupForm.value).toEqual({
-      name: 'status',
-      color: 'green',
-      statuses: []
     });
   });
 
@@ -67,103 +50,82 @@ describe('FormStatusesGroupComponent', () => {
     expect(component.isChecked({name: 'status', value: '4'})).toBeFalsy();
   });
 
-  it('should update on uncheked', () => {
-    const initialObject = {
-      controls: [
-        {
-          value: 'item1'
-        },
-        {
-          value: 'item2'
-        },
-        {
-          value: 'item3'
+  describe('onCheckboxChange', () => {
+    it('should update on uncheked', () => {
+      const groupFormStatuses = [
+        TaskStatus.TASK_STATUS_PROCESSED,
+        TaskStatus.TASK_STATUS_COMPLETED,
+        TaskStatus.TASK_STATUS_CANCELLED
+      ];
+      component.groupForm.patchValue({ statuses: groupFormStatuses });
+      const event = {
+        checked: false,
+        source: {
+          value: `${TaskStatus.TASK_STATUS_COMPLETED}`
         }
-      ],
-      removeAt: jest.fn()
-    } as unknown as AbstractControl;
-    const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce(() => initialObject);
+      } as unknown as MatCheckboxChange;
 
-    const event = {
-      checked: false,
-      source: {
-        value: 'item2'
-      }
-    } as unknown as MatCheckboxChange;
+      component.onCheckboxChange(event);
+      expect(component.groupForm.value.statuses?.length).toEqual(2);
+    });
 
-    component.onCheckboxChange(event);
-    expect((initialObject as FormArray).removeAt).toHaveBeenCalledWith(1);
-  });
+    it('should update on check', () => {
+      const groupFormStatuses = [
+        TaskStatus.TASK_STATUS_COMPLETED,
+        TaskStatus.TASK_STATUS_CANCELLED
+      ];
+      component.groupForm.patchValue({ statuses: groupFormStatuses });
 
-  it('should update on check', () => {
-    const initialObject = {
-      controls: [
-        {
-          value: 'item1'
-        },
-        {
-          value: 'item2'
-        },
-        {
-          value: 'item3'
+      const event = {
+        checked: true,
+        source: {
+          value: `${TaskStatus.TASK_STATUS_PROCESSED}`
         }
-      ],
-      push: jest.fn()
-    } as unknown as AbstractControl;
+      } as unknown as MatCheckboxChange;
 
-    const event = {
-      checked: true,
-      source: {
-        value: 'item4'
-      }
-    } as unknown as MatCheckboxChange;
+      component.onCheckboxChange(event);
+      expect(component.groupForm.value.statuses?.length).toEqual(3);
+    });
 
-    const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce(() => initialObject);
-
-    component.onCheckboxChange(event);
-    expect((initialObject as FormArray).push).toHaveBeenCalled();
-  });
-
-  it('should not update on check if there is no status', () => {
-    const event = {
-      checked: true,
-      source: {
-        value: 'item4'
-      }
-    } as unknown as MatCheckboxChange;
-
-    const spyGroupFormGet = jest.spyOn(component.groupForm, 'get');
-    spyGroupFormGet.mockImplementationOnce(() => null);
-    expect(component.onCheckboxChange(event)).toEqual(undefined);
-  });
-
-  it('should emit on submit', () => {
-    component.groupForm.value.color = 'green';
-    component.groupForm.value.name = 'name';
-    component.groupForm.value.statuses = ['0', '1'];
-
-    const spySubmit = jest.spyOn(component.submitChange, 'emit');
-
-    component.onSubmit();
-
-    expect(spySubmit).toHaveBeenCalledWith({
-      name: 'name',
-      color: 'green',
-      statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_CREATING]
+    it('should set the group name as the first selected status', () => {
+      component.groupForm.patchValue({name: undefined, statuses: []});
+      const event = {
+        checked: true,
+        source: {
+          value: `${TaskStatus.TASK_STATUS_PROCESSED}`
+        }
+      } as unknown as MatCheckboxChange;
+      
+      component.onCheckboxChange(event);
+      expect(component.groupForm.value.name).toEqual('Processed');
     });
   });
 
+  it('should emit on submit', () => {
+    const newGroup = {
+      name: 'name',
+      color: 'green',
+      statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_CREATING]
+    };
+    component.groupForm.setValue(newGroup);
+
+    const spySubmit = jest.spyOn(component.submitChange, 'emit');
+    component.onSubmit();
+
+    expect(spySubmit).toHaveBeenCalledWith(newGroup);
+  });
+
   it('should emit on submit even without values', () => {
-    component.groupForm.value.color = undefined;
-    component.groupForm.value.name = undefined;
-    component.groupForm.value.statuses = undefined;
+    const undefinedGroup = {
+      name: null,
+      color: null,
+      statuses: null
+    };
+    component.groupForm.setValue(undefinedGroup);
 
     const spySubmit = jest.spyOn(component.submitChange, 'emit');
 
     component.onSubmit();
-
     expect(spySubmit).toHaveBeenCalledWith({
       name: '',
       color: '',

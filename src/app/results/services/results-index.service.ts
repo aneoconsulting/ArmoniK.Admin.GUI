@@ -35,6 +35,11 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
       link: '/tasks',
     },
     {
+      name: $localize`Created By`,
+      key: 'createdBy',
+      sortable: true,
+    },
+    {
       name: $localize`Created at`,
       key: 'createdAt',
       type: 'date',

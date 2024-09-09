@@ -1,6 +1,6 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -41,7 +41,8 @@ mat-dialog-content {
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormStatusesGroupComponent implements OnInit {
   @Input() group: TasksStatusesGroup | null = null;
@@ -51,58 +52,42 @@ export class FormStatusesGroupComponent implements OnInit {
   @Output() submitChange = new EventEmitter<TasksStatusesGroup>();
 
   groupForm = new FormGroup({
-    name: new FormControl('', [
+    name: new FormControl<string | null>(null, [
       Validators.required,
     ]),
-    color: new FormControl(''),
-    statuses: new FormArray<FormControl<string>>([]),
+    color: new FormControl<string | null>(''),
+    statuses: new FormControl<TaskStatus[]>([])
   });
 
   ngOnInit() {
     if(this.group) {
-      this.groupForm.setValue({
+      this.groupForm.patchValue({
         name: this.group.name,
         color: this.group.color ?? null,
-        statuses: []
+        statuses: [...this.group.statuses],
       });
-      const statuses = this.groupForm.get('statuses') as FormArray | null;
-      if (!statuses) {
-        return;
-      }
-
-      for (const status of this.group.statuses) {
-        statuses.push(new FormControl(status));
-      }
     }
   }
 
   isChecked(status: StatusLabeled): boolean {
-    if (!this.group) {
-      return false;
-    }
-
-    return this.group.statuses.includes(Number(status.value) as TaskStatus);
+    return this.group?.statuses.includes(Number(status.value) as TaskStatus) ?? false;
   }
 
-
   onCheckboxChange(e: MatCheckboxChange) {
-    const statuses = this.groupForm.get('statuses') as FormArray | null;
-
-    if (!statuses) {
-      return;
-    }
+    const statuses = this.groupForm.get('statuses') as FormControl<TaskStatus[]>;
+    const status = Number(e.source.value) as TaskStatus;
 
     if (e.checked) {
-      statuses.push(new FormControl(e.source.value));
-    } else {
-      let i = 0;
-      (statuses.controls as FormControl[]).forEach((item: FormControl) => {
-        if (item.value == e.source.value) {
-          statuses.removeAt(i);
-          return;
+      statuses.value.push(status);
+      if (!this.groupForm.value.name && statuses.value.length === 1) {
+        const status = this.statuses.find(status => status.value === e.source.value);
+        if (status) {
+          this.groupForm.patchValue({name: status.name});
         }
-        i++;
-      });
+      }
+    } else {
+      const index = statuses.value.findIndex(s => s === status);
+      statuses.value.splice(index, 1);
     }
   }
 
@@ -110,7 +95,7 @@ export class FormStatusesGroupComponent implements OnInit {
     const result: TasksStatusesGroup = {
       name: this.groupForm.value.name ?? '',
       color: this.groupForm.value.color ?? '',
-      statuses: this.groupForm.value.statuses?.map((status: string) => Number(status) as TaskStatus) ?? []
+      statuses: this.groupForm.value.statuses ?? []
     };
 
     this.submitChange.emit(result);

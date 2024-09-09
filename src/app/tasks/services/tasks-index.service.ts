@@ -180,6 +180,11 @@ export class TasksIndexService implements IndexServiceCustomInterface<TaskSummar
       sortable: true
     },
     {
+      name: $localize`Created By`,
+      key: 'createdBy',
+      sortable: true
+    },
+    {
       name: $localize`Application Name`,
       key: 'options.applicationName',
       sortable: true,
