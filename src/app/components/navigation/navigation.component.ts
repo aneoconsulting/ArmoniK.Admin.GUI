@@ -20,7 +20,7 @@ import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
-import { ExternalServicesComponent } from './external-services.component';
+import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import pkg from '../../../../package.json';
 

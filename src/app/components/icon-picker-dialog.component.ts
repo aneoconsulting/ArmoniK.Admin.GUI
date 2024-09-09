@@ -35,7 +35,7 @@ article {
 export class IconPickerDialogComponent {
   readonly iconsService = inject(IconsService);
 
-  @Input({ required: true }) icon: string = '';
+  @Input({ required: true }) icon: string | null | undefined = '';
   @Output() iconChange = new EventEmitter<string>();
 
   icons: string[] = this.iconsService.getAllIcons();

@@ -1,8 +1,10 @@
+import { TestBed } from '@angular/core/testing';
 import { ExternalService } from '@app/types/external-service';
+import { IconsService } from '@services/icons.service';
 import { FormExternalServiceComponent } from './form-external-service.component';
 
 describe('', () => {
-  const component = new FormExternalServiceComponent();
+  let component: FormExternalServiceComponent;
 
   const externalService = {
     name: 'service',
@@ -11,6 +13,12 @@ describe('', () => {
   };
 
   beforeEach(() => {
+    component = TestBed.configureTestingModule({
+      providers: [
+        FormExternalServiceComponent,
+        IconsService
+      ]
+    }).inject(FormExternalServiceComponent);
     component.externalService = externalService as ExternalService;
     component.ngOnInit();
   });
@@ -21,25 +29,11 @@ describe('', () => {
 
   describe('on init', () => {
     it('should patch service form', () => {
-      expect(component.serviceForm.value).toEqual({
+      expect(component.externalServiceForm.value).toEqual({
         name: externalService.name,
-        url: externalService.url
+        url: externalService.url,
+        icon: externalService.icon
       });
-    });
-
-    it('should set icon', () => {
-      expect(component.icon).toEqual(externalService.icon);
-    });
-
-    it('should not have an icon if there is none', () => {
-      const nullExternalService = {
-        name: 'service',
-        url: 'url',
-        icon: null
-      };
-      component.externalService = nullExternalService as unknown as ExternalService;
-      component.ngOnInit();
-      expect(component.icon).toEqual('');
     });
   });
 
@@ -49,9 +43,13 @@ describe('', () => {
     expect(spy).toHaveBeenCalledWith(externalService);
   });
 
-  it('should emit on cancel', () => {
-    const spy = jest.spyOn(component.cancelChange, 'emit');
-    component.onCancel();
-    expect(spy).toHaveBeenCalled();
+  it('should get icons', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
+  });
+
+  it('should change the icon of the form', () => {
+    const icon = 'add';
+    component.onIconChange(icon);
+    expect(component.externalServiceForm.value.icon).toEqual(icon);
   });
 });

@@ -60,33 +60,21 @@ describe('ManageExternalServicesDialogComponent', () => {
     expect(component.getIcon('delete')).toEqual('delete');
   });
 
-  it('should add an external service', () => {
-    dialogRefSubject = new BehaviorSubject<ExternalService | null>({
-      name: 'service2',
-      url: 'someUrl',
-      icon: 'secondary'
-    });
-    component.addExternalService();
-    expect(component.externalServices[1]).toEqual({
-      name: 'service2',
-      url: 'someUrl',
-      icon: 'secondary'
-    });
+  it('should select an external service to edit', () => {
+    component.editExternalService(externalService);
+    expect(component.editedService).toBe(externalService);
   });
 
   it('should edit the external services', () => {
-    dialogRefSubject = new BehaviorSubject<ExternalService | null>({
-      name: 'service',
-      url: 'newUrl',
-      icon: 'main'
-    });
-
     component.editExternalService(externalService);
-    expect(externalService).toEqual({
+    const newService = {
       name: 'service',
       url: 'newUrl',
       icon: 'main'
-    });
+    };
+    const index = component.externalServices.indexOf(externalService);
+    component.onEditExternalService(newService);
+    expect(component.externalServices[index]).toEqual(newService);
   });
 
   it('should delete external services', () => {
@@ -97,6 +85,12 @@ describe('ManageExternalServicesDialogComponent', () => {
   it('should close on no click', () => {
     component.onNoClick();
     expect(mockMatDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should add a service', () => {
+    const service: ExternalService = { name: 'new', url: 'https://new', icon: undefined };
+    component.onNewService(service);
+    expect(component.externalServices).toContain(service);
   });
 
   it('should edit item list on drop', () => {
