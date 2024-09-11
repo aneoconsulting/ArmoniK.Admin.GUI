@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aneoconsultingfr/armonik.api.angular':
-        specifier: ^3.20.0
-        version: 3.20.0(@angular/common@18.2.3(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)
+        specifier: ^3.21.0
+        version: 3.21.0(@angular/common@18.2.3(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)
       '@angular-material-components/datetime-picker':
         specifier: ^16.0.1
         version: 16.0.1(ufrbrx3ry7f6id6rle6zpka27i)
@@ -164,8 +164,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@aneoconsultingfr/armonik.api.angular@3.20.0':
-    resolution: {integrity: sha512-DATS5lD+Z8/v2S6wnwT+qJHcYIjWBY+zUASgR8eD/BAGUWMb9cmBhlnoElozD0hjfd+Ea+hXl5Tcgz6JyWyDkw==}
+  '@aneoconsultingfr/armonik.api.angular@3.21.0':
+    resolution: {integrity: sha512-VZMUDRHzqL85QBtyGdsl75LU/ZE2gP5KYyPh220yRPNE1skvC8K7D8OCIIkD0jqTYbBbUv40rRb7JbKCXSsOsg==}
     peerDependencies:
       '@angular/common': ^18.2.1
       '@angular/core': ^18.2.1
@@ -6272,7 +6272,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@aneoconsultingfr/armonik.api.angular@3.20.0(@angular/common@18.2.3(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)':
+  '@aneoconsultingfr/armonik.api.angular@3.21.0(@angular/common@18.2.3(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1))(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(@ngx-grpc/core@3.1.2(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(rxjs@7.8.1))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.1))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.1)':
     dependencies:
       '@angular/common': 18.2.3(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.4))(rxjs@7.8.1)
       '@angular/core': 18.2.3(rxjs@7.8.1)(zone.js@0.14.4)
