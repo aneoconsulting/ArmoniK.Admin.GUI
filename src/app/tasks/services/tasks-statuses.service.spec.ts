@@ -25,7 +25,9 @@ describe('tasksStatusesService', () => {
       { value: '8', name: 'Cancelled' },
       { value: '9', name: 'Processing' },
       { value: '10', name: 'Processed' },
-      { value: '11', name: 'Retried' }
+      { value: '11', name: 'Retried' },
+      { value: '12', name: 'Pending' },
+      { value: '13', name: 'Paused' }
     ]);
   });
   

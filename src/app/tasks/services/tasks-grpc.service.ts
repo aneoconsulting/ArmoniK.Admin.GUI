@@ -21,6 +21,7 @@ export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, Task
     ownerPodId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID,
     initialTaskId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID,
     status: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
+    createdBy: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_BY,
     createdAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT,
     submittedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT,
     startedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT,
@@ -41,6 +42,7 @@ export class TasksGrpcService extends GrpcTableService<TaskSummaryFieldKey, Task
     receivedToEndDuration: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION,
     fetchedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT,
     processedAt: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT,
+    payloadId: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
   };
 
   list$(options: TaskSummaryListOptions, filters: TaskSummaryFilters): Observable<ListTasksResponse> {

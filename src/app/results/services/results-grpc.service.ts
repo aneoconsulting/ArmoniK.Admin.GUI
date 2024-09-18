@@ -19,6 +19,7 @@ export class ResultsGrpcService extends GrpcTableService<ResultRawFieldKey, Resu
     'name': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_NAME,
     'status': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_STATUS,
     'createdAt': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_AT,
+    'createdBy': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_CREATED_BY,
     'ownerTaskId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID,
     'resultId': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_RESULT_ID,
     'completedAt': ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT,
