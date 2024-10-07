@@ -20,6 +20,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_OWNER_POD_ID]: $localize`Owner Pod ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_INITIAL_TASK_ID]: $localize`Initial Task ID`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS]: $localize`Status`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_BY]: $localize`Created by`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_AT]: $localize`Created at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SUBMITTED_AT]: $localize`Submitted at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STARTED_AT]: $localize`Started at`,
@@ -35,6 +36,7 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_RECEIVED_TO_END_DURATION]: $localize`Received to End Duration`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PROCESSED_AT]: $localize`Processed at`,
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_FETCHED_AT]: $localize`Fetched at`,
+    [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID]: $localize`Payload ID`,
   };
 
   readonly optionsField: Record<TaskOptionEnumField, string> = {

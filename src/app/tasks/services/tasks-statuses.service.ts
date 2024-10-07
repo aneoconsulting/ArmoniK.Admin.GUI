@@ -7,17 +7,19 @@ import { StatusesServiceI } from '@app/types/services';
 export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
   readonly statuses: Record<TaskStatus, string> = {
     [TaskStatus.TASK_STATUS_UNSPECIFIED]: $localize`Unspecified`,
-    [TaskStatus.TASK_STATUS_DISPATCHED]: $localize`Dispatched`,
     [TaskStatus.TASK_STATUS_CREATING]: $localize`Creating`,
     [TaskStatus.TASK_STATUS_SUBMITTED]: $localize`Submitted`,
-    [TaskStatus.TASK_STATUS_PROCESSING]: $localize`Processing`,
-    [TaskStatus.TASK_STATUS_PROCESSED]: $localize`Processed`,
-    [TaskStatus.TASK_STATUS_CANCELLING]: $localize`Cancelling`,
-    [TaskStatus.TASK_STATUS_CANCELLED]: $localize`Cancelled`,
+    [TaskStatus.TASK_STATUS_DISPATCHED]: $localize`Dispatched`,
     [TaskStatus.TASK_STATUS_COMPLETED]: $localize`Completed`,
     [TaskStatus.TASK_STATUS_ERROR]: $localize`Error`,
     [TaskStatus.TASK_STATUS_TIMEOUT]: $localize`Timeout`,
+    [TaskStatus.TASK_STATUS_CANCELLING]: $localize`Cancelling`,
+    [TaskStatus.TASK_STATUS_CANCELLED]: $localize`Cancelled`,
+    [TaskStatus.TASK_STATUS_PROCESSING]: $localize`Processing`,
+    [TaskStatus.TASK_STATUS_PROCESSED]: $localize`Processed`,
     [TaskStatus.TASK_STATUS_RETRIED]: $localize`Retried`,
+    [TaskStatus.TASK_STATUS_PENDING]: $localize`Pending`,
+    [TaskStatus.TASK_STATUS_PAUSED]: $localize`Paused`,
   };
 
   statusesRecord(): { value: string, name: string }[] {
@@ -60,6 +62,6 @@ export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
    */
   taskNotEnded(taskStatus: TaskStatus) {
     return taskStatus === TaskStatus.TASK_STATUS_PROCESSING || taskStatus === TaskStatus.TASK_STATUS_CREATING || taskStatus === TaskStatus.TASK_STATUS_SUBMITTED 
-    || taskStatus === TaskStatus.TASK_STATUS_DISPATCHED || taskStatus === TaskStatus.TASK_STATUS_RETRIED;
+    || taskStatus === TaskStatus.TASK_STATUS_DISPATCHED || taskStatus === TaskStatus.TASK_STATUS_RETRIED || taskStatus === TaskStatus.TASK_STATUS_PENDING || taskStatus === TaskStatus.TASK_STATUS_PAUSED ;
   }
 }
