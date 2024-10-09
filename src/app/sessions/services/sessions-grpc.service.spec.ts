@@ -1,4 +1,4 @@
-import { CancelSessionRequest, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionRequest, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionRequest, PurgeSessionRequest, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { lastValueFrom, of } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
@@ -80,6 +80,7 @@ describe('SessionsGrpcService', () => {
     resumeSession: jest.fn(),
     closeSession: jest.fn(),
     deleteSession: jest.fn(),
+    purgeSession: jest.fn(),
   };
 
   const listOptions: ListOptions<SessionRaw, TaskOptions> = {
@@ -321,6 +322,14 @@ describe('SessionsGrpcService', () => {
     const sessionId = '1';
     service.resume$(sessionId);
     expect(mockSessionsGrpcClient.resumeSession).toHaveBeenCalledWith(new PauseSessionRequest({
+      sessionId
+    }));
+  });
+
+  it('should purge sessions', () => {
+    const sessionId = '1';
+    service.purge$(sessionId);
+    expect(mockSessionsGrpcClient.purgeSession).toHaveBeenCalledWith(new PurgeSessionRequest({
       sessionId
     }));
   });
