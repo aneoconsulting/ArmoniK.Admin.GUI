@@ -881,7 +881,7 @@ describe('SessionsTableComponent', () => {
       it('should check if a session can be purged', () => {
         const action = getAction(component.actions, 'Purge session');
         if (action.condition) {
-          expect(action.condition(sessionData)).toBe(true);
+          expect(action.condition(sessionData)).toBe(false);
         }
       });
   

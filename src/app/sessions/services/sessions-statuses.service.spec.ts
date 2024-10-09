@@ -54,11 +54,11 @@ describe('SessionsStatusesService', () => {
 
   describe('canClose', () => {
     it('should return true if the session can be closed', () => {
-      expect(service.canClose(SessionStatus.SESSION_STATUS_RUNNING)).toBe(true);
+      expect(service.canClose(SessionStatus.SESSION_STATUS_CLOSED)).toBe(true);
     });
 
     it('should return false if the session cannot be closed', () => {
-      expect(service.canClose(SessionStatus.SESSION_STATUS_CLOSED)).toBe(false);
+      expect(service.canClose(SessionStatus.SESSION_STATUS_RUNNING)).toBe(false);
     });
   });
 

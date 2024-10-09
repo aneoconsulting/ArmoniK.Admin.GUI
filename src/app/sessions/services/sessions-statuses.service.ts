@@ -39,6 +39,6 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
   }
 
   canPurge(status: SessionStatus): boolean {
-    return status === SessionStatus.SESSION_STATUS_RUNNING;
+    return status === SessionStatus.SESSION_STATUS_CANCELLED || status === SessionStatus.SESSION_STATUS_CLOSED;
   }
 }
