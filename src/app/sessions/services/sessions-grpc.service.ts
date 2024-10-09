@@ -1,4 +1,4 @@
-import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionField, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, CloseSessionRequest, CloseSessionResponse, DeleteSessionRequest, DeleteSessionResponse, FilterStringOperator, GetSessionRequest, GetSessionResponse, ListSessionsRequest, ListSessionsResponse, PauseSessionRequest, PauseSessionResponse, PurgeSessionRequest, PurgeSessionResponse, ResumeSessionRequest, ResumeSessionResponse, SessionField, SessionFilterField, SessionRawEnumField, SessionTaskOptionEnumField, SessionsClient, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { Observable, map } from 'rxjs';
@@ -124,6 +124,14 @@ export class SessionsGrpcService extends GrpcTableService<SessionRaw, SessionRaw
     });
 
     return this.grpcClient.resumeSession(resumeSessionRequest);
+  }
+
+  purge$(sessionId: string): Observable<PurgeSessionResponse> {
+    const purgeSessionRequest = new PurgeSessionRequest({
+      sessionId
+    });
+
+    return this.grpcClient.purgeSession(purgeSessionRequest);
   }
 
   close$(sessionId: string): Observable<CloseSessionResponse> {
