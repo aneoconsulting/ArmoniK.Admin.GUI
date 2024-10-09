@@ -15,7 +15,6 @@ import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { SessionsGrpcService } from '../services/sessions-grpc.service';
@@ -51,7 +50,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   
   readonly grpcService = inject(SessionsGrpcService);
   readonly indexService = inject(SessionsIndexService);
-  readonly iconsService = inject(IconsService);
   readonly statusesService = inject(SessionsStatusesService);
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
@@ -84,7 +82,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   resumeSessionSubscription = this.resumeSession$.subscribe(data => this.onResume(data.raw.sessionId));
 
   purgeSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
-  purgeSessionSubscription = this.resumeSession$.subscribe(data => this.onPurge(data.raw.sessionId));
+  purgeSessionSubscription = this.purgeSession$.subscribe(data => this.onPurge(data.raw.sessionId));
 
   cancelSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
@@ -249,11 +247,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     };
   }
 
-  getIcon(name: string): string {
-    console.log(name, this.iconsService.getIcon(name));
-    return this.iconsService.getIcon(name);
-  }
-
   onCopiedSessionId(data: ArmonikData<SessionRaw, TaskOptions>) {
     this.copyService.copy(data.raw.sessionId);
     this.notificationService.success('Session ID copied to clipboard');
@@ -362,7 +355,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   onPurge(sessionId: string) {
-    this.grpcService.cancel$(sessionId).subscribe(
+    this.grpcService.purge$(sessionId).subscribe(
       {
         error: () => this.notificationService.error('Unable to purge session'),
         complete: () => this.refresh$.next()
