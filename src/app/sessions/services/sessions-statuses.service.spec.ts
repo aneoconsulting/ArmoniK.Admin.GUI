@@ -24,11 +24,11 @@ describe('SessionsStatusesService', () => {
 
   describe('canPurge', () => {
     it('should return true if the session can be purged', () => {
-      expect(service.canPurge(SessionStatus.SESSION_STATUS_RUNNING)).toBe(true);
+      expect(service.canPurge(SessionStatus.SESSION_STATUS_CLOSED)).toBe(true);
     });
 
     it('should return false if the session cannot be purged', () => {
-      expect(service.canPurge(SessionStatus.SESSION_STATUS_PURGED)).toBe(false);
+      expect(service.canPurge(SessionStatus.SESSION_STATUS_RUNNING)).toBe(false);
     });
   });
 
@@ -54,11 +54,11 @@ describe('SessionsStatusesService', () => {
 
   describe('canClose', () => {
     it('should return true if the session can be closed', () => {
-      expect(service.canClose(SessionStatus.SESSION_STATUS_CLOSED)).toBe(true);
+      expect(service.canClose(SessionStatus.SESSION_STATUS_RUNNING)).toBe(true);
     });
 
     it('should return false if the session cannot be closed', () => {
-      expect(service.canClose(SessionStatus.SESSION_STATUS_RUNNING)).toBe(false);
+      expect(service.canClose(SessionStatus.SESSION_STATUS_CLOSED)).toBe(false);
     });
   });
 
