@@ -37,4 +37,8 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
   canDelete(status: SessionStatus): boolean {
     return status !== SessionStatus.SESSION_STATUS_DELETED;
   }
+
+  canPurge(status: SessionStatus): boolean {
+    return status === SessionStatus.SESSION_STATUS_RUNNING;
+  }
 }
