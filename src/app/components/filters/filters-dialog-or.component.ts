@@ -54,10 +54,10 @@ export class FiltersDialogOrComponent<T extends number, U extends number | null 
 
   @Output() removeChange: EventEmitter<Filter<T, U>[]> = new EventEmitter<Filter<T, U>[]>();
 
-  #iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
 
   getIcon(name: string) {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onAdd() {

@@ -74,9 +74,9 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
   @Output() lineDelete: EventEmitter<Line> = new EventEmitter<Line>();
 
-  readonly #dialogRef = inject(MatDialogRef<ReorganizeLinesDialogData, ReorganizeLinesDialogResult>);
-  readonly #iconsService = inject(IconsService);
-  readonly #dialog = inject(MatDialog);
+  private readonly dialogRef = inject(MatDialogRef<ReorganizeLinesDialogData, ReorganizeLinesDialogResult>);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialog = inject(MatDialog);
 
   lines: Line[] = [];
 
@@ -89,11 +89,11 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onNoClick(): void {
-    this.#dialogRef.close();
+    this.dialogRef.close();
   }
 
   onDrop(event: CdkDragDrop<Line[]>) {
@@ -108,7 +108,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
   }
 
   onEditNameLine(line: Line, index: number) {
-    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.#dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
+    const dialogRef: MatDialogRef<EditNameLineDialogComponent, string> = this.dialog.open<EditNameLineDialogComponent, EditNameLineData, string>(EditNameLineDialogComponent, {
       data: {
         name: line.name
       }
@@ -122,7 +122,7 @@ export class ReorganizeLinesDialogComponent implements OnInit {
             line.name = result;
           }
         };
-        this.lines.map(line => changeSelectedNameLine(line, selectedLine.name));
+        this.lines.forEach(line => changeSelectedNameLine(line, selectedLine.name));
       }
     });
   }

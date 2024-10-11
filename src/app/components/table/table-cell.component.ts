@@ -42,7 +42,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     this._element = entry;
     this._value = this.handleNestedKeys(entry);
     if (entry) {
-      this._queryParams = this.element.queryParams?.get(this.column.key as keyof DataRaw);
+      this._queryParams = this.element.queryParams?.get(this.column.key);
       this.createLink();
       if (this.column.key === 'count') {
         this.refreshStatuses.next();
@@ -56,7 +56,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
 
   @Output() changeSelection = new EventEmitter<void>();
 
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   private _value: unknown;
   private _element: ArmonikData<T, O>;
@@ -128,7 +128,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
   }
 
   handleNestedKeys(element: ArmonikData<T, O>) {
-    if (element === undefined || element.raw === undefined) {
+    if (element?.raw === undefined) {
       return undefined;
     }
     const keys = this.column.key.toString().split('.');
