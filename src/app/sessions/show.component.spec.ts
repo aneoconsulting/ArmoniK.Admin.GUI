@@ -1,14 +1,14 @@
 import { GetSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsInspectionService } from './services/sessions-inspection.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';

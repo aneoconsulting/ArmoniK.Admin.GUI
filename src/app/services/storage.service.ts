@@ -27,7 +27,7 @@ export class StorageService implements Storage {
     if (data && parse) {
       try {
         return JSON.parse(data) as T;
-      } catch (e) {
+      } catch {
         return data;
       }
     } else if (data) {

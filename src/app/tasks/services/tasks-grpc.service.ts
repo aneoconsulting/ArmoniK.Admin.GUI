@@ -1,10 +1,10 @@
 import { CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskField, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
+import { Observable } from 'rxjs';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TaskOptions, TaskOptionsFieldKey, TaskSummary, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 

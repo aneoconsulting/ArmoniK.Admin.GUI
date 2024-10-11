@@ -1,15 +1,15 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, Input, WritableSignal, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { GrpcStatusEvent } from '@ngx-grpc/common';
-import { Observable, Subject, catchError, first, map, of, switchMap } from 'rxjs';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
+import { Observable, Subject, catchError, first, map, of, switchMap } from 'rxjs';
 import { TableColumn } from '../column.type';
 import { Scope } from '../config';
 import { ArmonikData, ColumnKey, DataRaw, GrpcResponse } from '../data';
