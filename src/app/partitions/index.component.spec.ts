@@ -266,7 +266,7 @@ describe('Partitions Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`ID`,
           key: 'id',
@@ -298,7 +298,7 @@ describe('Partitions Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`ID`,
           key: 'id',
