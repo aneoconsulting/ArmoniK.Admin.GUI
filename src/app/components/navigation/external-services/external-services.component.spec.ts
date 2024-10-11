@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { ExternalService } from '@app/types/external-service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
+import { of } from 'rxjs';
 import { ExternalServicesComponent } from './external-services.component';
 
 describe('ExternalServicesComponent', () => {

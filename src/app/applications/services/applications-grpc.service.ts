@@ -1,9 +1,9 @@
 import { ApplicationFilterField, ApplicationRawEnumField, ApplicationsClient, ListApplicationsRequest, ListApplicationsResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcTableService, ListApplicationSortField, RequestFilterField } from '@app/types/services/grpcService';
 import { FilterField, buildStringFilter } from '@services/grpc-build-request.service';
+import { Observable } from 'rxjs';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationRaw, ApplicationRawFieldKey, ApplicationRawFilters, ApplicationRawListOptions } from '../types';
 
