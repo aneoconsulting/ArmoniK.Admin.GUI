@@ -32,10 +32,6 @@ import { NotificationService } from '@services/notification.service';
     SessionsStatusesService,
     TasksStatusesService,
     TasksFiltersService,
-    {
-      provide: DATA_FILTERS_SERVICE,
-      useExisting: TasksFiltersService
-    },
   ],
   imports: [
     MatToolbarModule,
