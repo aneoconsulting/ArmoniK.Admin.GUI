@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
 import { StorageService } from '@services/storage.service';
+import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 
 class FakeFileReader extends FileReader {

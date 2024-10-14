@@ -1,7 +1,6 @@
 import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of, throwError } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
@@ -13,6 +12,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { Observable, of, throwError } from 'rxjs';
 import { TasksLineComponent } from './tasks-line.component';
 import { TableLine } from '../../types';
 

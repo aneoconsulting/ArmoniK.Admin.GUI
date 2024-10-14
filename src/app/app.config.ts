@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
-import { catchError, merge, of, tap } from 'rxjs';
 import { CacheService } from '@services/cache.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
@@ -15,6 +14,7 @@ import { UserGrpcService } from '@services/user-grpc.service';
 import { UserService } from '@services/user.service';
 import { VersionsGrpcService } from '@services/versions-grpc.service';
 import { VersionsService } from '@services/versions.service';
+import { catchError, merge, of, tap } from 'rxjs';
 import { routes } from './app.routes';
 import { ExportedDefaultConfig } from './types/config';
 

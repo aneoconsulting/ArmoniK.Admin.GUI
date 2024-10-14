@@ -2,7 +2,6 @@ import { FilterStringOperator, PartitionRawEnumField } from '@aneoconsultingfr/a
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
@@ -12,6 +11,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';

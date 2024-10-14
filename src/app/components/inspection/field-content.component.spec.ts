@@ -1,10 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { TaskOptions, TaskRaw } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { Status } from '@app/types/data';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';

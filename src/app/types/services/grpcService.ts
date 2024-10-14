@@ -1,9 +1,9 @@
 import { ApplicationFilterField, ApplicationsClient, CancelSessionResponse, CancelTasksResponse, CountTasksByStatusResponse, GetPartitionResponse, GetResultResponse, GetSessionResponse, GetTaskResponse, PartitionFilterField, PartitionsClient, ResultFilterField, ResultsClient, SessionFilterField, SessionsClient, TaskFilterField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { inject } from '@angular/core';
-import { Observable } from 'rxjs';
 import { TaskOptions } from '@app/tasks/types';
 import { FilterField, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
+import { Observable } from 'rxjs';
 import { FiltersServiceInterface } from './filtersService';
 import { DataRaw, FieldKey, GrpcResponse } from '../data';
 import { FilterDefinition } from '../filter-definition';
