@@ -213,18 +213,28 @@ describe('FiltersDialogFilterFieldComponent', () => {
       expect(component.filter.value).toEqual(value);
     });
 
-    it('should change the filter value on number input', () => {
-      component.onPropertyChange(propertiesLabel[4]);
-      const value = 4;
-      component.onInputChange(value.toString());
-      expect(component.filter.value).toEqual(value);
-    });
+    describe('Number and durations', () => {
+      beforeEach(() => {
+        component.onPropertyChange(propertiesLabel[4]);
+      });
 
-    it('should set the filter value to null in case of NaN number value', () => {
-      component.onInputChange(propertiesLabel[4]);
-      const value = 'NaN';
-      component.onInputChange(value);
-      expect(component.filter.value).toBeNull();
+      it('should change the filter value on number input', () => {
+        const value = 4;
+        component.onInputChange(value.toString());
+        expect(component.filter.value).toEqual(value);
+      });
+  
+      it('should set the filter value to null in case of NaN number value', () => {
+        const value = 'NaN';
+        component.onInputChange(value);
+        expect(component.filter.value).toBeNull();
+      });
+  
+      it('should not set the filter value to null in case of "0" value', () => {
+        const value = '0';
+        component.onInputChange(value);
+        expect(component.filter.value).toEqual(0);
+      });
     });
   
     it('should change the filter value to date if one is passed', () => {

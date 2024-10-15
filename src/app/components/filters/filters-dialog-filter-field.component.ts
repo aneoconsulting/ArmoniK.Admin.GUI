@@ -179,7 +179,8 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
 
   onInputChange(value: string) {
     if (this.type === 'number' || this.type === 'duration') {
-      this._filter.value = Number(value) || null;
+      const number = Number(value);
+      this._filter.value = !isNaN(number) ? number : null;
     } else if (this.type === 'status') {
       this._filter.value = this.retrieveStatusKey(value);
     } else {
