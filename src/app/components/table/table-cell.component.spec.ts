@@ -1,12 +1,12 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Timestamp } from '@ngx-grpc/well-known-types';
 import { SessionsStatusesService } from '@app/sessions/services/sessions-statuses.service';
 import { SessionRaw, SessionRawColumnKey } from '@app/sessions/types';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
+import { Timestamp } from '@ngx-grpc/well-known-types';
 import { TableCellComponent } from './table-cell.component';
 
 describe('TableCellComponent', () => {

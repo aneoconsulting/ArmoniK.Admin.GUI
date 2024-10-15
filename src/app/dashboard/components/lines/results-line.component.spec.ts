@@ -1,7 +1,6 @@
 import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { ResultsIndexService } from '@app/results/services/results-index.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '@app/results/types';
 import { TableColumn } from '@app/types/column.type';
@@ -10,6 +9,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { ResultsLineComponent } from './results-line.component';
 import { TableLine } from '../../types';
 

@@ -2,11 +2,11 @@ import { GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angul
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksInspectionService } from './services/tasks-inspection.service';
 import { TasksStatusesService } from './services/tasks-statuses.service';

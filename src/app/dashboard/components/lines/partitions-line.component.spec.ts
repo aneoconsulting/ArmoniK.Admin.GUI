@@ -1,7 +1,6 @@
 import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
 import { TableColumn } from '@app/types/column.type';
@@ -11,6 +10,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { of } from 'rxjs';
 import { PartitionsLineComponent } from './partitions-line.component';
 import { TableLine } from '../../types';
 

@@ -1,7 +1,6 @@
 import { inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableLine } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -9,6 +8,7 @@ import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dia
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { TableColumn } from '../column.type';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';

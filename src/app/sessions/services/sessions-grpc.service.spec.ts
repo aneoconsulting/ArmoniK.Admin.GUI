@@ -1,6 +1,5 @@
 import { CancelSessionRequest, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionRequest, PurgeSessionRequest, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { lastValueFrom, of } from 'rxjs';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskOptions } from '@app/tasks/types';
 import { FieldKey } from '@app/types/data';
@@ -8,6 +7,7 @@ import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
+import { lastValueFrom, of } from 'rxjs';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionsStatusesService } from './sessions-statuses.service';

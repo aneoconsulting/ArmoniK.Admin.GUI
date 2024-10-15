@@ -1,9 +1,9 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
 import { ExternalService } from '@app/types/external-service';
 import { IconsService } from '@services/icons.service';
+import { BehaviorSubject } from 'rxjs';
 import { ManageExternalServicesDialogComponent } from './manage-external-services-dialog.component';
 
 describe('ManageExternalServicesDialogComponent', () => {

@@ -1,10 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, of } from 'rxjs';
 import { AddLineDialogResult, ReorganizeLinesDialogResult, SplitLinesDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Observable, of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { DashboardIndexService } from './services/dashboard-index.service';
 import { CountLine, Line, LineType } from './types';
