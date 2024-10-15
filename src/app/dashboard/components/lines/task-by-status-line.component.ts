@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, Output, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {  MatIconModule } from '@angular/material/icon';
@@ -82,7 +82,8 @@ app-actions-toolbar {
     MatButtonModule,
     StatusesGroupCardComponent,
     TableDashboardActionsToolbarComponent,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   readonly dialog = inject(MatDialog);
@@ -95,7 +96,7 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   @Output() lineDelete: EventEmitter<CountLine> = new EventEmitter<CountLine>();
 
   total: number;
-  loading = false;
+  loading = signal<boolean>(false);
   data = signal<StatusCount[]>([]);
 
   refresh: Subject<void> = new Subject<void>();
@@ -107,13 +108,13 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   ngAfterViewInit() {
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
-      tap(() => (this.loading = true)),
+      tap(() => (this.loading.set(true))),
       switchMap(() => this.taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
     ).subscribe((data) => {
       if (data.status) {
         this.data.set(data.status);
         this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
     this.subscriptions.add(mergeSubscription);
