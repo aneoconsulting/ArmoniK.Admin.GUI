@@ -214,7 +214,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
           console.error(error);
           this.error('Unable to purge session');
         }
-      })
+      });
     }
   }
 
