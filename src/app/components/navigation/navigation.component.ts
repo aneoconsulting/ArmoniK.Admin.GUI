@@ -93,30 +93,30 @@ main {
 export class NavigationComponent implements OnInit{
   version = this.getVersion();
 
-  #breakpointObserver = inject(BreakpointObserver);
-  #navigationService = inject(NavigationService);
-  #userService = inject(UserService);
-  #iconsService = inject(IconsService);
-  #versionsService = inject(VersionsService);
-  #environmentService = inject(EnvironmentService);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly navigationService = inject(NavigationService);
+  private readonly userService = inject(UserService);
+  private readonly iconsService = inject(IconsService);
+  private readonly versionsService = inject(VersionsService);
+  private readonly environmentService = inject(EnvironmentService);
 
-  environment = this.#environmentService.getEnvironment();
+  environment = this.environmentService.getEnvironment();
 
-  apiVersion = this.#versionsService.api;
-  coreVersion = this.#versionsService.core;
+  apiVersion = this.versionsService.api;
+  coreVersion = this.versionsService.core;
   settingsItem = $localize`Settings`;
 
-  sidebar = this.#navigationService.currentSidebar;
+  sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;
   
-  isHandset$: Observable<boolean> = this.#breakpointObserver.observe(Breakpoints.Handset)
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
   ngOnInit(): void {
-    this.sideBarOpened = this.#navigationService.restoreSideBarOpened();
+    this.sideBarOpened = this.navigationService.restoreSideBarOpened();
   }
 
   getVersion(): string {
@@ -124,12 +124,12 @@ export class NavigationComponent implements OnInit{
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   greeting() {
     const hour = new Date().getHours();
-    const username = this.#userService.user ? this.#userService.user.username : '';
+    const username = this.userService.user ? this.userService.user.username : '';
     if (hour < 12) {
       return $localize`Good morning` + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
@@ -141,6 +141,6 @@ export class NavigationComponent implements OnInit{
 
   toggleSideBar() {
     this.sideBarOpened = !this.sideBarOpened;
-    this.#navigationService.saveSideBarOpened(this.sideBarOpened);
+    this.navigationService.saveSideBarOpened(this.sideBarOpened);
   }
 }

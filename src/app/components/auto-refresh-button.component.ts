@@ -24,13 +24,13 @@ import { IconsService } from '@services/icons.service';
   ]
 })
 export class AutoRefreshButtonComponent implements OnInit{
-  #iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
   intervalDisplay: string;
   @Input({ required: true }) intervalValue: number;
 
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
 
-  constructor(private _dialog: MatDialog) { }
+  constructor(private readonly _dialog: MatDialog) { }
 
   private _isDisabled = false;
   
@@ -40,7 +40,7 @@ export class AutoRefreshButtonComponent implements OnInit{
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   setDisabled() {

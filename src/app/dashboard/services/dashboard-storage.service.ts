@@ -4,15 +4,14 @@ import { Line } from '../types';
 
 @Injectable()
 export class DashboardStorageService {
-
-  #storageService = inject(StorageService);
+  private readonly storageService = inject(StorageService);
 
   saveLines(lines: Line[]): void {
-    this.#storageService.setItem('dashboard-lines', lines);
+    this.storageService.setItem('dashboard-lines', lines);
   }
 
   restoreLines(): Line[] | null {
-    const storedLines = this.#storageService.getItem<Line[]>('dashboard-lines', true) as Line[] | null;
+    const storedLines = this.storageService.getItem<Line[]>('dashboard-lines', true) as Line[] | null;
 
     if (storedLines) {
       return storedLines;
@@ -21,11 +20,11 @@ export class DashboardStorageService {
   }
 
   saveSplitLines(columns: number): void {
-    this.#storageService.setItem('dashboard-split-lines', columns);
+    this.storageService.setItem('dashboard-split-lines', columns);
   }
 
   restoreSplitLines(): number | null {
-    const storedColumns = this.#storageService.getItem<number>('dashboard-split-lines', true) as number | null;
+    const storedColumns = this.storageService.getItem<number>('dashboard-split-lines', true) as number | null;
 
     if (storedColumns) {
       return storedColumns;

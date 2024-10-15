@@ -6,8 +6,8 @@ import { StorageService } from './storage.service';
 
 @Injectable()
 export class NavigationService {
-  #defaultConfigService = inject(DefaultConfigService);
-  #storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly storageService = inject(StorageService);
 
   sidebarItems: SidebarItems = [
     {
@@ -60,39 +60,39 @@ export class NavigationService {
     },
   ];
 
-  defaultSidebar: Sidebar[] = this.#defaultConfigService.defaultSidebar;
+  defaultSidebar: Sidebar[] = this.defaultConfigService.defaultSidebar;
 
   // Used to display the sidebar on the navigation component.
-  currentSidebar: SidebarItem[] = this.#formatSidebar(this.restoreSidebar());
+  currentSidebar: SidebarItem[] = this.formatSidebar(this.restoreSidebar());
 
   restoreSidebar(): Sidebar[] {
-    const sidebar = this.#storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.#defaultConfigService.defaultSidebar;
+    const sidebar = this.storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.defaultConfigService.defaultSidebar;
 
     return sidebar.filter(element => isSideBar(element));
   }
 
   saveSidebar(sidebar: Sidebar[]) {
-    this.currentSidebar = this.#formatSidebar(sidebar);
-    this.#storageService.setItem('navigation-sidebar', sidebar);
+    this.currentSidebar = this.formatSidebar(sidebar);
+    this.storageService.setItem('navigation-sidebar', sidebar);
   }
 
   updateSidebar(sidebar: Sidebar[]) {
-    this.currentSidebar = this.#formatSidebar(sidebar);
+    this.currentSidebar = this.formatSidebar(sidebar);
   }
 
 
   saveSideBarOpened(sideBarOpened: boolean) {
-    this.#storageService.setItem('navigation-sidebar-opened', sideBarOpened);
+    this.storageService.setItem('navigation-sidebar-opened', sideBarOpened);
   }
 
   restoreSideBarOpened(): boolean {
-    return this.#storageService.getItem('navigation-sidebar-opened') !== 'false';
+    return this.storageService.getItem('navigation-sidebar-opened') !== 'false';
   }
 
   /**
    * Change the format of a simple sidebar to a [SidebarItem](../types/navigation.ts)
    */
-  #formatSidebar(sidebarItems: Sidebar[]): SidebarItem[] {
+  formatSidebar(sidebarItems: Sidebar[]): SidebarItem[] {
     const sidebar = sidebarItems.reduce((acc, item) => {
       const sidebarItem = this.sidebarItems.find(sidebarItem => sidebarItem.id === item);
       if (sidebarItem) {
@@ -106,10 +106,10 @@ export class NavigationService {
   }
 
   restoreExternalServices(): ExternalService[] {
-    return this.#storageService.getItem('navigation-external-services', true) as ExternalService[] || [];
+    return this.storageService.getItem('navigation-external-services', true) as ExternalService[] || [];
   }
 
   saveExternalServices(externalServices: ExternalService[]) {
-    this.#storageService.setItem('navigation-external-services', externalServices);
+    this.storageService.setItem('navigation-external-services', externalServices);
   }
 }

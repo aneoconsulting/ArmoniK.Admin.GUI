@@ -8,19 +8,19 @@ import { QueryParamsService } from './query-params.service';
 
 @Injectable()
 export class ShareUrlService {
-  #window = inject(Window);
-  #queryParamsService = inject(QueryParamsService);
+  private readonly window = inject(Window);
+  private readonly queryParamsService = inject(QueryParamsService);
 
   generateSharableURL<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends TaskOptionEnumField | null = null>(options: ListOptions<T, O> | null, filters: FiltersOr<F, FO> | null): string {
-    const origin = this.#window.location.origin;
-    const pathname = this.#window.location.pathname;
+    const origin = this.window.location.origin;
+    const pathname = this.window.location.pathname;
 
     if (!options && !filters) {
       return `${origin}${pathname}`;
     }
 
-    const queryParamsOptions = options ? this.#queryParamsService.createOptions<T, O>(options) : null;
-    const queryParamsFilters = filters ? this.#queryParamsService.createFilters<F, FO>(filters) : null;
+    const queryParamsOptions = options ? this.queryParamsService.createOptions<T, O>(options) : null;
+    const queryParamsFilters = filters ? this.queryParamsService.createFilters<F, FO>(filters) : null;
 
     let queryParams = [this.#stringify(queryParamsOptions), this.#stringify(queryParamsFilters)].join('&');
 
