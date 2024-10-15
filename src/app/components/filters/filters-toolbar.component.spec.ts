@@ -2,9 +2,9 @@ import { FilterDateOperator, FilterStringOperator, SessionRawEnumField, SessionT
 import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { FiltersOr } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
+import { of } from 'rxjs';
 import { FiltersToolbarComponent } from './filters-toolbar.component';
 
 describe('FiltersToolbarComponent', () => {

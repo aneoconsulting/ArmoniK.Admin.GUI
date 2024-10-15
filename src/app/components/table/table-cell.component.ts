@@ -3,16 +3,16 @@ import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NavigationExtras, Params, Router, RouterModule } from '@angular/router';
-import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { Subject } from 'rxjs';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData, Status } from '@app/types/data';
 import { StatusesServiceI } from '@app/types/services';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
+import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
+import { Subject } from 'rxjs';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({

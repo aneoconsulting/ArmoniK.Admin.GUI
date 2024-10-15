@@ -1,7 +1,6 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { ExternalService } from '@app/types/external-service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { EnvironmentService } from '@services/environment.service';
@@ -10,6 +9,7 @@ import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
+import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { NavigationComponent } from './navigation.component';
 import pkg from '../../../../package.json';
 

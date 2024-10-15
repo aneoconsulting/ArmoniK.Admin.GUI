@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject, of } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
@@ -9,6 +8,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { Subject, of } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
 import { ApplicationsIndexService } from './services/applications-index.service';

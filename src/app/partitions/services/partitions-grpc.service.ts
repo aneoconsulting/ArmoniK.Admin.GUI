@@ -1,9 +1,9 @@
 import { GetPartitionRequest, GetPartitionResponse, ListPartitionsRequest, ListPartitionsResponse, PartitionFilterField, PartitionRawEnumField, PartitionsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Filter, FilterType } from '@app/types/filters';
 import { GrpcGetInterface, GrpcTableService, ListDefaultSortField, RequestFilterField } from '@app/types/services/grpcService';
 import { FilterField, buildArrayFilter, buildNumberFilter, buildStringFilter } from '@services/grpc-build-request.service';
+import { Observable } from 'rxjs';
 import { PartitionsFiltersService } from './partitions-filters.service';
 import { PartitionRaw, PartitionRawFieldKey, PartitionRawFilters, PartitionRawListOptions } from '../types';
 

@@ -2,7 +2,6 @@ import { FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from 
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableLine } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
@@ -13,6 +12,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
+import { of, throwError } from 'rxjs';
 import { IndexComponent } from './index.component';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';

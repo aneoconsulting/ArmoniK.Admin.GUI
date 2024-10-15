@@ -133,7 +133,7 @@ describe('ShowCardContentComponent', () => {
     });
 
     it('Should return false when a timestamp is provided', () => {
-      expect(component.isObject('time')).toBeFalsy;
+      expect(component.isObject('time')).toBeFalsy();
     });
 
     it('Should return false when a duration is provided', () => {

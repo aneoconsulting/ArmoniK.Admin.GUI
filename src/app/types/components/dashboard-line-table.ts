@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { EditNameLineDialogComponent } from '@app/dashboard/components/edit-name-line-dialog.component';
 import { TableLine } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -9,6 +8,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
 import { TableColumn } from '../column.type';
 import { ScopeConfig } from '../config';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';

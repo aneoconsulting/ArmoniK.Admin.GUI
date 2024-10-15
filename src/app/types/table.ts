@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
 import { TaskOptions } from '@app/tasks/types';
+import { Subject } from 'rxjs';
 import { ArmonikData, DataRaw } from './data';
 
 export type TableType = 'Applications' | 'Tasks' | 'Sessions' | 'Partitions' | 'Results';

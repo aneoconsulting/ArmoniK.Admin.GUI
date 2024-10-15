@@ -6,13 +6,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { GrpcStatusEvent } from '@ngx-grpc/common';
-import { Observable, Subject, catchError, of, startWith, switchMap } from 'rxjs';
 import { HealthCheckGrpcService } from '@app/healthcheck/services/healthcheck-grpc.service';
 import { ServiceHealth } from '@app/healthcheck/types';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
+import { Observable, Subject, catchError, of, startWith, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-healthcheck',

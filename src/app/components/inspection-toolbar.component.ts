@@ -2,8 +2,8 @@ import { Component, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Subject } from 'rxjs';
 import { IconsService } from '@services/icons.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-inspection-toolbar',
