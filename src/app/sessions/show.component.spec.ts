@@ -60,6 +60,7 @@ describe('AppShowComponent', () => {
   const mockSessionsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({session: returnedSession} as GetSessionResponse)),
     cancel$: jest.fn(() => of({})),
+    purge$: jest.fn(() => of({})),
     pause$: jest.fn(() => of({})),
     resume$: jest.fn(() => of({})),
     close$: jest.fn(() => of({})),
@@ -265,6 +266,41 @@ describe('AppShowComponent', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
       mockSessionsGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       component.cancel();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+  });
+
+  describe('Purging', () => {
+    beforeEach(() => {
+      mockSessionsGrpcService.get$.mockReturnValueOnce(of({session: {
+        sessionId: 'session-closed',
+        partitionIds: ['partitionId1', 'partitionId2'],
+        options: {
+          partitionId: 'partitionId1'
+        },
+        status: SessionStatus.SESSION_STATUS_CLOSED
+      }}));
+      component.refresh.next(); // setting up the CLOSED status
+    });
+
+    it('should permit to purge a session', () => {
+      expect(component.disablePurge).toBeFalsy();
+    });
+
+    it('should call grpc service "purge$" method', () => {
+      component.purge();
+      expect(mockSessionsGrpcService.purge$).toHaveBeenCalled();
+    });
+
+    it('should notify on success when purging a session', () => {
+      component.purge();
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session purged');
+    });
+
+    it('should notify on errors when purging a session', () => {
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+      mockSessionsGrpcService.purge$.mockReturnValueOnce(throwError(() => new Error()));
+      component.purge();
       expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
