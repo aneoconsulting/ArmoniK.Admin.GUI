@@ -15,6 +15,7 @@ import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { downloadFile } from '@services/download-file.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
@@ -271,15 +272,7 @@ export class IndexComponent implements OnInit {
   exportData(): void {
     const data = JSON.stringify(this.storageService.exportData());
 
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const date = new Date().toISOString().slice(0, 10);
-    const id = new Date().getTime();
-
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `${date}-${id}-settings.json`;
-    anchor.click();
+    downloadFile(data, 'settings', 'json');
 
     this.notificationService.success('Settings exported');
   }
