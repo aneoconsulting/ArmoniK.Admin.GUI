@@ -1,7 +1,8 @@
 import { FileFormat } from '@app/types/file.type';
-import { downloadFile } from './download-file.service';
+import DownloadService from './download-file.service';
 
 describe('download-file function', () => {
+  const service = new DownloadService();
   const anchor = {
     href: '',
     download: '',
@@ -21,22 +22,19 @@ describe('download-file function', () => {
   const format: FileFormat = 'csv';
   
   const data = JSON.stringify([1, 2, 3]);
-
-  beforeEach(() => {
-  });
   
   it('should download the settings', () => {
-    downloadFile(data, name, format);
+    service.downloadFile(data, name, format);
     expect(anchor.download).toEqual(`${mockDate}-${mockId}-${name}.${format}`);
   });
 
   it('should download the settings with default configuration', () => {
-    downloadFile(data);
+    service.downloadFile(data);
     expect(anchor.download).toContain(`${mockDate}-${mockId}.json`);
   });
   
   it('should click the anchor', () => {
-    downloadFile(data);
+    service.downloadFile(data);
     expect(anchor.click).toHaveBeenCalled();
   });
 });

@@ -15,7 +15,7 @@ import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
-import { downloadFile } from '@services/download-file.service';
+import DownloadService from '@services/download-file.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
@@ -130,6 +130,7 @@ main {
   providers: [
     QueryParamsService,
     NotificationService,
+    DownloadService,
   ],
   imports: [
     PageHeaderComponent,
@@ -160,6 +161,7 @@ export class IndexComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
+  private readonly downloadService = inject(DownloadService);
 
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());
@@ -272,7 +274,7 @@ export class IndexComponent implements OnInit {
   exportData(): void {
     const data = JSON.stringify(this.storageService.exportData());
 
-    downloadFile(data, 'settings', 'json');
+    this.downloadService.downloadFile(data, 'settings', 'json');
 
     this.notificationService.success('Settings exported');
   }
