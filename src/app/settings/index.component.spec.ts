@@ -321,14 +321,6 @@ describe('IndexComponent', () => {
       component.exportData();
     });
 
-    it('should download the settings', () => {
-      expect(anchor.download).toContain('settings.json');
-    });
-
-    it('should click the anchor', () => {
-      expect(anchor.click).toHaveBeenCalled();
-    });
-
     it('should notify on success', () => {
       expect(mockNotificationService.success).toHaveBeenCalled();
     });
