@@ -81,6 +81,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   disableResume: boolean = false;
   disableCancel: boolean = false;
   disableClose: boolean = false;
+  disablePurge: boolean = true;
 
   tasksKey: string = '';
   tasksQueryParams: Params = {};
@@ -132,6 +133,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
       this.disableResume = !this.sessionsStatusesService.canResume(data.status);
       this.disableCancel = !this.sessionsStatusesService.canCancel(data.status);
       this.disableClose = !this.sessionsStatusesService.canClose(data.status);
+      this.disablePurge = !this.sessionsStatusesService.canPurge(data.status);
       this.lowerDuration$.next();
       this.upperDuration$.next();
     }  
@@ -196,6 +198,22 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
           console.error(error);
           this.error('Unable to cancel session');
         },
+      });
+    }
+  }
+
+  purge(): void {
+    const data: SessionRaw | null = this.data();
+    if (data?.sessionId) {
+      this.grpcService.purge$(data.sessionId).subscribe({
+        complete: () => {
+          this.success('Session purged');
+          this.refresh.next();
+        },
+        error: (error) => {
+          console.error(error);
+          this.error('Unable to purge session');
+        }
       });
     }
   }
