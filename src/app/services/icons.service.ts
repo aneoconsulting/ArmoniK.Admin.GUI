@@ -72,6 +72,7 @@ export class IconsService {
     'menu-open': 'menu_open',
     'filter': 'filter_list',
     'divider': 'horizontal_rule',
+    'purge': 'whatshot',
   };
 
   getIcon(name: string | null | undefined): string {
