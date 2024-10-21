@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,34 +21,38 @@ import { IconsService } from '@services/icons.service';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AutoRefreshButtonComponent implements OnInit{
   private readonly iconsService = inject(IconsService);
   intervalDisplay: string;
-  @Input({ required: true }) intervalValue: number;
+
+  private readonly _intervalValue = signal<number>(-1);
+  private readonly _isDisabled = computed(() => this._intervalValue() === 0);
+
+  @Input({ required: true }) set intervalValue(value: number) {
+    this._intervalValue.set(value);
+  }
+
+  get isDisabled(): boolean {
+    return this._isDisabled();
+  }
+
+  get intervalValue() {
+    return this._intervalValue();
+  }
 
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private readonly _dialog: MatDialog) { }
-
-  private _isDisabled = false;
   
   ngOnInit(): void {
-    this.intervalDisplay = this.intervalValue === 0 ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
-    this.setDisabled();
+    this.intervalDisplay = this.isDisabled ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
   }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
-  }
-
-  setDisabled() {
-    this._isDisabled = this.intervalValue === 0;
-  }
-
-  get isDisabled(): boolean {
-    return this._isDisabled;
   }
   
   emit(value: number): void {
@@ -65,7 +69,6 @@ export class AutoRefreshButtonComponent implements OnInit{
     dialogRef.afterClosed().subscribe(value => {
       if (value !== undefined) {
         this.intervalValue = value;
-        this.setDisabled();
         this.intervalDisplay = this.isDisabled ? $localize`:Button disabled@@autoRefreshButton:Disabled` : (this.intervalValue + $localize` seconds`);
         this.emit(value);
       }
