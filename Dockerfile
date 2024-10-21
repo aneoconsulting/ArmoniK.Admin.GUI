@@ -16,7 +16,7 @@ COPY angular.json ./
 
 RUN pnpm build --base-href=/admin/
 
-FROM nginx:stable-alpine-perl AS production
+FROM nginx:mainline-alpine-slim AS production
 
 WORKDIR /usr/share/nginx/html
 
