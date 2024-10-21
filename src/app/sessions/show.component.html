@@ -37,6 +37,10 @@
       <span i18n>Close Session</span>
       <mat-icon [fontIcon]="this.getIcon('close')" />
     </button>
+    <button mat-flat-button color="accent" (click)="purge()" [disabled]="disablePurge">
+      <span i18n>Purge Session</span>
+      <mat-icon [fontIcon]="this.getIcon('purge')" />
+    </button>
     <button mat-flat-button color="accent" (click)="deleteSession()">
       <span i18n>Delete Session</span>
       <mat-icon [fontIcon]="this.getIcon('delete')" />

@@ -14,7 +14,6 @@ import { TableComponent } from '@components/table/table.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
-import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { Subject, map, mergeAll } from 'rxjs';
@@ -51,7 +50,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   
   readonly grpcService = inject(SessionsGrpcService);
   readonly indexService = inject(SessionsIndexService);
-  readonly iconsService = inject(IconsService);
   readonly statusesService = inject(SessionsStatusesService);
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
@@ -83,6 +81,9 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   resumeSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   resumeSessionSubscription = this.resumeSession$.subscribe(data => this.onResume(data.raw.sessionId));
 
+  purgeSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
+  purgeSessionSubscription = this.purgeSession$.subscribe(data => this.onPurge(data.raw.sessionId));
+
   cancelSession$ = new Subject<ArmonikData<SessionRaw, TaskOptions>>();
   cancelSessionSubscription = this.cancelSession$.subscribe(data => this.onCancel(data.raw.sessionId));
 
@@ -110,21 +111,27 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     },
     {
       label: 'Pause session',
-      icon: this.getIcon('pause'),
+      icon: 'pause',
       action$: this.pauseSession$,
       condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canPause(element.raw.status)
     },
     {
       label: 'Resume session',
-      icon: this.getIcon('play'),
+      icon: 'play',
       action$: this.resumeSession$,
       condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canResume(element.raw.status)
     },
     {
       label: 'Cancel session',
-      icon: this.getIcon('cancel'),
+      icon: 'cancel',
       action$: this.cancelSession$,
       condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canCancel(element.raw.status)
+    },
+    {
+      label: 'Purge session',
+      icon: 'purge',
+      action$: this.purgeSession$,
+      condition: (element: ArmonikData<SessionRaw, TaskOptions>) => this.statusesService.canPurge(element.raw.status)
     },
     {
       label: 'Close session',
@@ -240,10 +247,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     };
   }
 
-  getIcon(name: string): string {
-    return this.iconsService.getIcon(name);
-  }
-
   onCopiedSessionId(data: ArmonikData<SessionRaw, TaskOptions>) {
     this.copyService.copy(data.raw.sessionId);
     this.notificationService.success('Session ID copied to clipboard');
@@ -346,6 +349,15 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     this.grpcService.cancel$(sessionId).subscribe(
       {
         error: () => this.notificationService.error('Unable to cancel session'),
+        complete: () => this.refresh$.next()
+      }
+    );
+  }
+
+  onPurge(sessionId: string) {
+    this.grpcService.purge$(sessionId).subscribe(
+      {
+        error: () => this.notificationService.error('Unable to purge session'),
         complete: () => this.refresh$.next()
       }
     );
