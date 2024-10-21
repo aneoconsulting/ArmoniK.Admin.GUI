@@ -44,7 +44,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   options: ListOptions<T, O>;
 
   displayedColumnsKeys: ColumnKey<T, O>[] = [];
-  displayedColumns: TableColumn<T, O>[] = [];
+  readonly displayedColumns = signal<TableColumn<T, O>[]>([]);
   availableColumns: ColumnKey<T, O>[] = [];
   lockColumns: boolean = false;
   columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
@@ -101,7 +101,9 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   }
 
   updateDisplayedColumns() {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<T, O>[];
+    this.displayedColumns.set(
+      this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(c => c.key === key)).filter(Boolean) as TableColumn<T, O>[]
+    );
   }
 
   getIcon(name: string): string {
@@ -212,18 +214,20 @@ export abstract class DashboardLineCustomColumnsComponent<T extends DataRaw, F e
   }
 
   override updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.toString().includes('options.options.')) {
-        const customColumnName = key.toString().replaceAll('options.options.', '');
-        return {
-          key: key,
-          name: customColumnName,
-          sortable: true,
-        } as TableColumn<T, O>;
-      } else {
-        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
-      }
-    });
+    this.displayedColumns.set(
+      this.displayedColumnsKeys.map(key => {
+        if (key.toString().includes('options.options.')) {
+          const customColumnName = key.toString().replaceAll('options.options.', '');
+          return {
+            key: key,
+            name: customColumnName,
+            sortable: true,
+          } as TableColumn<T, O>;
+        } else {
+          return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
+        }
+      })
+    );
   }
   
   addCustomColumn(): void {
@@ -233,12 +237,11 @@ export abstract class DashboardLineCustomColumnsComponent<T extends DataRaw, F e
 
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
-        const oldCustoms = this.customColumns;
         this.customColumns = result;
         this.availableColumns = this.availableColumns.filter(column => !column.toString().startsWith('options.options.'));
         this.availableColumns.push(...result as ColumnKey<T, O>[]);
         this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.toString().startsWith('options.options.'));
-        this.displayedColumnsKeys.push(...result.filter(column => !oldCustoms.includes(column)) as ColumnKey<T, O>[]);
+        this.displayedColumnsKeys.push(...result as ColumnKey<T, O>[]);
         this.updateDisplayedColumns();
         this.line.displayedColumns = this.displayedColumnsKeys;
         this.line.customColumns = result;

@@ -34,7 +34,7 @@ import { SpinnerComponent } from './spinner.component';
   ]
 })
 export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> {
-  #iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
 
   @Input({ required: true }) loading = false;
   @Input({ required: true }) refreshTooltip = '';
@@ -52,7 +52,7 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Output() lockColumnsChange = new EventEmitter<void>();
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onRefresh(): void {

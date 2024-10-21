@@ -53,19 +53,19 @@ import { Group, PermissionGroup, isGroup } from './types';
 export class IndexComponent {
   sharableURL = null;
 
-  #userService = inject(UserService);
-  #iconsService = inject(IconsService);
+  private readonly userService = inject(UserService);
+  private readonly iconsService = inject(IconsService);
 
   get user() {
-    return this.#userService.user;
+    return this.userService.user;
   }
 
   getIcon(name: string) {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   groupedPermissions(): PermissionGroup[] {
-    const permissions = this.#userService.user.permissions;
+    const permissions = this.userService.user.permissions;
 
     const groups: PermissionGroup[] = [];
 

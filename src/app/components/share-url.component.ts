@@ -27,14 +27,14 @@ import { IconsService } from '@services/icons.service';
   ]
 })
 export class ShareUrlComponent {
-  #iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
 
   @Input({required: true}) sharableURL: string;
 
   public copied = false;
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onCopied() {

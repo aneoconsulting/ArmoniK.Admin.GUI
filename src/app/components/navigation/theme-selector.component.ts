@@ -25,11 +25,11 @@ import { StorageService } from '@services/storage.service';
   ],
 })
 export class ThemeSelectorComponent implements OnInit {
-  #defaultConfigService = inject(DefaultConfigService);
-  #storageService = inject(StorageService);
-  #iconsService = inject(IconsService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly storageService = inject(StorageService);
+  private readonly iconsService = inject(IconsService);
 
-  currentTheme: Theme = this.#defaultConfigService.defaultTheme;
+  currentTheme: Theme = this.defaultConfigService.defaultTheme;
   availableThemes: { name: Theme, displayName: string }[] = [
     { name: 'deeppurple-amber', displayName: 'Deep Purple & Amber' },
     { name: 'indigo-pink', displayName: 'Indigo & Pink' },
@@ -40,7 +40,7 @@ export class ThemeSelectorComponent implements OnInit {
   themeSelectionToolTip = $localize`Select a theme`;
 
   ngOnInit(): void {
-    const theme = this.#storageService.getItem<Theme>('navigation-theme') as Theme | null;
+    const theme = this.storageService.getItem<Theme>('navigation-theme') as Theme | null;
 
     if (theme) {
       this.currentTheme = theme;
@@ -49,7 +49,7 @@ export class ThemeSelectorComponent implements OnInit {
   }
 
   getIcon(iconName: string) {
-    return this.#iconsService.getIcon(iconName);
+    return this.iconsService.getIcon(iconName);
   }
 
   updateTheme(themeName: Theme) {
@@ -57,14 +57,14 @@ export class ThemeSelectorComponent implements OnInit {
       this.#removeTheme(this.currentTheme);
     }
 
-    if (themeName !== this.#defaultConfigService.defaultTheme) {
+    if (themeName !== this.defaultConfigService.defaultTheme) {
       this.#addTheme(themeName);
       this.currentTheme = themeName;
     } else {
-      this.currentTheme = this.#defaultConfigService.defaultTheme;
+      this.currentTheme = this.defaultConfigService.defaultTheme;
     }
 
-    this.#storageService.setItem('navigation-theme', this.currentTheme);
+    this.storageService.setItem('navigation-theme', this.currentTheme);
   }
 
   #removeTheme(themeName: Theme) {

@@ -8,26 +8,26 @@ import { StorageService } from './storage.service';
  */
 @Injectable()
 export class TableStorageService {
-  #storage = inject(StorageService);
+  private readonly storage = inject(StorageService);
 
   /**
    * Save data to the storage
    */
   save(key: Key, data: unknown) {
-    this.#storage.setItem(key, data);
+    this.storage.setItem(key, data);
   }
 
   /**
    * Restore data from the storage
    */
   restore<T>(key: Key, parse = true) {
-    return this.#storage.getItem<T>(key, parse);
+    return this.storage.getItem<T>(key, parse);
   }
 
   /**
    * Remove data from the storage
    */
   remove(key: Key) {
-    this.#storage.removeItem(key);
+    this.storage.removeItem(key);
   }
 }

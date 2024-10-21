@@ -56,11 +56,11 @@ export class StatusesGroupCardComponent {
   @Input({ required: true }) data: StatusCount[] = [];
   @Input({ required: true }) filters: TaskSummaryFilters;
 
-  #tasksStatusesService = inject(TasksStatusesService);
-  #filtersService = inject(FiltersService);
+  private readonly tasksStatusesService = inject(TasksStatusesService);
+  private readonly filtersService = inject(FiltersService);
 
   statusToLabel(status: TaskStatus): string {
-    return this.#tasksStatusesService.statusToLabel(status);
+    return this.tasksStatusesService.statusToLabel(status);
   }
 
   updateCounter(status: TaskStatus): number {
@@ -122,16 +122,16 @@ export class StatusesGroupCardComponent {
   }
 
   #createQueryParamKey(): string {
-    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+    return this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 
   #createQueryParamKeyOr(orGroup: number): string {
-    return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
+    return this.filtersService.createQueryParamsKey<TaskSummaryEnumField>(orGroup, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS);
   }
 
   #createQueryParamFilterKey(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number): string | null {
     if (filter.field && filter.operator && filter.for) {
-      return this.#filtersService.createQueryParamsKey<TaskSummaryEnumField | TaskOptionEnumField>(orGroup, filter.for, filter.operator, (filter.field as TaskSummaryEnumField | TaskOptionEnumField));
+      return this.filtersService.createQueryParamsKey<TaskSummaryEnumField | TaskOptionEnumField>(orGroup, filter.for, filter.operator, (filter.field as TaskSummaryEnumField | TaskOptionEnumField));
     }
     return null;
   }

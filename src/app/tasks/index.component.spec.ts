@@ -186,7 +186,7 @@ describe('Tasks Index Component', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...defaultCustomColumns]);
       expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...defaultCustomColumns]);
       expect(component.customColumns).toEqual(defaultCustomColumns);
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Task ID`,
           key: 'id',
@@ -300,7 +300,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Task ID`,
           key: 'id',
@@ -337,7 +337,7 @@ describe('Tasks Index Component', () => {
     });
 
     it('should update displayed columns', () => {
-      expect(component.displayedColumns).toEqual([
+      expect(component.displayedColumns()).toEqual([
         {
           name: $localize`Task ID`,
           key: 'id',

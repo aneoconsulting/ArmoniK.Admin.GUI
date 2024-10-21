@@ -67,9 +67,9 @@ button {
   ],
 })
 export class FiltersToolbarComponent<T extends number, U extends number | null = null> {
-  #iconsService = inject(IconsService);
-  #dialog = inject(MatDialog);
-  #viewContainerRef = inject(ViewContainerRef);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialog = inject(MatDialog);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   hasFilters = false;
   hasOneOrFilter = false;
@@ -93,7 +93,7 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   @Output() showFiltersChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   toggleShow(): void {
@@ -117,13 +117,13 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   }
 
   openFiltersDialog(): void {
-    const dialogRef = this.#dialog.open<FiltersDialogComponent<T, U>, FiltersDialogData<T, U>, FiltersDialogResult<T, U>>(FiltersDialogComponent, {
+    const dialogRef = this.dialog.open<FiltersDialogComponent<T, U>, FiltersDialogData<T, U>, FiltersDialogResult<T, U>>(FiltersDialogComponent, {
       data: {
         filtersOr: Array.from(this.filters),
         customColumns: this.customColumns
       },
       // @see https://www.jeffryhouser.com/index.cfm/2021/9/28/Why-wont-my-MatDialog-Inject-my-Service to understand issue solved here.
-      viewContainerRef: this.#viewContainerRef,
+      viewContainerRef: this.viewContainerRef,
     });
 
     dialogRef.afterClosed().subscribe(result => {
