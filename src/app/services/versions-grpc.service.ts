@@ -4,10 +4,10 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class VersionsGrpcService {
-  #versionService = inject(VersionsClient);
+  private readonly versionService = inject(VersionsClient);
 
   listVersions$(): Observable<ListVersionsResponse> {
     const request = new ListVersionsRequest();
-    return this.#versionService.listVersions(request);
+    return this.versionService.listVersions(request);
   }
 }

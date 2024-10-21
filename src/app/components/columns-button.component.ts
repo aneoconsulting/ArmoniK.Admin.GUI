@@ -36,7 +36,7 @@ export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | n
 
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
 
-  constructor(private _dialog: MatDialog) { }
+  constructor(private readonly _dialog: MatDialog) { }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);

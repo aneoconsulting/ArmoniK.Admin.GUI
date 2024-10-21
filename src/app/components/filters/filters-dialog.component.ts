@@ -45,8 +45,8 @@ import { FiltersDialogOrComponent } from './filters-dialog-or.component';
   ],
 })
 export class FiltersDialogComponent<T extends number, U extends number | null = null> implements OnInit {
-  #iconsService = inject(IconsService);
-  #dialogRef = inject(MatDialogRef<FiltersDialogComponent<T, U>>);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialogRef = inject(MatDialogRef<FiltersDialogComponent<T, U>>);
 
   filtersOr: FiltersOr<T, U> = [];
   customColumns: CustomColumn[];
@@ -84,10 +84,10 @@ export class FiltersDialogComponent<T extends number, U extends number | null = 
   }
 
   onNoClick(): void {
-    this.#dialogRef.close();
+    this.dialogRef.close();
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 }

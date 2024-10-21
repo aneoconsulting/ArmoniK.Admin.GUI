@@ -4,7 +4,7 @@
   </button>
 } @else if (actions[0].condition && actions[0].condition(element) || !actions[0].condition) {
   <button mat-button (click)="actions[0].action$.next(element)">
-    <mat-icon>{{ actions[0].icon }}</mat-icon>
+    <mat-icon [fontIcon]="getIcon(actions[0].icon)"/>
     <p>{{ actions[0].label }}</p>
   </button>
 }
