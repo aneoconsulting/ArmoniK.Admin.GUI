@@ -21,26 +21,26 @@ import { StorageService } from '@services/storage.service';
   ]
 })
 export class ChangeLanguageButtonComponent implements OnInit {
-  #defaultConfigService = inject(DefaultConfigService);
-  #router = inject(Router);
-  #iconsService = inject(IconsService);
-  #storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly router = inject(Router);
+  private readonly iconsService = inject(IconsService);
+  private readonly storageService = inject(StorageService);
 
   selectedLanguage: string;
   availableLanguages: string[];
   languageButtonTip = $localize`Change language`;
 
   ngOnInit(): void {
-    this.selectedLanguage = this.#defaultConfigService.defaultLanguage;
-    this.availableLanguages = this.#defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
+    this.selectedLanguage = this.defaultConfigService.defaultLanguage;
+    this.availableLanguages = this.defaultConfigService.availableLanguages.filter(language => language !== this.selectedLanguage);
   }
   
   getLanguageFromUrl(): string | undefined {
     const location = window.location.pathname.split('/');
     let urlLanguage: undefined | string = undefined;
     let i = 0;
-    while (i < this.#defaultConfigService.availableLanguages.length && !urlLanguage) {
-      const language = this.#defaultConfigService.availableLanguages[i];
+    while (i < this.defaultConfigService.availableLanguages.length && !urlLanguage) {
+      const language = this.defaultConfigService.availableLanguages[i];
       urlLanguage = location.find(path => path === language);
       i++;
     }
@@ -48,14 +48,14 @@ export class ChangeLanguageButtonComponent implements OnInit {
   }
 
   setLanguage(language: string) {
-    this.#storageService.setItem('language', language);
+    this.storageService.setItem('language', language);
   }
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   getRoute() {
-    return this.#router.url;
+    return this.router.url;
   }
 }

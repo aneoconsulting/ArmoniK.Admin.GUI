@@ -29,11 +29,11 @@ import { ManageExternalServicesDialogComponent } from './manage-external-service
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExternalServicesComponent implements OnInit {
-  readonly navigationService = inject(NavigationService);
-  readonly iconsService = inject(IconsService);
-  readonly dialog = inject(MatDialog);
+  private readonly navigationService = inject(NavigationService);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialog = inject(MatDialog);
 
-  private _externalServices = signal<ExternalService[]>([]);
+  private readonly _externalServices = signal<ExternalService[]>([]);
 
   set externalServices(entries: ExternalService[] | undefined) {
     if (entries) {

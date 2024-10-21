@@ -30,7 +30,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   abstract tableType: TableType;
 
-  displayedColumns: TableColumn<T, O>[] = [];
+  readonly displayedColumns = signal<TableColumn<T, O>[]>([]);
   displayedColumnsKeys: ColumnKey<T, O>[] = [];
   availableColumns: ColumnKey<T, O>[] = [];
   lockColumns: boolean = false;
@@ -93,7 +93,9 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>);
+    this.displayedColumns.set(
+      this.displayedColumnsKeys.map(key => this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>)
+    );
   }
 
   getIcon(name: string): string {
@@ -202,18 +204,20 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
   }
 
   override updateDisplayedColumns(): void {
-    this.displayedColumns = this.displayedColumnsKeys.map(key => {
-      if (key.toString().includes('options.options.')) {
-        const customColumnName = key.toString().replaceAll('options.options.', '');
-        return {
-          key: key,
-          name: customColumnName,
-          sortable: true,
-        } as TableColumn<T, O>;
-      } else {
-        return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
-      }
-    });
+    this.displayedColumns.set(
+      this.displayedColumnsKeys.map(key => {
+        if (key.toString().includes('options.options.')) {
+          const customColumnName = key.toString().replaceAll('options.options.', '');
+          return {
+            key: key,
+            name: customColumnName,
+            sortable: true,
+          } as TableColumn<T, O>;
+        } else {
+          return this.indexService.availableTableColumns.find(column => column.key === key) as TableColumn<T, O>;
+        }
+      })
+    );
   }
 
   addCustomColumn(): void {

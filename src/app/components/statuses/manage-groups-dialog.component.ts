@@ -130,15 +130,15 @@ ul {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageGroupsDialogComponent {
-  private _groups = signal<TasksStatusesGroup[]>([]);
+  private readonly _groups = signal<TasksStatusesGroup[]>([]);
 
   get groups(): TasksStatusesGroup[] {
     return this._groups();
   }
 
-  #dialog = inject(MatDialog);
-  #iconsServices = inject(IconsService);
-  #tasksStatusesService = inject(TasksStatusesService);
+  private readonly dialog = inject(MatDialog);
+  private readonly iconsServices = inject(IconsService);
+  private readonly tasksStatusesService = inject(TasksStatusesService);
 
   constructor(
     public _dialogRef: MatDialogRef<ManageGroupsDialogComponent, ManageGroupsDialogResult>,
@@ -148,11 +148,11 @@ export class ManageGroupsDialogComponent {
   }
 
   getIcon(name: string): string {
-    return this.#iconsServices.getIcon(name);
+    return this.iconsServices.getIcon(name);
   }
 
   statusToLabel(status: TaskStatus): string {
-    return this.#tasksStatusesService.statusToLabel(status);
+    return this.tasksStatusesService.statusToLabel(status);
   }
 
   onDrop(event: CdkDragDrop<TaskStatus[]>) {
@@ -169,9 +169,9 @@ export class ManageGroupsDialogComponent {
   }
 
   openAddStatusGroupModal(): void {
-    const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup> = this.#dialog.open(AddStatusesGroupDialogComponent, {
+    const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup> = this.dialog.open(AddStatusesGroupDialogComponent, {
       data: {
-        statuses: this.#tasksStatusesService.statusesRecord(),
+        statuses: this.tasksStatusesService.statusesRecord(),
       }
     });
 
@@ -183,10 +183,10 @@ export class ManageGroupsDialogComponent {
   }
 
   openEditStatusGroupModal(group: TasksStatusesGroup): void {
-    const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup> = this.#dialog.open(EditStatusesGroupDialogComponent, {
+    const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup> = this.dialog.open(EditStatusesGroupDialogComponent, {
       data: {
         group,
-        statuses: this.#tasksStatusesService.statusesRecord(),
+        statuses: this.tasksStatusesService.statusesRecord(),
       }
     });
 

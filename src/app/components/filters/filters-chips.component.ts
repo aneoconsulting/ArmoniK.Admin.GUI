@@ -28,9 +28,9 @@ import { UtilsService } from '@services/utils.service';
   ],
 })
 export class FiltersChipsComponent<T extends number, U extends number | null = null> {
-  #filtersService = inject(FiltersService);
-  #utilsService = inject(UtilsService<T, U>);
-  #dataFiltersService = inject(DATA_FILTERS_SERVICE);
+  private readonly filtersService = inject(FiltersService);
+  private readonly utilsService = inject(UtilsService<T, U>);
+  private readonly dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
   @Input({ required: true }) filtersAnd: FiltersAnd<T, U> = [];
 
@@ -42,7 +42,7 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
     
     let label: string;
     if (filter.for !== 'custom') {
-      label = this.#dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
+      label = this.dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
     } else {
       label = (filter.field as string);
     }
@@ -50,12 +50,12 @@ export class FiltersChipsComponent<T extends number, U extends number | null = n
     if (filter.value === null)
       return label + ' ' + $localize`has no value`;
 
-    const filtersDefinitions = this.#dataFiltersService.retrieveFiltersDefinitions();
-    const type = this.#utilsService.recoverType(filter, filtersDefinitions);
-    const operator = this.#filtersService.findOperators(type)[filter.operator as number];
+    const filtersDefinitions = this.dataFiltersService.retrieveFiltersDefinitions();
+    const type = this.utilsService.recoverType(filter, filtersDefinitions);
+    const operator = this.filtersService.findOperators(type)[filter.operator as number];
 
     if (type === 'status') {
-      const statuses = this.#utilsService.recoverStatuses(filter, filtersDefinitions);
+      const statuses = this.utilsService.recoverStatuses(filter, filtersDefinitions);
       const status = statuses.find(status => status.key.toString() === filter.value?.toString());
       return `${label} ${operator} ${status?.value}`;
     }

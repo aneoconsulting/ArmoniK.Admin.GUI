@@ -326,7 +326,7 @@ describe('SessionsLineComponent', () => {
   });
 
   describe('addCustomColumn', () => {
-    const newCustom: CustomColumn[] = ['options.options.newColumn', 'options.options.FastCompute'];
+    const newCustom: CustomColumn[] = ['options.options.newColumn'];
 
     beforeEach(() => {
       mockMatDialog.open.mockReturnValueOnce({
@@ -336,7 +336,6 @@ describe('SessionsLineComponent', () => {
       });
       component.customColumns = customColumns;
       component.availableColumns = [...defaultColumns, ...customColumns];
-      component.displayedColumnsKeys.filter(c => c === 'options.options.FastCompute');
       component.addCustomColumn();
     });
 

@@ -7,14 +7,14 @@ export type TableTasksByStatus = 'applications' | 'sessions' | 'partitions';
 
 @Injectable()
 export class TasksByStatusService {
-  readonly #key = 'tasks-by-status';
+  readonly key = 'tasks-by-status';
 
-  #defaultConfigService = inject(DefaultConfigService);
-  #storageService = inject(StorageService);
+  private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly storageService = inject(StorageService);
 
-  readonly defaultStatuses: TasksStatusesGroup[] = this.#defaultConfigService.defaultTasksByStatus;
+  readonly defaultStatuses: TasksStatusesGroup[] = this.defaultConfigService.defaultTasksByStatus;
   restoreStatuses(table: TableTasksByStatus): TasksStatusesGroup[] {
-    return this.#storageService.getItem<TasksStatusesGroup[]>(`${table}-${this.#key}`, true) as TasksStatusesGroup[] | null ?? this.defaultStatuses;
+    return this.storageService.getItem<TasksStatusesGroup[]>(`${table}-${this.key}`, true) as TasksStatusesGroup[] | null ?? this.defaultStatuses;
   }
   /**
    * Save colors corresponding to tasks statuses for applications, sessions or partitions
@@ -22,6 +22,6 @@ export class TasksByStatusService {
    * @param statuses array of TaskStatusColored objects
    */
   saveStatuses(table: TableTasksByStatus, statuses: TasksStatusesGroup[]): void {
-    this.#storageService.setItem(`${table}-${this.#key}`, statuses);
+    this.storageService.setItem(`${table}-${this.key}`, statuses);
   }
 }

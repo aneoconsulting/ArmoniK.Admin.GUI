@@ -10,7 +10,7 @@ import { QueryParamsOptionsKey } from '@app/types/query-params';
  */
 @Injectable()
 export class TableURLService {
-  #route = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
 
   /**
    * Returns the wanted table options from the url.
@@ -81,7 +81,7 @@ export class TableURLService {
    * @returns all the keys contained in the route. 
    */
   getQueryParamKeys(): string[] {
-    return this.#route.snapshot.queryParamMap.keys;
+    return this.route.snapshot.queryParamMap.keys;
   }
 
   /**
@@ -91,7 +91,7 @@ export class TableURLService {
    * @returns the data
    */
   getQueryParam<T>(key: string, parse = true) {
-    const data = this.#route.snapshot.queryParamMap.get(key);
+    const data = this.route.snapshot.queryParamMap.get(key);
 
     if(data && parse) {
       return JSON.parse(data) as T;

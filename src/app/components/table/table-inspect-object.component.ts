@@ -27,16 +27,16 @@ export class TableInspectObjectComponent
   @Input({ required: true }) object: Record<string, unknown> | undefined;
   @Input({ required: true }) label: string;
 
-  #iconsService = inject(IconsService);
-  #dialog = inject(MatDialog);
+  private readonly iconsService = inject(IconsService);
+  private readonly dialog = inject(MatDialog);
 
   getIcon(name: string): string {
-    return this.#iconsService.getIcon(name);
+    return this.iconsService.getIcon(name);
   }
 
   onViewObject(): void {
     if (this.object) {
-      this.#dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
+      this.dialog.open<TableInspectObjectDialogComponent, TableInspectObjectDialogData, void>(TableInspectObjectDialogComponent, {
         data: {
           label: this.label,
           object: this.object,
