@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +17,7 @@ import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, interval } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
@@ -88,9 +88,10 @@ main {
     ChangeLanguageButtonComponent,
     HealthCheckComponent,
     ExternalServicesComponent,
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavigationComponent implements OnInit{
+export class NavigationComponent implements OnInit, OnDestroy {
   version = this.getVersion();
 
   private readonly breakpointObserver = inject(BreakpointObserver);
@@ -106,6 +107,18 @@ export class NavigationComponent implements OnInit{
   coreVersion = this.versionsService.core;
   settingsItem = $localize`Settings`;
 
+  checkGreetingsSubscription: Subscription;
+
+  private _greetings = signal<string>('');
+
+  set greetings(value: string) {
+    this._greetings.set(value);
+  }
+
+  get greetings() {
+    return this._greetings();
+  }
+
   sidebar = this.navigationService.currentSidebar;
   sideBarOpened = true;
   
@@ -117,6 +130,12 @@ export class NavigationComponent implements OnInit{
 
   ngOnInit(): void {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
+    this.verifyGreetings();
+    this.checkGreetingsSubscription = interval(60000).subscribe(() => this.verifyGreetings());
+  }
+
+  ngOnDestroy(): void {
+    this.checkGreetingsSubscription.unsubscribe();
   }
 
   getVersion(): string {
@@ -127,15 +146,15 @@ export class NavigationComponent implements OnInit{
     return this.iconsService.getIcon(name);
   }
 
-  greeting() {
+  private verifyGreetings() {
     const hour = new Date().getHours();
     const username = this.userService.user ? this.userService.user.username : '';
-    if (hour < 12) {
-      return $localize`Good morning` + (username !== '' ? ', ' + username : '');
+    if (hour <= 12) {
+      this.greetings = $localize`Good morning` + (username !== '' ? ', ' + username : '');
     } else if (hour < 18) {
-      return $localize`Good afternoon` + (username !== '' ? ', ' + username : '');
+      this.greetings = $localize`Good afternoon` + (username !== '' ? ', ' + username : '');
     } else {
-      return $localize`Good evening` + (username !== '' ? ', ' + username : '');
+      this.greetings = $localize`Good evening` + (username !== '' ? ', ' + username : '');
     }
   }
 

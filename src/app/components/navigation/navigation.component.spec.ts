@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ExternalService } from '@app/types/external-service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -9,9 +9,17 @@ import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
-import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
+import { BehaviorSubject, Subject, lastValueFrom, of } from 'rxjs';
 import { NavigationComponent } from './navigation.component';
 import pkg from '../../../../package.json';
+
+
+// Creating a way to control the interval without having to fake the time.
+const fakeIntervalSubject = new Subject<void>();
+jest.mock('rxjs', () => ({
+  ...jest.requireActual('rxjs'),
+  interval: () => fakeIntervalSubject,
+}));
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -111,23 +119,34 @@ describe('NavigationComponent', () => {
     expect(component.sidebar).toEqual(currentSidebar);
   });
   
-  it('should greet correctly', () => {
+  it('should greet correctly', fakeAsync(() => {
+
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
-    expect(component.greeting()).toEqual('Good morning');
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T12:00:00'));
-    expect(component.greeting()).toEqual('Good afternoon');
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T18:00:00'));
-    expect(component.greeting()).toEqual('Good evening');
+    fakeIntervalSubject.next();
+    expect(component.greetings).toEqual('Good morning');
+    
+    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
+    fakeIntervalSubject.next();
+    expect(component.greetings).toEqual('Good afternoon');
+    
+    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T19:00:00'));
+    fakeIntervalSubject.next();
+    expect(component.greetings).toEqual('Good evening');
 
     mockUserService.user = {
       username: 'user'
     };
-    expect(component.greeting()).toEqual('Good evening, user');
+    fakeIntervalSubject.next();
+    expect(component.greetings).toEqual('Good evening, user');
+
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
-    expect(component.greeting()).toEqual('Good morning, user');
-    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T12:00:00'));
-    expect(component.greeting()).toEqual('Good afternoon, user');
-  });
+    fakeIntervalSubject.next();
+    expect(component.greetings).toEqual('Good morning, user');
+
+    jest.useFakeTimers().setSystemTime(new Date('2020-01-01T13:00:00'));
+    fakeIntervalSubject.next();
+    expect(component.greetings).toEqual('Good afternoon, user');
+  }));
 
   describe('toggle sidebar', () => {
     it('should toggle sidebar', () => {
