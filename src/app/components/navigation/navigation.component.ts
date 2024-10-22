@@ -109,7 +109,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   checkGreetingsSubscription: Subscription;
 
-  private _greetings = signal<string>('');
+  private readonly _greetings = signal<string>('');
 
   set greetings(value: string) {
     this._greetings.set(value);
