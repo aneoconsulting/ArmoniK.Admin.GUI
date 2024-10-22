@@ -80,7 +80,7 @@ describe('TaskByStatusLineComponent', () => {
       {status: TaskStatus.TASK_STATUS_PROCESSING, count: 145}
     ]);
     expect(component.total).toEqual(158);
-    expect(component.loading).toBeFalsy();
+    expect(component.loading()).toBeFalsy();
   });
 
   it('should get required icons', () => {
