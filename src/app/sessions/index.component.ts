@@ -9,6 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
+import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskOptions } from '@app/tasks/types';
@@ -20,6 +21,8 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
@@ -28,7 +31,9 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { SessionsTableComponent } from './components/table.component';
+import { SessionsDataService } from './services/sessions-data.service';
 import { SessionsFiltersService } from './services/sessions-filters.service';
+import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
 import { SessionsStatusesService } from './services/sessions-statuses.service';
 import { SessionRaw } from './types';
@@ -60,6 +65,11 @@ import { SessionRaw } from './types';
     MatDialog,
     DashboardIndexService,
     DashboardStorageService,
+    SessionsDataService,
+    SessionsGrpcService,
+    NotificationService,
+    TasksGrpcService,
+    GrpcSortFieldService,
   ],
   imports: [
     PageHeaderComponent,
@@ -76,6 +86,7 @@ import { SessionRaw } from './types';
 export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
+  readonly tableDataService = inject(SessionsDataService);
 
   tableType: TableType = 'Sessions';
 
@@ -89,5 +100,14 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  checkIfDurationDisplayed() {
+    this.tableDataService.isDurationDisplayed = this.displayedColumnsKeys.includes('duration');
+  }
+
+  override refresh() {
+    this.checkIfDurationDisplayed();
+    super.refresh();
   }
 }

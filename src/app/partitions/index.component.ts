@@ -17,6 +17,7 @@ import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -26,6 +27,7 @@ import { TableService } from '@services/table.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
 import { UtilsService } from '@services/utils.service';
 import { PartitionsTableComponent } from './components/table.component';
+import PartitionsDataService from './services/partitions-data.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
 import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
@@ -57,6 +59,9 @@ import { PartitionRaw } from './types';
     },
     DashboardIndexService,
     DashboardStorageService,
+    PartitionsDataService,
+    GrpcSortFieldService,
+    PartitionsGrpcService,
   ],
   imports: [
     PageHeaderComponent,
@@ -68,13 +73,13 @@ import { PartitionRaw } from './types';
     MatButtonModule,
     MatSnackBarModule,
     MatMenuModule,
-    PartitionsTableComponent
+    PartitionsTableComponent,
   ]
 })
 export class IndexComponent extends TableHandler<PartitionRaw, PartitionRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
-
   readonly filtersService = inject(PartitionsFiltersService);
   readonly indexService = inject(PartitionsIndexService);
+  readonly tableDataService = inject(PartitionsDataService);
 
   tableType: TableType = 'Partitions';
 

@@ -6,14 +6,14 @@
 <mat-toolbar>
   <mat-toolbar-row>
     <app-table-index-actions-toolbar
-      [loading]="loading()"
+      [loading]="loading"
       [refreshTooltip]="autoRefreshTooltip()"
       [intervalValue]="intervalValue"
       [columnsLabels]="columnsLabels"
       [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
+      (refresh)="refresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
@@ -44,10 +44,7 @@
 </mat-toolbar>
 
 <app-sessions-table
-  [filters$]="filters$"
   [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
-  [options]="options"
-  [refresh$]="refresh$"
-  [loading]="loading"
+  (optionsUpdate)="onOptionsChange()"
 />

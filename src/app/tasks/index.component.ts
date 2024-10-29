@@ -26,6 +26,7 @@ import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ManageViewInLogsDialogComponent } from './components/manage-view-in-logs-dialog.component';
 import { TasksTableComponent } from './components/table.component';
+import TasksDataService from './services/tasks-data.service';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksIndexService } from './services/tasks-index.service';
@@ -69,13 +70,14 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     DashboardIndexService,
     DashboardStorageService,
     GrpcSortFieldService,
+    TasksDataService,
   ],
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
-  readonly tasksGrpcService = inject(TasksGrpcService);
   readonly notificationService = inject(NotificationService);
   readonly indexService = inject(TasksIndexService);
   readonly filtersService = inject(TasksFiltersService);
+  readonly tableDataService = inject(TasksDataService);
 
   tableType: TableType = 'Tasks';
 
@@ -122,16 +124,7 @@ export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSu
   }
 
   cancelTasks(tasksIds: string[]): void {
-    this.tasksGrpcService.cancel$(tasksIds).subscribe({
-      complete: () => {
-        this.notificationService.success('Tasks canceled');
-        this.refresh$.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.notificationService.error('Unable to cancel tasks');
-      },
-    });
+    this.tableDataService.cancelTasks(tasksIds);
   }
 
   manageViewInLogs(): void {
