@@ -13,17 +13,13 @@ import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
+import PartitionsDataService from './services/partitions-data.service';
 import { PartitionsFiltersService } from './services/partitions-filters.service';
-import { PartitionsGrpcService } from './services/partitions-grpc.service';
 import { PartitionsIndexService } from './services/partitions-index.service';
 import { PartitionRaw } from './types';
 
 describe('Partitions Index Component', () => {
   let component: IndexComponent;
-
-  const mockPartitionsGrpcService = {
-    cancel$: jest.fn(() => of()),
-  };
 
   const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
 
@@ -87,6 +83,12 @@ describe('Partitions Index Component', () => {
       key: 'podMax',
       sortable: true,
     },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const defaultIntervalValue = 10;
@@ -98,6 +100,17 @@ describe('Partitions Index Component', () => {
   };
 
   const defaultShowFilters = false;
+
+  const mockPartitionsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
+  };
 
   const mockPartitionsIndexService = {
     restoreViewInLogs: jest.fn(() => defaultViewInLogs),
@@ -114,7 +127,7 @@ describe('Partitions Index Component', () => {
     resetColumns: jest.fn(() => defaultColumns),
   };
 
-  const mockTaskFiltersService = {
+  const mockPartititionsFiltersService = {
     restoreFilters: jest.fn(() => []),
     saveFilters: jest.fn(),
     resetFilters: jest.fn(() => []),
@@ -139,11 +152,11 @@ describe('Partitions Index Component', () => {
         IconsService,
         AutoRefreshService,
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
-        { provide: PartitionsGrpcService, useValue: mockPartitionsGrpcService },
+        { provide: PartitionsDataService, useValue: mockPartitionsDataService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         { provide: Router, useValue: mockRouter },
-        { provide: PartitionsFiltersService, useValue: mockTaskFiltersService },
+        { provide: PartitionsFiltersService, useValue: mockPartititionsFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
       ]
@@ -154,6 +167,10 @@ describe('Partitions Index Component', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockPartitionsDataService.loading);
   });
 
   it('should update columns keys', () => {
@@ -196,7 +213,6 @@ describe('Partitions Index Component', () => {
 
     it('should initialise filters', () => {
       expect(component.filters).toEqual([]);
-      expect(component.filters$).toBeDefined();
     });
 
     it('should init options', () => {
@@ -220,9 +236,8 @@ describe('Partitions Index Component', () => {
   });
 
   it('should refresh', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onRefresh();
-    expect(spy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
   });
 
   describe('On interval value change', () => {
@@ -238,9 +253,8 @@ describe('Partitions Index Component', () => {
     });
 
     it('should refresh if the value is not null', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
       component.onIntervalValueChange(5);
-      expect(spy).toHaveBeenCalled();
+      expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
     });
 
     it('should stop the interval if the value is 0', () => {
@@ -256,17 +270,23 @@ describe('Partitions Index Component', () => {
   });
 
   describe('On columns change', () => {
-    const newColumns: ColumnKey<PartitionRaw>[] = ['id', 'count'];
+    const newColumns: ColumnKey<PartitionRaw>[] = ['id', 'count', 'select'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(newColumns);
+      expect(component.displayedColumnsKeys).toEqual(['select', 'id', 'count']);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
         {
           name: $localize`ID`,
           key: 'id',
@@ -284,7 +304,7 @@ describe('Partitions Index Component', () => {
     });
 
     it('should save columns', () => {
-      expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(['id', 'count']);
+      expect(mockPartitionsIndexService.saveColumns).toHaveBeenCalledWith(['select', 'id', 'count']);
     });
   });
 
@@ -326,6 +346,20 @@ describe('Partitions Index Component', () => {
     });
   });
 
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(mockPartitionsIndexService.saveOptions).toHaveBeenCalledWith(mockPartitionsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockPartitionsDataService.refresh$.next).toHaveBeenCalled();
+    });
+  });
+
   describe('On Filters Change', () => {
     const newFilters: FiltersOr<PartitionRawEnumField> = [
       [
@@ -337,11 +371,7 @@ describe('Partitions Index Component', () => {
         }
       ]
     ];
-
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
     });
 
@@ -350,23 +380,16 @@ describe('Partitions Index Component', () => {
     });
 
     it('should save filters', () => {
-      expect(mockTaskFiltersService.saveFilters).toHaveBeenCalledWith(newFilters);
+      expect(mockPartititionsFiltersService.saveFilters).toHaveBeenCalledWith(newFilters);
     });
 
     it('should update page index', () => {
       expect(component.options.pageIndex).toEqual(0);
     });
-
-    it('should emit filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith(newFilters);
-    });
   });
 
   describe('On Filter Reset', () => {
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
     });
 
@@ -376,10 +399,6 @@ describe('Partitions Index Component', () => {
 
     it('should reset page index', () => {
       expect(component.options.pageIndex).toEqual(0);
-    });
-
-    it('should emit empty filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith([]);
     });
   });
 
@@ -443,7 +462,7 @@ describe('Partitions Index Component', () => {
     it('should save show filters', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
-      expect(mockTaskFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+      expect(mockPartititionsFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
 });

@@ -1,22 +1,17 @@
-import { ApplicationRawEnumField, FilterStringOperator, TaskOptionEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ColumnKey } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
-import { CacheService } from '@services/cache.service';
-import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { ApplicationsTableComponent } from './table.component';
-import { ApplicationsGrpcService } from '../services/applications-grpc.service';
-import { ApplicationsIndexService } from '../services/applications-index.service';
+import ApplicationsDataService from '../services/applications-data.service';
 import { ApplicationRaw } from '../types';
 
 describe('TasksTableComponent', () => {
@@ -50,21 +45,6 @@ describe('TasksTableComponent', () => {
     }
   ];
 
-  const mockApplicationsIndexService = {
-    isActionsColumn: jest.fn(),
-    isTaskIdColumn: jest.fn(),
-    isStatusColumn: jest.fn(),
-    isDateColumn: jest.fn(),
-    isDurationColumn: jest.fn(),
-    isObjectColumn: jest.fn(),
-    isSelectColumn: jest.fn(),
-    isSimpleColumn: jest.fn(),
-    isNotSortableColumn: jest.fn(),
-    columnToLabel: jest.fn(),
-    saveColumns: jest.fn(),
-    saveOptions: jest.fn(),
-  };
-
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
@@ -72,12 +52,6 @@ describe('TasksTableComponent', () => {
 
   const mockClipBoard = {
     copy: jest.fn()
-  };
-
-  const applications = { applications: [{ name: 'application1', version: 'version1' }, { name: 'application2', version: 'version2' }, { name: 'application3', version: 'version3' }], total: 3 };
-  const mockApplicationsGrpcService = {
-    list$: jest.fn(() => of(applications)),
-    cancel$: jest.fn(() => of({})),
   };
 
   const defaultStatusesGroups: TasksStatusesGroup[] = [
@@ -125,20 +99,22 @@ describe('TasksTableComponent', () => {
     navigate: jest.fn()
   };
 
-  const cachedApplications = { applications: [{ name: 'application1', version: 'version1' }, { name: 'application2', version: 'version2' }], total: 2 };
-  const mockCacheService = {
-    get: jest.fn(() => cachedApplications),
-    save: jest.fn()
+  const mockApplicationsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ApplicationsTableComponent,
-        { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
-        { provide: ApplicationsGrpcService, useValue: mockApplicationsGrpcService },
-        FiltersService,
-        { provide: CacheService, useValue: mockCacheService },
+        { provide: ApplicationsDataService, useValue: mockApplicationsDataService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: MatDialog, useValue: mockMatDialog },
@@ -149,19 +125,7 @@ describe('TasksTableComponent', () => {
     }).inject(ApplicationsTableComponent);
 
     component.displayedColumns = displayedColumns;
-    component.filters$ = new BehaviorSubject<FiltersOr<ApplicationRawEnumField>>([]);
-    component.options = {
-      pageIndex: 0,
-      pageSize: 10,
-      sort: {
-        active: 'name',
-        direction: 'desc'
-      }
-    };
-    component.refresh$ = new Subject();
-    component.loading = signal(false);
     component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should run', () => {
@@ -169,150 +133,24 @@ describe('TasksTableComponent', () => {
   });
 
   describe('initialisation', () => {
-    it('should get cached data', () => {
-      expect(mockCacheService.get).toHaveBeenCalled();
-    });
-  });
-
-  describe('loadFromCache', () => {
-    beforeEach(() => {
-      component.loadFromCache();
-    });
-
-    it('should update total data with cached one', () => {
-      expect(component.total).toEqual(cachedApplications.total);
-    });
-    
-    it('should update data with cached one', () => {
-      expect(component.data()).toEqual([
-        {
-          raw: {
-            name: 'application1',
-            version: 'version1'
-          } as ApplicationRaw,
-          queryTasksParams: {
-            '0-options-5-0': 'application1',
-            '0-options-6-0': 'version1'
-          },
-          filters: [[
-            { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application1' },
-            { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version1' }
-          ]]
-        },
-        {
-          raw: {
-            name: 'application2',
-            version: 'version2'
-          } as ApplicationRaw,
-          queryTasksParams: {
-            '0-options-5-0': 'application2',
-            '0-options-6-0': 'version2'
-          },
-          filters: [[
-            { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application2' },
-            { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version2' }
-          ]]
-        }
-      ]);
-    });
-  });
-
-  it('should update data on refresh', () => {
-    component.refresh$.next();
-    expect(component.data()).toEqual<ApplicationData[]>([
-      {
-        raw: {
-          name: 'application1',
-          version: 'version1'
-        } as ApplicationRaw,
-        queryTasksParams: {
-          '0-options-5-0': 'application1',
-          '0-options-6-0': 'version1'
-        },
-        filters: [[
-          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application1' },
-          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version1' }
-        ]]
-      },
-      {
-        raw: {
-          name: 'application2',
-          version: 'version2'
-        } as ApplicationRaw,
-        queryTasksParams: {
-          '0-options-5-0': 'application2',
-          '0-options-6-0': 'version2'
-        },
-        filters: [[
-          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application2' },
-          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version2' }
-        ]]
-      },
-      {
-        raw: {
-          name: 'application3',
-          version: 'version3'
-        } as ApplicationRaw,
-        queryTasksParams: {
-          '0-options-5-0': 'application3',
-          '0-options-6-0': 'version3'
-        },
-        filters: [[
-          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'application3' },
-          { for: 'options', field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_VERSION, operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, value: 'version3' }
-        ]]
-      }
-    ]);
-  });
-
-  it('should cache the received data', () => {
-    component.refresh$.next();
-    expect(mockCacheService.save).toHaveBeenCalled();
-  });
-
-  it('should return columns keys', () => {
-    expect(component.columnKeys).toEqual(displayedColumns.map(column => column.key));
-  });
-
-  describe('on list error', () => {
-    beforeEach(() => {
-      mockApplicationsGrpcService.list$.mockReturnValueOnce(throwError(() => new Error()));
-    });
-
-    it('should log error', () => {
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
-      component.refresh$.next();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should send a notification', () => {
-      component.refresh$.next();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-
-    it('should send empty data', () => {
-      component.refresh$.next();
-      expect(component.data()).toEqual([]);
+    it('init statuses', () => {
+      expect(component.statusesGroups).toEqual(defaultStatusesGroups);
     });
   });
 
   describe('options changes', () => {
-    it('should refresh data', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
+    it('should emit', () => {
+      const spy = jest.spyOn(component.optionsUpdate, 'emit');
       component.onOptionsChange();
       expect(spy).toHaveBeenCalled();
     });
-
-    it('should save options', () => {
-      component.onOptionsChange();
-      expect(mockApplicationsIndexService.saveOptions).toHaveBeenCalled();
-    });
   });
 
-  test('onDrop should call ApplicationsIndexService', () => {
+  test('onDrop should emit', () => {
+    const spy = jest.spyOn(component.columnUpdate, 'emit');
     const newColumns: ColumnKey<ApplicationRaw>[] = ['actions', 'name', 'namespace', 'version'];
     component.onDrop(newColumns);
-    expect(mockApplicationsIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
+    expect(spy).toHaveBeenCalledWith(newColumns);
   });
 
   describe('personnalizeTasksByStatus', () => {
@@ -337,102 +175,6 @@ describe('TasksTableComponent', () => {
     expect(component.createViewSessionsQueryParams(data.name, data.version)).toEqual({
       '0-options-5-0': data.name,
       '0-options-6-0': data.version
-    });
-  });
-
-  describe('createTasksByStatysQueryParams', () => {
-    it('should create params for a task by status redirection', () => {
-      const data = {
-        name: 'name',
-        version: 'version'
-      };
-      expect(component.createTasksByStatusQueryParams(data.name, data.version)).toEqual({
-        '0-options-5-0': data.name,
-        '0-options-6-0': data.version
-      });
-    });
-
-    it('should create params for each filter', () => {
-      component.filters = [
-        [
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_NOT_EQUAL,
-            for: 'root',
-            value: 'name'
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            for: 'root',
-            value: 'service'
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            for: 'root',
-            value: 'shouldNotAppearNamespace',
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_UNSPECIFIED,
-            operator: null,
-            for: 'root',
-            value: null
-          }
-        ],
-        [
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_UNSPECIFIED,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
-            for: 'root',
-            value: 'shouldNotAppear'
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
-            for: 'root',
-            value: 'version'
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
-            for: 'root',
-            value: 'namespace',
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            for: 'root',
-            value: 'shouldNotAppearName'
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_SERVICE,
-            operator: null,
-            for: 'root',
-            value: 'shouldNotAppearService'
-          },
-          {
-            field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_VERSION,
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            for: 'root',
-            value: null,
-          }
-        ]
-      ];
-      const data = {
-        name: 'nameData',
-        version: 'versionData'
-      };
-      expect(component.createTasksByStatusQueryParams(data.name, data.version)).toEqual({
-        '0-options-5-1': 'name',
-        '0-options-8-0': 'service',
-        '0-options-5-0': data.name,
-        '0-options-6-0': data.version,
-        '1-options-6-2': 'version',
-        '1-options-7-4': 'namespace',
-        '1-options-5-0': data.name,
-        '1-options-6-0': data.version,
-      });
     });
   });
 
@@ -468,5 +210,29 @@ describe('TasksTableComponent', () => {
   it('should track an application by its name and version', () => {
     const application = {raw: { name: 'application', version: '0.1.2'}} as ApplicationData;
     expect(component.trackBy(0, application)).toEqual(`${application.raw.name}-${application.raw.version}`);
+  });
+
+  it('should get data', () => {
+    expect(component.data).toEqual(mockApplicationsDataService.data);
+  });
+
+  it('should get total', () => {
+    expect(component.total).toEqual(mockApplicationsDataService.total);
+  });
+
+  it('should get options', () => {
+    expect(component.options).toEqual(mockApplicationsDataService.options);
+  });
+
+  it('should get filters', () => {
+    expect(component.filters).toEqual(mockApplicationsDataService.filters);
+  });
+
+  it('should get column keys', () => {
+    expect(component.columnKeys).toEqual(displayedColumns.map(c => c.key));
+  });
+
+  it('should get displayedColumns', () => {
+    expect(component.displayedColumns).toEqual(displayedColumns);
   });
 });

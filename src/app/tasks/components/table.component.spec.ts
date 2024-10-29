@@ -1,17 +1,11 @@
-import { FilterStringOperator, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
-import { CacheService } from '@services/cache.service';
-import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
-import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { TasksTableComponent } from './table.component';
-import { TasksGrpcService } from '../services/tasks-grpc.service';
-import { TasksIndexService } from '../services/tasks-index.service';
+import TasksDataService from '../services/tasks-data.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
@@ -46,21 +40,6 @@ describe('TasksTableComponent', () => {
     }
   ];
 
-  const mockTasksIndexService = {
-    isActionsColumn: jest.fn(),
-    isTaskIdColumn: jest.fn(),
-    isStatusColumn: jest.fn(),
-    isDateColumn: jest.fn(),
-    isDurationColumn: jest.fn(),
-    isObjectColumn: jest.fn(),
-    isSelectColumn: jest.fn(),
-    isSimpleColumn: jest.fn(),
-    isNotSortableColumn: jest.fn(),
-    columnToLabel: jest.fn(),
-    saveColumns: jest.fn(),
-    saveOptions: jest.fn(),
-  };
-
   const mockNotificationService = {
     success: jest.fn(),
     error: jest.fn(),
@@ -70,161 +49,46 @@ describe('TasksTableComponent', () => {
     copy: jest.fn()
   };
 
-  const tasks = { tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 };
-  const mockTasksGrpcService = {
-    list$: jest.fn(() => of(tasks)),
-    cancel$: jest.fn(() => of({})),
-  };
-
-  const cachedtasks = { tasks: [{ id: 'task1' }, { id: 'task2' }], total: 2 };
-  const mockCacheService = {
-    get: jest.fn(() => cachedtasks),
-    save: jest.fn(),
+  const mockTasksDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
+    cancelTask: jest.fn(),
   };
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         TasksTableComponent,
-        { provide: TasksIndexService, useValue: mockTasksIndexService },
-        { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         TasksStatusesService,
-        FiltersService,
-        { provide: CacheService, useValue: mockCacheService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
+        { provide: TasksDataService, useValue: mockTasksDataService }
       ]
     }).inject(TasksTableComponent);
 
     component.displayedColumns = displayedColumns;
     component.selection = [];
-    component.filters$ = new BehaviorSubject<FiltersOr<TaskSummaryEnumField, TaskOptionEnumField>>([]);
-    component.options = {
-      pageIndex: 0,
-      pageSize: 10,
-      sort: {
-        active: 'id',
-        direction: 'desc'
-      }
-    };
-    component.refresh$ = new Subject();
-    component.loading = signal(false);
-    component.ngOnInit();
-    component.ngAfterViewInit();
   });
 
   it('should run', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('initialisation', () => {
-    it('should load cached data from cachedService', () => {
-      expect(mockCacheService.get).toHaveBeenCalled();
-    });
-  });
-
-  describe('loadFromCache', () => {
-    beforeEach(() => {
-      component.loadFromCache();
-    });
-
-    it('should update total data with cached one', () => {
-      expect(component.total).toEqual(cachedtasks.total);
-    });
-
-    it('should update data with cached one', () => {
-      expect(component.data()).toEqual([
-        {
-          raw: {
-            id: 'task1'
-          },
-          resultsQueryParams: {
-            '1-root-3-0': 'task1'
-          }
-        },
-        {
-          raw: {
-            id: 'task2'
-          },
-          resultsQueryParams: {
-            '1-root-3-0': 'task2'
-          }
-        },
-      ]);
-    });
-  });
-
-  it('should update data on refresh', () => {
-    component.refresh$.next();
-    expect(component.data()).toEqual([
-      {
-        raw: {
-          id: 'task1'
-        },
-        resultsQueryParams: {
-          '1-root-3-0': 'task1'
-        }
-      },
-      {
-        raw: {
-          id: 'task2'
-        },
-        resultsQueryParams: {
-          '1-root-3-0': 'task2'
-        }
-      },
-      {
-        raw: {
-          id: 'task3'
-        },
-        resultsQueryParams: {
-          '1-root-3-0': 'task3'
-        }
-      }
-    ]);
-  });
-
-  it('should cache received data', () => {
-    component.refresh$.next();
-    expect(mockCacheService.get).toHaveBeenCalled();
-  });
-
   it('should return columns keys', () => {
     expect(component.columnKeys).toEqual(displayedColumns.map(column => column.key));
   });
-
-  describe('on list error', () => {
-    beforeEach(() => {
-      mockTasksGrpcService.list$.mockReturnValueOnce(throwError(() => new Error()));
-    });
-
-    it('should log error', () => {
-      const spy = jest.spyOn(console, 'error').mockImplementation(() => { });
-      component.refresh$.next();
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should send a notification', () => {
-      component.refresh$.next();
-      expect(mockNotificationService.error).toHaveBeenCalled();
-    });
-
-    it('should send empty data', () => {
-      component.refresh$.next();
-      expect(component.data()).toEqual([]);
-    });
-  });
   
   describe('options changes', () => {
-    it('should refresh data', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
+    it('emit', () => {
+      const spy = jest.spyOn(component.optionsUpdate, 'emit');
       component.onOptionsChange();
       expect(spy).toHaveBeenCalled();
-    });
-
-    it('should save options', () => {
-      component.onOptionsChange();
-      expect(mockTasksIndexService.saveOptions).toHaveBeenCalled();
     });
   });
 
@@ -252,10 +116,10 @@ describe('TasksTableComponent', () => {
     expect(spy).toHaveBeenCalledWith(task);
   });
 
-  it('should emit on cancel task', () => {
+  it('should call the cancelTask method on cancel', () => {
     const id = 'taskId';
     component.onCancelTask(id);
-    expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([id]);
+    expect(mockTasksDataService.cancelTask).toHaveBeenCalledWith(id);
   });
 
   it('should check if task can be cancelled', () => {
@@ -277,10 +141,11 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  test('onDrop should call tasksIndexService', () => {
+  test('onDrop should emit', () => {
+    const spy = jest.spyOn(component.columnUpdate, 'emit');
     const newColumns: ColumnKey<TaskSummary, TaskOptions>[] = ['actions', 'id', 'status'];
     component.onDrop(newColumns);
-    expect(mockTasksIndexService.saveColumns).toHaveBeenCalledWith(newColumns);
+    expect(spy).toHaveBeenCalledWith(newColumns);
   });
 
   it('should emit on selection change', () => {
@@ -333,61 +198,6 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  describe('Results query params', () => {
-    const id = 'taskId';
-    it('should return the taskId if there is no filter', () => {
-      expect(component.createResultsQueryParams(id)).toEqual({
-        '1-root-3-0': id
-      });
-    });
-
-    it('should add filters if there is any', () => {
-      component.filters = [
-        [
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
-            value: 'session1'
-          },
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_NOT_EQUAL,
-            value: 'taskId'
-          }
-        ],
-        [
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: 'should not appear'
-          },
-          {
-            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
-            value: 'session2'
-          },
-          {
-            field: null,
-            for: 'root',
-            operator: null,
-            value: 'neither should this'
-          }
-        ]
-      ];
-      expect(component.createResultsQueryParams(id)).toEqual({
-        '0-root-1-2': 'session1',
-        '0-root-3-1': 'taskId',
-        '0-root-3-0': id,
-        '1-root-1-4': 'session2',
-        '1-root-3-0': id,
-      });
-    });
-  });
-
   describe('actions', () => {
     const task = {
       raw: {
@@ -423,7 +233,7 @@ describe('TasksTableComponent', () => {
 
     it('should permit to cancel task', () => {
       component.actions[3].action$.next(task);
-      expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([task.raw.id]);
+      expect(mockTasksDataService.cancelTask).toHaveBeenCalledWith(task.raw.id);
     });
 
     it('should not permit to cancel tasks if the task is not cancellable', () => {
@@ -433,7 +243,7 @@ describe('TasksTableComponent', () => {
     });
 
     it('should open views in logs', () => {
-      const spy = jest.spyOn(window, 'open');
+      const spy = jest.spyOn(window, 'open').mockImplementation(() => null);
       component.serviceIcon = 'icon';
       component.serviceName = 'service';
       component.urlTemplate = 'https://myurl.com?taskId=%taskId';
@@ -459,5 +269,29 @@ describe('TasksTableComponent', () => {
   it('should track a task by its id', () => {
     const task = { raw: { id: 'task' } } as TaskData;
     expect(component.trackBy(0, task)).toEqual(task.raw.id);
+  });
+
+  it('should get data', () => {
+    expect(component.data).toEqual(mockTasksDataService.data);
+  });
+
+  it('should get total', () => {
+    expect(component.total).toEqual(mockTasksDataService.total);
+  });
+
+  it('should get options', () => {
+    expect(component.options).toEqual(mockTasksDataService.options);
+  });
+
+  it('should get filters', () => {
+    expect(component.filters).toEqual(mockTasksDataService.filters);
+  });
+
+  it('should get column keys', () => {
+    expect(component.columnKeys).toEqual(displayedColumns.map(c => c.key));
+  });
+
+  it('should get displayedColumns', () => {
+    expect(component.displayedColumns).toEqual(displayedColumns);
   });
 });

@@ -15,7 +15,11 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { CacheService } from '@services/cache.service';
+import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
@@ -24,7 +28,9 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ApplicationsTableComponent } from './components/table.component';
+import ApplicationsDataService from './services/applications-data.service';
 import { ApplicationsFiltersService } from './services/applications-filters.service';
+import { ApplicationsGrpcService } from './services/applications-grpc.service';
 import { ApplicationsIndexService } from './services/applications-index.service';
 import { ApplicationRaw } from './types';
 
@@ -51,6 +57,12 @@ import { ApplicationRaw } from './types';
     },
     DashboardIndexService,
     DashboardStorageService,
+    ApplicationsDataService,
+    ApplicationsGrpcService,
+    CacheService,
+    NotificationService,
+    FiltersService,
+    GrpcSortFieldService,
   ],
   imports: [
     PageHeaderComponent,
@@ -65,7 +77,7 @@ import { ApplicationRaw } from './types';
   ]
 })
 export class IndexComponent extends TableHandler<ApplicationRaw, ApplicationRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
-
+  readonly tableDataService = inject(ApplicationsDataService);
   readonly filtersService = inject(ApplicationsFiltersService);
   readonly indexService = inject(ApplicationsIndexService);
 

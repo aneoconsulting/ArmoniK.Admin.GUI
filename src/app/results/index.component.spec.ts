@@ -13,17 +13,13 @@ import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { of } from 'rxjs';
 import { IndexComponent } from './index.component';
+import ResultsDataService from './services/results-data.service';
 import { ResultsFiltersService } from './services/results-filters.service';
-import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultRaw } from './types';
 
 describe('Results Index Component', () => {
   let component: IndexComponent;
-
-  const mockResultsGrpcService = {
-    cancel$: jest.fn(() => of()),
-  };
 
   const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
 
@@ -87,6 +83,12 @@ describe('Results Index Component', () => {
       key: 'ownerTaskId',
       sortable: true,
     },
+    {
+      name: $localize`Select`,
+      key: 'select',
+      type: 'select',
+      sortable: false,
+    },
   ];
 
   const defaultIntervalValue = 10;
@@ -114,7 +116,7 @@ describe('Results Index Component', () => {
     resetColumns: jest.fn(() => defaultColumns),
   };
 
-  const mockTaskFiltersService = {
+  const mockResultsFiltersService = {
     restoreFilters: jest.fn(() => []),
     saveFilters: jest.fn(),
     resetFilters: jest.fn(() => []),
@@ -132,6 +134,17 @@ describe('Results Index Component', () => {
     warning: jest.fn(),
   };
 
+  const mockResultsDataService = {
+    data: [],
+    total: 0,
+    loading: false,
+    options: {},
+    filters: [],
+    refresh$: {
+      next: jest.fn()
+    },
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -139,11 +152,11 @@ describe('Results Index Component', () => {
         IconsService,
         AutoRefreshService,
         { provide: ResultsIndexService, useValue: mockResultsIndexService },
-        { provide: ResultsGrpcService, useValue: mockResultsGrpcService },
+        { provide: ResultsDataService, useValue: mockResultsDataService },
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         { provide: Router, useValue: mockRouter },
-        { provide: ResultsFiltersService, useValue: mockTaskFiltersService },
+        { provide: ResultsFiltersService, useValue: mockResultsFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
       ]
@@ -154,6 +167,10 @@ describe('Results Index Component', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should load properly', () => {
+    expect(component.loading).toEqual(mockResultsDataService.loading);
   });
 
   it('should update columns keys', () => {
@@ -197,7 +214,6 @@ describe('Results Index Component', () => {
 
     it('should initialise filters', () => {
       expect(component.filters).toEqual([]);
-      expect(component.filters$).toBeDefined();
     });
 
     it('should init options', () => {
@@ -221,9 +237,8 @@ describe('Results Index Component', () => {
   });
 
   it('should refresh', () => {
-    const spy = jest.spyOn(component.refresh$, 'next');
-    component.onRefresh();
-    expect(spy).toHaveBeenCalled();
+    component.refresh();
+    expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
   });
 
   describe('On interval value change', () => {
@@ -239,9 +254,8 @@ describe('Results Index Component', () => {
     });
 
     it('should refresh if the value is not null', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
       component.onIntervalValueChange(5);
-      expect(spy).toHaveBeenCalled();
+      expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
     });
 
     it('should stop the interval if the value is 0', () => {
@@ -256,18 +270,38 @@ describe('Results Index Component', () => {
     });
   });
 
+  describe('On Options Change', () => {
+    beforeEach(() => {
+      component.onOptionsChange();
+    });
+
+    it('should save options', () => {
+      expect(mockResultsIndexService.saveOptions).toHaveBeenCalledWith(mockResultsDataService.options);
+    });
+
+    it('should refresh', () => {
+      expect(mockResultsDataService.refresh$.next).toHaveBeenCalled();
+    });
+  });
+
   describe('On columns change', () => {
-    const newColumns: ColumnKey<ResultRaw>[] = ['resultId', 'createdAt'];
+    const newColumns: ColumnKey<ResultRaw>[] = ['resultId', 'createdAt', 'select'];
     beforeEach(() => {
       component.onColumnsChange(newColumns);
     });
 
     it('should update displayed column keys', () => {
-      expect(component.displayedColumnsKeys).toEqual(newColumns);
+      expect(component.displayedColumnsKeys).toEqual(['select', 'resultId', 'createdAt']);
     });
 
     it('should update displayed columns', () => {
       expect(component.displayedColumns()).toEqual([
+        {
+          name: $localize`Select`,
+          key: 'select',
+          type: 'select',
+          sortable: false,
+        },
         {
           name: $localize`Result ID`,
           key: 'resultId',
@@ -285,7 +319,7 @@ describe('Results Index Component', () => {
     });
 
     it('should save columns', () => {
-      expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(['resultId', 'createdAt']);
+      expect(mockResultsIndexService.saveColumns).toHaveBeenCalledWith(['select', 'resultId', 'createdAt']);
     });
   });
 
@@ -329,7 +363,6 @@ describe('Results Index Component', () => {
   });
 
   describe('On Filters Change', () => {
-
     const newFilters: FiltersOr<ResultRawEnumField> = [
       [
         {
@@ -341,10 +374,7 @@ describe('Results Index Component', () => {
       ]
     ];
 
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersChange(newFilters);
     });
 
@@ -353,23 +383,16 @@ describe('Results Index Component', () => {
     });
 
     it('should save filters', () => {
-      expect(mockTaskFiltersService.saveFilters).toHaveBeenCalledWith(newFilters);
+      expect(mockResultsFiltersService.saveFilters).toHaveBeenCalledWith(newFilters);
     });
 
     it('should update page index', () => {
       expect(component.options.pageIndex).toEqual(0);
     });
-
-    it('should emit filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith(newFilters);
-    });
   });
 
   describe('On Filter Reset', () => {
-    let filterSpy: jest.SpyInstance;
-
     beforeEach(() => {
-      filterSpy = jest.spyOn(component.filters$, 'next');
       component.onFiltersReset();
     });
 
@@ -379,10 +402,6 @@ describe('Results Index Component', () => {
 
     it('should reset page index', () => {
       expect(component.options.pageIndex).toEqual(0);
-    });
-
-    it('should emit empty filters', () => {
-      expect(filterSpy).toHaveBeenCalledWith([]);
     });
   });
 
@@ -446,7 +465,7 @@ describe('Results Index Component', () => {
     it('should save show filters', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
-      expect(mockTaskFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+      expect(mockResultsFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
     });
   });
 });

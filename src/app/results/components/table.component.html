@@ -1,2 +1,3 @@
-<app-table [trackBy]="trackBy" [columns]="displayedColumns" [data]="data()" [total]="total" [options]="options" [lockColumns]="lockColumns"
-  [statusesService]="statusesService" (optionsChange)="onOptionsChange()" (columnDrop)="onDrop($event)" />
+<app-table [trackBy]="trackBy" [columns]="displayedColumns" [data]="data" [total]="total" 
+  [options]="options" [lockColumns]="lockColumns" (optionsChange)="onOptionsChange()"
+  [statusesService]="statusesService" (columnDrop)="onDrop($event)" />

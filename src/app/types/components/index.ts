@@ -8,13 +8,13 @@ import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dia
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
-import { BehaviorSubject, Observable, Subject, Subscription, merge } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { TableColumn } from '../column.type';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
-import { ListOptions } from '../options';
 import { FiltersServiceInterface } from '../services/filtersService';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
+import { AbstractTableDataService } from '../services/table-data.service';
 import { TableType } from '../table';
 
 export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
@@ -27,6 +27,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   abstract readonly indexService: IndexServiceInterface<T, O>;
   abstract readonly filtersService: FiltersServiceInterface<F, FO>;
+  abstract readonly tableDataService: AbstractTableDataService<T, F, O, FO>;
 
   abstract tableType: TableType;
 
@@ -36,26 +37,31 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   lockColumns: boolean = false;
   columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
 
-  loading = signal(false);
-
-  options: ListOptions<T, O>;
-
-  filters: FiltersOr<F, FO>;
-  filters$: Subject<FiltersOr<F, FO>>;
   showFilters: boolean;
 
   intervalValue = 0;
   sharableURL = '';
-
-  refresh$: Subject<void> = new Subject<void>();
   stopInterval: Subject<void> = new Subject<void>();
   interval: Subject<number> = new Subject<number>();
   interval$: Observable<number> = this.autoRefreshService.createInterval(this.interval, this.stopInterval);
 
   subscriptions: Subscription = new Subscription();
 
+  get options() {
+    return this.tableDataService.options;
+  }
+
+  get filters() {
+    return this.tableDataService.filters;
+  }
+
+  get loading() {
+    return this.tableDataService.loading;
+  }
+
   initTableEnvironment() {
     this.initColumns();
+    this.updateDisplayedColumns();
     this.initFilters();
     this.initOptions();
     this.intervalValue = this.indexService.restoreIntervalValue();
@@ -64,7 +70,6 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   protected initColumns() {
     this.displayedColumnsKeys = this.indexService.restoreColumns();
-    this.updateDisplayedColumns();
     this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
     this.indexService.availableTableColumns.forEach(column => {
       this.columnsLabels[column.key] = column.name;
@@ -73,18 +78,17 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   private initFilters() {
-    this.filters = this.filtersService.restoreFilters();
+    this.tableDataService.filters = this.filtersService.restoreFilters();
     this.showFilters = this.filtersService.restoreShowFilters();
-    this.filters$ = new BehaviorSubject(this.filters);
   }
 
   private initOptions() {
-    this.options = this.indexService.restoreOptions();
+    this.tableDataService.options = this.indexService.restoreOptions();
   }
 
   mergeSubscriptions() {
-    const mergeSubscription = merge(this.interval$).subscribe(() => this.refresh$.next());
-    this.subscriptions.add(mergeSubscription);
+    const intervalSubscription = this.interval$.subscribe(() => this.refresh());
+    this.subscriptions.add(intervalSubscription);
     this.handleAutoRefreshStart();
   }
 
@@ -102,8 +106,8 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
     return this.iconsService.getIcon(name);
   }
 
-  onRefresh() {
-    this.refresh$.next();
+  refresh() {
+    this.tableDataService.refresh$.next();
   }
 
   onIntervalValueChange(value: number) {
@@ -113,7 +117,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
       this.stopInterval.next();
     } else {
       this.interval.next(value);
-      this.refresh$.next();
+      this.refresh();
     }
 
     this.indexService.saveIntervalValue(value);
@@ -133,18 +137,22 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
     this.updateDisplayedColumns();
   }
 
-  onFiltersChange(value: FiltersOr<F, FO>) {
-    this.filters = value;
+  onOptionsChange() {
+    this.indexService.saveOptions(this.options);
+    this.refresh();
+  }
 
-    this.filtersService.saveFilters(value);
-    this.options.pageIndex = 0;
-    this.filters$.next(this.filters);
+  onFiltersChange(value: FiltersOr<F, FO>) {
+    this.tableDataService.options.pageIndex = 0;
+    this.tableDataService.filters = value;
+    this.filtersService.saveFilters(this.filters);
+    this.refresh();
   }
 
   onFiltersReset(): void {
-    this.filters = this.filtersService.resetFilters();
-    this.options.pageIndex = 0;
-    this.filters$.next([]);
+    this.tableDataService.options.pageIndex = 0;
+    this.tableDataService.filters = this.filtersService.resetFilters();
+    this.refresh();
   }
 
   onShowFiltersChange(value: boolean) {
@@ -162,7 +170,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   handleAutoRefreshStart() {
-    this.refresh$.next();
+    this.refresh();
     if (this.intervalValue === 0) {
       this.stopInterval.next();
     } else {
@@ -171,7 +179,12 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   }
 
   onAddToDashboard() {
-    this.dashboardIndexService.addLine<TableLine<T, O>>({
+    this.dashboardIndexService.addLine<TableLine<T, O>>(this.createDashboardLine());
+    this.router.navigate(['/dashboard']);
+  }
+
+  protected createDashboardLine(): TableLine<T, O> {
+    return {
       name: this.tableType,
       type: this.tableType,
       interval: 10,
@@ -180,27 +193,19 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
       displayedColumns: this.displayedColumnsKeys,
       lockColumns: this.lockColumns,
       showFilters: this.showFilters
-    });
-    this.router.navigate(['/dashboard']);
+    };
   }
 }
 
 export abstract class TableHandlerCustomValues<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> extends TableHandler<T, F, O, FO> {
-
   abstract override readonly indexService: IndexServiceCustomInterface<T, O>;
 
   customColumns: CustomColumn[];
 
   protected override initColumns() {
+    super.initColumns();
     this.customColumns = this.indexService.restoreCustomColumns();
-    this.displayedColumnsKeys = [...this.indexService.restoreColumns()];
-    this.availableColumns = this.indexService.availableTableColumns.map(column => column.key);
     this.availableColumns.push(...this.customColumns as ColumnKey<T, O>[]);
-    this.lockColumns = this.indexService.restoreLockColumns();
-    this.indexService.availableTableColumns.forEach(column => {
-      this.columnsLabels[column.key] = column.name;
-    });
-    this.updateDisplayedColumns();
   }
 
   override updateDisplayedColumns(): void {
@@ -239,18 +244,7 @@ export abstract class TableHandlerCustomValues<T extends DataRaw, F extends Filt
     });
   }
 
-  override onAddToDashboard() {
-    this.dashboardIndexService.addLine<TableLine<T, O>>({
-      name: this.tableType,
-      type: this.tableType,
-      interval: 10,
-      filters: this.filters,
-      options: this.options,
-      displayedColumns: this.displayedColumnsKeys,
-      lockColumns: this.lockColumns,
-      showFilters: this.showFilters,
-      customColumns: this.customColumns
-    });
-    this.router.navigate(['/dashboard']);
+  override createDashboardLine(): TableLine<T, O> {
+    return {...super.createDashboardLine(), customColumns: this.customColumns};
   }
 }
