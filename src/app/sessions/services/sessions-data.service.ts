@@ -175,10 +175,10 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   private isDurationSorted = false;
   private sessionEndedDates: {sessionId: string, date: Timestamp | undefined}[] = [];
   private sessionCreationDates: {sessionId: string, date: Timestamp | undefined}[] = [];
-  private nextStartDuration$ = new Subject<string>();
-  private nextEndDuration$ = new Subject<string>();
-  private computeDuration$ = new Subject<void>();
-  private sessionsIdsComputationError: string[] = [];
+  private readonly nextStartDuration$ = new Subject<string>();
+  private readonly nextEndDuration$ = new Subject<string>();
+  private readonly computeDuration$ = new Subject<void>();
+  private readonly sessionsIdsComputationError: string[] = [];
 
   /**
    * Start the duration computation process
