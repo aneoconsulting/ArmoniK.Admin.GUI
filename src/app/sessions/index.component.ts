@@ -14,6 +14,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandlerCustomValues } from '@app/types/components';
+import { ColumnKey } from '@app/types/data';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -89,5 +90,12 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
 
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  override onColumnsChange(columns: ColumnKey<SessionRaw, TaskOptions>[]): void {
+    super.onColumnsChange(columns);
+    if (this.displayedColumnsKeys.includes('duration')) {
+      this.refresh$.next();
+    }
   }
 }
