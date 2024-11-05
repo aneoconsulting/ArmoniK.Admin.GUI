@@ -93,7 +93,7 @@ describe('TasksFilterService', () => {
 
   test('the service must return the right label with filterFor options', () => {
     const mockLabelFilterOptions = service.retrieveLabel(service.filtersDefinitions[18].for, (service.filtersDefinitions[18].field as TaskFilterField));
-    expect(mockLabelFilterOptions).toEqual('Application Service');
+    expect(mockLabelFilterOptions).toEqual('Application Namespace');
   });
 
   test('the service must throw an error ', () => {
