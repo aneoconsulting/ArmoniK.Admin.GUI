@@ -305,6 +305,12 @@ describe('Sessions Index Component', () => {
     it('should save columns', () => {
       expect(mockSessionsIndexService.saveColumns).toHaveBeenCalledWith(['sessionId', 'createdAt']);
     });
+
+    it('should refresh if duration is included', () => {
+      const spy = jest.spyOn(component.refresh$, 'next');
+      component.onColumnsChange(['duration']);
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('On Columns Reset', () => {
