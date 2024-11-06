@@ -64,6 +64,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
     this.initFilters();
     this.initFilters();
     this.initInterval();
+    this.handleAutoRefreshStart();
   }
 
   initColumns() {
@@ -130,6 +131,15 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
 
     this.lineChange.emit();
 
+  }
+
+  handleAutoRefreshStart() {
+    this.refresh$.next();
+    if (this.intervalValue === 0) {
+      this.stopInterval.next();
+    } else {
+      this.interval.next(this.intervalValue);
+    }
   }
 
   onEditNameLine() {
