@@ -66,6 +66,10 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
+      key: 'endedAt',
+      type: 'date'
+    },
+    {
       key: 'statusMessage',
       type: 'object'
     },
