@@ -1,3 +1,4 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -6,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Params, RouterModule } from '@angular/router';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 
 /**
  * The inspect list component provide a way to display lists inside a Mat-Card.
@@ -25,6 +27,9 @@ import { IconsService } from '@services/icons.service';
     MatDivider,
     MatIconModule,
   ],
+  providers: [
+    Clipboard,
+  ],
   styleUrl: 'inspect-list.component.css',
 })
 export class InspectListComponent {
@@ -32,6 +37,8 @@ export class InspectListComponent {
   private _queryParams: Params;
 
   private readonly iconsService = inject(IconsService);
+  private readonly notificationService = inject(NotificationService);
+  readonly clipboard = inject(Clipboard);
 
   @Input({ required: true }) set list(entries: string[] | undefined) {
     if (entries) {
@@ -62,5 +69,10 @@ export class InspectListComponent {
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
+  }
+
+  copy(value: string) {
+    this.clipboard.copy(value);
+    this.notificationService.success('Id copied');
   }
 }

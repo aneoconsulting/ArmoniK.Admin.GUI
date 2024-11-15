@@ -12,7 +12,7 @@
       <div class="item">
         <span>{{ item }}</span>
         <div class="item-actions">
-          <button mat-icon-button>
+          <button mat-icon-button (click)="copy(item)">
             <mat-icon [fontIcon]="getIcon('copy')" />
           </button>
           @if(redirectLink) {
