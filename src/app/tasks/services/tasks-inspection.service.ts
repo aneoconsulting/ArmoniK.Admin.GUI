@@ -71,11 +71,11 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
     },
     {
       key: 'statusMessage',
-      type: 'object'
+      type: 'message'
     },
     {
       key: 'output',
-      type: 'object'
+      type: 'output'
     },
   ];
 

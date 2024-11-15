@@ -1,0 +1,13 @@
+mat-card {
+  padding: 1rem;
+}
+
+#message-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+h2 {
+  margin: 0px;
+}

@@ -33,7 +33,7 @@
   row-gap: 0.5rem;
 }
 
-mat-accordion {
+mat-accordion, app-message {
   grid-column: 1 / 4;
 }
 
