@@ -10,13 +10,17 @@
   } @else {
     @for(item of list; track item) {
       <div class="item">
-        @if(redirectLink) {
-          <button mat-button [routerLink]="'/' + redirectLink + '/' + item">
-            <span>{{item}}</span>
+        <span>{{ item }}</span>
+        <div class="item-actions">
+          <button mat-icon-button>
+            <mat-icon [fontIcon]="getIcon('copy')" />
           </button>
-        } @else {
-          <span>{{item}}</span>
-        }
+          @if(redirectLink) {
+            <button mat-icon-button [routerLink]="'/' + redirectLink + '/' + item">
+              <mat-icon [fontIcon]="getIcon('view')" />
+            </button>
+          }
+        </div>
       </div>
       @if(!$last) {
         <mat-divider />
