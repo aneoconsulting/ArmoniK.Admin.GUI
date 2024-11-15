@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { DataRaw, Status } from '@app/types/data';
@@ -12,6 +13,7 @@ import { InspectionObjectComponent } from './inspection-object.component';
   imports: [
     InspectionObjectComponent,
     MatExpansionModule,
+    MatToolbarModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: '../../../inspections.css',
