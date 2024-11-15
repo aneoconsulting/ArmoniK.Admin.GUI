@@ -1,4 +1,7 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
+import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { InspectListComponent } from './inspect-list.component';
 
 describe('InspectListComponent', () => {
@@ -11,10 +14,21 @@ describe('InspectListComponent', () => {
     '2-root-1-0': list[2]
   };
 
+  const mockClipboard = {
+    copy: jest.fn()
+  };
+
+  const mockNotificationService = {
+    success: jest.fn(),
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
-        InspectListComponent
+        InspectListComponent,
+        IconsService,
+        { provide: Clipboard, useValue: mockClipboard },
+        { provide: NotificationService, useValue: mockNotificationService },
       ]
     }).inject(InspectListComponent);
     component.list = list;
@@ -58,6 +72,22 @@ describe('InspectListComponent', () => {
         '1-options-2-0': list[1],
         '2-options-2-0': list[2]
       });
+    });
+  });
+
+  describe('copy', () => {
+    const id = 'id';
+
+    beforeEach(() => {
+      component.copy(id);
+    });
+
+    it('should copy the provided Id', () => {
+      expect(mockClipboard.copy).toHaveBeenCalledWith(id);
+    });
+
+    it('should notify on copy', () => {
+      expect(mockNotificationService.success).toHaveBeenCalled();
     });
   });
 });

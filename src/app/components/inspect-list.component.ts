@@ -27,9 +27,6 @@ import { NotificationService } from '@services/notification.service';
     MatDivider,
     MatIconModule,
   ],
-  providers: [
-    Clipboard,
-  ],
   styleUrl: 'inspect-list.component.css',
 })
 export class InspectListComponent {
