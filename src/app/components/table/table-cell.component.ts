@@ -13,6 +13,7 @@ import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Subject } from 'rxjs';
+import { TableInspectMessageComponent } from './table-inspect-message.component';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
 @Component({
@@ -28,6 +29,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatButtonModule,
     CountTasksByStatusComponent,
     MatCheckboxModule,
+    TableInspectMessageComponent,
   ]
 })
 export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
@@ -76,6 +78,10 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
 
   get value() {
     return this._value;
+  }
+
+  get string() {
+    return this._value as string;
   }
 
   get durationValue() {
