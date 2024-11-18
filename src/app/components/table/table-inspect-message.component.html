@@ -1,0 +1,11 @@
+<mat-chip disableRipple>
+  <section>
+    <span>{{ croppedMessage | emptyCell }}</span>
+    @if (croppedMessage) {
+      <mat-icon [fontIcon]="getIcon('copy')" (click)="copy()" />
+    }
+    @if (displayEye) {
+      <mat-icon [fontIcon]="getIcon('view')" (click)="onView()" />
+    }
+  </section>
+</mat-chip>
