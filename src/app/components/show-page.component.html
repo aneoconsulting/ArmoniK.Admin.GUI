@@ -11,7 +11,9 @@
   @if (data) {
     <app-inspection-card [data]="data" [statuses]="statuses" [fields]="fields" />
     <app-inspection-list-grid [arrays]="arrays" [data]="data" />
-    <app-inspection-card [data]="data" [optionsFields]="optionsFields"/>
+    @if (optionsFields) {
+      <app-inspection-card [data]="data" [optionsFields]="optionsFields"/>
+    }
     <app-json-inspection [data]="data" />
   }  
 </section>
