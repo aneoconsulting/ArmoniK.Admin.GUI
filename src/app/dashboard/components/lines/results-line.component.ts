@@ -12,6 +12,7 @@ import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
+import { NotificationService } from '@services/notification.service';
 
 @Component({
   selector: 'app-dashboard-results-line',
@@ -25,6 +26,7 @@ import { TableDashboardActionsToolbarComponent } from '@components/table-dashboa
       provide: DATA_FILTERS_SERVICE,
       useExisting: ResultsFiltersService
     },
+    NotificationService,
   ],
   imports: [
     MatIconModule,
@@ -45,6 +47,7 @@ export class ResultsLineComponent extends DashboardLineTableComponent<ResultRaw,
 
   ngAfterViewInit(): void {
     this.mergeSubscriptions();
+    this.handleAutoRefreshStart();
   }
 
   ngOnDestroy(): void {

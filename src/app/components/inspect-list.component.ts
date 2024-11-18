@@ -1,9 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { ChangeDetectionStrategy, Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Params, RouterModule } from '@angular/router';
+import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 
 /**
  * The inspect list component provide a way to display lists inside a Mat-Card.
@@ -21,41 +25,17 @@ import { Params, RouterModule } from '@angular/router';
     MatButtonModule,
     RouterModule,
     MatDivider,
+    MatIconModule,
   ],
-  styles: [`
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .no-data {
-      text-align: center;
-      margin: 1rem;
-      font-style: italic;
-    }
-
-    button {
-      width: fit-content; 
-    }
-
-    .item {
-      width: 100%;
-      margin: 0.5rem;
-    }
-
-    mat-divider {
-      margin-right: 0.5rem;
-    }
-
-    mat-toolbar {
-      padding: 1rem;
-    }
-  `]
+  styleUrl: 'inspect-list.component.css',
 })
 export class InspectListComponent {
   private _list: string[] = [];
   private _queryParams: Params;
+
+  private readonly iconsService = inject(IconsService);
+  private readonly notificationService = inject(NotificationService);
+  readonly clipboard = inject(Clipboard);
 
   @Input({ required: true }) set list(entries: string[] | undefined) {
     if (entries) {
@@ -82,5 +62,14 @@ export class InspectListComponent {
 
   get queryParams(): Params {
     return this._queryParams;
+  }
+
+  getIcon(name: string) {
+    return this.iconsService.getIcon(name);
+  }
+
+  copy(value: string) {
+    this.clipboard.copy(value);
+    this.notificationService.success('Id copied');
   }
 }
