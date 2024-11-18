@@ -2,10 +2,10 @@
   <section>
     <span>{{ croppedMessage | emptyCell }}</span>
     @if (croppedMessage) {
-      <mat-icon [fontIcon]="getIcon('copy')" (click)="copy()" />
+      <mat-icon [fontIcon]="getIcon('copy')" (click)="copy()" (keydown.enter)="$event.stopPropagation();copy()" />
     }
     @if (displayEye) {
-      <mat-icon [fontIcon]="getIcon('view')" (click)="onView()" />
+      <mat-icon [fontIcon]="getIcon('view')" (click)="onView()" (keydown.enter)="$event.stopPropagation();onView()" />
     }
   </section>
 </mat-chip>
