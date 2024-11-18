@@ -1,8 +1,10 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TableInspectMessageDialogComponent, TableInspectMessageDialogData } from './table-inspect-message-dialog.component';
@@ -10,11 +12,14 @@ import { TableInspectMessageDialogComponent, TableInspectMessageDialogData } fro
 @Component({
   selector: 'app-table-inspect-message',
   templateUrl: 'table-inspect-message.component.html',
+  styleUrl: 'table-inspect-message.component.css',
   standalone: true,
   imports: [
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    MatChipsModule,
+    EmptyCellPipe,
   ],
   providers: [
     NotificationService
@@ -26,8 +31,8 @@ export class TableInspectMessageComponent {
   @Input({ required: true }) set message(entry: string | undefined) {
 
     if (entry && entry !== '') {
-      if (entry.length > 5) {
-        this._croppedMessage = entry.substring(0, 30);
+      if (entry.length > 15) {
+        this._croppedMessage = `${entry.substring(0, 14).trimEnd()}...`;
         this._message = entry;
         this._displayEye = true;
       } else {

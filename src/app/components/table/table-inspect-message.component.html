@@ -1,13 +1,11 @@
-@if (message) {
-  <span>{{croppedMessage}}...</span>
-  <button mat-icon-button (click)="copy()">
-    <mat-icon [fontIcon]="getIcon('copy')" />
-  </button>
-  @if (displayEye) {
-    <button mat-icon-button (click)="onView()">
-      <mat-icon [fontIcon]="getIcon('view')" />
-    </button>
-  }
-} @else {
-  <span>-</span>
-}
+<mat-chip disableRipple>
+  <section>
+    <span>{{croppedMessage | emptyCell }}</span>
+    @if (message) {
+      <mat-icon [fontIcon]="getIcon('copy')" (click)="copy()" />
+    }
+    @if (displayEye) {
+      <mat-icon [fontIcon]="getIcon('view')" (click)="onView()" />
+    }
+  </section>
+</mat-chip>

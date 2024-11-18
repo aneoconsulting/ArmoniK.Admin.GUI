@@ -1,7 +1,12 @@
-<h2 mat-dialog-title>{{ label }}</h2>
+<section>
+  <h2 mat-dialog-title>{{ label }}</h2>
+  <button mat-icon-button (click)="copy()">
+    <mat-icon [fontIcon]="getIcon('copy')" />
+  </button>
+</section>
 
 <mat-dialog-content>
-  <mat-card>{{ message }}</mat-card>
+  {{ message }}
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

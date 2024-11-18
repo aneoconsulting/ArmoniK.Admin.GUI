@@ -3,6 +3,7 @@ import { Component, Inject, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 
@@ -14,11 +15,13 @@ export interface TableInspectMessageDialogData {
 @Component({
   selector: 'app-inspect-message-dialog',
   templateUrl: 'table-inspect-message-dialog.component.html',
+  styleUrl: 'table-inspect-message-dialog.component.css',
   standalone: true,
   imports: [
     MatCardModule,
     MatButtonModule,
     MatDialogModule,
+    MatIconModule,
   ],
   providers: [
     NotificationService,
@@ -49,5 +52,9 @@ export class TableInspectMessageDialogComponent {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  getIcon(name: string) {
+    return this.iconsService.getIcon(name);
   }
 }
