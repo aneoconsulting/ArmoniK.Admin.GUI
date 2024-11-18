@@ -29,7 +29,6 @@ export class TableInspectMessageComponent {
   @Input({ required: true }) label: string;
   
   @Input({ required: true }) set message(entry: string | undefined) {
-
     if (entry && entry !== '') {
       if (entry.length > 15) {
         this._croppedMessage = `${entry.substring(0, 14).trimEnd()}...`;
@@ -37,6 +36,7 @@ export class TableInspectMessageComponent {
         this._displayEye = true;
       } else {
         this._croppedMessage = entry;
+        this._displayEye = false;
       }
     }
   }
@@ -49,10 +49,6 @@ export class TableInspectMessageComponent {
   private _croppedMessage: string | undefined;
   private _message: string |undefined;
   private _displayEye = false;
-
-  get message() {
-    return this._message;
-  }
 
   get croppedMessage() {
     return this._croppedMessage;
