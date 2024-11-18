@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
-import { DataRaw, Status } from '@app/types/data';
+import { DataRaw, Status, TaskOutput } from '@app/types/data';
 import { PrettyPipe } from '@pipes/pretty.pipe';
 import { FieldContentComponent } from './field-content.component';
+import { MessageComponent } from './message.component';
 
 @Component({
   selector: 'app-inspection-object',
@@ -14,6 +15,7 @@ import { FieldContentComponent } from './field-content.component';
     MatExpansionModule,
     PrettyPipe,
     FieldContentComponent,
+    MessageComponent
   ],
   styleUrl: '../../../inspections.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -48,6 +50,14 @@ export class InspectionObjectComponent<T extends DataRaw, S extends Status, O ex
 
   get fields() {
     return this._fields;
+  }
+
+  getError(field: Field<T> | Field<O>): string {
+    return ((this.data as T)[field.key as keyof T] as TaskOutput).error;
+  }
+
+  getMessage(field: Field<T> | Field<O>): string {
+    return (this.data as T)[field.key as keyof T] as string;
   }
 
   getObject(field: Field<T> | Field<O>): T {
