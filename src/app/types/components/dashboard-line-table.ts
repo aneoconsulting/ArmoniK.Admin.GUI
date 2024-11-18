@@ -64,7 +64,6 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
     this.initFilters();
     this.initFilters();
     this.initInterval();
-    this.handleAutoRefreshStart();
   }
 
   initColumns() {

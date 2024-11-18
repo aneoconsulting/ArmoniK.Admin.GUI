@@ -1,11 +1,6 @@
-<app-inspection-object [fields]="fields" [statuses]="statuses" [data]="data" />
+@if (fields) {
+  <app-inspection-object [fields]="fields" [statuses]="statuses" [data]="data" />
+}
 @if(optionsFields) {
-  <mat-accordion>
-    <mat-expansion-panel id="options">
-      <mat-expansion-panel-header>
-        <strong>Options</strong>
-      </mat-expansion-panel-header>
-      <app-inspection-object [fields]="optionsFields" [statuses]="statuses" [data]="options" />
-    </mat-expansion-panel>
-  </mat-accordion>
+  <app-inspection-object [fields]="optionsFields" [statuses]="statuses" [data]="options" />
 }

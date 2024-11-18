@@ -1,3 +1,8 @@
+@if (optionsFields && !fields) {
+<mat-toolbar>
+  Options
+</mat-toolbar>
+}
 <mat-card>
   <app-inspection [fields]="fields" [optionsFields]="optionsFields" [data]="data" [statuses]="statuses" />
 </mat-card>
