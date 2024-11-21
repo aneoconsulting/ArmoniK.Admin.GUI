@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, ViewChild, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
@@ -48,7 +48,7 @@ import pkg from '../../../../package.json';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavigationComponent implements OnInit, OnDestroy {
+export class NavigationComponent implements AfterViewInit, OnDestroy {
   version = this.getVersion();
 
   private readonly responsiveService = inject(ResponsiveService);
@@ -57,6 +57,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private readonly iconsService = inject(IconsService);
   private readonly versionsService = inject(VersionsService);
   private readonly environmentService = inject(EnvironmentService);
+
+  @ViewChild(MatSidenav) readonly sidenav: MatSidenav;
 
   environment = this.environmentService.getEnvironment();
 
@@ -72,19 +74,14 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   private readonly _greetings = signal<string>('');
 
-  set greetings(value: string) {
-    this._greetings.set(value);
-  }
-
   get greetings() {
     return this._greetings();
   }
 
   sidebar = this.navigationService.currentSidebar;
-  sideBarOpened = true;
 
-  ngOnInit(): void {
-    this.sideBarOpened = this.navigationService.restoreSideBarOpened();
+  ngAfterViewInit(): void {
+    this.sidenav.opened = this.navigationService.restoreSideBarOpened();
     this.verifyGreetings();
     this.subscriptions.add(interval(60000).subscribe(() => this.verifyGreetings()));
   }
@@ -105,16 +102,16 @@ export class NavigationComponent implements OnInit, OnDestroy {
     const hour = new Date().getHours();
     const username = this.userService.user ? this.userService.user.username : '';
     if (hour <= 12) {
-      this.greetings = $localize`Good morning` + (username !== '' ? ', ' + username : '');
+      this._greetings.set($localize`Good morning` + (username !== '' ? ', ' + username : ''));
     } else if (hour < 18) {
-      this.greetings = $localize`Good afternoon` + (username !== '' ? ', ' + username : '');
+      this._greetings.set($localize`Good afternoon` + (username !== '' ? ', ' + username : ''));
     } else {
-      this.greetings = $localize`Good evening` + (username !== '' ? ', ' + username : '');
+      this._greetings.set($localize`Good evening` + (username !== '' ? ', ' + username : ''));
     }
   }
 
   toggleSideBar() {
-    this.sideBarOpened = !this.sideBarOpened;
-    this.navigationService.saveSideBarOpened(this.sideBarOpened);
+    this.sidenav.opened = !this.sidenav.opened;
+    this.navigationService.saveSideBarOpened(this.sidenav.opened);
   }
 }

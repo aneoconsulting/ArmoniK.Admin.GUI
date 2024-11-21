@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" [style]="isNotDesktop ? 'justify-content: space-between; height: fit-content' : ''">
   <button mat-icon-button (click)="toggleSideBar()">
-    @if (sideBarOpened) {
+    @if (drawer.opened) {
       <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
     } @else {
       <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
@@ -56,7 +56,7 @@
   <app-theme-selector/>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" [opened]="sideBarOpened" [mode]="isNotDesktop ? 'over' : 'side'">
+  <mat-sidenav #drawer class="sidenav" [mode]="isNotDesktop ? 'over' : 'side'">
     <mat-nav-list>
       @for (item of sidebar; track $index) {
         @if(item.type !== 'divider') {
