@@ -2,6 +2,17 @@ button {
   margin-left: 0.15rem !important;
 }
 
+article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.article-not-desktop {
+  flex-direction: column-reverse;
+  align-items: start;
+}
+
 app-actions-toolbar-group {
   width: 100%;
 }

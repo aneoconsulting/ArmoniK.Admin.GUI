@@ -1,4 +1,4 @@
-<app-actions-toolbar>
+<article [class]="isHandset ? 'article-not-desktop' : ''">
   <section>
     <app-refresh-button [tooltip]="refreshTooltip" (refreshChange)="onRefresh()"/>
     <app-auto-refresh-button [intervalValue]="intervalValue" (intervalValueChange)="onIntervalValueChange($event)"/>
@@ -48,5 +48,5 @@
       <ng-content select="[extra-menu-items]"></ng-content>
     </mat-menu>
   </section>
-</app-actions-toolbar>
+</article>
   

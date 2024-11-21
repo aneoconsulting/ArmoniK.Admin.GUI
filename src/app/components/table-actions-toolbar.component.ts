@@ -1,5 +1,4 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,8 +7,7 @@ import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, DataRaw } from '@app/types/data';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { IconsService } from '@services/icons.service';
-import { Subscription, map } from 'rxjs';
-import { ActionsToolbarComponent } from './actions-toolbar.component';
+import { ResponsiveService } from '@services/responsive.service';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
 import { ColumnsButtonComponent } from './columns-button.component';
 import { SpinnerComponent } from './spinner.component';
@@ -24,7 +22,6 @@ import { SpinnerComponent } from './spinner.component';
     RefreshButtonComponent,
     AutoRefreshButtonComponent,
     ColumnsButtonComponent,
-    ActionsToolbarComponent,
     SpinnerComponent,
     MatButtonModule,
     MatMenuModule,
@@ -32,15 +29,12 @@ import { SpinnerComponent } from './spinner.component';
     MatTooltipModule,
   ]
 })
-export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> implements OnInit, OnDestroy {
+export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> implements OnInit {
   private readonly iconsService = inject(IconsService);
-  private readonly breakpointObserver = inject(BreakpointObserver);
-
-  private readonly subscriptions = new Subscription();
-  private readonly _isHandset = signal(false);
+  private readonly responsiveService = inject(ResponsiveService);
 
   get isHandset() {
-    return this._isHandset();
+    return this.responsiveService.isHandset;
   }
 
   @Input({ required: true }) loading = false;
@@ -59,20 +53,7 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Output() lockColumnsChange = new EventEmitter<void>();
 
   ngOnInit(): void {
-    this.subscriptions.add(this.setIsHandSet());
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
-
-  private setIsHandSet() {
-    return this.breakpointObserver.observe(Breakpoints.Handset)
-      .pipe(
-        map(result => result.matches),
-      ).subscribe((data) => {
-        this._isHandset.set(data);
-      });
+    this.responsiveService.initResponsiveCheck();
   }
 
   getIcon(name: string): string {

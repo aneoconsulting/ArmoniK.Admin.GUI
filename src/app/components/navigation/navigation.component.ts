@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -13,10 +12,11 @@ import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
 import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
+import { ResponsiveService } from '@services/responsive.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
-import { Subscription, combineLatestWith, interval, map } from 'rxjs';
+import { Subscription, interval } from 'rxjs';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
@@ -51,7 +51,7 @@ import pkg from '../../../../package.json';
 export class NavigationComponent implements OnInit, OnDestroy {
   version = this.getVersion();
 
-  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly responsiveService = inject(ResponsiveService);
   private readonly navigationService = inject(NavigationService);
   private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
@@ -64,10 +64,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   coreVersion = this.versionsService.core;
   settingsItem = $localize`Settings`;
 
-  private readonly _isHandset = signal(false);
-
-  get isHandset() {
-    return this._isHandset();
+  get isNotDesktop() {
+    return this.responsiveService.isNotDesktop;
   }
 
   private readonly subscriptions = new Subscription();
@@ -89,7 +87,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
     this.verifyGreetings();
     this.subscriptions.add(interval(60000).subscribe(() => this.verifyGreetings()));
-    this.subscriptions.add(this.setIsHandSet());
+    this.responsiveService.initResponsiveCheck();
   }
 
   ngOnDestroy(): void {
@@ -102,16 +100,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
-  }
-
-  private setIsHandSet() {
-    return this.breakpointObserver.observe(Breakpoints.Handset)
-      .pipe(
-        combineLatestWith(this.breakpointObserver.observe(Breakpoints.Tablet)),
-        map(([handset, tablet]) => handset.matches || tablet.matches),
-      ).subscribe((data) => {
-        this._isHandset.set(data);
-      });
   }
 
   private verifyGreetings() {

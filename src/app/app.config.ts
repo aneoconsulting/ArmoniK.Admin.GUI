@@ -9,6 +9,7 @@ import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
+import { ResponsiveService } from '@services/responsive.service';
 import { StorageService } from '@services/storage.service';
 import { UserGrpcService } from '@services/user-grpc.service';
 import { UserService } from '@services/user.service';
@@ -82,6 +83,7 @@ export const appConfig: ApplicationConfig = {
     NavigationService,
     EnvironmentService,
     CacheService,
+    ResponsiveService,
     {
       provide: Window,
       useValue: window

@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" [style]="isHandset ? 'justify-content: space-between; height: fit-content' : ''">
+<mat-toolbar color="primary" [style]="isNotDesktop ? 'justify-content: space-between; height: fit-content' : ''">
   <button mat-icon-button (click)="toggleSideBar()">
     @if (sideBarOpened) {
       <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
@@ -6,7 +6,7 @@
       <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
     }
   </button>
-  @if (!isHandset) {
+  @if (!isNotDesktop) {
     <section class="title">
       <span>ArmoniK</span>
       <span> - </span>
@@ -17,7 +17,7 @@
   <article class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
     {{ environment.name }} {{ environment.version }}
   </article>
-  @if (!isHandset) {
+  @if (!isNotDesktop) {
     <div class="spacer"></div>
     <app-change-language-button />
   }
@@ -56,7 +56,7 @@
   <app-theme-selector/>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" [opened]="sideBarOpened" [mode]="isHandset ? 'over' : 'side'">
+  <mat-sidenav #drawer class="sidenav" [opened]="sideBarOpened" [mode]="isNotDesktop ? 'over' : 'side'">
     <mat-nav-list>
       @for (item of sidebar; track $index) {
         @if(item.type !== 'divider') {
@@ -76,7 +76,7 @@
 
   </mat-sidenav>
   <mat-sidenav-content>
-    <main [class]="isHandset ? 'main-mobile' : 'main-desktop'">
+    <main [class]="isNotDesktop ? 'main-mobile' : 'main-desktop'">
       <ng-content></ng-content>
     </main>
   </mat-sidenav-content>
