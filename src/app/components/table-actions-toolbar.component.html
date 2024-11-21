@@ -7,10 +7,10 @@
     }
   </section>
   
-  <section>
+  <section [class]="isHandset ? 'revert-column' : ''">
     <ng-content select="[extra-buttons-right]"></ng-content>
 
-    <section>
+    <section [class]="isHandset ? 'space-between' : ''">
       <app-columns-button
       [columnsLabels]="columnsLabels"
       [displayedColumns]="displayedColumns"
