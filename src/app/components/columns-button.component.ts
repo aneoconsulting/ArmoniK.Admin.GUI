@@ -10,17 +10,9 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
 
 @Component({
   selector: 'app-columns-button',
-  template: `
-<button [disabled]="disabled" mat-stroked-button (click)="openModifyColumnsDialog()">
-  <mat-icon aria-hidden="true" [fontIcon]="getIcon('modify-columns')"></mat-icon>
-  <span i18n="Open a dialog on click">Modify Columns</span>
-</button>
-  `,
-  styles: [`
-  `],
+  templateUrl: 'columns-button.component.html',
   standalone: true,
   imports: [
-    ColumnsModifyDialogComponent,
     MatDialogModule,
     MatButtonModule,
     MatIconModule
@@ -28,6 +20,7 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
 })
 export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   readonly iconsService = inject(IconsService);
+  private readonly _dialog = inject(MatDialog);
 
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
@@ -36,7 +29,6 @@ export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | n
 
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
 
-  constructor(private readonly _dialog: MatDialog) { }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);

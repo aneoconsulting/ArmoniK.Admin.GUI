@@ -8,8 +8,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { IconsService } from '@services/icons.service';
 import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
 import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
@@ -118,8 +116,6 @@ ul {
     TasksStatusesService,
   ],
   imports: [
-    ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
     MatButtonModule,
     MatDialogModule,
     MatToolbarModule,

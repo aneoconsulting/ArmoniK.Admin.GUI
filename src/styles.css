@@ -133,3 +133,8 @@ input[type="file"] {
   border-radius: 100%;
   transform: translate(-50%, -50%);
 }
+
+mat-toolbar-row {
+  height: fit-content !important;
+  padding: 0.5rem 1rem 0rem 1rem !important;
+}

@@ -1,0 +1,13 @@
+button {
+  margin-left: 0.15rem !important;
+}
+
+app-actions-toolbar-group {
+  width: 100%;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

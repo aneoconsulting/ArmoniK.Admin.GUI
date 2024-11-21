@@ -38,6 +38,10 @@ mat-toolbar {
   border-radius: 0.25rem;
 }
 
-main {
+.main-desktop {
   padding: 20px 50px;
+}
+
+.main-mobile {
+  padding: 5px 15px;
 }

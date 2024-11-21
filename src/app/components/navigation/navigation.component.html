@@ -76,7 +76,7 @@
 
   </mat-sidenav>
   <mat-sidenav-content>
-    <main>
+    <main [class]="isHandset ? 'main-mobile' : 'main-desktop'">
       <ng-content></ng-content>
     </main>
   </mat-sidenav-content>

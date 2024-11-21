@@ -7,7 +7,6 @@ import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, DataRaw } from '@app/types/data';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { IconsService } from '@services/icons.service';
-import { ActionsToolbarGroupComponent } from './actions-toolbar-group.component';
 import { ActionsToolbarComponent } from './actions-toolbar.component';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
 import { ColumnsButtonComponent } from './columns-button.component';
@@ -16,8 +15,7 @@ import { SpinnerComponent } from './spinner.component';
 @Component({
   selector: 'app-table-actions-toolbar',
   templateUrl: './table-actions-toolbar.component.html',
-  styles: [`
-  `],
+  styleUrl: 'table-actions-toolbar.component.css',
   standalone: true,
   providers: [],
   imports: [
@@ -25,7 +23,6 @@ import { SpinnerComponent } from './spinner.component';
     AutoRefreshButtonComponent,
     ColumnsButtonComponent,
     ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
     SpinnerComponent,
     MatButtonModule,
     MatMenuModule,

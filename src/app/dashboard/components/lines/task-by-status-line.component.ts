@@ -11,16 +11,12 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData } from '@app/types/dialog';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
-import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
@@ -48,6 +44,12 @@ app-actions-toolbar {
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 }
+
+section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
     `],
   standalone: true,
   providers: [
@@ -68,12 +70,9 @@ app-actions-toolbar {
     GrpcSortFieldService,
   ],
   imports: [
-    PageSectionComponent,
-    PageSectionHeaderComponent,
     ActionsToolbarComponent,
     RefreshButtonComponent,
     SpinnerComponent,
-    ActionsToolbarGroupComponent,
     AutoRefreshButtonComponent,
     FiltersToolbarComponent,
     MatToolbarModule,
@@ -81,7 +80,6 @@ app-actions-toolbar {
     MatMenuModule,
     MatButtonModule,
     StatusesGroupCardComponent,
-    TableDashboardActionsToolbarComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
