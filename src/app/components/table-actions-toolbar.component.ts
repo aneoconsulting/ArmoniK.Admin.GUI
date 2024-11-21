@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -29,7 +29,7 @@ import { SpinnerComponent } from './spinner.component';
     MatTooltipModule,
   ]
 })
-export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> implements OnInit {
+export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   private readonly iconsService = inject(IconsService);
   private readonly responsiveService = inject(ResponsiveService);
 
@@ -51,10 +51,6 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
   @Output() lockColumnsChange = new EventEmitter<void>();
-
-  ngOnInit(): void {
-    this.responsiveService.initResponsiveCheck();
-  }
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);

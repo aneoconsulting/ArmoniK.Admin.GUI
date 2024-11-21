@@ -23,7 +23,11 @@ export class ResponsiveService implements OnDestroy {
     return this._isNotDesktop();
   }
 
-  initResponsiveCheck() {
+  constructor() {
+    this.initResponsiveCheck();
+  }
+
+  private initResponsiveCheck() {
     this.subscription.add(this.initHandsetCheck());
     this.subscription.add(this.initTabletCheck());
     this.subscription.add(this.initNotDesktopCheck());

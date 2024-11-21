@@ -1,6 +1,6 @@
 <mat-toolbar>
   <mat-toolbar-row>
-    <app-actions-toolbar>
+    <article>
       <section>
         <app-refresh-button [tooltip]="autoRefreshTooltip()" (refreshChange)="onRefresh()"/>
         @if (loading()) {
@@ -42,7 +42,7 @@
           </button>
         </mat-menu>
       </section>
-    </app-actions-toolbar>
+    </article>
   </mat-toolbar-row>
 
   <mat-toolbar-row class="filters">

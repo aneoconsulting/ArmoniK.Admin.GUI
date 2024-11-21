@@ -87,7 +87,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
     this.sideBarOpened = this.navigationService.restoreSideBarOpened();
     this.verifyGreetings();
     this.subscriptions.add(interval(60000).subscribe(() => this.verifyGreetings()));
-    this.responsiveService.initResponsiveCheck();
   }
 
   ngOnDestroy(): void {

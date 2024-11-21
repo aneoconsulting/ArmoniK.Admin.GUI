@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExternalService, ManageExternalServicesDialogData } from '@app/types/external-service';
 import { IconsService } from '@services/icons.service';
+import { ResponsiveService } from '@services/responsive.service';
 import { FormExternalServiceComponent } from './form-external-service.component';
 
 @Component({
@@ -24,7 +25,8 @@ import { FormExternalServiceComponent } from './form-external-service.component'
   ],
 })
 export class ManageExternalServicesDialogComponent implements OnInit {
-  readonly iconsService = inject(IconsService);
+  private readonly iconsService = inject(IconsService);
+  private readonly responsiveService = inject(ResponsiveService);
   
   externalServices: ExternalService[] = [];
   editedService: ExternalService | undefined = undefined;

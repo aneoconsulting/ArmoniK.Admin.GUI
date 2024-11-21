@@ -11,7 +11,6 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData } from '@app/types/dialog';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
@@ -70,7 +69,6 @@ section {
     GrpcSortFieldService,
   ],
   imports: [
-    ActionsToolbarComponent,
     RefreshButtonComponent,
     SpinnerComponent,
     AutoRefreshButtonComponent,
