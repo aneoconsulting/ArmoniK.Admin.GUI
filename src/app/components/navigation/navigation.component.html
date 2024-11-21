@@ -1,9 +1,4 @@
-<mat-toolbar color="primary">
-  @if (isHandset$ | async) {
-    <button mat-icon-button (click)="drawer.toggle()">
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-    </button>
-  }
+<mat-toolbar color="primary" [style]="isHandset ? 'justify-content: space-between; height: fit-content' : ''">
   <button mat-icon-button (click)="toggleSideBar()">
     @if (sideBarOpened) {
       <mat-icon [fontIcon]="getIcon('menu-open')" [dir]="'rtl'"/>
@@ -11,17 +6,21 @@
       <mat-icon [fontIcon]="getIcon('menu')" [dir]="'rtl'"/>
     }
   </button>
-  <div class="title">
-    <span>ArmoniK</span>
-    <span> - </span>
-    <span class="greeting">{{ greetings }}</span>
-  </div>
-  <div class="spacer"></div>
-  <div class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
+  @if (!isHandset) {
+    <section class="title">
+      <span>ArmoniK</span>
+      <span> - </span>
+      <span class="greeting">{{ greetings }}</span>
+    </section>
+    <div class="spacer"></div>
+  }
+  <article class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
     {{ environment.name }} {{ environment.version }}
-  </div>
-  <div class="spacer"></div>
-  <app-change-language-button />
+  </article>
+  @if (!isHandset) {
+    <div class="spacer"></div>
+    <app-change-language-button />
+  }
   <app-healthcheck />
   <app-external-services />
   <button mat-button class="version" [matMenuTriggerFor]="versionMenu" matTooltip="More Infos" i18n-matTooltip>
@@ -57,10 +56,7 @@
   <app-theme-selector/>
 </mat-toolbar>
 <mat-sidenav-container autosize class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav"
-  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-  [mode]="(isHandset$ | async) ? 'over' : 'side'"
-  [opened]="(isHandset$ | async) === false && sideBarOpened">
+  <mat-sidenav #drawer class="sidenav" [opened]="sideBarOpened" [mode]="isHandset ? 'over' : 'side'">
     <mat-nav-list>
       @for (item of sidebar; track $index) {
         @if(item.type !== 'divider') {
