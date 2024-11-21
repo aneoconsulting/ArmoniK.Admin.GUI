@@ -16,7 +16,7 @@ import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
-import { Subscription, interval, map } from 'rxjs';
+import { Subscription, combineLatestWith, interval, map } from 'rxjs';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
@@ -107,7 +107,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private setIsHandSet() {
     return this.breakpointObserver.observe(Breakpoints.Handset)
       .pipe(
-        map(result => result.matches),
+        combineLatestWith(this.breakpointObserver.observe(Breakpoints.Tablet)),
+        map(([handset, tablet]) => handset.matches || tablet.matches),
       ).subscribe((data) => {
         this._isHandset.set(data);
       });
