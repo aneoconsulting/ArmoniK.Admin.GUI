@@ -19,112 +19,14 @@ import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
+import { ResponsiveService } from '@services/responsive.service';
 import { StorageService } from '@services/storage.service';
 import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
 
 @Component({
   selector: 'app-settings-index',
   templateUrl: './index.component.html',
-  styles: [`
-app-page-section + app-page-section {
-  display: block;
-  margin-top: 2rem;
-}
-
-main {
-  display: flex;
-  justify-content: space-between;
-}
-
-.sidebar-items {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sidebar-items li {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-}
-
-.add-sidebar-item {
-  margin-top: 1rem;
-  width: 66%;
-}
-
-.storage ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-
-  display: grid;
-  grid-template-columns: min-content min-content min-content;
-  column-gap: 0.5rem;
-}
-
-.storage li {
-  /* do not wrap word */
-  white-space: nowrap;
-}
-
-.import .file {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-}
-
-.file {
-  align-items: center;
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.between {
-  justify-content: space-between;
-}
-
-.storage {
-  margin-top: 1rem;
-}
-
-.import {
-  margin-top: 1rem;
-}
-
-.navbar {
-  margin-bottom: 1rem;
-}
-
-.cdk-drag-preview {
-  list-style: none;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.cdk-drop-list-dragging li:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-  `],
+  styleUrl: 'settings.css',
   standalone: true,
   providers: [
     QueryParamsService,
@@ -159,6 +61,15 @@ export class IndexComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
+  private readonly responsiveService = inject(ResponsiveService);
+
+  get isNotDesktop() {
+    return this.responsiveService.isNotDesktop;
+  }
+
+  get isHandset() {
+    return this.responsiveService.isHandset;
+  }
 
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());

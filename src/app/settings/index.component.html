@@ -7,7 +7,7 @@
   Settings are stored in your browser. They are not synced across devices. But you can export and import them manually. This is useful if you want to use the same settings on multiple devices or browsers. You can also create presets and switch between them.
 </p>
 
-<main>
+<main [class]="isNotDesktop ? 'flex-column': ''">
   <app-page-section class="sidebar">
     <app-page-section-header icon="format_list_bulleted">
       <span i18n="Section title"> Sidebar </span>
@@ -67,7 +67,7 @@
 
       <form (submit)="onSubmitStorage($event)" #storageForm>
         @if (keys.size) {
-          <ul>
+          <ul [class]="isHandset ? 'ul-mobile' : ''">
             @for (key of keys; track key) {
               <li>
                 <mat-checkbox [name]="key" (change)="updateKeySelection($event)">
