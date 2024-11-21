@@ -5,16 +5,41 @@ mat-divider {
 
 form {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
 }
 
-#field-name {
+.form-divider {
+  margin: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.mobile-form {
+  column-gap: 0;
+  align-items: start;
+}
+
+.field-name {
   flex: 1;
 }
 
-#field-url {
+.field-name-mobile {
+  flex: 100%
+}
+
+.field-url {
   flex: 3;
+}
+
+.field-url-mobile {
+  flex: 60%;
+}
+
+.section-mobile {
+  flex: 40%;
+  display: flex;
 }
 
 button, button:hover {

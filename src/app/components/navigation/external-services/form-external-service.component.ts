@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -9,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExternalService } from '@app/types/external-service';
 import { IconPickerDialogComponent } from '@components/icon-picker-dialog.component';
 import { IconsService } from '@services/icons.service';
+import { ResponsiveService } from '@services/responsive.service';
 
 @Component({
   selector: 'app-form-external-service',
@@ -24,15 +26,21 @@ import { IconsService } from '@services/icons.service';
     MatInputModule,
     IconPickerDialogComponent,
     MatTooltipModule,
+    MatDividerModule,
   ],
 })
 export class FormExternalServiceComponent implements OnInit {
   private readonly iconsService = inject(IconsService);
+  private readonly responsiveService = inject(ResponsiveService);
 
   @Input({ required: false }) externalService: ExternalService;
 
   @Output() cancelChange = new EventEmitter<void>();
   @Output() submitChange = new EventEmitter<ExternalService>();
+
+  get isHandset() {
+    return this.responsiveService.isHandset;
+  }
 
   externalServiceForm = new FormGroup({
     icon: new FormControl(''),

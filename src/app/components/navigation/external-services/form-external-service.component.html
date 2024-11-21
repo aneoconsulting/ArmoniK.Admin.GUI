@@ -1,13 +1,16 @@
-<form [formGroup]="externalServiceForm" (ngSubmit)="onSubmit()">
-  <mat-form-field id="field-name" appearance="outline" subscriptSizing="dynamic">
+@if (isHandset) {
+  <mat-divider class="form-divider" />
+}
+<form [formGroup]="externalServiceForm" (ngSubmit)="onSubmit()" [class]="isHandset ? 'mobile-form' : ''">
+  <mat-form-field [class]="isHandset ? 'field-name-mobile' : 'field-name'" appearance="outline" subscriptSizing="dynamic">
     <mat-label for="name" i18n="Name of the external service">Name</mat-label>
     <input matInput id="name" type="text" formControlName="name">
   </mat-form-field>
-  <mat-form-field id="field-url" class="grid-span-2" appearance="outline" subscriptSizing="dynamic">
+  <mat-form-field [class]="isHandset ? 'field-url-mobile' : 'field-url'" appearance="outline" subscriptSizing="dynamic">
     <mat-label for="url" i18n="URL of the external service"> URL </mat-label>
     <input matInput id="url" type="url" formControlName="url">
   </mat-form-field>
-  <div>
+  <section [class]="isHandset ? 'section-mobile' : ''">
     <app-icon-picker
     [icon]="externalServiceForm.value.icon"
     (iconChange)="onIconChange($event)"
@@ -21,5 +24,8 @@
       <mat-icon [fontIcon]="getIcon('add')" />
     </button>
     }
-  </div>
+  </section>
 </form>
+@if (isHandset) {
+  <mat-divider class="form-divider" />
+}
