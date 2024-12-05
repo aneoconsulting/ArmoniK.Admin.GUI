@@ -16,13 +16,12 @@ import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
 import { UserService } from '@services/user.service';
-import { VersionsService } from '@services/versions.service';
 import { Observable, Subscription, interval } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
-import pkg from '../../../../package.json';
+import { VersionsMenuComponent } from './version-menu/versions-menu.component';
 
 @Component({
   selector: 'app-navigation',
@@ -88,23 +87,18 @@ main {
     ChangeLanguageButtonComponent,
     HealthCheckComponent,
     ExternalServicesComponent,
+    VersionsMenuComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavigationComponent implements OnInit, OnDestroy {
-  version = this.getVersion();
-
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly navigationService = inject(NavigationService);
   private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
-  private readonly versionsService = inject(VersionsService);
   private readonly environmentService = inject(EnvironmentService);
 
   environment = this.environmentService.getEnvironment();
-
-  apiVersion = this.versionsService.api;
-  coreVersion = this.versionsService.core;
   settingsItem = $localize`Settings`;
 
   checkGreetingsSubscription: Subscription;
@@ -136,10 +130,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.checkGreetingsSubscription.unsubscribe();
-  }
-
-  getVersion(): string {
-    return process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
   }
 
   getIcon(name: string): string {

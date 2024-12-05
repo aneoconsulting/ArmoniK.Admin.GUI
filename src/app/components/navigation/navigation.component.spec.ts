@@ -11,7 +11,6 @@ import { UserService } from '@services/user.service';
 import { VersionsService } from '@services/versions.service';
 import { BehaviorSubject, Subject, lastValueFrom, of } from 'rxjs';
 import { NavigationComponent } from './navigation.component';
-import pkg from '../../../../package.json';
 
 
 // Creating a way to control the interval without having to fake the time.
@@ -87,18 +86,6 @@ describe('NavigationComponent', () => {
     });
   });
 
-  describe('getVersion', () => {
-    it('should get production version', () => {
-      process.env['NODE_ENV'] = 'production';
-      expect(component.getVersion()).toEqual(pkg.version);
-    });
-
-    it('should get development version', () => {
-      process.env['NODE_ENV'] = 'development';
-      expect(component.getVersion()).toEqual('-dev');
-    });
-  });
-
   it('should get icon', () => {
     const icons = ['tune', 'arrow-down', 'update', 'help', 'api', 'hub'];
     const differentResults = ['arrow_drop_down', 'help_outline'];
@@ -120,7 +107,6 @@ describe('NavigationComponent', () => {
   });
   
   it('should greet correctly', fakeAsync(() => {
-
     jest.useFakeTimers().setSystemTime(new Date('2020-01-01T10:00:00'));
     fakeIntervalSubject.next();
     expect(component.greetings).toEqual('Good morning');

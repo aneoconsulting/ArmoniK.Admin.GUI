@@ -90,4 +90,8 @@ describe('InspectListComponent', () => {
       expect(mockNotificationService.success).toHaveBeenCalled();
     });
   });
+
+  it('should get icon', () => {
+    expect(component.getIcon('heart')).toEqual('favorite');
+  });
 });

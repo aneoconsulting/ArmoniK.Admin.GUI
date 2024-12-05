@@ -1,0 +1,19 @@
+<button mat-button class="version" [matMenuTriggerFor]="versionMenu" matTooltip="More Infos" i18n-matTooltip>
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('arrow-down')"></mat-icon>
+  <span>
+    v{{ version }}
+  </span>
+</button>
+<mat-menu #versionMenu="matMenu">
+  <a mat-menu-item [href]="'https://github.com/aneoconsulting/ArmoniK.Admin.GUI/releases/v' + version" target="_blank" rel="noopener noreferrer">
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('update')"/>
+    <span i18n="Button">Changelog</span>
+  </a>
+  <a mat-menu-item href="https://aneoconsulting.github.io/ArmoniK.Admin.GUI" target="_blank" rel="noopener">
+    <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="getIcon('help')"/>
+    <span i18n="Button">Documentation</span>
+  </a>
+  @for(repo of repositories; track $index) {
+    <app-repository-version [label]="repo.label" [link]="repo.link" [version]="repo.version" [icon]="repo.icon" />
+  }
+</mat-menu>

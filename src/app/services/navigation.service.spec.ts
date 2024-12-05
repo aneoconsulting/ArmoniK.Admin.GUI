@@ -1,16 +1,23 @@
 import { TestBed } from '@angular/core/testing';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { ExternalService } from '@app/types/external-service';
-import { Sidebar } from '@app/types/navigation';
+import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 import { NavigationService } from './navigation.service';
 import { StorageService } from './storage.service';
 
 describe('NavigationService', () => {
   let service: NavigationService;
+  
   const mockStorageService = {
     getItem: jest.fn(),
     setItem: jest.fn()
   };
+
+  const mockUserConnectedGuard = {
+    canActivate: jest.fn(() => true),
+  };
+
   const sidebar: Sidebar[] = ['applications', 'divider', 'sessions', 'sessions'];
   const expectedFormatResult = [
     {
@@ -49,7 +56,8 @@ describe('NavigationService', () => {
       providers: [
         NavigationService,
         DefaultConfigService,
-        { provide: StorageService, useValue: mockStorageService }
+        { provide: StorageService, useValue: mockStorageService },
+        { provide: UserConnectedGuard, useValue: mockUserConnectedGuard }
       ]
     }).inject(NavigationService);
   });
@@ -72,6 +80,20 @@ describe('NavigationService', () => {
     it('Should restore default config sideBar if none is stored', () => {
       storedSideBar = null;
       expect(service.restoreSidebar()).toEqual(new DefaultConfigService().defaultSidebar);
+    });
+  });
+
+  describe('setting sidebar', () => {
+    const newSideBar = [{id: 'applications'}, {id: 'partitions'}, {id: 'divider'}] as SidebarItem[];
+    it('should set the whole sidebar', () => {
+      service.sideBar = newSideBar;
+      expect(service.currentSidebar).toEqual(newSideBar);
+    });
+
+    it('should filter the profile if no user are connected', () => {
+      mockUserConnectedGuard.canActivate.mockReturnValueOnce(false);
+      service.sideBar = newSideBar;
+      expect(service.currentSidebar).toEqual(newSideBar.filter(e => e.id !== 'profile'));
     });
   });
 

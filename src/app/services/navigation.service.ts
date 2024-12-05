@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { ExternalService } from '@app/types/external-service';
-import { Sidebar, SidebarItem, SidebarItems, isSideBar } from '@app/types/navigation';
+import { Sidebar, SidebarItem, isSideBar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
@@ -8,8 +9,9 @@ import { StorageService } from './storage.service';
 export class NavigationService {
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly storageService = inject(StorageService);
+  private readonly userConnectedGuard = inject(UserConnectedGuard);
 
-  sidebarItems: SidebarItems = [
+  sidebarItems: SidebarItem[] = [
     {
       type: 'link',
       id: 'profile',
@@ -63,7 +65,19 @@ export class NavigationService {
   defaultSidebar: Sidebar[] = this.defaultConfigService.defaultSidebar;
 
   // Used to display the sidebar on the navigation component.
-  currentSidebar: SidebarItem[] = this.formatSidebar(this.restoreSidebar());
+  currentSidebar: SidebarItem[];
+
+  set sideBar(entry: SidebarItem[]) {
+    if (!this.userConnectedGuard.canActivate()) {
+      this.currentSidebar = entry.filter(element => element.id !== 'profile');
+    } else {
+      this.currentSidebar = entry;
+    }
+  }
+
+  constructor() {
+    this.sideBar = this.formatSidebar(this.restoreSidebar());
+  }
 
   restoreSidebar(): Sidebar[] {
     const sidebar = this.storageService.getItem('navigation-sidebar', true) as Sidebar[] || this.defaultConfigService.defaultSidebar;
@@ -72,12 +86,12 @@ export class NavigationService {
   }
 
   saveSidebar(sidebar: Sidebar[]) {
-    this.currentSidebar = this.formatSidebar(sidebar);
+    this.sideBar = this.formatSidebar(sidebar);
     this.storageService.setItem('navigation-sidebar', sidebar);
   }
 
   updateSidebar(sidebar: Sidebar[]) {
-    this.currentSidebar = this.formatSidebar(sidebar);
+    this.sideBar = this.formatSidebar(sidebar);
   }
 
 

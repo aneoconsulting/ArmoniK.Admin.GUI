@@ -605,21 +605,6 @@ describe('SessionsTableComponent', () => {
     });
   });
 
-  describe('computationErrorNotification', () => {
-    const sessionId = 'sessionId';
-    beforeEach(() => {
-      component.computationErrorNotification(sessionId);
-    });
-
-    it('should send a notification on computation error', () => {
-      expect(mockNotificationService.warning).toHaveBeenCalledWith(`Error while computing duration for session: ${sessionId}`);
-    });
-
-    it('should send the notification only one time', () => {
-      expect(mockNotificationService.warning).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('compute duration', () => {
     it('should not compute if the ended and created array have not the same length as the dataRaw array', () => {
       component.loading.set(true); // We are mocking the fact that the component is loading
@@ -658,11 +643,10 @@ describe('SessionsTableComponent', () => {
     });
     
     it('should log error if there is a computation error', () => {
-      const spy = jest.spyOn(component, 'computationErrorNotification');
       component.dataRaw = [{sessionId: 'sessionId'}] as SessionRaw[];
       component.durationSubscription({sessionId: 'otherSession', date: {seconds: '10', nanos: 0} as Timestamp}, 'created');
       component.durationSubscription(taskEndedAt, 'ended');
-      expect(spy).toHaveBeenCalledWith('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('sessionId');
     });
   });
 

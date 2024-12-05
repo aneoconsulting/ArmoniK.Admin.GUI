@@ -2,11 +2,6 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
-  {
     path: 'profile',
     loadChildren: () => import('./profile/routes').then(mod => mod.PROFILE_ROUTES)
   },
@@ -37,5 +32,10 @@ export const routes: Routes = [
   {
     path: 'settings',
     loadChildren: () => import('./settings/routes').then(mod => mod.SETTINGS_ROUTES)
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
   },
 ];
