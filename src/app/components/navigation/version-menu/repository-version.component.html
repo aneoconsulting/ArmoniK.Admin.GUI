@@ -1,0 +1,11 @@
+<a mat-menu-item target="_blank" [href]="link + (version() ?? '')">
+  <mat-icon matListItemIcon aria-hidden="true" [fontIcon]="realIcon"/>
+  <span>
+    <span i18n="Button">{{ label }}</span> -
+    @if (version()) {
+      v{{ version()}}
+    } @else {
+      <span i18n>Unavailable</span>
+    }
+  </span>
+</a>

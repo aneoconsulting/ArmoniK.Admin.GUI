@@ -65,7 +65,7 @@ export class IndexComponent {
   }
 
   groupedPermissions(): PermissionGroup[] {
-    const permissions = this.userService.user.permissions;
+    const permissions = this.userService.user?.permissions ?? [];
 
     const groups: PermissionGroup[] = [];
 
