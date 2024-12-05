@@ -167,7 +167,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
                 nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
               } as Duration;
             } else {
-              this.computationErrorNotification(key);
+              this.notificationService.error(key);
             }
           }
         });
@@ -415,13 +415,6 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
       this.sessionCreationDates.push({sessionId: data.sessionId, date: data.date});
     }
     this.computeDuration$.next();
-  }
-
-  computationErrorNotification(sessionId: string) {
-    if (!this.sessionsIdsComputationError.includes(sessionId)) {
-      this.sessionsIdsComputationError.push(sessionId);
-      this.notificationService.warning('Error while computing duration for session: ' + sessionId);
-    }
   }
 
   trackBy(index: number, item: ArmonikData<SessionRaw, TaskOptions>) {

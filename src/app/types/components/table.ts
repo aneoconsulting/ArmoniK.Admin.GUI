@@ -111,7 +111,7 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
           return this.list$(options, filters).pipe(
             catchError((err: GrpcStatusEvent) => {
               console.error(err);
-              this.notificationService.error(err.statusMessage);
+              this.notificationService.error(`Could not load ${this.scope}`);
               return of(null);
             })
           );
