@@ -112,6 +112,17 @@ describe('TableCellComponent', () => {
     });
   });
 
+  describe('string value', () => {
+    beforeEach(() => {
+      component.column = column;
+      component.element = element;
+    });
+
+    it('should set value', () => {
+      expect(component.string).toEqual('session-id');
+    });
+  });
+
   it('should refresh refreshStatuses in case of a count column', () => {
     component.column = {
       key: 'count',

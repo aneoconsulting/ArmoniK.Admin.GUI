@@ -167,7 +167,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
                 nanos: Math.abs(lastDuration.nanos - firstDuration.nanos)
               } as Duration;
             } else {
-              this.notificationService.error(key);
+              this.notificationService.warning(key);
             }
           }
         });

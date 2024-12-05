@@ -7,7 +7,8 @@ import { TaskSummaryFilters } from '@app/tasks/types';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
-import { Observable, of } from 'rxjs';
+import { NotificationService } from '@services/notification.service';
+import { Observable, of, throwError } from 'rxjs';
 import { TaskByStatusLineComponent } from './task-by-status-line.component';
 import { TasksStatusesGroup } from '../../types';
 
@@ -35,6 +36,10 @@ describe('TaskByStatusLineComponent', () => {
     } as CountTasksByStatusResponse)),
   };
 
+  const mockNotificationService = {
+    error: jest.fn(),
+  };
+
   const filters: TaskSummaryFilters = [[{
     field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
     operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
@@ -52,7 +57,8 @@ describe('TaskByStatusLineComponent', () => {
         AutoRefreshService,
         IconsService,
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
-        { provide: TasksIndexService, useValue: mockTasksIndexService }
+        { provide: TasksIndexService, useValue: mockTasksIndexService },
+        { provide: NotificationService, useValue: mockNotificationService }
       ]
     }).inject(TaskByStatusLineComponent);
     component.line = {
@@ -71,16 +77,39 @@ describe('TaskByStatusLineComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  test('after view init subscription', () => {
-    component.refresh.next();
+  describe('getting tasks', () => {
+    it('should get data', () => {
+      component.refresh.next();
 
-    expect(component.data()).toEqual([
-      {status:TaskStatus.TASK_STATUS_CANCELLED, count: 3},
-      {status: TaskStatus.TASK_STATUS_COMPLETED, count: 10},
-      {status: TaskStatus.TASK_STATUS_PROCESSING, count: 145}
-    ]);
-    expect(component.total).toEqual(158);
-    expect(component.loading()).toBeFalsy();
+      expect(component.data()).toEqual([
+        {status:TaskStatus.TASK_STATUS_CANCELLED, count: 3},
+        {status: TaskStatus.TASK_STATUS_COMPLETED, count: 10},
+        {status: TaskStatus.TASK_STATUS_PROCESSING, count: 145}
+      ]);
+      expect(component.total).toEqual(158);
+      expect(component.loading()).toBeFalsy();
+    });
+  });
+
+  describe('listing error', () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+
+    beforeEach(() => {
+      mockTasksGrpcService.countByStatus$.mockReturnValueOnce(throwError(() => new Error()));
+      component.refresh.next();
+    });
+
+    it('should log errors', () => {
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    });
+
+    it('should notify the error', () => {
+      expect(mockNotificationService.error).toHaveBeenCalled();
+    });
+
+    it('data should be empty', () => {
+      expect(component.data()).toEqual([]);
+    });
   });
 
   it('should get required icons', () => {
