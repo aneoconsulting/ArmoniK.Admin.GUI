@@ -22,7 +22,7 @@ export class VersionsMenuComponent {
   private readonly versionsService = inject(VersionsService);
   private readonly iconsService = inject(IconsService);
 
-  readonly version = process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
+  readonly version = this.getVersion();
 
   readonly repositories = [
     {
@@ -41,5 +41,9 @@ export class VersionsMenuComponent {
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
+  }
+
+  getVersion() {
+    return process.env['NODE_ENV'] === 'development' ? '-dev' : pkg.version;
   }
 }

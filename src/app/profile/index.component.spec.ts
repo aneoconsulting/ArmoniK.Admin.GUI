@@ -15,7 +15,7 @@ describe('IndexComponent', () => {
   };
 
   const mockUserService = {
-    user: user
+    user: user as User.AsObject | undefined
   };
 
   beforeEach(() => {
@@ -44,20 +44,27 @@ describe('IndexComponent', () => {
     expect(component.getIcon('profile')).toEqual('account_circle');
   });
 
-  it('should group permissions', () => {
-    expect(component.groupedPermissions()).toEqual<PermissionGroup[]>([
-      {
-        name: 'sessions',
-        permissions: [
-          'list', 'get', 'cancel'
-        ]
-      },
-      {
-        name: 'tasks',
-        permissions: [
-          'list'
-        ]
-      }
-    ]);
+  describe('grouping permissions', () => {
+    it('should group permissions', () => {
+      expect(component.groupedPermissions()).toEqual<PermissionGroup[]>([
+        {
+          name: 'sessions',
+          permissions: [
+            'list', 'get', 'cancel'
+          ]
+        },
+        {
+          name: 'tasks',
+          permissions: [
+            'list'
+          ]
+        }
+      ]);
+    });
+
+    it('should have empty permissions if no users are connected', () => {
+      mockUserService.user = undefined;
+      expect(component.groupedPermissions()).toEqual([]);
+    });
   });
 });

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { UserConnectedGuard } from '@app/profile/guards/user-connected-guard.component';
+import { UserConnectedGuard } from '@app/profile/guards/user-connected.guard';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar, SidebarItem, isSideBar } from '@app/types/navigation';
 import { DefaultConfigService } from './default-config.service';

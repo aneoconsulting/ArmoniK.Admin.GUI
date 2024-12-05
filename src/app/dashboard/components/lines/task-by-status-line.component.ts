@@ -115,10 +115,8 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
         })
       )),
     ).subscribe((data) => {
-      if (data.status) {
-        this.data.set(data.status);
-        this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-      }
+      this.data.set(data.status ?? []);
+      this.total = this.data().reduce((acc, curr) => acc + curr.count, 0);
       this.loading.set(false);
     });
     this.subscriptions.add(mergeSubscription);

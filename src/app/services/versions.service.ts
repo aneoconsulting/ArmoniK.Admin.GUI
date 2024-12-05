@@ -24,7 +24,7 @@ export class VersionsService {
     if (version.length === 4) {
       version.pop();
     }
-    return `v${version.join('.')}`;
+    return version.join('.');
   }
 
   setCoreVersion(version: string | null = null): void {
