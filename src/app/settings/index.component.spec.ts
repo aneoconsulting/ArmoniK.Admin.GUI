@@ -5,6 +5,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
+import DownloadService from '@services/download-file.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
@@ -127,6 +128,10 @@ describe('IndexComponent', () => {
     get: jest.fn()
   };
 
+  const mockDownloadService = {
+    downloadFile: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -137,6 +142,7 @@ describe('IndexComponent', () => {
         { provide: StorageService, useValue: mockStorageService },
         { provide: MatDialog, useValue: mockDialog },
         { provide: HttpClient, useValue: mockHttpClient },
+        { provide: DownloadService, useValue: mockDownloadService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -306,27 +312,13 @@ describe('IndexComponent', () => {
     });
   });
 
-  describe('exportData', () => {
-    const anchor = {
-      href: '',
-      download: '',
-      click: jest.fn()
-    };
-
-    global.document.createElement = jest.fn().mockReturnValue(anchor);
-
-    global.URL.createObjectURL = jest.fn();
-    
+  describe('exportData', () => {  
     beforeEach(() => {
       component.exportData();
     });
 
-    it('should download the settings', () => {
-      expect(anchor.download).toContain('settings.json');
-    });
-
-    it('should click the anchor', () => {
-      expect(anchor.click).toHaveBeenCalled();
+    it('should call downloadFile', () => {
+      expect(mockDownloadService.downloadFile).toHaveBeenCalled();
     });
 
     it('should notify on success', () => {
