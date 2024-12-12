@@ -143,6 +143,11 @@ export class SessionsFiltersService extends AbstractFilterService<SessionRawEnum
 
   readonly defaultFilters: SessionRawFilters = this.defaultConfigService.defaultSessions.filters;
 
+  constructor() {
+    super();
+    this.getFromCache();
+  }
+
   retrieveLabel(filterFor: SessionFilterFor, filterField: SessionFilterField): string {
     switch (filterFor) {
     case 'root':

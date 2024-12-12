@@ -77,6 +77,11 @@ export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumFi
 
   readonly defaultFilters: ResultRawFilters = this.defaultConfigService.defaultResults.filters;
 
+  constructor() {
+    super();
+    this.getFromCache();
+  }
+
   retrieveLabel(filterFor: FilterFor<ResultRawEnumField, null>, filterField:  ResultFilterField): string {
     switch (filterFor) {
     case 'root':

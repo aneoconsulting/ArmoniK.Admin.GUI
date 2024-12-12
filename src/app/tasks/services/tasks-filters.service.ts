@@ -189,6 +189,11 @@ export class TasksFiltersService extends AbstractFilterService<TaskSummaryEnumFi
 
   readonly defaultFilters: TaskSummaryFilters = this.defaultConfigService.defaultTasks.filters;
 
+  constructor() {
+    super();
+    this.getFromCache();
+  }
+
   retrieveLabel(filterFor: TaskFilterFor, filterField: TaskFilterField): string {
     switch (filterFor) {
     case 'root':
