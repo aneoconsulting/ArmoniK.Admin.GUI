@@ -1,5 +1,6 @@
 import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, DataRaw } from '@app/types/data';
+import { Scope } from './config';
 
 export type DataType = 'raw' | 'link' | 'object' | 'date' | 'duration' | 'status' | 'array' | 'output' | 'message'; 
 export type ColumnType = DataType | 'count' | 'actions' | 'select';
@@ -7,7 +8,7 @@ export type ColumnType = DataType | 'count' | 'actions' | 'select';
 export type Field<T extends DataRaw | TaskOptions | null> = {
   key: keyof T;
   type?: DataType;
-  link?: string;
+  link?: Scope;
   queryParams?: string;
 };
 
