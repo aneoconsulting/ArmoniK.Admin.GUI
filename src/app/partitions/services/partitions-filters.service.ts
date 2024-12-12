@@ -1,18 +1,15 @@
 import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersServiceInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { AbstractFilterService } from '@app/types/services/filtersService';
 import { PartitionFilterField, PartitionRawFilters, PartitionsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PartitionsFiltersService implements FiltersServiceInterface<PartitionRawEnumField> {
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
-
+export class PartitionsFiltersService extends AbstractFilterService<PartitionRawEnumField> {
+  protected readonly scope: Scope = 'partitions';
   readonly rootField: Record<PartitionRawEnumField, string> = {
     [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID]: $localize`ID`,
     [PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_PARENT_PARTITION_IDS]: $localize`Parent Partition Ids`,
@@ -58,28 +55,6 @@ export class PartitionsFiltersService implements FiltersServiceInterface<Partiti
   ];
 
   readonly defaultFilters: PartitionRawFilters = this.defaultConfigService.defaultPartitions.filters;
-
-  saveFilters(filters: PartitionRawFilters): void {
-    this.tableService.saveFilters('partitions-filters', filters);
-  }
-
-  restoreFilters(): PartitionRawFilters {
-    return this.tableService.restoreFilters<PartitionRawEnumField, null>('partitions-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): PartitionRawFilters {
-    this.tableService.resetFilters('partitions-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('partitions-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('partitions-show-filters') ?? true;
-  }
 
   retrieveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
     switch (filterFor) {

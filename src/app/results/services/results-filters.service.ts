@@ -1,19 +1,17 @@
 import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
+import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersServiceInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { AbstractFilterService, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService implements FiltersServiceInterface<ResultRawEnumField>, FiltersServiceStatusesInterface {
+export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface {
+  protected readonly scope: Scope = 'results';
   readonly statusService = inject(ResultsStatusesService);
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
 
   readonly rootField: Record<ResultRawEnumField, string> = {
     [ResultRawEnumField.RESULT_RAW_ENUM_FIELD_COMPLETED_AT]: $localize`Completed at`,
@@ -78,28 +76,6 @@ export class ResultsFiltersService implements FiltersServiceInterface<ResultRawE
   ];
 
   readonly defaultFilters: ResultRawFilters = this.defaultConfigService.defaultResults.filters;
-
-  saveFilters(filters: ResultRawFilters): void {
-    this.tableService.saveFilters('results-filters', filters);
-  }
-
-  restoreFilters(): ResultRawFilters {
-    return this.tableService.restoreFilters<ResultRawEnumField, null>('results-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): ResultRawFilters {
-    this.tableService.resetFilters('results-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('results-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('results-show-filters') ?? true;
-  }
 
   retrieveLabel(filterFor: FilterFor<ResultRawEnumField, null>, filterField:  ResultFilterField): string {
     switch (filterFor) {
