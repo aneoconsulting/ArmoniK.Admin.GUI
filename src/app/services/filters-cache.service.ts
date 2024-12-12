@@ -38,4 +38,11 @@ export class FiltersCacheService {
   delete(scope: Scope): void {
     this.filtersMap.delete(scope);
   }
+
+  /**
+   * Clear all cached filters
+   */
+  clear(): void {
+    this.filtersMap.clear();
+  }
 }
