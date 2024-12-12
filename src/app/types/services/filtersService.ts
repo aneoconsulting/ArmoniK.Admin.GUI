@@ -8,6 +8,7 @@ import { SessionFilterField, SessionFilterFor } from '@app/sessions/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskFilterField, TaskFilterFor } from '@app/tasks/types';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { Scope } from '../config';
 import { FilterDefinition } from '../filter-definition';
@@ -20,16 +21,25 @@ export type FilterField = TaskFilterField | ResultFilterField | SessionFilterFie
 export abstract class AbstractFilterService<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   protected abstract readonly scope: Scope;
   protected readonly defaultConfigService = inject(DefaultConfigService);
-  protected readonly tableService = inject(TableService);
+  private readonly tableService = inject(TableService);
+  private readonly filtersCacheService = inject(FiltersCacheService);
 
   abstract readonly rootField: Record<F, string>;
   abstract readonly filtersDefinitions: FilterDefinition<F, O>[];
 
   abstract readonly defaultFilters: FiltersOr<F, O>;
 
+  protected getFromCache() {
+    const filters = this.filtersCacheService.get<F, O>(this.scope);
+    if (filters) {
+      this.saveFilters(filters);
+    }
+  }
+
   saveFilters(filters: FiltersOr<F, O>): void {
     this.tableService.saveFilters(`${this.scope}-filters`, filters);
   }
+
   restoreFilters(): FiltersOr<F, O> {
     return this.tableService.restoreFilters<F, O>(`${this.scope}-filters`, this.filtersDefinitions) ?? this.defaultFilters;
   }

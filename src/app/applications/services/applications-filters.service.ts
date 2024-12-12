@@ -43,6 +43,11 @@ export class ApplicationsFiltersService extends AbstractFilterService<Applicatio
 
   readonly defaultFilters: ApplicationRawFilters = this.defaultConfigService.defaultApplications.filters;
 
+  constructor() {
+    super();
+    this.getFromCache();
+  }
+
   retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
     switch (filterFor) {
     case 'root':

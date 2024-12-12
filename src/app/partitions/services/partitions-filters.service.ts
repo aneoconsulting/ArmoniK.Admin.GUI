@@ -56,6 +56,11 @@ export class PartitionsFiltersService extends AbstractFilterService<PartitionRaw
 
   readonly defaultFilters: PartitionRawFilters = this.defaultConfigService.defaultPartitions.filters;
 
+  constructor() {
+    super();
+    this.getFromCache();
+  }
+
   retrieveLabel(filterFor: FilterFor<PartitionRawEnumField, null>, filterField:  PartitionFilterField): string {
     switch (filterFor) {
     case 'root':
