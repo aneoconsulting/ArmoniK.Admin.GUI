@@ -1,18 +1,17 @@
 import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { Scope } from '@app/types/config';
+import { AbstractFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskSummaryEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class TasksFiltersService extends AbstractFilterService<TaskSummaryEnumField, TaskOptionEnumField>
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  protected readonly scope: Scope = 'tasks';
   readonly statusService = inject(TasksStatusesService);
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
 
   readonly rootField: Record<TaskSummaryEnumField, string> = {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,
@@ -189,28 +188,6 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
   ];
 
   readonly defaultFilters: TaskSummaryFilters = this.defaultConfigService.defaultTasks.filters;
-
-  saveFilters(filters: TaskSummaryFilters): void {
-    this.tableService.saveFilters('tasks-filters', filters);
-  }
-
-  restoreFilters(): TaskSummaryFilters {
-    return this.tableService.restoreFilters<TaskSummaryEnumField, TaskOptionEnumField>('tasks-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): TaskSummaryFilters {
-    this.tableService.resetFilters('tasks-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('tasks-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('tasks-show-filters') ?? true;
-  }
 
   retrieveLabel(filterFor: TaskFilterFor, filterField: TaskFilterField): string {
     switch (filterFor) {

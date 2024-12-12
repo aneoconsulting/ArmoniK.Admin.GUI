@@ -13,7 +13,7 @@ import { TableColumn } from '../column.type';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
 import { ListOptions } from '../options';
-import { FiltersServiceInterface } from '../services/filtersService';
+import { AbstractFilterService } from '../services/filtersService';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 import { TableType } from '../table';
 
@@ -26,7 +26,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   readonly router = inject(Router);
 
   abstract readonly indexService: IndexServiceInterface<T, O>;
-  abstract readonly filtersService: FiltersServiceInterface<F, FO>;
+  abstract readonly filtersService: AbstractFilterService<F, FO>;
 
   abstract tableType: TableType;
 
