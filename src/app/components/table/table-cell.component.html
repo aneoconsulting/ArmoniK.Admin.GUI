@@ -2,6 +2,12 @@
   @case ('object') {
     <app-table-inspect-object [object]="handleNestedKeys(element)" [label]="column.name" />
   }
+  @case ('message') {
+    <app-table-inspect-message [label]="column.name" [message]="string" />
+  }
+  @case ('output') {
+    <app-table-inspect-message [label]="column.name" [message]="string" />
+  }
   @case ('link') {
     <button mat-button (click)="navigate()">
       {{ value | emptyCell }}

@@ -8,21 +8,13 @@ import { InspectionJsonComponent } from './inspection/inspection-json.component'
 import { InspectionListGridComponent } from './inspection/inspection-list-grid.component';
 import { InspectionHeaderComponent } from './inspection-header.component';
 import { InspectionToolbarComponent } from './inspection-toolbar.component';
-import { ShowActionsComponent } from './show-actions.component';
-import { ShowCardComponent } from './show-card.component';
 
 @Component({
   selector: 'app-show-page',
   templateUrl: './show-page.component.html',
-  styles: [`
-span {
-  font-style: italic;
-}
-  `],
+  styleUrl: 'show-page.component.css',
   standalone: true,
   imports: [
-    ShowCardComponent,
-    ShowActionsComponent,
     InspectionCardComponent,
     InspectionHeaderComponent,
     InspectionListGridComponent,

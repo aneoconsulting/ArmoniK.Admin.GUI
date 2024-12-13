@@ -36,6 +36,11 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
     },
     {
       key: 'createdBy',
+      link: 'tasks',
+    },
+    {
+      key: 'payloadId',
+      link: 'results',
     },
     {
       key: 'createdAt',
@@ -46,7 +51,7 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
-      key: 'fetchedAt',
+      key: 'receivedAt',
       type: 'date'
     },
     {
@@ -54,7 +59,7 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
-      key: 'receivedAt',
+      key: 'fetchedAt',
       type: 'date'
     },
     {
@@ -66,12 +71,16 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       type: 'date'
     },
     {
+      key: 'endedAt',
+      type: 'date'
+    },
+    {
       key: 'statusMessage',
-      type: 'object'
+      type: 'message'
     },
     {
       key: 'output',
-      type: 'object'
+      type: 'output'
     },
   ];
 

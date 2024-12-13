@@ -21,8 +21,6 @@
 .arrays {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin-top: 1rem;
-  margin-bottom: 1rem;
   gap: 1rem;
 }
 
@@ -33,7 +31,7 @@
   row-gap: 0.5rem;
 }
 
-mat-accordion {
+mat-accordion, app-message {
   grid-column: 1 / 4;
 }
 

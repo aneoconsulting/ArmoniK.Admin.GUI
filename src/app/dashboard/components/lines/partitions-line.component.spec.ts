@@ -166,6 +166,21 @@ describe('PartitionsLineComponent', () => {
     expect(subSpy).toHaveBeenCalled();
   });
 
+  describe('handleAutoRefreshStart', () => {
+    it('should start interval if interval value is not 0', () => {
+      const spy = jest.spyOn(component.interval, 'next');
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalledWith(component.intervalValue);
+    });
+
+    it('should stop interval if interval value is 0', () => {
+      const spy = jest.spyOn(component.stopInterval, 'next');
+      component.intervalValue = 0;
+      component.handleAutoRefreshStart();
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
   it('should get icon', () => {
     expect(component.getIcon('tune')).toEqual('tune');
   });

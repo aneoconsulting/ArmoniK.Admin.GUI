@@ -71,6 +71,7 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
 
   ngAfterViewInit(): void {
     this.mergeSubscriptions();
+    this.handleAutoRefreshStart();
   }
 
   ngOnDestroy(): void {

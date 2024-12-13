@@ -65,6 +65,7 @@ export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<S
 
   ngAfterViewInit(): void {
     this.mergeSubscriptions();
+    this.handleAutoRefreshStart();
   }
 
   ngOnDestroy(): void {

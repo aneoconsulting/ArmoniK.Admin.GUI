@@ -10,6 +10,10 @@
             <app-inspection-object [data]="getObject(field)" />
           </mat-expansion-panel>
         </mat-accordion>
+      } @else if (field.type === 'output') {
+        <app-message [message]="getError(field)" [label]="field.key" />
+      } @else if(field.type === 'message') {
+        <app-message [message]="getMessage(field)" [label]="field.key" />
       } @else {
         <app-field-content [field]="field" [statuses]="statuses" [data]="data" />
       }

@@ -46,3 +46,8 @@ export interface ResultData extends ArmonikData<ResultRaw> {
 export type Status = TaskStatus | SessionStatus | ResultStatus;
 
 export type GrpcResponse = ListApplicationsResponse | ListTasksResponse | ListSessionsResponse | ListPartitionsResponse | ListResultsResponse;
+
+export type TaskOutput = {
+  error: string;
+  success: boolean;
+}

@@ -62,6 +62,7 @@ export class ApplicationsLineComponent extends DashboardLineTableComponent<Appli
 
   ngAfterViewInit() {
     this.mergeSubscriptions();
+    this.handleAutoRefreshStart();
   }
 
   ngOnDestroy() {

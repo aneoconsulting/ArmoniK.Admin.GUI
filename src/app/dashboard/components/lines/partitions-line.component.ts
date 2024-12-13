@@ -54,6 +54,7 @@ export class PartitionsLineComponent extends DashboardLineTableComponent<Partiti
 
   ngAfterViewInit() {
     this.mergeSubscriptions();
+    this.handleAutoRefreshStart();
   }
 
   ngOnDestroy(): void {

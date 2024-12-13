@@ -141,6 +141,11 @@ export class TasksFiltersService implements FiltersServiceOptionsInterface<TaskS
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_PAYLOAD_ID,
       type: 'string'
     },
+    {
+      for: 'root',
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_CREATED_BY,
+      type: 'string',
+    },
     {  
       for: 'options',
       field: TaskOptionEnumField.TASK_OPTION_ENUM_FIELD_APPLICATION_NAME,

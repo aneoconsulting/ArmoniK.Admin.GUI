@@ -7,8 +7,13 @@
   <ng-content select="[bonus-actions]" bonus-actions />
 </app-inspection-toolbar>
 
-@if (data) {
-  <app-inspection-card [data]="data" [statuses]="statuses" [fields]="fields" [optionsFields]="optionsFields"/>
-  <app-inspection-list-grid [arrays]="arrays" [data]="data" />
-  <app-json-inspection [data]="data" />
-}
+<section id="content">
+  @if (data) {
+    <app-inspection-card [data]="data" [statuses]="statuses" [fields]="fields" />
+    <app-inspection-list-grid [arrays]="arrays" [data]="data" />
+    @if (optionsFields) {
+      <app-inspection-card [data]="data" [optionsFields]="optionsFields"/>
+    }
+    <app-json-inspection [data]="data" />
+  }  
+</section>

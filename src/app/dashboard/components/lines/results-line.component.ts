@@ -58,6 +58,7 @@ export class ResultsLineComponent extends DashboardLineTableComponent<ResultRaw,
 
   ngAfterViewInit(): void {
     this.mergeSubscriptions();
+    this.handleAutoRefreshStart();
   }
 
   ngOnDestroy(): void {
