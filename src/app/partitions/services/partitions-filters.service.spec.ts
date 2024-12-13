@@ -1,6 +1,8 @@
 import { FilterStringOperator, PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { FiltersOr } from '@app/types/filters';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { PartitionsFiltersService } from './partitions-filters.service';
 import { PartitionRawFilters } from '../types';
@@ -27,18 +29,40 @@ describe('PartitionsFilterService', () => {
     restoreShowFilters: jest.fn((): boolean | null => showFilters),
   };
 
+  const cachedFilters: FiltersOr<PartitionRawEnumField> = [[{
+    field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+    for: 'root',
+    operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+    value: 'partition'
+  }]];
+
+  const mockFiltersCacheService = {
+    get: jest.fn(() => cachedFilters),
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         PartitionsFiltersService,
         DefaultConfigService,
-        { provide: TableService, useValue: mockTableService }
+        { provide: TableService, useValue: mockTableService },
+        { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]
     }).inject(PartitionsFiltersService);
   });
 
   it('should create', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('initialisation', () => {
+    it('should get filters from the filterCache', () => {
+      expect(mockFiltersCacheService.get).toHaveBeenCalledWith(service['scope']);
+    });
+
+    it('should save the cached filters if they exist', () => {
+      expect(mockTableService.saveFilters).toHaveBeenCalledWith(`${service['scope']}-filters`, cachedFilters);
+    });
   });
 
   it('should save filters', () => {

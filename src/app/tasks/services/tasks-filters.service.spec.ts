@@ -1,6 +1,8 @@
+import { FilterDateOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
-import { FiltersAnd } from '@app/types/filters';
+import { FiltersAnd, FiltersOr } from '@app/types/filters';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksStatusesService } from './tasks-statuses.service';
@@ -29,14 +31,25 @@ describe('TasksFilterService', () => {
     filterAnd
   ];
 
+  const cachedFilters: FiltersOr<TaskSummaryEnumField, TaskOptionEnumField> = [[{
+    field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_ACQUIRED_AT,
+    for: 'root',
+    operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER,
+    value: '1'
+  }]];
+
+  const mockFiltersCacheService = {
+    get: jest.fn(() => cachedFilters),
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         TasksFiltersService,
         DefaultConfigService,
         TasksStatusesService, 
-        {provide: TableService, useValue: mockTableService}
-        
+        { provide: TableService, useValue: mockTableService },
+        { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]
     }).inject(TasksFiltersService);
   });
@@ -44,6 +57,16 @@ describe('TasksFilterService', () => {
   test('the service must create TasksFilterService', () => {
     expect(service).toBeTruthy();
   }); 
+
+  describe('initialisation', () => {
+    it('should get filters from the filterCache', () => {
+      expect(mockFiltersCacheService.get).toHaveBeenCalledWith(service['scope']);
+    });
+
+    it('should save the cached filters if they exist', () => {
+      expect(mockTableService.saveFilters).toHaveBeenCalledWith(`${service['scope']}-filters`, cachedFilters);
+    });
+  });
 
   test('the service must call saveFilters from Table Service', () => {
     const spySaveFilters = jest.spyOn(mockTableService, 'saveFilters');
