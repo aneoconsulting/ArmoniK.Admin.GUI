@@ -26,7 +26,10 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         versionsService.setAPIVersion(data.api);
       }),
       catchError((err) => {
-        throw err;
+        console.error(err);
+        versionsService.setCoreVersion(null);
+        versionsService.setAPIVersion(null);
+        return of();
       })
     ),
     userGrpcService.getUser$().pipe(
@@ -37,7 +40,8 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         userService.user = data.user;
       }),
       catchError((err) => {
-        throw err;
+        console.error(err);
+        return of();
       })
     ),
     httpClient.get<Partial<Environment>>('/static/environment.json').pipe(

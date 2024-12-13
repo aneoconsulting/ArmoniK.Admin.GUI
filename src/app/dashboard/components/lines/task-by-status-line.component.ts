@@ -15,20 +15,19 @@ import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
-import { PageSectionHeaderComponent } from '@components/page-section-header.component';
-import { PageSectionComponent } from '@components/page-section.component';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { SpinnerComponent } from '@components/spinner.component';
 import { ManageGroupsDialogComponent } from '@components/statuses/manage-groups-dialog.component';
-import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
+import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { StorageService } from '@services/storage.service';
 import { UtilsService } from '@services/utils.service';
-import { Observable, Subject, Subscription, merge, startWith, switchMap, tap } from 'rxjs';
+import { Observable, Subject, Subscription, catchError, merge, of, startWith, switchMap, tap } from 'rxjs';
 import { CountLine, ManageGroupsDialogData, ManageGroupsDialogResult } from '../../types';
 import { EditNameLineDialogComponent } from '../edit-name-line-dialog.component';
 import { StatusesGroupCardComponent } from '../statuses-group-card.component';
@@ -66,10 +65,9 @@ app-actions-toolbar {
       useClass: TasksFiltersService
     },
     GrpcSortFieldService,
+    NotificationService,
   ],
   imports: [
-    PageSectionComponent,
-    PageSectionHeaderComponent,
     ActionsToolbarComponent,
     RefreshButtonComponent,
     SpinnerComponent,
@@ -81,7 +79,6 @@ app-actions-toolbar {
     MatMenuModule,
     MatButtonModule,
     StatusesGroupCardComponent,
-    TableDashboardActionsToolbarComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -90,6 +87,7 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
   readonly autoRefreshService = inject(AutoRefreshService);
   readonly iconsService = inject(IconsService);
   readonly taskGrpcService = inject(TasksGrpcService);
+  private readonly notificationService = inject(NotificationService);
 
   @Input({ required: true }) line: CountLine;
   @Output() lineChange: EventEmitter<void> = new EventEmitter<void>();
@@ -109,13 +107,17 @@ export class TaskByStatusLineComponent implements AfterViewInit,OnDestroy {
     const mergeSubscription = merge(this.refresh, this.interval$).pipe(
       startWith(0),
       tap(() => (this.loading.set(true))),
-      switchMap(() => this.taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters)),
+      switchMap(() => this.taskGrpcService.countByStatus$(this.line.filters as TaskSummaryFilters).pipe(
+        catchError((err: GrpcStatusEvent) => {
+          console.error(err);
+          this.notificationService.error('Could not load tasks by statuses');
+          return of({status: undefined});
+        })
+      )),
     ).subscribe((data) => {
-      if (data.status) {
-        this.data.set(data.status);
-        this.total = data.status.reduce((acc, curr) => acc + curr.count, 0);
-        this.loading.set(false);
-      }
+      this.data.set(data.status ?? []);
+      this.total = this.data().reduce((acc, curr) => acc + curr.count, 0);
+      this.loading.set(false);
     });
     this.subscriptions.add(mergeSubscription);
   }
