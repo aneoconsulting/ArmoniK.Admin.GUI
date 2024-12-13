@@ -347,9 +347,8 @@ describe('Sessions Index Component', () => {
     });
 
     it('should refresh if duration is included', () => {
-      const spy = jest.spyOn(component.refresh$, 'next');
       component.onColumnsChange(['duration']);
-      expect(spy).toHaveBeenCalled();
+      expect(mockSessionsDataService.refresh$.next).toHaveBeenCalled();
     });
   });
 

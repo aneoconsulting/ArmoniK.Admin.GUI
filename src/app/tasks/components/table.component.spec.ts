@@ -74,6 +74,8 @@ describe('TasksTableComponent', () => {
 
     component.displayedColumns = displayedColumns;
     component.selection = [];
+
+    component.ngOnInit();
   });
 
   it('should run', () => {
@@ -272,7 +274,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get data', () => {
-    expect(component.data()).toEqual(mockTasksDataService.data);
+    expect(component.data).toEqual(mockTasksDataService.data);
   });
 
   it('should get total', () => {
@@ -292,6 +294,6 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    expect(component.columns).toEqual(displayedColumns);
   });
 });

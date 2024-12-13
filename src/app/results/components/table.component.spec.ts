@@ -8,7 +8,7 @@ import ResultsDataService from '../services/results-data.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRaw } from '../types';
 
-describe('TasksTableComponent', () => {
+describe('ResultsTableComponent', () => {
   let component: ResultsTableComponent;
 
   const displayedColumns: TableColumn<ResultRaw>[] = [
@@ -71,6 +71,7 @@ describe('TasksTableComponent', () => {
     }).inject(ResultsTableComponent);
 
     component.displayedColumns = displayedColumns;
+    component.ngOnInit();
   });
 
   it('should run', () => {
@@ -112,7 +113,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get data', () => {
-    expect(component.data()).toEqual(mockResultsDataService.data);
+    expect(component.data).toEqual(mockResultsDataService.data);
   });
 
   it('should get total', () => {
@@ -132,6 +133,6 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    expect(component.columns).toEqual(displayedColumns);
   });
 });

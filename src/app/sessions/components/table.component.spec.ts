@@ -338,7 +338,7 @@ describe('SessionsTableComponent', () => {
   });
 
   it('should get data', () => {
-    expect(component.data()).toEqual(mockSessionsDataService.data);
+    expect(component.data).toEqual(mockSessionsDataService.data);
   });
 
   it('should get total', () => {
@@ -358,6 +358,6 @@ describe('SessionsTableComponent', () => {
   });
 
   it('should get displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    expect(component.columns).toEqual(displayedColumns);
   });
 });

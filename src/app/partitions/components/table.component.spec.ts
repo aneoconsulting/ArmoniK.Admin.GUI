@@ -12,7 +12,7 @@ import { PartitionsTableComponent } from './table.component';
 import PartitionsDataService from '../services/partitions-data.service';
 import { PartitionRaw } from '../types';
 
-describe('TasksTableComponent', () => {
+describe('PartitionsTableComponent', () => {
   let component: PartitionsTableComponent;
 
   const displayedColumns: TableColumn<PartitionRaw>[] = [
@@ -190,6 +190,6 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    expect(component.columns).toEqual(displayedColumns);
   });
 });

@@ -213,7 +213,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get data', () => {
-    expect(component.data()).toEqual(mockApplicationsDataService.data);
+    expect(component.data).toEqual(mockApplicationsDataService.data);
   });
 
   it('should get total', () => {
@@ -233,6 +233,6 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get displayedColumns', () => {
-    expect(component.displayedColumns).toEqual(displayedColumns);
+    expect(component.columns).toEqual(displayedColumns);
   });
 });
