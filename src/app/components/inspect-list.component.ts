@@ -50,8 +50,8 @@ export class InspectListComponent {
   }
 
   @Input({ required: false }) set queryParams(entry: string | undefined) {
-    this._queryParams = {};
     if (entry && this.list.length !== 0) {
+      this._queryParams = {};
       if (this.list.length > 50) {
         const _for = entry.slice(2, 6) as 'custom' | 'root' | 'options';
         const field = Number(entry.slice(7, 8));
