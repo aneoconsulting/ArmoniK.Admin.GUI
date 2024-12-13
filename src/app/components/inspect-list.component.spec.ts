@@ -149,7 +149,7 @@ describe('InspectListComponent', () => {
     }]];
 
     beforeEach(() => {
-      component['filters'] = filters as FiltersOr<FiltersEnums, FiltersOptionsEnums>;
+      component['filters'].push(...(filters as FiltersOr<FiltersEnums, FiltersOptionsEnums>));
     });
     it('should add filters to the cache', () => {
       component.navigate();

@@ -90,7 +90,7 @@ export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums
    * Will transform filters before making the request. 
    */
   createListRequest(options: ListOptions<T, O>, filters: FiltersOr<F, FO>) {
-    const requestFilter = this.createFilters(filters, this.filterService.filtersDefinitions as FilterDefinition<F, FO>[]);
+    const requestFilter = this.createFilters(filters, this.filterService.filtersDefinitions);
     const sortField = this.createSortField(options.sort.active);
 
     return {

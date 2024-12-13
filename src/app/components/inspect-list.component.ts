@@ -35,7 +35,7 @@ import { NotificationService } from '@services/notification.service';
 export class InspectListComponent {
   private _list: string[] = [];
   private _queryParams: Params;
-  private filters: FiltersOr<FiltersEnums, FiltersOptionsEnums> = [];
+  private readonly filters: FiltersOr<FiltersEnums, FiltersOptionsEnums> = [];
 
   private readonly filtersCacheService = inject(FiltersCacheService);
   private readonly iconsService = inject(IconsService);
