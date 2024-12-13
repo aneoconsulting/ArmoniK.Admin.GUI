@@ -5,6 +5,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { Key } from '@app/types/config';
 import { Sidebar, SidebarItem } from '@app/types/navigation';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
@@ -127,6 +128,10 @@ describe('IndexComponent', () => {
     get: jest.fn()
   };
 
+  const mockFiltersCacheService = {
+    clear: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -137,6 +142,7 @@ describe('IndexComponent', () => {
         { provide: StorageService, useValue: mockStorageService },
         { provide: MatDialog, useValue: mockDialog },
         { provide: HttpClient, useValue: mockHttpClient },
+        { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -454,5 +460,10 @@ describe('IndexComponent', () => {
     } as unknown as Event;
     component.addConfigFile(event);
     expect(component.fileName).toEqual(fileName);
+  });
+
+  it('should clear the filters cache', () => {
+    component.clearFilterCache();
+    expect(mockFiltersCacheService.clear).toHaveBeenCalled();
   });
 });
