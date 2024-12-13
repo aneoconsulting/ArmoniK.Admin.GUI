@@ -5,6 +5,7 @@ import { NotificationStatus } from '@app/types/notification';
 @Injectable()
 export class NotificationService {
   private readonly snackBar = inject(MatSnackBar);
+  private readonly warnings = new Set();
   /**
    * Send a message to the function that display the success notification bar and display it in UI.
    * @param message string
@@ -24,7 +25,10 @@ export class NotificationService {
    * @param message String
    */
   warning(message: string): void {
-    this.openSnackBar(message, 'Close', 'warning');
+    if (!this.warnings.has(message)) {
+      this.openSnackBar(message, 'Close', 'warning');
+      this.warnings.add(message);
+    }
   }
   /**
    * 
