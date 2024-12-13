@@ -46,6 +46,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   ];
 
   ngOnInit(): void {
+    this.initTableDataService();
     this.initStatuses();
   }
   

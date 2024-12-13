@@ -1,7 +1,7 @@
-import { FilterDateOperator, FilterNumberOperator, FilterStringOperator, ListSessionsResponse, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStringOperator, ListSessionsResponse, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TaskOptions } from '@app/tasks/types';
-import { FiltersOr } from '@app/types/filters';
+import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
@@ -88,7 +88,7 @@ describe('SessionsDataService', () => {
       const map2 = new Map();
       map1.set('sessionId', {'0-root-1-0': 'session1'});
       map2.set('sessionId', {'0-root-1-0': 'session2'});
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             sessionId: 'session1'
@@ -119,7 +119,7 @@ describe('SessionsDataService', () => {
     });
 
     it('should set the total cached data', () => {
-      expect(service.total).toEqual(cachedSessions.total);
+      expect(service.total()).toEqual(cachedSessions.total);
     });
   });
 
@@ -131,7 +131,7 @@ describe('SessionsDataService', () => {
     
     it('should update the total', () => {
       service.refresh$.next();
-      expect(service.total).toEqual(sessions.total);
+      expect(service.total()).toEqual(sessions.total);
     });
 
     it('should update the data', () => {
@@ -190,7 +190,7 @@ describe('SessionsDataService', () => {
       map2.set('sessionId', {'0-root-1-0': 'session2'});
       map3.set('sessionId', {'0-root-1-0': 'session3'});
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             sessionId: 'session1'
@@ -264,7 +264,7 @@ describe('SessionsDataService', () => {
       const sessions = { sessions: undefined, total: 0} as unknown as ListSessionsResponse;
       mockSessionsGrpcService.list$.mockReturnValueOnce(of(sessions));
       service.refresh$.next();
-      expect(service.data).toEqual([]);
+      expect(service.data()).toEqual([]);
     });
 
     it('should catch errors', () => {
@@ -309,7 +309,7 @@ describe('SessionsDataService', () => {
   });
 
   it('should load correctly', () => {
-    expect(service.loading).toBeFalsy();
+    expect(service.loading()).toBeFalsy();
   });
 
   describe('computing duration', () => {
@@ -319,7 +319,7 @@ describe('SessionsDataService', () => {
 
     it('should compute the duration for each session', () => {
       service.refresh$.next();
-      expect(service.data.map((session) => ({sessionId: session.raw.sessionId, duration: session.raw.duration}))).toEqual([
+      expect(service.data().map((session) => ({sessionId: session.raw.sessionId, duration: session.raw.duration}))).toEqual([
         {
           sessionId: 'session1',
           duration: {
@@ -364,7 +364,7 @@ describe('SessionsDataService', () => {
         direction: 'asc',
       };
       service.refresh$.next();
-      expect(service.data.map(session => session.raw.sessionId)).toEqual(['session1', 'session2', 'session3']);
+      expect(service.data().map(session => session.raw.sessionId)).toEqual(['session1', 'session2', 'session3']);
     });
 
     it('should sort in a descending order', () => {
@@ -374,7 +374,46 @@ describe('SessionsDataService', () => {
         direction: 'desc',
       };
       service.refresh$.next();
-      expect(service.data.map(session => session.raw.sessionId)).toEqual(['session3', 'session2', 'session1']);
+      expect(service.data().map(session => session.raw.sessionId)).toEqual(['session3', 'session2', 'session1']);
+    });
+
+    it('should append the filters to existing ones if they do not contain a CREATED_AT field', () => {
+      const dateFilter: Filter<SessionRawEnumField, SessionTaskOptionEnumField> =           {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+        for: 'root',
+        operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER,
+        value: 1
+      };
+      const stringFilter: Filter<SessionRawEnumField, SessionTaskOptionEnumField> =           {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CLIENT_SUBMISSION,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+        value: 1
+      };
+      const arrayFilter: Filter<SessionRawEnumField, SessionTaskOptionEnumField> = 
+      {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_OPTIONS,
+        for: 'root',
+        operator: FilterArrayOperator.FILTER_ARRAY_OPERATOR_NOT_CONTAINS,
+        value: 1
+      };
+      jest.useFakeTimers().setSystemTime(new Date('1970-01-01'));
+      const date = new Date();
+      date.setDate(date.getDate() - 3);
+      const appliedFilter: Filter<SessionRawEnumField, TaskOptionEnumField> = {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+        for: 'root',
+        operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
+        value: Math.floor(date.getTime()/1000)
+      };
+      service.options = { pageIndex: 0, pageSize: 0, sort: { active: 'duration', direction: 'asc'}};
+      service.isDurationDisplayed = true;
+      service.filters = [[arrayFilter, stringFilter], [dateFilter]];
+      service.refresh$.next();
+      expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(
+        { pageIndex: 0, pageSize: 0, sort: { active: 'createdAt', direction: 'asc'}},
+        [[arrayFilter, stringFilter, appliedFilter], [dateFilter]]
+      );
     });
   });
 

@@ -62,7 +62,7 @@ describe('ResultsDataService', () => {
 
   describe('initialisation', () => {
     it('should load data from the cache', () => {
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             resultId: 'result1'
@@ -77,7 +77,7 @@ describe('ResultsDataService', () => {
     });
 
     it('should set the total cached data', () => {
-      expect(service.total).toEqual(cachedResults.total);
+      expect(service.total()).toEqual(cachedResults.total);
     });
   });
 
@@ -89,12 +89,12 @@ describe('ResultsDataService', () => {
 
     it('should update the total', () => {
       service.refresh$.next();
-      expect(service.total).toEqual(results.total);
+      expect(service.total()).toEqual(results.total);
     });
 
     it('should update the data', () => {
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             resultId: 'result1'
@@ -117,7 +117,7 @@ describe('ResultsDataService', () => {
       const emptyResults = { results: undefined, total: 0 } as unknown as ListResultsResponse;
       mockResultsGrpcService.list$.mockReturnValueOnce(of(emptyResults));
       service.refresh$.next();
-      expect(service.data).toEqual([]);
+      expect(service.data()).toEqual([]);
     });
 
     it('should catch errors', () => {
@@ -162,6 +162,6 @@ describe('ResultsDataService', () => {
   });
 
   it('should load correctly', () => {
-    expect(service.loading).toBeFalsy();
+    expect(service.loading()).toBeFalsy();
   });
 });

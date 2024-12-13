@@ -1,6 +1,6 @@
 import { TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Router} from '@angular/router';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
@@ -23,7 +23,7 @@ import { TaskOptions, TaskSummary } from '../types';
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit {
   scope: Scope = 'tasks';
 
   @Input({ required: false }) set serviceIcon(entry: string | null) {
@@ -111,6 +111,10 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
       condition: (element: ArmonikData<TaskSummary, TaskOptions>) => this.canCancelTask(element.raw),
     },
   ];
+
+  ngOnInit(): void {
+    this.initTableDataService();
+  }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;

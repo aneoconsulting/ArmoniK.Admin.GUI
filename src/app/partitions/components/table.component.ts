@@ -28,6 +28,7 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
   table: TableTasksByStatus = 'partitions';
 
   ngOnInit(): void {
+    this.initTableDataService();
     this.initStatuses();
   }
 

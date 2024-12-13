@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal, inject, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { TaskOptions } from '@app/tasks/types';
 import { ArmonikData, DataRaw, GrpcResponse } from '@app/types/data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
@@ -23,43 +23,14 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
 
   readonly refresh$ = new Subject<void>();
 
-  private readonly _loading = signal<boolean>(false);
-  private readonly _data: WritableSignal<ArmonikData<T, O>[]> = signal([]);
-  private readonly _total = signal<number>(0);
+  readonly loading = signal<boolean>(false);
+  readonly total = signal<number>(0);
+  readonly data = signal<ArmonikData<T, O>[]>([]);
 
   filters: FiltersOr<F, FO> = [];
   options: ListOptions<T, O>;
 
   abstract scope: Scope;
-
-  protected set data(entries: T[]) {
-    this._data.set(entries.map(entry => this.createNewLine(entry)));
-  }
-
-  protected set loading(value: boolean) {
-    this._loading.set(value);
-  }
-
-  /**
-   * Handle the loading state of the table.
-   */
-  get loading(): boolean {
-    return this._loading();
-  }
-
-  /**
-   * The current loaded data.
-   */
-  get data(): ArmonikData<T, O>[] {
-    return this._data();
-  }
-
-  /**
-   * Total number of this data stored in the database.
-   */
-  get total(): number {
-    return this._total();
-  }
 
   constructor() {
     this.loadFromCache();
@@ -73,9 +44,9 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
     const cachedResponse = this.cacheService.get(this.scope);
     if (cachedResponse) {
       const cachedData = this.computeGrpcData(cachedResponse);
-      this._total.set(cachedResponse.total);
+      this.total.set(cachedResponse.total);
       if (cachedData) {
-        this.data = cachedData;
+        this.handleData(cachedData);
       }
     }
   }
@@ -88,7 +59,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   private subscribeToGrpcList() {
     this.refresh$.pipe(
       switchMap(() => {
-        this._loading.set(true);
+        this.loading.set(true);
 
         const options = this.prepareOptions();
         const filters = this.preparefilters();
@@ -102,7 +73,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
           );
       }),
       map((entries) => {
-        this._total.set(entries?.total ?? 0);
+        this.total.set(entries?.total ?? 0);
         if (entries) {
           this.cacheService.save(this.scope, entries);
           return this.computeGrpcData(entries) ?? [];
@@ -111,7 +82,6 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
       })
     ).subscribe((entries) => {
       this.handleData(entries);
-      this._loading.set(false);
     });
   }
 
@@ -134,7 +104,8 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
    * @param entries 
    */
   handleData(entries: T[]): void {
-    this.data = entries;
+    this.data.set(entries.map(entry => this.createNewLine(entry)));
+    this.loading.set(false);
   }
 
   /**

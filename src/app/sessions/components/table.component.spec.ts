@@ -338,7 +338,7 @@ describe('SessionsTableComponent', () => {
   });
 
   it('should get data', () => {
-    expect(component.data).toEqual(mockSessionsDataService.data);
+    expect(component.data()).toEqual(mockSessionsDataService.data);
   });
 
   it('should get total', () => {

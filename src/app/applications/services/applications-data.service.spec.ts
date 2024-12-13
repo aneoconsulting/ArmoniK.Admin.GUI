@@ -62,7 +62,7 @@ describe('ApplicationDataService', () => {
 
   describe('initialisation', () => {
     it('should load data from the cache', () => {
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             name: 'application1',
@@ -95,7 +95,7 @@ describe('ApplicationDataService', () => {
     });
 
     it('should set the total cached data', () => {
-      expect(service.total).toEqual(cachedApplications.total);
+      expect(service.total()).toEqual(cachedApplications.total);
     });
   });
 
@@ -107,12 +107,12 @@ describe('ApplicationDataService', () => {
 
     it('should update the total', () => {
       service.refresh$.next();
-      expect(service.total).toEqual(applications.total);
+      expect(service.total()).toEqual(applications.total);
     });
 
     it('should update the data', () => {
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             name: 'application1',
@@ -162,7 +162,7 @@ describe('ApplicationDataService', () => {
       const emptyApplications = { applications: undefined, total: 0 } as unknown as ListApplicationsResponse;
       mockApplicationsGrpcService.list$.mockReturnValueOnce(of(emptyApplications));
       service.refresh$.next();
-      expect(service.data).toEqual([]);
+      expect(service.data()).toEqual([]);
     });
 
     it('should catch errors', () => {
@@ -207,7 +207,7 @@ describe('ApplicationDataService', () => {
   });
 
   it('should load correctly', () => {
-    expect(service.loading).toBeFalsy();
+    expect(service.loading()).toBeFalsy();
   });
 
   describe('Applying filters', () => {
@@ -281,7 +281,7 @@ describe('ApplicationDataService', () => {
     it('should apply the filters correctly when transforming the data', () => {
       service.filters = filters;
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             name: 'application1',

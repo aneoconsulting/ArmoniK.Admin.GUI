@@ -122,6 +122,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   ];
 
   ngOnInit(): void {
+    this.initTableDataService();
     this.initStatuses();
   }
 

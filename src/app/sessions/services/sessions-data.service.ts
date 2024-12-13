@@ -31,7 +31,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
 
   override handleData(entries: SessionRaw[]): void {
     this.dataRaw = entries;
-    if (this.isDurationDisplayed) {
+    if (this.isDurationDisplayed && entries.length !== 0) {
       this.startComputingDuration(entries);
     } else {
       super.handleData(entries); 
@@ -53,18 +53,27 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   }
 
   override preparefilters(): FiltersOr<SessionRawEnumField, TaskOptionEnumField> {
-    const filters = super.preparefilters();
-    if(this.isDurationDisplayed && this.options.sort.active === 'duration' && this.filtersHaveNoCreatedAt()) {
+    const filtersOr = super.preparefilters();
+    if(this.isDurationDisplayed && this.options.sort.active === 'duration') {
       const date = new Date();
       date.setDate(date.getDate() - 3);
-      filters.push([{
+      const filter: Filter<SessionRawEnumField, TaskOptionEnumField> = {
         field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
         for: 'root',
         operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
         value: Math.floor(date.getTime()/1000)
-      }]);
+      };
+      if (filtersOr.length !== 0) {
+        filtersOr.forEach(filtersAnd => {
+          if (filtersAnd.find(filter => filter.field === SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT) === undefined) {
+            filtersAnd.push(filter);
+          }
+        });
+      } else {
+        filtersOr.push([filter]);
+      }
     }
-    return filters;
+    return filtersOr;
   }
 
   createNewLine(entry: SessionRaw): SessionData {
@@ -220,11 +229,10 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
         if (this.isDurationSorted) {
           this.orderByDuration(this.dataRaw);
         } else {
-          this.data = this.dataRaw;
+          super.handleData(this.dataRaw);
         }
         this.sessionEndedDates = [];
         this.sessionCreationDates = [];
-        this.loading = false;
       }
     });
     
@@ -250,7 +258,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
         return Number(b.duration?.seconds) - Number(a.duration?.seconds);
       }
     }).slice(0, this.options.pageSize);
-    this.data = data;
+    super.handleData(data);
   }
 
   /**

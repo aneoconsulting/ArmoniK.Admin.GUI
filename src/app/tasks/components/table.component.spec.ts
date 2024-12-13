@@ -272,7 +272,7 @@ describe('TasksTableComponent', () => {
   });
 
   it('should get data', () => {
-    expect(component.data).toEqual(mockTasksDataService.data);
+    expect(component.data()).toEqual(mockTasksDataService.data);
   });
 
   it('should get total', () => {

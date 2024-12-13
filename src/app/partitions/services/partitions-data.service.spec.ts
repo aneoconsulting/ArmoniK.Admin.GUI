@@ -62,7 +62,7 @@ describe('PartitionsDataService', () => {
 
   describe('initialisation', () => {
     it('should load data from the cache', () => {
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             id: 'partition1',
@@ -99,7 +99,7 @@ describe('PartitionsDataService', () => {
     });
 
     it('should set the total cached data', () => {
-      expect(service.total).toEqual(cachedPartitions.total);
+      expect(service.total()).toEqual(cachedPartitions.total);
     });
   });
 
@@ -111,12 +111,12 @@ describe('PartitionsDataService', () => {
     
     it('should update the total', () => {
       service.refresh$.next();
-      expect(service.total).toEqual(partitions.total);
+      expect(service.total()).toEqual(partitions.total);
     });
 
     it('should update the data', () => {
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             id: 'partition1',
@@ -157,7 +157,7 @@ describe('PartitionsDataService', () => {
       const partitions = { partitions: undefined, total: 0} as unknown as ListPartitionsResponse;
       mockPartitionsGrpcService.list$.mockReturnValueOnce(of(partitions));
       service.refresh$.next();
-      expect(service.data).toEqual([]);
+      expect(service.data()).toEqual([]);
     });
 
     it('should catch errors', () => {
@@ -202,7 +202,7 @@ describe('PartitionsDataService', () => {
   });
 
   it('should load correctly', () => {
-    expect(service.loading).toBeFalsy();
+    expect(service.loading()).toBeFalsy();
   });
 
   describe('Applying filters', () => {
@@ -234,7 +234,7 @@ describe('PartitionsDataService', () => {
     it('should apply the filters correctly when transforming the data', () => {
       service.filters = filters;
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             id: 'partition1',

@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Signal, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
@@ -8,7 +8,8 @@ import { NotificationService } from '@services/notification.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { TableColumn } from '../column.type';
 import { ArmonikData, ColumnKey, DataRaw } from '../data';
-import { FiltersEnums, FiltersOptionsEnums } from '../filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { ListOptions } from '../options';
 import { AbstractTableDataService } from '../services/table-data.service';
 
 export interface SelectableTable<D extends DataRaw> {
@@ -24,42 +25,33 @@ export interface SelectableTable<D extends DataRaw> {
 })
 export abstract class AbstractTableComponent<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) set displayedColumns(columns: TableColumn<T, O>[]) {
-    this._displayedColumns = columns;
-    this._columnKeys = columns.map(column => column.key);
+    this.columns = columns;
+    this.columnKeys = columns.map(column => column.key);
   }
   @Input() lockColumns = false;
   @Output() columnUpdate = new EventEmitter<ColumnKey<T, O>[]>();
   @Output() optionsUpdate = new EventEmitter<void>();
 
-  private _displayedColumns: TableColumn<T, O>[] = [];
-  private _columnKeys: ColumnKey<T, O>[];
+  columns: TableColumn<T, O>[] = [];
+  columnKeys: ColumnKey<T, O>[];
 
-  get data() {
-    return this.tableDataService.data;
-  }
+  data: Signal<ArmonikData<T, O>[]>;
 
-  get total() {
-    return this.tableDataService.total;
-  }
+  total: Signal<number>;
 
-  get options() {
-    return this.tableDataService.options;
-  }
+  options: ListOptions<T, O>;
 
-  get filters() {
-    return this.tableDataService.filters;
-  }
-
-  get columnKeys() {
-    return this._columnKeys;
-  }
-
-  get displayedColumns() {
-    return this._displayedColumns;
-  }
+  filters: FiltersOr<F, FO>;
   
   readonly notificationService = inject(NotificationService);
   abstract readonly tableDataService: AbstractTableDataService<T, F, O, FO>;
+
+  protected initTableDataService() {
+    this.data = this.tableDataService.data;
+    this.total = this.tableDataService.total;
+    this.options = this.tableDataService.options;
+    this.filters = this.tableDataService.filters;
+  }
 
   onDrop(columnsKeys: ColumnKey<T, O>[]) {
     this.columnUpdate.emit(columnsKeys);

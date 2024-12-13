@@ -63,7 +63,7 @@ describe('TasksDataService', () => {
 
   describe('initialisation', () => {
     it('should load data from the cache', () => {
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             id: 'task1'
@@ -84,7 +84,7 @@ describe('TasksDataService', () => {
     });
 
     it('should set the total cached data', () => {
-      expect(service.total).toEqual(cachedTasks.total);
+      expect(service.total()).toEqual(cachedTasks.total);
     });
   });
 
@@ -96,12 +96,12 @@ describe('TasksDataService', () => {
 
     it('should update the total', () => {
       service.refresh$.next();
-      expect(service.total).toEqual(tasks.total);
+      expect(service.total()).toEqual(tasks.total);
     });
 
     it('should update the data', () => {
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             id: 'task1'
@@ -133,7 +133,7 @@ describe('TasksDataService', () => {
       const emptyTasks = { tasks: undefined, total: 0 } as unknown as ListTasksResponse;
       mockTasksGrpcService.list$.mockReturnValueOnce(of(emptyTasks));
       service.refresh$.next();
-      expect(service.data).toEqual([]);
+      expect(service.data()).toEqual([]);
     });
 
     it('should catch errors', () => {
@@ -178,7 +178,7 @@ describe('TasksDataService', () => {
   });
 
   it('should load correctly', () => {
-    expect(service.loading).toBeFalsy();
+    expect(service.loading()).toBeFalsy();
   });
 
   describe('Applying filters', () => {
@@ -222,7 +222,7 @@ describe('TasksDataService', () => {
     it('should apply the filters correctly when transforming the data', () => {
       service.filters = filters;
       service.refresh$.next();
-      expect(service.data).toEqual([
+      expect(service.data()).toEqual([
         {
           raw: {
             id: 'task1'
