@@ -8,7 +8,7 @@
       [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
-      (refresh)="onRefresh()"
+      (refresh)="refresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
       (resetColumns)="onColumnsReset()"
@@ -49,14 +49,11 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <app-tasks-table
-  [filters$]="filters$"
-  [options]="options"
   [displayedColumns]="displayedColumns()"
   [lockColumns]="lockColumns"
-  [refresh$]="refresh$"
-  [loading]="loading"
   [serviceIcon]="serviceIcon"
   [serviceName]="serviceName"
   [urlTemplate]="urlTemplate"
   (selectionChange)="onSelectionChange($event)"
+  (optionsUpdate)="onOptionsChange()"
 />

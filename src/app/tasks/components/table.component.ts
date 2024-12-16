@@ -1,19 +1,14 @@
-import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
+import { TaskOptionEnumField, TaskSummaryEnumField} from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard, } from '@angular/cdk/clipboard';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Router} from '@angular/router';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
-import { Filter } from '@app/types/filters';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
-import { FiltersService } from '@services/filters.service';
-import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { Subject } from 'rxjs';
-import { TasksGrpcService } from '../services/tasks-grpc.service';
-import { TasksIndexService } from '../services/tasks-index.service';
+import TasksDataService from '../services/tasks-data.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
@@ -22,18 +17,13 @@ import { TaskOptions, TaskSummary } from '../types';
   standalone: true,
   templateUrl: './table.component.html',
   providers: [
-    MatDialog,
-    FiltersService,
     Clipboard,
-    TasksGrpcService,
-    GrpcSortFieldService,
   ],
   imports: [
     TableComponent
   ]
 })
-export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
-  implements OnInit, AfterViewInit {
+export class TasksTableComponent extends AbstractTableComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit {
   scope: Scope = 'tasks';
 
   @Input({ required: false }) set serviceIcon(entry: string | null) {
@@ -59,8 +49,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   @Output() cancelTask = new EventEmitter<string>();
   @Output() selectionChange = new EventEmitter<string[]>();
 
-  readonly indexService = inject(TasksIndexService);
-  readonly grpcService = inject(TasksGrpcService);
+  readonly tableDataService = inject(TasksDataService);
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(TasksStatusesService);
@@ -124,59 +113,11 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   ];
 
   ngOnInit(): void {
-    this.initTable();
-  }
-
-  ngAfterViewInit(): void {
-    this.subscribeToData();
-  }
-
-  computeGrpcData(entries: ListTasksResponse): TaskSummary[] | undefined {
-    return entries.tasks;
+    this.initTableDataService();
   }
 
   isDataRawEqual(value: TaskSummary, entry: TaskSummary): boolean {
     return value.id === entry.id;
-  }
-
-  createNewLine(entry: TaskSummary): TaskData {
-    return {
-      raw: entry,
-      resultsQueryParams: this.createResultsQueryParams(entry.id),
-    };
-  }
-
-  createResultsQueryParams(taskId: string) {
-    if (this.filters.length === 0) {
-      const keyTask = this.filtersService.createQueryParamsKey<ResultRawEnumField>(1, 'root', FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-
-      return {
-        [keyTask]: taskId
-      };
-    } else {
-      const params: Record<string, string> = {};
-      this.filters.forEach((filterAnd, index) => {
-        filterAnd.forEach(filter => {
-          if (!(filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID && filter.operator === FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL)) {
-            const filterLabel = this.#createResultFilterLabel(filter, index);
-            if (filterLabel && filter.value) params[filterLabel] = filter.value.toString();
-          }
-        });
-        params[`${index}-root-${ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID}-${FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL}`] = taskId;
-      });
-      return params;
-    }
-  }
-
-  #createResultFilterLabel(filter: Filter<TaskSummaryEnumField, TaskOptionEnumField>, orGroup: number) {
-    if (filter.field !== null && filter.operator !== null) {
-      if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID) {
-        return this.filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_OWNER_TASK_ID);
-      } else if (filter.field === TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID) {
-        return this.filtersService.createQueryParamsKey<ResultRawEnumField>(orGroup, 'root', filter.operator, ResultRawEnumField.RESULT_RAW_ENUM_FIELD_SESSION_ID);
-      }
-    }
-    return null;
   }
 
   onCopiedTaskId(element: ArmonikData<TaskSummary, TaskOptions>) {
@@ -196,8 +137,8 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     this.retries.emit(task);
   }
 
-  onCancelTask(id: string) {
-    this.grpcService.cancel$([id]).subscribe(() => this.notificationService.success('Task canceled'));
+  onCancelTask(taskId: string) {
+    this.tableDataService.cancelTask(taskId);
   }
 
   onSelectionChange($event: TaskSummary[]): void {

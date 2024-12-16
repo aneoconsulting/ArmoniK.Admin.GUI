@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ManageViewInLogsDialogComponent } from '@app/tasks/components/manage-view-in-logs-dialog.component';
 import { TasksTableComponent } from '@app/tasks/components/table.component';
+import TasksDataService from '@app/tasks/services/tasks-data.service';
 import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
@@ -16,6 +17,7 @@ import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashb
 import { ManageViewInLogsDialogData, ManageViewInLogsDialogResult } from '@app/types/dialog';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
+import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 
@@ -33,7 +35,9 @@ import { NotificationService } from '@services/notification.service';
       useExisting: TasksFiltersService
     },
     TasksGrpcService,
-    GrpcSortFieldService
+    GrpcSortFieldService,
+    TasksDataService,
+    FiltersService,
   ],
   imports: [
     MatToolbarModule,
@@ -47,7 +51,7 @@ import { NotificationService } from '@services/notification.service';
 })
 export class TasksLineComponent extends DashboardLineCustomColumnsComponent<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(TasksIndexService);
-  readonly tasksGrpcService = inject(TasksGrpcService);
+  readonly tableDataService = inject(TasksDataService);
 
   serviceIcon: string | null = null;
   serviceName: string | null = null;
@@ -83,16 +87,7 @@ export class TasksLineComponent extends DashboardLineCustomColumnsComponent<Task
   }
 
   cancelTasks(tasksIds: string[]): void {
-    this.tasksGrpcService.cancel$(tasksIds).subscribe({
-      complete: () => {
-        this.notificationService.success('Tasks canceled');
-        this.refresh.next();
-      },
-      error: (error) => {
-        console.error(error);
-        this.notificationService.error('Unable to cancel tasks');
-      },
-    });
+    this.tableDataService.cancelTasks(tasksIds);
   }
 
   manageViewInLogs(): void {

@@ -15,6 +15,8 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { PageHeaderComponent } from '@components/page-header.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
+import { FiltersService } from '@services/filters.service';
+import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -24,11 +26,12 @@ import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
 import { ResultsTableComponent } from './components/table.component';
+import ResultsDataService from './services/results-data.service';
 import { ResultsFiltersService } from './services/results-filters.service';
+import { ResultsGrpcService } from './services/results-grpc.service';
 import { ResultsIndexService } from './services/results-index.service';
 import { ResultsStatusesService } from './services/results-statuses.service';
 import { ResultRaw } from './types';
-
 
 @Component({
   selector: 'app-results-index',
@@ -54,6 +57,10 @@ import { ResultRaw } from './types';
     DashboardIndexService,
     DashboardStorageService,
     TasksStatusesService,
+    ResultsDataService,
+    ResultsGrpcService,
+    GrpcSortFieldService,
+    FiltersService,
   ],
   imports: [
     PageHeaderComponent,
@@ -68,7 +75,7 @@ import { ResultRaw } from './types';
   ]
 })
 export class IndexComponent extends TableHandler<ResultRaw, ResultRawEnumField> implements OnInit, AfterViewInit, OnDestroy {
-
+  readonly tableDataService = inject(ResultsDataService);
   readonly filtersService = inject(ResultsFiltersService);
   readonly indexService = inject(ResultsIndexService);
 
