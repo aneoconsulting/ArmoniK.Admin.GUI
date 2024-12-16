@@ -53,14 +53,12 @@ export class InspectListComponent {
     if (entry && this.list.length !== 0) {
       this._queryParams = {};
       if (this.list.length > 50) {
-        const _for = entry.slice(2, 6) as 'custom' | 'root' | 'options';
-        const field = Number(entry.slice(7, 8));
-        const operator = Number(entry.slice(9, 10));
+        const splittedKey = entry.split('-');
         this.list.forEach((value) => {
           this.filters.push([{
-            for: _for,
-            field: field,
-            operator: operator,
+            for: splittedKey[1] as 'custom' | 'root' | 'options',
+            field: Number(splittedKey[2]),
+            operator: Number(splittedKey[3]),
             value: value,
           }]);
         });
