@@ -1,18 +1,17 @@
 import { SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
-import { FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { Scope } from '@app/types/config';
+import { AbstractFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
 import { SessionsStatusesService } from './sessions-statuses.service';
 import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionRawFilters } from '../types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsFiltersService implements FiltersServiceOptionsInterface<SessionRawEnumField, TaskOptionEnumField>, FiltersServiceStatusesInterface {
+export class SessionsFiltersService extends AbstractFilterService<SessionRawEnumField, TaskOptionEnumField>
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  protected readonly scope: Scope = 'sessions';
   readonly statusService = inject(SessionsStatusesService);
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
 
   readonly rootField: Record<SessionRawEnumField, string> = {
     [SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID]: $localize`Session ID`,
@@ -144,26 +143,9 @@ export class SessionsFiltersService implements FiltersServiceOptionsInterface<Se
 
   readonly defaultFilters: SessionRawFilters = this.defaultConfigService.defaultSessions.filters;
 
-  saveFilters(filters: SessionRawFilters): void {
-    this.tableService.saveFilters('sessions-filters', filters);
-  }
-
-  restoreFilters(): SessionRawFilters {
-    return this.tableService.restoreFilters<SessionRawEnumField, SessionTaskOptionEnumField>('sessions-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): SessionRawFilters {
-    this.tableService.resetFilters('sessions-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('sessions-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('sessions-show-filters') ?? true;
+  constructor() {
+    super();
+    this.getFromCache();
   }
 
   retrieveLabel(filterFor: SessionFilterFor, filterField: SessionFilterField): string {

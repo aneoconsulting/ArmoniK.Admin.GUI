@@ -56,6 +56,14 @@
   </app-page-section>
 
   <section>
+    <app-page-section>
+      <app-page-section-header [icon]="getIcon('filter')">
+        <span i18n> Filters Cache </span>
+      </app-page-section-header>
+      
+      <button mat-flat-button color="primary" (click)="clearFilterCache()" i18n>Clear cached filters</button>
+    </app-page-section>
+
     <app-page-section class="storage">
       <app-page-section-header [icon]="getIcon('storage')">
         <span i18n="Section title"> Storage </span>

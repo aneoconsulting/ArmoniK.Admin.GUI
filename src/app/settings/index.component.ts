@@ -15,6 +15,7 @@ import { Sidebar, SidebarItem } from '@app/types/navigation';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { NotificationService } from '@services/notification.service';
@@ -159,6 +160,7 @@ export class IndexComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
+  private readonly filtersCacheService = inject(FiltersCacheService);
 
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());
@@ -349,5 +351,9 @@ export class IndexComponent implements OnInit {
 
   addConfigFile(event: Event): void {
     this.fileName = (event.target as HTMLInputElement).files?.item(0)?.name;
+  }
+
+  clearFilterCache() {
+    this.filtersCacheService.clear();
   }
 }

@@ -7,6 +7,7 @@ import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { CacheService } from '@services/cache.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { Environment, EnvironmentService } from '@services/environment.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
@@ -86,6 +87,7 @@ export const appConfig: ApplicationConfig = {
     NavigationService,
     EnvironmentService,
     CacheService,
+    FiltersCacheService,
     {
       provide: Window,
       useValue: window

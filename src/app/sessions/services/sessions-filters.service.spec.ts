@@ -1,6 +1,8 @@
-import { SessionRawEnumField, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterDateOperator, SessionRawEnumField, SessionTaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { FiltersOr } from '@app/types/filters';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
@@ -26,19 +28,41 @@ describe('SessionsFilterService', () => {
 
   const showFilters = false;
 
+  const cachedFilters: FiltersOr<SessionRawEnumField, SessionTaskOptionEnumField> = [[{
+    field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CANCELLED_AT,
+    for: 'root',
+    operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER,
+    value: '1'
+  }]];
+
+  const mockFiltersCacheService = {
+    get: jest.fn(() => cachedFilters),
+  };
+
   beforeEach(() => {
     service = TestBed.configureTestingModule({
       providers: [
         SessionsFiltersService,
         DefaultConfigService,
         SessionsStatusesService,
-        { provide: TableService, useValue: mockTableService }
+        { provide: TableService, useValue: mockTableService },
+        { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]
     }).inject(SessionsFiltersService);
   });
 
   test('the service must create SessionsFilterService', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('initialisation', () => {
+    it('should get filters from the filterCache', () => {
+      expect(mockFiltersCacheService.get).toHaveBeenCalledWith(service['scope']);
+    });
+
+    it('should save the cached filters if they exist', () => {
+      expect(mockTableService.saveFilters).toHaveBeenCalledWith(`${service['scope']}-filters`, cachedFilters);
+    });
   });
 
   test('the service must call saveFilters from Table Service', () => {

@@ -21,7 +21,7 @@ export class ResultsInspectionService extends InspectionService<ResultRaw> {
     },
     {
       key: 'createdBy',
-      link: 'task',
+      link: 'tasks',
     },
     {
       key: 'completedAt',

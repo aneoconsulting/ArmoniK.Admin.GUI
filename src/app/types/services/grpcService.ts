@@ -4,11 +4,11 @@ import { TaskOptions } from '@app/tasks/types';
 import { FilterField, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
 import { Observable } from 'rxjs';
-import { FiltersServiceInterface } from './filtersService';
 import { DataRaw, FieldKey, GrpcResponse } from '../data';
 import { FilterDefinition } from '../filter-definition';
 import { Filter, FilterType, FiltersAnd, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
 import { ListOptions } from '../options';
+import { AbstractFilterService } from './filtersService';
 
 export type GrpcClient = TasksClient | ApplicationsClient | ResultsClient | SessionsClient | PartitionsClient;
 export type GetResponse = GetTaskResponse | GetPartitionResponse | GetResultResponse | GetSessionResponse;
@@ -50,7 +50,7 @@ export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums
   abstract readonly sortFields: Record<FieldKey<T>, F>;
   
   abstract readonly grpcClient: GrpcClient;
-  abstract readonly filterService: FiltersServiceInterface<F, FO>;
+  abstract readonly filterService: AbstractFilterService<F, FO>;
 
   readonly utilsService = inject(UtilsService<F, FO>);
   
@@ -90,7 +90,7 @@ export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums
    * Will transform filters before making the request. 
    */
   createListRequest(options: ListOptions<T, O>, filters: FiltersOr<F, FO>) {
-    const requestFilter = this.createFilters(filters, this.filterService.filtersDefinitions as FilterDefinition<F, FO>[]);
+    const requestFilter = this.createFilters(filters, this.filterService.filtersDefinitions);
     const sortField = this.createSortField(options.sort.active);
 
     return {

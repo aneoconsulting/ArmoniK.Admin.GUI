@@ -1,7 +1,9 @@
-import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FilterFor } from '@app/types/filter-definition';
+import { FiltersOr } from '@app/types/filters';
 import { DefaultConfigService } from '@services/default-config.service';
+import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { ApplicationsFiltersService } from './applications-filters.service';
 import { ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
@@ -42,6 +44,19 @@ describe('ApplicationsFiltersService', () => {
     }
   ];
 
+  const cachedFilters: FiltersOr<ApplicationRawEnumField> = [[
+    {
+      field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+      value: 'name'
+    }
+  ]];
+
+  const mockFiltersCacheService = {
+    get: jest.fn(() => cachedFilters),
+  };
+
   const defaultFilters: ApplicationRawFilters = new DefaultConfigService().defaultApplications.filters;
 
   beforeEach(() => {
@@ -49,13 +64,24 @@ describe('ApplicationsFiltersService', () => {
       providers: [
         ApplicationsFiltersService,
         DefaultConfigService,
-        { provide: TableService, useValue: mockTableService }
+        { provide: TableService, useValue: mockTableService },
+        { provide: FiltersCacheService, useValue: mockFiltersCacheService },
       ]
     }).inject(ApplicationsFiltersService);
   });
 
   it('should create', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('initialisation', () => {
+    it('should get filters from the filterCache', () => {
+      expect(mockFiltersCacheService.get).toHaveBeenCalledWith(service['scope']);
+    });
+
+    it('should save the cached filters if they exist', () => {
+      expect(mockTableService.saveFilters).toHaveBeenCalledWith(`${service['scope']}-filters`, cachedFilters);
+    });
   });
 
   it('should save filters', () => {

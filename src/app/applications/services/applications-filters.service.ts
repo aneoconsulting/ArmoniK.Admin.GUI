@@ -1,18 +1,15 @@
 import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersServiceInterface } from '@app/types/services/filtersService';
-import { DefaultConfigService } from '@services/default-config.service';
-import { TableService } from '@services/table.service';
+import { AbstractFilterService } from '@app/types/services/filtersService';
 import { ApplicationFilterField, ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApplicationsFiltersService implements FiltersServiceInterface<ApplicationRawEnumField> {
-  readonly defaultConfigService = inject(DefaultConfigService);
-  readonly tableService = inject(TableService);
-
+export class ApplicationsFiltersService extends AbstractFilterService<ApplicationRawEnumField> {
+  protected readonly scope: Scope = 'applications';
   readonly rootField: Record<ApplicationRawEnumField, string> = {
     [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME]: $localize`Name`,
     [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAMESPACE]: $localize`Namespace`,
@@ -46,26 +43,9 @@ export class ApplicationsFiltersService implements FiltersServiceInterface<Appli
 
   readonly defaultFilters: ApplicationRawFilters = this.defaultConfigService.defaultApplications.filters;
 
-  saveFilters(filters: ApplicationRawFilters): void {
-    this.tableService.saveFilters('applications-filters', filters);
-  }
-
-  restoreFilters(): ApplicationRawFilters {
-    return this.tableService.restoreFilters<ApplicationRawEnumField, null>('applications-filters', this.filtersDefinitions) ?? this.defaultFilters;
-  }
-
-  resetFilters(): ApplicationRawFilters {
-    this.tableService.resetFilters('applications-filters');
-
-    return this.defaultFilters;
-  }
-
-  saveShowFilters(showFilters: boolean): void {
-    this.tableService.saveShowFilters('applications-show-filters', showFilters);
-  }
-
-  restoreShowFilters(): boolean {
-    return this.tableService.restoreShowFilters('applications-show-filters') ?? this.defaultConfigService.defaultApplications.showFilters;
+  constructor() {
+    super();
+    this.getFromCache();
   }
 
   retrieveLabel(filterFor: FilterFor<ApplicationRawEnumField, null>, filterField:  ApplicationFilterField): string {
