@@ -20,7 +20,8 @@ export class TasksInspectionService extends InspectionService<TaskRaw> {
       key: 'podHostname'
     },
     {
-      key: 'podTtl'
+      key: 'podTtl',
+      type: 'date',
     },
     {
       key: 'creationToEndDuration',
