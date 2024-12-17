@@ -57,7 +57,6 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     this.addCustomsToProperties();
   }
 
-  allProperties: FilterDefinition<F, O>[];
   labelledProperties: string[];
 
   allOperators: Record<number, string>;
@@ -126,7 +125,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     this.labelledStatuses = Object.values(this.allStatuses).map(status => status.value);
   }
 
-  retrieveStatusKey(status: string) {
+  private retrieveStatusKey(status: string) {
     const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
     if (key) {
       return key;
@@ -144,7 +143,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
         this.filter.operator = null;
       }
     } else {
-      const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
+      const for_ = this.dataFiltersService.filtersDefinitions.find(value => value.for === field.for && value.field === field.index)?.for;
       if (for_) {
         this._filter.for = for_;
         this._filter.field = field.index as F | O;
@@ -163,7 +162,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     this._filter.operator = key !== undefined ? Number(key) : null;
   }
 
-  retrieveOperatorKey(operator: string) {
+  private retrieveOperatorKey(operator: string) {
     const labelledOperators = Object.values(this.allOperators);
     const value = labelledOperators.find(label => label.toLowerCase() === operator.toLowerCase());
     return Object.keys(this.allOperators).find(key => this.allOperators[Number(key)] === value);
@@ -180,7 +179,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     }
   }
 
-  setInput() {
+  private setInput() {
     switch (this.type) {
     case 'string': {
       this.input = {
@@ -236,7 +235,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     }
   }
 
-  findType(): FilterType {
+  private findType(): FilterType {
     if (this._filter.field && this._filter.for !== 'custom') {
       const field = this.findFilterMetadata(this._filter);
       if (field) {
@@ -246,7 +245,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     return 'string';
   }
 
-  findStatuses(): FilterValueOptions {
+  private findStatuses(): FilterValueOptions {
     if (this._filter.field) {
       const field = this.findFilterMetadata(this._filter);
       if (field?.type === 'status') {
@@ -256,11 +255,11 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     return [];
   }
 
-  findOperators(): Record<number, string> {
+  private findOperators(): Record<number, string> {
     return this.filtersService.findOperators(this.type);
   }
 
-  findFilterMetadata(filter: Filter<F, O>): FilterDefinition<F, O> | null {
+  private findFilterMetadata(filter: Filter<F, O>): FilterDefinition<F, O> | null {
     return this.dataFiltersService.filtersDefinitions.find(f => f.for === filter.for && f.field === filter.field) ?? null;
   }
 }
