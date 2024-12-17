@@ -1,4 +1,3 @@
-import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,7 +6,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterType, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterInput, FilterType, FilterValueOptions, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
@@ -30,12 +29,10 @@ span {
   `],
   standalone: true,
   imports: [
-    KeyValuePipe,
     MatFormFieldModule,
     MatSelectModule,
     FiltersDialogInputComponent,
     MatInputModule,
-    AsyncPipe,
     FormsModule,
     ReactiveFormsModule,
     AutoCompleteComponent,
@@ -44,9 +41,9 @@ span {
     FiltersService,
   ],
 })
-export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> {
+export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) first: boolean;
-  @Input({ required: true }) set filter(entry: Filter<T, U>) {
+  @Input({ required: true }) set filter(entry: Filter<F, O>) {
     this._filter = entry;
     this.setStatuses();
     this.setType();
@@ -60,7 +57,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     this.addCustomsToProperties();
   }
 
-  allProperties: FilterDefinition<T, U>[];
+  allProperties: FilterDefinition<F, O>[];
   labelledProperties: string[];
 
   allOperators: Record<number, string>;
@@ -72,7 +69,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   readonly filtersService = inject(FiltersService);
   readonly dataFiltersService = inject(DATA_FILTERS_SERVICE);
 
-  _filter: Filter<T, U>;
+  _filter: Filter<F, O>;
   _customColumns: CustomColumn[];
   columnValue: string;
   operatorLabel: string;
@@ -84,7 +81,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   get filtersDefinitions() {
-    return this.dataFiltersService.retrieveFiltersDefinitions<T, U>();
+    return this.dataFiltersService.retrieveFiltersDefinitions<F, O>();
   }
 
   private setColumnValue() {
@@ -104,7 +101,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   private setProperties() {
-    this.allProperties = this.dataFiltersService.retrieveFiltersDefinitions<T, U>();
+    this.allProperties = this.dataFiltersService.retrieveFiltersDefinitions<F, O>();
     this.labelledProperties = this.allProperties.map(property => this.retrieveLabel(property));
     this.addCustomsToProperties();
   }
@@ -115,7 +112,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
   }
 
-  private retrieveLabel(filterDefinition: FilterDefinition<T, U>) {
+  private retrieveLabel(filterDefinition: FilterDefinition<F, O>) {
     return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field);
   }
 
@@ -155,7 +152,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
       const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
       if (for_) {
         this._filter.for = for_;
-        this._filter.field = field.index as T | U;
+        this._filter.field = field.index as F | O;
         this.filter.operator = null;
       }
     }
@@ -268,7 +265,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return this.filtersService.findOperators(this.type);
   }
 
-  findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
-    return this.dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+  findFilterMetadata(filter: Filter<F, O>): FilterDefinition<F, O> | null {
+    return this.dataFiltersService.retrieveFiltersDefinitions<F, O>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
   }
 }
