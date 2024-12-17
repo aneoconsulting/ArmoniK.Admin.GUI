@@ -59,6 +59,7 @@ export abstract class DataFilterService<F extends FiltersEnums, O extends Filter
   }
 
   abstract retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
+  abstract retrieveField(filterField: string): FilterField;
 }
 
 export interface FiltersServiceOptionsInterface<O extends NonNullable<FiltersOptionsEnums>> {

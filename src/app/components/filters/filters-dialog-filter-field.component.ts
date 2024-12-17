@@ -3,10 +3,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterInput, FilterType, FilterValueOptions, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { DataFilterService, FilterField } from '@app/types/services/data-filter.service';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
@@ -67,7 +67,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
   labelledStatuses: string[];
 
   readonly filtersService = inject(FiltersService);
-  readonly dataFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly dataFiltersService = inject(DataFilterService);
 
   _filter: Filter<F, O>;
   _customColumns: CustomColumn[];
@@ -80,14 +80,10 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
     return this._filter;
   }
 
-  get filtersDefinitions() {
-    return this.dataFiltersService.retrieveFiltersDefinitions<F, O>();
-  }
-
   private setColumnValue() {
     if (this._filter.field && this._filter.for) {
       if (this._filter.for !== 'custom') {
-        this.columnValue = this.dataFiltersService.retrieveLabel(this._filter.for, this._filter.field);
+        this.columnValue = this.dataFiltersService.retrieveLabel(this._filter.for, this._filter.field as FilterField);
       } else {
         this.columnValue = this._filter.field.toString();
       }
@@ -101,8 +97,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
   }
 
   private setProperties() {
-    this.allProperties = this.dataFiltersService.retrieveFiltersDefinitions<F, O>();
-    this.labelledProperties = this.allProperties.map(property => this.retrieveLabel(property));
+    this.labelledProperties = this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property));
     this.addCustomsToProperties();
   }
 
@@ -113,7 +108,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
   }
 
   private retrieveLabel(filterDefinition: FilterDefinition<F, O>) {
-    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field);
+    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
   }
 
   private setOperators() {
@@ -140,7 +135,7 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
   }
 
   onPropertyChange(value: string) {
-    const field = this.dataFiltersService.retrieveField(value);
+    const field = this.dataFiltersService.retrieveField(value) as { for: string; index: number };
     if (field.index === -1) {
       const customField = this._customColumns?.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
       if (customField) {
@@ -266,6 +261,6 @@ export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends
   }
 
   findFilterMetadata(filter: Filter<F, O>): FilterDefinition<F, O> | null {
-    return this.dataFiltersService.retrieveFiltersDefinitions<F, O>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+    return this.dataFiltersService.filtersDefinitions.find(f => f.for === filter.for && f.field === filter.field) ?? null;
   }
 }

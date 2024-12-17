@@ -1,7 +1,7 @@
 import { Component, Input, inject, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
 
@@ -30,7 +30,7 @@ import { UtilsService } from '@services/utils.service';
 export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   private readonly filtersService = inject(FiltersService);
   private readonly utilsService = inject(UtilsService<F, O>);
-  private readonly dataFiltersService = inject(DATA_FILTERS_SERVICE);
+  private readonly dataFiltersService = inject(DataFilterService);
 
   readonly filters = signal<string[]>([]);
 
@@ -46,13 +46,12 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
         return label + ' ' + $localize`has no value`;
       }
 
-      const filtersDefinitions = this.dataFiltersService.retrieveFiltersDefinitions();
-      const type = this.utilsService.recoverType(filter, filtersDefinitions);
+      const type = this.utilsService.recoverType(filter, this.dataFiltersService.filtersDefinitions);
       const operator = this.filtersService.findOperators(type)[filter.operator as number];
 
       switch (type) {
       case 'status': {
-        const statuses = this.utilsService.recoverStatuses(filter, filtersDefinitions);
+        const statuses = this.utilsService.recoverStatuses(filter, this.dataFiltersService.filtersDefinitions);
         const status = statuses.find(status => status.key.toString() === filter.value?.toString());
         return `${label} ${operator} ${status?.value}`;
       }
