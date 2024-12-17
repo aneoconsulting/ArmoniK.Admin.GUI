@@ -1,30 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { Filter, FilterType } from '@app/types/filters';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field.component';
 
 describe('FiltersDialogFilterFieldComponent', () => {
   let component: FiltersDialogFilterFieldComponent<number, number>;
-
-  const mockDataFiltersService = {
-    retrieveFiltersDefinitions: jest.fn(() => {
-      return filterDefinitions;
-    }),
-    retrieveLabel: jest.fn((for_: string, value: number) => {
-      return propertiesLabel[value];
-    }),
-    retrieveField: jest.fn((value: string) => {
-      const values = Object.values(propertiesLabel);
-      const index = values.findIndex(label => label.toLowerCase() === value.toLowerCase());
-      const key = index !== -1 ? Number(Object.keys(propertiesLabel).at(index)) : index;
-      const for_ = filterDefinitions.find(def => def.field === key)?.for ?? -1;
-      return { for: for_ ?? 'custom', index: key };
-    })
-  };
 
   const allStatuses = [
     { key: 0, value: 'Creation' },
@@ -43,7 +27,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
     8: 'Client Submission'
   };
 
-  const filterDefinitions: FilterDefinition<number, number>[] = [
+  const filtersDefinitions: FilterDefinition<number, number>[] = [
     {
       field: 4,
       type: 'number',
@@ -96,13 +80,27 @@ describe('FiltersDialogFilterFieldComponent', () => {
     value: 'someValue'
   };
 
+  const mockDataFiltersService = {
+    filtersDefinitions: filtersDefinitions,
+    retrieveLabel: jest.fn((for_: string, value: number) => {
+      return propertiesLabel[value];
+    }),
+    retrieveField: jest.fn((value: string) => {
+      const values = Object.values(propertiesLabel);
+      const index = values.findIndex(label => label.toLowerCase() === value.toLowerCase());
+      const key = index !== -1 ? Number(Object.keys(propertiesLabel).at(index)) : index;
+      const for_ = filtersDefinitions.find(def => def.field === key)?.for ?? -1;
+      return { for: for_ ?? 'custom', index: key };
+    })
+  };
+
   beforeEach(async () => {
     component = TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule],
       providers: [
         FiltersDialogFilterFieldComponent,
         FiltersService,
-        { provide: DATA_FILTERS_SERVICE, useValue: mockDataFiltersService }
+        { provide: DataFilterService, useValue: mockDataFiltersService }
       ]
     }).inject(FiltersDialogFilterFieldComponent);
 
@@ -148,10 +146,6 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
   });
 
-  it('should retrieve the filter definitions', () => {
-    expect(component.filtersDefinitions).toEqual(filterDefinitions);
-  });
-
   describe('onPropertyChange', () => {
     it('should update filter', () => {
       component.onPropertyChange('Created at');
@@ -185,11 +179,11 @@ describe('FiltersDialogFilterFieldComponent', () => {
     });
 
     it('should retrieve the key of the status', () => {
-      expect(component.retrieveStatusKey(allStatuses[1].value)).toEqual(1);
+      expect(component['retrieveStatusKey'](allStatuses[1].value)).toEqual(1);
     });
 
     it('should return null if the label does not exists', () => {
-      expect(component.retrieveStatusKey('Unexisting')).toEqual(null);
+      expect(component['retrieveStatusKey']('Unexisting')).toEqual(null);
     });
   });
 
@@ -275,7 +269,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'someValue'
       };
       component.filter = filter;
-      expect(component.findType()).toEqual('number');
+      expect(component['findType']()).toEqual('number');
     });
 
     it('should return type string if the field is null', () => {
@@ -286,7 +280,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'someValue'
       };
       component.filter = filter;
-      expect(component.findType()).toEqual('string');
+      expect(component['findType']()).toEqual('string');
     });
 
     it('should return type string if the definition does not exists', () => {
@@ -297,7 +291,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'someValue'
       };
       component.filter = filter;
-      expect(component.findType()).toEqual('string');
+      expect(component['findType']()).toEqual('string');
     });
   });
 
@@ -310,7 +304,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'myStatus'
       };
       component.filter = statusFilter;
-      expect(component.findStatuses()).toEqual(allStatuses);
+      expect(component['findStatuses']()).toEqual(allStatuses);
     });
 
     it('should return an empty status list if the filter has no field', () => {
@@ -321,7 +315,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'myStatus'
       };
       component.filter = statusFilter;
-      expect(component.findStatuses()).toEqual([]);
+      expect(component['findStatuses']()).toEqual([]);
     });
 
     it('should return an empty status list if the filter definition does not exists', () => {
@@ -332,7 +326,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'myStatus'
       };
       component.filter = statusFilter;
-      expect(component.findStatuses()).toEqual([]);
+      expect(component['findStatuses']()).toEqual([]);
     });
 
     it('should return an empty status list if the filter is not of type status', () => {
@@ -343,7 +337,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'someValue'
       };
       component.filter = notAStatusFilter;
-      expect(component.findStatuses()).toEqual([]);
+      expect(component['findStatuses']()).toEqual([]);
     });
   });
 
@@ -356,7 +350,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
         value: 'myStatus'
       };
       component.filter = filter;
-      expect(component.findOperators()).toEqual(new FiltersService()['filterNumberOperators']);
+      expect(component['findOperators']()).toEqual(new FiltersService()['filterNumberOperators']);
     });
   });
 
@@ -374,7 +368,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should handle strings', () => {
       component.type = 'string';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'string',
         value: filter.value
@@ -383,7 +377,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should handle numbers', () => {
       component.type = 'number';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'number',
         value: Number(filter.value)
@@ -392,7 +386,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should handle arrays', () => {
       component.type = 'array';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'array',
         value: filter.value
@@ -402,7 +396,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
     it('should handle statuses', () => {
       component.allStatuses = allStatuses;
       component.type = 'status';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'status',
         value: 'Submitted'
@@ -411,7 +405,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should handle dates', () => {
       component.type = 'date';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'date',
         value: new Date(Number(filter.value) * 1000)
@@ -420,7 +414,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should handle durations', () => {
       component.type = 'duration';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'duration',
         value: filter.value
@@ -429,7 +423,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
 
     it('should handle booleans', () => {
       component.type = 'boolean';
-      component.setInput();
+      component['setInput']();
       expect(component.input).toEqual({
         type: 'boolean',
         value: filter.value
@@ -439,7 +433,7 @@ describe('FiltersDialogFilterFieldComponent', () => {
     it('should throw an error in case of unknown type', () => {
       const type = 'unknown' as FilterType;
       component.type = type;
-      expect(() => component.setInput()).toThrow(`Unknown type ${type}`);
+      expect(() => component['setInput']()).toThrow(`Unknown type ${type}`);
     });
   });
 });

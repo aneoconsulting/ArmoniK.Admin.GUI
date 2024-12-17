@@ -40,30 +40,36 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
 
   private toContent(filter: Filter<F, O>): string {
     if (filter.field !== null && filter.field !== undefined) {
-      const label = filter.for !== 'custom' ? this.dataFiltersService.retrieveLabel(filter.for ?? 'root', Number(filter.field)) : (filter.field as string);
+      const label = filter.for !== 'custom' ? this.dataFiltersService.retrieveLabel(filter.for as 'root' | 'options', Number(filter.field)) : (filter.field as string);
 
       if (filter.value === null) {
         return label + ' ' + $localize`has no value`;
+      } else if (filter.operator === null) {
+        return $localize`No operator`;
       }
 
-      const type = this.utilsService.recoverType(filter, this.dataFiltersService.filtersDefinitions);
-      const operator = this.filtersService.findOperators(type)[filter.operator as number];
+      try {
+        const type = this.utilsService.recoverType(filter, this.dataFiltersService.filtersDefinitions);
+        const operator = this.filtersService.findOperators(type)[filter.operator as number];
 
-      switch (type) {
-      case 'status': {
-        const statuses = this.utilsService.recoverStatuses(filter, this.dataFiltersService.filtersDefinitions);
-        const status = statuses.find(status => status.key.toString() === filter.value?.toString());
-        return `${label} ${operator} ${status?.value}`;
-      }
-      case 'date': {
-        return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
-      }
-      case 'duration': {
-        return `${label} ${operator} ${this.durationToString(Number(filter.value))}`;
-      }
-      default: {
-        return `${label} ${operator} ${filter.value}`;
-      }
+        switch (type) {
+        case 'status': {
+          const statuses = this.utilsService.recoverStatuses(filter, this.dataFiltersService.filtersDefinitions);
+          const status = statuses.find(status => status.key.toString() === filter.value?.toString());
+          return `${label} ${operator} ${status?.value}`;
+        }
+        case 'date': {
+          return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
+        }
+        case 'duration': {
+          return `${label} ${operator} ${this.durationToString(Number(filter.value))}`;
+        }
+        default: {
+          return `${label} ${operator} ${filter.value}`;
+        }
+        }
+      } catch {
+        return $localize`Invalid Filter Field`;
       }
     }
     return $localize`No field`;
