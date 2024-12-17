@@ -1,14 +1,14 @@
 import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
-import { AbstractFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
+import { DataFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
 import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksFiltersService extends AbstractFilterService<TaskSummaryEnumField, TaskOptionEnumField>
+export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField, TaskOptionEnumField>
   implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
   protected readonly scope: Scope = 'tasks';
   readonly statusService = inject(TasksStatusesService);
