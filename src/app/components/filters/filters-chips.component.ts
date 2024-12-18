@@ -50,7 +50,7 @@ export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOpti
 
       try {
         const type = this.utilsService.recoverType(filter, this.dataFiltersService.filtersDefinitions);
-        const operator = this.filtersService.findOperators(type)[filter.operator as number];
+        const operator = this.filtersService.findOperators(type)[filter.operator];
 
         switch (type) {
         case 'status': {
