@@ -11,8 +11,8 @@ import { ResultsGrpcService } from '@app/results/services/results-grpc.service';
 import { ResultsIndexService } from '@app/results/services/results-index.service';
 import { ResultsStatusesService } from '@app/results/services/results-statuses.service';
 import { ResultRaw } from '@app/results/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
@@ -28,7 +28,7 @@ import { NotificationService } from '@services/notification.service';
     ResultsIndexService,
     ResultsFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: ResultsFiltersService
     },
     ResultsDataService,

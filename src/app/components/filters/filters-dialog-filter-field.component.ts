@@ -1,13 +1,12 @@
-import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { Filter, FilterInput, FilterType, FilterValueOptions } from '@app/types/filters';
+import { Filter, FilterInput, FilterType, FilterValueOptions, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { DataFilterService, FilterField } from '@app/types/services/data-filter.service';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { FiltersService } from '@services/filters.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
@@ -30,12 +29,10 @@ span {
   `],
   standalone: true,
   imports: [
-    KeyValuePipe,
     MatFormFieldModule,
     MatSelectModule,
     FiltersDialogInputComponent,
     MatInputModule,
-    AsyncPipe,
     FormsModule,
     ReactiveFormsModule,
     AutoCompleteComponent,
@@ -44,9 +41,9 @@ span {
     FiltersService,
   ],
 })
-export class FiltersDialogFilterFieldComponent<T extends number, U extends number | null = null> {
+export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) first: boolean;
-  @Input({ required: true }) set filter(entry: Filter<T, U>) {
+  @Input({ required: true }) set filter(entry: Filter<F, O>) {
     this._filter = entry;
     this.setStatuses();
     this.setType();
@@ -60,7 +57,6 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     this.addCustomsToProperties();
   }
 
-  allProperties: FilterDefinition<T, U>[];
   labelledProperties: string[];
 
   allOperators: Record<number, string>;
@@ -70,9 +66,9 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   labelledStatuses: string[];
 
   readonly filtersService = inject(FiltersService);
-  readonly dataFiltersService = inject(DATA_FILTERS_SERVICE);
+  readonly dataFiltersService = inject(DataFilterService);
 
-  _filter: Filter<T, U>;
+  _filter: Filter<F, O>;
   _customColumns: CustomColumn[];
   columnValue: string;
   operatorLabel: string;
@@ -83,14 +79,10 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return this._filter;
   }
 
-  get filtersDefinitions() {
-    return this.dataFiltersService.retrieveFiltersDefinitions<T, U>();
-  }
-
   private setColumnValue() {
     if (this._filter.field && this._filter.for) {
       if (this._filter.for !== 'custom') {
-        this.columnValue = this.dataFiltersService.retrieveLabel(this._filter.for, this._filter.field);
+        this.columnValue = this.dataFiltersService.retrieveLabel(this._filter.for, this._filter.field as FilterField);
       } else {
         this.columnValue = this._filter.field.toString();
       }
@@ -104,8 +96,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   private setProperties() {
-    this.allProperties = this.dataFiltersService.retrieveFiltersDefinitions<T, U>();
-    this.labelledProperties = this.allProperties.map(property => this.retrieveLabel(property));
+    this.labelledProperties = this.dataFiltersService.filtersDefinitions.map(property => this.retrieveLabel(property));
     this.addCustomsToProperties();
   }
 
@@ -115,8 +106,8 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
   }
 
-  private retrieveLabel(filterDefinition: FilterDefinition<T, U>) {
-    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field);
+  private retrieveLabel(filterDefinition: FilterDefinition<F, O>) {
+    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
   }
 
   private setOperators() {
@@ -134,7 +125,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     this.labelledStatuses = Object.values(this.allStatuses).map(status => status.value);
   }
 
-  retrieveStatusKey(status: string) {
+  private retrieveStatusKey(status: string) {
     const key = this.allStatuses.find(label => label.value.toLowerCase() === status.toLowerCase())?.key;
     if (key) {
       return key;
@@ -143,7 +134,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
   }
 
   onPropertyChange(value: string) {
-    const field = this.dataFiltersService.retrieveField(value);
+    const field = this.dataFiltersService.retrieveField(value) as { for: string; index: number };
     if (field.index === -1) {
       const customField = this._customColumns?.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
       if (customField) {
@@ -152,10 +143,10 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
         this.filter.operator = null;
       }
     } else {
-      const for_ = this.allProperties.find(value => value.for === field.for && value.field === field.index)?.for;
+      const for_ = this.dataFiltersService.filtersDefinitions.find(value => value.for === field.for && value.field === field.index)?.for;
       if (for_) {
         this._filter.for = for_;
-        this._filter.field = field.index as T | U;
+        this._filter.field = field.index as F | O;
         this.filter.operator = null;
       }
     }
@@ -171,7 +162,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     this._filter.operator = key !== undefined ? Number(key) : null;
   }
 
-  retrieveOperatorKey(operator: string) {
+  private retrieveOperatorKey(operator: string) {
     const labelledOperators = Object.values(this.allOperators);
     const value = labelledOperators.find(label => label.toLowerCase() === operator.toLowerCase());
     return Object.keys(this.allOperators).find(key => this.allOperators[Number(key)] === value);
@@ -188,7 +179,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
   }
 
-  setInput() {
+  private setInput() {
     switch (this.type) {
     case 'string': {
       this.input = {
@@ -244,7 +235,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     }
   }
 
-  findType(): FilterType {
+  private findType(): FilterType {
     if (this._filter.field && this._filter.for !== 'custom') {
       const field = this.findFilterMetadata(this._filter);
       if (field) {
@@ -254,7 +245,7 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return 'string';
   }
 
-  findStatuses(): FilterValueOptions {
+  private findStatuses(): FilterValueOptions {
     if (this._filter.field) {
       const field = this.findFilterMetadata(this._filter);
       if (field?.type === 'status') {
@@ -264,11 +255,11 @@ export class FiltersDialogFilterFieldComponent<T extends number, U extends numbe
     return [];
   }
 
-  findOperators(): Record<number, string> {
+  private findOperators(): Record<number, string> {
     return this.filtersService.findOperators(this.type);
   }
 
-  findFilterMetadata(filter: Filter<T, U>): FilterDefinition<T, U> | null {
-    return this.dataFiltersService.retrieveFiltersDefinitions<T, U>().find(f => f.for === filter.for && f.field === filter.field) ?? null;
+  private findFilterMetadata(filter: Filter<F, O>): FilterDefinition<F, O> | null {
+    return this.dataFiltersService.filtersDefinitions.find(f => f.for === filter.for && f.field === filter.field) ?? null;
   }
 }

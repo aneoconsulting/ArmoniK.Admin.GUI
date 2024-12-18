@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomColumn } from '@app/types/data';
 import { FiltersDialogData, FiltersDialogResult } from '@app/types/dialog';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
 import { FiltersChipsComponent } from '@components/filters/filters-chips.component';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogComponent } from './filters-dialog.component';
@@ -59,14 +59,13 @@ button {
   standalone: true,
   imports: [
     FiltersChipsComponent,
-    FiltersDialogComponent,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
     MatTooltipModule,
   ],
 })
-export class FiltersToolbarComponent<T extends number, U extends number | null = null> {
+export class FiltersToolbarComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   private readonly iconsService = inject(IconsService);
   private readonly dialog = inject(MatDialog);
   private readonly viewContainerRef = inject(ViewContainerRef);
@@ -74,22 +73,22 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   hasFilters = false;
   hasOneOrFilter = false;
 
-  private _filters: FiltersOr<T, U> = [];
+  private _filters: FiltersOr<F, O> = [];
   
-  @Input({ required: true }) set filters(entry: FiltersOr<T, U>) {
+  @Input({ required: true }) set filters(entry: FiltersOr<F, O>) {
     this._filters = entry;
     this.setHasFilters();
     this.setHasOneOrFilter();
   }
   
-  get filters(): FiltersOr<T, U> {
+  get filters(): FiltersOr<F, O> {
     return this._filters;
   }
 
   @Input() customColumns: CustomColumn[];
   @Input() showFilters = true;
 
-  @Output() filtersChange: EventEmitter<FiltersOr<T, U>> = new EventEmitter<FiltersOr<T, U>>();
+  @Output() filtersChange: EventEmitter<FiltersOr<F, O>> = new EventEmitter<FiltersOr<F, O>>();
   @Output() showFiltersChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   getIcon(name: string): string {
@@ -117,7 +116,7 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
   }
 
   openFiltersDialog(): void {
-    const dialogRef = this.dialog.open<FiltersDialogComponent<T, U>, FiltersDialogData<T, U>, FiltersDialogResult<T, U>>(FiltersDialogComponent, {
+    const dialogRef = this.dialog.open<FiltersDialogComponent<F, O>, FiltersDialogData<F, O>, FiltersDialogResult<F, O>>(FiltersDialogComponent, {
       data: {
         filtersOr: Array.from(this.filters),
         customColumns: this.customColumns
@@ -140,7 +139,7 @@ export class FiltersToolbarComponent<T extends number, U extends number | null =
     });
   }
 
-  isFilterNull(result: FiltersDialogResult<T, U>): boolean {
+  isFilterNull(result: FiltersDialogResult<F, O>): boolean {
     return result[0][0].field === null && result[0][0].for === null && result[0][0].operator === null && result[0][0].value === null;
   }
 }

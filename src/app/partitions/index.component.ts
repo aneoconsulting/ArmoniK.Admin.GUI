@@ -9,8 +9,8 @@ import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.s
 import { DashboardStorageService } from '@app/dashboard/services/dashboard-storage.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { TableHandler } from '@app/types/components';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
@@ -54,7 +54,7 @@ import { PartitionRaw } from './types';
     FiltersService,
     PartitionsFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: PartitionsFiltersService
     },
     DashboardIndexService,

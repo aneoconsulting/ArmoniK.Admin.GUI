@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,7 +24,6 @@ mat-form-field {
     NgxMatTimepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
-    AsyncPipe,
     MatAutocompleteModule,
     MatButtonModule,
     AutoCompleteComponent

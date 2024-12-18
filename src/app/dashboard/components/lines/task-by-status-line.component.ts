@@ -9,8 +9,8 @@ import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { EditNameLineData } from '@app/types/dialog';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
 import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
 import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
@@ -61,7 +61,7 @@ app-actions-toolbar {
     TasksGrpcService,
     TasksFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useClass: TasksFiltersService
     },
     GrpcSortFieldService,

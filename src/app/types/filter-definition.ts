@@ -1,4 +1,4 @@
-import { FilterValueOptions, FiltersAnd } from '@app/types/filters';
+import { FilterValueOptions } from '@app/types/filters';
 /**
  *
  * `for` and `field` are used to identify the filter.
@@ -99,14 +99,3 @@ export type FilterDefinitionTaskOption<T extends number | null> = FilterDefiniti
 export type FilterDefinition<T extends number, U extends number | null = null> = FilterDefinitionRoot<T> | FilterDefinitionTaskOption<U> | FilterDefinitionCustom;
 
 export type FilterFor<T extends number, U extends number | null = null> = FilterDefinition<T, U>['for'];
-
-
-
-export abstract class DataFilterService {
-  abstract retrieveFiltersDefinitions<T extends number, U extends number | null = null>(): FilterDefinition<T, U>[];
-  abstract retrieveLabel<T extends number, U extends number | null = null>(filterFor: FilterFor<T, U>, filterField: T | U | string): string;
-  abstract saveFilters<T extends number, U extends number | null = null>(filters: FiltersAnd<T, U>[]): void;
-  abstract restoreFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
-  abstract resetFilters<T extends number, U extends number | null = null>(): FiltersAnd<T, U>[];
-  abstract retrieveField<U extends { for: string, index: number }>(filterField: string): U;
-}

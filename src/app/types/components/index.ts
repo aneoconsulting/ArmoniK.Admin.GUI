@@ -12,7 +12,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { TableColumn } from '../column.type';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
-import { AbstractFilterService } from '../services/filtersService';
+import { DataFilterService } from '../services/data-filter.service';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 import { AbstractTableDataService } from '../services/table-data.service';
 import { TableType } from '../table';
@@ -26,7 +26,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   readonly router = inject(Router);
 
   abstract readonly indexService: IndexServiceInterface<T, O>;
-  abstract readonly filtersService: AbstractFilterService<F, FO>;
+  abstract readonly filtersService: DataFilterService<F, FO>;
   abstract readonly tableDataService: AbstractTableDataService<T, F, O, FO>;
 
   abstract tableType: TableType;

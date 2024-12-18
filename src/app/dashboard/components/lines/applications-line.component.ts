@@ -10,8 +10,8 @@ import { ApplicationsFiltersService } from '@app/applications/services/applicati
 import { ApplicationsGrpcService } from '@app/applications/services/applications-grpc.service';
 import { ApplicationsIndexService } from '@app/applications/services/applications-index.service';
 import { ApplicationRaw } from '@app/applications/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
@@ -34,7 +34,7 @@ import { ShareUrlService } from '@services/share-url.service';
     DefaultConfigService,
     MatSnackBar,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useClass: ApplicationsFiltersService
     },
     ApplicationsFiltersService,

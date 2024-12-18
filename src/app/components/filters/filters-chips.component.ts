@@ -1,7 +1,7 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, signal } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
-import { Filter, FiltersAnd } from '@app/types/filters';
+import { Filter, FiltersAnd, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { UtilsService } from '@services/utils.service';
 
@@ -27,49 +27,55 @@ import { UtilsService } from '@services/utils.service';
     FiltersService,
   ],
 })
-export class FiltersChipsComponent<T extends number, U extends number | null = null> {
+export class FiltersChipsComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   private readonly filtersService = inject(FiltersService);
-  private readonly utilsService = inject(UtilsService<T, U>);
-  private readonly dataFiltersService = inject(DATA_FILTERS_SERVICE);
+  private readonly utilsService = inject(UtilsService<F, O>);
+  private readonly dataFiltersService = inject(DataFilterService);
 
-  @Input({ required: true }) filtersAnd: FiltersAnd<T, U> = [];
+  readonly filters = signal<string[]>([]);
 
-  content(filter: Filter<T, U>): string {
-
-    if(!filter.for) {
-      filter.for = 'root';
-    }
-    
-    let label: string;
-    if (filter.for !== 'custom') {
-      label = this.dataFiltersService.retrieveLabel(filter.for, Number(filter.field));
-    } else {
-      label = (filter.field as string);
-    }
-
-    if (filter.value === null)
-      return label + ' ' + $localize`has no value`;
-
-    const filtersDefinitions = this.dataFiltersService.retrieveFiltersDefinitions();
-    const type = this.utilsService.recoverType(filter, filtersDefinitions);
-    const operator = this.filtersService.findOperators(type)[filter.operator as number];
-
-    if (type === 'status') {
-      const statuses = this.utilsService.recoverStatuses(filter, filtersDefinitions);
-      const status = statuses.find(status => status.key.toString() === filter.value?.toString());
-      return `${label} ${operator} ${status?.value}`;
-    }
-    else if (type === 'date') {
-      return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
-    }
-    else if (type === 'duration') {
-      return `${label} ${operator} ${this.durationToString(Number(filter.value))}`;
-    }
-
-    return `${label} ${operator} ${filter.value}`;
+  @Input({ required: true }) set filtersAnd(entry: FiltersAnd<F, O>) {
+    this.filters.set(entry.map(filter => this.toContent(filter)));
   }
 
-  durationToString(value: number): string {
+  private toContent(filter: Filter<F, O>): string {
+    if (filter.field !== null && filter.field !== undefined) {
+      const label = filter.for !== 'custom' ? this.dataFiltersService.retrieveLabel(filter.for as 'root' | 'options', Number(filter.field)) : (filter.field as string);
+
+      if (filter.value === null) {
+        return label + ' ' + $localize`has no value`;
+      } else if (filter.operator === null) {
+        return $localize`No operator`;
+      }
+
+      try {
+        const type = this.utilsService.recoverType(filter, this.dataFiltersService.filtersDefinitions);
+        const operator = this.filtersService.findOperators(type)[filter.operator];
+
+        switch (type) {
+        case 'status': {
+          const statuses = this.utilsService.recoverStatuses(filter, this.dataFiltersService.filtersDefinitions);
+          const status = statuses.find(status => status.key.toString() === filter.value?.toString());
+          return `${label} ${operator} ${status?.value}`;
+        }
+        case 'date': {
+          return `${label} ${operator} ${new Date(Number(filter.value) * 1000).toUTCString()}`;
+        }
+        case 'duration': {
+          return `${label} ${operator} ${this.durationToString(Number(filter.value))}`;
+        }
+        default: {
+          return `${label} ${operator} ${filter.value}`;
+        }
+        }
+      } catch {
+        return $localize`Invalid Filter Field`;
+      }
+    }
+    return $localize`No field`;
+  }
+
+  private durationToString(value: number): string {
     let resultString = '';
     const hours = Math.floor(Number(value)/3600);
     const minutes = Math.floor((Number(value)%3600)/60);

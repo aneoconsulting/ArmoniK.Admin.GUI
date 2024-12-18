@@ -1,14 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { FiltersAnd, FiltersOr } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogComponent } from './filters-dialog.component';
 
 describe('FiltersDialogComponent', () => {
   let component: FiltersDialogComponent<number, number>;
-  let fixture: ComponentFixture<FiltersDialogComponent<number, number>>;
 
   const filterAnd1: FiltersAnd<number, number> = [{
     field: 1,
@@ -34,28 +32,17 @@ describe('FiltersDialogComponent', () => {
   };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    component = TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule],
       providers: [
         FiltersDialogComponent,
         IconsService,
         { provide: MatDialogRef, useValue: mockDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: mockMatDialogData },
-        { provide: DATA_FILTERS_SERVICE, useValue: {
-          retrieveFiltersDefinitions: jest.fn(() => {
-            return [];
-          }),
-          retrieveLabel: jest.fn()
-        } },
       ]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
+    }).inject(FiltersDialogComponent);
     mockMatDialogData.filtersOr = filterOr;
-    fixture = TestBed.createComponent(FiltersDialogComponent<number, number>);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.ngOnInit();
   });
 
   it('should init', () => {

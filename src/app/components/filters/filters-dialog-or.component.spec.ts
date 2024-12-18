@@ -1,20 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { Filter } from '@app/types/filters';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogOrComponent } from './filters-dialog-or.component';
 
 describe('FiltersDialogOrComponent', () => {
-  let component: FiltersDialogOrComponent<number, number>;
-  let fixture: ComponentFixture<FiltersDialogOrComponent<number, number>>;
-  const filter1: Filter<number, number> = {
+  let component: FiltersDialogOrComponent<TaskSummaryEnumField, TaskOptionEnumField>;
+  const filter1: Filter<TaskSummaryEnumField, TaskOptionEnumField> = {
     field: 1,
     for: 'root',
     operator: 1,
     value: 'someValue'
   };
-  const filter2: Filter<number, number> = {
+  const filter2: Filter<TaskSummaryEnumField, TaskOptionEnumField> = {
     field: 1,
     for: 'root',
     operator: 2,
@@ -22,26 +21,14 @@ describe('FiltersDialogOrComponent', () => {
   };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    component = TestBed.configureTestingModule({
       imports: [BrowserAnimationsModule],
       providers: [
         FiltersDialogOrComponent,
         IconsService,
-        { provide: DATA_FILTERS_SERVICE, useValue: {
-          retrieveFiltersDefinitions: jest.fn(() => {
-            return [];
-          }),
-          retrieveLabel: jest.fn()
-        } },
       ]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FiltersDialogOrComponent<number, number>);
-    component = fixture.componentInstance;
+    }).inject(FiltersDialogOrComponent<TaskSummaryEnumField, TaskOptionEnumField>);
     component.filtersOr = [filter1, filter2];
-    fixture.detectChanges();
   });
 
   it('should create', () => {

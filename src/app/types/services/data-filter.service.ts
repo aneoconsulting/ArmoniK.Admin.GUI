@@ -18,7 +18,7 @@ type StatusesService = TasksStatusesService | ResultsStatusesService | SessionsS
 export type FilterFor = TaskFilterFor | ResultFilterFor | SessionFilterFor | PartitionFilterFor | ApplicationFilterFor;
 export type FilterField = TaskFilterField | ResultFilterField | SessionFilterField | PartitionFilterField | ApplicationFilterField;
 
-export abstract class AbstractFilterService<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
+export abstract class DataFilterService<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   protected abstract readonly scope: Scope;
   protected readonly defaultConfigService = inject(DefaultConfigService);
   private readonly tableService = inject(TableService);
@@ -59,6 +59,7 @@ export abstract class AbstractFilterService<F extends FiltersEnums, O extends Fi
   }
 
   abstract retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
+  abstract retrieveField(filterField: string): FilterField;
 }
 
 export interface FiltersServiceOptionsInterface<O extends NonNullable<FiltersOptionsEnums>> {

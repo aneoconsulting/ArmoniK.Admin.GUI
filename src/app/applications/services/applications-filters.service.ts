@@ -2,13 +2,13 @@ import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { AbstractFilterService } from '@app/types/services/filtersService';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { ApplicationFilterField, ApplicationRawFilters, ApplicationsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApplicationsFiltersService extends AbstractFilterService<ApplicationRawEnumField> {
+export class ApplicationsFiltersService extends DataFilterService<ApplicationRawEnumField> {
   protected readonly scope: Scope = 'applications';
   readonly rootField: Record<ApplicationRawEnumField, string> = {
     [ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME]: $localize`Name`,

@@ -2,14 +2,14 @@ import { ResultRawEnumField, ResultStatus } from '@aneoconsultingfr/armonik.api.
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { FilterFor } from '@app/types/filter-definition';
-import { AbstractFilterService, FiltersServiceStatusesInterface } from '@app/types/services/filtersService';
+import { DataFilterService, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
 import { ResultsStatusesService } from './results-statuses.service';
 import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '../types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService extends AbstractFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface {
+export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface {
   protected readonly scope: Scope = 'results';
   readonly statusService = inject(ResultsStatusesService);
 
