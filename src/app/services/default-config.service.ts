@@ -312,6 +312,7 @@ export class DefaultConfigService {
     'tasks-show-filters': this.#defaultTasks.showFilters,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'host-config': null,
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

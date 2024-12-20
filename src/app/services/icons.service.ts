@@ -73,6 +73,10 @@ export class IconsService {
     'filter': 'filter_list',
     'divider': 'horizontal_rule',
     'purge': 'whatshot',
+    'test': 'science',
+    'host': 'dns',
+    'success': 'check',
+    'fail': 'close',
   };
 
   getIcon(name: string | null | undefined): string {

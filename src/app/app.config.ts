@@ -2,7 +2,7 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { GrpcCoreModule } from '@ngx-grpc/core';
+import { GRPC_INTERCEPTORS, GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { CacheService } from '@services/cache.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -17,6 +17,7 @@ import { VersionsGrpcService } from '@services/versions-grpc.service';
 import { VersionsService } from '@services/versions.service';
 import { catchError, merge, of, tap } from 'rxjs';
 import { routes } from './app.routes';
+import { GrpcHostInterceptor } from './interceptors/grpc.interceptor';
 import { ExportedDefaultConfig } from './types/config';
 
 function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
@@ -95,6 +96,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: Storage,
       useValue: localStorage
+    },
+    {
+      provide: GRPC_INTERCEPTORS,
+      useClass: GrpcHostInterceptor,
     },
     {
       provide: APP_INITIALIZER,

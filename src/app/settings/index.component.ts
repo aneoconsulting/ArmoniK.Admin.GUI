@@ -22,6 +22,7 @@ import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { StorageService } from '@services/storage.service';
 import { ClearAllDialogComponent } from './component/clear-all-dialog.component';
+import { UpdateHostConfigComponent } from './component/update-host-config.component';
 
 @Component({
   selector: 'app-settings-index',
@@ -144,6 +145,7 @@ main {
     MatSnackBarModule,
     MatMenuModule,
     DragDropModule,
+    UpdateHostConfigComponent,
   ]
 })
 export class IndexComponent implements OnInit {
