@@ -12,26 +12,32 @@ export class SessionsStatusesService extends StatusService<SessionStatus> {
     [SessionStatus.SESSION_STATUS_RUNNING]: {
       label: $localize`Running`,
       color: 'green',
+      icon: 'play',
     },
     [SessionStatus.SESSION_STATUS_CANCELLED]: {
       label: $localize`Cancelled`,
       color: 'blue',
+      icon: 'cancel',
     },
     [SessionStatus.SESSION_STATUS_CLOSED]: {
       label: $localize`Closed`,
       color: 'red',
+      icon: 'close',
     },
     [SessionStatus.SESSION_STATUS_DELETED]: {
       label: $localize`Deleted`,
       color: 'black',
+      icon: 'delete',
     },
     [SessionStatus.SESSION_STATUS_PURGED]: {
       label: $localize`Purged`,
       color: 'purple',
+      icon: 'purge',
     },
     [SessionStatus.SESSION_STATUS_PAUSED]: {
       label: $localize`Paused`,
       color: 'yellow',
+      icon: 'pause',
     },
   };
 

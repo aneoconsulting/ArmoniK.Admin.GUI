@@ -11,19 +11,23 @@ export class ResultsStatusesService extends StatusService<ResultStatus> {
     },
     [ResultStatus.RESULT_STATUS_CREATED]: {
       label: $localize`Created`,
-      color: 'cyan',
+      color: 'darkcyan',
+      icon: 'add',
     },
     [ResultStatus.RESULT_STATUS_COMPLETED]: {
       label: $localize`Completed`,
       color: 'green',
+      icon: 'success',
     },
     [ResultStatus.RESULT_STATUS_ABORTED]: {
       label: $localize`Aborted`,
       color: 'purple',
+      icon: 'cancel'
     },
     [ResultStatus.RESULT_STATUS_DELETED]: {
       label: $localize`Deleted`,
-      color: 'delete',
+      color: 'black',
+      icon: 'delete',
     },
     [ResultStatus.RESULT_STATUS_NOTFOUND]: {
       label: $localize`Not found`,
