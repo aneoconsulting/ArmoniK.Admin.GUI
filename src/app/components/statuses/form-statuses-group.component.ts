@@ -6,6 +6,7 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { StatusLabelColor } from '@app/types/status';
 import { StatusLabeled, TasksStatusesGroup } from '../../dashboard/types';
 
 @Component({
@@ -46,7 +47,7 @@ mat-dialog-content {
 })
 export class FormStatusesGroupComponent implements OnInit {
   @Input() group: TasksStatusesGroup | null = null;
-  @Input({ required: true }) statuses: { name: string, value: string }[] = [];
+  @Input({ required: true }) statuses: { name: string, value: StatusLabelColor }[] = [];
 
   @Output() cancelChange = new EventEmitter<void>();
   @Output() submitChange = new EventEmitter<TasksStatusesGroup>();
@@ -80,7 +81,7 @@ export class FormStatusesGroupComponent implements OnInit {
     if (e.checked) {
       statuses.value.push(status);
       if (!this.groupForm.value.name && statuses.value.length === 1) {
-        const status = this.statuses.find(status => status.value === e.source.value);
+        const status = this.statuses.find(status => status.value.label === e.source.value);
         if (status) {
           this.groupForm.patchValue({name: status.name});
         }

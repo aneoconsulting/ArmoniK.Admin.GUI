@@ -5,6 +5,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { StatusLabelColor } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { PageHeaderComponent } from './page-header.component';
@@ -46,15 +47,15 @@ export class InspectionHeaderComponent {
     }
   }
 
-  @Input({ required: false }) status: string | undefined;
+  @Input({ required: false }) status: StatusLabelColor | undefined;
   @Input({ required: false }) sharableURL: string | null;
 
   get id() {
     return this._id;
   }
 
-  getIcon(name: string) {
-    return this.iconsService.getIcon(name);
+  getIcon(name: string | undefined) {
+    return name ? this.iconsService.getIcon(name) : '';
   }
 
   onCopyId() {

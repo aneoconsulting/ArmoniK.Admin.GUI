@@ -20,7 +20,7 @@
       <h3 i18n> Statuses </h3>
       <div class="inputs">
         @for (status of statuses; track status.value) {
-          <mat-checkbox [value]="status.value" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
+          <mat-checkbox [value]="status.value.label" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
             {{ status.name }}
           </mat-checkbox>
         }

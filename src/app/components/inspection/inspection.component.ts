@@ -4,7 +4,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { DataRaw } from '@app/types/data';
-import { Status } from '@app/types/status';
 import { InspectionObjectComponent } from './inspection-object.component';
 
 @Component({
@@ -19,7 +18,7 @@ import { InspectionObjectComponent } from './inspection-object.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: '../../../inspections.css',
 })
-export class InspectionComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
+export class InspectionComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   private _data: T = {} as T;
   private _options: NonNullable<O> = {} as NonNullable<O>;
 
@@ -39,11 +38,6 @@ export class InspectionComponent<T extends DataRaw, S extends Status, O extends 
       }
     }
   }
-
-  /**
-   * Required to display a status label.
-   */
-  @Input({ required: false }) statuses: Record<S, string>;
 
   get data(): T {
     return this._data;

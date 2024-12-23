@@ -8,8 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManageGroupsDialogData, ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
+import { StatusLabelColor } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { AddStatusesGroupDialogComponent } from './add-statuses-group-dialog.component';
 import { EditStatusesGroupDialogComponent } from './edit-status-group-dialog.component';
@@ -118,8 +117,6 @@ ul {
     TasksStatusesService,
   ],
   imports: [
-    ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
     MatButtonModule,
     MatDialogModule,
     MatToolbarModule,
@@ -151,7 +148,7 @@ export class ManageGroupsDialogComponent {
     return this.iconsServices.getIcon(name);
   }
 
-  statusToLabel(status: TaskStatus): string {
+  statusToLabel(status: TaskStatus): StatusLabelColor {
     return this.tasksStatusesService.statusToLabel(status);
   }
 

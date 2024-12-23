@@ -60,7 +60,7 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as SessionStatus],
+          value: this.statusService.statuses[Number(status) as SessionStatus].label,
         };
       }),
     },

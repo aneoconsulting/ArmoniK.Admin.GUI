@@ -1,33 +1,86 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusService } from '@app/types/status';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 
 
 @Injectable()
 export class TasksStatusesService extends StatusService<TaskStatus> {
-  readonly statuses: Record<TaskStatus, string> = {
-    [TaskStatus.TASK_STATUS_UNSPECIFIED]: $localize`Unspecified`,
-    [TaskStatus.TASK_STATUS_CREATING]: $localize`Creating`,
-    [TaskStatus.TASK_STATUS_SUBMITTED]: $localize`Submitted`,
-    [TaskStatus.TASK_STATUS_DISPATCHED]: $localize`Dispatched`,
-    [TaskStatus.TASK_STATUS_COMPLETED]: $localize`Completed`,
-    [TaskStatus.TASK_STATUS_ERROR]: $localize`Error`,
-    [TaskStatus.TASK_STATUS_TIMEOUT]: $localize`Timeout`,
-    [TaskStatus.TASK_STATUS_CANCELLING]: $localize`Cancelling`,
-    [TaskStatus.TASK_STATUS_CANCELLED]: $localize`Cancelled`,
-    [TaskStatus.TASK_STATUS_PROCESSING]: $localize`Processing`,
-    [TaskStatus.TASK_STATUS_PROCESSED]: $localize`Processed`,
-    [TaskStatus.TASK_STATUS_RETRIED]: $localize`Retried`,
-    [TaskStatus.TASK_STATUS_PENDING]: $localize`Pending`,
-    [TaskStatus.TASK_STATUS_PAUSED]: $localize`Paused`,
+  readonly statuses: Record<TaskStatus, StatusLabelColor> = {
+    [TaskStatus.TASK_STATUS_UNSPECIFIED]: {
+      label: 'Unspecified',
+      color: 'darkgrey'
+    },
+    [TaskStatus.TASK_STATUS_CREATING]: {
+      label: 'Creating',
+      color: 'darkcyan',
+      icon: 'creating',
+    },
+    [TaskStatus.TASK_STATUS_SUBMITTED]: {
+      label: 'Submitted',
+      color: 'yellowgreen',
+      icon: 'submitting',
+    },
+    [TaskStatus.TASK_STATUS_DISPATCHED]: {
+      label: 'Dispatched',
+      color: 'darkgreen',
+      icon: 'dispatched',
+    },
+    [TaskStatus.TASK_STATUS_COMPLETED]: {
+      label: 'Completed',
+      color: 'green',
+      icon: 'completed'
+    },
+    [TaskStatus.TASK_STATUS_ERROR]: {
+      label: 'Error',
+      color: 'red',
+      icon: 'error',
+    },
+    [TaskStatus.TASK_STATUS_TIMEOUT]: {
+      label: 'Timeout',
+      color: 'red',
+      icon: 'timeout',
+    },
+    [TaskStatus.TASK_STATUS_CANCELLING]: {
+      label: 'Cancelling',
+      color: 'grey',
+      icon: 'cancelling',
+    },
+    [TaskStatus.TASK_STATUS_CANCELLED]: {
+      label: 'Cancelled',
+      color: 'black',
+      icon: 'cancel',
+    },
+    [TaskStatus.TASK_STATUS_PROCESSING]: {
+      label: 'Processing',
+      color: 'orange',
+      icon: 'running'
+    },
+    [TaskStatus.TASK_STATUS_PROCESSED]: {
+      label: 'Processed',
+      color: 'darkcyan',
+      icon: 'processed'
+    },
+    [TaskStatus.TASK_STATUS_RETRIED]: {
+      label: 'Retried',
+      color: 'red',
+      icon: 'repeat',
+    },
+    [TaskStatus.TASK_STATUS_PENDING]: {
+      label: $localize`Pending`,
+      color: 'grey',
+    },
+    [TaskStatus.TASK_STATUS_PAUSED]: {
+      label: $localize`Paused`,
+      color: 'darkyellow',
+    },
   };
 
-  statusesRecord(): { value: string, name: string }[] {
-    const values = Object.values(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
+  statusesRecord(): { value: string, name: StatusLabelColor }[] {
+    const values = Object.values(this.statuses).map(status => status.label).sort((a, b) => a.toString().localeCompare(b.toString()));
     const keys = Object.keys(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
     const sortedKeys = values.map((value) => {
       return keys.find((key) => {
-        return this.statuses[Number(key) as TaskStatus] === value;
+        return this.statuses[Number(key) as TaskStatus].label === value;
       });
     });
 

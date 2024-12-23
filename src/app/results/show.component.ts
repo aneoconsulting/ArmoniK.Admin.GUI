@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { AppShowComponent } from '@app/types/components/show';
+import { StatusLabelColor } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
@@ -52,13 +53,13 @@ export class ShowComponent extends AppShowComponent<ResultRaw, GetResultResponse
 
   private readonly resultsStatusesService = inject(ResultsStatusesService);
 
-  private _status: string | undefined;
+  private _status: StatusLabelColor | undefined;
 
   set status(status: ResultStatus | undefined) {
     this._status = status ? this.statuses[status] : undefined;
   }
 
-  get status(): string | undefined {
+  get status(): StatusLabelColor | undefined {
     return this._status;
   }
 

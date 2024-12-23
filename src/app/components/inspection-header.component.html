@@ -6,7 +6,8 @@
   </button>
   @if(status) {
     <mat-chip color="accent" highlighted right>
-      <span id="status">{{ status }}</span>
+      <mat-icon [fontIcon]="getIcon(status.icon)" />
+      <span id="status">{{ status.label }}</span>
     </mat-chip>
   }
 </app-page-header>

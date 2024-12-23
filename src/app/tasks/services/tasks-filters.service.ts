@@ -76,7 +76,7 @@ export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField,
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as TaskStatus],
+          value: this.statusService.statuses[Number(status) as TaskStatus].label,
         };
       }),
     },

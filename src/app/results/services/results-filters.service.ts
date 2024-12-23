@@ -59,7 +59,7 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as ResultStatus],
+          value: this.statusService.statuses[Number(status) as ResultStatus].label,
         };
       }),
     },

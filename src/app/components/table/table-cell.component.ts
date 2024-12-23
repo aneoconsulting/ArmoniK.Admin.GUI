@@ -7,7 +7,7 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
-import { Status, StatusService } from '@app/types/status';
+import { Status, StatusLabelColor, StatusService } from '@app/types/status';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
@@ -158,7 +158,7 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
     }
   }
 
-  statusLabel(): string {
+  statusLabel(): StatusLabelColor {
     return this.statusesService.statusToLabel(this.statusValue);
   }
 }

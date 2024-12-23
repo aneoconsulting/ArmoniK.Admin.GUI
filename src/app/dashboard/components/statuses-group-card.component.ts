@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { StatusCount, TaskSummaryFilters } from '@app/tasks/types';
 import { Filter } from '@app/types/filters';
+import { StatusLabelColor } from '@app/types/status';
 import { FiltersService } from '@services/filters.service';
 import { TasksStatusesGroup } from '../types';
 
@@ -59,7 +60,7 @@ export class StatusesGroupCardComponent {
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly filtersService = inject(FiltersService);
 
-  statusToLabel(status: TaskStatus): string {
+  statusToLabel(status: TaskStatus): StatusLabelColor {
     return this.tasksStatusesService.statusToLabel(status);
   }
 

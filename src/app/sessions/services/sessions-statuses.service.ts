@@ -1,17 +1,38 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusService } from '@app/types/status';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 
 @Injectable()
 export class SessionsStatusesService extends StatusService<SessionStatus> {
-  readonly statuses: Record<SessionStatus, string> = {
-    [SessionStatus.SESSION_STATUS_UNSPECIFIED]: $localize`Unspecified`,
-    [SessionStatus.SESSION_STATUS_RUNNING]: $localize`Running`,
-    [SessionStatus.SESSION_STATUS_CANCELLED]: $localize`Cancelled`,
-    [SessionStatus.SESSION_STATUS_CLOSED]: $localize`Closed`,
-    [SessionStatus.SESSION_STATUS_DELETED]: $localize`Deleted`,
-    [SessionStatus.SESSION_STATUS_PURGED]: $localize`Purged`,
-    [SessionStatus.SESSION_STATUS_PAUSED]: $localize`Paused`,
+  readonly statuses: Record<SessionStatus, StatusLabelColor> = {
+    [SessionStatus.SESSION_STATUS_UNSPECIFIED]: {
+      label: $localize`Unspecified`,
+      color: 'grey',
+    },
+    [SessionStatus.SESSION_STATUS_RUNNING]: {
+      label: $localize`Running`,
+      color: 'green',
+    },
+    [SessionStatus.SESSION_STATUS_CANCELLED]: {
+      label: $localize`Cancelled`,
+      color: 'blue',
+    },
+    [SessionStatus.SESSION_STATUS_CLOSED]: {
+      label: $localize`Closed`,
+      color: 'red',
+    },
+    [SessionStatus.SESSION_STATUS_DELETED]: {
+      label: $localize`Deleted`,
+      color: 'black',
+    },
+    [SessionStatus.SESSION_STATUS_PURGED]: {
+      label: $localize`Purged`,
+      color: 'purple',
+    },
+    [SessionStatus.SESSION_STATUS_PAUSED]: {
+      label: $localize`Paused`,
+      color: 'yellow',
+    },
   };
 
   canCancel(status: SessionStatus): boolean {

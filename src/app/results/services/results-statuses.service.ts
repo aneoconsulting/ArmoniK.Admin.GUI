@@ -1,15 +1,33 @@
 import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusService } from '@app/types/status';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 
 @Injectable()
 export class ResultsStatusesService extends StatusService<ResultStatus> {
-  readonly statuses: Record<ResultStatus, string> = {
-    [ResultStatus.RESULT_STATUS_UNSPECIFIED]: $localize`Unspecified`,
-    [ResultStatus.RESULT_STATUS_CREATED]: $localize`Created`,
-    [ResultStatus.RESULT_STATUS_COMPLETED]: $localize`Completed`,
-    [ResultStatus.RESULT_STATUS_ABORTED]: $localize`Aborted`,
-    [ResultStatus.RESULT_STATUS_DELETED]: $localize`Deleted`,
-    [ResultStatus.RESULT_STATUS_NOTFOUND]: $localize`Not found`,
+  readonly statuses: Record<ResultStatus, StatusLabelColor> = {
+    [ResultStatus.RESULT_STATUS_UNSPECIFIED]: {
+      label: $localize`Unspecified`,
+      color: 'grey',
+    },
+    [ResultStatus.RESULT_STATUS_CREATED]: {
+      label: $localize`Created`,
+      color: 'cyan',
+    },
+    [ResultStatus.RESULT_STATUS_COMPLETED]: {
+      label: $localize`Completed`,
+      color: 'green',
+    },
+    [ResultStatus.RESULT_STATUS_ABORTED]: {
+      label: $localize`Aborted`,
+      color: 'purple',
+    },
+    [ResultStatus.RESULT_STATUS_DELETED]: {
+      label: $localize`Deleted`,
+      color: 'delete',
+    },
+    [ResultStatus.RESULT_STATUS_NOTFOUND]: {
+      label: $localize`Not found`,
+      color: 'grey'
+    },
   };
 }

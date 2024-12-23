@@ -10,6 +10,7 @@ import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { StatusLabelColor } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { FiltersService } from '@services/filters.service';
@@ -95,9 +96,9 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
 
   arrays: Field<SessionRaw>[];
 
-  private _status: string | undefined;
+  private _status: StatusLabelColor | undefined;
 
-  get status(): string | undefined {
+  get status(): StatusLabelColor | undefined {
     return this._status;
   }
 
