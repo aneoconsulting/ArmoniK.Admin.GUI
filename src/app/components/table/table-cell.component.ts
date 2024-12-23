@@ -9,6 +9,7 @@ import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ArmonikData, DataRaw, PartitionData, SessionData } from '@app/types/data';
 import { Status, StatusLabelColor, StatusService } from '@app/types/status';
 import { CountTasksByStatusComponent } from '@components/count-tasks-by-status.component';
+import { StatusChipComponent } from '@components/status-chip.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
@@ -30,6 +31,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     CountTasksByStatusComponent,
     MatCheckboxModule,
     TableInspectMessageComponent,
+    StatusChipComponent,
   ]
 })
 export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
@@ -86,10 +88,6 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
 
   get durationValue() {
     return this._value as Duration;
-  }
-
-  get statusValue() {
-    return this._value as S;
   }
 
   get dateValue(): Date | null {
@@ -159,6 +157,6 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
   }
 
   statusLabel(): StatusLabelColor {
-    return this.statusesService.statusToLabel(this.statusValue);
+    return this.statusesService.statusToLabel(this._value as S);
   }
 }

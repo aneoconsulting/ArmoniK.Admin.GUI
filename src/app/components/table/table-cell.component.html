@@ -20,7 +20,7 @@
     {{ dateValue | date: 'yyyy-MM-dd &nbsp;HH:mm:ss' | emptyCell }}
   }
   @case ('status') {
-    {{ statusLabel().label }}
+    <app-status-chip [status]="statusLabel()" />
   }
   @case ('count') {
     <app-count-tasks-by-status
