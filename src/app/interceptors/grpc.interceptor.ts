@@ -15,8 +15,7 @@ export type GrpcClientSettings = GrpcClient<unknown> & {
  */
 export class GrpcHostInterceptor implements GrpcInterceptor {
   host: string | null = null;
-  readonly checkRegex = /(^$|(http(s)?:\/\/)([\w-]+\.)+[\w-]+((:\d{1,5})?)+([\w-]*))/;
-
+  readonly checkRegex = /(http(s)?:\/\/)([\w-]+\.)+[\w-]+[\w-]*/;
   private readonly storageService = inject(StorageService);
 
   constructor() {
