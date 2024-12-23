@@ -81,7 +81,11 @@ describe('ShowComponent', () => {
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual('Created');
+      expect(component.status).toEqual({
+        label: 'Created',
+        color: 'darkcyan',
+        icon: 'add',
+      });
     });
 
     it('should return undefined if there is no data', () => {

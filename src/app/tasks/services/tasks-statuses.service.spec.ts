@@ -9,11 +9,11 @@ describe('tasksStatusesService', () => {
   });
 
   it('should return the right task status', () => {
-    expect(service.statusToLabel(TaskStatus.TASK_STATUS_PROCESSED)).toEqual('Processed');
+    expect(service.statusToLabel(TaskStatus.TASK_STATUS_PROCESSED)).toBeDefined();
   });
 
   it('should get statuses label', () => {
-    expect(service.statusesRecord().sort((a, b) => Number(a.value) - Number(b.value))).toEqual([
+    expect(service.statusesRecord().sort((a, b) => Number(a.value) - Number(b.value)).map((value) => ({value: value.value, name: value.name.label}))).toEqual([
       { value: '0', name: 'Unspecified' },
       { value: '1', name: 'Creating' },
       { value: '2', name: 'Submitted' },

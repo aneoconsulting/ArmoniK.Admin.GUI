@@ -229,7 +229,11 @@ describe('AppShowComponent', () => {
   describe('get status', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
-      expect(component.status).toEqual('Running');
+      expect(component.status).toEqual({
+        color: 'green',
+        icon: 'play',
+        label: 'Running'
+      });
     });
 
     it('should return undefined if there is no data', () => {

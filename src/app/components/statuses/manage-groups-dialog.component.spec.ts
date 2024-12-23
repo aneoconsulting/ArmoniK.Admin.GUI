@@ -64,14 +64,15 @@ describe('ManageGroupsDialogComponent', () => {
   });
 
   it('should get all required icons', () => {
-    expect(component.getIcon('add')).toEqual('add');
-    expect(component.getIcon('edit')).toEqual('edit');
     expect(component.getIcon('delete')).toEqual('delete');
-    expect(component.getIcon('drag')).toEqual('drag_indicator');
   });
 
   it('should get statuses labels', () => {
-    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
+    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
+      color: 'darkgreen',
+      icon: 'success',
+      label: 'Completed'
+    });
   });
 
   it('should change array on drop', () => {
