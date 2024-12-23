@@ -17,12 +17,12 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
     [TaskStatus.TASK_STATUS_SUBMITTED]: {
       label: 'Submitted',
-      color: 'yellowgreen',
+      color: 'darkblue',
       icon: 'submitting',
     },
     [TaskStatus.TASK_STATUS_DISPATCHED]: {
       label: 'Dispatched',
-      color: 'darkgreen',
+      color: 'cornflowerblue',
       icon: 'dispatched',
     },
     [TaskStatus.TASK_STATUS_COMPLETED]: {
@@ -52,7 +52,7 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
     [TaskStatus.TASK_STATUS_PROCESSING]: {
       label: 'Processing',
-      color: 'orange',
+      color: 'green',
       icon: 'play'
     },
     [TaskStatus.TASK_STATUS_PROCESSED]: {
@@ -72,7 +72,7 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
     [TaskStatus.TASK_STATUS_PAUSED]: {
       label: $localize`Paused`,
-      color: 'darkyellow',
+      color: 'darkorange',
       icon: 'pause',
     },
   };

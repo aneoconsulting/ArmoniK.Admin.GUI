@@ -16,7 +16,7 @@ export class ResultsStatusesService extends StatusService<ResultStatus> {
     },
     [ResultStatus.RESULT_STATUS_COMPLETED]: {
       label: $localize`Completed`,
-      color: 'green',
+      color: 'darkgreen',
       icon: 'success',
     },
     [ResultStatus.RESULT_STATUS_ABORTED]: {

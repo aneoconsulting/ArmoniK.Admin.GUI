@@ -1,4 +1,9 @@
 p {
   margin: 0;
   font-weight: 500;
+  color:dark;
+}
+
+mat-icon, p {
+  color: white !important;
 }

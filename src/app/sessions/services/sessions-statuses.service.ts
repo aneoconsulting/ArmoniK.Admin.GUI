@@ -16,7 +16,7 @@ export class SessionsStatusesService extends StatusService<SessionStatus> {
     },
     [SessionStatus.SESSION_STATUS_CANCELLED]: {
       label: $localize`Cancelled`,
-      color: 'blue',
+      color: '#0E4D92',
       icon: 'cancel',
     },
     [SessionStatus.SESSION_STATUS_CLOSED]: {
@@ -36,7 +36,7 @@ export class SessionsStatusesService extends StatusService<SessionStatus> {
     },
     [SessionStatus.SESSION_STATUS_PAUSED]: {
       label: $localize`Paused`,
-      color: 'yellow',
+      color: 'darkorange',
       icon: 'pause',
     },
   };
