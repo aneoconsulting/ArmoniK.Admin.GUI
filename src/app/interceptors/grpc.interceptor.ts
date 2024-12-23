@@ -15,8 +15,7 @@ export type GrpcClientSettings = GrpcClient<unknown> & {
  */
 export class GrpcHostInterceptor implements GrpcInterceptor {
   host: string | null = null;
-  // eslint-disable-next-line no-useless-escape
-  readonly checkRegex = /(^$|(http(s)?:\/\/)([\w-]+\.)+[\w-]+((:[0-9]\d{1,5})?)+([\w- ;,.\/?%&=]*))/;
+  readonly checkRegex = /(^$|(http(s)?:\/\/)([\w-]+\.)+[\w-]+((:\d{1,5})?)+([\w-]*))/;
 
   private readonly storageService = inject(StorageService);
 
