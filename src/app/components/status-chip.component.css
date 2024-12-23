@@ -2,31 +2,3 @@ p {
   margin: 0;
   font-weight: 500;
 }
-
-mat-chip {
-  background-color: white !important;
-}
-
-.yellow {
-  border: 1px solid yellow;
-}
-
-.green {
-  border: 1px solid green;
-}
-
-.blue {
-  border: 1px solid blue;
-}
-
-.red {
-  border: 1px solid red;
-}
-
-.purple {
-  border: 1px solid purple;
-}
-
-.black {
-  border: 1px solid black;
-}

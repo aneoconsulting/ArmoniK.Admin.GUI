@@ -9,6 +9,7 @@ import { StatusLabelColor } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { PageHeaderComponent } from './page-header.component';
+import { StatusChipComponent } from './status-chip.component';
 
 @Component({
   selector: 'app-inspection-header',
@@ -22,6 +23,7 @@ import { PageHeaderComponent } from './page-header.component';
     CdkCopyToClipboard,
     MatTooltipModule,
     MatChipsModule,
+    StatusChipComponent,
   ],
   providers: [
     IconsService,
