@@ -7,9 +7,9 @@ import { MatTableModule } from '@angular/material/table';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ArmonikData, ColumnKey, DataRaw, Status } from '@app/types/data';
+import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
 import { ListOptions } from '@app/types/options';
-import { StatusesServiceI } from '@app/types/services';
+import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
 import { TableActionsComponent } from './table-actions.component';
@@ -58,7 +58,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
 
   // Optional inputs
   @Input({ required: false }) actions: ActionTable<T, O>[];
-  @Input({ required: false }) statusesService: StatusesServiceI<S>;
+  @Input({ required: false }) statusesService: StatusService<S>;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 

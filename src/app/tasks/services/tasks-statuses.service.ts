@@ -1,10 +1,10 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusesServiceI } from '@app/types/services';
+import { StatusService } from '@app/types/status';
 
 
 @Injectable()
-export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
+export class TasksStatusesService extends StatusService<TaskStatus> {
   readonly statuses: Record<TaskStatus, string> = {
     [TaskStatus.TASK_STATUS_UNSPECIFIED]: $localize`Unspecified`,
     [TaskStatus.TASK_STATUS_CREATING]: $localize`Creating`,
@@ -38,14 +38,6 @@ export class TasksStatusesService implements StatusesServiceI<TaskStatus> {
         name: this.statusToLabel(status)
       };
     });
-  }
-
-  /**
-   * @param status Number standing for a task status
-   * @returns a string standing for the corresponding task status
-   */
-  statusToLabel(status: TaskStatus): string {
-    return this.statuses[status];
   }
 
   /**

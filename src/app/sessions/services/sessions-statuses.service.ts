@@ -1,9 +1,9 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusesServiceI } from '@app/types/services';
+import { StatusService } from '@app/types/status';
 
 @Injectable()
-export class SessionsStatusesService implements StatusesServiceI<SessionStatus> {
+export class SessionsStatusesService extends StatusService<SessionStatus> {
   readonly statuses: Record<SessionStatus, string> = {
     [SessionStatus.SESSION_STATUS_UNSPECIFIED]: $localize`Unspecified`,
     [SessionStatus.SESSION_STATUS_RUNNING]: $localize`Running`,
@@ -13,10 +13,6 @@ export class SessionsStatusesService implements StatusesServiceI<SessionStatus> 
     [SessionStatus.SESSION_STATUS_PURGED]: $localize`Purged`,
     [SessionStatus.SESSION_STATUS_PAUSED]: $localize`Paused`,
   };
-
-  statusToLabel(status: SessionStatus): string {
-    return this.statuses[status];
-  }
 
   canCancel(status: SessionStatus): boolean {
     return status === SessionStatus.SESSION_STATUS_RUNNING || status === SessionStatus.SESSION_STATUS_PAUSED;

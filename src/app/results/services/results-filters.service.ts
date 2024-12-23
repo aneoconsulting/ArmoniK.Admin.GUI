@@ -9,7 +9,7 @@ import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '.
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface {
+export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface<ResultStatus> {
   protected readonly scope: Scope = 'results';
   readonly statusService = inject(ResultsStatusesService);
 

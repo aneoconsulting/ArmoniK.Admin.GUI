@@ -9,7 +9,7 @@ import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionR
   providedIn: 'root',
 })
 export class SessionsFiltersService extends DataFilterService<SessionRawEnumField, TaskOptionEnumField>
-  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<SessionStatus> {
   protected readonly scope: Scope = 'sessions';
   readonly statusService = inject(SessionsStatusesService);
 

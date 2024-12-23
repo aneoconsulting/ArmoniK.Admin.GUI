@@ -3,7 +3,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TaskOptions } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
-import { DataRaw, Status } from '@app/types/data';
+import { DataRaw } from '@app/types/data';
+import { Status } from '@app/types/status';
 import { InspectionComponent } from './inspection.component';
 
 @Component({

@@ -9,7 +9,7 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
   providedIn: 'root'
 })
 export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField, TaskOptionEnumField>
-  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<TaskStatus> {
   protected readonly scope: Scope = 'tasks';
   readonly statusService = inject(TasksStatusesService);
 
