@@ -69,7 +69,7 @@ describe('ManageGroupsDialogComponent', () => {
 
   it('should get statuses labels', () => {
     expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
-      color: 'darkgreen',
+      color: '#006400',
       icon: 'success',
       label: 'Completed'
     });
