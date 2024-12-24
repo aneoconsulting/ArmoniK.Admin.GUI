@@ -83,7 +83,7 @@ describe('ShowComponent', () => {
       component.refresh.next();
       expect(component.status).toEqual({
         label: 'Created',
-        color: 'darkcyan',
+        color: '#008B8B',
         icon: 'add',
       });
     });

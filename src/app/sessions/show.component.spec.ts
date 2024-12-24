@@ -230,7 +230,7 @@ describe('AppShowComponent', () => {
     it('should return the status label if there is data', () => {
       component.refresh.next();
       expect(component.status).toEqual({
-        color: 'green',
+        color: '#008000',
         icon: 'play',
         label: 'Running'
       });

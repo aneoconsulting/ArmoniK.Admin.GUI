@@ -119,7 +119,7 @@ describe('AppShowComponent', () => {
       component.status = undefined;
       component.refresh.next();
       expect(component.status).toEqual({
-        color: 'green',
+        color: '#008000',
         icon: 'play',
         label: 'Processing'
       });

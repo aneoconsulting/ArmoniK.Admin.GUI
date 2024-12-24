@@ -77,24 +77,6 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
   };
 
-  statusesRecord(): { value: string, name: StatusLabelColor }[] {
-    const values = Object.values(this.statuses).map(status => status.label).sort((a, b) => a.toString().localeCompare(b.toString()));
-    const keys = Object.keys(this.statuses).sort((a, b) => a.toString().localeCompare(b.toString()));
-    const sortedKeys = values.map((value) => {
-      return keys.find((key) => {
-        return this.statuses[Number(key) as TaskStatus].label === value;
-      });
-    });
-
-    return (sortedKeys.filter(Boolean) as string[]).map((key) => {
-      const status = Number(key) as TaskStatus;
-      return {
-        value: key,
-        name: this.statusToLabel(status)
-      };
-    });
-  }
-
   /**
    * @param status Number standing for a task status
    * @returns true if status corresponds to TaskStatus.TASK_STATUS_RETRIED number

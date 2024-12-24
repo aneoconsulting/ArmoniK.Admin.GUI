@@ -190,7 +190,7 @@ describe('TableCellComponent', () => {
 
     it('should get status label', () => {
       expect(component.statusLabel()).toEqual({
-        color: 'green',
+        color: '#008000',
         icon: 'play',
         label: 'Running'
       });

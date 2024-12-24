@@ -58,7 +58,11 @@ describe('StatusesGroupCardComponent', () => {
   });
 
   it('should get labels', () => {
-    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual('Completed');
+    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
+      label: 'Completed',
+      color: '#006400',
+      icon: 'success',
+    });
   });
 
   it('should update counter', () => {
