@@ -7,31 +7,31 @@ export class ResultsStatusesService extends StatusService<ResultStatus> {
   readonly statuses: Record<ResultStatus, StatusLabelColor> = {
     [ResultStatus.RESULT_STATUS_UNSPECIFIED]: {
       label: $localize`Unspecified`,
-      color: 'grey',
+      color: '#696969',
     },
     [ResultStatus.RESULT_STATUS_CREATED]: {
       label: $localize`Created`,
-      color: 'darkcyan',
+      color: '#008B8B',
       icon: 'add',
     },
     [ResultStatus.RESULT_STATUS_COMPLETED]: {
       label: $localize`Completed`,
-      color: 'darkgreen',
+      color: '#006400',
       icon: 'success',
     },
     [ResultStatus.RESULT_STATUS_ABORTED]: {
       label: $localize`Aborted`,
-      color: 'purple',
+      color: '#800080',
       icon: 'cancel'
     },
     [ResultStatus.RESULT_STATUS_DELETED]: {
       label: $localize`Deleted`,
-      color: 'black',
+      color: '#000000',
       icon: 'delete',
     },
     [ResultStatus.RESULT_STATUS_NOTFOUND]: {
       label: $localize`Not found`,
-      color: 'grey'
+      color: '#696969'
     },
   };
 }

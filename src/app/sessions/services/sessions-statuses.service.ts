@@ -7,11 +7,11 @@ export class SessionsStatusesService extends StatusService<SessionStatus> {
   readonly statuses: Record<SessionStatus, StatusLabelColor> = {
     [SessionStatus.SESSION_STATUS_UNSPECIFIED]: {
       label: $localize`Unspecified`,
-      color: 'grey',
+      color: '#696969',
     },
     [SessionStatus.SESSION_STATUS_RUNNING]: {
       label: $localize`Running`,
-      color: 'green',
+      color: '#008000',
       icon: 'play',
     },
     [SessionStatus.SESSION_STATUS_CANCELLED]: {
@@ -21,22 +21,22 @@ export class SessionsStatusesService extends StatusService<SessionStatus> {
     },
     [SessionStatus.SESSION_STATUS_CLOSED]: {
       label: $localize`Closed`,
-      color: 'red',
+      color: '#FF0000',
       icon: 'close',
     },
     [SessionStatus.SESSION_STATUS_DELETED]: {
       label: $localize`Deleted`,
-      color: 'black',
+      color: '#000000',
       icon: 'delete',
     },
     [SessionStatus.SESSION_STATUS_PURGED]: {
       label: $localize`Purged`,
-      color: 'purple',
+      color: '#800080',
       icon: 'purge',
     },
     [SessionStatus.SESSION_STATUS_PAUSED]: {
       label: $localize`Paused`,
-      color: 'darkorange',
+      color: '#FF8C00',
       icon: 'pause',
     },
   };
