@@ -13,15 +13,15 @@
 
     <mat-form-field subscriptSizing="dynamic" appearance="outline">
       <mat-label for="color" i18n="Color of the statuses group"> Color </mat-label>
-      <input matInput id="color" type="color" formControlName="color" i18n-placeholder placeholder="color of your group">
+      <input matInput id="color" type="color" [value]="groupForm.value.color" formControlName="color" i18n-placeholder placeholder="color of your group">
     </mat-form-field>
 
     <div class="statuses">
       <h3 i18n> Statuses </h3>
       <div class="inputs">
-        @for (status of statuses; track status.value) {
-          <mat-checkbox [value]="status.value.label" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
-            {{ status.name }}
+        @for (status of allStatuses; track status) {
+          <mat-checkbox [value]="status" (change)="onCheckboxChange($event)" [checked]="isChecked(status)">
+            {{ getLabel(status) }}
           </mat-checkbox>
         }
       </div>

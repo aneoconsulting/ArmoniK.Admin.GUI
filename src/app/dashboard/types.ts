@@ -50,13 +50,11 @@ export type ManageGroupsDialogResult = {
   groups: TasksStatusesGroup[];
 };
 
-export type StatusLabeled = { name: string, value: StatusLabelColor };
-
 export type AddStatusGroupDialogData = {
-  statuses: StatusLabeled[];
+  statuses: Record<TaskStatus, StatusLabelColor>;
 };
 
 export type EditStatusGroupDialogData = {
   group: TasksStatusesGroup;
-  statuses: StatusLabeled[];
+  statuses: Record<TaskStatus, StatusLabelColor>;
 };

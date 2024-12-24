@@ -168,7 +168,7 @@ export class ManageGroupsDialogComponent {
   openAddStatusGroupModal(): void {
     const dialogRef: MatDialogRef<AddStatusesGroupDialogComponent, TasksStatusesGroup> = this.dialog.open(AddStatusesGroupDialogComponent, {
       data: {
-        statuses: this.tasksStatusesService.statusesRecord(),
+        statuses: this.tasksStatusesService.statuses,
       }
     });
 
@@ -183,7 +183,7 @@ export class ManageGroupsDialogComponent {
     const dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup> = this.dialog.open(EditStatusesGroupDialogComponent, {
       data: {
         group,
-        statuses: this.tasksStatusesService.statusesRecord(),
+        statuses: this.tasksStatusesService.statuses,
       }
     });
 
