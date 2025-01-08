@@ -45,7 +45,11 @@ describe('InspectionHeaderComponent', () => {
   });
 
   it('should set "status"', () => {
-    const status = 'Completed';
+    const status = {
+      label: 'Completed',
+      color: 'darkgreen',
+      icon: 'success',
+    };
     component.status = status;
     expect(component.status).toEqual(status);
   });

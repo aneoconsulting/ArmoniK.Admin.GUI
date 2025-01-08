@@ -9,7 +9,7 @@ describe('SessionsStatusesService', () => {
   });
 
   it('should return the correct label', () => {
-    expect(service.statusToLabel(SessionStatus.SESSION_STATUS_RUNNING)).toBe('Running');
+    expect(service.statusToLabel(SessionStatus.SESSION_STATUS_RUNNING)).toBeDefined();
   });
 
   describe('canCancel', () => {

@@ -1,25 +1,38 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { StatusLabelColor } from '@app/types/status';
 import { FormStatusesGroupComponent } from './form-statuses-group.component';
 
 describe('FormStatusesGroupComponent', () => {
   const component = new FormStatusesGroupComponent();
 
-  const statuses: { name: string, value: string }[] = [
-    { name: 'Completed', value: `${TaskStatus.TASK_STATUS_COMPLETED}` },
-    { name: 'Cancelled', value: `${TaskStatus.TASK_STATUS_CANCELLED}` },
-    { name: 'Processed', value: `${TaskStatus.TASK_STATUS_PROCESSED}` }
-  ];
+  const statusesLabelsColors = {
+    [TaskStatus.TASK_STATUS_CANCELLED]: {
+      label: 'Cancelled',
+      color: 'black',
+    },
+    [TaskStatus.TASK_STATUS_COMPLETED]: {
+      label: 'Completed',
+      color: 'green',
+    },
+    [TaskStatus.TASK_STATUS_PROCESSED]: {
+      label: 'Processed',
+      color: 'orange',
+    }
+  } as Record<TaskStatus, StatusLabelColor>;
+
+  const defaultGroup = {
+    name: 'status',
+    color: 'green',
+    statuses: [
+      TaskStatus.TASK_STATUS_CANCELLED,
+      TaskStatus.TASK_STATUS_COMPLETED
+    ]
+  };
 
   beforeEach(() => {
-    component.statuses = statuses;
-    component.group = {
-      name: 'status',
-      statuses: [
-        TaskStatus.TASK_STATUS_CANCELLED,
-        TaskStatus.TASK_STATUS_COMPLETED
-      ]
-    };
+    component.statuses = statusesLabelsColors;
+    component.group = defaultGroup;
     component.ngOnInit();
   });
 
@@ -29,25 +42,33 @@ describe('FormStatusesGroupComponent', () => {
 
   describe('on init', () => {
     it('should complete form', () => {
+      expect(component.groupForm.value).toEqual(defaultGroup);
+    });
+
+    it('should init even with a empty group', () => {
+      component.group = null;
+      component.ngOnInit();
       expect(component.groupForm.value).toEqual({
-        name: 'status',
+        name: null,
         color: null,
-        statuses: [8, 4]
+        statuses: [],
       });
     });
   });
 
-  it('should return true if it is checked', () => {
-    expect(component.isChecked({name: 'status', value: '4'})).toBeTruthy();
-  });
-
-  it('should return false if it is not checked', () => {
-    expect(component.isChecked({name: 'status', value: '5'})).toBeFalsy();
-  });
-
-  it('should return false by default', () => {
-    component.group = null;
-    expect(component.isChecked({name: 'status', value: '4'})).toBeFalsy();
+  describe('isChecked', () => {
+    it('should return true', () => {
+      expect(component.isChecked('4')).toBeTruthy();
+    });
+  
+    it('should return false', () => {
+      expect(component.isChecked('5')).toBeFalsy();
+    });
+  
+    it('should return false by default', () => {
+      component.group = null;
+      expect(component.isChecked('4')).toBeFalsy();
+    });
   });
 
   describe('onCheckboxChange', () => {
@@ -88,7 +109,7 @@ describe('FormStatusesGroupComponent', () => {
     });
 
     it('should set the group name as the first selected status', () => {
-      component.groupForm.patchValue({name: undefined, statuses: []});
+      component.groupForm.patchValue({name: null, color: null, statuses: []});
       const event = {
         checked: true,
         source: {
@@ -101,35 +122,35 @@ describe('FormStatusesGroupComponent', () => {
     });
   });
 
-  it('should emit on submit', () => {
-    const newGroup = {
-      name: 'name',
-      color: 'green',
-      statuses: [TaskStatus.TASK_STATUS_UNSPECIFIED, TaskStatus.TASK_STATUS_CREATING]
-    };
-    component.groupForm.setValue(newGroup);
 
-    const spySubmit = jest.spyOn(component.submitChange, 'emit');
-    component.onSubmit();
-
-    expect(spySubmit).toHaveBeenCalledWith(newGroup);
+  it('should get a status label', () => {
+    expect(component.getLabel(`${TaskStatus.TASK_STATUS_COMPLETED}`)).toEqual(statusesLabelsColors[TaskStatus.TASK_STATUS_COMPLETED].label);
   });
 
-  it('should emit on submit even without values', () => {
-    const undefinedGroup = {
-      name: null,
-      color: null,
-      statuses: null
-    };
-    component.groupForm.setValue(undefinedGroup);
-
-    const spySubmit = jest.spyOn(component.submitChange, 'emit');
-
-    component.onSubmit();
-    expect(spySubmit).toHaveBeenCalledWith({
-      name: '',
-      color: '',
-      statuses: []
+  describe('Submitting', () => {
+    it('should emit', () => {
+      const spySubmit = jest.spyOn(component.submitChange, 'emit');
+      component.onSubmit();
+  
+      expect(spySubmit).toHaveBeenCalledWith(defaultGroup);
+    });
+  
+    it('should emit even without values', () => {
+      const undefinedGroup = {
+        name: null,
+        color: null,
+        statuses: null
+      };
+      component.groupForm.setValue(undefinedGroup);
+  
+      const spySubmit = jest.spyOn(component.submitChange, 'emit');
+  
+      component.onSubmit();
+      expect(spySubmit).toHaveBeenCalledWith({
+        name: '',
+        color: '',
+        statuses: []
+      });
     });
   });
 

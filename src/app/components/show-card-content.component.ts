@@ -40,7 +40,6 @@ export class ShowCardContentComponent<T extends object> {
       this.keys = Object.keys(this.data).sort((a, b) => a.toString().localeCompare(b.toString()));
     }
   }
-  @Input({ required: true }) statuses: Record<number, string> = [];
 
   keys: (keyof Data)[] = [];
   private _data: Data;
@@ -55,10 +54,6 @@ export class ShowCardContentComponent<T extends object> {
 
   isNumber(key: keyof Data): boolean {
     return typeof this.data[key] === 'number';
-  }
-
-  isStatus(key: keyof Data): boolean {
-    return key.toString().toLowerCase().includes('status');
   }
 
   isArray(value: unknown): boolean {
@@ -131,20 +126,5 @@ export class ShowCardContentComponent<T extends object> {
       }
     }
     return {};
-  }
-
-  /**
-   * Returns the label associated to a status.
-   * @param key the key of the status
-   * @returns the label if found, "-" if not
-   */
-  statusToLabel(key: keyof Data) {
-    if (this.data && this.statuses) {
-      const label = this.statuses[Number(this.data[key])];
-      if (label) {
-        return label;
-      }
-    }
-    return null;
   }
 }

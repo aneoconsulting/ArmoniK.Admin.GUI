@@ -1,22 +1,45 @@
 import { SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
-import { StatusesServiceI } from '@app/types/services';
+import { StatusLabelColor, StatusService } from '@app/types/status';
 
 @Injectable()
-export class SessionsStatusesService implements StatusesServiceI<SessionStatus> {
-  readonly statuses: Record<SessionStatus, string> = {
-    [SessionStatus.SESSION_STATUS_UNSPECIFIED]: $localize`Unspecified`,
-    [SessionStatus.SESSION_STATUS_RUNNING]: $localize`Running`,
-    [SessionStatus.SESSION_STATUS_CANCELLED]: $localize`Cancelled`,
-    [SessionStatus.SESSION_STATUS_CLOSED]: $localize`Closed`,
-    [SessionStatus.SESSION_STATUS_DELETED]: $localize`Deleted`,
-    [SessionStatus.SESSION_STATUS_PURGED]: $localize`Purged`,
-    [SessionStatus.SESSION_STATUS_PAUSED]: $localize`Paused`,
+export class SessionsStatusesService extends StatusService<SessionStatus> {
+  readonly statuses: Record<SessionStatus, StatusLabelColor> = {
+    [SessionStatus.SESSION_STATUS_UNSPECIFIED]: {
+      label: $localize`Unspecified`,
+      color: '#696969',
+    },
+    [SessionStatus.SESSION_STATUS_RUNNING]: {
+      label: $localize`Running`,
+      color: '#008000',
+      icon: 'play',
+    },
+    [SessionStatus.SESSION_STATUS_CANCELLED]: {
+      label: $localize`Cancelled`,
+      color: '#0E4D92',
+      icon: 'cancel',
+    },
+    [SessionStatus.SESSION_STATUS_CLOSED]: {
+      label: $localize`Closed`,
+      color: '#FF0000',
+      icon: 'close',
+    },
+    [SessionStatus.SESSION_STATUS_DELETED]: {
+      label: $localize`Deleted`,
+      color: '#000000',
+      icon: 'delete',
+    },
+    [SessionStatus.SESSION_STATUS_PURGED]: {
+      label: $localize`Purged`,
+      color: '#800080',
+      icon: 'purge',
+    },
+    [SessionStatus.SESSION_STATUS_PAUSED]: {
+      label: $localize`Paused`,
+      color: '#FF8C00',
+      icon: 'pause',
+    },
   };
-
-  statusToLabel(status: SessionStatus): string {
-    return this.statuses[status];
-  }
 
   canCancel(status: SessionStatus): boolean {
     return status === SessionStatus.SESSION_STATUS_RUNNING || status === SessionStatus.SESSION_STATUS_PAUSED;

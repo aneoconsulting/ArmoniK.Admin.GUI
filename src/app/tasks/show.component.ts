@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Params, RouterModule } from '@angular/router';
 import { Field } from '@app/types/column.type';
 import { AppShowComponent } from '@app/types/components/show';
+import { StatusLabelColor } from '@app/types/status';
 import { ShowPageComponent } from '@components/show-page.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -61,7 +62,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   private readonly tasksStatusesService = inject(TasksStatusesService);
   private readonly filtersService = inject(FiltersService);
 
-  private _status: string | undefined;
+  private _status: StatusLabelColor | undefined;
 
   resultsKey: string = '';
   resultsQueryParams: Params = {};
@@ -71,7 +72,7 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   arrays: Field<TaskRaw>[] = this.inspectionService.arrays;
   optionsFields: Field<TaskOptions>[] = this.inspectionService.optionsFields;
 
-  get status(): string | undefined {
+  get status(): StatusLabelColor | undefined {
     return this._status;
   }
 

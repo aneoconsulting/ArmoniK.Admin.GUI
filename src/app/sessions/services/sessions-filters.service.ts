@@ -9,7 +9,7 @@ import { SessionFilterDefinition, SessionFilterField, SessionFilterFor, SessionR
   providedIn: 'root',
 })
 export class SessionsFiltersService extends DataFilterService<SessionRawEnumField, TaskOptionEnumField>
-  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<SessionStatus> {
   protected readonly scope: Scope = 'sessions';
   readonly statusService = inject(SessionsStatusesService);
 
@@ -60,7 +60,7 @@ export class SessionsFiltersService extends DataFilterService<SessionRawEnumFiel
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as SessionStatus],
+          value: this.statusService.statuses[Number(status) as SessionStatus].label,
         };
       }),
     },

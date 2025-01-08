@@ -9,7 +9,7 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
   providedIn: 'root'
 })
 export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField, TaskOptionEnumField>
-  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface {
+  implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<TaskStatus> {
   protected readonly scope: Scope = 'tasks';
   readonly statusService = inject(TasksStatusesService);
 
@@ -76,7 +76,7 @@ export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField,
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as TaskStatus],
+          value: this.statusService.statuses[Number(status) as TaskStatus].label,
         };
       }),
     },

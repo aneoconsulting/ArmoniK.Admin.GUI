@@ -36,7 +36,7 @@ describe('FiltersDialogOrComponent', () => {
   });
 
   it('should get icon', () => {
-    expect(component.getIcon('add')).toEqual('add');
+    expect(component.getIcon('add')).toEqual('add_circle');
     expect(component.getIcon('more')).toEqual('more_vert');
     expect(component.getIcon('delete')).toEqual('delete');
   });

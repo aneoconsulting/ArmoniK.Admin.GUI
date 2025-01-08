@@ -9,7 +9,7 @@
 
 <section id="content">
   @if (data) {
-    <app-inspection-card [data]="data" [statuses]="statuses" [fields]="fields" />
+    <app-inspection-card [data]="data" [fields]="fields" />
     <app-inspection-list-grid [arrays]="arrays" [data]="data" />
     @if (optionsFields) {
       <app-inspection-card [data]="data" [optionsFields]="optionsFields"/>

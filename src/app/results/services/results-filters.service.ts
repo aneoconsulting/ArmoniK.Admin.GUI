@@ -9,7 +9,7 @@ import { ResultFilterField, ResultRawFilters, ResultsFiltersDefinition } from '.
 @Injectable({
   providedIn: 'root'
 })
-export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface {
+export class ResultsFiltersService extends DataFilterService<ResultRawEnumField> implements FiltersServiceStatusesInterface<ResultStatus> {
   protected readonly scope: Scope = 'results';
   readonly statusService = inject(ResultsStatusesService);
 
@@ -59,7 +59,7 @@ export class ResultsFiltersService extends DataFilterService<ResultRawEnumField>
       statuses: Object.keys(this.statusService.statuses).map(status => {
         return {
           key: status,
-          value: this.statusService.statuses[Number(status) as ResultStatus],
+          value: this.statusService.statuses[Number(status) as ResultStatus].label,
         };
       }),
     },

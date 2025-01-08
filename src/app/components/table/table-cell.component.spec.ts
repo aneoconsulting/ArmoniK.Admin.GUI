@@ -188,12 +188,12 @@ describe('TableCellComponent', () => {
       component.element = element;
     });
 
-    it('should set statusValue', () => {
-      expect(component.statusValue).toEqual(SessionStatus.SESSION_STATUS_RUNNING);
-    });
-
     it('should get status label', () => {
-      expect(component.statusLabel()).toEqual('Running');
+      expect(component.statusLabel()).toEqual({
+        color: '#008000',
+        icon: 'play',
+        label: 'Running'
+      });
     });
   });
 

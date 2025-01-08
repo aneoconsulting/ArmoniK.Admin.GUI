@@ -5,8 +5,6 @@
     <mat-icon aria-hidden="true" [fontIcon]="getIcon('copy')" />
   </button>
   @if(status) {
-    <mat-chip color="accent" highlighted right>
-      <span id="status">{{ status }}</span>
-    </mat-chip>
+    <app-status-chip [status]="status" right />
   }
 </app-page-header>

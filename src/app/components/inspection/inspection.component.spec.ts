@@ -1,10 +1,9 @@
-import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TaskOptions, TaskRaw } from '@app/tasks/types';
 import { Field } from '@app/types/column.type';
 import { InspectionComponent } from './inspection.component';
 
 describe('InspectionComponent', () => {
-  const component = new InspectionComponent<TaskRaw, TaskStatus, TaskOptions>();
+  const component = new InspectionComponent<TaskRaw, TaskOptions>();
 
   const data: TaskRaw = {
     id: 'taskId',
@@ -44,16 +43,10 @@ describe('InspectionComponent', () => {
     }
   ];
 
-  const statuses: Record<TaskStatus, string> = {
-    0: 'Undefined',
-    1: 'completed'
-  } as Record<TaskStatus, string>;
-
   beforeEach(() => {
     component.fields = fields;
     component.optionsFields = optionsFields;
     component.data = data;
-    component.statuses = statuses;
   });
 
   describe('initialisation', () => {
@@ -71,10 +64,6 @@ describe('InspectionComponent', () => {
 
     it('should set "options" object', () => {
       expect(component.options).toEqual(data.options);
-    });
-
-    it('should set statuses', () => {
-      expect(component.statuses).toEqual(statuses);
     });
   });
 });

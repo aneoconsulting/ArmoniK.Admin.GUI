@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormStatusesGroupComponent } from './form-statuses-group.component';
-import { EditStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '../../dashboard/types';
+import { EditStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/types';
 
 @Component({
   selector: 'app-edit-statuses-group-dialog',
@@ -10,7 +10,7 @@ import { EditStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '..
 
 <app-form-statuses-group
   [group]="group"
-  [statuses]="statuses"
+  [statuses]="data.statuses"
   (cancelChange)="onNoClick()"
   (submitChange)="onSubmit($event)"
 />
@@ -25,18 +25,14 @@ import { EditStatusGroupDialogData, StatusLabeled, TasksStatusesGroup } from '..
     MatDialogModule,
   ]
 })
-export class EditStatusesGroupDialogComponent implements OnInit {
+export class EditStatusesGroupDialogComponent {
   group: TasksStatusesGroup;
-  statuses: StatusLabeled[] = [];
 
   constructor(
     public _dialogRef: MatDialogRef<EditStatusesGroupDialogComponent, TasksStatusesGroup>,
     @Inject(MAT_DIALOG_DATA) public data: EditStatusGroupDialogData,
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.group = {...this.data.group};
-    this.statuses = this.data.statuses;
   }
 
   onSubmit(result: TasksStatusesGroup) {
