@@ -10,8 +10,8 @@ import { PartitionsFiltersService } from '@app/partitions/services/partitions-fi
 import { PartitionsGrpcService } from '@app/partitions/services/partitions-grpc.service';
 import { PartitionsIndexService } from '@app/partitions/services/partitions-index.service';
 import { PartitionRaw } from '@app/partitions/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineTableComponent } from '@app/types/components/dashboard-line-table';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
@@ -27,7 +27,7 @@ import { NotificationService } from '@services/notification.service';
     MatSnackBar,
     PartitionsFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: PartitionsFiltersService
     },
     PartitionsGrpcService,

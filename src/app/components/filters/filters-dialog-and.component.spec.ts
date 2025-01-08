@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { IconsService } from '@services/icons.service';
 import { FiltersDialogAndComponent } from './filters-dialog-and.component';
 
@@ -14,12 +13,6 @@ describe('FiltersDialogAndComponent', () => {
       providers: [
         FiltersDialogAndComponent,
         IconsService,
-        { provide: DATA_FILTERS_SERVICE, useValue: {
-          retrieveFiltersDefinitions: jest.fn(() => {
-            return [];
-          }),
-          retrieveLabel: jest.fn(),
-        }}
       ]
     }).inject(FiltersDialogAndComponent<number, number>);
     component.filter = {

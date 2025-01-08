@@ -1,11 +1,7 @@
 <mat-chip-listbox>
-  @for(filter of filtersAnd; track filter.field) {
+  @for(filter of filters(); track $index) {
     <mat-chip class="mat-mdc-standard-chip mat-primary mat-mdc-chip-selected">
-      @if(filter.field) {
-        <span>{{ content(filter) }}</span>
-      } @else {
-        <span i18n>No field</span>
-      }
+      <span>{{ filter }}</span>
     </mat-chip>
     @if(!$last) {
       <span class="text" i18n>AND</span>

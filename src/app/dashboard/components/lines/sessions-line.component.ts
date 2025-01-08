@@ -15,8 +15,8 @@ import { TasksFiltersService } from '@app/tasks/services/tasks-filters.service';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { TaskOptions } from '@app/tasks/types';
-import { DATA_FILTERS_SERVICE } from '@app/tokens/filters.token';
 import { DashboardLineCustomColumnsComponent } from '@app/types/components/dashboard-line-table';
+import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
@@ -32,7 +32,7 @@ import { NotificationService } from '@services/notification.service';
     NotificationService,
     SessionsFiltersService,
     {
-      provide: DATA_FILTERS_SERVICE,
+      provide: DataFilterService,
       useExisting: SessionsFiltersService
     },
     SessionsIndexService,
