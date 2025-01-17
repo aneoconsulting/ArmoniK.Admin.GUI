@@ -32,7 +32,12 @@ export class VersionsService {
   }
 
   setAPIVersion(version: string | null = null): void {
-    this.api.set(this.formatVersion(version));
+    const fixedApiVersion = this.fixApiVersion(version);
+    this.api.set(this.formatVersion(fixedApiVersion));
   }
 
+  // TEMPORARY FIX - The API returns a string that is composed of the current version and its commmit SHA. We only keep the version.
+  private fixApiVersion(version: string | null) {
+    return version?.split('+')[0] ?? null;
+  }
 }
