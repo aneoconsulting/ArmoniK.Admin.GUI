@@ -41,5 +41,11 @@ describe('versions service', () => {
       service.setAPIVersion();
       expect(service.api()).toBeUndefined();
     });
+
+    it('should fix the api version', () => {
+      const realversion = '3.20.4';
+      service.setAPIVersion(`${realversion}+ezasfdefrhjuro10`);
+      expect(service.api()).toEqual(realversion);
+    });
   });
 });
