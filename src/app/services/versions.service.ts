@@ -30,10 +30,15 @@ export class VersionsService {
   }
 
   setAPIVersion(version: string | null = null): void {
-    const notNullableNumbersVersion = this.handleNullableVersion(version);
+    const fixedApiVersion = this.fixApiVersion(version);
+    const notNullableNumbersVersion = this.handleNullableVersion(fixedApiVersion);
     const APINumber = this.formatVersion(notNullableNumbersVersion);
     const isInvalidAPINumber = APINumber.some(number => Number.isNaN(number));
     this.api = isInvalidAPINumber ? this.VERSION_NOT_FOUND : this.fixVersion(APINumber);
   }
 
+  // TEMPORARY FIX - The API returns a string that is composed of the current version and its commmit SHA. We only keep the version.
+  private fixApiVersion(version: string | null) {
+    return version?.split('+')[0];
+  }
 }
