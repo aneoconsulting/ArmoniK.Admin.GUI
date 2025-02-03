@@ -1,4 +1,4 @@
-import { FilterStringOperator, GetSessionResponse, ResultRawEnumField, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionResponse, CloseSessionResponse, DeleteSessionResponse, FilterStringOperator, GetSessionResponse, PauseSessionResponse, PurgeSessionResponse, ResultRawEnumField, ResumeSessionResponse, SessionStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +22,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
-import { Subject, map, switchMap } from 'rxjs';
+import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import { SessionsFiltersService } from './services/sessions-filters.service';
 import { SessionsGrpcService } from './services/sessions-grpc.service';
 import { SessionsIndexService } from './services/sessions-index.service';
@@ -190,96 +190,144 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
   cancel(): void {
     const data: SessionRaw | null = this.data();
     if(data?.sessionId) {
-      this.grpcService.cancel$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session canceled');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to cancel session');
-        },
-      });
+      this.grpcService.cancel$(data.sessionId)
+        .pipe(
+          catchError((error) => {
+            console.error(error);
+            this.error(error);
+            return of(undefined);
+          })
+        )
+        .subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof CancelSessionResponse) {
+              this.success('Session Cancelled.');
+              this.refresh.next();
+            } else {
+              this.handleBlockAction(response, 'Cancel');
+            }
+          }
+        });
     }
   }
 
   purge(): void {
     const data: SessionRaw | null = this.data();
     if (data?.sessionId) {
-      this.grpcService.purge$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session purged');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to purge session');
-        }
-      });
+      this.grpcService.purge$(data.sessionId)
+        .pipe(
+          catchError((error) => {
+            console.error(error);
+            this.error(error);
+            return of(undefined);
+          })
+        )
+        .subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof PurgeSessionResponse) {
+              this.success('Session Purged.');
+              this.refresh.next();
+            } else {
+              this.handleBlockAction(response, 'Purge');
+            }
+          }
+        });
     }
   }
 
   pause(): void {
     const data: SessionRaw | null = this.data();
     if(data?.sessionId) {
-      this.grpcService.pause$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session paused');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to pause session');
-        },
-      });
+      this.grpcService.pause$(data.sessionId)
+        .pipe(
+          catchError((error) => {
+            console.error(error);
+            this.error(error);
+            return of(undefined);
+          })
+        )
+        .subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof PauseSessionResponse) {
+              this.success('Session Paused.');
+              this.refresh.next();
+            } else {
+              this.handleBlockAction(response, 'Pause');
+            }
+          }
+        });
     }
   }
 
   resume(): void {
     const data: SessionRaw | null = this.data();
     if(data?.sessionId) {
-      this.grpcService.resume$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session resumed');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to resume session');
-        },
-      });
+      this.grpcService.resume$(data.sessionId)
+        .pipe(
+          catchError((error) => {
+            console.error(error);
+            this.error(error);
+            return of(undefined);
+          })
+        )
+        .subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof ResumeSessionResponse) {
+              this.success('Session Resumed.');
+              this.refresh.next();
+            } else {
+              this.handleBlockAction(response, 'Resume');
+            }
+          }
+        });
     }
   }
 
   close(): void {
     const data: SessionRaw | null = this.data();
     if(data?.sessionId) {
-      this.grpcService.close$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session closed');
-          this.refresh.next();
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to close session');
-        },
-      });
+      this.grpcService.close$(data.sessionId)
+        .pipe(
+          catchError((error) => {
+            console.error(error);
+            this.error(error);
+            return of(undefined);
+          })
+        )
+        .subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof CloseSessionResponse) {
+              this.success('Session Closed.');
+              this.refresh.next();
+            } else {
+              this.handleBlockAction(response, 'Close');
+            }
+          }
+        });
     }
   }
 
   deleteSession(): void {
     const data: SessionRaw | null = this.data();
     if(data?.sessionId) {
-      this.grpcService.delete$(data.sessionId).subscribe({
-        complete: () => {
-          this.success('Session deleted');
-          this.router.navigate(['/sessions']);
-        },
-        error: (error) => {
-          console.error(error);
-          this.error('Unable to delete session');
-        },
-      });
+      this.grpcService.delete$(data.sessionId)
+        .pipe(
+          catchError((error) => {
+            console.error(error);
+            this.error(error);
+            return of(undefined);
+          })
+        )
+        .subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof DeleteSessionResponse) {
+              this.success('Session Deleted.');
+              this.refresh.next();
+            } else {
+              this.handleBlockAction(response, 'Delete');
+            }
+          }
+        });
     }
   }
 }

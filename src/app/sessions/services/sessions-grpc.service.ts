@@ -3,8 +3,9 @@ import { Injectable, inject } from '@angular/core';
 import { SortDirection } from '@angular/material/sort';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { Filter, FilterType } from '@app/types/filters';
-import { GrpcCancelInterface, GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
+import { AbstractGrpcAction, GrpcGetInterface, ListDefaultSortField } from '@app/types/services/grpcService';
 import { FilterField, buildArrayFilter, buildBooleanFilter, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { Observable, map } from 'rxjs';
@@ -12,8 +13,8 @@ import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionRaw, SessionRawFieldKey, SessionRawFilters, SessionRawListOptions } from '../types';
 
 @Injectable()
-export class SessionsGrpcService extends GrpcTableService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField>
-  implements GrpcGetInterface<GetSessionResponse>, GrpcCancelInterface<CancelSessionResponse> {
+export class SessionsGrpcService extends AbstractGrpcAction<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField>
+  implements GrpcGetInterface<GetSessionResponse> {
   readonly filterService = inject(SessionsFiltersService);
   readonly grpcClient = inject(SessionsClient);
   readonly tasksGrpcService = inject(TasksGrpcService);
@@ -102,52 +103,62 @@ export class SessionsGrpcService extends GrpcTableService<SessionRaw, SessionRaw
     return this.grpcClient.getSession(getSessionRequest);
   }
 
-  cancel$(sessionId: string): Observable<CancelSessionResponse> {
-    const cancelSessionRequest = new CancelSessionRequest({
-      sessionId
+  cancel$(sessionId: string): Observable<CancelSessionResponse | GrpcBlockedEnum> {
+    return this.protectAction<CancelSessionResponse>(() => {
+      const cancelSessionRequest = new CancelSessionRequest({
+        sessionId
+      });
+  
+      return this.grpcClient.cancelSession(cancelSessionRequest);
     });
-
-    return this.grpcClient.cancelSession(cancelSessionRequest);
   }
 
-  pause$(sessionId: string): Observable<PauseSessionResponse> {
-    const pauseSessionRequest = new PauseSessionRequest({
-      sessionId
+  pause$(sessionId: string): Observable<PauseSessionResponse | GrpcBlockedEnum> {
+    return this.protectAction(() => {
+      const pauseSessionRequest = new PauseSessionRequest({
+        sessionId
+      });
+      return this.grpcClient.pauseSession(pauseSessionRequest);
     });
-
-    return this.grpcClient.pauseSession(pauseSessionRequest);
   }
 
-  resume$(sessionId: string): Observable<ResumeSessionResponse> {
-    const resumeSessionRequest = new ResumeSessionRequest({
-      sessionId
+  resume$(sessionId: string): Observable<ResumeSessionResponse | GrpcBlockedEnum> {
+    return this.protectAction(() => {
+      const resumeSessionRequest = new ResumeSessionRequest({
+        sessionId
+      });
+      return this.grpcClient.resumeSession(resumeSessionRequest);
     });
-
-    return this.grpcClient.resumeSession(resumeSessionRequest);
   }
 
-  purge$(sessionId: string): Observable<PurgeSessionResponse> {
-    const purgeSessionRequest = new PurgeSessionRequest({
-      sessionId
+  purge$(sessionId: string): Observable<PurgeSessionResponse | GrpcBlockedEnum> {
+    return this.protectAction(() => {
+      const purgeSessionRequest = new PurgeSessionRequest({
+        sessionId
+      });
+  
+      return this.grpcClient.purgeSession(purgeSessionRequest);
     });
-
-    return this.grpcClient.purgeSession(purgeSessionRequest);
   }
 
-  close$(sessionId: string): Observable<CloseSessionResponse> {
-    const closeSessionRequest = new CloseSessionRequest({
-      sessionId
+  close$(sessionId: string): Observable<CloseSessionResponse | GrpcBlockedEnum> {
+    return this.protectAction(() => {
+      const closeSessionRequest = new CloseSessionRequest({
+        sessionId
+      });
+  
+      return this.grpcClient.closeSession(closeSessionRequest);
     });
-
-    return this.grpcClient.closeSession(closeSessionRequest);
   }
 
-  delete$(sessionId: string): Observable<DeleteSessionResponse> {
-    const deleteSessionRequest = new DeleteSessionRequest({
-      sessionId
+  delete$(sessionId: string): Observable<DeleteSessionResponse | GrpcBlockedEnum> {
+    return this.protectAction(() => {
+      const deleteSessionRequest = new DeleteSessionRequest({
+        sessionId
+      });
+  
+      return this.grpcClient.deleteSession(deleteSessionRequest);
     });
-
-    return this.grpcClient.deleteSession(deleteSessionRequest);
   }
 
   getTaskData$(sessionId: string, active: 'createdAt' | 'endedAt', direction: SortDirection) {

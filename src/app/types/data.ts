@@ -49,3 +49,7 @@ export type TaskOutput = {
   error: string;
   success: boolean;
 }
+
+export enum GrpcBlockedEnum {
+  WAITING = 0,
+}

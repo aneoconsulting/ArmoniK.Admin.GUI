@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { TaskOptions } from '@app/tasks/types';
-import { ArmonikData, DataRaw, GrpcResponse } from '@app/types/data';
+import { ArmonikData, DataRaw, GrpcBlockedEnum, GrpcResponse } from '@app/types/data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
@@ -8,7 +8,7 @@ import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
-import { GrpcTableService } from './grpcService';
+import { AbstractGrpcList } from './grpcService';
 import { Scope } from '../config';
 
 @Injectable()
@@ -16,7 +16,7 @@ import { Scope } from '../config';
  * TableData services are used by index and tables components to retrieve and provide every data-related field (such as options, filter, loading, data).
  */
 export abstract class AbstractTableDataService<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
-  abstract readonly grpcService: GrpcTableService<T, F, O, FO>;
+  abstract readonly grpcService: AbstractGrpcList<T, F, O, FO>;
   private readonly cacheService = inject(CacheService);
   private readonly notificationService = inject(NotificationService);
   readonly filtersService = inject(FiltersService);
@@ -130,6 +130,17 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
    */
   warning(message: string) {
     this.notificationService.warning(message);
+  }
+
+  protected handleBlockAction(blocked: GrpcBlockedEnum, action?: string) {
+    switch (blocked) {
+    case GrpcBlockedEnum.WAITING:
+      console.warn(action, 'blocked by WAITING');
+      this.warning('Please wait' + action ? ` before trying to ${action}.` : '.');
+      break;
+    default:
+      break;
+    }
   }
   
   /**

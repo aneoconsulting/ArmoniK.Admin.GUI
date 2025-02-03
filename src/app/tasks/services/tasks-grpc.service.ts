@@ -1,7 +1,8 @@
 import { CancelTasksRequest, CancelTasksResponse, CountTasksByStatusRequest, CountTasksByStatusResponse, GetTaskRequest, GetTaskResponse, ListTasksRequest, ListTasksResponse, TaskField, TaskFilterField, TaskOptionEnumField, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { Filter, FilterType } from '@app/types/filters';
-import { GrpcCancelManyInterface, GrpcCountByStatusInterface, GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
+import { AbstractGrpcAction, GrpcGetInterface, ListDefaultSortField } from '@app/types/services/grpcService';
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { Observable } from 'rxjs';
@@ -9,8 +10,8 @@ import { TasksFiltersService } from './tasks-filters.service';
 import { TaskOptions, TaskOptionsFieldKey, TaskSummary, TaskSummaryFieldKey, TaskSummaryFilters, TaskSummaryListOptions } from '../types';
 
 @Injectable()
-export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
-  implements GrpcGetInterface<GetTaskResponse>, GrpcCancelManyInterface<CancelTasksResponse>, GrpcCountByStatusInterface<TaskSummaryEnumField, TaskOptionEnumField> {
+export class TasksGrpcService extends AbstractGrpcAction<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField>
+  implements GrpcGetInterface<GetTaskResponse> {
   readonly filterService = inject(TasksFiltersService);
   readonly grpcClient = inject(TasksClient);
   readonly sortFieldService = inject(GrpcSortFieldService);
@@ -58,12 +59,14 @@ export class TasksGrpcService extends GrpcTableService<TaskSummary, TaskSummaryE
     return this.grpcClient.getTask(getTaskRequest);
   }
 
-  cancel$(taskIds: string[]): Observable<CancelTasksResponse> {
-    const request = new CancelTasksRequest({
-      taskIds
+  cancel$(taskIds: string[]): Observable<CancelTasksResponse | GrpcBlockedEnum> {
+    return this.protectAction(() => {
+      const request = new CancelTasksRequest({
+        taskIds
+      });
+  
+      return this.grpcClient.cancelTasks(request);
     });
-
-    return this.grpcClient.cancelTasks(request);
   }
 
   countByStatus$(filters: TaskSummaryFilters): Observable<CountTasksByStatusResponse> {

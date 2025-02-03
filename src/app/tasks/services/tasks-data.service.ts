@@ -1,4 +1,4 @@
-import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelTasksResponse, FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
@@ -70,15 +70,18 @@ export default class TasksDataService extends AbstractTableDataService<TaskSumma
 
   cancelTasks(ids: string[]) {
     this.grpcService.cancel$(ids)
-      .pipe(
-        catchError((error) => {
-          this.error(error, 'Could not cancel Tasks');
-          return of(null);
-        })
-      ).subscribe((data) => {
-        if (data) {
-          this.success('Tasks cancelled');
-        }
+      .pipe(catchError((error) => {
+        console.error(error);
+        this.error(error, 'Could not cancel Tasks');
+        return of(undefined);
+      })).subscribe((response) => {
+        if (response !== undefined) {
+          if (response instanceof CancelTasksResponse) {
+            this.success('Tasks cancelled');
+          } else {
+            this.handleBlockAction(response, 'cancel');
+          }
+        } 
       });
   }
 

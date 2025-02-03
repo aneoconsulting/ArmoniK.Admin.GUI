@@ -1,4 +1,4 @@
-import { FilterStringOperator, GetTaskResponse, ResultRawEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelTasksResponse, FilterStringOperator, GetTaskResponse, ResultRawEnumField, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +18,7 @@ import { TableStorageService } from '@services/table-storage.service';
 import { TableURLService } from '@services/table-url.service';
 import { TableService } from '@services/table.service';
 import { UtilsService } from '@services/utils.service';
+import { catchError, of } from 'rxjs';
 import { TasksFiltersService } from './services/tasks-filters.service';
 import { TasksGrpcService } from './services/tasks-grpc.service';
 import { TasksInspectionService } from './services/tasks-inspection.service';
@@ -106,15 +107,19 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
   cancel(): void {
     const data = this.data();
     if (data) {
-      this.grpcService.cancel$([data.id]).subscribe({
-        complete: () => {
-          this.success('Task canceled');
-          this.refresh.next();
-        },
-        error: (error) => {
+      this.grpcService.cancel$([data.id])
+        .pipe(catchError((error) => {
           this.handleError(error);
-        },
-      });
+          return of(undefined);
+        })).subscribe((response) => {
+          if (response !== undefined) {
+            if (response instanceof CancelTasksResponse) {
+              this.success('Tasks cancelled');
+            } else {
+              this.handleBlockAction(response, 'cancel');
+            }
+          } 
+        });
     }
   }
 

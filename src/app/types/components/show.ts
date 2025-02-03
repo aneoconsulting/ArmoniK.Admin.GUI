@@ -6,7 +6,7 @@ import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 import { Observable, Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { Field } from '../column.type';
-import { DataRaw } from '../data';
+import { DataRaw, GrpcBlockedEnum } from '../data';
 import { GetResponse, GrpcGetInterface } from '../services/grpcService';
 import { InspectionService } from '../services/inspectionService';
 
@@ -121,10 +121,25 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
   }
 
   error(message: string) {
-    return this.notificationService.error(message);
+    this.notificationService.error(message);
+  }
+
+  warn(message: string) {
+    this.notificationService.warning(message);
   }
 
   success(message: string) {
-    return this.notificationService.success(message);
+    this.notificationService.success(message);
+  }
+
+  protected handleBlockAction(blocked: GrpcBlockedEnum, action?: string) {
+    switch (blocked) {
+    case GrpcBlockedEnum.WAITING:
+      console.warn(action, 'blocked by WAITING');
+      this.warn('Please wait' + (action ? ` before trying to ${action}.` : '.'));
+      break;
+    default:
+      break;
+    }
   }
 }
