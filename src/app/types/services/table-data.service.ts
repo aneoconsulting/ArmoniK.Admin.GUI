@@ -132,13 +132,11 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
     this.notificationService.warning(message);
   }
 
-  protected handleBlockAction(blocked: GrpcBlockedEnum, action?: string) {
+  protected handleBlockAction(blocked: GrpcBlockedEnum, action: string) {
     switch (blocked) {
     case GrpcBlockedEnum.WAITING:
       console.warn(action, 'blocked by WAITING');
-      this.warning('Please wait' + action ? ` before trying to ${action}.` : '.');
-      break;
-    default:
+      this.warning(`Please wait before trying to ${action}.`);
       break;
     }
   }

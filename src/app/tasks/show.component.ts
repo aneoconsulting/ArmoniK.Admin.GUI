@@ -114,7 +114,8 @@ export class ShowComponent extends AppShowComponent<TaskRaw, GetTaskResponse> im
         })).subscribe((response) => {
           if (response !== undefined) {
             if (response instanceof CancelTasksResponse) {
-              this.success('Tasks cancelled');
+              this.success('Task cancelled.');
+              this.refresh.next();
             } else {
               this.handleBlockAction(response, 'cancel');
             }

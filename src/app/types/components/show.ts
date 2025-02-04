@@ -132,13 +132,11 @@ export abstract class AppShowComponent<T extends DataRaw, R extends GetResponse>
     this.notificationService.success(message);
   }
 
-  protected handleBlockAction(blocked: GrpcBlockedEnum, action?: string) {
+  protected handleBlockAction(blocked: GrpcBlockedEnum, action: string) {
     switch (blocked) {
     case GrpcBlockedEnum.WAITING:
       console.warn(action, 'blocked by WAITING');
-      this.warn('Please wait' + (action ? ` before trying to ${action}.` : '.'));
-      break;
-    default:
+      this.warn(`Please wait before trying to ${action}.`);
       break;
     }
   }

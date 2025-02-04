@@ -1,12 +1,13 @@
-import { TaskSummaryEnumField, FilterStringOperator, ListTasksResponse, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskSummaryEnumField, FilterStringOperator, ListTasksResponse, TaskOptionEnumField, CancelTasksResponse } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import TasksDataService from './tasks-data.service';
 import { TaskOptions, TaskSummary } from '../types';
 import { TasksGrpcService } from './tasks-grpc.service';
@@ -23,7 +24,7 @@ describe('TasksDataService', () => {
   const tasks = { tasks: [{ id: 'task1' }, { id: 'task2' }, { id: 'task3' }], total: 3 }  as unknown as ListTasksResponse;
   const mockTasksGrpcService = {
     list$: jest.fn(() => of(tasks)),
-    cancel$: jest.fn(() => of({})),
+    cancel$: jest.fn((): Observable<CancelTasksResponse | GrpcBlockedEnum> => of(new CancelTasksResponse())),
   };
 
   const mockNotificationService = {
@@ -281,6 +282,13 @@ describe('TasksDataService', () => {
       const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
       service.cancelTasks(tasksToCancel);
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockTasksGrpcService.cancel$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.cancelTasks(tasksToCancel);
+      expect(mockNotificationService.warning).toHaveBeenCalled();
     });
 
     it('should display an error message', () => {

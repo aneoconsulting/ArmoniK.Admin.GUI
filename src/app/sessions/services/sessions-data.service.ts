@@ -303,17 +303,14 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   // Session Interactions
 
   onPause(sessionId: string) {
-    console.log('test');
     this.grpcService.pause$(sessionId)
       .pipe(
         catchError((error) => {
-          console.error(error);
-          this.error(error);
+          this.error(error, 'Unable to pause the session.');
           return of(undefined);
         })
       )
       .subscribe((response) => {
-        console.log(response);
         if (response !== undefined) {
           if (response instanceof PauseSessionResponse) {
             this.success('Session Paused.');
@@ -329,8 +326,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.grpcService.resume$(sessionId)
       .pipe(
         catchError((error) => {
-          console.error(error);
-          this.error(error);
+          this.error(error, 'Unable to resume the session.');
           return of(undefined);
         })
       )
@@ -350,8 +346,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.grpcService.cancel$(sessionId)
       .pipe(
         catchError((error) => {
-          console.error(error);
-          this.error(error);
+          this.error(error, 'Unable to cancel the session.');
           return of(undefined);
         })
       )
@@ -371,8 +366,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.grpcService.purge$(sessionId)
       .pipe(
         catchError((error) => {
-          console.error(error);
-          this.error(error);
+          this.error(error, 'Unable to purge the session.');
           return of(undefined);
         })
       )
@@ -392,8 +386,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.grpcService.close$(sessionId)
       .pipe(
         catchError((error) => {
-          console.error(error);
-          this.error(error);
+          this.error(error, 'Unable to close the session.');
           return of(undefined);
         })
       )
@@ -413,8 +406,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.grpcService.delete$(sessionId)
       .pipe(
         catchError((error) => {
-          console.error(error);
-          this.error(error);
+          this.error(error, 'Unable to delete the session.');
           return of(undefined);
         })
       )

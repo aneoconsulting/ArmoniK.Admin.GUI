@@ -1,13 +1,14 @@
-import { FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStringOperator, ListSessionsResponse, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionResponse, CloseSessionResponse, DeleteSessionResponse, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStringOperator, ListSessionsResponse, PauseSessionResponse, PurgeSessionResponse, ResumeSessionResponse, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionRaw } from '../types';
 import { SessionsDataService } from './sessions-data.service';
@@ -39,12 +40,12 @@ describe('SessionsDataService', () => {
         });
       }
     }),
-    cancel$: jest.fn(() => of({})),
-    pause$: jest.fn(() => of({})),
-    resume$: jest.fn(() => of({})),
-    close$: jest.fn(() => of({})),
-    delete$: jest.fn(() => of({})),
-    purge$: jest.fn(() => of({})),
+    cancel$: jest.fn((): Observable<CancelSessionResponse | GrpcBlockedEnum> => of(new CancelSessionResponse())),
+    purge$: jest.fn((): Observable<PurgeSessionResponse | GrpcBlockedEnum> => of(new PurgeSessionResponse())),
+    pause$: jest.fn((): Observable<PauseSessionResponse | GrpcBlockedEnum> => of(new PauseSessionResponse())),
+    resume$: jest.fn((): Observable<ResumeSessionResponse | GrpcBlockedEnum> => of(new ResumeSessionResponse())),
+    close$: jest.fn((): Observable<CloseSessionResponse | GrpcBlockedEnum> => of(new CloseSessionResponse())),
+    delete$: jest.fn((): Observable<DeleteSessionResponse | GrpcBlockedEnum> => of(new DeleteSessionResponse())),
   };
 
   const mockNotificationService = {
@@ -424,10 +425,17 @@ describe('SessionsDataService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.pause$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.onPause('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
     it('should notify on error', () => {
       mockSessionsGrpcService.pause$.mockReturnValueOnce(throwError(() => new Error()));
       service.onPause('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to pause session');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to pause the session.');
     });
   });
 
@@ -438,10 +446,17 @@ describe('SessionsDataService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.resume$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.onResume('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
     it('should notify on error', () => {
       mockSessionsGrpcService.resume$.mockReturnValueOnce(throwError(() => new Error()));
       service.onResume('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to resume session');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to resume the session.');
     });
   });
 
@@ -452,10 +467,17 @@ describe('SessionsDataService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.purge$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.onPurge('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
     it('should notify on error', () => {
       mockSessionsGrpcService.purge$.mockReturnValueOnce(throwError(() => new Error()));
       service.onPurge('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to purge session');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to purge the session.');
     });
   });
 
@@ -465,11 +487,18 @@ describe('SessionsDataService', () => {
       service.onCancel('sessionId');
       expect(spy).toHaveBeenCalled();
     });
+    
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.cancel$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.onCancel('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
 
     it('should notify on error', () => {
       mockSessionsGrpcService.cancel$.mockReturnValueOnce(throwError(() => new Error()));
       service.onCancel('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to cancel session');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to cancel the session.');
     });
   });
 
@@ -480,10 +509,17 @@ describe('SessionsDataService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.close$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.onClose('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
     it('should notify on error', () => {
       mockSessionsGrpcService.close$.mockReturnValueOnce(throwError(() => new Error()));
       service.onClose('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to close session');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to close the session.');
     });
   });
 
@@ -494,10 +530,17 @@ describe('SessionsDataService', () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.delete$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      service.onDelete('sessionId');
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
     it('should notify on error', () => {
       mockSessionsGrpcService.delete$.mockReturnValueOnce(throwError(() => new Error()));
       service.onDelete('sessionId');
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to delete session');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to delete the session.');
     });
   });
 });

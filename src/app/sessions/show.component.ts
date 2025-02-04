@@ -322,7 +322,7 @@ export class ShowComponent extends AppShowComponent<SessionRaw, GetSessionRespon
           if (response !== undefined) {
             if (response instanceof DeleteSessionResponse) {
               this.success('Session Deleted.');
-              this.refresh.next();
+              this.router.navigate(['/sessions']);
             } else {
               this.handleBlockAction(response, 'Delete');
             }
