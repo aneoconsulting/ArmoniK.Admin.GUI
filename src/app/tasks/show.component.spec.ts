@@ -1,6 +1,7 @@
-import { GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelTasksResponse, GetTaskResponse, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -18,6 +19,7 @@ describe('AppShowComponent', () => {
 
   const mockNotificationService = {
     success: jest.fn(),
+    warning: jest.fn(),
     error: jest.fn(),
   };
 
@@ -47,7 +49,7 @@ describe('AppShowComponent', () => {
 
   const mockTasksGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({ task: returnedTask } as GetTaskResponse)),
-    cancel$: jest.fn(() => of({}))
+    cancel$: jest.fn((): Observable<CancelTasksResponse | GrpcBlockedEnum> => of(new CancelTasksResponse()))
   };
 
   beforeEach(() => {
@@ -204,13 +206,20 @@ describe('AppShowComponent', () => {
 
     it('should notify on success', () => {
       component.cancel();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Task canceled');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Task cancelled.');
     });
 
     it('should refresh on success', () => {
       const spy = jest.spyOn(component.refresh, 'next');
       component.cancel();
       expect(spy).toHaveBeenCalled();
+    });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockTasksGrpcService.cancel$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.cancel();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
     });
 
     it('should log errors', () => {
