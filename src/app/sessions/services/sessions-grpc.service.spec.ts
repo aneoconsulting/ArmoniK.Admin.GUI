@@ -1,13 +1,13 @@
-import { CancelSessionRequest, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionRequest, PurgeSessionRequest, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionRequest, CancelSessionResponse, CloseSessionResponse, DeleteSessionResponse, FilterArrayOperator, FilterBooleanOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetSessionRequest, ListSessionsRequest, PauseSessionResponse, PurgeSessionResponse, ResumeSessionResponse, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, SessionsClient, SortDirection, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TasksGrpcService } from '@app/tasks/services/tasks-grpc.service';
 import { TaskOptions } from '@app/tasks/types';
-import { FieldKey } from '@app/types/data';
+import { FieldKey, GrpcBlockedEnum } from '@app/types/data';
 import { FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
-import { lastValueFrom, of } from 'rxjs';
+import { lastValueFrom, Observable, of } from 'rxjs';
 import { SessionsFiltersService } from './sessions-filters.service';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionsStatusesService } from './sessions-statuses.service';
@@ -75,12 +75,12 @@ describe('SessionsGrpcService', () => {
   const mockSessionsGrpcClient = {
     listSessions: jest.fn(),
     getSession: jest.fn(),
-    cancelSession: jest.fn(),
-    pauseSession: jest.fn(),
-    resumeSession: jest.fn(),
-    closeSession: jest.fn(),
-    deleteSession: jest.fn(),
-    purgeSession: jest.fn(),
+    cancelSession: jest.fn((): Observable<CancelSessionResponse | GrpcBlockedEnum> => of(new CancelSessionResponse())),
+    pauseSession: jest.fn((): Observable<PauseSessionResponse | GrpcBlockedEnum> => of(new PauseSessionResponse())),
+    resumeSession: jest.fn((): Observable<ResumeSessionResponse | GrpcBlockedEnum> => of(new ResumeSessionResponse())),
+    closeSession: jest.fn((): Observable<CloseSessionResponse | GrpcBlockedEnum> => of(new CloseSessionResponse())),
+    deleteSession: jest.fn((): Observable<DeleteSessionResponse | GrpcBlockedEnum> => of(new DeleteSessionResponse())),
+    purgeSession: jest.fn((): Observable<PurgeSessionResponse | GrpcBlockedEnum> => of(new PurgeSessionResponse())),
   };
 
   const listOptions: ListOptions<SessionRaw, TaskOptions> = {
@@ -310,44 +310,67 @@ describe('SessionsGrpcService', () => {
     expect(() => service.list$(listOptions, filters)).toThrow('Type unexpected not supported');
   });
 
-  it('should pause sessions', () => {
+  describe('Pausing sessions', () => {
     const sessionId = '1';
-    service.pause$(sessionId);
-    expect(mockSessionsGrpcClient.pauseSession).toHaveBeenCalledWith(new PauseSessionRequest({
-      sessionId
-    }));
+
+    it('should pause sessions', () => {
+      service.pause$(sessionId).subscribe((response) => expect(response).toEqual(GrpcBlockedEnum.WAITING));
+    });
+
+    it('should block the request', () => {
+      service['allowAction'] = false;
+      service.pause$(sessionId).subscribe((response) => expect(response).toEqual(GrpcBlockedEnum.WAITING));
+    });
   });
 
-  it('should resume sessions', () => {
+  describe('Resuming sessions', () => {
     const sessionId = '1';
-    service.resume$(sessionId);
-    expect(mockSessionsGrpcClient.resumeSession).toHaveBeenCalledWith(new PauseSessionRequest({
-      sessionId
-    }));
+
+    it('should resume sessions', () => {
+      service.resume$(sessionId).subscribe((response) => expect(response).toEqual(new PauseSessionResponse()));
+    });
+
+    it('should block the request', () => {
+      service['allowAction'] = false;
+      service.resume$(sessionId).subscribe((response) => expect(response).toEqual(GrpcBlockedEnum.WAITING));
+    });
   });
 
-  it('should purge sessions', () => {
+  describe('Purging sessions', () => {
     const sessionId = '1';
-    service.purge$(sessionId);
-    expect(mockSessionsGrpcClient.purgeSession).toHaveBeenCalledWith(new PurgeSessionRequest({
-      sessionId
-    }));
+
+    it('should purge sessions', () => {
+      service.purge$(sessionId).subscribe((response) => expect(response).toEqual(new PurgeSessionResponse()));
+    });
+
+    it('should block the request', () => {
+      service['allowAction'] = false;
+      service.purge$(sessionId).subscribe((response) => expect(response).toEqual(GrpcBlockedEnum.WAITING));
+    });
   });
 
-  it('should close sessions', () => {
+  describe('Closing sessions', () => {
     const sessionId = '1';
-    service.close$(sessionId);
-    expect(mockSessionsGrpcClient.closeSession).toHaveBeenCalledWith(new PauseSessionRequest({
-      sessionId
-    }));
+
+    it('should close sessions', () => {
+      service.close$(sessionId).subscribe((response) => expect(response).toEqual(new CloseSessionResponse()));
+    });
+
+    it('should block the request', () => {
+      service.close$(sessionId).subscribe((response) => expect(response).toEqual(GrpcBlockedEnum.WAITING));
+    });
   });
 
-  it('should delete sessions', () => {
+  describe('Deleting sessions', () => {
     const sessionId = '1';
-    service.delete$(sessionId);
-    expect(mockSessionsGrpcClient.deleteSession).toHaveBeenCalledWith(new PauseSessionRequest({
-      sessionId
-    }));
+
+    it('should delete sessions', () => {
+      service.delete$(sessionId).subscribe((response) => expect(response).toEqual(new DeleteSessionResponse()));
+    });
+
+    it('should block the request', () => {
+      service.delete$(sessionId).subscribe((response) => expect(response).toEqual(GrpcBlockedEnum.WAITING));
+    });
   });
 
   describe('get Task data', () => {

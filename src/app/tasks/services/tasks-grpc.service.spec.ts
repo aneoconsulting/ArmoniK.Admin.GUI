@@ -1,8 +1,10 @@
-import { CancelTasksRequest, CountTasksByStatusRequest, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetTaskRequest, ListTasksRequest, SortDirection, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelTasksResponse, CountTasksByStatusRequest, FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, GetTaskRequest, ListTasksRequest, SortDirection, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { ListOptionsSort } from '@app/types/options';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { UtilsService } from '@services/utils.service';
+import { Observable, of } from 'rxjs';
 import { TasksFiltersService } from './tasks-filters.service';
 import { TasksGrpcService } from './tasks-grpc.service';
 import { TasksStatusesService } from './tasks-statuses.service';
@@ -47,7 +49,7 @@ describe('TasksGrpcService', () => {
   const mockGrpcClient = {
     listTasks: jest.fn(),
     getTask: jest.fn(),
-    cancelTasks: jest.fn(),
+    cancelTasks: jest.fn((): Observable<CancelTasksResponse | GrpcBlockedEnum> => of(new CancelTasksResponse())),
     countTasksByStatus: jest.fn()
   };
 
@@ -257,12 +259,16 @@ describe('TasksGrpcService', () => {
     }));
   });
 
-  it('should cancel tasks', () => {
+  describe('Cancelling', () => {
     const tasks = ['1', '2'];
-    service.cancel$(tasks);
-    expect(mockGrpcClient.cancelTasks).toHaveBeenCalledWith(new CancelTasksRequest({
-      taskIds: tasks
-    }));
+    it('should cancel tasks', () => {
+      service.cancel$(tasks).subscribe((value) => expect(value).toEqual(new CancelTasksResponse()));
+    });
+
+    it('should return a blocked enum', () => {
+      service['allowAction'] = false;
+      service.cancel$(tasks).subscribe((value) => expect(value).toEqual(GrpcBlockedEnum.WAITING));
+    });
   });
 
   it('should not allow some filters', () => {
