@@ -1,7 +1,7 @@
 {
   "name": "armonik-admin-gui",
   "version": "0.10.7",
-  "packageManager": "pnpm@9.14.2",
+  "packageManager": "pnpm@10.2.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -52,7 +52,7 @@
     "@types/ungap__structured-clone": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "8.15.0",
     "@typescript-eslint/parser": "8.15.0",
-    "bumpp": "^9.8.1",
+    "bumpp": "^10.0.2",
     "eslint": "^9.15.0",
     "angular-eslint": "^19.0.0",
     "eslint-import-resolver-typescript": "^3.6.3",
