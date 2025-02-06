@@ -1,8 +1,12 @@
 <app-table-container>
-  <table mat-table [trackBy]="trackBy" matSort [matSortActive]="options.sort.active.toString()"
+  <table mat-table [trackBy]="trackBy" matSort [matSortActive]="options.sort.active.toString()" multiTemplateDataRows
     [matSortDirection]="options.sort.direction" matSortDisableClear cdkDropList cdkDropListOrientation="horizontal"
     [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)" [dataSource]="data" i18n-aria-label
     aria-label="Data Table">
+
+    <ng-container matColumnDef="test">
+      <td mat-cell [attr.colspan]="columns.length" *matCellDef="let element">test</td>
+    </ng-container>
 
     @for (column of columns; track column.key) {
     <ng-container [matColumnDef]="column.key.toString()">
@@ -35,7 +39,8 @@
     </tr>
 
     <tr mat-header-row *matHeaderRowDef="columnsKeys; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsKeys;"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsKeys;" ></tr>
+    <tr mat-row *matRowDef="let row; columns: ['test']"></tr>
   </table>
 
   <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize"
