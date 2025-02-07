@@ -159,7 +159,8 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     this.tableDataService.onDelete(sessionId);
   }
 
-  trackBy(index: number, item: ArmonikData<SessionRaw, TaskOptions>) {
-    return item.raw.sessionId;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  trackBy(index: number, _item: ArmonikData<SessionRaw, TaskOptions>) {
+    return index;
   }
 }

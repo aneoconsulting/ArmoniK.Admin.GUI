@@ -17,7 +17,7 @@ export type DataRaw = SessionRaw | ApplicationRaw | PartitionRaw | ResultRaw | T
 export type CustomColumn = `options.options.${string}`;
 
 export interface ArmonikData<T extends DataRaw, O extends TaskOptions | null = null> {
-  raw: T,
+  raw: T;
   queryParams?: Map<ColumnKey<T, O>, Params>;
 }
 

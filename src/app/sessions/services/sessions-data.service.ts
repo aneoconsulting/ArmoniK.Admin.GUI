@@ -33,7 +33,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
             field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
             for: 'root',
             operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: '7ce2655a-b811-4845-802a-9969cf92ff68'
+            value: '0a773a41-0668-4af6-81db-32a50a5c978c'
           }
         ]
       ]
@@ -226,9 +226,10 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     ).subscribe((data) => {
       if (data) {
         group.data = data;
-        console.log(data);
       }
     });
+
+    this.groups.push(group);
 
     this.groupsSubscriptions.set(groupCondition.name, groupSubscription);
   }
