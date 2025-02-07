@@ -7,7 +7,7 @@ import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { NotificationService } from '@services/notification.service';
-import { Subject, catchError, map, of, switchMap } from 'rxjs';
+import { Subject, Subscription, catchError, map, of, switchMap } from 'rxjs';
 import { GrpcTableService } from './grpcService';
 import { Scope } from '../config';
 
@@ -26,6 +26,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   readonly loading = signal<boolean>(false);
   readonly total = signal<number>(0);
   readonly data = signal<ArmonikData<T, O>[]>([]);
+  protected dataSubscription: Subscription;
 
   filters: FiltersOr<F, FO> = [];
   options: ListOptions<T, O>;
@@ -57,7 +58,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
    * Catch errors if needed.
    */
   private subscribeToGrpcList() {
-    this.refresh$.pipe(
+    this.dataSubscription = this.refresh$.pipe(
       switchMap(() => {
         this.loading.set(true);
 
@@ -130,6 +131,10 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
    */
   warning(message: string) {
     this.notificationService.warning(message);
+  }
+
+  protected onDestroy() {
+    this.dataSubscription.unsubscribe();
   }
   
   /**

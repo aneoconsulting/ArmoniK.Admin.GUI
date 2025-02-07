@@ -1,36 +1,55 @@
 import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Params } from '@angular/router';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ColumnKey, SessionData } from '@app/types/data';
 import { Filter, FiltersOr } from '@app/types/filters';
-import { GroupConditions } from '@app/types/groups';
+import { Group, GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { InvertFilterService } from '@services/invert-filter.service';
-import { Subject, map, mergeAll } from 'rxjs';
+import { Subject, Subscription, map, mergeAll, switchMap } from 'rxjs';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionRaw } from '../types';
 
 @Injectable()
-export class SessionsDataService extends AbstractTableDataService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> {
+export class SessionsDataService extends AbstractTableDataService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnDestroy {
   readonly grpcService = inject(SessionsGrpcService);
   readonly invertFiltersService: InvertFilterService<SessionRawEnumField, TaskOptionEnumField> = inject(InvertFilterService);
 
   scope: Scope = 'sessions';
 
+  groups: Group<SessionRaw, TaskOptions>[] = [];
+  private readonly groupsSubscriptions: Map<string, Subscription> = new Map();
+
   groupsConditions: GroupConditions<SessionRawEnumField, TaskOptionEnumField>[] = [
     {
       name: 'Group 1',
-      conditions: []
+      conditions: [
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: '7ce2655a-b811-4845-802a-9969cf92ff68'
+          }
+        ]
+      ]
     }
   ];
 
   constructor() {
     super();
     this.subscribeToDurationSubjects();
+    this.setGroups();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy();
+    this.groupsSubscriptions.forEach((groupSubscription) => groupSubscription.unsubscribe());
+    this.groupsSubscriptions.clear();
   }
 
   computeGrpcData(entries: ListSessionsResponse): SessionRaw[] | undefined {
@@ -187,6 +206,48 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
         }
       ]
     ];
+  }
+
+  initGroup(groupCondition: GroupConditions<SessionRawEnumField, TaskOptionEnumField>) {
+    const group: Group<SessionRaw, TaskOptions> = {
+      name: groupCondition.name,
+      opened: false,
+      data: []
+    };
+    const groupSubscription = this.refresh$.pipe(
+      switchMap(() => this.grpcService.list$(this.options, groupCondition.conditions)),
+      map((data) => this.computeGrpcData(data)),
+      map((data) => {
+        if (data) {
+          return data.map(entry => this.createNewLine(entry));
+        }
+        return undefined;
+      })
+    ).subscribe((data) => {
+      if (data) {
+        group.data = data;
+        console.log(data);
+      }
+    });
+
+    this.groupsSubscriptions.set(groupCondition.name, groupSubscription);
+  }
+
+  setGroups() {
+    this.groupsConditions.forEach((g) => this.initGroup(g));
+  }
+
+  addGroup(groupCondition: GroupConditions<SessionRawEnumField, TaskOptionEnumField>) {
+    this.groupsConditions.push(groupCondition);
+    this.initGroup(groupCondition);
+  }
+
+  removeGroup(groupName: string) {
+    const subscription = this.groupsSubscriptions.get(groupName);
+    if (subscription) {
+      subscription.unsubscribe();
+      this.groupsSubscriptions.delete(groupName);
+    }
   }
 
   // Duration computation
