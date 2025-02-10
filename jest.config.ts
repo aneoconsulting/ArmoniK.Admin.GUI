@@ -97,7 +97,8 @@ const config: Config = {
     '@components/(.*)': '<rootDir>/src/app/components/$1',
     '@services/(.*)': '<rootDir>/src/app/services/$1',
     '@pipes/(.*)': '<rootDir>/src/app/pipes/$1',
-    '@app/(.*)': '<rootDir>/src/app/$1'
+    '@app/(.*)': '<rootDir>/src/app/$1',
+    '@shared/(.*)': '<rootDir>/src/app/shared/$1',
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

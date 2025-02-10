@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +13,7 @@ import { Group } from '@app/types/groups';
 import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { IconsService } from '@services/icons.service';
+import { rotateFull, expand } from '@shared/animations';
 import { GroupTasksByStatusComponent } from '../grouped-tasks-by-status/group-tasks-by-status.component';
 import { TableActionsComponent } from '../table-actions.component';
 import { TableCellComponent } from '../table-cell.component';
@@ -38,16 +38,8 @@ import { TableCellComponent } from '../table-cell.component';
     IconsService
   ],
   animations: [
-    trigger('rotateFull', [
-      state('true', style({ transform: 'rotate(-180deg)' })),
-      state('false', style({ transform: 'rotate(0deg)' })),
-      transition('true <=> false', [animate('125ms ease-in')])
-    ]),
-    trigger('expand', [
-      state('false', style({ 'height': '0' })),
-      state('true', style({})),
-      transition('true <=> false', [animate('500ms cubic-bezier(0.4, 0.0, 0.2, 1)')])
-    ])
+    rotateFull,
+    expand,
   ]
 })
 export class TableGroupComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null> {
