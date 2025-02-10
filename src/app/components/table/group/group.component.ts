@@ -69,6 +69,7 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
   private readonly iconsService = inject(IconsService);
 
   pageIndex = 0;
+  settingsRotate = false;
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);

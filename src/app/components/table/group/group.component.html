@@ -8,9 +8,12 @@
       <span i18n>Total: </span>
       <span>{{ group.total }}</span>
     </p>
+    <app-group-tasks-by-status [groupData]="group.data" [statusesGroups]="statusesGroups" />
   </div>
   <div class="general-actions">
-    <app-group-tasks-by-status [groupData]="group.data" [statusesGroups]="statusesGroups" />
+    <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false">
+      <mat-icon [@rotateFull]="settingsRotate" [fontIcon]="getIcon('settings')" />
+    </button>
     <button mat-icon-button (click)="switchView()">
       <mat-icon [@rotateFull]="group.opened" [fontIcon]="getIcon('arrow-down')" />
     </button>
