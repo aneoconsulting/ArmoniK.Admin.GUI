@@ -1,5 +1,5 @@
 <section class="detailed-row">
-  <div class="general-data">
+  <article class="general-data">
     <div class="group-info">
       <mat-icon [fontIcon]="getIcon('table-group')" />
       <p>{{ group.name }}</p>
@@ -8,19 +8,19 @@
       <span i18n>Total: </span>
       <span>{{ group.total }}</span>
     </p>
-  </div>
-  <div class="tasks-statuses">
+  </article>
+  <article class="tasks-statuses">
     <p>Tasks statuses: </p>
     <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
-  </div>
-  <div class="general-actions">
+  </article>
+  <article class="general-actions">
     <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false">
       <mat-icon [@rotateFull]="settingsRotate" [fontIcon]="getIcon('settings')" />
     </button>
     <button mat-icon-button (click)="switchView()">
       <mat-icon [@rotateFull]="group.opened" [fontIcon]="getIcon('arrow-down')" />
     </button>
-  </div>
+  </article>
 </section>
 <section [@expand]="group.opened">
   <mat-card class="table-container">
