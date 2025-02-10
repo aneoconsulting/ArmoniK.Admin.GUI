@@ -33,7 +33,15 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
             field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
             for: 'root',
             operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: '0a773a41-0668-4af6-81db-32a50a5c978c'
+            value: '335af491-ff89-4b9a-8952-8cb2e800be65'
+          }
+        ],
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: '5bb6d33a-0931-485a-a7d9-d5263218c1bd'
           }
         ]
       ]
@@ -212,11 +220,15 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     const group: Group<SessionRaw, TaskOptions> = {
       name: groupCondition.name,
       opened: false,
+      total: 0,
       data: []
     };
     const groupSubscription = this.refresh$.pipe(
       switchMap(() => this.grpcService.list$(this.options, groupCondition.conditions)),
-      map((data) => this.computeGrpcData(data)),
+      map((data) => {
+        group.total = data.total;
+        return this.computeGrpcData(data);
+      }),
       map((data) => {
         if (data) {
           return data.map(entry => this.createNewLine(entry));

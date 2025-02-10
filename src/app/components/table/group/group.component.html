@@ -1,0 +1,41 @@
+<section class="detailed-row">
+  <div class="general-data">
+    <div class="group-info">
+      <mat-icon [fontIcon]="getIcon('table-group')" />
+      <p>{{ group.name }}</p>
+    </div>
+    <p>
+      <span i18n>Total: </span>
+      <span>{{ group.total }}</span>
+    </p>
+  </div>
+  <div class="general-actions">
+    <app-group-tasks-by-status [groupData]="group.data" [statusesGroups]="statusesGroups" />
+    <button mat-icon-button (click)="switchView()">
+      <mat-icon [@rotateFull]="group.opened" [fontIcon]="getIcon('arrow-down')" />
+    </button>
+  </div>
+</section>
+<section [@expand]="group.opened">
+  <article class="table-actions">
+    <app-refresh-button />
+    <mat-paginator [length]="group.total" [pageIndex]="pageIndex" (page)="pageChange($event)" pageSize="1" aria-label="Select page" i18n-aria-label />
+  </article>
+  <mat-card class="table-container">
+    <table mat-table [dataSource]="group.data">
+      @for (column of displayedColumns; track $index) {
+        <ng-container [matColumnDef]="column.key.toString()">
+          <ng-container *matHeaderCellDef></ng-container>
+          <td *matCellDef="let element" mat-cell>
+            @if (column.type !== 'actions') {
+              <app-table-cell [column]="column" [element]="element" [statusesService]="statusesService" [statusesGroups]="statusesGroups" />
+            } @else {
+              <app-table-actions [actions]="actions" [element]="element" />
+            }
+          </td>
+        </ng-container>
+      }
+      <tr mat-row *matRowDef="let row; columns: columnsKeys;"></tr>
+    </table>
+  </mat-card>
+</section>

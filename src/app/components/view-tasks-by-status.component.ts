@@ -14,7 +14,7 @@ import { SpinnerComponent } from './spinner.component';
   @if (loading) {
     <app-spinner />
   } @else {
-    @for (group of statusesGroups; track group.name) {
+    @for (group of groups; track group.name) {
       <a mat-button
         [matTooltip]="group.name"
         [routerLink]="['/tasks']"
@@ -45,22 +45,23 @@ import { SpinnerComponent } from './spinner.component';
 })
 export class ViewTasksByStatusComponent {
   @Input({ required: true }) loading = true;
-  @Input({ required: true }) defaultQueryParams: Record<string, string> = {};
+  @Input({ required: true }) set defaultQueryParams(entry: Record<string, string>) {
+    this.queryParams = entry;
+    this.groups.forEach((group) => group.queryParams = this.createQueryParams(group));
+  }
+
+  private queryParams: Record<string, string> = {};
 
   @Input() set statusesGroups(entries: TasksStatusesGroup[]) {
-    this._statusesGroups = entries.map(group => this.completeGroup(group));
+    this.groups = entries.map(group => this.completeGroup(group));
   }
 
-  private _statusesGroups: TasksStatusesGroup[] = [];
-
-  get statusesGroups(): TasksStatusesGroup[] {
-    return this._statusesGroups;
-  }
+  groups: TasksStatusesGroup[] = [];
 
   @Input() set statusesCount(entries: StatusCount[] | null) {
-    this.statusesGroups.forEach(group => group.statusCount = 0);
+    this.groups.forEach(group => group.statusCount = 0);
     entries?.forEach((entry) => {
-      this.statusesGroups.forEach(group => {
+      this.groups.forEach(group => {
         if (group.statuses.includes(entry.status) && group.statusCount !== undefined) {
           group.statusCount += entry.count;
         }
@@ -69,9 +70,9 @@ export class ViewTasksByStatusComponent {
   }
 
   createQueryParams(group: TasksStatusesGroup) {
-    const queryOrs = Object.keys(this.defaultQueryParams).map(key => key[0]).filter((key, index, self) => self.indexOf(key) === index);
-    const queryParamsKeys = Object.keys(this.defaultQueryParams);
-    const queryParamsValues = Object.values(this.defaultQueryParams);
+    const queryOrs = Object.keys(this.queryParams).map(key => key[0]).filter((key, index, self) => self.indexOf(key) === index);
+    const queryParamsKeys = Object.keys(this.queryParams);
+    const queryParamsValues = Object.values(this.queryParams);
     const taskStatusQueryParams: Record<string, string> = {};
     let orGroups = 0;
 

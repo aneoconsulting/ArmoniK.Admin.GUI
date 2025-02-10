@@ -10,5 +10,6 @@ export type GroupConditions<F extends FiltersEnums, FO extends FiltersOptionsEnu
 export type Group<T extends DataRaw, O extends TaskOptions | null = null> = {
   name: string;
   opened: boolean;
+  total: number;
   data: ArmonikData<T, O>[]
 }

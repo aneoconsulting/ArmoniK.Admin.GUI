@@ -1,0 +1,47 @@
+.detailed-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.general-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 20rem;
+}
+
+.general-actions {
+  display: flex;
+  align-items: center;
+}
+
+.group-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: bolder;
+}
+
+.table-actions {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
+
+app-refresh-button {
+  padding-left: 1rem;
+}
+
+mat-card {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0;
+  background-color: var(--mat-sidenav-content-background-color) !important;
+}
+
+p {
+  margin: 0;
+}

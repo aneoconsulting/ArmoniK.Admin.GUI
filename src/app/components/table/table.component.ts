@@ -13,6 +13,7 @@ import { ListOptions } from '@app/types/options';
 import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
+import { TableGroupComponent } from './group/group.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
@@ -32,6 +33,7 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
     MatSortModule,
     TableActionsComponent,
     TableContainerComponent,
+    TableGroupComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -66,7 +68,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O> |Group<T, O>): number | string {
+  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O> | Group<T, O>): number | string {
     return index;
   }
 
@@ -84,7 +86,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   private _isAllSelected: boolean = false;
 
   get data(): (ArmonikData<T, O> | Group<T, O>)[] {
-    return [...this.groups, ...this._data];
+    return [...(this.groups ?? []), ...this._data];
   }
 
   get columns(): TableColumn<T, O>[] {
@@ -92,7 +94,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   }
 
   get columnsKeys(): ColumnKey<T, O>[] {
-    return this._columnsKeys;
+    return [...this._columnsKeys, 'group'] as ColumnKey<T, O>[];
   }
 
   get isAllSelected(): boolean {
@@ -171,10 +173,5 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
 
   isData(element: ArmonikData<T, O> | Group<T, O>) {
     return (element as ArmonikData<T, O>).raw !== undefined && (element as Group<T, O>).name === undefined;
-  }
-
-  test(e: unknown) {
-    console.log(e);
-    return '';
   }
 }

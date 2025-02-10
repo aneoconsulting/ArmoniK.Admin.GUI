@@ -4,6 +4,17 @@
     [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)" [dataSource]="data" i18n-aria-label
     aria-label="Data Table">
 
+    <ng-container matColumnDef="group">
+      <ng-container *matHeaderCellDef></ng-container>
+      <ng-container *matCellDef="let element">
+        @if (!isData(element)) {
+          <td mat-cell [attr.colspan]="columns.length" style="padding: 0;">
+            <app-table-group [group]="element" [columns]="columns" [actions]="actions" [statusesService]="statusesService" [statusesGroups]="statusesGroups"/>
+          </td>
+        }
+      </ng-container>
+    </ng-container>
+
     @for (column of columns; track column.key) {
     <ng-container [matColumnDef]="column.key.toString()">
       <!-- Header -->
@@ -30,9 +41,6 @@
       </ng-container>
     </ng-container>
     }
-    <ng-container>
-      @if (!isData(element)) {}
-    </ng-container>
 
     <!-- Empty -->
     <tr *matNoDataRow>
@@ -42,7 +50,7 @@
     </tr>
 
     <tr mat-header-row *matHeaderRowDef="columnsKeys; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsKeys;" ></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsKeys;"></tr>
   </table>
 
   <mat-paginator [length]="total" [pageIndex]="options.pageIndex" [pageSize]="options.pageSize"
