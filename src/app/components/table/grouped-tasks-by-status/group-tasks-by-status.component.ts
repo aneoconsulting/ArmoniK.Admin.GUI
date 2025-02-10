@@ -22,15 +22,18 @@ export class GroupTasksByStatusComponent<T extends DataRaw, O extends TaskOption
     groupData.forEach((data) => {
       this.filters.push(...data.filters);
     });
+
     groupData.forEach((data, index) => {
       const keys = Object.keys(data.queryTasksParams);
       keys.forEach((key) => (this.queryParams[`${index}${key.slice(1)}`] = data.queryTasksParams[key]));
     });
+    this.queryParamsLength = Object.keys(this.queryParams).length;
   }
 
   @Input({ required: true }) statusesGroups: TasksStatusesGroup[];
 
   filters: TaskSummaryFilters;
   queryParams: Record<string, string>;
+  queryParamsLength = 0;
   refresh = new Subject<void>();
 }

@@ -8,6 +8,9 @@
       <span i18n>Total: </span>
       <span>{{ group.total }}</span>
     </p>
+  </div>
+  <div class="tasks-statuses">
+    <p>Tasks statuses: </p>
     <app-group-tasks-by-status [groupData]="group.data" [statusesGroups]="statusesGroups" />
   </div>
   <div class="general-actions">
@@ -20,11 +23,11 @@
   </div>
 </section>
 <section [@expand]="group.opened">
-  <article class="table-actions">
-    <app-refresh-button />
-    <mat-paginator [length]="group.total" [pageIndex]="pageIndex" (page)="pageChange($event)" pageSize="1" aria-label="Select page" i18n-aria-label />
-  </article>
   <mat-card class="table-container">
+    <article class="table-actions">
+      <app-refresh-button />
+      <mat-paginator [length]="group.total" [pageIndex]="pageIndex" (page)="pageChange($event)" pageSize="1" aria-label="Select page" i18n-aria-label />
+    </article>
     <table mat-table [dataSource]="group.data">
       @for (column of displayedColumns; track $index) {
         <ng-container [matColumnDef]="column.key.toString()">

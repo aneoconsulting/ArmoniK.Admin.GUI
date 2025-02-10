@@ -15,7 +15,8 @@ export class InvertFilterService<F extends FiltersEnums, FO extends FiltersOptio
   };
 
   invert(filters: FiltersOr<F, FO>): FiltersOr<F, FO> {
-    return filters.map((filterAnd) => filterAnd.map((filter) => this.invertFilter(filter)));
+    return [filters.map((filterAnd) => filterAnd.map((filter) => this.invertFilter(filter))).flat()];
+
   }
 
   private invertFilter(filter: Filter<F,FO>) {

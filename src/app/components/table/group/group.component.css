@@ -13,6 +13,11 @@
   min-width: 20rem;
 }
 
+.tasks-statuses {
+  display: flex;
+  align-items: center;
+}
+
 .general-actions {
   display: flex;
   align-items: center;
@@ -28,18 +33,20 @@
 .table-actions {
   display: flex;
   justify-content: space-between;
-  padding-top: 1rem;
+  align-items: center;
+  background-color: var(--mat-table-background-color);
 }
 
 app-refresh-button {
-  padding-left: 1rem;
+  padding-left: 0.5rem;
 }
 
 mat-card {
+  padding: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   border-radius: 0;
-  background-color: var(--mat-sidenav-content-background-color) !important;
+  background-color: var(--mat-sidenav-content-background-color);
 }
 
 p {

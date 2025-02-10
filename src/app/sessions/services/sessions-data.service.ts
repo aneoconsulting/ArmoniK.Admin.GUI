@@ -41,7 +41,7 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
             field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
             for: 'root',
             operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: '5bb6d33a-0931-485a-a7d9-d5263218c1bd'
+            value: '03b69175-b3fb-47e4-b1b1-b5a6ab302601'
           }
         ]
       ]
