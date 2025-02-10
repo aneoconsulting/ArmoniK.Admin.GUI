@@ -163,4 +163,8 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   trackBy(index: number, _item: ArmonikData<SessionRaw, TaskOptions>) {
     return index;
   }
+
+  groupPageChange(groupName: string) {
+    this.tableDataService.refreshGroup(groupName);
+  }
 }

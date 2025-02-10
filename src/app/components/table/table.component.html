@@ -9,7 +9,15 @@
       <ng-container *matCellDef="let element">
         @if (!isData(element)) {
           <td mat-cell [attr.colspan]="columns.length" style="padding: 0;">
-            <app-table-group [group]="element" [columns]="columns" [actions]="actions" [statusesService]="statusesService" [statusesGroups]="statusesGroups"/>
+            <app-table-group
+              [group]="element"
+              [columns]="columns"
+              [actions]="actions"
+              [statusesService]="statusesService"
+              [statusesGroups]="statusesGroups"
+              [trackBy]="trackBy"
+              (page)="groupPageUpdate(element.name)"
+            />
           </td>
         }
       </ng-container>

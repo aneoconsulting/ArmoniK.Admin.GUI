@@ -15,19 +15,21 @@ import { Subject } from 'rxjs';
   ]
 })
 export class GroupTasksByStatusComponent<T extends DataRaw, O extends TaskOptions | null = null> {
-  @Input({ required: true }) set groupData(entry: ArmonikData<T, O>[]) {
-    this.filters = [];
-    this.queryParams = {};
-    const groupData = entry as unknown as (SessionData | ApplicationData | PartitionData)[];
-    groupData.forEach((data) => {
-      this.filters.push(...data.filters);
-    });
-
-    groupData.forEach((data, index) => {
-      const keys = Object.keys(data.queryTasksParams);
-      keys.forEach((key) => (this.queryParams[`${index}${key.slice(1)}`] = data.queryTasksParams[key]));
-    });
-    this.queryParamsLength = Object.keys(this.queryParams).length;
+  @Input({ required: true }) set groupData(entry: ArmonikData<T, O>[] | null) {
+    if (entry !== null) {
+      this.filters = [];
+      this.queryParams = {};
+      const groupData = entry as unknown as (SessionData | ApplicationData | PartitionData)[];
+      groupData.forEach((data) => {
+        this.filters.push(...data.filters);
+      });
+  
+      groupData.forEach((data, index) => {
+        const keys = Object.keys(data.queryTasksParams);
+        keys.forEach((key) => (this.queryParams[`${index}${key.slice(1)}`] = data.queryTasksParams[key]));
+      });
+      this.queryParamsLength = Object.keys(this.queryParams).length;
+    }
   }
 
   @Input({ required: true }) statusesGroups: TasksStatusesGroup[];

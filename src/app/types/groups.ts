@@ -1,4 +1,5 @@
 import { TaskOptions } from '@app/tasks/types';
+import { Observable, Subject } from 'rxjs';
 import { ArmonikData, DataRaw } from './data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from './filters';
 
@@ -11,5 +12,7 @@ export type Group<T extends DataRaw, O extends TaskOptions | null = null> = {
   name: string;
   opened: boolean;
   total: number;
-  data: ArmonikData<T, O>[]
+  page: number;
+  refresh$: Subject<void>,
+  data: Observable<ArmonikData<T, O>[]>
 }

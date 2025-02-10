@@ -10,7 +10,7 @@ import { ListOptions } from '@app/types/options';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { InvertFilterService } from '@services/invert-filter.service';
-import { Subject, Subscription, map, mergeAll, switchMap } from 'rxjs';
+import { Subject, map, merge, mergeAll, switchMap } from 'rxjs';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionRaw } from '../types';
 
@@ -22,7 +22,6 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   scope: Scope = 'sessions';
 
   groups: Group<SessionRaw, TaskOptions>[] = [];
-  private readonly groupsSubscriptions: Map<string, Subscription> = new Map();
 
   groupsConditions: GroupConditions<SessionRawEnumField, TaskOptionEnumField>[] = [
     {
@@ -56,8 +55,6 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
 
   ngOnDestroy(): void {
     this.onDestroy();
-    this.groupsSubscriptions.forEach((groupSubscription) => groupSubscription.unsubscribe());
-    this.groupsSubscriptions.clear();
   }
 
   computeGrpcData(entries: ListSessionsResponse): SessionRaw[] | undefined {
@@ -217,33 +214,29 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   }
 
   initGroup(groupCondition: GroupConditions<SessionRawEnumField, TaskOptionEnumField>) {
+    const groupRefresh$ = new Subject<void>();
     const group: Group<SessionRaw, TaskOptions> = {
       name: groupCondition.name,
       opened: false,
       total: 0,
-      data: []
+      page: 0,
+      refresh$: groupRefresh$,
+      data: merge(this.refresh$, groupRefresh$).pipe(
+        switchMap(() => this.grpcService.list$({pageSize: 100, pageIndex: group.page, sort: this.options.sort}, groupCondition.conditions)),
+        map((data) => {
+          group.total = data.total;
+          return this.computeGrpcData(data);
+        }),
+        map((data) => {
+          if (data) {
+            return data.map(entry => this.createNewLine(entry));
+          }
+          return [];
+        })
+      )
     };
-    const groupSubscription = this.refresh$.pipe(
-      switchMap(() => this.grpcService.list$(this.options, groupCondition.conditions)),
-      map((data) => {
-        group.total = data.total;
-        return this.computeGrpcData(data);
-      }),
-      map((data) => {
-        if (data) {
-          return data.map(entry => this.createNewLine(entry));
-        }
-        return undefined;
-      })
-    ).subscribe((data) => {
-      if (data) {
-        group.data = data;
-      }
-    });
 
     this.groups.push(group);
-
-    this.groupsSubscriptions.set(groupCondition.name, groupSubscription);
   }
 
   setGroups() {
@@ -255,12 +248,15 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.initGroup(groupCondition);
   }
 
-  removeGroup(groupName: string) {
-    const subscription = this.groupsSubscriptions.get(groupName);
-    if (subscription) {
-      subscription.unsubscribe();
-      this.groupsSubscriptions.delete(groupName);
+  refreshGroup(groupName: string) {
+    const group = this.groups.find((group) => group.name === groupName);
+    if (group) {
+      group.refresh$.next();
     }
+  }
+
+  removeGroup(groupName: string) {
+    this.groups = this.groups.filter((group) => group.name !== groupName);
   }
 
   // Duration computation

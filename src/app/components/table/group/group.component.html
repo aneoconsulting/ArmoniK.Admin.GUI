@@ -11,7 +11,7 @@
   </div>
   <div class="tasks-statuses">
     <p>Tasks statuses: </p>
-    <app-group-tasks-by-status [groupData]="group.data" [statusesGroups]="statusesGroups" />
+    <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
   </div>
   <div class="general-actions">
     <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false">
@@ -24,10 +24,9 @@
 </section>
 <section [@expand]="group.opened">
   <mat-card class="table-container">
-    <article class="table-actions">
-      <app-refresh-button />
-      <mat-paginator [length]="group.total" [pageIndex]="pageIndex" (page)="pageChange($event)" pageSize="1" aria-label="Select page" i18n-aria-label />
-    </article>
+    <div class="table-actions">
+      <mat-paginator [length]="group.total" [pageIndex]="group.page" (page)="pageChange($event)" pageSize="100" aria-label="Select page" i18n-aria-label />
+    </div>
     <table mat-table [dataSource]="group.data">
       @for (column of displayedColumns; track $index) {
         <ng-container [matColumnDef]="column.key.toString()">

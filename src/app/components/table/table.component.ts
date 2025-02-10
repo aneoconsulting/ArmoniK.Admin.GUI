@@ -76,6 +76,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() personnalizeTasksByStatus = new EventEmitter<void>();
+  @Output() groupPageChange = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -173,5 +174,9 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
 
   isData(element: ArmonikData<T, O> | Group<T, O>) {
     return (element as ArmonikData<T, O>).raw !== undefined && (element as Group<T, O>).name === undefined;
+  }
+
+  groupPageUpdate(groupName: string) {
+    this.groupPageChange.emit(groupName);
   }
 }

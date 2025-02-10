@@ -1,4 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,12 +9,11 @@ import { MatTableModule } from '@angular/material/table';
 import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
-import { ColumnKey, DataRaw } from '@app/types/data';
+import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
 import { Group } from '@app/types/groups';
 import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { IconsService } from '@services/icons.service';
-import { RefreshButtonComponent } from '../../refresh-button.component';
 import { GroupTasksByStatusComponent } from '../grouped-tasks-by-status/group-tasks-by-status.component';
 import { TableActionsComponent } from '../table-actions.component';
 import { TableCellComponent } from '../table-cell.component';
@@ -31,8 +31,8 @@ import { TableCellComponent } from '../table-cell.component';
     MatCardModule,
     TableCellComponent,
     TableActionsComponent,
-    RefreshButtonComponent,
-    GroupTasksByStatusComponent
+    GroupTasksByStatusComponent,
+    AsyncPipe,
   ],
   providers: [
     IconsService
@@ -60,15 +60,18 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
   @Input({ required: false }) actions: ActionTable<T, O>[];
   @Input({ required: false }) statusesService: StatusService<S>;
   @Input({ required: false }) statusesGroups: TasksStatusesGroup[];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O> | Group<T, O>): number | string {
+    return index;
+  }
 
   columnsKeys: ColumnKey<T, O>[];
   displayedColumns: TableColumn<T, O>[];
 
-  @Output() page = new EventEmitter<number>();
+  @Output() page = new EventEmitter<void>();
 
   private readonly iconsService = inject(IconsService);
 
-  pageIndex = 0;
   settingsRotate = false;
 
   getIcon(name: string) {
@@ -80,6 +83,7 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
   }
 
   pageChange(event: PageEvent) {
-    this.page.emit(event.pageIndex);
+    this.group.page = event.pageIndex;
+    this.page.emit();
   }
 }
