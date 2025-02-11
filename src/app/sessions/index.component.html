@@ -21,6 +21,12 @@
       (lockColumnsChange)="onLockColumnsChange()"
       (addToDashboard)="onAddToDashboard()"
     >
+      <ng-container extra-buttons-right>
+        <button mat-button (click)="openGroups()">
+          <mat-icon [fontIcon]="getIcon('table-group')" />
+          <span i18n>Manage Groups</span>
+        </button>
+      </ng-container>
       <ng-container extra-menu-items>
         <button mat-menu-item (click)="addCustomColumn()">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>

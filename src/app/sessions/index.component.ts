@@ -1,5 +1,5 @@
 import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +19,7 @@ import { DataFilterService } from '@app/types/services/data-filter.service';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
+import { ManageGroupsDialogComponent, ManageGroupsDialogInput } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -61,7 +62,7 @@ import { SessionRaw } from './types';
     SessionsFiltersService,
     {
       provide: DataFilterService,
-      useExisting: SessionsFiltersService
+      useExisting: SessionsFiltersService,
     },
     SessionsStatusesService,
     MatDialog,
@@ -83,13 +84,14 @@ import { SessionRaw } from './types';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    SessionsTableComponent
+    SessionsTableComponent,
   ]
 })
 export class IndexComponent extends TableHandlerCustomValues<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
   readonly tableDataService = inject(SessionsDataService);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   tableType: TableType = 'Sessions';
 
@@ -99,6 +101,7 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
 
   ngAfterViewInit(): void {
     this.mergeSubscriptions();
+    this.openGroups();
   }
 
   ngOnDestroy(): void {
@@ -119,5 +122,14 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
     if (this.displayedColumnsKeys.includes('duration')) {
       this.refresh();
     }
+  }
+
+  openGroups() {
+    this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField,TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
+      data: {
+        groups: this.tableDataService.groupsConditions
+      },
+      viewContainerRef: this.viewContainerRef
+    });
   }
 }

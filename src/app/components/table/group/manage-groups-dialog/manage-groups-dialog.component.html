@@ -1,0 +1,41 @@
+<mat-dialog-content>
+  <section id="groups-names">
+    <button mat-button (click)="addGroup()">
+      <mat-icon [fontIcon]="getIcon('add')"/>
+      <span>Add a group</span>
+    </button>
+    <mat-divider />
+    <ul>
+      @for (group of groups; track $index) {
+        <li>
+          <button mat-button (click)="selectGroup(group, true)">
+            {{group.name}}
+          </button>
+          <button mat-icon-button (click)="removeGroup($index)">
+            <mat-icon [fontIcon]="getIcon('delete')" />
+          </button>
+        </li>
+      }
+    </ul>
+  </section>
+  <section id="group-conditions">
+    @if (selectedGroup) {
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Group Name" [value]="selectedGroup.name" (input)="updateName($event)" />
+      </mat-form-field>
+      <article id="conditions-area">
+        @for (filters of selectedGroup.conditions; track $index) {
+          <app-filters-dialog-or [first]="$first" [filtersOr]="filters" (removeChange)="removeOrFilter($event)" />
+        }
+      </article>
+      <button mat-button id="or-button" (click)="addOrFilter()">
+        <mat-icon [fontIcon]="getIcon('add')" />
+        <span i18n>Add an or Filter</span>
+      </button>
+    } @else {
+      <div id="no-groups">
+        <p>Please select or create a group.</p>
+      </div>
+    }
+  </section>
+</mat-dialog-content>
