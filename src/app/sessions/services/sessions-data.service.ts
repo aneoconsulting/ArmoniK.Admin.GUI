@@ -8,6 +8,7 @@ import { Filter, FiltersOr } from '@app/types/filters';
 import { Group, GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
+import { ManageGroupsDialogResult } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { InvertFilterService } from '@services/invert-filter.service';
 import { Subject, map, merge, mergeAll, switchMap } from 'rxjs';
@@ -239,6 +240,24 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     this.groups.push(group);
   }
 
+  manageGroupDialogResult(dialogResult: ManageGroupsDialogResult<SessionRawEnumField, TaskOptionEnumField>) {
+    const editedKeys = Object.keys(dialogResult.editedGroups);
+    editedKeys.forEach((key) => {
+      const conditionsIndex =  this.groupsConditions.findIndex((group) => group.name === key);
+      if (conditionsIndex !== -1) {
+        this.groupsConditions[conditionsIndex] = dialogResult.editedGroups[key];
+      }
+      const groupIndex = this.groups.findIndex((group) => group.name === key);
+      if (groupIndex) {
+        this.groupsConditions[groupIndex].name = dialogResult.editedGroups[key].name;
+      }
+    });
+
+    dialogResult.addedGroups.forEach((group) => (this.addGroup(group)));
+
+    dialogResult.deletedGroups.forEach((groupName) => (this.removeGroup(groupName)));
+  }
+
   setGroups() {
     this.groupsConditions.forEach((g) => this.initGroup(g));
   }
@@ -256,7 +275,10 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   }
 
   removeGroup(groupName: string) {
-    this.groups = this.groups.filter((group) => group.name !== groupName);
+    const index = this.groups.findIndex((group) => group.name === groupName);
+    if (index !== -1) {
+      this.groups.splice(index, 1);
+    }
   }
 
   // Duration computation

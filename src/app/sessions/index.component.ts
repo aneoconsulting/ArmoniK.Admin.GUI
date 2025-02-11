@@ -124,11 +124,17 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
   }
 
   openGroups() {
-    this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField,TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
+    const dialogRef = this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField,TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
       data: {
         groups: this.tableDataService.groupsConditions
       },
       viewContainerRef: this.viewContainerRef
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.tableDataService.manageGroupDialogResult(result);
+      }
     });
   }
 }

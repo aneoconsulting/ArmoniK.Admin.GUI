@@ -43,7 +43,7 @@ export type ManageGroupsDialogResult<F extends FiltersEnums, FO extends FiltersO
 export class ManageGroupsDialogComponent<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   private readonly dialogRef: MatDialogRef<ManageGroupsDialogComponent<F, FO>, ManageGroupsDialogResult<F, FO>> = inject(MatDialogRef);
   constructor(@Inject(MAT_DIALOG_DATA) private readonly dialogData: ManageGroupsDialogInput<F, FO>) {
-    this.groups = [...dialogData.groups];
+    this.groups = structuredClone(dialogData.groups);
     if (dialogData.selected !== undefined) {
       this.selectedGroup = this.groups.find(group => group.name === dialogData.selected);
     }
@@ -53,9 +53,9 @@ export class ManageGroupsDialogComponent<F extends FiltersEnums, FO extends Filt
 
   groups: GroupConditions<F, FO>[];
 
-  addedGroups: GroupConditions<F, FO>[];
-  editedGroups: Record<string, GroupConditions<F, FO>>;
-  deletedGroups: string[];
+  addedGroups: GroupConditions<F, FO>[] = [];
+  editedGroups: Record<string, GroupConditions<F, FO>> = {};
+  deletedGroups: string[] = [];
 
   selectedGroup: GroupConditions<F, FO> | undefined;
 
