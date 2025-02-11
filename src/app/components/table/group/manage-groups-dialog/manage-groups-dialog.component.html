@@ -39,3 +39,8 @@
     }
   </section>
 </mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="confirmClose()">Confirm</button>
+</mat-dialog-actions>

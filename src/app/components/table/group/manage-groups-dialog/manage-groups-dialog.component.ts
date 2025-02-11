@@ -136,4 +136,8 @@ export class ManageGroupsDialogComponent<F extends FiltersEnums, FO extends Filt
       editedGroups: this.editedGroups
     });
   }
+
+  close() {
+    this.dialogRef.close();
+  }
 }
