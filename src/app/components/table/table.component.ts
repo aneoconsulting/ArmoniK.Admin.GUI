@@ -13,7 +13,7 @@ import { ListOptions } from '@app/types/options';
 import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
-import { TableGroupComponent } from './group/group.component';
+import { TableGroupComponent } from './group/group-row/group.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';

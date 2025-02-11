@@ -12,11 +12,11 @@ import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
 import { Group } from '@app/types/groups';
 import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
+import { TableActionsComponent } from '@components/table/table-actions.component';
+import { TableCellComponent } from '@components/table/table-cell.component';
 import { IconsService } from '@services/icons.service';
 import { rotateFull, expand } from '@shared/animations';
 import { GroupTasksByStatusComponent } from '../grouped-tasks-by-status/group-tasks-by-status.component';
-import { TableActionsComponent } from '../table-actions.component';
-import { TableCellComponent } from '../table-cell.component';
 
 @Component({
   selector: 'app-table-group',
