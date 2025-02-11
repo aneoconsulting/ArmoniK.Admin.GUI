@@ -101,7 +101,6 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
 
   ngAfterViewInit(): void {
     this.mergeSubscriptions();
-    this.openGroups();
   }
 
   ngOnDestroy(): void {

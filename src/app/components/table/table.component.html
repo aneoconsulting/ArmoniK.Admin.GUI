@@ -17,6 +17,7 @@
               [statusesGroups]="statusesGroups"
               [trackBy]="trackBy"
               (page)="groupPageUpdate(element.name)"
+              (groupSettings)="onGroupSettingsEmit($event)"
             />
           </td>
         }

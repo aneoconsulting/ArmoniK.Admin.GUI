@@ -77,6 +77,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() personnalizeTasksByStatus = new EventEmitter<void>();
   @Output() groupPageChange = new EventEmitter<string>();
+  @Output() groupSettings = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -178,5 +179,9 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
 
   groupPageUpdate(groupName: string) {
     this.groupPageChange.emit(groupName);
+  }
+
+  onGroupSettingsEmit(groupName: string) {
+    this.groupSettings.emit(groupName);
   }
 }

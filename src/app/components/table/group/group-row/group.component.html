@@ -14,7 +14,7 @@
     <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
   </article>
   <article class="general-actions">
-    <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false">
+    <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false" (click)="groupSettingsEmit()">
       <mat-icon [@rotateFull]="settingsRotate" [fontIcon]="getIcon('settings')" />
     </button>
     <button mat-icon-button (click)="switchView()">

@@ -1,12 +1,13 @@
 import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard} from '@angular/cdk/clipboard';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, inject } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Router, RouterModule } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData, SessionData } from '@app/types/data';
 import { ActionTable } from '@app/types/table';
+import { ManageGroupsDialogComponent, ManageGroupsDialogInput } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { TableComponent } from '@components/table/table.component';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { Subject } from 'rxjs';
@@ -33,6 +34,7 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   readonly statusesService = inject(SessionsStatusesService);
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   readonly tableDataService = inject(SessionsDataService);
 
@@ -166,5 +168,15 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
 
   groupPageChange(groupName: string) {
     this.tableDataService.refreshGroup(groupName);
+  }
+
+  groupeSettingsDisplay(groupName: string) {
+    this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField, TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
+      data: {
+        groups: this.tableDataService.groupsConditions,
+        selected: groupName,
+      },
+      viewContainerRef: this.viewContainerRef
+    });
   }
 }

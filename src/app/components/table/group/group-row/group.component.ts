@@ -61,6 +61,7 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
   displayedColumns: TableColumn<T, O>[];
 
   @Output() page = new EventEmitter<void>();
+  @Output() groupSettings = new EventEmitter<string>();
 
   private readonly iconsService = inject(IconsService);
 
@@ -77,5 +78,9 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
   pageChange(event: PageEvent) {
     this.group.page = event.pageIndex;
     this.page.emit();
+  }
+
+  groupSettingsEmit() {
+    this.groupSettings.emit(this.group.name);
   }
 }
