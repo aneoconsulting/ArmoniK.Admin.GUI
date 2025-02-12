@@ -9,10 +9,12 @@
       <span>{{ group.total }}</span>
     </p>
   </article>
-  <article class="tasks-statuses">
-    <p>Tasks statuses: </p>
-    <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
-  </article>
+  @if (statusesGroups) {
+    <article class="tasks-statuses">
+      <p>Tasks statuses: </p>
+      <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
+    </article>
+  }
   <article class="general-actions">
     <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false" (click)="groupSettingsEmit()">
       <mat-icon [@rotateFull]="settingsRotate" [fontIcon]="getIcon('settings')" />
