@@ -11,6 +11,7 @@ import { TableColumn } from '../column.type';
 import { ArmonikData, ColumnKey, DataRaw } from '../data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
 import { ListOptions } from '../options';
+import { DataFilterService } from '../services/data-filter.service';
 import { AbstractTableDataService } from '../services/table-data.service';
 
 export interface SelectableTable<D extends DataRaw> {
@@ -48,6 +49,7 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
   abstract readonly tableDataService: AbstractTableDataService<T, F, O, FO>;
   readonly dialog = inject(MatDialog);
   private readonly viewContainerRef = inject(ViewContainerRef);
+  abstract readonly filtersService: DataFilterService<F, FO>;
 
   protected initTableDataService() {
     this.data = this.tableDataService.data;
@@ -77,13 +79,12 @@ export abstract class AbstractTableComponent<T extends DataRaw, F extends Filter
       viewContainerRef: this.viewContainerRef
     });
 
-    const subscription = dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.tableDataService.manageGroupDialogResult(result);
+        this.filtersService.saveGroups(this.tableDataService.groupsConditions);
       }
     });
-
-    subscription.unsubscribe();
   }
 
   abstract isDataRawEqual(value: T, entry: T): boolean;

@@ -6,11 +6,13 @@ import { Router, RouterModule } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData, SessionData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { Subject } from 'rxjs';
 import { SessionsDataService } from '../services/sessions-data.service';
+import { SessionsFiltersService } from '../services/sessions-filters.service';
 import { SessionsStatusesService } from '../services/sessions-statuses.service';
 import { SessionRaw } from '../types';
 
@@ -31,6 +33,7 @@ import { SessionRaw } from '../types';
 export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField>
   implements OnInit {  
   readonly statusesService = inject(SessionsStatusesService);
+  readonly filtersService = inject(SessionsFiltersService);
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
 
@@ -159,8 +162,11 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
     this.tableDataService.onDelete(sessionId);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  trackBy(index: number, _item: ArmonikData<SessionRaw, TaskOptions>) {
-    return index;
+  trackBy(index: number, item: ArmonikData<SessionRaw, TaskOptions> | Group<SessionRaw, TaskOptions>) {
+    if ((item as ArmonikData<SessionRaw, TaskOptions>).raw !== undefined) {
+      return (item as ArmonikData<SessionRaw, TaskOptions>).raw.sessionId;
+    } else {
+      return (item as Group<SessionRaw, TaskOptions>).name();
+    }
   }
 }

@@ -199,13 +199,12 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
       viewContainerRef: this.viewContainerRef
     });
 
-    const subscription = dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.tableDataService.manageGroupDialogResult(result);
+        this.filtersService.saveGroups(this.tableDataService.groupsConditions);
       }
     });
-
-    subscription.unsubscribe();
   }
 
   protected createDashboardLine(): TableLine<T, O> {

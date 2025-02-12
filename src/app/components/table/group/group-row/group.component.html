@@ -27,7 +27,7 @@
     <div class="table-actions">
       <mat-paginator [length]="group.total" [pageIndex]="group.page" (page)="pageChange($event)" pageSize="100" aria-label="Select page" i18n-aria-label />
     </div>
-    <table mat-table [dataSource]="group.data">
+    <table mat-table [dataSource]="group.data" [trackBy]="trackBy">
       @for (column of displayedColumns; track $index) {
         <ng-container [matColumnDef]="column.key.toString()">
           <ng-container *matHeaderCellDef></ng-container>

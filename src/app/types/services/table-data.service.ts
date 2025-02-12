@@ -191,9 +191,13 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   }
 
   removeGroup(groupName: string) {
-    const index = this.groups.findIndex((group) => group.name() === groupName);
-    if (index !== -1) {
-      this.groups.splice(index, 1);
+    const conditionsIndex =  this.groupsConditions.findIndex((group) => group.name === groupName);
+    if (conditionsIndex !== -1) {
+      this.groupsConditions.splice(conditionsIndex, 1);
+    }
+    const groupIndex = this.groups.findIndex((group) => group.name() === groupName);
+    if (groupIndex !== -1) {
+      this.groups.splice(groupIndex, 1);
     }
   }
 
