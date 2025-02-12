@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewContainerRef, inject, signal } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditNameLineDialogComponent } from '@app/dashboard/components/edit-name-line-dialog.component';
 import { TableLine } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
+import { ManageGroupsTableDialogInput, ManageGroupsTableDialogResult, ManageTableGroupsDialogComponent } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -13,6 +14,7 @@ import { ScopeConfig } from '../config';
 import { ColumnKey, CustomColumn, DataRaw } from '../data';
 import { EditNameLineData } from '../dialog';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { GroupConditions } from '../groups';
 import { ListOptions } from '../options';
 import { IndexServiceCustomInterface, IndexServiceInterface } from '../services/indexService';
 import { AbstractTableDataService } from '../services/table-data.service';
@@ -26,6 +28,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   readonly iconsService = inject(IconsService);
   readonly defaultConfigService = inject(DefaultConfigService);
   readonly dialog = inject(MatDialog);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   abstract readonly tableDataService: AbstractTableDataService<T, F, O, FO>;
   abstract readonly indexService: IndexServiceInterface<T, O>;
@@ -67,7 +70,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
     this.updateDisplayedColumns();
     this.initOptions();
     this.initFilters();
-    this.initFilters();
+    this.initGroups();
     this.initInterval();
     this.handleAutoRefreshStart();
   }
@@ -85,6 +88,11 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   initFilters() {
     this.tableDataService.filters = this.line.filters as FiltersOr<F, FO>;
     this.showFilters = this.line.showFilters ?? this.defaultConfig.showFilters;
+  }
+
+  private initGroups() {
+    this.tableDataService.groupsConditions = this.line.groups as GroupConditions<F, FO>[];
+    this.tableDataService.initGroups();
   }
 
   initInterval() {
@@ -209,6 +217,23 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
     this.lockColumns = !this.lockColumns;
     this.line.lockColumns = this.lockColumns;
     this.lineChange.emit();
+  }
+
+  openGroupsSettings() {
+    const dialogRef = this.dialog.open<ManageTableGroupsDialogComponent<F, FO>, ManageGroupsTableDialogInput<F, FO>, ManageGroupsTableDialogResult<F, FO>>(ManageTableGroupsDialogComponent, {
+      data: {
+        groups: this.tableDataService.groupsConditions,
+      },
+      viewContainerRef: this.viewContainerRef
+    });
+
+    const subscription = dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.tableDataService.manageGroupDialogResult(result);
+      }
+    });
+
+    subscription.unsubscribe();
   }
 }
 

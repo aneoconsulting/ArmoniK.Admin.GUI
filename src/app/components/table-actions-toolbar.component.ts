@@ -50,6 +50,7 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
   @Output() lockColumnsChange = new EventEmitter<void>();
+  @Output() groupSettings = new EventEmitter<void>();
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
@@ -77,5 +78,9 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
 
   onLockColumnsChange(): void {
     this.lockColumnsChange.emit();
+  }
+
+  openGroupsSettings(): void {
+    this.groupSettings.emit();
   }
 }

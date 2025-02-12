@@ -312,6 +312,11 @@ export class DefaultConfigService {
     'tasks-show-filters': this.#defaultTasks.showFilters,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'applications-groups': [],
+    'partitions-groups': [],
+    'sessions-groups': [],
+    'tasks-groups': [],
+    'results-groups': [],
   };
 
   get exportedDefaultConfig(): ExportedDefaultConfig {

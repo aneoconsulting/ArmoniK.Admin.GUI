@@ -1,5 +1,5 @@
 import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewContainerRef, inject } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,6 @@ import { DataFilterService } from '@app/types/services/data-filter.service';
 import { TableType } from '@app/types/table';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
-import { ManageGroupsDialogComponent, ManageGroupsDialogInput } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { TableIndexActionsToolbarComponent } from '@components/table-index-actions-toolbar.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
@@ -91,7 +90,6 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
   readonly filtersService = inject(SessionsFiltersService);
   readonly indexService = inject(SessionsIndexService);
   readonly tableDataService = inject(SessionsDataService);
-  private readonly viewContainerRef = inject(ViewContainerRef);
 
   tableType: TableType = 'Sessions';
 
@@ -121,20 +119,5 @@ export class IndexComponent extends TableHandlerCustomValues<SessionRaw, Session
     if (this.displayedColumnsKeys.includes('duration')) {
       this.refresh();
     }
-  }
-
-  openGroups() {
-    const dialogRef = this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField,TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
-      data: {
-        groups: this.tableDataService.groupsConditions
-      },
-      viewContainerRef: this.viewContainerRef
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.tableDataService.manageGroupDialogResult(result);
-      }
-    });
   }
 }

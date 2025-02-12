@@ -11,12 +11,12 @@ import { FiltersDialogOrComponent } from '@components/filters/filters-dialog-or.
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 
-export type ManageGroupsDialogInput<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> = {
+export type ManageGroupsTableDialogInput<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> = {
   groups: GroupConditions<F, FO>[];
   selected?: string;
 }
 
-export type ManageGroupsDialogResult<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> = {
+export type ManageGroupsTableDialogResult<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> = {
   addedGroups: GroupConditions<F, FO>[];
   editedGroups: Record<string, GroupConditions<F, FO>>;
   deletedGroups: string[];
@@ -40,9 +40,9 @@ export type ManageGroupsDialogResult<F extends FiltersEnums, FO extends FiltersO
     FiltersService
   ]
 })
-export class ManageGroupsDialogComponent<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
-  private readonly dialogRef: MatDialogRef<ManageGroupsDialogComponent<F, FO>, ManageGroupsDialogResult<F, FO>> = inject(MatDialogRef);
-  constructor(@Inject(MAT_DIALOG_DATA) dialogData: ManageGroupsDialogInput<F, FO>) {
+export class ManageTableGroupsDialogComponent<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
+  private readonly dialogRef: MatDialogRef<ManageTableGroupsDialogComponent<F, FO>, ManageGroupsTableDialogResult<F, FO>> = inject(MatDialogRef);
+  constructor(@Inject(MAT_DIALOG_DATA) dialogData: ManageGroupsTableDialogInput<F, FO>) {
     this.groups = structuredClone(dialogData.groups);
     if (dialogData.selected !== undefined) {
       const group = this.groups.find(group => group.name === dialogData.selected);

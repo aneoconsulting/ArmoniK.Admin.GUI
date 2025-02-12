@@ -6,6 +6,7 @@ import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ColumnKey, CustomColumn, DataRaw } from '@app/types/data';
 import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { StatusLabelColor } from '@app/types/status';
 import { TableType } from '@app/types/table';
@@ -29,6 +30,7 @@ export interface CountLine extends Line {
 
 export interface TableLine<T extends DataRaw, O extends TaskOptions | null = null> extends Line {
   options?: ListOptions<T, O>;
+  groups?: GroupConditions<FiltersEnums, FiltersOptionsEnums>[];
   displayedColumns?: ColumnKey<T, O>[],
   lockColumns?: boolean;
   customColumns?: CustomColumn[],

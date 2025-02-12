@@ -1,17 +1,15 @@
 import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, OnDestroy, inject, signal } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Params } from '@angular/router';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ColumnKey, SessionData } from '@app/types/data';
 import { Filter, FiltersOr } from '@app/types/filters';
-import { Group, GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
-import { ManageGroupsDialogResult } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { InvertFilterService } from '@services/invert-filter.service';
-import { Subject, map, merge, mergeAll, of, switchMap } from 'rxjs';
+import { Subject, map, mergeAll } from 'rxjs';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionRaw } from '../types';
 
@@ -22,36 +20,9 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
 
   scope: Scope = 'sessions';
 
-  groups: Group<SessionRaw, TaskOptions>[] = [];
-
-  groupsConditions: GroupConditions<SessionRawEnumField, TaskOptionEnumField>[] = [
-    {
-      name: 'Group 1',
-      conditions: [
-        [
-          {
-            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: '335af491-ff89-4b9a-8952-8cb2e800be65'
-          }
-        ],
-        [
-          {
-            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
-            for: 'root',
-            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
-            value: '03b69175-b3fb-47e4-b1b1-b5a6ab302601'
-          }
-        ]
-      ]
-    }
-  ];
-
   constructor() {
     super();
     this.subscribeToDurationSubjects();
-    this.initGroups();
   }
 
   ngOnDestroy(): void {
@@ -212,89 +183,6 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
         }
       ]
     ];
-  }
-
-  setGroup(groupName: string) {
-    const groupRefresh$ = new Subject<void>();
-    const group: Group<SessionRaw, TaskOptions> = {
-      name: signal(groupName),
-      opened: false,
-      total: 0,
-      page: 0,
-      refresh$: groupRefresh$,
-      data: merge(this.refresh$, groupRefresh$).pipe(
-        switchMap(() => {
-          const options = {
-            pageSize: 100,
-            pageIndex: group.page,
-            sort: this.options.sort
-          };
-          const groupConditions = this.groupsConditions.find((condition) => condition.name === group.name());
-          if (groupConditions) {
-            return this.grpcService.list$(options, groupConditions.conditions);
-          }
-          return of(undefined);
-        }),
-        map((data) => {
-          if (data) {
-            group.total = data.total;
-            return this.computeGrpcData(data);
-          }
-          return undefined;
-        }),
-        map((data) => {
-          if (data) {
-            return data.map(entry => this.createNewLine(entry));
-          }
-          return [];
-        })
-      )
-    };
-
-    this.groups.push(group);
-  }
-
-  manageGroupDialogResult(dialogResult: ManageGroupsDialogResult<SessionRawEnumField, TaskOptionEnumField>) {
-    const editedKeys = Object.keys(dialogResult.editedGroups);
-    editedKeys.forEach((key) => {
-      const conditionsIndex =  this.groupsConditions.findIndex((group) => group.name === key);
-      if (conditionsIndex !== -1) {
-        this.groupsConditions[conditionsIndex] = dialogResult.editedGroups[key];
-      }
-      const groupIndex = this.groups.findIndex((group) => group.name() === key);
-      if (groupIndex !== -1) {
-        this.groups[groupIndex].name.set(dialogResult.editedGroups[key].name);
-      }
-    });
-
-    dialogResult.addedGroups.forEach((group) => (this.addGroup(group)));
-
-    dialogResult.deletedGroups.forEach((groupName) => (this.removeGroup(groupName)));
-
-    this.refresh$.next();
-  }
-
-  initGroups() {
-    this.groupsConditions.forEach((g) => this.setGroup(g.name));
-  }
-
-  addGroup(groupCondition: GroupConditions<SessionRawEnumField, TaskOptionEnumField>) {
-    this.groupsConditions.push(groupCondition);
-    this.setGroup(groupCondition.name);
-  }
-
-  refreshGroup(groupName: string) {
-    const group = this.groups.find((group) => group.name() === groupName);
-    if (group) {
-      group.refresh$.next();
-    }
-  }
-
-  removeGroup(groupName: string) {
-    const index = this.groups.findIndex((group) => group.name() === groupName);
-    if (index !== -1) {
-      this.groups.splice(index, 1);
-    }
   }
 
   // Duration computation
