@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
@@ -33,6 +34,7 @@ import { GroupTasksByStatusComponent } from '../grouped-tasks-by-status/group-ta
     TableActionsComponent,
     GroupTasksByStatusComponent,
     AsyncPipe,
+    MatChipsModule,
   ],
   providers: [
     IconsService

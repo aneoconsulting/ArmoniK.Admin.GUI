@@ -121,6 +121,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
       opened: false,
       total: 0,
       page: 0,
+      emptyCondition: false,
       refresh$: groupRefresh$,
       data: merge(this.refresh$, groupRefresh$).pipe(
         switchMap(() => {
@@ -131,7 +132,10 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
           };
           const groupConditions = this.groupsConditions.find((condition) => condition.name === group.name());
           if (groupConditions) {
-            return this.grpcService.list$(options, groupConditions.conditions);
+            if (this.isNotEmptyCondition(groupConditions)) {
+              return this.grpcService.list$(options, groupConditions.conditions);
+            }
+            group.emptyCondition = true;
           }
           return of(undefined);
         }),
@@ -139,8 +143,10 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
           if (data) {
             group.total = data.total;
             return this.computeGrpcData(data);
+          } else {
+            group.total = 0;
+            return undefined;
           }
-          return undefined;
         }),
         map((data) => {
           if (data) {
@@ -178,7 +184,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
     this.groupsConditions.forEach((g) => this.setGroup(g.name));
   }
 
-  addGroup(groupCondition: GroupConditions<F, FO>) {
+  private addGroup(groupCondition: GroupConditions<F, FO>) {
     this.groupsConditions.push(groupCondition);
     this.setGroup(groupCondition.name);
   }
@@ -190,7 +196,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
     }
   }
 
-  removeGroup(groupName: string) {
+  private removeGroup(groupName: string) {
     const conditionsIndex =  this.groupsConditions.findIndex((group) => group.name === groupName);
     if (conditionsIndex !== -1) {
       this.groupsConditions.splice(conditionsIndex, 1);
@@ -199,6 +205,14 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
     if (groupIndex !== -1) {
       this.groups.splice(groupIndex, 1);
     }
+  }
+
+  private isNotEmptyCondition(groupCondition: GroupConditions<F, FO>): boolean {
+    return groupCondition.conditions.map((condition) => 
+      condition
+        .map((filter) => filter.for !== null && filter.field !== null && filter.operator !== null && filter.value !== null)
+        .reduce((acc, current) => acc || current, false)
+    ).reduce((acc, current) => acc || current, false);
   }
 
   /**

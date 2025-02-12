@@ -16,6 +16,12 @@
     </article>
   }
   <article class="general-actions">
+    @if (group.emptyCondition) {
+    <mat-chip disableRipple>
+      <mat-icon matChipAvatar [fontIcon]="getIcon('error')" />
+      <p i18n>No conditions</p>
+    </mat-chip>
+    }
     <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false" (click)="groupSettingsEmit()">
       <mat-icon [@rotateFull]="settingsRotate" [fontIcon]="getIcon('settings')" />
     </button>

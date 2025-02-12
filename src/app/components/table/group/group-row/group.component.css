@@ -49,6 +49,15 @@ mat-card {
   background-color: var(--mat-sidenav-content-background-color);
 }
 
+mat-chip {
+  background-color: red !important;
+  box-shadow: 0 0 10px red;
+}
+
+mat-chip p, mat-chip mat-icon {
+  color: white !important;
+}
+
 p {
   margin: 0;
 }

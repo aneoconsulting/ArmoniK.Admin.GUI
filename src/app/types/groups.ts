@@ -14,6 +14,7 @@ export type Group<T extends DataRaw, O extends TaskOptions | null = null> = {
   opened: boolean;
   total: number;
   page: number;
+  emptyCondition: boolean;
   refresh$: Subject<void>,
   data: Observable<ArmonikData<T, O>[]>
 }
