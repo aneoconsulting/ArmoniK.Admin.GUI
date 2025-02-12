@@ -171,12 +171,18 @@ export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<S
   }
 
   groupeSettingsDisplay(groupName: string) {
-    this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField, TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
+    const dialogRef = this.dialog.open<ManageGroupsDialogComponent<SessionRawEnumField, TaskOptionEnumField>, ManageGroupsDialogInput<SessionRawEnumField,TaskOptionEnumField>>(ManageGroupsDialogComponent, {
       data: {
         groups: this.tableDataService.groupsConditions,
         selected: groupName,
       },
       viewContainerRef: this.viewContainerRef
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.tableDataService.manageGroupDialogResult(result);
+      }
     });
   }
 }

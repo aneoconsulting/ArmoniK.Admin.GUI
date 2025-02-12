@@ -1,3 +1,4 @@
+import { WritableSignal } from '@angular/core';
 import { TaskOptions } from '@app/tasks/types';
 import { Observable, Subject } from 'rxjs';
 import { ArmonikData, DataRaw } from './data';
@@ -9,7 +10,7 @@ export type GroupConditions<F extends FiltersEnums, FO extends FiltersOptionsEnu
 }
 
 export type Group<T extends DataRaw, O extends TaskOptions | null = null> = {
-  name: string;
+  name: WritableSignal<string>;
   opened: boolean;
   total: number;
   page: number;

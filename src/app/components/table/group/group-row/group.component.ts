@@ -81,6 +81,6 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
   }
 
   groupSettingsEmit() {
-    this.groupSettings.emit(this.group.name);
+    this.groupSettings.emit(this.group.name());
   }
 }

@@ -42,10 +42,13 @@ export type ManageGroupsDialogResult<F extends FiltersEnums, FO extends FiltersO
 })
 export class ManageGroupsDialogComponent<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   private readonly dialogRef: MatDialogRef<ManageGroupsDialogComponent<F, FO>, ManageGroupsDialogResult<F, FO>> = inject(MatDialogRef);
-  constructor(@Inject(MAT_DIALOG_DATA) private readonly dialogData: ManageGroupsDialogInput<F, FO>) {
+  constructor(@Inject(MAT_DIALOG_DATA) dialogData: ManageGroupsDialogInput<F, FO>) {
     this.groups = structuredClone(dialogData.groups);
     if (dialogData.selected !== undefined) {
-      this.selectedGroup = this.groups.find(group => group.name === dialogData.selected);
+      const group = this.groups.find(group => group.name === dialogData.selected);
+      if (group) {
+        this.selectGroup(group, true);
+      }
     }
   }
 
