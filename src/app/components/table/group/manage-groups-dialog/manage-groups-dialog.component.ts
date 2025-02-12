@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { Filter, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { GroupConditions } from '@app/types/groups';
 import { FiltersDialogOrComponent } from '@components/filters/filters-dialog-or.component';
-import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
 
 export type ManageGroupsTableDialogInput<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> = {
@@ -36,9 +35,6 @@ export type ManageGroupsTableDialogResult<F extends FiltersEnums, FO extends Fil
     MatFormFieldModule,
     MatInputModule,
   ],
-  providers: [
-    FiltersService
-  ]
 })
 export class ManageTableGroupsDialogComponent<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
   private readonly dialogRef: MatDialogRef<ManageTableGroupsDialogComponent<F, FO>, ManageGroupsTableDialogResult<F, FO>> = inject(MatDialogRef);
@@ -62,7 +58,12 @@ export class ManageTableGroupsDialogComponent<F extends FiltersEnums, FO extends
 
   selectedGroup: GroupConditions<F, FO> | undefined;
 
+  duplicates: number = 0;
+
   selectGroup(group: GroupConditions<F, FO>, setAsEdited: boolean = false) {
+    if (this.selectedGroup && this.duplicates !== 0) {
+      this.selectedGroup.name += ` ${this.duplicates}`;
+    }
     this.selectedGroup = group;
     if (setAsEdited) {
       const groupName = `${group.name}`;
@@ -71,8 +72,10 @@ export class ManageTableGroupsDialogComponent<F extends FiltersEnums, FO extends
   }
 
   addGroup() {
+    const name = $localize`New Group`;
+    const countName = this.groups.filter((group) => group.name.includes(name)).length;
     const group: GroupConditions<F, FO> = {
-      name: $localize`New Group`,
+      name: name + (countName !== 0 ? ` ${countName}` : ''),
       conditions: [[{
         field: null,
         for: null,
@@ -101,6 +104,7 @@ export class ManageTableGroupsDialogComponent<F extends FiltersEnums, FO extends
   updateName(event: Event) {
     if (this.selectedGroup) {
       const name = (event.target as HTMLInputElement).value;
+      this.duplicates = this.groups.filter((group) => group.name.includes(name)).length;
       this.selectedGroup.name = name;
     }
   }
