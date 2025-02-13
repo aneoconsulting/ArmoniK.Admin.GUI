@@ -52,7 +52,7 @@
     "@types/ungap__structured-clone": "^1.2.0",
     "@typescript-eslint/eslint-plugin": "8.15.0",
     "@typescript-eslint/parser": "8.15.0",
-    "bumpp": "^9.8.1",
+    "bumpp": "^10.0.3",
     "eslint": "^9.15.0",
     "angular-eslint": "^19.0.0",
     "eslint-import-resolver-typescript": "^3.6.3",
