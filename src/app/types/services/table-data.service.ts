@@ -7,6 +7,7 @@ import { ManageGroupsTableDialogResult } from '@components/table/group/manage-gr
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 import { Subject, Subscription, catchError, map, merge, of, switchMap } from 'rxjs';
 import { GrpcTableService } from './grpcService';
@@ -22,6 +23,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   private readonly cacheService = inject(CacheService);
   private readonly notificationService = inject(NotificationService);
   readonly filtersService = inject(FiltersService);
+  readonly invertFiltersService: InvertFilterService<F, FO> = inject(InvertFilterService);
 
   readonly refresh$ = new Subject<void>();
 
@@ -99,10 +101,23 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   }
 
   /**
-   * Clone the filter object and transform it if needed.
+   * Clone the filter object, and add the inverted conditions of every groupConditions to it.
    */
   preparefilters(): FiltersOr<F, FO> {
-    return structuredClone(this.filters);
+    let filtersOr = structuredClone(this.filters);
+    this.groupsConditions.forEach((groupConditions) => {
+      const inverted = this.invertFiltersService.invert(groupConditions.conditions);
+      if (!this.isNotEmptyFilter(filtersOr)) {
+        filtersOr.push(...inverted);
+      } else {
+        const result: FiltersOr<F, FO> = [];
+        filtersOr.forEach((filterAnd) => {
+          inverted.map((invertedAnd) => [...invertedAnd, ...filterAnd]).forEach((r) => result.push(r));
+        });
+        filtersOr = result;
+      }
+    });
+    return filtersOr;
   }
 
   /**
@@ -132,7 +147,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
           };
           const groupConditions = this.groupsConditions.find((condition) => condition.name === group.name());
           if (groupConditions) {
-            if (this.isNotEmptyCondition(groupConditions)) {
+            if (this.isNotEmptyFilter(groupConditions.conditions)) {
               return this.grpcService.list$(options, groupConditions.conditions);
             }
             group.emptyCondition = true;
@@ -207,9 +222,9 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
     }
   }
 
-  private isNotEmptyCondition(groupCondition: GroupConditions<F, FO>): boolean {
-    return groupCondition.conditions.map((condition) => 
-      condition
+  private isNotEmptyFilter(filters: FiltersOr<F, FO>): boolean {
+    return filters.map((filterAnd) => 
+      filterAnd
         .map((filter) => filter.for !== null && filter.field !== null && filter.operator !== null && filter.value !== null)
         .reduce((acc, current) => acc || current, false)
     ).reduce((acc, current) => acc || current, false);

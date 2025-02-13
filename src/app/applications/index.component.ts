@@ -19,6 +19,7 @@ import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
 import { IconsService } from '@services/icons.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -63,6 +64,7 @@ import { ApplicationRaw } from './types';
     NotificationService,
     FiltersService,
     GrpcSortFieldService,
+    InvertFilterService,
   ],
   imports: [
     PageHeaderComponent,

@@ -8,7 +8,6 @@ import { Filter, FiltersOr } from '@app/types/filters';
 import { ListOptions } from '@app/types/options';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
-import { InvertFilterService } from '@services/invert-filter.service';
 import { Subject, map, mergeAll } from 'rxjs';
 import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionRaw } from '../types';
@@ -16,7 +15,6 @@ import { SessionRaw } from '../types';
 @Injectable()
 export class SessionsDataService extends AbstractTableDataService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnDestroy {
   readonly grpcService = inject(SessionsGrpcService);
-  readonly invertFiltersService: InvertFilterService<SessionRawEnumField, TaskOptionEnumField> = inject(InvertFilterService);
 
   scope: Scope = 'sessions';
 
@@ -60,7 +58,6 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
 
   override preparefilters(): FiltersOr<SessionRawEnumField, TaskOptionEnumField> {
     const filtersOr = super.preparefilters();
-    this.groupsConditions.forEach((groupConditions) => (filtersOr.push(...this.invertFiltersService.invert(groupConditions.conditions))));
     if(this.isDurationDisplayed && this.options.sort.active === 'duration') {
       const date = new Date();
       date.setDate(date.getDate() - 3);
