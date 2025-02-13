@@ -25,7 +25,7 @@
       </mat-form-field>
       <article id="conditions-area">
         @for (filters of selectedGroup.conditions; track $index) {
-          <app-filters-dialog-or [first]="$first" [filtersOr]="filters" (removeChange)="removeOrFilter($event)" />
+          <app-filters-dialog-or [first]="$first" [filtersOr]="filters" (removeChange)="removeOrFilter($index)" />
         }
       </article>
       <button mat-button id="or-button" (click)="addOrFilter()">
