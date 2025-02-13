@@ -8,7 +8,6 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-group-tasks-by-status',
   templateUrl: 'group-tasks-by-status.component.html',
-  styleUrl: 'group-tasks-by-status.component.css',
   standalone: true,
   imports: [
     CountTasksByStatusComponent,

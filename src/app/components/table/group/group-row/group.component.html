@@ -38,7 +38,7 @@
     <table mat-table [dataSource]="group.data" [trackBy]="trackBy">
       @for (column of displayedColumns; track $index) {
         <ng-container [matColumnDef]="column.key.toString()">
-          <ng-container *matHeaderCellDef></ng-container>
+          <th *matHeaderCellDef></th>
           <td *matCellDef="let element" mat-cell>
             @if (column.type !== 'actions') {
               <app-table-cell [column]="column" [element]="element" [statusesService]="statusesService" [statusesGroups]="statusesGroups" />
