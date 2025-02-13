@@ -19,6 +19,9 @@ import { IconsService } from '@services/icons.service';
 import { rotateFull, expand } from '@shared/animations';
 import { GroupTasksByStatusComponent } from '../grouped-tasks-by-status/group-tasks-by-status.component';
 
+/**
+ * Display groups row in tables.
+ */
 @Component({
   selector: 'app-table-group',
   templateUrl: 'group.component.html',
@@ -68,19 +71,34 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
 
   private readonly iconsService = inject(IconsService);
 
+  /**
+   * Retrieves an icon.
+   * @param name icon name
+   * @returns Material icon name
+   */
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
   }
 
+  /**
+   * Expand or close the group row.
+   */
   switchView() {
     this.group.opened = !this.group.opened;
   }
 
+  /**
+   * Emits the page change to the parent component.
+   * @param event PageEvent
+   */
   pageChange(event: PageEvent) {
     this.group.page = event.pageIndex;
     this.page.emit();
   }
 
+  /**
+   * Emits the name of the group to open its settings. 
+   */
   groupSettingsEmit() {
     this.groupSettings.emit(this.group.name());
   }
