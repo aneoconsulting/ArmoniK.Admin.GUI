@@ -8,7 +8,7 @@ import { TaskOptions, TaskRaw, TaskSummary, TaskSummaryFilters } from '@app/task
 
 export type PrefixedOptions<T> = `options.${keyof T extends string ? keyof T : never}`;
 
-export type ColumnKey<T extends DataRaw, O extends TaskOptions | null = null> = keyof T | 'actions' | PrefixedOptions<O> | CustomColumn | 'count' | 'select';
+export type ColumnKey<T extends DataRaw, O extends TaskOptions | null = null> = keyof T | 'actions' | PrefixedOptions<O> | CustomColumn | 'count' | 'select' | 'group';
 
 export type FieldKey<T extends DataRaw | TaskOptions> = keyof T;
 

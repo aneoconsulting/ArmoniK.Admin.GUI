@@ -42,6 +42,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
+    this._columnsKeys.push('group');
   }
 
   @Input({ required: true }) set data(entries: ArmonikData<T, O>[]) {
@@ -96,7 +97,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   }
 
   get columnsKeys(): ColumnKey<T, O>[] {
-    return [...this._columnsKeys, 'group'] as ColumnKey<T, O>[];
+    return this._columnsKeys as ColumnKey<T, O>[];
   }
 
   get isAllSelected(): boolean {
