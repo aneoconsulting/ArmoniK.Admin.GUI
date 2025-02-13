@@ -20,7 +20,10 @@
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
       (addToDashboard)="onAddToDashboard()"
+      (groupSettings)="openGroupsSettings()"
     >
+      <ng-container extra-buttons-right>
+      </ng-container>
       <ng-container extra-menu-items>
         <button mat-menu-item (click)="addCustomColumn()">
           <mat-icon aria-hidden="true" [fontIcon]="getIcon('manage-customs')"></mat-icon>

@@ -20,6 +20,7 @@
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
       (addToDashboard)="onAddToDashboard()"
+      (groupSettings)="openGroupsSettings()"
       >
         <ng-container extra-buttons-right>
           <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">

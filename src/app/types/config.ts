@@ -30,7 +30,8 @@ export type Key =
   'tasks-view-in-logs' |
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
-  `${Scope}-show-filters`;
+  `${Scope}-show-filters` |
+  `${Scope}-groups`;
 
 export type ExportedDefaultConfig = {
   [key in Key]: unknown;

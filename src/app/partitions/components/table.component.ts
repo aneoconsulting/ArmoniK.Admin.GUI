@@ -2,10 +2,12 @@ import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Component, OnInit, inject } from '@angular/core';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import PartitionsDataService from '../services/partitions-data.service';
+import { PartitionsFiltersService } from '../services/partitions-filters.service';
 import { PartitionRaw } from '../types';
 
 @Component({
@@ -24,6 +26,7 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
   implements OnInit {
   
   readonly tableDataService = inject(PartitionsDataService);
+  readonly filtersService = inject(PartitionsFiltersService);
   
   table: TableTasksByStatus = 'partitions';
 
@@ -36,7 +39,11 @@ export class PartitionsTableComponent extends AbstractTaskByStatusTableComponent
     return value.id === entry.id;
   }
 
-  trackBy(index: number, items: ArmonikData<PartitionRaw>) {
-    return items.raw.id;
+  trackBy(index: number, item: ArmonikData<PartitionRaw> | Group<PartitionRaw>) {
+    if ((item as ArmonikData<PartitionRaw>).raw !== undefined) {
+      return (item as ArmonikData<PartitionRaw>).raw.id;
+    } else {
+      return (item as Group<PartitionRaw>).name();
+    }
   }
 }

@@ -15,6 +15,7 @@ import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 
 @Component({
@@ -33,6 +34,7 @@ import { NotificationService } from '@services/notification.service';
     PartitionsGrpcService,
     PartitionsDataService,
     GrpcSortFieldService,
+    InvertFilterService,
   ],
   imports: [
     MatToolbarModule,

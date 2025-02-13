@@ -18,6 +18,7 @@ import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 import { ShareUrlService } from '@services/share-url.service';
 
@@ -41,6 +42,7 @@ import { ShareUrlService } from '@services/share-url.service';
     FiltersService,
     ApplicationsDataService,
     GrpcSortFieldService,
+    InvertFilterService,
   ],
   imports: [
     FiltersToolbarComponent,

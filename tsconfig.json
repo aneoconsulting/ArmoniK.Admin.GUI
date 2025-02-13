@@ -16,6 +16,9 @@
       "@app/*": [
         "src/app/*"
       ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ]
     },
     "rootDir": "./",
     "outDir": "./dist/out-tsc",

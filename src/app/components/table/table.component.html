@@ -4,6 +4,26 @@
     [cdkDropListDisabled]="lockColumns" (cdkDropListDropped)="onDrop($event)" [dataSource]="data" i18n-aria-label
     aria-label="Data Table">
 
+    <ng-container matColumnDef="group">
+      <ng-container *matHeaderCellDef></ng-container>
+      <ng-container *matCellDef="let element">
+        @if (!isData(element)) {
+          <td mat-cell [attr.colspan]="columns.length" style="padding: 0;">
+            <app-table-group
+              [group]="element"
+              [columns]="columns"
+              [actions]="actions"
+              [statusesService]="statusesService"
+              [statusesGroups]="statusesGroups"
+              [trackBy]="trackBy"
+              (page)="groupPageUpdate(element.name)"
+              (groupSettings)="onGroupSettingsEmit($event)"
+            />
+          </td>
+        }
+      </ng-container>
+    </ng-container>
+
     @for (column of columns; track column.key) {
     <ng-container [matColumnDef]="column.key.toString()">
       <!-- Header -->
@@ -13,17 +33,21 @@
           (statusesChange)="onPersonnalizeTasksByStatus()" />
       </th>
       <!-- Columns -->
-      @if (column.type !== 'actions') {
-      <td mat-cell *matCellDef="let element" appNoWrap>
-        <app-table-cell [column]="column" [element]="element" [statusesService]="statusesService"
-          [statusesGroups]="statusesGroups" [isSelected]="isSelected(element.raw)"
-          (changeSelection)="toggleRow(element.raw)" />
-      </td>
-      } @else {
-      <td mat-cell *matCellDef="let element" appNoWrap>
-        <app-table-actions [actions]="actions" [element]="element" />
-      </td>
-      }
+      <ng-container *matCellDef="let element" >
+        @if (isData(element)) {
+          @if (column.type !== 'actions') {
+            <td mat-cell appNoWrap>
+              <app-table-cell [column]="column" [element]="element" [statusesService]="statusesService"
+              [statusesGroups]="statusesGroups" [isSelected]="isSelected(element.raw)"
+              (changeSelection)="toggleRow(element.raw)" />
+            </td>
+          } @else {
+            <td mat-cell appNoWrap>
+              <app-table-actions [actions]="actions" [element]="element" />
+            </td>
+          }
+        }
+      </ng-container>
     </ng-container>
     }
 

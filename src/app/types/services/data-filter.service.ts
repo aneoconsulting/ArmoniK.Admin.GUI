@@ -9,7 +9,8 @@ import { FiltersCacheService } from '@services/filters-cache.service';
 import { TableService } from '@services/table.service';
 import { Scope } from '../config';
 import { FilterDefinition } from '../filter-definition';
-import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { Filter, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
+import { GroupConditions } from '../groups';
 import { Status, StatusService } from '../status';
 
 export type FilterFor = TaskFilterFor | ResultFilterFor | SessionFilterFor | PartitionFilterFor | ApplicationFilterFor;
@@ -53,6 +54,22 @@ export abstract class DataFilterService<F extends FiltersEnums, O extends Filter
 
   restoreShowFilters(): boolean {
     return this.tableService.restoreShowFilters(`${this.scope}-show-filters`) ?? true;
+  }
+
+  getType(filter: Filter<F, O>) {
+    return this.filtersDefinitions.find(definition => definition.field === filter.field && definition.for === filter.for)?.type;
+  }
+
+  saveGroups(groups: GroupConditions<F, O>[]) {
+    this.tableService.saveGroups(`${this.scope}-groups`, groups);
+  }
+
+  restoreGroups() {
+    return this.tableService.restoreGroups<F, O>(`${this.scope}-groups`);
+  }
+
+  resetGroups() {
+    this.tableService.resetGroups(`${this.scope}-groups`);
   }
 
   abstract retrieveLabel(filterFor: FilterFor, filterField: FilterField): string;
