@@ -61,13 +61,12 @@ export class TableGroupComponent<T extends DataRaw, S extends Status, O extends 
 
   columnsKeys: ColumnKey<T, O>[];
   displayedColumns: TableColumn<T, O>[];
+  settingsRotate = false;
 
   @Output() page = new EventEmitter<void>();
   @Output() groupSettings = new EventEmitter<string>();
 
   private readonly iconsService = inject(IconsService);
-
-  settingsRotate = false;
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
