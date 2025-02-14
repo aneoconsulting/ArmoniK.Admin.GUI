@@ -30,7 +30,7 @@ export class InvertFilterService<F extends FiltersEnums, FO extends FiltersOptio
 
   }
 
-  private invertFilter(filter: Filter<F,FO>) {
+  private invertFilter(filter: Filter<F, FO>) {
     const type = this.dataFilterService.getType(filter);
     switch (type) {
     case 'string':
