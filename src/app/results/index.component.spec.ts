@@ -1,4 +1,5 @@
 import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -21,12 +22,12 @@ import { ResultRaw } from './types';
 describe('Results Index Component', () => {
   let component: IndexComponent;
 
-  const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
+  const dialogResult: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
 
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed: (): unknown => of(newCustomColumns)
+        afterClosed: (): unknown => of(dialogResult)
       };
     })
   };
@@ -122,6 +123,9 @@ describe('Results Index Component', () => {
     resetFilters: jest.fn(() => []),
     saveShowFilters: jest.fn(),
     restoreShowFilters: jest.fn(() => defaultShowFilters),
+    restoreGroups: jest.fn(() => []),
+    saveGroups: jest.fn(),
+    resetGroups: jest.fn()
   };
   
   const mockShareUrlService = {
@@ -143,6 +147,10 @@ describe('Results Index Component', () => {
     refresh$: {
       next: jest.fn()
     },
+    groups: [],
+    groupsConditions: [],
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
   };
 
   beforeEach(() => {
@@ -159,6 +167,7 @@ describe('Results Index Component', () => {
         { provide: ResultsFiltersService, useValue: mockResultsFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, useValue: {} },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -222,6 +231,11 @@ describe('Results Index Component', () => {
 
     it('should merge subscriptions', () => {
       expect(component.subscriptions).toBeDefined();
+    });
+
+    it('should init groups on init', () => {
+      expect(mockResultsDataService.groupsConditions).toEqual(mockResultsFiltersService.restoreGroups());
+      expect(mockResultsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -451,6 +465,7 @@ describe('Results Index Component', () => {
         displayedColumns: defaultColumns,
         options: defaultOptions,
         filters: [],
+        groups: mockResultsDataService.groupsConditions
       });
     });
   });
@@ -466,6 +481,20 @@ describe('Results Index Component', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(mockResultsFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    beforeEach(() => {
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockResultsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(mockResultsFiltersService.saveGroups).toHaveBeenCalledWith(mockResultsDataService.groupsConditions);
     });
   });
 });
