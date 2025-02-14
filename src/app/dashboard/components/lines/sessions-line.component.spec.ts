@@ -1,4 +1,5 @@
-import { SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { SessionsDataService } from '@app/sessions/services/sessions-data.service';
@@ -7,7 +8,8 @@ import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -68,6 +70,16 @@ describe('SessionsLineComponent', () => {
     },
   };
 
+  const lineGroup: GroupConditions<SessionRawEnumField, TaskOptionEnumField> = {
+    name: 'Group 1',
+    conditions: [[{
+      field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+      value: 'name'
+    }]],
+  };
+
   const line: TableLine<SessionRaw, TaskOptions> = {
     name: 'Tasks',
     type: 'Sessions',
@@ -76,6 +88,7 @@ describe('SessionsLineComponent', () => {
     interval: 20,
     options: options,
     showFilters: false,
+    groups: lineGroup as unknown as GroupConditions<FiltersEnums, FiltersOptionsEnums>[],
   };
 
   const nameLine = {
@@ -100,6 +113,10 @@ describe('SessionsLineComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
+    groupsConditions: [],
+    groups: [],
   };
 
   const mockSessionsIndexService = {
@@ -125,6 +142,7 @@ describe('SessionsLineComponent', () => {
         { provide: SessionsIndexService, useValue: mockSessionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, usevalue: {} },
       ]
     }).inject(SessionsLineComponent);
     component.line = line;
@@ -160,6 +178,11 @@ describe('SessionsLineComponent', () => {
       expect(component.intervalValue).toEqual(10);
       expect(component.options).toEqual(defaultConfigService.defaultSessions.options);
       expect(component.showFilters).toEqual(line.showFilters);
+    });
+
+    it('should init groups', () => {
+      expect(mockSessionsDataService.groupsConditions).toBe(lineGroup);
+      expect(mockSessionsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -449,6 +472,24 @@ describe('SessionsLineComponent', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(component.line.showFilters).toEqual(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult = [{fake: 'return'}];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockSessionsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(component.line.groups).toEqual(mockSessionsDataService.groupsConditions);
     });
   });
 });

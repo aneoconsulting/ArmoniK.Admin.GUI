@@ -230,6 +230,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
     const subscription = dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.tableDataService.manageGroupDialogResult(result);
+        this.line.groups = this.tableDataService.groupsConditions;
       }
     });
 

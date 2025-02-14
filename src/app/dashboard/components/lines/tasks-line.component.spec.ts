@@ -1,4 +1,5 @@
-import { TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import TasksDataService from '@app/tasks/services/tasks-data.service';
@@ -6,7 +7,8 @@ import { TasksIndexService } from '@app/tasks/services/tasks-index.service';
 import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, CustomColumn } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
@@ -67,6 +69,16 @@ describe('TasksLineComponent', () => {
     },
   };
 
+  const lineGroup: GroupConditions<TaskSummaryEnumField, TaskOptionEnumField> = {
+    name: 'Group 1',
+    conditions: [[{
+      field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+      value: 'name'
+    }]],
+  };
+
   const line: TableLine<TaskSummary, TaskOptions> = {
     name: 'Tasks',
     type: 'Tasks',
@@ -75,6 +87,7 @@ describe('TasksLineComponent', () => {
     interval: 20,
     options: options,
     showFilters: false,
+    groups: lineGroup as unknown as GroupConditions<FiltersEnums, FiltersOptionsEnums>[],
   };
 
   const nameLine = {
@@ -106,6 +119,10 @@ describe('TasksLineComponent', () => {
       next: jest.fn()
     },
     cancelTasks: jest.fn(),
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
+    groupsConditions: [],
+    groups: [],
   };
 
   const mockTasksIndexService = {
@@ -132,6 +149,7 @@ describe('TasksLineComponent', () => {
         { provide: TasksIndexService, useValue: mockTasksIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, usevalue: {} },
       ]
     }).inject(TasksLineComponent);
     component.line = line;
@@ -174,6 +192,11 @@ describe('TasksLineComponent', () => {
       component.line.showFilters = undefined as unknown as boolean;
       component.ngOnInit();
       expect(component.showFilters).toEqual(defaultConfigService.defaultTasks.showFilters);
+    });
+
+    it('should init groups', () => {
+      expect(mockTasksDataService.groupsConditions).toBe(lineGroup);
+      expect(mockTasksDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -466,6 +489,24 @@ describe('TasksLineComponent', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(component.line.showFilters).toEqual(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult = [{fake: 'return'}];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockTasksDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(component.line.groups).toEqual(mockTasksDataService.groupsConditions);
     });
   });
 });
