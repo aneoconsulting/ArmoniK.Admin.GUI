@@ -1,11 +1,14 @@
-import { FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStringOperator, ListSessionsResponse, SessionRawEnumField, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterArrayOperator, FilterDateOperator, FilterNumberOperator, FilterStatusOperator, FilterStringOperator, ListSessionsResponse, SessionRawEnumField, SessionStatus, SessionTaskOptionEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TaskOptions } from '@app/tasks/types';
 import { Filter, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
+import { ManageGroupsTableDialogResult } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 import { of, throwError } from 'rxjs';
 import { SessionsGrpcService } from './sessions-grpc.service';
@@ -62,7 +65,58 @@ describe('SessionsDataService', () => {
     }
   };
 
-  const initialFilters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [];
+  const initialFilters: FiltersOr<SessionRawEnumField, TaskOptionEnumField> = [
+    [
+      {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+        value: 'sessionId',
+      },
+    ],
+    [
+      {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
+        for: 'root',
+        operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+        value: SessionStatus.SESSION_STATUS_PAUSED
+      },
+    ],
+  ];
+
+  const mockInvertFilterService = {
+    invert: jest.fn((e) => e),
+  };
+  
+  const groupConditions: GroupConditions<SessionRawEnumField, TaskOptionEnumField>[] = [
+    {
+      name: 'Group 1',
+      conditions: [
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 't'
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+            value: 'p',
+          },
+        ],
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 'test'
+          },
+        ],
+      ]
+    }
+  ];
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -72,10 +126,13 @@ describe('SessionsDataService', () => {
         { provide: SessionsGrpcService, useValue: mockSessionsGrpcService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: CacheService, useValue: mockCacheService },
+        { provide: InvertFilterService, useValue: mockInvertFilterService },
       ]
     }).inject(SessionsDataService);
     service.options = initialOptions;
     service.filters = initialFilters;
+    service.groupsConditions.push(...groupConditions);
+    service.initGroups();
   });
 
   it('should create', () => {
@@ -126,7 +183,7 @@ describe('SessionsDataService', () => {
   describe('Fetching data', () => {
     it('should list the data', () => {
       service.refresh$.next();
-      expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(service.options, service.filters);
+      expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.preparefilters());
     });
     
     it('should update the total', () => {
@@ -400,19 +457,13 @@ describe('SessionsDataService', () => {
       jest.useFakeTimers().setSystemTime(new Date('1970-01-01'));
       const date = new Date();
       date.setDate(date.getDate() - 3);
-      const appliedFilter: Filter<SessionRawEnumField, TaskOptionEnumField> = {
-        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
-        for: 'root',
-        operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
-        value: Math.floor(date.getTime()/1000)
-      };
       service.options = { pageIndex: 0, pageSize: 0, sort: { active: 'duration', direction: 'asc'}};
       service.isDurationDisplayed = true;
       service.filters = [[arrayFilter, stringFilter], [dateFilter]];
       service.refresh$.next();
       expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(
-        { pageIndex: 0, pageSize: 0, sort: { active: 'createdAt', direction: 'asc'}},
-        [[arrayFilter, stringFilter, appliedFilter], [dateFilter]]
+        service.prepareOptions(),
+        service.preparefilters(),
       );
     });
   });
@@ -499,5 +550,199 @@ describe('SessionsDataService', () => {
       service.onDelete('sessionId');
       expect(mockNotificationService.error).toHaveBeenCalledWith('Unable to delete session');
     });
+  });
+
+  describe('PrepareOptions', () => {
+    it('should clone the options', () => {
+      expect(service.prepareOptions()).toEqual(initialOptions);
+    });
+  });
+    
+  describe('PrepareFilters', () => {
+    it('should merge filters and group conditions', () => {
+      (expect(service.preparefilters())).toEqual([
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 't'
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+            value: 'p',
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: 'sessionId',
+          },
+        ],
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 'test'
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: 'sessionId',
+          },
+        ],
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 't'
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+            value: 'p',
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
+            for: 'root',
+            operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+            value: SessionStatus.SESSION_STATUS_PAUSED
+          },
+        ],
+        [
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 'test'
+          },
+          {
+            field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_STATUS,
+            for: 'root',
+            operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+            value: SessionStatus.SESSION_STATUS_PAUSED
+          },
+        ],
+      ]);
+    });
+    
+    it('should return group conditions if there is no filters', () => {
+      service.filters = [];
+      expect(service.preparefilters()).toEqual(groupConditions[0].conditions);
+    });
+  });
+    
+  describe('groups fetching data', () => {
+    describe('defined conditions', () => {
+      it('should list data if there is a group condition', () => {
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(
+            {
+              pageSize: 100,
+              pageIndex: group.page,
+              sort: initialOptions.sort
+            },
+            groupConditions[0].conditions
+          );
+        });
+        group.refresh$.next();
+      });
+      
+      it('should update the group total', () => {
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(group.total).toEqual(sessions.total);
+        });
+        group.refresh$.next();
+      });
+    });
+    
+    describe('empty conditions', () => {
+      it('should set emptyCondition to true', () => {
+        service.groupsConditions[0].conditions = [];
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(group.emptyCondition).toBeTruthy();
+        });
+        group.refresh$.next();
+      });
+    
+      it('should set total to 0', () => {
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(group.total).toEqual(0);
+        });
+        group.refresh$.next();
+      });
+    });
+  });
+    
+  describe('manageGroupDialogResult', () => {
+    const toDeleteCondition: GroupConditions<SessionRawEnumField, TaskOptionEnumField> = {
+      name: 'ToBeDeleted',
+      conditions: []
+    };
+    
+    const dialogResult: ManageGroupsTableDialogResult<SessionRawEnumField, TaskOptionEnumField> = {
+      editedGroups: {
+        'Group 1': {
+          name: 'Renamed Group',
+          conditions: [],
+        },
+      },
+      addedGroups: [
+        {
+          name: 'New Group',
+          conditions: [],
+        },
+      ],
+      deletedGroups: [
+        'ToBeDeleted',
+      ],
+    };
+    
+    beforeEach(() => {
+      service['removeGroup']('New Group');
+      service['addGroup'](toDeleteCondition);
+      service.manageGroupDialogResult(dialogResult);
+    });
+    
+    it('should edit the correct group condition', () => {
+      expect(service.groupsConditions[0]).toEqual(dialogResult.editedGroups['Group 1']);
+    });
+    
+    it('should edit the correct group', () => {
+      expect(service.groups[0].name()).toEqual(dialogResult.editedGroups['Group 1'].name);
+    });
+    
+    it('should add a group condition', () => {
+      expect(service.groupsConditions[1]).toEqual(dialogResult.addedGroups[0]);
+    });
+    
+    it('should add a group', () => {
+      expect(service.groups[1].name()).toEqual(dialogResult.addedGroups[0].name);
+    });
+    
+    it('should remove a group condition', () => {
+      expect(service.groupsConditions.findIndex((group) => group.name === 'ToBeDeleted')).toEqual(-1);
+    });
+    
+    it('should remove a group', () => {
+      expect(service.groups.findIndex((group) => group.name() === 'ToBeDeleted')).toEqual(-1);
+    });
+  });
+    
+  it('should refresh the correct group', () => {
+    const group = service.groups[0];
+    const spy = jest.spyOn(group.refresh$, 'next');
+    service.refreshGroup(group.name());
+    expect(spy).toHaveBeenCalled();
   });
 });

@@ -187,10 +187,10 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
         this.groups[groupIndex].name.set(dialogResult.editedGroups[key].name);
       }
     });
+    
+    dialogResult.deletedGroups.forEach((groupName) => (this.removeGroup(groupName)));
 
     dialogResult.addedGroups.forEach((group) => (this.addGroup(group)));
-
-    dialogResult.deletedGroups.forEach((groupName) => (this.removeGroup(groupName)));
 
     this.refresh$.next();
   }
@@ -212,7 +212,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   }
 
   private removeGroup(groupName: string) {
-    const conditionsIndex =  this.groupsConditions.findIndex((group) => group.name === groupName);
+    const conditionsIndex = this.groupsConditions.findIndex((group) => group.name === groupName);
     if (conditionsIndex !== -1) {
       this.groupsConditions.splice(conditionsIndex, 1);
     }
