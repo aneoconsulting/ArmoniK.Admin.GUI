@@ -97,7 +97,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   }
 
   get columnsKeys(): ColumnKey<T, O>[] {
-    return this._columnsKeys as ColumnKey<T, O>[];
+    return this._columnsKeys;
   }
 
   get isAllSelected(): boolean {
