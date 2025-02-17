@@ -1,15 +1,18 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ViewContainerRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, PartitionData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { PartitionsTableComponent } from './table.component';
 import PartitionsDataService from '../services/partitions-data.service';
+import { PartitionsFiltersService } from '../services/partitions-filters.service';
 import { PartitionRaw } from '../types';
 
 describe('PartitionsTableComponent', () => {
@@ -69,10 +72,11 @@ describe('PartitionsTableComponent', () => {
     ]
   };
 
+  const afterClosedMocked = jest.fn((): Observable<unknown> => of(mockDialogReturn));
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed: jest.fn(() => of(mockDialogReturn))
+        afterClosed: afterClosedMocked
       };
     })
   };
@@ -91,6 +95,13 @@ describe('PartitionsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    refreshGroup: jest.fn(),
+    groupsConditions: [],
+    manageGroupDialogResult: jest.fn(),
+  };
+
+  const mockPartitionsFilters = {
+    saveGroups: jest.fn(),
   };
 
   const mockNotificationService = {
@@ -108,6 +119,8 @@ describe('PartitionsTableComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, useValue: {} },
+        { provide: PartitionsFiltersService, useValue: mockPartitionsFilters },
       ]
     }).inject(PartitionsTableComponent);
 
@@ -164,9 +177,16 @@ describe('PartitionsTableComponent', () => {
     });
   });
 
-  it('should track a partition by its id', () => {
-    const partition = {raw: { id: 'partition' }} as PartitionData;
-    expect(component.trackBy(0, partition)).toEqual(partition.raw.id);
+  describe('track By', () => {
+    it('should track a partition by its id', () => {
+      const partition = {raw: { id: 'partition' }} as PartitionData;
+      expect(component.trackBy(0, partition)).toEqual(partition.raw.id);
+    });
+    
+    it('should track group by its name', () => {
+      const group = { name: signal('some-name') } as unknown as Group<PartitionRaw>;
+      expect(component.trackBy(0, group)).toEqual(group.name());
+    });
   });
 
   it('should get data', () => {
@@ -191,5 +211,35 @@ describe('PartitionsTableComponent', () => {
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+
+  describe('UpdateGroupPage', () => {
+    const groupName = 'group 1';
+    
+    beforeEach(() => {
+      component.updateGroupPage(groupName);
+    });
+    
+    it('should refresh the selected group', () => {
+      expect(mockPartitionsDataService.refreshGroup).toHaveBeenCalledWith(groupName);
+    });
+  });
+
+  describe('openGroupSettings', () => {
+    const groupName = 'Group 1';
+    const result = [{name: 'Renamed Group', conditions: []}];
+    
+    beforeEach(() => {
+      afterClosedMocked.mockReturnValueOnce(of(result));
+      component.openGroupSettings(groupName);
+    });
+    
+    it('should manage the group dialog result', () => {
+      expect(mockPartitionsDataService.manageGroupDialogResult).toHaveBeenCalledWith(result);
+    });
+
+    it('should update the groups in the local storage', () => {
+      expect(mockPartitionsFilters.saveGroups).toHaveBeenCalledWith(mockPartitionsDataService.groupsConditions);
+    });
   });
 });

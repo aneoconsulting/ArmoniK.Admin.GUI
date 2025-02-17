@@ -1,17 +1,20 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ViewContainerRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ManageGroupsDialogResult, TasksStatusesGroup } from '@app/dashboard/types';
 import { TableColumn } from '@app/types/column.type';
 import { ApplicationData, ColumnKey } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { TasksByStatusService } from '@services/tasks-by-status.service';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ApplicationsTableComponent } from './table.component';
 import ApplicationsDataService from '../services/applications-data.service';
+import { ApplicationsFiltersService } from '../services/applications-filters.service';
 import { ApplicationRaw } from '../types';
 
 describe('TasksTableComponent', () => {
@@ -82,10 +85,11 @@ describe('TasksTableComponent', () => {
     ]
   };
 
+  const afterClosedMocked = jest.fn((): Observable<unknown> => of(mockDialogReturn));
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed: jest.fn(() => of(mockDialogReturn))
+        afterClosed: afterClosedMocked,
       };
     })
   };
@@ -108,6 +112,13 @@ describe('TasksTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    refreshGroup: jest.fn(),
+    groupsConditions: [],
+    manageGroupDialogResult: jest.fn(),
+  };
+
+  const mockApplicationsFilterService = {
+    saveGroups: jest.fn(),
   };
 
   beforeEach(() => {
@@ -120,7 +131,9 @@ describe('TasksTableComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         { provide: TasksByStatusService, useValue: mockTasksByStatusService },
         IconsService,
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: ViewContainerRef, useValue: {} },
+        { provide: ApplicationsFiltersService, useValue: mockApplicationsFilterService },
       ]
     }).inject(ApplicationsTableComponent);
 
@@ -207,9 +220,16 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should track an application by its name and version', () => {
-    const application = {raw: { name: 'application', version: '0.1.2'}} as ApplicationData;
-    expect(component.trackBy(0, application)).toEqual(`${application.raw.name}-${application.raw.version}`);
+  describe('track By', () => {
+    it('should track an application by its name and version', () => {
+      const application = {raw: { name: 'application', version: '0.1.2'}} as ApplicationData;
+      expect(component.trackBy(0, application)).toEqual(`${application.raw.name}-${application.raw.version}`);
+    });
+    
+    it('should track group by its name', () => {
+      const group = { name: signal('some-name') } as unknown as Group<ApplicationRaw>;
+      expect(component.trackBy(0, group)).toEqual(group.name());
+    });
   });
 
   it('should get data', () => {
@@ -234,5 +254,35 @@ describe('TasksTableComponent', () => {
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+
+  describe('UpdateGroupPage', () => {
+    const groupName = 'group 1';
+    
+    beforeEach(() => {
+      component.updateGroupPage(groupName);
+    });
+    
+    it('should refresh the selected group', () => {
+      expect(mockApplicationsDataService.refreshGroup).toHaveBeenCalledWith(groupName);
+    });
+  });
+
+  describe('openGroupSettings', () => {
+    const groupName = 'Group 1';
+    const result = [{name: 'Renamed Group', conditions: []}];
+    
+    beforeEach(() => {
+      afterClosedMocked.mockReturnValueOnce(of(result));
+      component.openGroupSettings(groupName);
+    });
+    
+    it('should manage the group dialog result', () => {
+      expect(mockApplicationsDataService.manageGroupDialogResult).toHaveBeenCalledWith(result);
+    });
+
+    it('should update the groups in the local storage', () => {
+      expect(mockApplicationsFilterService.saveGroups).toHaveBeenCalledWith(mockApplicationsDataService.groupsConditions);
+    });
   });
 });
