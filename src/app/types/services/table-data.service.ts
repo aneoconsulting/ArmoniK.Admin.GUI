@@ -110,11 +110,9 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
       if (!this.isNotEmptyFilter(filtersOr)) {
         filtersOr.push(...inverted);
       } else {
-        const result: FiltersOr<F, FO> = [];
-        filtersOr.forEach((filterAnd) => {
-          inverted.map((invertedAnd) => [...invertedAnd, ...filterAnd]).forEach((r) => result.push(r));
-        });
-        filtersOr = result;
+        filtersOr = filtersOr
+          .map((filterAnd) => inverted.map((invertedAnd) => [...invertedAnd, ...filterAnd]))
+          .reduce((acc, cur) => [...acc, ...cur]);
       }
     });
     return filtersOr;

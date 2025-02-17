@@ -21,9 +21,9 @@ export class InvertFilterService<F extends FiltersEnums, FO extends FiltersOptio
       if (invertedFilters.length === 0) {
         invertedFilters.push(...filterAnd.map((filter) => [this.invertFilter(filter)]));
       } else {
-        const result = invertedFilters.map((invertedAnd) => filterAnd.map((filter) => [...invertedAnd, this.invertFilter(filter)]));
-        invertedFilters = [];
-        result.forEach((r) => invertedFilters.push(...r));
+        invertedFilters = invertedFilters
+          .map((invertedAnd) => filterAnd.map((filter) => [...invertedAnd, this.invertFilter(filter)]))
+          .reduce((acc, current) => [...acc, ...current]);
       }
     });
     return invertedFilters;
