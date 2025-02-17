@@ -10,10 +10,7 @@
     </p>
   </article>
   @if (statusesGroups) {
-    <article class="tasks-statuses">
-      <p>Tasks statuses: </p>
-      <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
-    </article>
+    <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
   }
   <article class="general-actions">
     @if (group.emptyCondition) {

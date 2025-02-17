@@ -11,6 +11,7 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-group-tasks-by-status',
   templateUrl: 'group-tasks-by-status.component.html',
+  styleUrl: 'group-tasks-by-status.component.css',
   standalone: true,
   imports: [
     CountTasksByStatusComponent,
@@ -35,6 +36,8 @@ export class GroupTasksByStatusComponent<T extends DataRaw, O extends TaskOption
         keys.forEach((key) => (this.queryParams[`${index}${key.slice(1)}`] = data.queryTasksParams[key]));
       });
       this.queryParamsLength = Object.keys(this.queryParams).length;
+
+      this.refresh.next();
     }
   }
 

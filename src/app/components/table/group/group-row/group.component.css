@@ -13,11 +13,6 @@
   min-width: 20rem;
 }
 
-.tasks-statuses {
-  display: flex;
-  align-items: center;
-}
-
 .general-actions {
   display: flex;
   align-items: center;

@@ -1,3 +1,6 @@
 @if (queryParamsLength !== 0 && filters.length !== 0) {
-  <app-count-tasks-by-status [refresh]="refresh" [queryParams]="queryParams" [filters]="filters" [statusesGroups]="statusesGroups" />
+  <article>
+    <p>Tasks statuses: </p>
+    <app-count-tasks-by-status [refresh]="refresh" [queryParams]="queryParams" [filters]="filters" [statusesGroups]="statusesGroups" />
+  </article>
 }
