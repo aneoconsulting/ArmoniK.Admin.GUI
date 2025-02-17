@@ -23,7 +23,7 @@ export class InvertFilterService<F extends FiltersEnums, FO extends FiltersOptio
       } else {
         invertedFilters = invertedFilters
           .map((invertedAnd) => filterAnd.map((filter) => [...invertedAnd, this.invertFilter(filter)]))
-          .reduce((acc, current) => [...acc, ...current]);
+          .reduce((acc, current) => [...acc, ...current], []);
       }
     });
     return invertedFilters;

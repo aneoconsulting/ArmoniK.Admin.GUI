@@ -112,7 +112,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
       } else {
         filtersOr = filtersOr
           .map((filterAnd) => inverted.map((invertedAnd) => [...invertedAnd, ...filterAnd]))
-          .reduce((acc, cur) => [...acc, ...cur]);
+          .reduce((acc, cur) => [...acc, ...cur], []);
       }
     });
     return filtersOr;
