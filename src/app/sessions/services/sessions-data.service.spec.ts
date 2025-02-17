@@ -457,13 +457,19 @@ describe('SessionsDataService', () => {
       jest.useFakeTimers().setSystemTime(new Date('1970-01-01'));
       const date = new Date();
       date.setDate(date.getDate() - 3);
+      const appliedFilter: Filter<SessionRawEnumField, TaskOptionEnumField> = {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+        for: 'root',
+        operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
+        value: Math.floor(date.getTime()/1000)
+      };
       service.options = { pageIndex: 0, pageSize: 0, sort: { active: 'duration', direction: 'asc'}};
       service.isDurationDisplayed = true;
+      service.groupsConditions = [];
       service.filters = [[arrayFilter, stringFilter], [dateFilter]];
       service.refresh$.next();
       expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(
-        service.prepareOptions(),
-        service.prepareFilters(),
+        service.prepareOptions(),[[arrayFilter, stringFilter, appliedFilter], [dateFilter]]
       );
     });
   });
@@ -635,6 +641,23 @@ describe('SessionsDataService', () => {
     it('should return group conditions if there is no filters', () => {
       service.filters = [];
       expect(service.prepareFilters()).toEqual(groupConditions[0].conditions);
+    });
+
+    it('should return the applied filter if the duration is displayed and there is no filters', () => {
+      service.groupsConditions = [];
+      service.filters = [];
+      service.isDurationDisplayed = true;
+      jest.useFakeTimers().setSystemTime(new Date('1970-01-01'));
+      const date = new Date();
+      date.setDate(date.getDate() - 3);
+      const appliedFilter: Filter<SessionRawEnumField, TaskOptionEnumField> = {
+        field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_CREATED_AT,
+        for: 'root',
+        operator: FilterDateOperator.FILTER_DATE_OPERATOR_AFTER_OR_EQUAL,
+        value: Math.floor(date.getTime()/1000)
+      };
+
+      expect(service.prepareFilters()).toEqual([[appliedFilter]]);
     });
   });
     
