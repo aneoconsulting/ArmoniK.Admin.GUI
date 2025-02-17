@@ -56,8 +56,8 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     return options;
   }
 
-  override preparefilters(): FiltersOr<SessionRawEnumField, TaskOptionEnumField> {
-    const filtersOr = super.preparefilters();
+  override prepareFilters(): FiltersOr<SessionRawEnumField, TaskOptionEnumField> {
+    const filtersOr = super.prepareFilters();
     if(this.isDurationDisplayed && this.options.sort.active === 'duration') {
       const date = new Date();
       date.setDate(date.getDate() - 3);

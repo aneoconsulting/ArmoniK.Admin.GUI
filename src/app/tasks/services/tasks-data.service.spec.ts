@@ -146,7 +146,7 @@ describe('TasksDataService', () => {
   describe('Fetching data', () => {
     it('should list the data', () => {
       service.refresh$.next();
-      expect(mockTasksGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.preparefilters());
+      expect(mockTasksGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.prepareFilters());
     });
 
     it('should update the total', () => {
@@ -360,7 +360,7 @@ describe('TasksDataService', () => {
     
   describe('PrepareFilters', () => {
     it('should merge filters and group conditions', () => {
-      (expect(service.preparefilters())).toEqual([
+      (expect(service.prepareFilters())).toEqual([
         [
           {
             field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
@@ -412,7 +412,7 @@ describe('TasksDataService', () => {
     
     it('should return group conditions if there is no filters', () => {
       service.filters = [];
-      expect(service.preparefilters()).toEqual(groupConditions[0].conditions);
+      expect(service.prepareFilters()).toEqual(groupConditions[0].conditions);
     });
   });
     

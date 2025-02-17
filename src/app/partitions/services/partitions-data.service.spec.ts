@@ -163,7 +163,7 @@ describe('PartitionsDataService', () => {
   describe('Fetching data', () => {
     it('should list the data', () => {
       service.refresh$.next();
-      expect(mockPartitionsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.preparefilters());
+      expect(mockPartitionsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.prepareFilters());
     });
     
     it('should update the total', () => {
@@ -355,7 +355,7 @@ describe('PartitionsDataService', () => {
   
   describe('PrepareFilters', () => {
     it('should merge filters and group conditions', () => {
-      (expect(service.preparefilters())).toEqual([
+      (expect(service.prepareFilters())).toEqual([
         [
           {
             field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
@@ -429,7 +429,7 @@ describe('PartitionsDataService', () => {
   
     it('should return group conditions if there is no filters', () => {
       service.filters = [];
-      expect(service.preparefilters()).toEqual(groupConditions[0].conditions);
+      expect(service.prepareFilters()).toEqual(groupConditions[0].conditions);
     });
   });
   

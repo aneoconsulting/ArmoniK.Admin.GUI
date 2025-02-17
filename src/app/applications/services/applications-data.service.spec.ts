@@ -163,7 +163,7 @@ describe('ApplicationDataService', () => {
   describe('Fetching data', () => {
     it('should list the data', () => {
       service.refresh$.next();
-      expect(mockApplicationsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.preparefilters());
+      expect(mockApplicationsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.prepareFilters());
     });
 
     it('should update the total', () => {
@@ -263,7 +263,7 @@ describe('ApplicationDataService', () => {
 
   describe('PrepareFilters', () => {
     it('should merge filters and group conditions', () => {
-      (expect(service.preparefilters())).toEqual([
+      (expect(service.prepareFilters())).toEqual([
         [
           {
             field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
@@ -337,7 +337,7 @@ describe('ApplicationDataService', () => {
 
     it('should return group conditions if there is no filters', () => {
       service.filters = [];
-      expect(service.preparefilters()).toEqual(groupConditions[0].conditions);
+      expect(service.prepareFilters()).toEqual(groupConditions[0].conditions);
     });
   });
 

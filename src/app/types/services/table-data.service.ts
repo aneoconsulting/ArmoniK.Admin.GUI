@@ -70,7 +70,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
         this.loading.set(true);
 
         const options = this.prepareOptions();
-        const filters = this.preparefilters();
+        const filters = this.prepareFilters();
 
         return this.grpcService.list$(options, filters)
           .pipe(
@@ -103,7 +103,7 @@ export abstract class AbstractTableDataService<T extends DataRaw, F extends Filt
   /**
    * Clone the filter object, and add the inverted conditions of every groupConditions to it.
    */
-  preparefilters(): FiltersOr<F, FO> {
+  prepareFilters(): FiltersOr<F, FO> {
     let filtersOr = structuredClone(this.filters);
     this.groupsConditions.forEach((groupConditions) => {
       const inverted = this.invertFiltersService.invert(groupConditions.conditions);

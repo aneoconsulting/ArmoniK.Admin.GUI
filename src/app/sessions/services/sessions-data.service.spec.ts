@@ -183,7 +183,7 @@ describe('SessionsDataService', () => {
   describe('Fetching data', () => {
     it('should list the data', () => {
       service.refresh$.next();
-      expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.preparefilters());
+      expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.prepareFilters());
     });
     
     it('should update the total', () => {
@@ -463,7 +463,7 @@ describe('SessionsDataService', () => {
       service.refresh$.next();
       expect(mockSessionsGrpcService.list$).toHaveBeenCalledWith(
         service.prepareOptions(),
-        service.preparefilters(),
+        service.prepareFilters(),
       );
     });
   });
@@ -560,7 +560,7 @@ describe('SessionsDataService', () => {
     
   describe('PrepareFilters', () => {
     it('should merge filters and group conditions', () => {
-      (expect(service.preparefilters())).toEqual([
+      (expect(service.prepareFilters())).toEqual([
         [
           {
             field: SessionRawEnumField.SESSION_RAW_ENUM_FIELD_SESSION_ID,
@@ -634,7 +634,7 @@ describe('SessionsDataService', () => {
     
     it('should return group conditions if there is no filters', () => {
       service.filters = [];
-      expect(service.preparefilters()).toEqual(groupConditions[0].conditions);
+      expect(service.prepareFilters()).toEqual(groupConditions[0].conditions);
     });
   });
     
