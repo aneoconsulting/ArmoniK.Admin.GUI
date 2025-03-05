@@ -10,7 +10,7 @@
     <app-actions-toolbar-group>
       <ng-content select="[extra-buttons-right]"></ng-content>
 
-      <button mat-button (click)="openGroupsSettings()">
+      <button mat-button (click)="openGroupsSettings()" [matBadge]="groupsLength !== 0 ? groupsLength : undefined">
         <mat-icon [fontIcon]="getIcon('table-group')" />
         <span i18n>Manage Groups</span>
       </button>

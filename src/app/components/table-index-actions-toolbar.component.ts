@@ -27,6 +27,7 @@ export class TableIndexActionsToolbarComponent<T extends DataRaw, O extends Task
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
   @Input({ required: true }) lockColumns = false;
+  @Input({ required: false }) groupsLength: number;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
