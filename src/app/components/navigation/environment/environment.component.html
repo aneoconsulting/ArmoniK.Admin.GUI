@@ -1,0 +1,22 @@
+<section class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
+  {{ environment.name }} {{ environment.version }}
+</section>
+<button mat-icon-button #menuTrigger [matMenuTriggerFor]="menu">
+  <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')" [@rotateFull]="openedMenu" />
+</button>
+<mat-menu #menu xPosition="before">
+  @for (env of environmentService.environments; track $index) {
+    <article>
+      <button mat-button class="environment" [style]="'color:' + environment.color + ';'" matTooltip="Change environment">
+        {{ environment.name }} {{ environment.version }}
+      </button>
+      <button mat-icon-button>
+        <mat-icon [fontIcon]="getIcon('delete')" />
+      </button>
+    </article>
+  }
+  <button mat-menu-item (click)="openNewEnvDialog()">
+    <mat-icon [fontIcon]="getIcon('add')" />
+    <span i18n>Add a environment</span>
+  </button>
+</mat-menu>

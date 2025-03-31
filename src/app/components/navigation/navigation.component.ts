@@ -19,6 +19,7 @@ import { UserService } from '@services/user.service';
 import { Observable, Subscription, interval } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ChangeLanguageButtonComponent } from './change-language-button.component';
+import { EnvironmentComponent } from './environment/environment.component';
 import { ExternalServicesComponent } from './external-services/external-services.component';
 import { ThemeSelectorComponent } from './theme-selector.component';
 import { VersionsMenuComponent } from './version-menu/versions-menu.component';
@@ -57,12 +58,6 @@ import { VersionsMenuComponent } from './version-menu/versions-menu.component';
   font-weight: normal;
 }
 
-.environment {
-  background: white;
-  padding: 0 1rem;
-  border-radius: 0.25rem;
-}
-
 main {
   padding: 20px 50px;
 }
@@ -88,6 +83,7 @@ main {
     HealthCheckComponent,
     ExternalServicesComponent,
     VersionsMenuComponent,
+    EnvironmentComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

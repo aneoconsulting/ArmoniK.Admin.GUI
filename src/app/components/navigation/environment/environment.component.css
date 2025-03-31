@@ -1,0 +1,12 @@
+.environment {
+  background: white;
+  padding: 0 1rem;
+  border-radius: 0.25rem;
+  height: fit-content;
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}

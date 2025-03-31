@@ -1,0 +1,28 @@
+<h2 mat-dialog-title i18n="Dialog title">New environment</h2>
+
+<form [formGroup]="formGroup">
+  <mat-form-field appearance="outline">
+    <mat-label for="host" i18n>Environment Endpoint</mat-label>
+    <input matInput id="host" type="text" formControlName="host" />
+  </mat-form-field>
+</form>
+
+<p i18n>Environment Overview</p>
+<section>
+  @if (loading()) {
+    <app-spinner />
+  } @else if (testedEnvironment === null) {
+    <p i18n>Environment not found at this adress.</p>
+  } @else if (testedEnvironment) {
+    <article class="environment" [style]="'color:' + testedEnvironment.color + ';'" [matTooltip]="testedEnvironment.description">
+      {{ testedEnvironment.name }} {{ testedEnvironment.version }}
+    </article>
+  } @else {
+    <p>Enter a valid URL to test the endpoint</p>
+  }
+</section>
+
+<mat-dialog-actions>
+  <button mat-button matDialogClose>Cancel</button>
+  <button mat-flat-button color="primary" [disabled]="formGroup.invalid">Confirm</button>
+</mat-dialog-actions>

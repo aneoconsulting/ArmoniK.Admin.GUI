@@ -29,6 +29,7 @@ export type Key =
   'partitions-tasks-by-status' |
   'tasks-view-in-logs' |
   'host-config' |
+  'environments'|
   `${CustomScope}-custom-columns` |
   `${Scope}-${Element}` |
   `${Scope}-show-filters`;

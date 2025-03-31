@@ -10,6 +10,7 @@ import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
 import { Theme } from '@app/types/themes';
+import { Environment } from './environment.service';
 
 @Injectable()
 export class DefaultConfigService {
@@ -206,6 +207,8 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
+  readonly #environment: Environment[] = [];
+
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 
   get defaultTheme(): Theme {
@@ -268,6 +271,10 @@ export class DefaultConfigService {
     return structuredClone(this.#availableLanguages);
   }
 
+  get environment() {
+    return structuredClone(this.#environment);
+  }
+
   readonly #exportedDefaultConfig: ExportedDefaultConfig = {
     'language': this.#defaultLanguage,
     'navigation-sidebar': this.#defaultSidebar,
@@ -312,6 +319,7 @@ export class DefaultConfigService {
     'tasks-show-filters': this.#defaultTasks.showFilters,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
+    'environments': this.#environment,
     'host-config': null,
   };
 

@@ -1,0 +1,24 @@
+.environment {
+  background: white;
+  padding: 0 1rem;
+  border-radius: 0.25rem;
+  height: fit-content;
+}
+
+mat-dialog-actions {
+  width: 30vw !important;
+}
+
+section {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+section > p {
+  width: 100%;
+}
+
+:host {
+  padding: 1rem;
+}
