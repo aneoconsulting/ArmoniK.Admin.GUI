@@ -11,7 +11,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HealthCheckComponent } from '@app/healthcheck/healthcheck.component';
-import { EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
 import { StorageService } from '@services/storage.service';
@@ -92,9 +91,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private readonly navigationService = inject(NavigationService);
   private readonly userService = inject(UserService);
   private readonly iconsService = inject(IconsService);
-  private readonly environmentService = inject(EnvironmentService);
 
-  environment = this.environmentService.getEnvironment();
   settingsItem = $localize`Settings`;
 
   checkGreetingsSubscription: Subscription;

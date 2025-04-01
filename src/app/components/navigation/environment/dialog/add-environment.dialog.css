@@ -7,6 +7,8 @@
 
 mat-dialog-actions {
   width: 30vw !important;
+  display: flex;
+  justify-content: space-between;
 }
 
 section {
@@ -19,6 +21,6 @@ section > p {
   width: 100%;
 }
 
-:host {
-  padding: 1rem;
+mat-form-field {
+  width: 100%;
 }

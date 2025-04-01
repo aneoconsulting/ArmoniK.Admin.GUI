@@ -11,29 +11,26 @@ export interface Environment {
 
 @Injectable()
 export class EnvironmentService {
-  private environment: Environment;
-  readonly environments: Environment[];
+  readonly hosts: string[];
 
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
 
   constructor() {
-    this.environments = (this.storageService.getItem<Environment[]>('environments') ?? this.defaultConfigService.environment) as Environment[];
+    this.hosts = (this.storageService.getItem<string[]>('environments') ?? this.defaultConfigService.environment) as string[];
   }
 
-  getEnvironment(): Environment {
-    return this.environment;
-  }
-
-  setEnvironment(environment: Environment): void {
-    this.environment = environment;
-  }
-
-  addEnvironment(environment: Environment): void {
-    this.environments.push(environment);
+  addEnvironment(environment: string): void {
+    this.hosts.push(environment);
+    this.saveEnvironments();
   }
 
   removeEnvironment(index: number): void {
-    this.environments.splice(index, 1);
+    this.hosts.splice(index, 1);
+    this.saveEnvironments();
+  }
+
+  private saveEnvironments() {
+    this.storageService.setItem('environments', this.hosts);
   }
 }

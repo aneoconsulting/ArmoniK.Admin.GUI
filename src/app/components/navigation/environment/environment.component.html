@@ -1,22 +1,38 @@
-<section class="environment" [style]="'color:' + environment.color + ';'" [matTooltip]="environment.description">
-  {{ environment.name }} {{ environment.version }}
-</section>
+@let env = environment();
+@if (env) {
+  <section class="environment" [style]="'color:' + env.color + ';'" [matTooltip]="env.description">
+    {{ env.name }} {{ env.version }}
+  </section>
+}
 <button mat-icon-button #menuTrigger [matMenuTriggerFor]="menu">
   <mat-icon aria-hidden="true" [fontIcon]="getIcon('arrow-down')" [@rotateFull]="openedMenu" />
 </button>
 <mat-menu #menu xPosition="before">
-  @for (env of environmentService.environments; track $index) {
-    <article>
-      <button mat-button class="environment" [style]="'color:' + environment.color + ';'" matTooltip="Change environment">
-        {{ environment.name }} {{ environment.version }}
+  @if (defaultEnvironment) {
+    <article class="env-item">
+      <button mat-button class="environment" [style]="'color:' + defaultEnvironment.color + ';'">
+        {{ defaultEnvironment.name }} {{ defaultEnvironment.version }}
       </button>
-      <button mat-icon-button>
+      <mat-icon color="info" [fontIcon]="getIcon('important')" i18n-matTooltip matTooltip="This is the default environment and cannot be removed." />
+    </article>
+  }
+  @for (host of environmmentList; track $index) {
+    <article class="env-item">
+      @if (host) {
+        <button mat-button class="environment" [style]="'color:' + host.color + ';'" i18n-matTooltip matTooltip="Change environment">
+          {{ host.name }} {{ host.version }}
+        </button>
+      } @else {
+        <p mat-menu-item disabled color="warn" i18n>Could not find the environment.</p>
+      }
+      <button mat-icon-button (click)="deleteEnv($index)" color="warn">
         <mat-icon [fontIcon]="getIcon('delete')" />
       </button>
     </article>
   }
+  <mat-divider />
   <button mat-menu-item (click)="openNewEnvDialog()">
     <mat-icon [fontIcon]="getIcon('add')" />
-    <span i18n>Add a environment</span>
+    <span i18n>Add an environment</span>
   </button>
 </mat-menu>

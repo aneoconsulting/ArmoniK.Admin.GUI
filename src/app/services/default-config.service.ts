@@ -10,7 +10,6 @@ import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
 import { Theme } from '@app/types/themes';
-import { Environment } from './environment.service';
 
 @Injectable()
 export class DefaultConfigService {
@@ -207,7 +206,7 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
-  readonly #environment: Environment[] = [];
+  readonly #environment: string[] = ['http://172.19.56.177:5000'];
 
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 

@@ -5,8 +5,30 @@
   height: fit-content;
 }
 
+.env-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  padding-left: 0.75rem;
+  height: 2rem;
+}
+
+.env-item > mat-icon {
+  padding: 0.75rem;
+}
+
+.env-item > p {
+  padding: 0;
+  margin: 0;
+}
+
 :host {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+::ng-deep.mat-mdc-menu-panel {
+  max-width: none !important;
 }

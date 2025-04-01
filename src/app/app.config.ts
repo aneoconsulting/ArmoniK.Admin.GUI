@@ -6,7 +6,6 @@ import { GRPC_INTERCEPTORS, GrpcCoreModule } from '@ngx-grpc/core';
 import { GrpcWebClientModule } from '@ngx-grpc/grpc-web-client';
 import { CacheService } from '@services/cache.service';
 import { DefaultConfigService } from '@services/default-config.service';
-import { Environment, EnvironmentService } from '@services/environment.service';
 import { FiltersCacheService } from '@services/filters-cache.service';
 import { IconsService } from '@services/icons.service';
 import { NavigationService } from '@services/navigation.service';
@@ -20,7 +19,7 @@ import { routes } from './app.routes';
 import { GrpcHostInterceptor } from './interceptors/grpc.interceptor';
 import { ExportedDefaultConfig } from './types/config';
 
-function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
+function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, storageService: StorageService) {
   return () => merge(
     versionsGrpcService.listVersions$().pipe(
       tap((data) => {
@@ -45,21 +44,6 @@ function initializeAppFactory(userGrpcService: UserGrpcService, userService: Use
         console.error(err);
         return of();
       })
-    ),
-    httpClient.get<Partial<Environment>>('/static/environment.json').pipe(
-      tap((data)=> {
-        const environment = {
-          color: data.color || 'red',
-          name: data.name || 'Unknown',
-          description: data.description || 'Unknown',
-          version: data.version || 'Unknown',
-        } satisfies Environment;
-
-        environmentService.setEnvironment(environment);
-      }),
-      catchError((err) => {
-        throw err;
-      }),
     ),
     httpClient.get<Partial<ExportedDefaultConfig>>('/static/gui_configuration').pipe(
       tap((data) => {
@@ -86,7 +70,6 @@ export const appConfig: ApplicationConfig = {
     VersionsService,
     StorageService,
     NavigationService,
-    EnvironmentService,
     CacheService,
     FiltersCacheService,
     {
@@ -104,7 +87,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
-      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, EnvironmentService, StorageService],
+      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, StorageService],
       multi: true
     },
     provideExperimentalZonelessChangeDetection(),

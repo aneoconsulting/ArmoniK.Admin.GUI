@@ -77,6 +77,7 @@ export class IconsService {
     'host': 'dns',
     'success': 'check',
     'fail': 'close',
+    'important': 'error_outline'
   };
 
   getIcon(name: string | null | undefined): string {
