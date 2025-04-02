@@ -6,9 +6,11 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { GrpcHostInterceptor } from '@app/interceptors/grpc.interceptor';
 import { rotateFull } from '@app/shared/animations';
 import { ConfirmationDialogComponent } from '@components/dialogs/confirmation/confirmation.dialog';
 import { ConfirmationDialogData } from '@components/dialogs/confirmation/type';
+import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
 import { BehaviorSubject, catchError, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
@@ -39,41 +41,41 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   defaultEnvironment: Environment | undefined;
 
   environmmentList: (Environment | null)[] = [];
+  selectedEnvironment: number | null = null;
 
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger;
 
   openedMenu = false;
 
-  private readonly envConf$ = new BehaviorSubject<string | null>(null);
-
+  private readonly host$ = new BehaviorSubject<string | null>(null);
   private readonly subscription = new Subscription();
+
   private readonly iconsService = inject(IconsService);
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
+  private readonly grpcInterceptor = inject(GRPC_INTERCEPTORS) as GrpcHostInterceptor;
+
   readonly environmentService = inject(EnvironmentService);
 
   ngOnInit(): void {
-    this.subscription.add(this.envConf$.pipe(
-      switchMap((envConf) => this.httpClient.get<Partial<Environment>>(envConf ?? '' + '/static/environment.json')),
+    this.subscription.add(this.host$.pipe(
+      switchMap((host) => {
+        console.log(host);
+        return this.httpClient.get<Partial<Environment>>(host ?? '' + '/static/environment.json');
+      }),
       catchError((error) => {
         console.error(error);
         return of({} as Partial<Environment>); // Returns environment with undefined fields
       })
     ).subscribe((environment) => {
-      this.environment.set({
-        color: environment.color || 'red',
-        name: environment.name || 'Unknown',
-        description: environment.description || 'Unknown',
-        version: environment.version || 'Unknown',
-      } satisfies Environment);
-      if (!this.defaultEnvironment) {
-        this.defaultEnvironment = this.environment();
-      }
+      this.environment.set(this.partialToCompleteEnv(environment));
     }));
 
     of(...this.environmentService.hosts).pipe(mergeMap((host) => this.hostToEnvironment(host))).subscribe((value) => {
       this.environmmentList.push(value);
     });
+
+    this.host$.next(this.environmentService.currentHost);
   }
 
   ngAfterViewInit(): void {
@@ -91,6 +93,18 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
+  }
+
+  selectEnvironment(index: number) {
+    this.environmentService.selectHost(index);
+    this.selectedEnvironment = index !== -1 ? index : null;
+    this.host$.next(this.environmentService.currentHost);
+    this.grpcInterceptor.setHost(this.environmentService.currentHost);
+  }
+
+  private hostToEnvironment(envAdress: string): Observable<Environment | null> {
+    return this.httpClient.get<Environment>(envAdress + '/static/environment.json')
+      .pipe(catchError(() => of(null)));
   }
 
   openNewEnvDialog() {
@@ -118,8 +132,12 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private hostToEnvironment(envAdress: string): Observable<Environment | null> {
-    return this.httpClient.get<Environment>(envAdress + '/static/environment.json')
-      .pipe(catchError(() => of(null)));
+  partialToCompleteEnv(partial: Partial<Environment>) {
+    return {
+      color: partial.color || 'red',
+      name: partial.name || 'Unknown',
+      description: partial.description || 'Unknown',
+      version: partial.version || 'Unknown',
+    } satisfies Environment;
   }
 }

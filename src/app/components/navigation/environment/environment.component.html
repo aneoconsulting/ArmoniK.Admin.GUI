@@ -10,21 +10,39 @@
 <mat-menu #menu xPosition="before">
   @if (defaultEnvironment) {
     <article class="env-item">
-      <button mat-button class="environment" [style]="'color:' + defaultEnvironment.color + ';'">
-        {{ defaultEnvironment.name }} {{ defaultEnvironment.version }}
-      </button>
+      <section>
+        <button mat-icon-button (click)="selectEnvironment(-1)" [disabled]="selectedEnvironment === null">
+          @if (selectedEnvironment === null) {
+            <mat-icon [fontIcon]="getIcon('checked')" />
+          } @else {
+            <mat-icon [fontIcon]="getIcon('unchecked')" />
+          }
+        </button>
+        <div class="environment" [style]="'color:' + defaultEnvironment.color + ';'">
+          {{ defaultEnvironment.name }} {{ defaultEnvironment.version }}
+        </div>
+      </section>
       <mat-icon color="info" [fontIcon]="getIcon('important')" i18n-matTooltip matTooltip="This is the default environment and cannot be removed." />
     </article>
   }
   @for (host of environmmentList; track $index) {
     <article class="env-item">
-      @if (host) {
-        <button mat-button class="environment" [style]="'color:' + host.color + ';'" i18n-matTooltip matTooltip="Change environment">
-          {{ host.name }} {{ host.version }}
+      <section>
+        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" (click)="selectEnvironment($index)">
+          @if (selectedEnvironment === $index) {
+            <mat-icon [fontIcon]="getIcon('checked')" />
+          } @else {
+            <mat-icon [fontIcon]="getIcon('unchecked')" />
+          }
         </button>
-      } @else {
-        <p mat-menu-item disabled color="warn" i18n>Could not find the environment.</p>
-      }
+        @if (host) {
+          <div class="environment" [style]="'color:' + host.color + ';'" >
+            {{ host.name }} {{ host.version }}
+          </div>
+        } @else {
+          <p mat-menu-item disabled i18n>Could not find the environment.</p>
+        }
+      </section>
       <button mat-icon-button (click)="deleteEnv($index)" color="warn">
         <mat-icon [fontIcon]="getIcon('delete')" />
       </button>

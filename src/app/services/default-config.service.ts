@@ -206,7 +206,7 @@ export class DefaultConfigService {
     urlTemplate: null,
   };
 
-  readonly #environment: string[] = ['http://172.19.56.177:5000'];
+  readonly #environment: string[] = ['http://172.26.174.64:5000'];
 
   // We use getters to be able to deep copy the default config and to access the default config from the outside
 

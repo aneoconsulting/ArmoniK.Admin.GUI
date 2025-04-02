@@ -14,11 +14,17 @@
   height: 2rem;
 }
 
-.env-item > mat-icon {
-  padding: 0.75rem;
+.env-item > section {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
 }
 
-.env-item > p {
+.env-item > mat-icon {
+  margin: 0.75rem;
+}
+
+.env-item > section > p {
   padding: 0;
   margin: 0;
 }

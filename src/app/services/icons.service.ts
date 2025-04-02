@@ -77,7 +77,9 @@ export class IconsService {
     'host': 'dns',
     'success': 'check',
     'fail': 'close',
-    'important': 'error_outline'
+    'important': 'error_outline',
+    'checked': 'radio_button_checked',
+    'unchecked': 'radio_button_unchecked',
   };
 
   getIcon(name: string | null | undefined): string {
