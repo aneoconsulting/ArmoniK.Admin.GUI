@@ -11,8 +11,8 @@
   @if (defaultEnvironment) {
     <article class="env-item">
       <section>
-        <button mat-icon-button (click)="selectEnvironment(-1)" [disabled]="selectedEnvironment === null">
-          @if (selectedEnvironment === null) {
+        <button mat-icon-button (click)="selectEnvironment(-1)" [disabled]="environmentService.currentIndex === -1">
+          @if (environmentService.currentIndex === -1) {
             <mat-icon [fontIcon]="getIcon('checked')" />
           } @else {
             <mat-icon [fontIcon]="getIcon('unchecked')" />
@@ -28,8 +28,8 @@
   @for (host of environmmentList; track $index) {
     <article class="env-item">
       <section>
-        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" (click)="selectEnvironment($index)">
-          @if (selectedEnvironment === $index) {
+        <button mat-icon-button i18n-matTooltip matTooltip="Select environment" [disabled]="!host || environmentService.currentIndex === $index" (click)="selectEnvironment($index)">
+          @if (environmentService.currentIndex === $index) {
             <mat-icon [fontIcon]="getIcon('checked')" />
           } @else {
             <mat-icon [fontIcon]="getIcon('unchecked')" />

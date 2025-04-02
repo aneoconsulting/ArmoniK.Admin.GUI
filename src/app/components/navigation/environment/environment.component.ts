@@ -13,7 +13,7 @@ import { ConfirmationDialogData } from '@components/dialogs/confirmation/type';
 import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
-import { BehaviorSubject, catchError, mergeMap, Observable, of, Subscription, switchMap } from 'rxjs';
+import { catchError, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
 import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
 
 @Component({
@@ -37,17 +37,17 @@ import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
-  environment = signal<Environment | undefined>(undefined);
-  defaultEnvironment: Environment | undefined;
+  private readonly host$ = new Subject<void>();
+  environment = signal<Environment | null>(null);
+  defaultEnvironment: Environment | null = null;
 
+  private readonly hostList$ = new Subject<void>();
   environmmentList: (Environment | null)[] = [];
-  selectedEnvironment: number | null = null;
 
   @ViewChild(MatMenuTrigger) private readonly trigger: MatMenuTrigger;
 
   openedMenu = false;
 
-  private readonly host$ = new BehaviorSubject<string | null>(null);
   private readonly subscription = new Subscription();
 
   private readonly iconsService = inject(IconsService);
@@ -58,24 +58,32 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly environmentService = inject(EnvironmentService);
 
   ngOnInit(): void {
-    this.subscription.add(this.host$.pipe(
-      switchMap((host) => {
-        console.log(host);
-        return this.httpClient.get<Partial<Environment>>(host ?? '' + '/static/environment.json');
-      }),
+    this.host$.pipe(
+      startWith(),
+      switchMap(() => this.httpClient.get<Partial<Environment>>(this.environmentService.currentHost ?? '' + '/static/environment.json')),
       catchError((error) => {
         console.error(error);
         return of({} as Partial<Environment>); // Returns environment with undefined fields
       })
     ).subscribe((environment) => {
+      console.log(environment);
       this.environment.set(this.partialToCompleteEnv(environment));
-    }));
+    });
 
-    of(...this.environmentService.hosts).pipe(mergeMap((host) => this.hostToEnvironment(host))).subscribe((value) => {
+    this.httpClient.get<Partial<Environment>>('/static/environment.json').subscribe((value) => {
+      this.defaultEnvironment = this.partialToCompleteEnv(value);
+    });
+
+    this.hostList$.pipe(
+      startWith(),
+      () => of(...this.environmentService.hosts),
+      mergeMap((host) => this.hostToEnvironment(host))
+    ).subscribe((value) => {
       this.environmmentList.push(value);
     });
 
-    this.host$.next(this.environmentService.currentHost);
+    console.log(this.hostList$.observed);
+    this.host$.next();
   }
 
   ngAfterViewInit(): void {
@@ -96,9 +104,8 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectEnvironment(index: number) {
+    this.environment.set(index !== -1 ? this.environmmentList[index] : this.defaultEnvironment);
     this.environmentService.selectHost(index);
-    this.selectedEnvironment = index !== -1 ? index : null;
-    this.host$.next(this.environmentService.currentHost);
     this.grpcInterceptor.setHost(this.environmentService.currentHost);
   }
 
@@ -113,6 +120,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.environmentService.addEnvironment(value);
+        this.hostList$.next();
       }
     });
   }
@@ -128,6 +136,7 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogRef.afterClosed().subscribe(value => {
       if (value) {
         this.environmentService.removeEnvironment(index);
+        this.hostList$.next();
       }
     });
   }
