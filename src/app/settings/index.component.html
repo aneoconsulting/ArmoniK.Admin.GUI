@@ -63,19 +63,6 @@
       
       <button mat-flat-button color="primary" (click)="clearFilterCache()" i18n>Clear cached filters</button>
     </app-page-section>
-    <app-page-section>
-      <app-page-section-header [icon]="getIcon('host')">
-        <span i18n> Host Configuration </span>
-      </app-page-section-header>
-
-      <p i18n>
-        Set the URL of an ArmoniK deployment for this application to observe it  instead of the default one.
-        <br/>
-        Check that your address is allowed in the CORS policy of the deployment.
-      </p>
-      
-      <app-update-host-config />
-    </app-page-section>
 
     <app-page-section class="storage">
       <app-page-section-header [icon]="getIcon('storage')">
