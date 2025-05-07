@@ -1,4 +1,6 @@
 import { Injectable, inject } from '@angular/core';
+import { GrpcHostInterceptor } from '@app/interceptors/grpc.interceptor';
+import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { DefaultConfigService } from './default-config.service';
 import { StorageService } from './storage.service';
 
@@ -17,6 +19,7 @@ export class EnvironmentService {
 
   private readonly storageService = inject(StorageService);
   private readonly defaultConfigService = inject(DefaultConfigService);
+  private readonly grpcInterceptor = inject(GRPC_INTERCEPTORS) as GrpcHostInterceptor;
 
   constructor() {
     this.hosts = (this.storageService.getItem<string[]>('environments', true) ?? this.defaultConfigService.environment) as string[];
@@ -31,6 +34,7 @@ export class EnvironmentService {
     } else {
       this.currentHost = null;
     }
+    this.grpcInterceptor.setHost(this.currentHost);
   }
 
   addEnvironment(environment: string): void {

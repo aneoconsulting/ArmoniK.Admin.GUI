@@ -22,7 +22,7 @@
           {{ defaultEnvironment.name }} {{ defaultEnvironment.version }}
         </div>
       </section>
-      <mat-icon color="info" [fontIcon]="getIcon('important')" i18n-matTooltip matTooltip="This is the default environment and cannot be removed." />
+      <mat-icon color="info" [fontIcon]="getIcon('info')" i18n-matTooltip matTooltip="This is the default environment and cannot be removed." />
     </article>
   }
   @for (host of environmmentList; track $index) {

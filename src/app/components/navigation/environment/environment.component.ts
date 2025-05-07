@@ -6,14 +6,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { GrpcHostInterceptor } from '@app/interceptors/grpc.interceptor';
 import { rotateFull } from '@app/shared/animations';
 import { ConfirmationDialogComponent } from '@components/dialogs/confirmation/confirmation.dialog';
 import { ConfirmationDialogData } from '@components/dialogs/confirmation/type';
-import { GRPC_INTERCEPTORS } from '@ngx-grpc/core';
 import { Environment, EnvironmentService } from '@services/environment.service';
 import { IconsService } from '@services/icons.service';
-import { catchError, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap } from 'rxjs';
+import { catchError, concatMap, from, mergeMap, Observable, of, startWith, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { AddEnvironmentDialogComponent } from './dialog/add-environment.dialog';
 
 @Component({
@@ -53,7 +51,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly iconsService = inject(IconsService);
   private readonly dialog = inject(MatDialog);
   private readonly httpClient = inject(HttpClient);
-  private readonly grpcInterceptor = inject(GRPC_INTERCEPTORS) as GrpcHostInterceptor;
 
   readonly environmentService = inject(EnvironmentService);
 
@@ -66,24 +63,24 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
         return of({} as Partial<Environment>); // Returns environment with undefined fields
       })
     ).subscribe((environment) => {
-      console.log(environment);
       this.environment.set(this.partialToCompleteEnv(environment));
+    });
+
+    this.hostList$.pipe(
+      startWith(),
+      tap(() => this.environmmentList = []),
+      concatMap(() => from(this.environmentService.hosts)),
+      mergeMap((host) => this.hostToEnvironment(host))
+    ).subscribe((value) => {
+      this.environmmentList.push(value);
     });
 
     this.httpClient.get<Partial<Environment>>('/static/environment.json').subscribe((value) => {
       this.defaultEnvironment = this.partialToCompleteEnv(value);
     });
 
-    this.hostList$.pipe(
-      startWith(),
-      () => of(...this.environmentService.hosts),
-      mergeMap((host) => this.hostToEnvironment(host))
-    ).subscribe((value) => {
-      this.environmmentList.push(value);
-    });
-
-    console.log(this.hostList$.observed);
     this.host$.next();
+    this.hostList$.next();
   }
 
   ngAfterViewInit(): void {
@@ -106,7 +103,6 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
   selectEnvironment(index: number) {
     this.environment.set(index !== -1 ? this.environmmentList[index] : this.defaultEnvironment);
     this.environmentService.selectHost(index);
-    this.grpcInterceptor.setHost(this.environmentService.currentHost);
   }
 
   private hostToEnvironment(envAdress: string): Observable<Environment | null> {
@@ -137,6 +133,10 @@ export class EnvironmentComponent implements OnInit, AfterViewInit, OnDestroy {
       if (value) {
         this.environmentService.removeEnvironment(index);
         this.hostList$.next();
+
+        if (index === this.environmentService.currentIndex) {
+          this.selectEnvironment(-1);
+        }
       }
     });
   }

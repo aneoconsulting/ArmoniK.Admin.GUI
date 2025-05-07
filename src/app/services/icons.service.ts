@@ -58,7 +58,7 @@ export class IconsService {
     'key': 'key',
     'compare': 'compare_arrows',
     'groups': 'groups',
-    'info': 'info',
+    'info': 'info_outline',
     'applications': 'apps',
     'partitions': 'donut_small',
     'sessions': 'workspaces',

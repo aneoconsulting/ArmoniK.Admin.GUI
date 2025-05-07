@@ -26,9 +26,7 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
    * Function intercepting the Grpc requests.
    */
   intercept<Q extends GrpcMessage, S extends GrpcMessage>(request: GrpcRequest<Q, S>, next: GrpcHandler): Observable<GrpcEvent<S>> {
-    if (this.host !== null) {
-      (request.client as GrpcClientSettings).settings.host = this.host;
-    }
+    (request.client as GrpcClientSettings).settings.host = this.host ?? '';
     return next.handle(request);
   }
 
@@ -39,10 +37,8 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
    */
   setHost(entry: string | null) {
     if (entry !== null) {
-      if (this.checkRegex.test(entry)) {
-        this.host = entry;
-        this.storageService.setItem('host-config', entry);
-      }
+      this.host = entry;
+      this.storageService.setItem('host-config', entry);
     } else {
       this.clearHost();
       this.host = null;
@@ -54,16 +50,5 @@ export class GrpcHostInterceptor implements GrpcInterceptor {
      */
   clearHost() {
     this.storageService.removeItem('host-config');
-  }
-
-  /**
-   * Create a test environment to check if an URL is working.
-   * @param hostValue 
-   */
-  test(hostValue: string | null, testFn: () => void) {
-    const cachedHost = this.host;
-    this.host = hostValue;
-    testFn();
-    this.host = cachedHost;
   }
 }
