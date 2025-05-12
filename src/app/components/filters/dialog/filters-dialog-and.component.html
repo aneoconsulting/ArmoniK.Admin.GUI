@@ -1,0 +1,11 @@
+@for (filter of form.controls; track $index) {
+  @let type = findType(filter.value);
+  @let statuses = findStatuses(filter.value);
+  @let operators = findOperators(type);
+
+  <app-filters-dialog-field [filter]="filter" [customProperties]="customProperties" />
+
+  <app-filters-dialog-operator [operators]="operators" [formControl]="filter.controls.operator" />
+
+  <app-filters-dialog-input [type]="type" [statuses]="mapStatuses(statuses)" [formControl]="filter.controls.value" />
+}
