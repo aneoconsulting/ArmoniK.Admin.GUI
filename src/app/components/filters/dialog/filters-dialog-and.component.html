@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card appearance="outlined">
   @for (filter of form.controls; track $index) {
   <article>
     @let type = findType(filter.value);
@@ -13,11 +13,11 @@
 
     <section>
       @if (!$last) {
-        <span i18n>And</span>
+        <span i18n style="margin-left: 0.2rem;">And</span>
       } @else {
         <button mat-button (click)="add()">
           <mat-icon [fontIcon]="getIcon('add')" />
-          <span i18n>Add</span>
+          <span i18n>And</span>
         </button>
       }
       <button mat-icon-button (click)="remove($index)">

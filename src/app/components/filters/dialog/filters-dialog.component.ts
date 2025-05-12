@@ -1,5 +1,5 @@
 import { Component, Inject, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CustomColumn } from '@app/types/data';
 import { FiltersDialogData } from '@app/types/dialog';
 import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
@@ -9,20 +9,23 @@ import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd, FormFilte
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FilterFor } from '@app/types/filter-definition';
 import { FiltersDialogAndComponent } from './filters-dialog-and.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-filters-dialog',
   templateUrl: './filters-dialog.component.html',
-  styles: [`
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-  `],
+  styleUrl: './filters-dialog.component.css',
   standalone: true,
   imports: [
     FiltersDialogAndComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatDividerModule,
   ],
   providers: [
     FiltersService,
@@ -44,7 +47,7 @@ export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOpt
     this.customProperties = this.data.customColumns ?? [];
   }
 
-  add() {
+  add(index?: number) {
     const filter: FormFilter<F, O> = new FormGroup<FormFilterType<F, O>>({
       for: new FormControl<FilterFor<F, O> | null>(null),
       field: new FormControl<F | O | string | null>(null),
@@ -52,11 +55,19 @@ export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOpt
       value: new FormControl<FilterInputValue>(null),
     });
 
-    this.form.push(new FormArray([filter]));
+    if (index !== undefined) {
+      this.form.insert(index + 1, new FormArray([filter]));
+    } else {
+      this.form.push(new FormArray([filter]));
+    }
   }
 
   remove(index: number) {
     this.form.removeAt(index);
+
+    if (this.form.length === 0) {
+      this.add();
+    }
   }
 
   onNoClick(): void {

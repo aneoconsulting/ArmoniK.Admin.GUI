@@ -1,6 +1,7 @@
 mat-card {
   display: flex;
   flex-direction: column;
+  background-color: #363636;
 }
 
 article {

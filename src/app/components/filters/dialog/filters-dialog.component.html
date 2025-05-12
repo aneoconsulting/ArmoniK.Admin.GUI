@@ -1,3 +1,34 @@
-@for (filter of form.controls; track $index) {
-  <app-filters-dialog-and [form]="filter" [customProperties]="customProperties" />
-}
+<h2 mat-dialog-title i18n>Manage Filters</h2>
+
+<mat-dialog-content>
+  @for (filter of form.controls; track $index) {
+    <section class="filter-and">
+      <app-filters-dialog-and [form]="filter" [customProperties]="customProperties" />      
+      <article>
+        <button mat-mini-fab color="primary" class="delete-button" (click)="remove($index)">
+        <mat-icon [fontIcon]="getIcon('delete')" />
+        </button>
+        <button mat-mini-fab color="primary" class="add-button" (click)="add($index)">
+          <mat-icon [fontIcon]="getIcon('add')" />
+        </button>
+      </article>
+    </section>
+    <section class="filter-header">
+      <mat-divider />
+      @if (!$last) {
+        <span i18n>Or</span>
+      } @else {
+        <button mat-button (click)="add()">
+          <mat-icon [fontIcon]="getIcon('add')" />
+          <span i18n>Or</span>
+        </button>
+      }
+      <mat-divider />
+    </section>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-flat-button [disabled]="form.invalid" [mat-dialog-close]="form.value">Confirm</button>
+</mat-dialog-actions>
