@@ -46,8 +46,6 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
       value: new FormControl<FilterInputValue>(null),
     });
 
-    filter.value
-
     this.form.push(filter);
   }
 
