@@ -1,0 +1,18 @@
+mat-card {
+  display: flex;
+  flex-direction: column;
+}
+
+article {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}

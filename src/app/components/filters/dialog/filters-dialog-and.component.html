@@ -1,11 +1,29 @@
-@for (filter of form.controls; track $index) {
-  @let type = findType(filter.value);
-  @let statuses = findStatuses(filter.value);
-  @let operators = findOperators(type);
+<mat-card>
+  @for (filter of form.controls; track $index) {
+  <article>
+    @let type = findType(filter.value);
+    @let statuses = findStatuses(filter.value);
+    @let operators = findOperators(type);
 
-  <app-filters-dialog-field [filter]="filter" [customProperties]="customProperties" />
+    <app-filters-dialog-field [filter]="filter" [customProperties]="customProperties" />
 
-  <app-filters-dialog-operator [operators]="operators" [formControl]="filter.controls.operator" />
+    <app-filters-dialog-operator [operators]="operators" [formControl]="filter.controls.operator" />
 
-  <app-filters-dialog-input [type]="type" [statuses]="mapStatuses(statuses)" [formControl]="filter.controls.value" />
-}
+    <app-filters-dialog-input [type]="type" [statuses]="mapStatuses(statuses)" [formControl]="filter.controls.value" />
+
+    <section>
+      @if (!$last) {
+        <span i18n>And</span>
+      } @else {
+        <button mat-button (click)="add()">
+          <mat-icon [fontIcon]="getIcon('add')" />
+          <span i18n>Add</span>
+        </button>
+      }
+      <button mat-icon-button (click)="remove($index)">
+        <mat-icon [fontIcon]="getIcon('delete')" />
+      </button>
+    </section>
+  </article>
+  }
+</mat-card>

@@ -10,16 +10,23 @@ import { CustomColumn } from "@app/types/data";
 import { FiltersService } from "@services/filters.service";
 import { FiltersDialogOperatorComponent } from "./filters-dialog-operator.component";
 import { FitlersDialogFieldComponent } from "./filters-dialog-field.component";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatCardModule } from "@angular/material/card";
 
 @Component({
   selector: 'app-filters-dialog-and',
   templateUrl: './filters-dialog-and.component.html',
+  styleUrl: './filters-dialog-and.component.css',
   standalone: true,
   imports: [
     FiltersDialogInputComponent,
     FiltersDialogOperatorComponent,
     ReactiveFormsModule,
-    FitlersDialogFieldComponent
+    FitlersDialogFieldComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
 ],
   providers: [
     FiltersService
@@ -51,6 +58,9 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
 
   remove(index: number) {
     this.form.removeAt(index);
+    if (this.form.length === 0) {
+      this.add();
+    }
   }
 
   private findFilterMetadata(filter: Filter<F, O>): FilterDefinition<F, O> | null {
