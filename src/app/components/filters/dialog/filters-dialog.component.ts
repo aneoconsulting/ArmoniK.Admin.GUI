@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-filters-dialog',
@@ -26,6 +27,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatIconModule,
     MatDialogModule,
     MatDividerModule,
+    MatTooltipModule,
   ],
   providers: [
     FiltersService,

@@ -13,6 +13,7 @@ import { FitlersDialogFieldComponent } from "./filters-dialog-field.component";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatCardModule } from "@angular/material/card";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
   selector: 'app-filters-dialog-and',
@@ -27,6 +28,7 @@ import { MatCardModule } from "@angular/material/card";
     MatButtonModule,
     MatIconModule,
     MatCardModule,
+    MatTooltipModule,
 ],
   providers: [
     FiltersService

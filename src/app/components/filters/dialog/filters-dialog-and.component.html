@@ -15,12 +15,12 @@
       @if (!$last) {
         <span i18n style="margin-left: 0.2rem;">And</span>
       } @else {
-        <button mat-button (click)="add()">
+        <button mat-button (click)="add()" i18n-matTooltip matTooltip="Add a condition">
           <mat-icon [fontIcon]="getIcon('add')" />
           <span i18n>And</span>
         </button>
       }
-      <button mat-icon-button (click)="remove($index)">
+      <button mat-icon-button (click)="remove($index)" i18n-matTooltip matTooltip="Delete this condition">
         <mat-icon [fontIcon]="getIcon('delete')" />
       </button>
     </section>
