@@ -9,7 +9,7 @@
 
     <app-filters-dialog-operator [operators]="operators" [formControl]="filter.controls.operator" />
 
-    <app-filters-dialog-input [type]="type" [statuses]="mapStatuses(statuses)" [formControl]="filter.controls.value" />
+    <app-filters-dialog-input [type]="type" [statuses]="statuses" [formControl]="filter.controls.value" />
 
     <section>
       @if (!$last) {

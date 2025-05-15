@@ -1,6 +1,6 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms"
-import { FilterFor } from "@app/types/filter-definition";
-import { FiltersEnums, FiltersOptionsEnums } from "@app/types/filters"
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FilterFor } from '@app/types/filter-definition';
+import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 
 
 export type FormFiltersOr<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> = FormArray<FormFiltersAnd<F, O>>;
