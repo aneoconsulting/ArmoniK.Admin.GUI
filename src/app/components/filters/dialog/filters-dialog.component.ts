@@ -1,19 +1,19 @@
 import { Component, Inject, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomColumn } from '@app/types/data';
 import { FiltersDialogData } from '@app/types/dialog';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { FilterFor } from '@app/types/filter-definition';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
-import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd, FormFiltersOr } from './types';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { FilterFor } from '@app/types/filter-definition';
 import { FiltersDialogAndComponent } from './filters-dialog-and.component';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd, FormFiltersOr } from './types';
 
 @Component({
   selector: 'app-filters-dialog',
@@ -35,16 +35,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   private readonly iconsService = inject(IconsService);
-  private readonly dialogRef = inject(MatDialogRef<FiltersDialogComponent<F, O>>);
 
   readonly form: FormFiltersOr<F, O> = new FormArray<FormFiltersAnd<F, O>>([]);
   customProperties: CustomColumn[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FiltersDialogData<F, O>) {
+    this.init();
+  }
+
+  private init() {
     if (!this.data.filtersOr.length) {
       this.add();
     } else {
-      this.form.patchValue(this.data.filtersOr);
+      this.patchFormValues(this.data.filtersOr);
     }
     this.customProperties = this.data.customColumns ?? [];
   }
@@ -72,11 +75,22 @@ export class FiltersDialogComponent<F extends FiltersEnums, O extends FiltersOpt
     }
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
+  }
+
+  private patchFormValues(filterOr: FiltersOr<F, O>) {
+    this.form.reset();
+    filterOr.forEach((filterAnd) => {
+      const array = new FormArray(
+        filterAnd.map((filter) => new FormGroup<FormFilterType<F, O>>({
+          for: new FormControl<FilterFor<F, O> | null>(filter.for),
+          field: new FormControl<F | O | string | null>(filter.field),
+          operator: new FormControl<number | null>(filter.operator),
+          value: new FormControl<FilterInputValue>(filter.value)})
+        )
+      );
+      this.form.push(array);
+    });
   }
 }
