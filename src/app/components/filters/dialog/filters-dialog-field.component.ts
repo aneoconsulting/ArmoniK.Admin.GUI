@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, inject } from "@angular/core";
-import { CustomColumn } from "@app/types/data";
-import { FilterDefinition } from "@app/types/filter-definition";
-import { FiltersEnums, FiltersOptionsEnums } from "@app/types/filters";
-import { DataFilterService, FilterField } from "@app/types/services/data-filter.service";
-import { AutoCompleteComponent } from "@components/auto-complete.component";
-import { FormFilter } from "./types";
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { CustomColumn } from '@app/types/data';
+import { FilterDefinition } from '@app/types/filter-definition';
+import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { DataFilterService, FilterField } from '@app/types/services/data-filter.service';
+import { AutoCompleteComponent } from '@components/auto-complete.component';
+import { FormFilter } from './types';
 
 @Component({
   selector: 'app-filters-dialog-field',
