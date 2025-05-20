@@ -1,13 +1,13 @@
-import { Component, Input, forwardRef, inject } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { FilterType, FiltersEnums, FiltersOptionsEnums } from "@app/types/filters";
-import { DataFilterService } from "@app/types/services/data-filter.service";
-import { FilterInputValue } from "./types";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from "@angular-material-components/datetime-picker";
-import { AutoCompleteComponent } from "@components/auto-complete.component";
-import { NgxMatDatepickerInputEvent } from "@angular-material-components/datetime-picker/lib/datepicker-input-base";
+import { Component, Input, forwardRef, inject } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
+import { FilterType } from '@app/types/filters';
+import { DataFilterService } from '@app/types/services/data-filter.service';
+import { AutoCompleteComponent } from '@components/auto-complete.component';
+import { FilterInputValue } from './types';
 
 @Component({
   selector: 'app-filters-dialog-input',
@@ -29,7 +29,7 @@ import { NgxMatDatepickerInputEvent } from "@angular-material-components/datetim
     },
   ],
 })
-export class FiltersDialogInputComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements ControlValueAccessor {
+export class FiltersDialogInputComponent implements ControlValueAccessor {
   @Input({ required: true }) type: FilterType;
   @Input({ required: false }) statuses: string[];
 
@@ -113,7 +113,7 @@ export class FiltersDialogInputComponent<F extends FiltersEnums, O extends Filte
 
   private registeredOnTouched?: (val: FilterInputValue) => void;
 
-    registerOnChange(fn: (val: FilterInputValue) => void): void {
+  registerOnChange(fn: (val: FilterInputValue) => void): void {
     this.registeredOnChange = fn;
   }
 
