@@ -1,6 +1,6 @@
-import { Component, Input, forwardRef } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { AutoCompleteComponent } from "@components/auto-complete.component";
+import { Component, Input, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AutoCompleteComponent } from '@components/auto-complete.component';
 
 @Component({
   selector: 'app-filters-dialog-operator',
@@ -58,7 +58,7 @@ export class FiltersDialogOperatorComponent implements ControlValueAccessor {
 
   private registeredOnTouched?: (val: number | null) => void;
 
-    registerOnChange(fn: (val: number | null) => void): void {
+  registerOnChange(fn: (val: number | null) => void): void {
     this.registeredOnChange = fn;
   }
 
