@@ -74,12 +74,12 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
       value: new FormControl<FilterInputValue>(null),
     });
 
-    this.form.push(filter);
+    this.filterAnd.push(filter);
   }
 
   remove(index: number) {
-    this.form.removeAt(index);
-    if (this.form.length === 0) {
+    this.filterAnd.removeAt(index);
+    if (this.filterAnd.length === 0) {
       this.add();
     }
   }
@@ -112,7 +112,7 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
     return [];
   }
 
-  updateFor(filter: FormFilter<F, O>, $event: FilterFor<F, O>) {
-    filter.controls.for.setValue($event);
+  updateFor(filter: FormFilter<F, O>, newFor: FilterFor<F, O>) {
+    filter.controls.for.setValue(newFor);
   }
 }
