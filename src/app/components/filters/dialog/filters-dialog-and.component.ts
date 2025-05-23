@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, OnDestroy, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,6 +10,7 @@ import { Filter, FilterType, FiltersEnums, FiltersOptionsEnums } from '@app/type
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
+import { Subscription } from 'rxjs';
 import { FitlersDialogFieldComponent } from './filters-dialog-field.component';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 import { FiltersDialogOperatorComponent } from './filters-dialog-operator.component';
@@ -31,17 +32,35 @@ import { FilterInputValue, FormFilter, FormFilterType, FormFiltersAnd } from './
     MatTooltipModule,
   ],
   providers: [
-    FiltersService
+    FiltersService,
   ]
 })
-export class FiltersDialogAndComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
-  @Input({ required: true }) form: FormFiltersAnd<F, O>;
+export class FiltersDialogAndComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnDestroy {
+  @Input({ required: true }) set form(entry: FormFiltersAnd<F, O>) {
+    this.filterAnd = entry;
+
+    entry.controls.forEach((filter) => {
+      const subscription = filter.controls.field.valueChanges.subscribe(() => {
+        filter.controls.operator.setValue(null);
+        filter.controls.value.setValue(null);
+      });
+
+      this.subscriptions.add(subscription);
+    });
+  }
 
   @Input({ required: true }) customProperties: CustomColumn[];
 
+  filterAnd: FormFiltersAnd<F, O>;
   private readonly iconsService = inject(IconsService);
   private readonly dataFiltersService = inject(DataFilterService);
   readonly filtersService = inject(FiltersService);
+
+  private readonly subscriptions = new Subscription();
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
@@ -91,5 +110,9 @@ export class FiltersDialogAndComponent<F extends FiltersEnums, O extends Filters
       }
     }
     return [];
+  }
+
+  updateFor(filter: FormFilter<F, O>, $event: FilterFor<F, O>) {
+    filter.controls.for.setValue($event);
   }
 }

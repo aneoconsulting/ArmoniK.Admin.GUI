@@ -1,11 +1,11 @@
 <mat-card appearance="outlined">
-  @for (filter of form.controls; track $index) {
+  @for (filter of filterAnd.controls; track $index) {
   <article>
     @let type = findType(filter.value);
     @let statuses = findStatuses(filter.value);
     @let operators = findOperators(type);
 
-    <app-filters-dialog-field [filter]="filter" [customProperties]="customProperties" />
+    <app-filters-dialog-field [filter]="filter" [customProperties]="customProperties" [formControl]="filter.controls.field" (for)="updateFor(filter, $event)" />
 
     <app-filters-dialog-operator [operators]="operators" [formControl]="filter.controls.operator" />
 

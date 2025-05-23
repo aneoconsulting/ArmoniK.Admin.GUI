@@ -1,5 +1,5 @@
 import { Component, Input, forwardRef, inject } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
@@ -20,6 +20,7 @@ import { FilterInputValue } from './types';
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
     AutoCompleteComponent,
+    ReactiveFormsModule,
   ],
   providers: [
     {
@@ -36,6 +37,7 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
   readonly dataFiltersService = inject(DataFilterService);
 
   value: FilterInputValue = null;
+  dateForm = new FormControl<Date | null>(null);
 
   actualDate = new Date();
   duration: {[key: number]: string} = {};
@@ -93,6 +95,9 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
   }
 
   writeValue(value: FilterInputValue): void {
+    if (this.type === 'date' && !isNaN(Number(value))) {
+      this.dateForm.setValue(new Date(Number(value)));
+    }
     this.value = value;
 
     if (this.registeredOnChange) {

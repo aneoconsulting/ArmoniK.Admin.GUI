@@ -14,7 +14,7 @@
   @case ('date') {
     <mat-form-field class="dateForm" appearance="outline" subscriptSizing="dynamic">
       <mat-label i18n="Input label">Choose a date</mat-label>
-      <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [value]="value" i18n-placeholder placeholder="Choose a date">
+      <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onDateChange($event)" [formControl]="dateForm" i18n-placeholder placeholder="Choose a date">
        <ngx-mat-datepicker-toggle matSuffix [for]="picker"/>
        <ngx-mat-datetime-picker #picker [startAt]="actualDate" [showSpinners]="true" [showSeconds]="true" >
         <ngx-mat-datepicker-actions>

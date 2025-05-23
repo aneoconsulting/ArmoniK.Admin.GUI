@@ -1,10 +1,11 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, forwardRef, inject } from '@angular/core';
+import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CustomColumn } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
 import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { DataFilterService, FilterField } from '@app/types/services/data-filter.service';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
-import { FormFilter } from './types';
+import { FormFilterType } from './types';
 
 @Component({
   selector: 'app-filters-dialog-field',
@@ -13,13 +14,23 @@ import { FormFilter } from './types';
   imports: [
     AutoCompleteComponent,
   ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FitlersDialogFieldComponent),
+      multi: true,
+    },
+  ],
 })
-export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnInit {
+export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> implements OnInit, ControlValueAccessor {
   value: string | null = null;
   
   labelledProperties: string[];
-  @Input({ required: true }) filter: FormFilter<F, O>;
+
+  @Input({ required: true }) filter: FormGroup<FormFilterType<F, O>>;
   @Input({ required: true }) customProperties: CustomColumn[];
+
+  @Output() for = new EventEmitter<'root' | 'options' | 'custom'>();
   
   private readonly dataFiltersService = inject(DataFilterService);
 
@@ -31,29 +42,54 @@ export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends Filte
   }
 
   private retrieveLabel(filterDefinition: FilterDefinition<F, O>) {
-    return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
+    try {
+      return this.dataFiltersService.retrieveLabel(filterDefinition.for, filterDefinition.field as FilterField);
+    } catch {
+      return '';
+    }
   }
-  
-  onChange(value: string): void {
+
+  writeValue(value: string): void {
+    if (!isNaN(Number(value))) {
+      value = this.retrieveLabel({ for: this.filter.value.for, field: value } as FilterDefinition<F, O>) ;
+    }
     this.value = value;
 
-    const field = this.dataFiltersService.retrieveField(value) as { for: string; index: number };
+    const field = this.dataFiltersService.retrieveField(value) as { for: 'root' | 'options' | 'custom'; index: number };
+    let change: F | O | string | null = null;
     if (field.index === -1) {
-      const customField = this.customProperties.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
-      if (customField) {
-        this.filter.controls.for.setValue('custom');
-        this.filter.controls.field.setValue(value);
-        this.filter.controls.operator.setValue(null);
-        this.filter.markAsDirty();
+      const isCustom = this.customProperties.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
+      if (isCustom) {
+        change = value;
+        this.emitFor('custom');
       }
     } else {
-      const for_ = this.dataFiltersService.filtersDefinitions.find(value => value.for === field.for && value.field === field.index)?.for;
-      if (for_) {
-        this.filter.controls.for.setValue(for_);
-        this.filter.controls.field.setValue(field.index as F | O);
-        this.filter.controls.operator.setValue(null);
-        this.filter.markAsDirty();
-      }
+      change = field.index as F | O;
+      this.emitFor(field.for);
     }
+
+    if (this.registeredOnChange) {
+      this.registeredOnChange(change);
+    }
+
+    if (this.registeredOnTouched) {
+      this.registeredOnTouched(change);
+    }
+  }
+
+  private emitFor(value: 'root' | 'options' | 'custom') {
+    this.for.emit(value);
+  }
+
+  private registeredOnChange: (val: string | F | O | null) => void;
+  
+  private registeredOnTouched: (val: string | F | O | null) => void;
+  
+  registerOnChange(fn: (val: string | F | O | null) => void): void {
+    this.registeredOnChange = fn;
+  }
+  
+  registerOnTouched(fn: (val: string | F | O | null) => void): void {
+    this.registeredOnTouched = fn;
   }
 }
