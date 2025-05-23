@@ -51,7 +51,7 @@ export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends Filte
 
   writeValue(value: string): void {
     if (!isNaN(Number(value))) {
-      value = this.retrieveLabel({ for: this.filter.value.for, field: value } as FilterDefinition<F, O>) ;
+      value = this.retrieveLabel({ for: this.filter.value.for, field: Number(value) } as FilterDefinition<F, O>) ;
     }
     this.value = value;
 

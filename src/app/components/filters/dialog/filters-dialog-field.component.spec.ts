@@ -32,6 +32,9 @@ describe('FitlersDialogFieldComponent', () => {
 
   const customProperties: CustomColumn[] = ['options.options.someProperty'];
 
+  const registeredOnChange = jest.fn((val: string | TaskSummaryEnumField | TaskOptionEnumField | null) => val);
+  const registeredOnTouche = jest.fn((val: string | TaskSummaryEnumField | TaskOptionEnumField | null) => val);
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -41,6 +44,8 @@ describe('FitlersDialogFieldComponent', () => {
     }).inject(FitlersDialogFieldComponent<TaskSummaryEnumField, TaskOptionEnumField>);
     component.customProperties = customProperties;
     component.filter = filterForm;
+    component.registerOnChange(registeredOnChange);
+    component.registerOnTouched(registeredOnTouche);
     component.ngOnInit();
   });
 
@@ -54,29 +59,26 @@ describe('FitlersDialogFieldComponent', () => {
     });
   });
 
-  describe('onChange', () => {
+  describe('writeValue', () => {
+    let spy: jest.SpyInstance;
+
+    beforeEach(() => {
+      spy = jest.spyOn(component.for, 'emit');
+    });
+
     describe('with non custom property', () => {
       const value = 'TaskId';
 
       beforeEach(() => {
-        component.onChange(value);
+        component.writeValue(value);
       });
 
       it('should change the value', () => {
         expect(component.value).toEqual(value);
       });
 
-      it('should change the values of the filter form', () => {
-        expect(filterForm.value).toEqual({
-          for: 'root',
-          field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
-          operator: null,
-          value: 'id',
-        });
-      });
-
-      it('should mark the form as dirty', () => {
-        expect(filterForm.dirty).toBeTruthy();
+      it('should emit the new "for" value for the filter', () => {
+        expect(spy).toHaveBeenCalledWith('root');
       });
     });
 
@@ -84,25 +86,33 @@ describe('FitlersDialogFieldComponent', () => {
       const value = 'someProperty';
 
       beforeEach(() => {
-        component.onChange(value);
+        component.writeValue(value);
       });
 
       it('should change the value', () => {
         expect(component.value).toEqual(value);
       });
 
-      it('should change the values of the filter form', () => {
-        expect(filterForm.value).toEqual({
-          for: 'custom',
-          field: value,
-          operator: null,
-          value: 'id',
-        });
+      it('should emit the new "for" value for the filter as "custom"', () => {
+        expect(spy).toHaveBeenCalledWith('custom');
       });
+    });
 
-      it('should mark the form as dirty', () => {
-        expect(filterForm.dirty).toBeTruthy();
-      });
+    it('should retrieve the label if the provided value is a number', () => {
+      component.writeValue('1');
+      expect(component.value).toEqual('Else');
+    });
+  });
+
+  describe('retrieveLabel', () => {
+    it('should retrieve the label', () => {
+      component['retrieveLabel']({ for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID, type: 'string' });
+      expect(mockDataFiltersService.retrieveLabel).toHaveBeenCalled();
+    });
+
+    it('should return an empty string when an error is catched', () => {
+      mockDataFiltersService.retrieveLabel.mockImplementationOnce(() => {throw new Error();});
+      expect(component['retrieveLabel']({ for: 'root', field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID, type: 'string' })).toEqual('');
     });
   });
 });
