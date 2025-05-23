@@ -19,7 +19,6 @@ import { AutoCompleteComponent } from '@components/auto-complete.component';
 })
 export class FiltersDialogOperatorComponent implements ControlValueAccessor {
   value: string | null = null;
-  disabled = false;
 
   @Input({ required: true }) set operators(entry: Record<number, string>) {
     this.operatorRecord = entry;
@@ -48,10 +47,6 @@ export class FiltersDialogOperatorComponent implements ControlValueAccessor {
     const value = labelledOperators.find(label => label.toLowerCase() === operator.toLowerCase());
     const key = Object.keys(this.operatorRecord).find(key => this.operatorRecord[Number(key)] === value);
     return key ? Number(key) : null;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   private registeredOnChange?: (val: number | null) => void;

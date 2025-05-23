@@ -158,9 +158,4 @@ describe('FiltersDialogInputComponent', () => {
       expect(registeredOnTouche).toHaveBeenCalledWith(value);
     });
   });
-
-  it('should set the disabled state', () => {
-    component.setDisabledState(true);
-    expect(component.disabled).toEqual(true);
-  });
 });

@@ -63,9 +63,4 @@ describe('FiltersDialogOperatorComponent', () => {
       });
     });
   });
-
-  it('should change the disabled state', () => {
-    component.setDisabledState(true);
-    expect(component.disabled).toBeTruthy();
-  });
 });

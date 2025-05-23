@@ -36,7 +36,6 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
   readonly dataFiltersService = inject(DataFilterService);
 
   value: FilterInputValue = null;
-  disabled = false;
 
   actualDate = new Date();
   duration: {[key: number]: string} = {};
@@ -103,10 +102,6 @@ export class FiltersDialogInputComponent implements ControlValueAccessor {
     if (this.registeredOnTouched) {
       this.registeredOnTouched(value);
     }
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   private registeredOnChange?: (val: FilterInputValue) => void;
