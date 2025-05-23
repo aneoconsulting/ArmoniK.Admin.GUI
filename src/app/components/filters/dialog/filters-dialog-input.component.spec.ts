@@ -89,33 +89,53 @@ describe('FiltersDialogInputComponent', () => {
         expect(spy).toHaveBeenLastCalledWith('128135');
       });
 
-      it('should look for the duration input values', () => {
-        (inputEvent.target as HTMLInputElement).value = 'NaN value';
+      it('should have 0 by default', () => {
+        const value = 'NotANumber';
+        (inputEvent.target as HTMLInputElement).value = 'NotANumberNeither';
         for (let index = 0; index < 3; index++) {
+          component.value = value;
           component.onDurationChange(inputEvent, index);
+          expect(spy).toHaveBeenLastCalledWith('0');
         }
-        component.value = 94350;
-        component.onDurationChange(inputEvent, 0);
-        expect(spy).toHaveBeenLastCalledWith('94350');
       });
     });
   });
 
   describe('getDurationInputValue', () => {
-    beforeEach(() => {
-      component.value = 94350;
+    describe('valid input value', () => {
+      beforeEach(() => {
+        component.value = 94350;
+      });
+      it('should get the hours from a duration in seconds', () => {
+        expect(component.getDurationInputValue('hours')).toEqual(26);
+      });
+      it('should get the minutes from a duration in seconds', () => {
+        expect(component.getDurationInputValue('minutes')).toEqual(12);
+      });
+      it('should get the seconds from a duration in seconds', () => {
+        expect(component.getDurationInputValue('seconds')).toEqual(30);
+      });
+      it('should return undefined for an invalid search item', () => {
+        expect(component.getDurationInputValue('invalid')).toBeUndefined();
+      });
     });
-    it('should get the hours from a duration in seconds', () => {
-      expect(component.getDurationInputValue('hours')).toEqual(26);
-    });
-    it('should get the minutes from a duration in seconds', () => {
-      expect(component.getDurationInputValue('minutes')).toEqual(12);
-    });
-    it('should get the seconds from a duration in seconds', () => {
-      expect(component.getDurationInputValue('seconds')).toEqual(30);
-    });
-    it('should return undefined for an invalid search item', () => {
-      expect(component.getDurationInputValue('invalid')).toBeUndefined();
+
+    describe('invalid input value', () => {
+      beforeEach(() => {
+        component.value = 'NotANumber';
+      });
+      it('should get the hours from a duration in seconds', () => {
+        expect(component.getDurationInputValue('hours')).toBeUndefined();
+      });
+      it('should get the minutes from a duration in seconds', () => {
+        expect(component.getDurationInputValue('minutes')).toBeUndefined();
+      });
+      it('should get the seconds from a duration in seconds', () => {
+        expect(component.getDurationInputValue('seconds')).toBeUndefined();
+      });
+      it('should return undefined for an invalid search item', () => {
+        expect(component.getDurationInputValue('invalid')).toBeUndefined();
+      });
     });
   });
 
