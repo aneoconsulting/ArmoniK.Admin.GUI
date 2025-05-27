@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+// eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { DataFilterService } from '@app/types/services/data-filter.service';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
