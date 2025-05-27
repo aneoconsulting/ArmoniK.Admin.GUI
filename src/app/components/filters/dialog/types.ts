@@ -1,6 +1,6 @@
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { FilterFor } from '@app/types/filter-definition';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { FilterFieldValue, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 
 
 export type FormFiltersOr<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> = FormArray<FormFiltersAnd<F, O>>;
@@ -11,7 +11,7 @@ export type FormFilter<F extends FiltersEnums, O extends FiltersOptionsEnums | n
 
 export type FormFilterType<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> = {
   for: FormControl<FilterFor<F, O> | null>;
-  field: FormControl<F | O | string | null>;
+  field: FormControl<FilterFieldValue<F, O>>;
   value: FormControl<FilterInputValue>;
   operator: FormControl<number | null>;
 };

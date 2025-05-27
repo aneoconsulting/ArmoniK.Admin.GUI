@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CustomColumn } from '@app/types/data';
-import { FilterDefinition } from '@app/types/filter-definition';
-import { FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
+import { FilterDefinition, FilterFor } from '@app/types/filter-definition';
+import { FilterFieldValue, FiltersEnums, FiltersOptionsEnums } from '@app/types/filters';
 import { DataFilterService, FilterField } from '@app/types/services/data-filter.service';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
 import { FormFilterType } from './types';
@@ -30,7 +30,7 @@ export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends Filte
   @Input({ required: true }) filter: FormGroup<FormFilterType<F, O>>;
   @Input({ required: true }) customProperties: CustomColumn[];
 
-  @Output() for = new EventEmitter<'root' | 'options' | 'custom'>();
+  @Output() for = new EventEmitter<FilterFor<F, O>>();
   
   private readonly dataFiltersService = inject(DataFilterService);
 
@@ -55,8 +55,8 @@ export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends Filte
     }
     this.value = value;
 
-    const field = this.dataFiltersService.retrieveField(value) as { for: 'root' | 'options' | 'custom'; index: number };
-    let change: F | O | string | null = null;
+    const field = this.dataFiltersService.retrieveField(value) as { for: FilterFor<F, O>; index: number };
+    let change: FilterFieldValue<F, O> = null;
     if (field.index === -1) {
       const isCustom = this.customProperties.find(col => col.toLowerCase() === `options.options.${value.toLowerCase()}`);
       if (isCustom) {
@@ -77,19 +77,19 @@ export class FitlersDialogFieldComponent<F extends FiltersEnums, O extends Filte
     }
   }
 
-  private emitFor(value: 'root' | 'options' | 'custom') {
+  private emitFor(value: FilterFor<F, O>) {
     this.for.emit(value);
   }
 
-  private registeredOnChange: (val: string | F | O | null) => void;
+  private registeredOnChange: (val: FilterFieldValue<F, O>) => void;
   
-  private registeredOnTouched: (val: string | F | O | null) => void;
+  private registeredOnTouched: (val: FilterFieldValue<F, O>) => void;
   
-  registerOnChange(fn: (val: string | F | O | null) => void): void {
+  registerOnChange(fn: (val: FilterFieldValue<F, O>) => void): void {
     this.registeredOnChange = fn;
   }
   
-  registerOnTouched(fn: (val: string | F | O | null) => void): void {
+  registerOnTouched(fn: (val: FilterFieldValue<F, O>) => void): void {
     this.registeredOnTouched = fn;
   }
 }
