@@ -32,6 +32,13 @@ describe('FiltersDialogInputComponent', () => {
     expect(typeof component.valueAsString).toEqual('string');
   });
 
+  it('should set the component dateForm if the provided value is a number for a date filter', () => {
+    const date = 1234;
+    component.type = 'date';
+    component.writeValue(`${date}`);
+    expect(component.dateForm.value).toEqual(new Date(date));
+  });
+
   describe('changes', () => {
     let spy: jest.SpyInstance;
 

@@ -62,5 +62,19 @@ describe('FiltersDialogOperatorComponent', () => {
         expect(registeredOnTouche).toHaveBeenCalledWith(null);
       });
     });
+
+    describe('With a numeric value', () => {
+      it('should retrieve the associated operator', () => {
+        const numeric = FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS;
+        component.writeValue(`${numeric}`);
+        expect(component.value).toEqual(operators[numeric]);
+      });
+
+      it('should write an empty string if there is no related operator label', () => {
+        const numeric = 48596;
+        component.writeValue(`${numeric}`);
+        expect(component.value).toEqual('');
+      });
+    });
   });
 });
