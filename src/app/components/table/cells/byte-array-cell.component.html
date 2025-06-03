@@ -1,0 +1,8 @@
+@if (byteLength) {
+  <p>{{ byteLength }}</p>
+  <button mat-icon-button (click)="download()" [matTooltip]="tooltip + label">
+    <mat-icon [fontIcon]="getIcon('download')" />
+  </button>
+} @else {
+  <p>-</p>
+}
