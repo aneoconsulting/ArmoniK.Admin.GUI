@@ -1,8 +1,22 @@
-@if (byteLength) {
-  <p>{{ byteLength }}</p>
-  <button mat-icon-button (click)="download()" [matTooltip]="tooltip + label">
-    <mat-icon [fontIcon]="getIcon('download')" />
-  </button>
+@if (decodedData && byteLength) {
+  <p><span i18n>Large</span> {{ byteLength }}</p>
+} @else if (decodedData && !byteLength) {
+  <p>{{ decodedData }}</p>
+} @else if (!decodedData && byteLength) {
+  <p><span i18n>Binary</span> {{ byteLength }}</p>
 } @else {
   <p>-</p>
 }
+
+<article class="buttons">
+  @if (decodedData && !byteLength) {
+    <button mat-icon-button (click)="copy()" [matTooltip]="copyTip + label">
+      <mat-icon [fontIcon]="getIcon('copy')" />
+    </button>
+  }
+  @if (decodedData || byteLength) {
+    <button mat-icon-button (click)="download()" [matTooltip]="downloadTip + label">
+      <mat-icon [fontIcon]="getIcon('download')" />
+    </button>
+  }
+</article>

@@ -1,7 +1,9 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, inject, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ByteDecoderService } from '@services/byte-decoder.service';
 import { IconsService } from '@services/icons.service';
 
 @Component({
@@ -13,24 +15,35 @@ import { IconsService } from '@services/icons.service';
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+  ],
+  providers: [
+    ByteDecoderService,
   ]
 })
 export class ByteArrayComponent {
   @Input({ required: true }) set data(entry: Uint8Array) {
-    this.array = entry.buffer;
-    this.computeByteLength(entry.buffer.byteLength);
+    this.byteArray = entry;
+    this.decodedData = this.byteDecoderService.decode(this.byteArray);
+    if (this.decodedData === null || (this.decodedData && this.decodedData.length >= 128)) {
+      this.computeByteLength(this.byteArray.byteLength);
+    }
   }
 
   @Input({ required: true }) label: string;
 
-  private array: ArrayBufferLike;
+  decodedData: string | null = null;
+  private byteArray: Uint8Array;
   byteLength: string | null = null;
-  tooltip = $localize`Download this `;
 
+  readonly downloadTip = $localize`Download this `;
+  readonly copyTip = $localize`Copy this `;
+
+  private readonly byteDecoderService = inject(ByteDecoderService);
   private readonly iconsService = inject(IconsService);
+  readonly clipboard = inject(Clipboard);
 
   download() {
-    const blob = new Blob([this.array], {
+    const blob = new Blob([this.byteArray], {
       type: 'application/octet-stream'
     });
     const url = URL.createObjectURL(blob);
@@ -43,6 +56,12 @@ export class ByteArrayComponent {
 
     URL.revokeObjectURL(url);
     anchor.remove();
+  }
+
+  copy() {
+    if (this.decodedData) {
+      this.clipboard.copy(this.decodedData);
+    }
   }
 
   getIcon(name: string): string {

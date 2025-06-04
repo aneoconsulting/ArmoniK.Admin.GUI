@@ -7,3 +7,8 @@
 p {
   margin: 0px;
 }
+
+.buttons {
+  display: flex;
+  align-items: center;
+}

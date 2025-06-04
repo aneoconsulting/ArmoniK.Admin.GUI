@@ -1,4 +1,6 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
+import { ByteDecoderService } from '@services/byte-decoder.service';
 import { IconsService } from '@services/icons.service';
 import { ByteArrayComponent } from './byte-array-cell.component';
 
@@ -9,22 +11,37 @@ describe('ByteArrayComponent', () => {
     getIcon: jest.fn(),
   };
 
+  const mockByteDecoderService = {
+    decode: jest.fn((value) => (value.content as string).includes('invalid') ? null : (value.content as string)),
+  };
+
+  const mockClipboard = {
+    copy: jest.fn()
+  };
+
+  let dataContent = '';
+  for(let i = 0; i !== 128; i++) {
+    dataContent += 'a';
+  }
+
   const data = {
-    buffer: {
-      byteLength: 10000,
-    },
-  } as Uint8Array;
+    content: '', // The decode function is mocked to only return null when the string contains "invalid",
+    byteLength: 10000,
+  }; 
   const label = 'Opaque ID';
 
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ByteArrayComponent,
+        { provide: ByteDecoderService, useValue: mockByteDecoderService },
         { provide: IconsService, useValue: mockIconsService },
+        { provide: Clipboard, useValue: mockClipboard },
       ]
     }).inject(ByteArrayComponent);
 
-    component.data = data;
+    data.content = `${dataContent}`;
+    component.data = data as unknown as Uint8Array;
     component.label = label;
   });
 
@@ -33,16 +50,69 @@ describe('ByteArrayComponent', () => {
   });
 
   describe('initialisation', () => {
-    it('should set the byteLength', () => {
-      expect(component.byteLength).toEqual('10.00 Ko');
+    describe('valid string with more than 128 characters', () => {
+      it('should decode the data', () => {
+        expect(component.decodedData).toEqual(data.content);
+      });
+
+      it('should set the byteLength', () => {
+        expect(component.byteLength).toEqual('10.00 Ko');
+      });
+
+      it('should set the label', () => {
+        expect(component.label).toEqual(label);
+      });
+
+      it('should set the buffered array', () => {
+        expect(component['byteArray']).toEqual(data);
+      });
     });
 
-    it('should set the label', () => {
-      expect(component.label).toEqual(label);
+    describe('valid string with less than 128 characters', () => {
+      beforeEach(() => {
+        component.byteLength = null;
+        data.content = 'valid string';
+        component.data = data as unknown as Uint8Array;
+      });
+
+      it('should decode the data', () => {
+        expect(component.decodedData).toEqual(data.content);
+      });
+      
+      it('should set the byteLength', () => {
+        expect(component.byteLength).toBeNull();
+      });
+
+      it('should set the label', () => {
+        expect(component.label).toEqual(label);
+      });
+
+      it('should set the buffered array', () => {
+        expect(component['byteArray']).toEqual(data);
+      });
     });
 
-    it('should set the buffered array', () => {
-      expect(component['array']).toEqual(data.buffer);
+    describe('invalid string', () => {
+      beforeEach(() => {
+        data.content = 'invalid string';
+        component.data = data as unknown as Uint8Array;
+      });
+
+      it('should decode the data', () => {
+        expect(component.decodedData).toBeNull();
+      });
+
+      it('should set the byteLength', () => {
+        expect(component.byteLength).toEqual('10.00 Ko');
+      });
+
+      it('should set the label', () => {
+        expect(component.label).toEqual(label);
+      });
+
+      it('should set the buffered array', () => {
+        expect(component['byteArray']).toEqual(data);
+      });
     });
   });
 
@@ -95,6 +165,11 @@ describe('ByteArrayComponent', () => {
     const icon = 'heart';
     component.getIcon(icon);
     expect(mockIconsService.getIcon).toHaveBeenCalledWith(icon);
+  });
+
+  it('should copy the content properly', () => {
+    component.copy();
+    expect(mockClipboard.copy).toHaveBeenCalledWith(dataContent);
   });
 
   describe('computeByteLength', () => {
