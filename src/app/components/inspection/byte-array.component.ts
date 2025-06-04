@@ -1,28 +1,22 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, inject, Input } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, Input, inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { PrettyPipe } from '@pipes/pretty.pipe';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
 
 /**
- * Displays a byte array in armonik tables.
- * The displays depends on 4 conditions:
- * - A readable string with a length equal or superior than 128 characters: "Large [Binary size (o)] [download button]"
- * - A readable string with a length inferior than 128 characters: "[string] [copy button] [download button]"
- * - A non-readable string: "Binary [Binary size (o)] [download button]"
- * - Bytelength equal to 0: "-"
+ * Displays a byte array in armonik inspection pages.
  */
 @Component({
-  selector: 'app-byte-array-cell',
-  templateUrl: 'byte-array-cell.component.html',
-  styleUrl: 'byte-array-cell.component.css',
+  selector: 'app-byte-array-inspection',
+  templateUrl: 'byte-array.component.html',
   standalone: true,
   imports: [
-    MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
+    MatCardModule,
+    PrettyPipe,
   ],
   providers: [
     ByteArrayService,
@@ -32,23 +26,29 @@ export class ByteArrayComponent {
   @Input({ required: true }) set data(entry: Uint8Array) {
     this.byteArray = entry;
     this.decodedData = this.byteArrayService.decode(this.byteArray);
-    if (this.decodedData === null || (this.decodedData && this.decodedData.length >= 128)) {
+    if (this.decodedData === null) {
       this.byteLength = this.byteArrayService.byteLengthToString(this.byteArray.byteLength);
     }
   }
 
-  @Input({ required: true }) label: string;
+  @Input({ required: true }) label: string | number | symbol;
 
-  decodedData: string | null = null;
   private byteArray: Uint8Array;
+  decodedData: string | null = null;
   byteLength: string | null = null;
-
-  readonly downloadTip = $localize`Download this `;
-  readonly copyTip = $localize`Copy this `;
 
   private readonly byteArrayService = inject(ByteArrayService);
   private readonly iconsService = inject(IconsService);
-  readonly clipboard = inject(Clipboard);
+  private readonly clipboard = inject(Clipboard);
+
+  /**
+   * Returns the icon associated with that name.
+   * @param name string
+   * @returns string
+   */
+  getIcon(name: string) {
+    return this.iconsService.getIcon(name);
+  }
 
   /**
    * Download the byteArray in a binary file. 
@@ -63,7 +63,7 @@ export class ByteArrayComponent {
     const date = new Date();
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `${date.toISOString().slice(0, 10)}-${this.label.toLocaleLowerCase().replaceAll(' ', '-')}`;
+    anchor.download = `${date.toISOString().slice(0, 10)}-${this.label.toString().toLocaleLowerCase().replaceAll(' ', '-')}`;
     anchor.click();
 
     URL.revokeObjectURL(url);
@@ -77,14 +77,5 @@ export class ByteArrayComponent {
     if (this.decodedData) {
       this.clipboard.copy(this.decodedData);
     }
-  }
-
-  /**
-   * Returns the icon associated with that name.
-   * @param name string
-   * @returns string
-   */
-  getIcon(name: string): string {
-    return this.iconsService.getIcon(name);
   }
 }

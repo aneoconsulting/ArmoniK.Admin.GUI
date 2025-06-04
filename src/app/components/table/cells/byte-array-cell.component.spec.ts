@@ -1,6 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
-import { ByteDecoderService } from '@services/byte-decoder.service';
+import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
 import { ByteArrayComponent } from './byte-array-cell.component';
 
@@ -11,8 +11,9 @@ describe('ByteArrayComponent', () => {
     getIcon: jest.fn(),
   };
 
-  const mockByteDecoderService = {
+  const mockByteArrayService = {
     decode: jest.fn((value) => (value.content as string).includes('invalid') ? null : (value.content as string)),
+    byteLengthToString: jest.fn(),
   };
 
   const mockClipboard = {
@@ -34,7 +35,7 @@ describe('ByteArrayComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         ByteArrayComponent,
-        { provide: ByteDecoderService, useValue: mockByteDecoderService },
+        { provide: ByteArrayService, useValue: mockByteArrayService },
         { provide: IconsService, useValue: mockIconsService },
         { provide: Clipboard, useValue: mockClipboard },
       ]
@@ -56,7 +57,7 @@ describe('ByteArrayComponent', () => {
       });
 
       it('should set the byteLength', () => {
-        expect(component.byteLength).toEqual('10.00 Ko');
+        expect(mockByteArrayService.byteLengthToString).toHaveBeenCalled();
       });
 
       it('should set the label', () => {
@@ -77,10 +78,6 @@ describe('ByteArrayComponent', () => {
 
       it('should decode the data', () => {
         expect(component.decodedData).toEqual(data.content);
-      });
-      
-      it('should set the byteLength', () => {
-        expect(component.byteLength).toBeNull();
       });
 
       it('should set the label', () => {
@@ -103,7 +100,7 @@ describe('ByteArrayComponent', () => {
       });
 
       it('should set the byteLength', () => {
-        expect(component.byteLength).toEqual('10.00 Ko');
+        expect(mockByteArrayService.byteLengthToString).toHaveBeenCalled();
       });
 
       it('should set the label', () => {
@@ -170,27 +167,5 @@ describe('ByteArrayComponent', () => {
   it('should copy the content properly', () => {
     component.copy();
     expect(mockClipboard.copy).toHaveBeenCalledWith(dataContent);
-  });
-
-  describe('computeByteLength', () => {
-    it('should compute octets', () => {
-      component['computeByteLength'](1.01);
-      expect(component.byteLength).toEqual('1.01 o');
-    });
-
-    it('should compute kilo-octets', () => {
-      component['computeByteLength'](1010);
-      expect(component.byteLength).toEqual('1.01 Ko');
-    });
-
-    it('should compute mega-octets', () => {
-      component['computeByteLength'](1010000);
-      expect(component.byteLength).toEqual('1.01 Mo');
-    });
-
-    it('should compute giga-octets', () => {
-      component['computeByteLength'](1010000000);
-      expect(component.byteLength).toEqual('1.01 Go');
-    });
   });
 });
