@@ -2,6 +2,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 import { ByteArrayComponent } from './byte-array-cell.component';
 
 describe('ByteArrayComponent', () => {
@@ -19,6 +20,11 @@ describe('ByteArrayComponent', () => {
   const mockClipboard = {
     copy: jest.fn()
   };
+
+  const mockNotificationService = {
+    success: jest.fn(),
+  };
+
 
   let dataContent = '';
   for(let i = 0; i !== 128; i++) {
@@ -38,6 +44,7 @@ describe('ByteArrayComponent', () => {
         { provide: ByteArrayService, useValue: mockByteArrayService },
         { provide: IconsService, useValue: mockIconsService },
         { provide: Clipboard, useValue: mockClipboard },
+        { provide: NotificationService, useValue: mockNotificationService },
       ]
     }).inject(ByteArrayComponent);
 
@@ -164,8 +171,15 @@ describe('ByteArrayComponent', () => {
     expect(mockIconsService.getIcon).toHaveBeenCalledWith(icon);
   });
 
-  it('should copy the content properly', () => {
-    component.copy();
-    expect(mockClipboard.copy).toHaveBeenCalledWith(dataContent);
+  describe('copy', () => {
+    it('should copy the content properly', () => {
+      component.copy();
+      expect(mockClipboard.copy).toHaveBeenCalledWith(dataContent);
+    });
+
+    it('hsould notify the user', () => {
+      component.copy();
+      expect(mockNotificationService.success).toHaveBeenCalled();
+    });
   });
 });

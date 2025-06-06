@@ -1,6 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
-import { ByteDecoderService } from '@services/byte-decoder.service';
+import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
 import { ByteArrayComponent } from './byte-array.component';
@@ -12,7 +12,7 @@ describe('ByteArrayComponent', () => {
     getIcon: jest.fn(),
   };
 
-  const mockByteDecoderService = {
+  const mockByteArrayService = {
     decode: jest.fn((value) => (value.content as string).includes('invalid') ? null : (value.content as string)),
     computeByteLength: jest.fn()
   };
@@ -40,7 +40,7 @@ describe('ByteArrayComponent', () => {
     component = TestBed.configureTestingModule({
       providers: [
         ByteArrayComponent,
-        { provide: ByteDecoderService, useValue: mockByteDecoderService },
+        { provide: ByteArrayService, useValue: mockByteArrayService },
         { provide: IconsService, useValue: mockIconsService },
         { provide: Clipboard, useValue: mockClipboard },
         { provide: NotificationService, useValue: mockNotificationService },
@@ -69,7 +69,7 @@ describe('ByteArrayComponent', () => {
       });
       
       it('should set the byteLength', () => {
-        expect(mockByteDecoderService.computeByteLength).toHaveBeenCalledWith(data.byteLength);
+        expect(mockByteArrayService.computeByteLength).toHaveBeenCalledWith(data.byteLength);
       });
 
       it('should set the label', () => {
@@ -92,7 +92,7 @@ describe('ByteArrayComponent', () => {
       });
 
       it('should set the byteLength', () => {
-        expect(mockByteDecoderService.computeByteLength).toHaveBeenCalledWith(data.byteLength);
+        expect(mockByteArrayService.computeByteLength).toHaveBeenCalledWith(data.byteLength);
       });
 
       it('should set the label', () => {
