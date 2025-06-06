@@ -31,9 +31,7 @@ export class ByteArrayComponent {
   @Input({ required: true }) set data(entry: Uint8Array) {
     this.byteArray = entry;
     this.decodedData = this.byteArrayService.decode(this.byteArray);
-    if (this.decodedData === null) {
-      this.byteLength = this.byteArrayService.byteLengthToString(this.byteArray.byteLength);
-    }
+    this.byteLength = this.byteArrayService.byteLengthToString(this.byteArray.byteLength);
   }
 
   @Input({ required: true }) label: string | number | symbol;

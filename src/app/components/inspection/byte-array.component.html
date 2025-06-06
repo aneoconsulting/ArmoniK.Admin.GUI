@@ -1,5 +1,10 @@
 <section id="byte-array-header">
-  <p i18n>{{ label | pretty }}</p>
+  <p i18n>
+    {{ label | pretty }}
+    @if (byteLength) {
+      ({{ byteLength }})
+    }
+  </p>
   @if (decodedData) {
     <button mat-icon-button (click)="copy()">
       <mat-icon [fontIcon]="getIcon('copy')" />
