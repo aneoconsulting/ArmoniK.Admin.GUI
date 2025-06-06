@@ -14,7 +14,7 @@ describe('ByteArrayComponent', () => {
 
   const mockByteArrayService = {
     decode: jest.fn((value) => (value.content as string).includes('invalid') ? null : (value.content as string)),
-    computeByteLength: jest.fn()
+    byteLengthToString: jest.fn()
   };
 
   const mockClipboard = {
@@ -69,7 +69,7 @@ describe('ByteArrayComponent', () => {
       });
       
       it('should set the byteLength', () => {
-        expect(mockByteArrayService.computeByteLength).toHaveBeenCalledWith(data.byteLength);
+        expect(mockByteArrayService.byteLengthToString).toHaveBeenCalledWith(data.byteLength);
       });
 
       it('should set the label', () => {
@@ -92,7 +92,7 @@ describe('ByteArrayComponent', () => {
       });
 
       it('should set the byteLength', () => {
-        expect(mockByteArrayService.computeByteLength).toHaveBeenCalledWith(data.byteLength);
+        expect(mockByteArrayService.byteLengthToString).toHaveBeenCalledWith(data.byteLength);
       });
 
       it('should set the label', () => {
