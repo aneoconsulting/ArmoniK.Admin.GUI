@@ -1,5 +1,5 @@
-<section id="message-header">
-  <h2 i18n>{{ label | pretty }}</h2>
+<section id="byte-array-header">
+  <p i18n>{{ label | pretty }}</p>
   @if (decodedData) {
     <button mat-icon-button (click)="copy()">
       <mat-icon [fontIcon]="getIcon('copy')" />

@@ -1,5 +1,6 @@
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, Input, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { PrettyPipe } from '@pipes/pretty.pipe';
@@ -12,10 +13,12 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-byte-array-inspection',
   templateUrl: 'byte-array.component.html',
+  styleUrl: 'byte-array.component.css',
   standalone: true,
   imports: [
     MatIconModule,
     MatCardModule,
+    MatButtonModule,
     PrettyPipe,
   ],
   providers: [

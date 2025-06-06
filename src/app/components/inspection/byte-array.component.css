@@ -1,0 +1,17 @@
+:host {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+#byte-array-header {
+  display: flex;
+  align-items: center;
+}
+
+p {
+  margin: 0;
+}
+
+mat-card {
+  padding: 0.25rem;
+}
