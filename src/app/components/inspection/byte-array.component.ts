@@ -2,6 +2,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { PrettyPipe } from '@pipes/pretty.pipe';
 import { ByteArrayService } from '@services/byte-array.service';
@@ -21,6 +22,7 @@ import { NotificationService } from '@services/notification.service';
     MatCardModule,
     MatButtonModule,
     PrettyPipe,
+    MatChipsModule,
   ],
   providers: [
     ByteArrayService,

@@ -6,6 +6,7 @@
 #byte-array-header {
   display: flex;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 p {
@@ -14,4 +15,8 @@ p {
 
 mat-card {
   padding: 0.25rem;
+}
+
+mat-chip {
+  margin-left: 0.25rem;
 }
