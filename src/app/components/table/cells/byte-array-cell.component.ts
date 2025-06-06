@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 
 /**
  * Displays a byte array in armonik tables.
@@ -26,6 +27,7 @@ import { IconsService } from '@services/icons.service';
   ],
   providers: [
     ByteArrayService,
+    NotificationService,
   ]
 })
 export class ByteArrayComponent {
@@ -49,6 +51,7 @@ export class ByteArrayComponent {
   private readonly byteArrayService = inject(ByteArrayService);
   private readonly iconsService = inject(IconsService);
   readonly clipboard = inject(Clipboard);
+  private readonly notificationService = inject(NotificationService);
 
   /**
    * Download the byteArray in a binary file. 
@@ -76,6 +79,7 @@ export class ByteArrayComponent {
   copy() {
     if (this.decodedData) {
       this.clipboard.copy(this.decodedData);
+      this.notificationService.success('Copied to clipboard');
     }
   }
 

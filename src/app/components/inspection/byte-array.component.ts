@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { PrettyPipe } from '@pipes/pretty.pipe';
 import { ByteArrayService } from '@services/byte-array.service';
 import { IconsService } from '@services/icons.service';
+import { NotificationService } from '@services/notification.service';
 
 /**
  * Displays a byte array in armonik inspection pages.
@@ -23,6 +24,7 @@ import { IconsService } from '@services/icons.service';
   ],
   providers: [
     ByteArrayService,
+    NotificationService,
   ]
 })
 export class ByteArrayComponent {
@@ -43,6 +45,7 @@ export class ByteArrayComponent {
   private readonly byteArrayService = inject(ByteArrayService);
   private readonly iconsService = inject(IconsService);
   private readonly clipboard = inject(Clipboard);
+  private readonly notificationService = inject(NotificationService);
 
   /**
    * Returns the icon associated with that name.
@@ -75,10 +78,12 @@ export class ByteArrayComponent {
 
   /**
    * Copy the value of the decoded byteArray into the user's clipboard.
+   * Notifies the user.
    */
   copy() {
     if (this.decodedData) {
       this.clipboard.copy(this.decodedData);
+      this.notificationService.success('Copied to clipboard');
     }
   }
 }
