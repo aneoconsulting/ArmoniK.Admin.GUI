@@ -26,8 +26,8 @@ describe('ByteArrayComponent', () => {
   };
 
   let dataContent = '';
-  for(let i = 0; i !== 128; i++) {
-    dataContent += 'a';
+  for(let i = 0; i !== 129; i++) {
+    dataContent += ' ';
   }
 
   const data = {
@@ -58,14 +58,12 @@ describe('ByteArrayComponent', () => {
 
   describe('initialisation', () => {
     describe('valid string', () => {
-      beforeEach(() => {
-        component.byteLength = null;
-        data.content = 'valid string';
-        component.data = data as unknown as Uint8Array;
-      });
-
       it('should decode the data', () => {
         expect(component.decodedData).toEqual(data.content);
+      });
+
+      it('should set the grid column size on 4 for large byte-arrays', () => {
+        expect(component.gridColumnSize).toEqual(4);
       });
       
       it('should set the byteLength', () => {

@@ -1,5 +1,5 @@
 import { Clipboard } from '@angular/cdk/clipboard';
-import { Component, Input, inject } from '@angular/core';
+import { Component, HostBinding, Input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -34,6 +34,9 @@ export class ByteArrayComponent {
     this.byteArray = entry;
     this.decodedData = this.byteArrayService.decode(this.byteArray);
     this.byteLength = this.byteArrayService.byteLengthToString(this.byteArray.byteLength);
+    if (this.decodedData && this.decodedData.length > 128) {
+      this.gridColumnSize = 4;
+    }
   }
 
   @Input({ required: true }) label: string | number | symbol;
@@ -41,6 +44,8 @@ export class ByteArrayComponent {
   private byteArray: Uint8Array;
   decodedData: string | null = null;
   byteLength: string | null = null;
+
+  @HostBinding('style.grid-column-end') gridColumnSize: number = 1;
 
   private readonly byteArrayService = inject(ByteArrayService);
   private readonly iconsService = inject(IconsService);

@@ -1,12 +1,10 @@
 :host {
   grid-column-start: 1;
-  grid-column-end: 4;
 }
 
 #byte-array-header {
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
 }
 
 p {
@@ -19,4 +17,8 @@ mat-card {
 
 mat-chip {
   margin-left: 0.25rem;
+}
+
+.binary-indicator {
+  margin-left: 0.2rem;
 }

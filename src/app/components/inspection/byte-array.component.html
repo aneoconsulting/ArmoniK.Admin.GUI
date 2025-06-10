@@ -4,6 +4,8 @@
     <button mat-icon-button (click)="copy()">
       <mat-icon [fontIcon]="getIcon('copy')" />
     </button>
+  } @else {
+    <span class="binary-indicator" i18n>- Binary</span>
   }
   @if (byteLength) {
     <button mat-icon-button (click)="download()">
@@ -11,10 +13,8 @@
     </button>
   }
 </section>
-<mat-card appearance="outlined">
-  @if (decodedData) {
+@if (decodedData) {
+  <mat-card appearance="outlined">
     <span>{{ decodedData }}</span>
-  } @else {
-    <span i18n>No data</span>
-  }
-</mat-card>
+  </mat-card>
+}
