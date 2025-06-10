@@ -39,7 +39,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
 
   displayedColumnsKeys: ColumnKey<T, O>[] = [];
   readonly displayedColumns = signal<TableColumn<T, O>[]>([]);
-  availableColumns: ColumnKey<T, O>[] = [];
+  availableColumns: TableColumn<T, O>[] = [];
   lockColumns: boolean = false;
   columnsLabels: Record<ColumnKey<T, O>, string> = {} as Record<ColumnKey<T, O>, string>;
 
@@ -73,7 +73,7 @@ export abstract class DashboardLineTableComponent<T extends DataRaw, F extends F
   }
 
   initColumns() {
-    this.availableColumns = this.indexService.availableTableColumns.map(c => c.key);
+    this.availableColumns = this.indexService.availableTableColumns;
     this.displayedColumnsKeys = this.line.displayedColumns ?? this.indexService.defaultColumns;
 
     this.indexService.availableTableColumns.forEach(column => {
@@ -224,7 +224,6 @@ export abstract class DashboardLineCustomColumnsComponent<T extends DataRaw, F e
   override initColumns() {
     super.initColumns();
     this.customColumns = this.line.customColumns ?? [];
-    this.availableColumns.push(...this.customColumns as ColumnKey<T, O>[]);
   }
 
   override updateDisplayedColumns(): void {
@@ -252,8 +251,6 @@ export abstract class DashboardLineCustomColumnsComponent<T extends DataRaw, F e
     dialogRef.afterClosed().subscribe((result) => {
       if(result) {
         this.customColumns = result;
-        this.availableColumns = this.availableColumns.filter(column => !column.toString().startsWith('options.options.'));
-        this.availableColumns.push(...result as ColumnKey<T, O>[]);
         this.displayedColumnsKeys = this.displayedColumnsKeys.filter(column => !column.toString().startsWith('options.options.'));
         this.displayedColumnsKeys.push(...result as ColumnKey<T, O>[]);
         this.updateDisplayedColumns();
