@@ -42,8 +42,4 @@ export class ColumnsModifyAreaComponent<T extends DataRaw, O extends TaskOptions
   isSelected(column: ColumnKey<T, O>): boolean {
     return this.selectedColumns.includes(column);
   }
-
-  isCustomColumn(column: ColumnKey<T, O>): boolean {
-    return column.toString().startsWith('options.options.');
-  }
 }

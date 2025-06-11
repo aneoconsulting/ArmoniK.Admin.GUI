@@ -22,6 +22,10 @@ describe('ColumnsModifyAreaComponent', () => {
     component.columns = columns;
   });
 
+  it('should run', () => {
+    expect(component).toBeTruthy();
+  });
+
   describe('initialisation', () => {
     it('should set the columns labels properly', () => {
       expect(component.columnsLabels).toEqual(columnsLabels);
