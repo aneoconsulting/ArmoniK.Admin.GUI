@@ -11,9 +11,6 @@ importers:
       '@aneoconsultingfr/armonik.api.angular':
         specifier: ^3.22.0
         version: 3.22.0(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(@ngx-grpc/core@3.1.2(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(rxjs@7.8.2))(@ngx-grpc/well-known-types@3.1.2(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(google-protobuf@3.21.2))(google-protobuf@3.21.2)(rxjs@7.8.2)
-      '@angular-material-components/datetime-picker':
-        specifier: ^16.0.1
-        version: 16.0.1(ff83a336257a45c41a1881b7e044d9d1)
       '@angular/animations':
         specifier: ^18.2.13
         version: 18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))
@@ -56,6 +53,9 @@ importers:
       '@ngx-grpc/grpc-web-client':
         specifier: ^3.1.2
         version: 3.1.2(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(@ngx-grpc/core@3.1.2(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(@ngx-grpc/common@3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2))(rxjs@7.8.2))(grpc-web@1.4.2)(rxjs@7.8.2)
+      '@ngxmc/datetime-picker':
+        specifier: 18.2.2
+        version: 18.2.2(ff83a336257a45c41a1881b7e044d9d1)
       '@ungap/structured-clone':
         specifier: ^1.3.0
         version: 1.3.0
@@ -314,16 +314,6 @@ packages:
       '@typescript-eslint/utils': ^7.11.0 || ^8.0.0
       eslint: ^8.57.0 || ^9.0.0
       typescript: '*'
-
-  '@angular-material-components/datetime-picker@16.0.1':
-    resolution: {integrity: sha512-dbkwWiC8qL7NVlMclb1hvuZvuP2l1nvfnnmijEc/zGsoWeoLNDXn/+z/UQtMcbUphcwCzFt9CfHhhpGUGgQLgw==}
-    peerDependencies:
-      '@angular/cdk': ^16.0.0
-      '@angular/common': ^16.0.0
-      '@angular/core': ^16.0.0
-      '@angular/forms': ^16.0.0
-      '@angular/material': ^16.0.0
-      '@angular/platform-browser': ^16.0.0
 
   '@angular/animations@18.2.13':
     resolution: {integrity: sha512-rG5J5Ek5Hg+Tz2NjkNOaG6PupiNK/lPfophXpsR1t/nWujqnMWX2krahD/i6kgD+jNWNKCJCYSOVvCx/BHOtKA==}
@@ -2068,6 +2058,16 @@ packages:
     peerDependencies:
       '@ngx-grpc/common': 3.1.2
       google-protobuf: ^3.10.0
+
+  '@ngxmc/datetime-picker@18.2.2':
+    resolution: {integrity: sha512-h9p7phaBUyX4mBlcAx1LKXxgFyKiLahgmWPtuYUhGGgHiiJXuWmkNmaOH79rckymplQUTLAR4o+TQP4mGbEQzA==}
+    peerDependencies:
+      '@angular/cdk': ^18.0.0
+      '@angular/common': ^18.0.0
+      '@angular/core': ^18.0.0
+      '@angular/forms': ^18.0.0
+      '@angular/material': ^18.0.0
+      '@angular/platform-browser': ^18.0.0
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -6679,16 +6679,6 @@ snapshots:
       eslint: 9.28.0(jiti@2.4.2)
       typescript: 5.4.5
 
-  '@angular-material-components/datetime-picker@16.0.1(ff83a336257a45c41a1881b7e044d9d1)':
-    dependencies:
-      '@angular/cdk': 18.2.14(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2)
-      '@angular/common': 18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2)
-      '@angular/core': 18.2.13(rxjs@7.8.2)(zone.js@0.14.4)
-      '@angular/forms': 18.2.13(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(@angular/platform-browser@18.2.13(@angular/animations@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4)))(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4)))(rxjs@7.8.2)
-      '@angular/material': 18.2.14(ca82722567ed33cf1ad02ca7b207a5bc)
-      '@angular/platform-browser': 18.2.13(@angular/animations@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4)))(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))
-      tslib: 2.8.1
-
   '@angular/animations@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))':
     dependencies:
       '@angular/core': 18.2.13(rxjs@7.8.2)(zone.js@0.14.4)
@@ -8554,6 +8544,16 @@ snapshots:
     dependencies:
       '@ngx-grpc/common': 3.1.2(google-protobuf@3.21.2)(rxjs@7.8.2)
       google-protobuf: 3.21.2
+      tslib: 2.8.1
+
+  '@ngxmc/datetime-picker@18.2.2(ff83a336257a45c41a1881b7e044d9d1)':
+    dependencies:
+      '@angular/cdk': 18.2.14(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2)
+      '@angular/common': 18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2)
+      '@angular/core': 18.2.13(rxjs@7.8.2)(zone.js@0.14.4)
+      '@angular/forms': 18.2.13(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(@angular/platform-browser@18.2.13(@angular/animations@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4)))(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4)))(rxjs@7.8.2)
+      '@angular/material': 18.2.14(ca82722567ed33cf1ad02ca7b207a5bc)
+      '@angular/platform-browser': 18.2.13(@angular/animations@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4)))(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.4))
       tslib: 2.8.1
 
   '@nodelib/fs.scandir@2.1.5':
