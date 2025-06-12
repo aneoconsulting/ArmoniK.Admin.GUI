@@ -69,25 +69,16 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
    * checked: add the column.
    * Unchecked: remove it
    */
-  updateColumn({ checked, column }: CheckedColumn<T, O>): void {
-    if (checked) {
-      this.select(column);
-    } else {
-      this.unSelect(column);
+  updateColumn(event: CheckedColumn<T, O>): void {
+    if (event.checked) {
+      if (!this.selectedColumns.includes(event.column)) {
+        this.selectedColumns.push(event.column);
+      }
+    } else if(this.selectedColumns.includes(event.column)) {
+      this.selectedColumns = this.selectedColumns.filter(currentColumn => currentColumn !== event.column);
     }
   }
-
-  private select(column: ColumnKey<T, O>) {
-    if (!this.selectedColumns.includes(column)) {
-      this.selectedColumns.push(column);
-    }
-  }
-
-  private unSelect(column: ColumnKey<T, O>) {
-    if(this.selectedColumns.includes(column)) {
-      this.selectedColumns = this.selectedColumns.filter(currentColumn => currentColumn !== column);
-    }
-  }
+  
 
   onNoClick(): void {
     this.dialogRef.close();
