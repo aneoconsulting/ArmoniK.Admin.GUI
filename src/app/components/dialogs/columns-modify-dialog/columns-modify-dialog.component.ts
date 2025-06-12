@@ -32,7 +32,10 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
 
   selectedColumns: ColumnKey<T, O>[] = [];
 
-  constructor(private dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>, @Inject(MAT_DIALOG_DATA) private data: ColumnsModifyDialogData<T, O>) {
+  constructor(
+    private readonly dialogRef: MatDialogRef<ColumnsModifyDialogComponent<T, O>>,
+    @Inject(MAT_DIALOG_DATA) private readonly data: ColumnsModifyDialogData<T, O>
+  ) {
     this.selectedColumns = this.data.currentColumns;
     this.columnsLabels = this.data.columnsLabels;
     this.customColumns = this.data.customColumns;
@@ -68,10 +71,20 @@ export class ColumnsModifyDialogComponent<T extends DataRaw, O extends TaskOptio
    */
   updateColumn({ checked, column }: CheckedColumn<T, O>): void {
     if (checked) {
-      if (!this.selectedColumns.includes(column)) {
-        this.selectedColumns.push(column);
-      }
-    } else if(this.selectedColumns.includes(column)) {
+      this.select(column);
+    } else {
+      this.unSelect(column);
+    }
+  }
+
+  private select(column: ColumnKey<T, O>) {
+    if (!this.selectedColumns.includes(column)) {
+      this.selectedColumns.push(column);
+    }
+  }
+
+  private unSelect(column: ColumnKey<T, O>) {
+    if(this.selectedColumns.includes(column)) {
       this.selectedColumns = this.selectedColumns.filter(currentColumn => currentColumn !== column);
     }
   }
