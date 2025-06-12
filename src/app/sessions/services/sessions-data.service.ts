@@ -1,5 +1,5 @@
 import { FilterDateOperator, FilterStringOperator, ListSessionsResponse, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Params } from '@angular/router';
 import { TaskOptions, TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
@@ -13,7 +13,7 @@ import { SessionsGrpcService } from './sessions-grpc.service';
 import { SessionRaw } from '../types';
 
 @Injectable()
-export class SessionsDataService extends AbstractTableDataService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> {
+export class SessionsDataService extends AbstractTableDataService<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnDestroy {
   readonly grpcService = inject(SessionsGrpcService);
 
   scope: Scope = 'sessions';
@@ -21,6 +21,10 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
   constructor() {
     super();
     this.subscribeToDurationSubjects();
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy();
   }
 
   computeGrpcData(entries: ListSessionsResponse): SessionRaw[] | undefined {
@@ -52,8 +56,8 @@ export class SessionsDataService extends AbstractTableDataService<SessionRaw, Se
     return options;
   }
 
-  override preparefilters(): FiltersOr<SessionRawEnumField, TaskOptionEnumField> {
-    const filtersOr = super.preparefilters();
+  override prepareFilters(): FiltersOr<SessionRawEnumField, TaskOptionEnumField> {
+    const filtersOr = super.prepareFilters();
     if(this.isDurationDisplayed && this.options.sort.active === 'duration') {
       const date = new Date();
       date.setDate(date.getDate() - 3);

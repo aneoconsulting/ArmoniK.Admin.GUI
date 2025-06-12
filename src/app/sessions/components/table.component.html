@@ -1,3 +1,9 @@
-<app-table [trackBy]="trackBy" [columns]="columns" [data]="data()" [total]="total()" [options]="options" [lockColumns]="lockColumns"
+<app-table 
+  [trackBy]="trackBy" [columns]="columns" [data]="data()"
+  [groups]="tableDataService.groups" [total]="total()"
+  [options]="options" [lockColumns]="lockColumns"
   [actions]="actions" [statusesService]="statusesService" [statusesGroups]="statusesGroups"
-  (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()" (personnalizeTasksByStatus)="personalizeTasksByStatus()" />
+  (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()"
+  (personnalizeTasksByStatus)="personalizeTasksByStatus()" (groupPageChange)="updateGroupPage($event)"
+  (groupSettings)="openGroupSettings($event)"
+/>

@@ -105,6 +105,7 @@ describe('IndexComponent', () => {
         interval: 5,
         hideGroupsHeader: false,
         filters: [],
+        groups: [],
         taskStatusesGroups: [
           {
             name: 'Finished',

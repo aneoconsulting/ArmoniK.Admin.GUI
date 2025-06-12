@@ -1,4 +1,5 @@
-import { ApplicationRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import ApplicationsDataService from '@app/applications/services/applications-data.service';
@@ -6,7 +7,8 @@ import { ApplicationsIndexService } from '@app/applications/services/application
 import { ApplicationRaw, ApplicationRawColumnKey, ApplicationRawFieldKey, ApplicationRawListOptions } from '@app/applications/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -72,6 +74,16 @@ describe('ApplicationsLineComponent', () => {
     },
   };
 
+  const lineGroup: GroupConditions<ApplicationRawEnumField> = {
+    name: 'Group 1',
+    conditions: [[{
+      field: ApplicationRawEnumField.APPLICATION_RAW_ENUM_FIELD_NAME,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+      value: 'name'
+    }]],
+  };
+
   const line: TableLine<ApplicationRaw> = {
     name: 'Tasks',
     type: 'Applications',
@@ -79,7 +91,8 @@ describe('ApplicationsLineComponent', () => {
     filters: [],
     interval: 20,
     options: options,
-    showFilters: false
+    showFilters: false,
+    groups: lineGroup as unknown as GroupConditions<FiltersEnums, FiltersOptionsEnums>[],
   };
 
   const nameLine = {
@@ -88,7 +101,7 @@ describe('ApplicationsLineComponent', () => {
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed() {
+        afterClosed(): unknown {
           return of(nameLine);
         }
       };
@@ -104,6 +117,10 @@ describe('ApplicationsLineComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
+    groupsConditions: [],
+    groups: [],
   };
 
   const mockApplicationsIndexService = {
@@ -129,7 +146,8 @@ describe('ApplicationsLineComponent', () => {
         IconsService,
         { provide: ApplicationsIndexService, useValue: mockApplicationsIndexService },
         DefaultConfigService,
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, usevalue: {} },
       ]
     }).inject(ApplicationsLineComponent);
     component.line = line;
@@ -165,6 +183,11 @@ describe('ApplicationsLineComponent', () => {
       expect(component.displayedColumnsKeys).toEqual(defaultColumns);
       expect(component.intervalValue).toEqual(10);
       expect(component.options).toEqual(defaultConfigService.defaultApplications.options);
+    });
+
+    it('should init groups', () => {
+      expect(mockApplicationsDataService.groupsConditions).toBe(lineGroup);
+      expect(mockApplicationsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -388,6 +411,24 @@ describe('ApplicationsLineComponent', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(component.line.showFilters).toEqual(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult = [{fake: 'return'}];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockApplicationsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(component.line.groups).toEqual(mockApplicationsDataService.groupsConditions);
     });
   });
 });

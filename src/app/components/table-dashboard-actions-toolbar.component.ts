@@ -26,6 +26,7 @@ export class TableDashboardActionsToolbarComponent<T extends DataRaw, O extends 
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
   @Input({ required: true }) lockColumns = false;
+  @Input({ required: false }) groupsLength: number;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
@@ -35,6 +36,7 @@ export class TableDashboardActionsToolbarComponent<T extends DataRaw, O extends 
   @Output() lockColumnsChange = new EventEmitter<void>();
   @Output() editNameLine = new EventEmitter<void>();
   @Output() deleteLine = new EventEmitter<void>();
+  @Output() groupSettings = new EventEmitter<void>();
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
@@ -70,5 +72,9 @@ export class TableDashboardActionsToolbarComponent<T extends DataRaw, O extends 
 
   onDeleteLine() {
     this.deleteLine.emit();
+  }
+
+  openGroupsSettings(): void {
+    this.groupSettings.emit();
   }
 }

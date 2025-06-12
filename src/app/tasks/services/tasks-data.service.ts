@@ -1,5 +1,5 @@
 import { FilterStringOperator, ListTasksResponse, ResultRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { TaskData } from '@app/types/data';
 import { Filter } from '@app/types/filters';
@@ -9,10 +9,14 @@ import { TaskOptions, TaskSummary } from '../types';
 import { TasksGrpcService } from './tasks-grpc.service';
 
 @Injectable()
-export default class TasksDataService extends AbstractTableDataService<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> {
+export default class TasksDataService extends AbstractTableDataService<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnDestroy {
   readonly grpcService = inject(TasksGrpcService);
 
   scope: Scope = 'tasks';
+
+  ngOnDestroy(): void {
+    this.onDestroy();
+  }
 
   computeGrpcData(entries: ListTasksResponse): TaskSummary[] | undefined {
     return entries.tasks;

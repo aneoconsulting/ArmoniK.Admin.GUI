@@ -62,7 +62,8 @@ export default tseslint.config(
             "^@components/",
             "^@services/",
             "^@angular/",
-            "^@pipes/"
+            "^@pipes/",
+            "^@shared/",
           ]
         }
       ],

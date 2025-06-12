@@ -1,4 +1,5 @@
 import { ApplicationRawEnumField, FilterStringOperator } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
@@ -129,7 +130,10 @@ describe('Application component', () => {
     saveFilters: jest.fn(),
     resetFilters: jest.fn(() => defaultFilters),
     saveShowFilters: jest.fn(),
-    restoreShowFilters: jest.fn(() => defaultShowFilters)
+    restoreShowFilters: jest.fn(() => defaultShowFilters),
+    restoreGroups: jest.fn(() => []),
+    saveGroups: jest.fn(),
+    resetGroups: jest.fn()
   };
 
 
@@ -152,6 +156,21 @@ describe('Application component', () => {
     refresh$: {
       next: jest.fn()
     },
+    groups: [],
+    groupsConditions: [],
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
+  };
+
+  const dialogResult: unknown[] = [];
+  const mockmatDialog = {
+    open: () => {
+      return {
+        afterClosed: () => {
+          return of(dialogResult);
+        }
+      };
+    }
   };
 
   beforeEach(() => {
@@ -164,19 +183,10 @@ describe('Application component', () => {
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: ApplicationsIndexService, useValue: mockApplicationIndexService },
         { provide: AutoRefreshService, useValue: mockAutoRefreshService },
-        { provide: MatDialog, useValue:
-          {
-            open: () => {
-              return {
-                afterClosed: () => {
-                  return of([]);
-                }
-              };
-            }
-          }
-        },
+        { provide: MatDialog, useValue: mockmatDialog },
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
         DefaultConfigService,
+        { provide: ViewContainerRef, useValue: {} },
       ]
     }).inject(IndexComponent);
 
@@ -199,6 +209,11 @@ describe('Application component', () => {
     expect(mockApplicationIndexService.restoreIntervalValue).toHaveBeenCalled();
     expect(mockShareUrlService.generateSharableURL).toHaveBeenCalledWith(component.options, component.filters);
     expect(component.availableColumns).toEqual(displayedColumns.map(col => col.key));
+  });
+
+  it('should init groups on init', () => {
+    expect(mockApplicationsDataService.groupsConditions).toEqual(mockApplicationsFilterService.restoreGroups());
+    expect(mockApplicationsDataService.initGroups).toHaveBeenCalled();
   });
 
   it('should get page icon', () => {
@@ -409,6 +424,7 @@ describe('Application component', () => {
         displayedColumns: component.displayedColumnsKeys,
         options: defaultOptions,
         filters: component.filters,
+        groups: mockApplicationsDataService.groupsConditions,
       });
     });
   });
@@ -424,6 +440,20 @@ describe('Application component', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(mockApplicationsFilterService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    beforeEach(() => {
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockApplicationsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(mockApplicationsFilterService.saveGroups).toHaveBeenCalledWith(mockApplicationsDataService.groupsConditions);
     });
   });
 });

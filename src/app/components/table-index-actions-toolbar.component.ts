@@ -27,6 +27,7 @@ export class TableIndexActionsToolbarComponent<T extends DataRaw, O extends Task
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
   @Input({ required: true }) lockColumns = false;
+  @Input({ required: false }) groupsLength: number;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
@@ -35,6 +36,7 @@ export class TableIndexActionsToolbarComponent<T extends DataRaw, O extends Task
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
   @Output() lockColumnsChange = new EventEmitter<void>();
   @Output() addToDashboard = new EventEmitter<void>();
+  @Output() groupSettings = new EventEmitter<void>();
 
   getIcon(value: string): string {
     return this.iconsService.getIcon(value);
@@ -66,5 +68,9 @@ export class TableIndexActionsToolbarComponent<T extends DataRaw, O extends Task
 
   onAddToDashboard(): void {
     this.addToDashboard.emit();
+  }
+
+  openGroupsSettings(): void {
+    this.groupSettings.emit();
   }
 }

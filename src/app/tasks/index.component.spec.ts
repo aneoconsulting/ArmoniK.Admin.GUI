@@ -1,4 +1,5 @@
 import { FilterStringOperator, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -136,6 +137,9 @@ describe('Tasks Index Component', () => {
     resetFilters: jest.fn(() => []),
     saveShowFilters: jest.fn(),
     restoreShowFilters: jest.fn(() => defaultShowFilters),
+    restoreGroups: jest.fn(() => []),
+    saveGroups: jest.fn(),
+    resetGroups: jest.fn()
   };
   
   const mockShareUrlService = {
@@ -158,6 +162,10 @@ describe('Tasks Index Component', () => {
       next: jest.fn()
     },
     cancelTasks: jest.fn(),
+    groups: [],
+    groupsConditions: [],
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
   };
 
   beforeEach(() => {
@@ -174,6 +182,7 @@ describe('Tasks Index Component', () => {
         { provide: TasksFiltersService, useValue: mockTaskFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, useValue: {} },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -250,6 +259,11 @@ describe('Tasks Index Component', () => {
       expect(component.serviceIcon).toEqual(defaultViewInLogs.serviceIcon);
       expect(component.serviceName).toEqual(defaultViewInLogs.serviceName);
       expect(component.urlTemplate).toEqual(defaultViewInLogs.urlTemplate);
+    });
+
+    it('should init groups on init', () => {
+      expect(mockTasksDataService.groupsConditions).toEqual(mockTaskFiltersService.restoreGroups());
+      expect(mockTasksDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -480,6 +494,7 @@ describe('Tasks Index Component', () => {
         customColumns: defaultCustomColumns,
         options: defaultOptions,
         filters: [],
+        groups: mockTasksDataService.groupsConditions,
       });
     });
   });
@@ -583,6 +598,24 @@ describe('Tasks Index Component', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(mockTaskFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult: unknown = [];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockTasksDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(mockTaskFiltersService.saveGroups).toHaveBeenCalledWith(mockTasksDataService.groupsConditions);
     });
   });
 });

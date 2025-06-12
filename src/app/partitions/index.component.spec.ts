@@ -1,4 +1,5 @@
 import { FilterStringOperator, PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -21,12 +22,12 @@ import { PartitionRaw } from './types';
 describe('Partitions Index Component', () => {
   let component: IndexComponent;
 
-  const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
+  const dialogResult: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
 
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed: (): unknown => of(newCustomColumns)
+        afterClosed: (): unknown => of(dialogResult)
       };
     })
   };
@@ -110,6 +111,10 @@ describe('Partitions Index Component', () => {
     refresh$: {
       next: jest.fn()
     },
+    groups: [],
+    groupsConditions: [],
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
   };
 
   const mockPartitionsIndexService = {
@@ -133,6 +138,9 @@ describe('Partitions Index Component', () => {
     resetFilters: jest.fn(() => []),
     saveShowFilters: jest.fn(),
     restoreShowFilters: jest.fn(() => defaultShowFilters),
+    restoreGroups: jest.fn(() => []),
+    saveGroups: jest.fn(),
+    resetGroups: jest.fn()
   };
   
   const mockShareUrlService = {
@@ -159,6 +167,7 @@ describe('Partitions Index Component', () => {
         { provide: PartitionsFiltersService, useValue: mockPartititionsFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, useValue: {} },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -221,6 +230,11 @@ describe('Partitions Index Component', () => {
 
     it('should merge subscriptions', () => {
       expect(component.subscriptions).toBeDefined();
+    });
+
+    it('should init groups on init', () => {
+      expect(mockPartitionsDataService.groupsConditions).toEqual(mockPartititionsFiltersService.restoreGroups());
+      expect(mockPartitionsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -448,6 +462,7 @@ describe('Partitions Index Component', () => {
         displayedColumns: defaultColumns,
         options: defaultOptions,
         filters: [],
+        groups: mockPartitionsDataService.groupsConditions,
       });
     });
   });
@@ -463,6 +478,20 @@ describe('Partitions Index Component', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(mockPartititionsFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    beforeEach(() => {
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockPartitionsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(mockPartititionsFiltersService.saveGroups).toHaveBeenCalledWith(mockPartitionsDataService.groupsConditions);
     });
   });
 });

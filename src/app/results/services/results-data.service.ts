@@ -1,5 +1,5 @@
 import { ListResultsResponse, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { ResultData } from '@app/types/data';
 import { AbstractTableDataService } from '@app/types/services/table-data.service';
@@ -7,10 +7,14 @@ import { ResultRaw } from '../types';
 import { ResultsGrpcService } from './results-grpc.service';
 
 @Injectable()
-export default class ResultsDataService extends AbstractTableDataService<ResultRaw, ResultRawEnumField> {
+export default class ResultsDataService extends AbstractTableDataService<ResultRaw, ResultRawEnumField> implements OnDestroy {
   readonly grpcService = inject(ResultsGrpcService);
 
   scope: Scope = 'results';
+
+  ngOnDestroy(): void {
+    this.onDestroy();
+  }
 
   computeGrpcData(entries: ListResultsResponse): ResultRaw[] | undefined {
     return entries.results;

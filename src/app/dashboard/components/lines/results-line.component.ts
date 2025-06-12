@@ -17,6 +17,7 @@ import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.com
 import { TableDashboardActionsToolbarComponent } from '@components/table-dashboard-actions-toolbar.component';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 
 @Component({
@@ -37,6 +38,7 @@ import { NotificationService } from '@services/notification.service';
     GrpcSortFieldService,
     FiltersService,
     NotificationService,
+    InvertFilterService,
   ],
   imports: [
     MatIconModule,

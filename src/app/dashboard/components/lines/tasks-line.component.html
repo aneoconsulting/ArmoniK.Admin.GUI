@@ -16,6 +16,7 @@
       (lockColumnsChange)="onLockColumnsChange()"
       (deleteLine)="onDeleteLine()"
       (editNameLine)="onEditNameLine()"
+      (groupSettings)="openGroupsSettings()"
     >
     <ng-container extra-buttons-right>
       <button mat-flat-button color="accent" (click)="onCancelTasksSelection()" [disabled]="!selection.length">

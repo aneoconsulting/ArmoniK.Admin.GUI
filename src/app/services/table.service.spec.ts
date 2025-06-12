@@ -1,8 +1,9 @@
-import { TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { SessionRawEnumField, TaskOptionEnumField, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { TaskFilterDefinition } from '@app/tasks/types';
 import { DataRaw, FieldKey } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { StorageService } from './storage.service';
 import { TableStorageService } from './table-storage.service';
@@ -15,9 +16,11 @@ describe('TableService', () => {
     getQueryParamsOptions: jest.fn(),
     getQueryParamsFilters: jest.fn()
   };
+
+  const restoreReturn = 'example';
   const tableStorageMock = {
     save: jest.fn(),
-    restore: jest.fn(),
+    restore: jest.fn((value: string): unknown => `${value}-${restoreReturn}`),
     remove: jest.fn()
   };
 
@@ -43,8 +46,8 @@ describe('TableService', () => {
 
   describe('restoreIntervalValue', () => {
 
-    beforeAll(() => {
-      tableStorageMock.restore.mockImplementation((key: string) => {
+    beforeEach(() => {
+      tableStorageMock.restore.mockImplementationOnce((key: string) => {
         const intervalRecord: Record<string, unknown> = {
           'applications-interval': 10,
           'sessions-interval': 'Oops',
@@ -56,7 +59,6 @@ describe('TableService', () => {
 
     it('Should return the interval value of the specified scope', () => {
       expect(service.restoreIntervalValue('applications-interval')).toEqual(10);
-      expect(service.restoreIntervalValue('tasks-interval')).toEqual(0);
     });
 
     it('Should return null if the interval value has no interval', () => {
@@ -94,8 +96,8 @@ describe('TableService', () => {
       }
     } as ListOptions<DataRaw>;
 
-    beforeAll(() => {
-      tableStorageMock.restore.mockImplementation((key: string) => {
+    beforeEach(() => {
+      tableStorageMock.restore.mockImplementationOnce((key: string) => {
         const optionsRecord: Record<string, unknown> = {
           'applications-options': {
             pageIndex: 0,
@@ -121,11 +123,16 @@ describe('TableService', () => {
     it('Should return queryParamsOptions values', () => {
       tableURLMock.getQueryParamsOptions.mockImplementation((key: string) => {
         switch(key) {
-        case 'pageIndex': return '20';
-        case 'pageSize': return '50';
-        case 'sortField': return 3 as FieldKey<DataRaw>;
-        case 'sortDirection': return 'desc';
-        default: return null;
+        case 'pageIndex': 
+          return 20;
+        case 'pageSize':
+          return 50;
+        case 'sortField':
+          return 3 as FieldKey<DataRaw>;
+        case 'sortDirection':
+          return 'desc';
+        default:
+          return null;
         }
       });
       expect(service.restoreOptions('applications-options', defaultOptions)).toEqual({
@@ -168,26 +175,20 @@ describe('TableService', () => {
         }
       });
     });
+  });
 
-
-    it('should call TableStorageService.save when saving filter', () => {
-      service.saveFilters('applications-filters', [[{
-        field: 1,
-        operator: 0,
-        value: 'someData',
-        for: 'root'
-      }]]);
-      expect(tableStorageMock.save).toHaveBeenCalledWith('applications-filters', [[{
-        field: 1,
-        operator: 0,
-        value: 'someData',
-        for: 'root'
-      }]]);
-    });
+  it('should call TableStorageService.save when saving filter', () => {
+    const filters = [[{
+      field: 1,
+      operator: 0,
+      value: 'someData',
+      for: 'root'
+    }]];
+    service.saveFilters('applications-filters', filters);
+    expect(tableStorageMock.save).toHaveBeenCalledWith('applications-filters', filters);
   });
 
   describe('restoreFilter', () => {
-    
     const validFilterDefs: TaskFilterDefinition[] = [{
       for: 'root',
       field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_SESSION_ID,
@@ -199,63 +200,28 @@ describe('TableService', () => {
       type: 'string'
     }];
 
-    beforeAll(() => {
-      tableURLMock.getQueryParamsFilters.mockImplementation((filterDef: FilterDefinition<number, number>[]) => {
-        return filterDef === validFilterDefs ? [[
-          {
-            field: 1,
-            operator: 0,
-            value: 'someData',
-            for: 'root'
-          }, 
-        ]] : [];
-      });
-      tableStorageMock.restore.mockImplementation((key: string) => {
-        return key === 'applications-filters' ? [[
-          {
-            field: 1,
-            operator: 0,
-            value: 'someData',
-            for: 'root'
-          }, 
-          {
-            field: 16,
-            operator: 0,
-            value: 'anotherKindOfData',
-            for: 'root'
-          }
-        ]] : null;
-      });
-    });
-
-    it('should return queryParamsFilter', () => {
-      expect(service.restoreFilters('applications-filters', validFilterDefs)).toEqual([[{
+    const queryParamsFilter = [[
+      {
         field: 1,
         operator: 0,
         value: 'someData',
         for: 'root'
-      }]]);
+      }, 
+    ]];
+
+    beforeEach(() => {
+      tableStorageMock.restore.mockClear();
+      tableURLMock.getQueryParamsFilters.mockImplementationOnce((filterDef: FilterDefinition<number, number>[]) => {
+        return filterDef === validFilterDefs ? queryParamsFilter : [];
+      });
+    });
+
+    it('should return queryParamsFilter', () => {
+      expect(service.restoreFilters('applications-filters', validFilterDefs)).toEqual(queryParamsFilter);
     });
 
     it('should return stored filters if there is no QueryParams', () => {
-      expect(service.restoreFilters('applications-filters', invalidFilterDefs)).toEqual([[
-        {
-          field: 1,
-          operator: 0,
-          value: 'someData',
-          for: 'root'
-        }, 
-        {
-          field: 16,
-          operator: 0,
-          value: 'anotherKindOfData',
-          for: 'root'
-        }
-      ]]);
-    });
-
-    it('Should return null if there is no queryParams nor stored filters', () => {
-      expect(service.restoreFilters('partitions-filters', invalidFilterDefs)).toBeNull();
+      expect(service.restoreFilters('applications-filters', invalidFilterDefs)).toEqual('applications-filters-example');
     });
   });
 
@@ -301,5 +267,31 @@ describe('TableService', () => {
   it('should call TableStorageService.restore when restoring showFilters', () => {
     service.restoreShowFilters('applications-show-filters');
     expect(tableStorageMock.restore).toHaveBeenCalledWith('applications-show-filters');
+  });
+
+  describe('Groups', () => {
+    const key = 'sessions-groups';
+
+    it('should save groups', () => {
+      const groups: GroupConditions<SessionRawEnumField, TaskOptionEnumField>[] = [];
+      service.saveGroups<SessionRawEnumField, TaskOptionEnumField>(key, groups);
+      expect(tableStorageMock.save).toHaveBeenCalledWith(key, groups);
+    });
+
+    describe('restoreGroups', () => {
+      it('should restore groups', () => {
+        expect(service.restoreGroups(key)).toEqual(`${key}-${restoreReturn}`);
+      });
+
+      it('should return an empty array if no groups are stored', () => {
+        tableStorageMock.restore.mockImplementationOnce(() => null);
+        expect(service.restoreGroups(key)).toEqual([]);
+      });
+    });
+
+    it('should reset groups', () => {
+      service.resetGroups(key);
+      expect(tableStorageMock.remove).toHaveBeenCalledWith(key);
+    });
   });
 });

@@ -10,15 +10,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
 import { AddLineDialogData, AddLineDialogResult, ReorganizeLinesDialogData, ReorganizeLinesDialogResult, SplitLinesDialogData, SplitLinesDialogResult } from '@app/types/dialog';
-import { ActionsToolbarGroupComponent } from '@components/actions-toolbar-group.component';
-import { ActionsToolbarComponent } from '@components/actions-toolbar.component';
-import { AutoRefreshButtonComponent } from '@components/auto-refresh-button.component';
-import { FiltersToolbarComponent } from '@components/filters/filters-toolbar.component';
 import { PageHeaderComponent } from '@components/page-header.component';
 import { PageSectionHeaderComponent } from '@components/page-section-header.component';
 import { PageSectionComponent } from '@components/page-section.component';
-import { RefreshButtonComponent } from '@components/refresh-button.component';
-import { SpinnerComponent } from '@components/spinner.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { IconsService } from '@services/icons.service';
@@ -106,12 +100,7 @@ import { Line, LineType } from './types';
   imports: [
     PageHeaderComponent,
     PageSectionComponent,
-    SpinnerComponent,
     PageSectionHeaderComponent,
-    ActionsToolbarComponent,
-    ActionsToolbarGroupComponent,
-    RefreshButtonComponent,
-    AutoRefreshButtonComponent,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
@@ -120,7 +109,6 @@ import { Line, LineType } from './types';
     MatCardModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    FiltersToolbarComponent,
     TaskByStatusLineComponent,
     ApplicationsLineComponent,
     ResultsLineComponent,
@@ -191,6 +179,7 @@ export class IndexComponent implements OnInit {
           interval: 5,
           hideGroupsHeader: false,
           filters: [],
+          groups: [],
           taskStatusesGroups: [
             {
               name: 'Finished',
@@ -224,7 +213,7 @@ export class IndexComponent implements OnInit {
           name: result.name,
           type: result.type,
           interval: 5,
-          filters: []
+          filters: [],
         });
       }
       this.onSaveChange();

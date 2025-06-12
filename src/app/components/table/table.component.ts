@@ -8,10 +8,12 @@ import { TasksStatusesGroup } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, DataRaw } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { Status, StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableContainerComponent } from '@components/table-container.component';
+import { TableGroupComponent } from './group/group-row/group.component';
 import { TableActionsComponent } from './table-actions.component';
 import { TableCellComponent } from './table-cell.component';
 import { TableColumnHeaderComponent } from './table-column-header.component';
@@ -31,6 +33,7 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
     MatSortModule,
     TableActionsComponent,
     TableContainerComponent,
+    TableGroupComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -39,6 +42,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: true }) set columns(entries: TableColumn<T, O>[]) {
     this._columns = entries;
     this._columnsKeys = entries.map((entry) => entry.key);
+    this._columnsKeys.push('group');
   }
 
   @Input({ required: true }) set data(entries: ArmonikData<T, O>[]) {
@@ -50,6 +54,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
       this._isAllSelected = this.selection.selected.length === entries.length;
     }
   }
+
+  @Input({ required: false }) groups: Group<T, O>[];
 
   @Input({ required: true }) total: number;
 
@@ -63,7 +69,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Input({ required: false }) dataComparator: ((a: T, b: T) => boolean) | undefined;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O>): number | string {
+  @Input({ required: false }) trackBy(index: number, item: ArmonikData<T, O> | Group<T, O>): number | string {
     return index;
   }
 
@@ -71,6 +77,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   @Output() optionsChange = new EventEmitter<never>();
   @Output() selectionChange = new EventEmitter<T[]>();
   @Output() personnalizeTasksByStatus = new EventEmitter<void>();
+  @Output() groupPageChange = new EventEmitter<string>();
+  @Output() groupSettings = new EventEmitter<string>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -80,8 +88,8 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
   private _columnsKeys: ColumnKey<T, O>[];
   private _isAllSelected: boolean = false;
 
-  get data(): ArmonikData<T, O>[] {
-    return this._data;
+  get data(): (ArmonikData<T, O> | Group<T, O>)[] {
+    return [...(this.groups ?? []), ...this._data];
   }
 
   get columns(): TableColumn<T, O>[] {
@@ -109,7 +117,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
     });
 
     this.paginator.page.subscribe(() => {
-      if (this.options.pageSize > this.paginator.pageSize) this.data = this.data.slice(0, this.paginator.pageSize);
+      if (this.options.pageSize > this.paginator.pageSize) this._data = this._data.slice(0, this.paginator.pageSize);
       this.options.pageIndex = this.paginator.pageIndex;
       this.options.pageSize = this.paginator.pageSize;
       this.optionsChange.emit();
@@ -147,7 +155,7 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
       this.selection.clear();
       this._isAllSelected = false;
     } else {
-      this.selection.select(...(this.data.map(d => d.raw)));
+      this.selection.select(...(this._data.map(d => d.raw)));
       this._isAllSelected = true;
     }
     this.emitSelectionChange();
@@ -164,5 +172,17 @@ export class TableComponent<T extends DataRaw, S extends Status, O extends TaskO
 
   onPersonnalizeTasksByStatus(): void {
     this.personnalizeTasksByStatus.emit();
+  }
+
+  isData(element: ArmonikData<T, O> | Group<T, O>) {
+    return (element as ArmonikData<T, O>).raw !== undefined && (element as Group<T, O>).name === undefined;
+  }
+
+  groupPageUpdate(groupName: string) {
+    this.groupPageChange.emit(groupName);
+  }
+
+  onGroupSettingsEmit(groupName: string) {
+    this.groupSettings.emit(groupName);
   }
 }

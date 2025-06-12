@@ -77,7 +77,7 @@ describe('ViewTasksByStatusComponent', () => {
   });
 
   it('should handle statuses on init', () => {
-    expect(component.statusesGroups).toEqual([
+    expect(component.groups).toEqual([
       {
         ...initialStatusesGroups[0],
         queryParams: {
@@ -111,6 +111,6 @@ describe('ViewTasksByStatusComponent', () => {
       { status: TaskStatus.TASK_STATUS_ERROR, count: errorStatusCount },
       { status: TaskStatus.TASK_STATUS_TIMEOUT, count: timeoutStatusCount },
     ];
-    expect(component.statusesGroups.map(group => group.statusCount)).toEqual([completedStatusCount, errorStatusCount + timeoutStatusCount]);
+    expect(component.groups.map(group => group.statusCount)).toEqual([completedStatusCount, errorStatusCount + timeoutStatusCount]);
   });
 });

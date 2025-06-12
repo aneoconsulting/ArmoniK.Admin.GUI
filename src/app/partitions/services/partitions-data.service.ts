@@ -1,5 +1,5 @@
 import { FilterStringOperator, ListPartitionsResponse, PartitionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { PartitionData } from '@app/types/data';
@@ -8,10 +8,14 @@ import { PartitionRaw } from '../types';
 import { PartitionsGrpcService } from './partitions-grpc.service';
 
 @Injectable()
-export default class PartitionsDataService extends AbstractTableDataService<PartitionRaw, PartitionRawEnumField> {
+export default class PartitionsDataService extends AbstractTableDataService<PartitionRaw, PartitionRawEnumField> implements OnDestroy {
   readonly grpcService = inject(PartitionsGrpcService);
 
   scope: Scope = 'partitions';
+
+  ngOnDestroy(): void {
+    this.onDestroy();
+  }
 
   computeGrpcData(entries: ListPartitionsResponse): PartitionRaw[] | undefined {
     return entries.partitions;

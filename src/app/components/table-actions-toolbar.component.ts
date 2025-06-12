@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -12,6 +13,7 @@ import { ActionsToolbarComponent } from './actions-toolbar.component';
 import { AutoRefreshButtonComponent } from './auto-refresh-button.component';
 import { ColumnsButtonComponent } from './columns-button.component';
 import { SpinnerComponent } from './spinner.component';
+
 
 @Component({
   selector: 'app-table-actions-toolbar',
@@ -31,6 +33,7 @@ import { SpinnerComponent } from './spinner.component';
     MatMenuModule,
     MatIconModule,
     MatTooltipModule,
+    MatBadgeModule
   ]
 })
 export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptions | null = null> {
@@ -43,6 +46,7 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
   @Input({ required: true }) availableColumns: ColumnKey<T, O>[] = [];
   @Input({ required: true }) lockColumns = false;
+  @Input({ required: false }) groupsLength: number = 0;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
   @Output() intervalValueChange: EventEmitter<number> = new EventEmitter<number>();
@@ -50,6 +54,7 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Output() resetColumns: EventEmitter<void> = new EventEmitter<void>();
   @Output() resetFilters: EventEmitter<void> = new EventEmitter<void>();
   @Output() lockColumnsChange = new EventEmitter<void>();
+  @Output() groupSettings = new EventEmitter<void>();
 
   getIcon(name: string): string {
     return this.iconsService.getIcon(name);
@@ -77,5 +82,9 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
 
   onLockColumnsChange(): void {
     this.lockColumnsChange.emit();
+  }
+
+  openGroupsSettings(): void {
+    this.groupSettings.emit();
   }
 }
