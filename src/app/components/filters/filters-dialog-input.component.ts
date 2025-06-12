@@ -3,31 +3,34 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
-// eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { FilterInput } from '@app/types/filters';
 import { AutoCompleteComponent } from '@components/auto-complete.component';
+import { NgxMatDatepickerActions, NgxMatDatepickerApply, NgxMatDatepickerCancel, NgxMatDatepickerInput, NgxMatDatepickerToggle, NgxMatDatetimepicker, NgxMatNativeDateModule } from '@ngxmc/datetime-picker';
+// eslint-disable-next-line import/no-unresolved
+import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicker-input-base';
 
 @Component({
   selector: 'app-filters-dialog-input',
   templateUrl: './filters-dialog-input.component.html',
-  styles: [`
-mat-form-field {
-  width: 100%;
-}
-`],
+  styleUrl: 'filters-dialog-input.component.css',
   standalone: true,
   imports: [
     MatFormFieldModule,
     MatInputModule,
-    NgxMatTimepickerModule,
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
     MatAutocompleteModule,
     MatButtonModule,
-    AutoCompleteComponent
+    AutoCompleteComponent,
+    NgxMatDatepickerActions,
+    NgxMatDatepickerApply,
+    NgxMatDatepickerCancel,
+    NgxMatDatepickerInput,
+    NgxMatDatetimepicker,
+    NgxMatDatepickerToggle,
+    NgxMatNativeDateModule,
   ],
+  providers: [
+    NgxMatNativeDateModule,
+  ]
 })
 export class FiltersDialogInputComponent {
   @Input({ required: true }) input: FilterInput;
@@ -35,7 +38,6 @@ export class FiltersDialogInputComponent {
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   booleans = ['true', 'false'];
-  actualDate = new Date();
   duration: {[key: number]: string} = {};
 
   private emit(value: string) {
