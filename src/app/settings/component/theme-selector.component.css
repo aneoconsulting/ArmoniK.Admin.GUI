@@ -1,0 +1,13 @@
+section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+button {
+  width: fit-content;
+}
+
+.selected {
+  border: 0.1rem solid white;
+}
