@@ -1,0 +1,29 @@
+<mat-card appearance="outlined">
+  @for (filter of filterAnd.controls; track $index) {
+  <article>
+    @let type = findType(filter.value);
+    @let statuses = findStatuses(filter.value);
+    @let operators = findOperators(type);
+
+    <app-filters-dialog-field [filter]="filter" [customProperties]="customProperties" [formControl]="filter.controls.field" (for)="updateFor(filter, $event)" />
+
+    <app-filters-dialog-operator [operators]="operators" [formControl]="filter.controls.operator" />
+
+    <app-filters-dialog-input [type]="type" [statuses]="statuses" [formControl]="filter.controls.value" />
+
+    <section>
+      @if (!$last) {
+        <span i18n style="margin-left: 0.2rem;">And</span>
+      } @else {
+        <button mat-button (click)="add()" i18n-matTooltip matTooltip="Add a condition">
+          <mat-icon [fontIcon]="getIcon('add')" />
+          <span i18n>And</span>
+        </button>
+      }
+      <button mat-icon-button (click)="remove($index)" i18n-matTooltip matTooltip="Delete this condition">
+        <mat-icon [fontIcon]="getIcon('delete')" />
+      </button>
+    </section>
+  </article>
+  }
+</mat-card>

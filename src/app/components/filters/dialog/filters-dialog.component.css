@@ -1,0 +1,35 @@
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+section {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.filter-header {
+  align-items: center;
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+  justify-content: s;
+  gap: 0.5rem;
+}
+
+.mat-divider {
+  width: 45%;
+}
+
+button {
+  width: fit-content;
+}
+
+.delete-button, .add-button {
+  width: 2rem;
+  height: 2rem;
+}
