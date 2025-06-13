@@ -63,6 +63,17 @@ export class ResultsIndexService implements IndexServiceInterface<ResultRaw> {
       name: $localize`Size`,
       key: 'size',
       sortable: true
+    },
+    {
+      name: $localize`Manual Deletion`,
+      key: 'manualDeletion',
+      sortable: true,
+    },
+    {
+      name: $localize`Opaque ID`,
+      key: 'opaqueId',
+      type: 'byte-array',
+      sortable: false,
     }
   ];
 
