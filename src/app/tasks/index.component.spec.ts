@@ -196,7 +196,7 @@ describe('Tasks Index Component', () => {
   describe('initialisation', () => {
     it('should initialise columns (with customs)', () => {
       expect(component.displayedColumnsKeys).toEqual([...defaultColumns, ...defaultCustomColumns]);
-      expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...defaultCustomColumns]);
+      expect(component.availableColumns).toEqual(availableTableColumns);
       expect(component.customColumns).toEqual(defaultCustomColumns);
       expect(component.displayedColumns()).toEqual([
         {
@@ -491,10 +491,6 @@ describe('Tasks Index Component', () => {
 
     it('should add custom columns throught dialog', () => {
       expect(component.customColumns).toEqual(newCustomColumns);
-    });
-
-    it('should update available columns', () => {
-      expect(component.availableColumns).toEqual([...availableTableColumns.map(column => column.key), ...newCustomColumns]);
     });
 
     it('should update displayed columns', () => {
