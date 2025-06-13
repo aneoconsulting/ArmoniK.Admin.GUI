@@ -2,7 +2,7 @@ import { TaskOptions } from '@app/tasks/types';
 import { ColumnKey, DataRaw } from '@app/types/data';
 import { Scope } from './config';
 
-export type DataType = 'raw' | 'link' | 'object' | 'date' | 'duration' | 'status' | 'array' | 'output' | 'message'; 
+export type DataType = 'raw' | 'link' | 'object' | 'date' | 'duration' | 'status' | 'array' | 'output' | 'message' | 'byte-array'; 
 export type ColumnType = DataType | 'count' | 'actions' | 'select';
 
 export type Field<T extends DataRaw | TaskOptions | null> = {
