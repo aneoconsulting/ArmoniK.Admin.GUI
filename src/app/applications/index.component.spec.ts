@@ -198,7 +198,7 @@ describe('Application component', () => {
     expect(mockApplicationsFilterService.restoreFilters).toHaveBeenCalled();
     expect(mockApplicationIndexService.restoreIntervalValue).toHaveBeenCalled();
     expect(mockShareUrlService.generateSharableURL).toHaveBeenCalledWith(component.options, component.filters);
-    expect(component.availableColumns).toEqual(displayedColumns.map(col => col.key));
+    expect(component.availableColumns).toEqual(displayedColumns);
   });
 
   it('should get page icon', () => {
