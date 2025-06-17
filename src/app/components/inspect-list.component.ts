@@ -20,7 +20,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-inspect-list',
   templateUrl: 'inspect-list.component.html',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatToolbarModule,
@@ -30,7 +29,7 @@ import { NotificationService } from '@services/notification.service';
     MatDivider,
     MatIconModule,
   ],
-  styleUrl: 'inspect-list.component.css',
+  styleUrl: 'inspect-list.component.css'
 })
 export class InspectListComponent {
   private _list: string[] = [];

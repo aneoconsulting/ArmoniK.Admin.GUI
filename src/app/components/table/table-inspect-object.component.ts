@@ -12,7 +12,6 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
   templateUrl: './table-inspect-object.component.html',
   styles: [`
   `],
-  standalone: true,
   imports: [
     MatTooltipModule,
     MatDialogModule,
@@ -20,7 +19,7 @@ import { TableInspectObjectDialogComponent, TableInspectObjectDialogData } from 
     MatIconModule,
     CommonModule
   ],
-  providers: [],
+  providers: []
 })
 export class TableInspectObjectComponent
 {

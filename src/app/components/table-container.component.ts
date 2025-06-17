@@ -20,10 +20,7 @@ import { Component } from '@angular/core';
   overflow: auto;
 }
   `],
-  standalone: true,
-  providers: [
-  ],
-  imports: [
-  ]
+  providers: [],
+  imports: []
 })
 export class TableContainerComponent {}

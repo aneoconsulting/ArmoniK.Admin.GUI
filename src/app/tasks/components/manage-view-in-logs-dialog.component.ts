@@ -40,7 +40,6 @@ mat-dialog-content {
   max-width: 425px;
 }
   `],
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -49,7 +48,7 @@ mat-dialog-content {
     MatButtonModule,
     MatIconModule,
     IconPickerDialogComponent,
-  ],
+  ]
 })
 export class ManageViewInLogsDialogComponent implements OnInit {
   readonly #dialogRef = inject(MatDialogRef<ManageViewInLogsDialogComponent, ManageViewInLogsDialogResult>);

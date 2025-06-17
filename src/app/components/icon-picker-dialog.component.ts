@@ -18,7 +18,6 @@ article {
   display: grid;
 }
   `],
-  standalone: true,
   providers: [
     IconsService
   ],

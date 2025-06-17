@@ -14,15 +14,13 @@ import { StorageService } from '@services/storage.service';
   styles: [`
 
   `],
-  standalone: true,
-  providers: [
-  ],
+  providers: [],
   imports: [
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
     MatTooltipModule,
-  ],
+  ]
 })
 export class ThemeSelectorComponent implements OnInit {
   private readonly defaultConfigService = inject(DefaultConfigService);

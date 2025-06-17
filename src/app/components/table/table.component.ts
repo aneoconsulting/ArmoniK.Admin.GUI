@@ -20,7 +20,6 @@ import { TableEmptyDataComponent } from './table-empty-data.component';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  standalone: true,
   imports: [
     TableColumnHeaderComponent,
     TableCellComponent,

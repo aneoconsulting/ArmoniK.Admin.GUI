@@ -36,7 +36,6 @@ span {
   gap: 1rem;
 }
   `],
-  standalone: true,
   imports: [
     FiltersDialogAndComponent,
     MatButtonModule,
@@ -45,7 +44,7 @@ span {
   ],
   providers: [
     IconsService
-  ],
+  ]
 })
 export class FiltersDialogOrComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) first: boolean;

@@ -67,7 +67,6 @@ main {
   padding: 20px 50px;
 }
   `],
-  standalone: true,
   providers: [
     StorageService,
     IconsService,

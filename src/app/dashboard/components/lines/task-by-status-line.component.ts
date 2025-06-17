@@ -48,7 +48,6 @@ app-actions-toolbar {
   grid-gap: 1rem;
 }
     `],
-  standalone: true,
   providers: [
     TasksStatusesService,
     ShareUrlService,

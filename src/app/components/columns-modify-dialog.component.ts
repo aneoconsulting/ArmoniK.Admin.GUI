@@ -9,7 +9,7 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
 
 @Component({
   selector: 'app-add-columns-dialog',
-  templateUrl:'./columns-modify-dialog.component.html',
+  templateUrl: './columns-modify-dialog.component.html',
   styles: [`
   .columns {
     display: grid;
@@ -20,7 +20,6 @@ import { ColumnsModifyDialogData } from '@app/types/dialog';
     margin-top: 1rem;
   }
   `],
-  standalone: true,
   imports: [
     MatGridListModule,
     MatDialogModule,

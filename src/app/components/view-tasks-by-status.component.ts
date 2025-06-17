@@ -34,7 +34,6 @@ import { SpinnerComponent } from './spinner.component';
   min-width: 0;
 }
     `],
-  standalone: true,
   imports: [
     RouterModule,
     SpinnerComponent,

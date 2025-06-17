@@ -86,7 +86,6 @@ import { Line, LineType } from './types';
   margin-bottom: 2rem
 }
   `],
-  standalone: true,
   providers: [
     ShareUrlService,
     QueryParamsService,

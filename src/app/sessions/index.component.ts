@@ -42,7 +42,6 @@ import { SessionRaw } from './types';
 @Component({
   selector: 'app-sessions-index',
   templateUrl: './index.component.html',
-  standalone: true,
   providers: [
     ShareUrlService,
     QueryParamsService,

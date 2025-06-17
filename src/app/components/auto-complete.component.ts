@@ -6,7 +6,6 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-autocomplete',
-  standalone: true,
   templateUrl: 'auto-complete.component.html',
   imports: [
     MatFormFieldModule,

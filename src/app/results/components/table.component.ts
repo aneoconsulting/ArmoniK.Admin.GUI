@@ -10,8 +10,7 @@ import { ResultRaw } from '../types';
 
 @Component({
   selector: 'app-results-table',
-  standalone: true,
-  templateUrl: './table.component.html', 
+  templateUrl: './table.component.html',
   providers: [
     ResultsStatusesService,
     NotificationService,

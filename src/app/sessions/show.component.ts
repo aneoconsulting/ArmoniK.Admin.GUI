@@ -34,7 +34,6 @@ import { SessionRaw } from './types';
   selector: 'app-sessions-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,

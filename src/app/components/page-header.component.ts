@@ -3,7 +3,7 @@ import { ShareUrlComponent } from './share-url.component';
 
 @Component({
   selector: 'app-page-header',
-  templateUrl:'./page-header.component.html',
+  templateUrl: './page-header.component.html',
   styles: [`
 .page-header {
   display: flex;
@@ -26,7 +26,6 @@ import { ShareUrlComponent } from './share-url.component';
   align-items: center;
 }
   `],
-  standalone: true,
   providers: [],
   imports: [
     ShareUrlComponent

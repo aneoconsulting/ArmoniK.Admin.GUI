@@ -1,5 +1,6 @@
 import { HttpClient, provideHttpClient } from '@angular/common/http';
-import { APP_INITIALIZER, ApplicationConfig, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideExperimentalZonelessChangeDetection, inject, provideAppInitializer } from '@angular/core';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
@@ -96,12 +97,11 @@ export const appConfig: ApplicationConfig = {
       provide: Storage,
       useValue: localStorage
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeAppFactory,
-      deps: [UserGrpcService, UserService, VersionsGrpcService, VersionsService, HttpClient, EnvironmentService, StorageService],
-      multi: true
-    },
+    provideAppInitializer(() => {
+      const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService));
+      return initializerFn();
+    }),
+    provideNativeDateAdapter(),
     provideExperimentalZonelessChangeDetection(),
     provideRouter(routes),
     importProvidersFrom(BrowserAnimationsModule),

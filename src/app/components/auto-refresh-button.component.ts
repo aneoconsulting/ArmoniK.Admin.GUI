@@ -7,7 +7,7 @@ import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-auto-refresh-button',
-  templateUrl:'./auto-refresh-button.component.html',
+  templateUrl: './auto-refresh-button.component.html',
   styles: [`
     .auto-refresh-disabled {
       border: 0px;
@@ -15,7 +15,6 @@ import { IconsService } from '@services/icons.service';
       background-color: #D7D7D7;   
     }
   `],
-  standalone: true,
   imports: [
     AutoRefreshButtonComponent,
     MatDialogModule,

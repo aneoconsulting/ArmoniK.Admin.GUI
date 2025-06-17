@@ -24,7 +24,6 @@ import { PartitionRaw } from './types';
   selector: 'app-partitions-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,

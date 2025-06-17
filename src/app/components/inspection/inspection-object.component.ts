@@ -12,7 +12,6 @@ import { MessageComponent } from './message.component';
 @Component({
   selector: 'app-inspection-object',
   templateUrl: 'inspection-object.component.html',
-  standalone: true,
   imports: [
     MatExpansionModule,
     PrettyPipe,

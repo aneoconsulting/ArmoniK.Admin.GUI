@@ -37,7 +37,6 @@ import { ApplicationRaw } from './types';
 @Component({
   selector: 'app-applications-index',
   templateUrl: './index.component.html',
-  standalone: true,
   providers: [
     IconsService,
     ShareUrlService,

@@ -24,7 +24,6 @@ import { ResultRaw } from './types';
   selector: 'app-result-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     UtilsService,
     ShareUrlService,

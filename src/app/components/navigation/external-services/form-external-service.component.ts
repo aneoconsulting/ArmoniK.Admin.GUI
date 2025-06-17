@@ -14,7 +14,6 @@ import { IconsService } from '@services/icons.service';
   selector: 'app-form-external-service',
   templateUrl: './form-external-service.component.html',
   styleUrl: 'external-services.css',
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatIconModule,
@@ -24,7 +23,7 @@ import { IconsService } from '@services/icons.service';
     MatInputModule,
     IconPickerDialogComponent,
     MatTooltipModule,
-  ],
+  ]
 })
 export class FormExternalServiceComponent implements OnInit {
   private readonly iconsService = inject(IconsService);

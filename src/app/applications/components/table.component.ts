@@ -15,7 +15,6 @@ import { ApplicationRaw } from '../types';
 
 @Component({
   selector: 'app-application-table',
-  standalone: true,
   templateUrl: './table.component.html',
   providers: [
     TasksByStatusService,

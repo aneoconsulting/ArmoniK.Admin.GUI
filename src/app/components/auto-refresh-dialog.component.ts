@@ -8,7 +8,6 @@ import { AutoCompleteComponent } from './auto-complete.component';
   selector: 'app-auto-refresh-dialog',
   templateUrl: './auto-refresh-dialog.component.html',
   styles: [''],
-  standalone: true,
   imports: [
     MatDialogModule,
     MatButtonModule,

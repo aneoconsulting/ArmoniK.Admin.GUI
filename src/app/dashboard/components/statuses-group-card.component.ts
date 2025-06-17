@@ -40,7 +40,6 @@ ul li a {
   text-decoration: none;
 }
   `],
-  standalone: true,
   providers: [
     TasksStatusesService,
     FiltersService,

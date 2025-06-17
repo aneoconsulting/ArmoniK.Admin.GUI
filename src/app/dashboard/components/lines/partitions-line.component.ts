@@ -20,7 +20,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-dashboard-partitions-line',
   templateUrl: './partitions-line.component.html',
-  standalone: true,
   providers: [
     PartitionsIndexService,
     NotificationService,

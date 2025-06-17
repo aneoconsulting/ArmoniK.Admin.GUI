@@ -12,7 +12,6 @@ import { FormExternalServiceComponent } from './form-external-service.component'
   selector: 'app-manage-external-services',
   templateUrl: './manage-external-services-dialog.component.html',
   styleUrl: 'external-services.css',
-  standalone: true,
   providers: [],
   imports: [
     DragDropModule,
@@ -21,7 +20,7 @@ import { FormExternalServiceComponent } from './form-external-service.component'
     MatIconModule,
     MatTooltipModule,
     FormExternalServiceComponent,
-  ],
+  ]
 })
 export class ManageExternalServicesDialogComponent implements OnInit {
   readonly iconsService = inject(IconsService);

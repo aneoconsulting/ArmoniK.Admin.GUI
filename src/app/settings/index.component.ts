@@ -126,7 +126,6 @@ main {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
   `],
-  standalone: true,
   providers: [
     QueryParamsService,
     NotificationService,

@@ -10,7 +10,6 @@ import { PartitionRaw } from '../types';
 
 @Component({
   selector: 'app-partitions-table',
-  standalone: true,
   templateUrl: './table.component.html',
   providers: [
     TasksByStatusService,

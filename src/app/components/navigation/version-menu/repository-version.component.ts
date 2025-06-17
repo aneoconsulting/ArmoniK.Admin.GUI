@@ -5,7 +5,6 @@ import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-repository-version',
-  standalone: true,
   templateUrl: 'repository-version.component.html',
   imports: [
     MatMenuModule,

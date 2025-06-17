@@ -21,7 +21,6 @@ h2 {
   gap: 1rem;
 }
   `],
-  standalone: true,
   providers: [],
   imports: [
     MatIconModule

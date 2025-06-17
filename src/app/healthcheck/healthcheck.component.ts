@@ -16,7 +16,6 @@ import { Observable, Subject, catchError, of, startWith, switchMap } from 'rxjs'
 
 @Component({
   selector: 'app-healthcheck',
-  standalone: true,
   templateUrl: './healthcheck.component.html',
   styles: [`
   .health-color {

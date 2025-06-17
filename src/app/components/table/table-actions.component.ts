@@ -10,7 +10,6 @@ import { IconsService } from '@services/icons.service';
 
 @Component({
   selector: 'app-table-actions',
-  standalone: true,
   templateUrl: './table-actions.component.html',
   styles: [`
     p {

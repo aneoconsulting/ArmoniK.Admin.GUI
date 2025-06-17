@@ -9,7 +9,6 @@ import { IconsService } from '../services/icons.service';
   selector: 'app-status-chip',
   templateUrl: 'status-chip.component.html',
   styleUrl: 'status-chip.component.css',
-  standalone: true,
   imports: [
     MatChipsModule,
     MatIconModule,

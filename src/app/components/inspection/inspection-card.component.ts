@@ -9,7 +9,6 @@ import { InspectionComponent } from './inspection.component';
 @Component({
   selector: 'app-inspection-card',
   templateUrl: 'inspection-card.component.html',
-  standalone: true,
   imports: [
     MatCardModule,
     InspectionComponent,

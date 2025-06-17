@@ -15,7 +15,6 @@ import { Component } from '@angular/core';
   justify-content: space-between;
 }
   `],
-  standalone: true,
   providers: [],
   imports: []
 })

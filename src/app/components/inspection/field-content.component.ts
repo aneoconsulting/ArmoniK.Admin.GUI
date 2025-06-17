@@ -20,7 +20,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-field-content',
   templateUrl: 'field-content.component.html',
-  standalone: true,
   imports: [
     MatChipsModule,
     DatePipe,
