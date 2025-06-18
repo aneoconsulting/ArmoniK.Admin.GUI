@@ -50,7 +50,8 @@ export class FiltersDialogInputComponent {
 
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
     if (event.value) {
-      this.emit(`${event.value.getTime() / 1000}`);
+      const secondsOffset = event.value.getTimezoneOffset() * 60;
+      this.emit(`${(event.value.getTime() / 1000) - secondsOffset}`);
     } else {
       this.emit('');
     }
