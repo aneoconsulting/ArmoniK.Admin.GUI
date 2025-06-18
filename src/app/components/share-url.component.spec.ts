@@ -1,4 +1,4 @@
-import { TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlComponent } from './share-url.component';
 

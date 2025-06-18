@@ -1,6 +1,7 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
 import { NotificationService } from '@services/notification.service';
@@ -61,6 +62,10 @@ describe('TasksTableComponent', () => {
     cancelTask: jest.fn(),
   };
 
+  const mockRouter = {
+    navigate: jest.fn()
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -68,6 +73,7 @@ describe('TasksTableComponent', () => {
         TasksStatusesService,
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
+        { provide: Router, useValue: mockRouter },
         { provide: TasksDataService, useValue: mockTasksDataService }
       ]
     }).inject(TasksTableComponent);
