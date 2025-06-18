@@ -37,7 +37,7 @@ export class FiltersDialogInputComponent {
     this.filter = entry;
     if (entry.type === 'date' && entry.value) {
       const millisecondsOffset = (new Date()).getTimezoneOffset() * 60000;
-      this.date = new Date((entry.value as Date).getTime() + millisecondsOffset);
+      this.date = new Date(entry.value.getTime() + millisecondsOffset);
     }
   }
   @Input({ required: true }) statuses: string[];
