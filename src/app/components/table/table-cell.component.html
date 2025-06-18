@@ -39,6 +39,9 @@
       [aria-label]="checkboxLabel()"
     />
   }
+  @case ('byte-array') {
+    <app-byte-array-cell [data]="byteArray" [label]="column.name" />
+  }
   @default {
     {{ value | emptyCell }}
   }

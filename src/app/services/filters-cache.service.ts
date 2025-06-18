@@ -9,6 +9,17 @@ import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters
 export class FiltersCacheService {
   private readonly filtersMap = new Map<Scope, FiltersOr<FiltersEnums, FiltersOptionsEnums>>();
 
+  isDataCached: boolean = false;
+
+  /**
+   * Check if any data is currently stored in the cache.
+   * Null and undefined data are also counted as stored. 
+   * @returns 
+   */
+  private checkIfDataCached() {
+    this.isDataCached = [...this.filtersMap.values()].length !== 0;
+  }
+
   /**
    * Cache filters value for a specified table
    * @param scope Table to apply filters to
@@ -16,6 +27,7 @@ export class FiltersCacheService {
    */
   set<F extends FiltersEnums, FO extends FiltersOptionsEnums>(scope: Scope, filters: FiltersOr<F, FO>) {
     this.filtersMap.set(scope, filters);
+    this.checkIfDataCached();
   }
 
   /**
@@ -37,6 +49,7 @@ export class FiltersCacheService {
    */
   delete(scope: Scope): void {
     this.filtersMap.delete(scope);
+    this.checkIfDataCached();
   }
 
   /**
@@ -44,5 +57,6 @@ export class FiltersCacheService {
    */
   clear(): void {
     this.filtersMap.clear();
+    this.checkIfDataCached();
   }
 }

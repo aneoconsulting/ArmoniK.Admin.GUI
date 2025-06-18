@@ -60,8 +60,14 @@
       <app-page-section-header [icon]="getIcon('filter')">
         <span i18n> Filters Cache </span>
       </app-page-section-header>
+
+      <p i18n="Section description">
+        Some filters may be too long to be shared via URL. In that case, they are loaded in the <span style="font-style: italic;">filter cache</span> before any redirection to a table.
+        <br/>
+        The cached filters are automatically destroyed when used, but if you encounter some issues with it, try to clear the cached filters.
+      </p>
       
-      <button mat-flat-button color="primary" (click)="clearFilterCache()" i18n>Clear cached filters</button>
+      <button mat-flat-button color="primary" [disabled]="!filtersCacheService.isDataCached" (click)="clearFilterCache()" i18n>Clear cached filters</button>
     </app-page-section>
 
     <app-page-section class="storage">

@@ -160,7 +160,7 @@ export class IndexComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly storageService = inject(StorageService);
   private readonly httpClient = inject(HttpClient);
-  private readonly filtersCacheService = inject(FiltersCacheService);
+  readonly filtersCacheService = inject(FiltersCacheService);
 
   ngOnInit(): void {
     this.keys = this.sortKeys(this.storageService.restoreKeys());

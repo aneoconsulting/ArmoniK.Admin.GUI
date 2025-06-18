@@ -14,6 +14,7 @@ import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { DurationPipe } from '@pipes/duration.pipe';
 import { EmptyCellPipe } from '@pipes/empty-cell.pipe';
 import { Subject } from 'rxjs';
+import { ByteArrayComponent } from './cells/byte-array-cell.component';
 import { TableInspectMessageComponent } from './table-inspect-message.component';
 import { TableInspectObjectComponent } from './table-inspect-object.component';
 
@@ -32,6 +33,7 @@ import { TableInspectObjectComponent } from './table-inspect-object.component';
     MatCheckboxModule,
     TableInspectMessageComponent,
     StatusChipComponent,
+    ByteArrayComponent,
   ]
 })
 export class TableCellComponent<T extends DataRaw, S extends Status, O extends TaskOptions | null = null>{
@@ -108,6 +110,10 @@ export class TableCellComponent<T extends DataRaw, S extends Status, O extends T
 
   get countFilters() {
     return (this._element as unknown as SessionData | ApplicationData | PartitionData).filters;
+  }
+
+  get byteArray() {
+    return this._value as Uint8Array;
   }
 
   createLink() {

@@ -5,6 +5,7 @@ import { Field } from '@app/types/column.type';
 import { DataRaw, TaskOutput } from '@app/types/data';
 import { Status } from '@app/types/status';
 import { PrettyPipe } from '@pipes/pretty.pipe';
+import { ByteArrayComponent } from './byte-array.component';
 import { FieldContentComponent } from './field-content.component';
 import { MessageComponent } from './message.component';
 
@@ -16,7 +17,8 @@ import { MessageComponent } from './message.component';
     MatExpansionModule,
     PrettyPipe,
     FieldContentComponent,
-    MessageComponent
+    MessageComponent,
+    ByteArrayComponent
   ],
   styleUrl: '../../../inspections.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -63,6 +65,10 @@ export class InspectionObjectComponent<T extends DataRaw, S extends Status, O ex
 
   getObject(field: Field<T> | Field<O>): T {
     return (this.data as T | NonNullable<O>)[field.key as keyof (T | O)] as T;
+  }
+
+  getByteArray(field: Field<T> | Field<O>): Uint8Array {
+    return (this.data as T |NonNullable<O>)[field.key as keyof (T | O)] as Uint8Array;
   }
 
   private setFieldsFromData(data: T | NonNullable<O>) {
