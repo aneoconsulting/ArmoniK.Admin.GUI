@@ -4,7 +4,6 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-json',
   templateUrl: 'json.component.html',
-  standalone: true,
   imports: [
     JsonPipe
   ],

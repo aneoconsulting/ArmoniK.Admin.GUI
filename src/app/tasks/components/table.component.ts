@@ -14,7 +14,6 @@ import { TaskOptions, TaskSummary } from '../types';
 
 @Component({
   selector: 'app-tasks-table',
-  standalone: true,
   templateUrl: './table.component.html',
   providers: [
     Clipboard,

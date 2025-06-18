@@ -24,7 +24,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-dashboard-tasks-line',
   templateUrl: './tasks-line.component.html',
-  standalone: true,
   providers: [
     MatSnackBar,
     TasksIndexService,

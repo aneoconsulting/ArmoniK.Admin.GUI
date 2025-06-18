@@ -18,7 +18,6 @@ import { Component } from '@angular/core';
   margin-left: 1rem;
 }
   `],
-  standalone: true,
   providers: [],
   imports: []
 })

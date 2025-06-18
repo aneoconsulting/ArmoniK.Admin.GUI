@@ -9,14 +9,13 @@ import { InspectionObjectComponent } from './inspection-object.component';
 @Component({
   selector: 'app-inspection',
   templateUrl: 'inspection.component.html',
-  standalone: true,
   imports: [
     InspectionObjectComponent,
     MatExpansionModule,
     MatToolbarModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrl: '../../../inspections.css',
+  styleUrl: '../../../inspections.css'
 })
 export class InspectionComponent<T extends DataRaw, O extends TaskOptions | null = null> {
   private _data: T = {} as T;

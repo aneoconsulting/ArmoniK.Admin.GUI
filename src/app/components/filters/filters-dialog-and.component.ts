@@ -19,7 +19,6 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
   gap: 1rem;
 }
   `],
-  standalone: true,
   imports: [
     FiltersDialogFilterFieldComponent,
     MatButtonModule,
@@ -28,7 +27,7 @@ import { FiltersDialogFilterFieldComponent } from './filters-dialog-filter-field
   ],
   providers: [
     IconsService,
-  ],
+  ]
 })
 export class FiltersDialogAndComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) first: boolean;

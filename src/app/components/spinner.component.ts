@@ -8,9 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   `,
   styles: [`
   `],
-  standalone: true,
-  providers: [
-  ],
+  providers: [],
   imports: [
     MatProgressSpinnerModule
   ]

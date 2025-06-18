@@ -26,7 +26,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-dashboard-sessions-line',
   templateUrl: './sessions-line.component.html',
-  standalone: true,
   providers: [
     MatSnackBar,
     NotificationService,
@@ -52,7 +51,7 @@ import { NotificationService } from '@services/notification.service';
     SessionsTableComponent,
     MatIconModule,
     MatMenuModule,
-  ],
+  ]
 })
 export class SessionsLineComponent extends DashboardLineCustomColumnsComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly indexService = inject(SessionsIndexService);

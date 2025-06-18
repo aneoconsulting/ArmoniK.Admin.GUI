@@ -16,7 +16,6 @@ import { SessionRaw } from '../types';
 
 @Component({
   selector: 'app-sessions-table',
-  standalone: true,
   templateUrl: './table.component.html',
   providers: [
     TasksByStatusService,

@@ -30,8 +30,7 @@ app-show-card-content {
     DatePipe,
     EmptyCellPipe,
     PrettyPipe,
-  ],
-  standalone: true
+  ]
 })
 export class ShowCardContentComponent<T extends object> {
   @Input({ required: true }) set data(entry: T | T[] | null) {

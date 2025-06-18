@@ -16,7 +16,6 @@ export interface TableInspectMessageDialogData {
   selector: 'app-inspect-message-dialog',
   templateUrl: 'table-inspect-message-dialog.component.html',
   styleUrl: 'table-inspect-message-dialog.component.css',
-  standalone: true,
   imports: [
     MatCardModule,
     MatButtonModule,

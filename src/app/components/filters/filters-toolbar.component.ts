@@ -56,14 +56,13 @@ button {
   transform: scale(1.5);
 }
   `],
-  standalone: true,
   imports: [
     FiltersChipsComponent,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
     MatTooltipModule,
-  ],
+  ]
 })
 export class FiltersToolbarComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   private readonly iconsService = inject(IconsService);

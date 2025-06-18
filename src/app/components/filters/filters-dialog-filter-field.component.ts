@@ -27,7 +27,6 @@ span {
   text-align: end;
 }
   `],
-  standalone: true,
   imports: [
     MatFormFieldModule,
     MatSelectModule,
@@ -39,7 +38,7 @@ span {
   ],
   providers: [
     FiltersService,
-  ],
+  ]
 })
 export class FiltersDialogFilterFieldComponent<F extends FiltersEnums, O extends FiltersOptionsEnums | null = null> {
   @Input({ required: true }) first: boolean;
