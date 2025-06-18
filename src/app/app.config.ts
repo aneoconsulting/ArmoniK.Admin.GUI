@@ -1,6 +1,5 @@
 import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
-import { provideNativeDateAdapter } from '@angular/material/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { GrpcCoreModule } from '@ngx-grpc/core';
@@ -18,6 +17,7 @@ import { VersionsGrpcService } from '@services/versions-grpc.service';
 import { VersionsService } from '@services/versions.service';
 import { catchError, merge, of, tap } from 'rxjs';
 import { routes } from './app.routes';
+import { provideArmonikDateAdapter } from './initialisation/date-adapter';
 import { ExportedDefaultConfig } from './types/config';
 
 function initializeAppFactory(userGrpcService: UserGrpcService, userService: UserService, versionsGrpcService: VersionsGrpcService, versionsService: VersionsService, httpClient: HttpClient, environmentService: EnvironmentService, storageService: StorageService) {
@@ -101,7 +101,7 @@ export const appConfig: ApplicationConfig = {
       const initializerFn = (initializeAppFactory)(inject(UserGrpcService), inject(UserService), inject(VersionsGrpcService), inject(VersionsService), inject(HttpClient), inject(EnvironmentService), inject(StorageService));
       return initializerFn();
     }),
-    provideNativeDateAdapter(),
+    provideArmonikDateAdapter(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
     importProvidersFrom(BrowserAnimationsModule),
