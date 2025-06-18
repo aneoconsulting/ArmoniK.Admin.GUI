@@ -1,5 +1,5 @@
 import { HttpClient, provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig, importProvidersFrom, provideExperimentalZonelessChangeDetection, inject, provideAppInitializer } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
@@ -102,7 +102,7 @@ export const appConfig: ApplicationConfig = {
       return initializerFn();
     }),
     provideNativeDateAdapter(),
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     importProvidersFrom(BrowserAnimationsModule),
     provideHttpClient(),
