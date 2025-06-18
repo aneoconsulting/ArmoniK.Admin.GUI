@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-unresolved
-import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicker-input-base';
+import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
