@@ -1,4 +1,5 @@
-import { PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, PartitionRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import PartitionsDataService from '@app/partitions/services/partitions-data.service';
@@ -6,7 +7,8 @@ import { PartitionsIndexService } from '@app/partitions/services/partitions-inde
 import { PartitionRaw, PartitionRawColumnKey, PartitionRawFieldKey, PartitionRawListOptions } from '@app/partitions/types';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey } from '@app/types/data';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -65,6 +67,16 @@ describe('PartitionsLineComponent', () => {
     },
   };
 
+  const lineGroup: GroupConditions<PartitionRawEnumField> = {
+    name: 'Group 1',
+    conditions: [[{
+      field: PartitionRawEnumField.PARTITION_RAW_ENUM_FIELD_ID,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+      value: 'name'
+    }]],
+  };
+
   const line: TableLine<PartitionRaw> = {
     name: 'Tasks',
     type: 'Partitions',
@@ -73,6 +85,7 @@ describe('PartitionsLineComponent', () => {
     interval: 20,
     options: options,
     showFilters: false,
+    groups: lineGroup as unknown as GroupConditions<FiltersEnums, FiltersOptionsEnums>[],
   };
 
   const nameLine = {
@@ -81,7 +94,7 @@ describe('PartitionsLineComponent', () => {
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed() {
+        afterClosed(): unknown {
           return of(nameLine);
         }
       };
@@ -97,6 +110,10 @@ describe('PartitionsLineComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
+    groupsConditions: [],
+    groups: [],
   };
 
   const mockPartitionsIndexService = {
@@ -122,6 +139,7 @@ describe('PartitionsLineComponent', () => {
         { provide: PartitionsIndexService, useValue: mockPartitionsIndexService },
         DefaultConfigService,
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, usevalue: {} },
       ]
     }).inject(PartitionsLineComponent);
     component.line = line;
@@ -157,6 +175,11 @@ describe('PartitionsLineComponent', () => {
       expect(component.intervalValue).toEqual(10);
       expect(component.options).toEqual(defaultConfigService.defaultPartitions.options);
       expect(component.showFilters).toEqual(line.showFilters);
+    });
+
+    it('should init groups', () => {
+      expect(mockPartitionsDataService.groupsConditions).toBe(lineGroup);
+      expect(mockPartitionsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -381,6 +404,24 @@ describe('PartitionsLineComponent', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(component.line.showFilters).toEqual(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult = [{fake: 'return'}];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockPartitionsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(component.line.groups).toEqual(mockPartitionsDataService.groupsConditions);
     });
   });
 });

@@ -1,10 +1,15 @@
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ViewContainerRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, ResultData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { NotificationService } from '@services/notification.service';
+import { Observable, of } from 'rxjs';
 import { ResultsTableComponent } from './table.component';
 import ResultsDataService from '../services/results-data.service';
+import { ResultsFiltersService } from '../services/results-filters.service';
 import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRaw } from '../types';
 
@@ -57,6 +62,22 @@ describe('ResultsTableComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    refreshGroup: jest.fn(),
+    groupsConditions: [],
+    manageGroupDialogResult: jest.fn(),
+  };
+
+  const afterClosedMocked = jest.fn((): Observable<unknown> => of());
+  const mockMatDialog = {
+    open: jest.fn(() => {
+      return {
+        afterClosed: afterClosedMocked,
+      };
+    })
+  };
+
+  const mockResultsFilterService = {
+    saveGroups: jest.fn(),
   };
 
   beforeEach(() => {
@@ -66,7 +87,10 @@ describe('ResultsTableComponent', () => {
         ResultsStatusesService,
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
-        { provide: ResultsDataService, useValue: mockResultsDataService }
+        { provide: ResultsDataService, useValue: mockResultsDataService },
+        { provide: MatDialog, useValue: mockMatDialog },
+        { provide: ViewContainerRef, useValue: {} },
+        { provide: ResultsFiltersService, useValue: mockResultsFilterService },
       ]
     }).inject(ResultsTableComponent);
 
@@ -107,9 +131,16 @@ describe('ResultsTableComponent', () => {
     });
   });
 
-  it('should track a result by its id', () => {
-    const result = {raw: { resultId: 'result' }} as ResultData;
-    expect(component.trackBy(0, result)).toEqual(result.raw.resultId);
+  describe('track By', () => {
+    it('should track a result by its id', () => {
+      const result = {raw: { resultId: 'result' }} as ResultData;
+      expect(component.trackBy(0, result)).toEqual(result.raw.resultId);
+    });
+    
+    it('should track group by its name', () => {
+      const group = { name: signal('some-name') } as unknown as Group<ResultRaw>;
+      expect(component.trackBy(0, group)).toEqual(group.name());
+    });
   });
 
   it('should get data', () => {
@@ -134,5 +165,35 @@ describe('ResultsTableComponent', () => {
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+
+  describe('UpdateGroupPage', () => {
+    const groupName = 'group 1';
+    
+    beforeEach(() => {
+      component.updateGroupPage(groupName);
+    });
+    
+    it('should refresh the selected group', () => {
+      expect(mockResultsDataService.refreshGroup).toHaveBeenCalledWith(groupName);
+    });
+  });
+
+  describe('openGroupSettings', () => {
+    const groupName = 'Group 1';
+    const result = [{name: 'Renamed Group', conditions: []}];
+    
+    beforeEach(() => {
+      afterClosedMocked.mockReturnValueOnce(of(result));
+      component.openGroupSettings(groupName);
+    });
+    
+    it('should manage the group dialog result', () => {
+      expect(mockResultsDataService.manageGroupDialogResult).toHaveBeenCalledWith(result);
+    });
+
+    it('should update the groups in the local storage', () => {
+      expect(mockResultsFilterService.saveGroups).toHaveBeenCalledWith(mockResultsDataService.groupsConditions);
+    });
   });
 });

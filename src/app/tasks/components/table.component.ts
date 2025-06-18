@@ -5,10 +5,12 @@ import { Router} from '@angular/router';
 import { AbstractTableComponent } from '@app/types/components/table';
 import { Scope } from '@app/types/config';
 import { ArmonikData, TaskData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { Subject } from 'rxjs';
 import TasksDataService from '../services/tasks-data.service';
+import { TasksFiltersService } from '../services/tasks-filters.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
@@ -50,6 +52,7 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
   @Output() selectionChange = new EventEmitter<string[]>();
 
   readonly tableDataService = inject(TasksDataService);
+  readonly filtersService = inject(TasksFiltersService);
   readonly router = inject(Router);
   readonly clipboard = inject(Clipboard);
   readonly tasksStatusesService = inject(TasksStatusesService);
@@ -171,7 +174,11 @@ export class TasksTableComponent extends AbstractTableComponent<TaskSummary, Tas
     }
   }
 
-  trackBy(index: number, item: ArmonikData<TaskSummary, TaskOptions>) {
-    return item.raw.id;
+  trackBy(index: number, item: ArmonikData<TaskSummary, TaskOptions> | Group<TaskSummary, TaskOptions>) {
+    if ((item as ArmonikData<TaskSummary, TaskOptions>).raw !== undefined) {
+      return (item as ArmonikData<TaskSummary, TaskOptions>).raw.id;
+    } else {
+      return (item as Group<TaskSummary, TaskOptions>).name();
+    }
   }
 }

@@ -1,11 +1,13 @@
-import { ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { FilterStringOperator, ResultRawEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import ResultsDataService from '@app/results/services/results-data.service';
 import { ResultsIndexService } from '@app/results/services/results-index.service';
 import { ResultRaw, ResultRawColumnKey, ResultRawFieldKey, ResultRawListOptions } from '@app/results/types';
 import { TableColumn } from '@app/types/column.type';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { DefaultConfigService } from '@services/default-config.service';
 import { IconsService } from '@services/icons.service';
@@ -64,6 +66,16 @@ describe('ResultsLineComponent', () => {
     },
   };
 
+  const lineGroup: GroupConditions<ResultRawEnumField> = {
+    name: 'Group 1',
+    conditions: [[{
+      field: ResultRawEnumField.RESULT_RAW_ENUM_FIELD_NAME,
+      for: 'root',
+      operator: FilterStringOperator.FILTER_STRING_OPERATOR_CONTAINS,
+      value: 'name'
+    }]],
+  };
+
   const line: TableLine<ResultRaw> = {
     name: 'Tasks',
     type: 'Results',
@@ -72,6 +84,7 @@ describe('ResultsLineComponent', () => {
     interval: 20,
     options: options,
     showFilters: false,
+    groups: lineGroup as unknown as GroupConditions<FiltersEnums, FiltersOptionsEnums>[],
   };
 
   const nameLine = {
@@ -80,7 +93,7 @@ describe('ResultsLineComponent', () => {
   const mockMatDialog = {
     open: jest.fn(() => {
       return {
-        afterClosed() {
+        afterClosed(): unknown {
           return of(nameLine);
         }
       };
@@ -96,6 +109,10 @@ describe('ResultsLineComponent', () => {
     refresh$: {
       next: jest.fn()
     },
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
+    groupsConditions: [],
+    groups: [],
   };
 
   const mockResultsIndexService = {
@@ -120,7 +137,8 @@ describe('ResultsLineComponent', () => {
         { provide: ResultsDataService, useValue: mockResultsDataService },
         { provide: ResultsIndexService, useValue: mockResultsIndexService },
         DefaultConfigService,
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, useValue: {} },
       ]
     }).inject(ResultsLineComponent);
     component.line = line;
@@ -156,6 +174,11 @@ describe('ResultsLineComponent', () => {
       expect(component.intervalValue).toEqual(10);
       expect(component.options).toEqual(defaultConfigService.defaultResults.options);
       expect(component.showFilters).toEqual(line.showFilters);
+    });
+
+    it('should init groups', () => {
+      expect(mockResultsDataService.groupsConditions).toBe(lineGroup);
+      expect(mockResultsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -380,6 +403,24 @@ describe('ResultsLineComponent', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(component.line.showFilters).toEqual(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult = [{fake: 'return'}];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockResultsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(component.line.groups).toEqual(mockResultsDataService.groupsConditions);
     });
   });
 });

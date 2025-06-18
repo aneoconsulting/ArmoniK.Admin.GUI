@@ -20,7 +20,6 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   `],
   standalone: true,
   imports: [
-    ColumnsModifyDialogComponent,
     MatDialogModule,
     MatButtonModule,
     MatIconModule

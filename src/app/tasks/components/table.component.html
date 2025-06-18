@@ -1,3 +1,7 @@
-<app-table [trackBy]="trackBy" [columns]="columns" [dataComparator]="isDataRawEqual" [data]="data()" [total]="total()"
-  [options]="options" [lockColumns]="lockColumns" [actions]="actions" (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()"
-  (selectionChange)="onSelectionChange($event)" [statusesService]="tasksStatusesService" />
+<app-table
+  [trackBy]="trackBy" [columns]="columns" [dataComparator]="isDataRawEqual" [groups]="tableDataService.groups"
+  [data]="data()" [total]="total()" [options]="options" [lockColumns]="lockColumns"
+  [actions]="actions" (columnDrop)="onDrop($event)" (optionsChange)="onOptionsChange()"
+  (selectionChange)="onSelectionChange($event)" [statusesService]="tasksStatusesService"
+  (groupPageChange)="updateGroupPage($event)" (groupSettings)="openGroupSettings($event)"
+/>

@@ -13,6 +13,7 @@
       [displayedColumns]="displayedColumnsKeys"
       [availableColumns]="availableColumns"
       [lockColumns]="lockColumns"
+      [groupsLength]="tableDataService.groupsConditions.length"
       (refresh)="refresh()"
       (intervalValueChange)="onIntervalValueChange($event)"
       (displayedColumnsChange)="onColumnsChange($event)"
@@ -20,6 +21,7 @@
       (resetFilters)="onFiltersReset()"
       (lockColumnsChange)="onLockColumnsChange()"
       (addToDashboard)="onAddToDashboard()"
+      (groupSettings)="openGroupsSettings()"
       >
     </app-table-index-actions-toolbar>
   </mat-toolbar-row>

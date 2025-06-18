@@ -7,6 +7,7 @@ import { SessionRaw } from '@app/sessions/types';
 import { TaskOptions } from '@app/tasks/types';
 import { TableColumn } from '@app/types/column.type';
 import { SessionData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { TableComponent } from './table.component';
 
@@ -94,7 +95,7 @@ describe('TableComponent', () => {
   });
 
   it('should set columnsKeys', () => {
-    expect(component.columnsKeys).toEqual(columns.map((entry) => entry.key));
+    expect(component.columnsKeys).toEqual([...columns.map((entry) => entry.key), 'group']);
   });
 
   describe('sortChange', () => {
@@ -239,6 +240,30 @@ describe('TableComponent', () => {
   it('should track by index', () => {
     const index = 0;
     expect(component.trackBy(index, data[0])).toEqual(index);
+  });
+
+  describe('isData', () => {
+    it('should return true if the element is an ArmonikData', () => {
+      expect(component.isData({raw: {sessionId: ''}} as SessionData));
+    });
+
+    it('should return false if the element is a group', () => {
+      expect(component.isData({name: 'group'} as unknown as Group<SessionRaw, TaskOptions>));
+    });
+  });
+
+  it('should emit on group page update', () => {
+    const name = 'group';
+    const spy = jest.spyOn(component.groupPageChange, 'emit');
+    component.groupPageUpdate(name);
+    expect(spy).toHaveBeenCalledWith(name);
+  });
+
+  it('should emit on group settings open', () => {
+    const name = 'group';
+    const spy = jest.spyOn(component.groupSettings, 'emit');
+    component.onGroupSettingsEmit(name);
+    expect(spy).toHaveBeenCalledWith(name);
   });
 
   it('should unsubscribe on destroy', () => {

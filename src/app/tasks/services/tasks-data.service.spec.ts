@@ -1,10 +1,13 @@
-import { TaskSummaryEnumField, FilterStringOperator, ListTasksResponse, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { TaskSummaryEnumField, FilterStringOperator, ListTasksResponse, TaskOptionEnumField, FilterStatusOperator, TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
+import { ManageGroupsTableDialogResult } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { CacheService } from '@services/cache.service';
 import { FiltersService } from '@services/filters.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 import { of, throwError } from 'rxjs';
 import TasksDataService from './tasks-data.service';
@@ -41,7 +44,56 @@ describe('TasksDataService', () => {
     }
   };
 
-  const initialFilters: FiltersOr<TaskSummaryEnumField, TaskOptionEnumField> = [];
+  const initialFilters: FiltersOr<TaskSummaryEnumField, TaskOptionEnumField> = [
+    [
+      {
+        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+        for: 'root',
+        operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+        value: 'id'
+      },
+      {
+        field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
+        for: 'root',
+        operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+        value: TaskStatus.TASK_STATUS_COMPLETED,
+      }
+    ]
+  ];
+
+  const mockInvertFilterService = {
+    invert: jest.fn((e) => e),
+  };
+  
+  const groupConditions: GroupConditions<TaskSummaryEnumField, TaskOptionEnumField>[] = [
+    {
+      name: 'Group 1',
+      conditions: [
+        [
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 't'
+          },
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+            value: 'p',
+          },
+        ],
+        [
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 'test'
+          },
+        ],
+      ]
+    }
+  ];
 
   beforeEach(() => {
     service = TestBed.configureTestingModule({
@@ -51,10 +103,13 @@ describe('TasksDataService', () => {
         { provide: TasksGrpcService, useValue: mockTasksGrpcService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: CacheService, useValue: mockCacheService },
+        { provide: InvertFilterService, useValue: mockInvertFilterService },
       ]
     }).inject(TasksDataService);
     service.options = initialOptions;
     service.filters = initialFilters;
+    service.groupsConditions.push(...groupConditions);
+    service.initGroups();
   });
 
   it('should create', () => {
@@ -91,7 +146,7 @@ describe('TasksDataService', () => {
   describe('Fetching data', () => {
     it('should list the data', () => {
       service.refresh$.next();
-      expect(mockTasksGrpcService.list$).toHaveBeenCalledWith(service.options, service.filters);
+      expect(mockTasksGrpcService.list$).toHaveBeenCalledWith(service.prepareOptions(), service.prepareFilters());
     });
 
     it('should update the total', () => {
@@ -107,7 +162,7 @@ describe('TasksDataService', () => {
             id: 'task1'
           },
           resultsQueryParams: {
-            '1-root-3-0': 'task1'
+            '0-root-3-0': 'task1'
           }
         },
         {
@@ -115,7 +170,7 @@ describe('TasksDataService', () => {
             id: 'task2'
           },
           resultsQueryParams: {
-            '1-root-3-0': 'task2'
+            '0-root-3-0': 'task2'
           }
         },
         {
@@ -123,7 +178,7 @@ describe('TasksDataService', () => {
             id: 'task3'
           },
           resultsQueryParams: {
-            '1-root-3-0': 'task3'
+            '0-root-3-0': 'task3'
           }
         }
       ]);
@@ -295,5 +350,177 @@ describe('TasksDataService', () => {
     const task = '1';
     service.cancelTask(task);
     expect(mockTasksGrpcService.cancel$).toHaveBeenCalledWith([task]);
+  });
+
+  describe('PrepareOptions', () => {
+    it('should clone the options', () => {
+      expect(service.prepareOptions()).toEqual(initialOptions);
+    });
+  });
+    
+  describe('PrepareFilters', () => {
+    it('should merge filters and group conditions', () => {
+      (expect(service.prepareFilters())).toEqual([
+        [
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 't'
+          },
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_ENDS_WITH,
+            value: 'p',
+          },
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: 'id'
+          },
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
+            for: 'root',
+            operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+            value: TaskStatus.TASK_STATUS_COMPLETED,
+          }
+        ],
+        [
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_STARTS_WITH,
+            value: 'test'
+          },
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID,
+            for: 'root',
+            operator: FilterStringOperator.FILTER_STRING_OPERATOR_EQUAL,
+            value: 'id'
+          },
+          {
+            field: TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_STATUS,
+            for: 'root',
+            operator: FilterStatusOperator.FILTER_STATUS_OPERATOR_EQUAL,
+            value: TaskStatus.TASK_STATUS_COMPLETED,
+          }
+        ],
+      ]);
+    });
+    
+    it('should return group conditions if there is no filters', () => {
+      service.filters = [];
+      expect(service.prepareFilters()).toEqual(groupConditions[0].conditions);
+    });
+  });
+    
+  describe('groups fetching data', () => {
+    describe('defined conditions', () => {
+      it('should list data if there is a group condition', () => {
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(mockTasksGrpcService.list$).toHaveBeenCalledWith(
+            {
+              pageSize: 100,
+              pageIndex: group.page,
+              sort: initialOptions.sort
+            },
+            groupConditions[0].conditions
+          );
+        });
+        group.refresh$.next();
+      });
+      
+      it('should update the group total', () => {
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(group.total).toEqual(tasks.total);
+        });
+        group.refresh$.next();
+      });
+    });
+    
+    describe('empty conditions', () => {
+      it('should set emptyCondition to true', () => {
+        service.groupsConditions[0].conditions = [];
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(group.emptyCondition).toBeTruthy();
+        });
+        group.refresh$.next();
+      });
+    
+      it('should set total to 0', () => {
+        const group = service.groups[0];
+        group.data.subscribe(() => {
+          expect(group.total).toEqual(0);
+        });
+        group.refresh$.next();
+      });
+    });
+  });
+    
+  describe('manageGroupDialogResult', () => {
+    const toDeleteCondition: GroupConditions<TaskSummaryEnumField, TaskOptionEnumField> = {
+      name: 'ToBeDeleted',
+      conditions: []
+    };
+    
+    const dialogResult: ManageGroupsTableDialogResult<TaskSummaryEnumField, TaskOptionEnumField> = {
+      editedGroups: {
+        'Group 1': {
+          name: 'Renamed Group',
+          conditions: [],
+        },
+      },
+      addedGroups: [
+        {
+          name: 'New Group',
+          conditions: [],
+        },
+      ],
+      deletedGroups: [
+        'ToBeDeleted',
+      ],
+    };
+    
+    beforeEach(() => {
+      service['removeGroup']('New Group');
+      service['addGroup'](toDeleteCondition);
+      service.manageGroupDialogResult(dialogResult);
+    });
+    
+    it('should edit the correct group condition', () => {
+      expect(service.groupsConditions[0]).toEqual(dialogResult.editedGroups['Group 1']);
+    });
+    
+    it('should edit the correct group', () => {
+      expect(service.groups[0].name()).toEqual(dialogResult.editedGroups['Group 1'].name);
+    });
+    
+    it('should add a group condition', () => {
+      expect(service.groupsConditions[1]).toEqual(dialogResult.addedGroups[0]);
+    });
+    
+    it('should add a group', () => {
+      expect(service.groups[1].name()).toEqual(dialogResult.addedGroups[0].name);
+    });
+    
+    it('should remove a group condition', () => {
+      expect(service.groupsConditions.findIndex((group) => group.name === 'ToBeDeleted')).toEqual(-1);
+    });
+    
+    it('should remove a group', () => {
+      expect(service.groups.findIndex((group) => group.name() === 'ToBeDeleted')).toEqual(-1);
+    });
+  });
+    
+  it('should refresh the correct group', () => {
+    const group = service.groups[0];
+    const spy = jest.spyOn(group.refresh$, 'next');
+    service.refreshGroup(group.name());
+    expect(spy).toHaveBeenCalled();
   });
 });

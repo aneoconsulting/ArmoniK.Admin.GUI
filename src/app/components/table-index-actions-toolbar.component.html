@@ -6,12 +6,14 @@
 [displayedColumns]="displayedColumns"
 [availableColumns]="availableColumns"
 [lockColumns]="lockColumns"
+[groupsLength]="groupsLength"
 (refresh)="onRefresh()"
 (intervalValueChange)="onIntervalValueChange($event)"
 (displayedColumnsChange)="onColumnsChange($event)"
 (resetColumns)="onColumnsReset()"
 (resetFilters)="onFiltersReset()"
 (lockColumnsChange)="onLockColumnsChange()"
+(groupSettings)="openGroupsSettings()"
 >
 <ng-content extra-buttons-right select="[extra-buttons-right]"></ng-content>
 <ng-container extra-menu-items>

@@ -4,7 +4,8 @@ import { TaskOptions } from '@app/tasks/types';
 import { CustomScope, Scope } from '@app/types/config';
 import { DataRaw, FieldKey } from '@app/types/data';
 import { FilterDefinition } from '@app/types/filter-definition';
-import { FiltersOr } from '@app/types/filters';
+import { FiltersEnums, FiltersOptionsEnums, FiltersOr } from '@app/types/filters';
+import { GroupConditions } from '@app/types/groups';
 import { ListOptions } from '@app/types/options';
 import { TableStorageService } from './table-storage.service';
 import { TableURLService } from './table-url.service';
@@ -84,15 +85,17 @@ export class TableService {
    * Restore filters from the URL and then from the storage
    */
   restoreFilters<T extends number, U extends number | null>(key: `${Scope}-filters`, filtersDefinitions: FilterDefinition<T, U>[]): FiltersOr<T, U> | null {
-
     const queryParams = this.tableURLService.getQueryParamsFilters<T, U>(filtersDefinitions);
 
-    if (queryParams.length) {
+    if (queryParams.length !== 0) {
       return queryParams;
     }
 
+    console.log('getting storage', key);
 
     const storageData = this.tableStorageService.restore<FiltersOr<T, U>>(key) as FiltersOr<T, U> | null;
+
+    console.log(storageData);
 
     return storageData;
   }
@@ -120,6 +123,27 @@ export class TableService {
    */
   restoreShowFilters(key: `${Scope}-show-filters`): boolean {
     return this.tableStorageService.restore(key) as boolean;
+  }
+
+  /**
+   * Save groups for a given table.
+   */
+  saveGroups<F extends FiltersEnums, O extends FiltersOptionsEnums | null>(key: `${Scope}-groups`, groups: GroupConditions<F, O>[]) {
+    this.tableStorageService.save(key, groups);
+  }
+
+  /**
+   * Retrieve groups for a given table.
+   */
+  restoreGroups<F extends FiltersEnums, O extends FiltersOptionsEnums | null>(key: `${Scope}-groups`): GroupConditions<F, O>[] {
+    return (this.tableStorageService.restore(key) ?? []) as GroupConditions<F, O>[];
+  }
+
+  /**
+   * Reset groups for a given table.
+   */
+  resetGroups(key: `${Scope}-groups`) {
+    return this.tableStorageService.remove(key);
   }
 
   /**

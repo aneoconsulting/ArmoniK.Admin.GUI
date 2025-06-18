@@ -1,11 +1,16 @@
 import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { ViewContainerRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { NotificationService } from '@services/notification.service';
+import { Observable, of } from 'rxjs';
 import { TasksTableComponent } from './table.component';
 import TasksDataService from '../services/tasks-data.service';
+import { TasksFiltersService } from '../services/tasks-filters.service';
 import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
@@ -59,6 +64,22 @@ describe('TasksTableComponent', () => {
       next: jest.fn()
     },
     cancelTask: jest.fn(),
+    refreshGroup: jest.fn(),
+    groupsConditions: [],
+    manageGroupDialogResult: jest.fn(),
+  };
+
+  const afterClosedMocked = jest.fn((): Observable<unknown> => of());
+  const mockMatDialog = {
+    open: jest.fn(() => {
+      return {
+        afterClosed: afterClosedMocked,
+      };
+    })
+  };
+
+  const mockTasksFiltersService = {
+    saveGroups: jest.fn(),
   };
 
   beforeEach(() => {
@@ -68,7 +89,10 @@ describe('TasksTableComponent', () => {
         TasksStatusesService,
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
-        { provide: TasksDataService, useValue: mockTasksDataService }
+        { provide: TasksDataService, useValue: mockTasksDataService },
+        { provide: MatDialog, useValue: mockMatDialog },
+        { provide: ViewContainerRef, useValue: {} },
+        { provide: TasksFiltersService, useValue: mockTasksFiltersService },
       ]
     }).inject(TasksTableComponent);
 
@@ -268,9 +292,16 @@ describe('TasksTableComponent', () => {
     });
   });
 
-  it('should track a task by its id', () => {
-    const task = { raw: { id: 'task' } } as TaskData;
-    expect(component.trackBy(0, task)).toEqual(task.raw.id);
+  describe('track By', () => {
+    it('should track a task by its id', () => {
+      const task = { raw: { id: 'task' } } as TaskData;
+      expect(component.trackBy(0, task)).toEqual(task.raw.id);
+    });
+    
+    it('should track group by its name', () => {
+      const group = { name: signal('some-name') } as unknown as Group<TaskSummary, TaskOptions>;
+      expect(component.trackBy(0, group)).toEqual(group.name());
+    });
   });
 
   it('should get data', () => {
@@ -295,5 +326,35 @@ describe('TasksTableComponent', () => {
 
   it('should get displayedColumns', () => {
     expect(component.columns).toEqual(displayedColumns);
+  });
+  
+  describe('UpdateGroupPage', () => {
+    const groupName = 'group 1';
+    
+    beforeEach(() => {
+      component.updateGroupPage(groupName);
+    });
+    
+    it('should refresh the selected group', () => {
+      expect(mockTasksDataService.refreshGroup).toHaveBeenCalledWith(groupName);
+    });
+  });
+
+  describe('openGroupSettings', () => {
+    const groupName = 'Group 1';
+    const result = [{name: 'Renamed Group', conditions: []}];
+    
+    beforeEach(() => {
+      afterClosedMocked.mockReturnValueOnce(of(result));
+      component.openGroupSettings(groupName);
+    });
+    
+    it('should manage the group dialog result', () => {
+      expect(mockTasksDataService.manageGroupDialogResult).toHaveBeenCalledWith(result);
+    });
+
+    it('should update the groups in the local storage', () => {
+      expect(mockTasksFiltersService.saveGroups).toHaveBeenCalledWith(mockTasksDataService.groupsConditions);
+    });
   });
 });

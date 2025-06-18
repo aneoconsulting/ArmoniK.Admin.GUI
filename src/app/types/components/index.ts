@@ -1,10 +1,11 @@
-import { inject, signal } from '@angular/core';
+import { ViewContainerRef, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DashboardIndexService } from '@app/dashboard/services/dashboard-index.service';
 import { TableLine } from '@app/dashboard/types';
 import { TaskOptions } from '@app/tasks/types';
 import { ManageCustomColumnDialogComponent } from '@components/manage-custom-dialog.component';
+import { ManageGroupsTableDialogInput, ManageGroupsTableDialogResult, ManageTableGroupsDialogComponent } from '@components/table/group/manage-groups-dialog/manage-groups-dialog.component';
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -24,6 +25,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
   readonly dialog = inject(MatDialog);
   readonly dashboardIndexService = inject(DashboardIndexService);
   readonly router = inject(Router);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   abstract readonly indexService: IndexServiceInterface<T, O>;
   abstract readonly filtersService: DataFilterService<F, FO>;
@@ -64,6 +66,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
     this.updateDisplayedColumns();
     this.initFilters();
     this.initOptions();
+    this.initGroups();
     this.intervalValue = this.indexService.restoreIntervalValue();
     this.sharableURL = this.shareUrlService.generateSharableURL(this.options, this.filters);
   }
@@ -84,6 +87,11 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
 
   private initOptions() {
     this.tableDataService.options = this.indexService.restoreOptions();
+  }
+
+  private initGroups() {
+    this.tableDataService.groupsConditions = this.filtersService.restoreGroups();
+    this.tableDataService.initGroups();
   }
 
   mergeSubscriptions() {
@@ -183,6 +191,22 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
     this.router.navigate(['/dashboard']);
   }
 
+  openGroupsSettings() {
+    const dialogRef = this.dialog.open<ManageTableGroupsDialogComponent<F, FO>, ManageGroupsTableDialogInput<F, FO>, ManageGroupsTableDialogResult<F, FO>>(ManageTableGroupsDialogComponent, {
+      data: {
+        groups: this.tableDataService.groupsConditions,
+      },
+      viewContainerRef: this.viewContainerRef
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.tableDataService.manageGroupDialogResult(result);
+        this.filtersService.saveGroups(this.tableDataService.groupsConditions);
+      }
+    });
+  }
+
   protected createDashboardLine(): TableLine<T, O> {
     return {
       name: this.tableType,
@@ -190,6 +214,7 @@ export abstract class TableHandler<T extends DataRaw, F extends FiltersEnums, O 
       interval: 10,
       filters: this.filters,
       options: this.options,
+      groups: this.tableDataService.groupsConditions,
       displayedColumns: this.displayedColumnsKeys,
       lockColumns: this.lockColumns,
       showFilters: this.showFilters

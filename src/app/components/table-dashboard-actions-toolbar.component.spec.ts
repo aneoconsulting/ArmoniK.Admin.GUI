@@ -93,4 +93,10 @@ describe('TableDashboardActionsToolbarComponent', () => {
     component.onDeleteLine();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('should emit on "Open groups settings"', () => {
+    const spy = jest.spyOn(component.groupSettings, 'emit');
+    component.openGroupsSettings();
+    expect(spy).toHaveBeenCalled();
+  });
 });

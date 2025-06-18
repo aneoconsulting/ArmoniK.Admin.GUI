@@ -18,6 +18,7 @@ import { TableIndexActionsToolbarComponent } from '@components/table-index-actio
 import { AutoRefreshService } from '@services/auto-refresh.service';
 import { FiltersService } from '@services/filters.service';
 import { GrpcSortFieldService } from '@services/grpc-sort-field.service';
+import { InvertFilterService } from '@services/invert-filter.service';
 import { NotificationService } from '@services/notification.service';
 import { QueryParamsService } from '@services/query-params.service';
 import { ShareUrlService } from '@services/share-url.service';
@@ -62,6 +63,7 @@ import { PartitionRaw } from './types';
     PartitionsDataService,
     GrpcSortFieldService,
     PartitionsGrpcService,
+    InvertFilterService,
   ],
   imports: [
     PageHeaderComponent,

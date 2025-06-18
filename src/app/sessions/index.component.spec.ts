@@ -1,4 +1,5 @@
 import { FilterStringOperator, SessionRawEnumField, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ViewContainerRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -38,6 +39,10 @@ describe('Sessions Index Component', () => {
     onPurge: jest.fn(),
     onClose: jest.fn(),
     onDelete: jest.fn(),
+    groups: [],
+    groupsConditions: [],
+    initGroups: jest.fn(),
+    manageGroupDialogResult: jest.fn(),
   };
 
   const newCustomColumns: CustomColumn[] = ['options.options.FastCompute', 'options.options.NewCustom'];
@@ -150,6 +155,9 @@ describe('Sessions Index Component', () => {
     resetFilters: jest.fn(() => []),
     saveShowFilters: jest.fn(),
     restoreShowFilters: jest.fn(() => defaultShowFilters),
+    restoreGroups: jest.fn(() => []),
+    saveGroups: jest.fn(),
+    resetGroups: jest.fn()
   };
   
   const mockShareUrlService = {
@@ -176,6 +184,7 @@ describe('Sessions Index Component', () => {
         { provide: SessionsFiltersService, useValue: mockSessionFiltersService },
         { provide: ShareUrlService, useValue: mockShareUrlService },
         { provide: NotificationService, useValue: mockNotificationService },
+        { provide: ViewContainerRef, useValue: {} },
       ]
     }).inject(IndexComponent);
     component.ngOnInit();
@@ -242,6 +251,11 @@ describe('Sessions Index Component', () => {
 
     it('should merge subscriptions', () => {
       expect(component.subscriptions).toBeDefined();
+    });
+
+    it('should init groups on init', () => {
+      expect(mockSessionsDataService.groupsConditions).toEqual(mockSessionFiltersService.restoreGroups());
+      expect(mockSessionsDataService.initGroups).toHaveBeenCalled();
     });
   });
 
@@ -483,6 +497,7 @@ describe('Sessions Index Component', () => {
         customColumns: defaultCustomColumns,
         options: defaultOptions,
         filters: [],
+        groups: mockSessionsDataService.groupsConditions,
       });
     });
   });
@@ -525,6 +540,24 @@ describe('Sessions Index Component', () => {
       const newShowFilters = true;
       component.onShowFiltersChange(newShowFilters);
       expect(mockSessionFiltersService.saveShowFilters).toHaveBeenCalledWith(newShowFilters);
+    });
+  });
+
+  describe('openGroupsSettings', () => {
+    const dialogResult: unknown = [];
+    beforeEach(() => {
+      mockMatDialog.open.mockReturnValueOnce({
+        afterClosed: () => of(dialogResult)
+      });
+      component.openGroupsSettings();
+    });
+
+    it('should manage the group dialogResult', () => {
+      expect(mockSessionsDataService.manageGroupDialogResult).toHaveBeenCalledWith(dialogResult);
+    });
+
+    it('should save the groups', () => {
+      expect(mockSessionFiltersService.saveGroups).toHaveBeenCalledWith(mockSessionsDataService.groupsConditions);
     });
   });
 });

@@ -1,0 +1,51 @@
+<section class="detailed-row">
+  <article class="general-data">
+    <div class="group-info">
+      <mat-icon [fontIcon]="getIcon('table-group')" />
+      <p>{{ group.name() }}</p>
+    </div>
+    <p>
+      <span i18n>Total: </span>
+      <span>{{ group.total }}</span>
+    </p>
+  </article>
+  @if (statusesGroups) {
+    <app-group-tasks-by-status [groupData]="group.data|async" [statusesGroups]="statusesGroups" />
+  }
+  <article class="general-actions">
+    @if (group.emptyCondition) {
+    <mat-chip disableRipple>
+      <mat-icon matChipAvatar [fontIcon]="getIcon('error')" />
+      <p i18n>No conditions</p>
+    </mat-chip>
+    }
+    <button mat-icon-button (mouseenter)="settingsRotate = true" (mouseleave)="settingsRotate = false" (click)="groupSettingsEmit()">
+      <mat-icon [@rotateFull]="settingsRotate" [fontIcon]="getIcon('settings')" />
+    </button>
+    <button mat-icon-button (click)="switchView()">
+      <mat-icon [@rotateFull]="group.opened" [fontIcon]="getIcon('arrow-down')" />
+    </button>
+  </article>
+</section>
+<section [@expand]="group.opened">
+  <mat-card class="table-container">
+    <div class="table-actions">
+      <mat-paginator [length]="group.total" [pageIndex]="group.page" (page)="pageChange($event)" pageSize="100" aria-label="Select page" i18n-aria-label />
+    </div>
+    <table mat-table [dataSource]="group.data" [trackBy]="trackBy">
+      @for (column of displayedColumns; track $index) {
+        <ng-container [matColumnDef]="column.key.toString()">
+          <th *matHeaderCellDef></th>
+          <td *matCellDef="let element" mat-cell>
+            @if (column.type !== 'actions') {
+              <app-table-cell [column]="column" [element]="element" [statusesService]="statusesService" [statusesGroups]="statusesGroups" />
+            } @else {
+              <app-table-actions [actions]="actions" [element]="element" />
+            }
+          </td>
+        </ng-container>
+      }
+      <tr mat-row *matRowDef="let row; columns: columnsKeys;"></tr>
+    </table>
+  </mat-card>
+</section>

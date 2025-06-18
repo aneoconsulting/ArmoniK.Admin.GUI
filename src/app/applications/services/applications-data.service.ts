@@ -1,5 +1,5 @@
 import { ApplicationRawEnumField, FilterStringOperator, ListApplicationsResponse, TaskOptionEnumField } from '@aneoconsultingfr/armonik.api.angular';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { TaskSummaryFilters } from '@app/tasks/types';
 import { Scope } from '@app/types/config';
 import { ApplicationData } from '@app/types/data';
@@ -9,10 +9,14 @@ import { ApplicationRaw } from '../types';
 import { ApplicationsGrpcService } from './applications-grpc.service';
 
 @Injectable()
-export default class ApplicationsDataService extends AbstractTableDataService<ApplicationRaw, ApplicationRawEnumField> {
+export default class ApplicationsDataService extends AbstractTableDataService<ApplicationRaw, ApplicationRawEnumField> implements OnDestroy {
   readonly grpcService = inject(ApplicationsGrpcService);
 
   scope: Scope = 'applications';
+
+  ngOnDestroy(): void {
+    this.onDestroy();
+  }
 
   computeGrpcData(entries: ListApplicationsResponse): ApplicationRaw[] | undefined {
     return entries.applications;

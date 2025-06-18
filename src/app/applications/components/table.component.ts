@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData } from '@app/types/data';
+import { Group } from '@app/types/groups';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { FiltersService } from '@services/filters.service';
@@ -11,6 +12,7 @@ import { IconsService } from '@services/icons.service';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
 import { Subject } from 'rxjs';
 import ApplicationsDataService from '../services/applications-data.service';
+import { ApplicationsFiltersService } from '../services/applications-filters.service';
 import { ApplicationRaw } from '../types';
 
 @Component({
@@ -31,6 +33,7 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
   table: TableTasksByStatus = 'applications';
   
   readonly tableDataService = inject(ApplicationsDataService);
+  readonly filtersService = inject(ApplicationsFiltersService);
   readonly iconsService = inject(IconsService);
   readonly router = inject(Router);
 
@@ -65,7 +68,11 @@ export class ApplicationsTableComponent extends AbstractTaskByStatusTableCompone
     };
   }
 
-  trackBy(index: number, item: ArmonikData<ApplicationRaw>) {
-    return `${item.raw.name}-${item.raw.version}`;
+  trackBy(index: number, item: ArmonikData<ApplicationRaw> | Group<ApplicationRaw>) {
+    if ((item as ArmonikData<ApplicationRaw>).raw !== undefined) {
+      return `${(item as ArmonikData<ApplicationRaw>).raw.name}-${(item as ArmonikData<ApplicationRaw>).raw.version}`;
+    } else {
+      return (item as Group<ApplicationRaw>).name();
+    }
   }
 }

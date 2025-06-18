@@ -83,6 +83,8 @@ export class IconsService {
     'processed': 'offline_pin',
     'retry': 'repeat_on',
     'pending': 'pending',
+    'table-group': 'diversity_2',
+    'save': 'save',
   };
 
   getIcon(name: string | null | undefined): string {
