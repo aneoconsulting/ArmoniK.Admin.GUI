@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, tick } from '@angular/core/testing';
 import { IconsService } from '@services/icons.service';
 import { ShareUrlComponent } from './share-url.component';
 
@@ -34,9 +34,10 @@ describe('ShareUrlComponent', () => {
     expect(component.copied).toBeTruthy();
   });
 
-  it('Should not be copied one second after', fakeAsync(() => {
+  it('Should not be copied one second after', () => {
+    jest.useFakeTimers();
     component.onCopied();
-    tick(1250);
+    jest.runAllTimers();
     expect(component.copied).toBeFalsy();
-  }));
+  });
 });
