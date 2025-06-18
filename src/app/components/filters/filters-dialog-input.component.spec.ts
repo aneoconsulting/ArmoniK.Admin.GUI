@@ -1,17 +1,41 @@
+ 
+import { FilterInput, FilterInputDate } from '@app/types/filters';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicker-input-base';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
 
 describe('FiltersDialogInputComponent', () => {
   const component = new FiltersDialogInputComponent();
-  component.input = {
+  const input: FilterInput = {
     type: 'string',
     value: 'someValue'
   };
   const valueChangeSpy = jest.spyOn(component.valueChange, 'emit');
+  const dateTimeOffsetSpy = jest.spyOn(Date.prototype, 'getTimezoneOffset');
+
+  beforeEach(() => {
+    component.input = input;
+    dateTimeOffsetSpy.mockReturnValue(0);
+  });
 
   it('should run', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('On initialisation', () => {
+    it('should set the filter object', () => {
+      expect(component.filter).toBe(input);
+    });
+
+    it('should set the date if the provided input is of type date', () => {
+      const dateInput: FilterInputDate = {
+        type: 'date',
+        value: new Date(10),
+      };
+      component.input = dateInput;
+
+      expect(component.date).toEqual(dateInput.value);
+    });
   });
 
   it('should emit on string change', () => {
@@ -27,7 +51,7 @@ describe('FiltersDialogInputComponent', () => {
   });
 
   describe('on date change', () => {
-    it('should emit the value', () => {
+    it('should emit the value (with timeZone offset)', () => {
       const milliseconds = 19043234000;
       const event = {
         value: new Date(milliseconds) // Date takes milliseconds, not seconds.
@@ -78,15 +102,15 @@ describe('FiltersDialogInputComponent', () => {
       for (let index = 0; index < 3; index++) {
         component.onDurationChange(inputEvent, index);
       }
-      component.input.value = 94350;
+      component.filter.value = 94350;
       component.onDurationChange(inputEvent, 0);
-      expect(valueChangeSpy).toHaveBeenLastCalledWith(`${component.input.value}`);
+      expect(valueChangeSpy).toHaveBeenLastCalledWith(`${component.filter.value}`);
     });
   });
 
   describe('getDurationInputValue', () => {
     beforeEach(() => {
-      component.input.value = 94350;
+      component.filter.value = 94350;
     });
     it('should get the hours from a duration in seconds', () => {
       expect(component.getDurationInputValue('hours')).toEqual(26);
