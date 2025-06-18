@@ -91,11 +91,11 @@ export class FiltersDialogInputComponent {
   getDurationInputValue(searchItem: string): number | undefined {
     switch (searchItem) {
     case 'hours':
-      return !isNaN(Number(this.input.value)) ? Math.floor(Number(this.input.value)/3600) : undefined;
+      return !isNaN(Number(this.filter.value)) ? Math.floor(Number(this.filter.value)/3600) : undefined;
     case 'minutes':
-      return !isNaN(Number(this.input.value)) ? Math.floor((Number(this.input.value)%3600)/60) : undefined;
+      return !isNaN(Number(this.filter.value)) ? Math.floor((Number(this.filter.value)%3600)/60) : undefined;
     case 'seconds':
-      return !isNaN(Number(this.input.value)) ? Math.floor(((Number(this.input.value))%3600)%60) : undefined;
+      return !isNaN(Number(this.filter.value)) ? Math.floor(((Number(this.filter.value))%3600)%60) : undefined;
     default:
       return undefined;
     }
