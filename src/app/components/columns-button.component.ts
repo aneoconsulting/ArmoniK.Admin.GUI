@@ -19,7 +19,6 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   styles: [`
   `],
   imports: [
-    ColumnsModifyDialogComponent,
     MatDialogModule,
     MatButtonModule,
     MatIconModule

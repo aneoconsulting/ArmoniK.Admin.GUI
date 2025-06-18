@@ -16,7 +16,6 @@ import { IconsService } from '@services/icons.service';
     }
   `],
   imports: [
-    AutoRefreshButtonComponent,
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
