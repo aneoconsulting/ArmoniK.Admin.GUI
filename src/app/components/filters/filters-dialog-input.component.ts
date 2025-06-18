@@ -33,12 +33,21 @@ import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicke
   ]
 })
 export class FiltersDialogInputComponent {
-  @Input({ required: true }) input: FilterInput;
+  @Input({ required: true }) set input(entry: FilterInput) {
+    this.filter = entry;
+    if (entry.type === 'date' && entry.value) {
+      const millisecondsOffset = (new Date()).getTimezoneOffset() * 60000;
+      this.date = new Date((entry.value as Date).getTime() + millisecondsOffset);
+    }
+  }
   @Input({ required: true }) statuses: string[];
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   booleans = ['true', 'false'];
   duration: {[key: number]: string} = {};
+
+  filter: FilterInput;
+  date: Date | null = null;
 
   private emit(value: string) {
     this.valueChange.emit(value);
@@ -51,7 +60,8 @@ export class FiltersDialogInputComponent {
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
     if (event.value) {
       const secondsOffset = event.value.getTimezoneOffset() * 60;
-      this.emit(`${(event.value.getTime() / 1000) - secondsOffset}`);
+      const time = (event.value.getTime() / 1000) - secondsOffset;
+      this.emit(`${time}`);
     } else {
       this.emit('');
     }
