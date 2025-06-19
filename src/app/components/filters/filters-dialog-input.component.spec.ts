@@ -1,5 +1,4 @@
- 
-import { FilterInput, FilterInputDate } from '@app/types/filters';
+import { FilterInput } from '@app/types/filters';
 // eslint-disable-next-line import/no-unresolved
 import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicker-input-base';
 import { FiltersDialogInputComponent } from './filters-dialog-input.component';
@@ -24,17 +23,7 @@ describe('FiltersDialogInputComponent', () => {
 
   describe('On initialisation', () => {
     it('should set the filter object', () => {
-      expect(component.filter).toBe(input);
-    });
-
-    it('should set the date if the provided input is of type date', () => {
-      const dateInput: FilterInputDate = {
-        type: 'date',
-        value: new Date(10),
-      };
-      component.input = dateInput;
-
-      expect(component.date).toEqual(dateInput.value);
+      expect(component.input).toBe(input);
     });
   });
 
@@ -102,15 +91,15 @@ describe('FiltersDialogInputComponent', () => {
       for (let index = 0; index < 3; index++) {
         component.onDurationChange(inputEvent, index);
       }
-      component.filter.value = 94350;
+      component.input.value = 94350;
       component.onDurationChange(inputEvent, 0);
-      expect(valueChangeSpy).toHaveBeenLastCalledWith(`${component.filter.value}`);
+      expect(valueChangeSpy).toHaveBeenLastCalledWith(`${component.input.value}`);
     });
   });
 
   describe('getDurationInputValue', () => {
     beforeEach(() => {
-      component.filter.value = 94350;
+      component.input.value = 94350;
     });
     it('should get the hours from a duration in seconds', () => {
       expect(component.getDurationInputValue('hours')).toEqual(26);
