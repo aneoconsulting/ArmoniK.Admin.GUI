@@ -13,7 +13,7 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     [TaskStatus.TASK_STATUS_CREATING]: {
       label: 'Creating',
       color: '#008B8B',
-      icon: 'add',
+      icon: 'creating',
     },
     [TaskStatus.TASK_STATUS_SUBMITTED]: {
       label: 'Submitted',
