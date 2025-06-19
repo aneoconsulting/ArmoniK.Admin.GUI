@@ -33,21 +33,12 @@ import { NgxMatDatepickerInputEvent } from '@ngxmc/datetime-picker/lib/datepicke
   ]
 })
 export class FiltersDialogInputComponent {
-  @Input({ required: true }) set input(entry: FilterInput) {
-    this.filter = entry;
-    if (entry.type === 'date' && entry.value) {
-      const millisecondsOffset = (new Date()).getTimezoneOffset() * 60000;
-      this.date = new Date(entry.value.getTime() + millisecondsOffset);
-    }
-  }
+  @Input({ required: true }) input: FilterInput;
   @Input({ required: true }) statuses: string[];
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
   booleans = ['true', 'false'];
   duration: {[key: number]: string} = {};
-
-  filter: FilterInput;
-  date: Date | null = null;
 
   private emit(value: string) {
     this.valueChange.emit(value);
@@ -59,8 +50,7 @@ export class FiltersDialogInputComponent {
 
   onDateChange(event: NgxMatDatepickerInputEvent<Date>): void {
     if (event.value) {
-      const secondsOffset = event.value.getTimezoneOffset() * 60;
-      const time = (event.value.getTime() / 1000) - secondsOffset;
+      const time = (event.value.getTime() / 1000);
       this.emit(`${time}`);
     } else {
       this.emit('');
@@ -91,11 +81,11 @@ export class FiltersDialogInputComponent {
   getDurationInputValue(searchItem: string): number | undefined {
     switch (searchItem) {
     case 'hours':
-      return !isNaN(Number(this.filter.value)) ? Math.floor(Number(this.filter.value)/3600) : undefined;
+      return !isNaN(Number(this.input.value)) ? Math.floor(Number(this.input.value)/3600) : undefined;
     case 'minutes':
-      return !isNaN(Number(this.filter.value)) ? Math.floor((Number(this.filter.value)%3600)/60) : undefined;
+      return !isNaN(Number(this.input.value)) ? Math.floor((Number(this.input.value)%3600)/60) : undefined;
     case 'seconds':
-      return !isNaN(Number(this.filter.value)) ? Math.floor(((Number(this.filter.value))%3600)%60) : undefined;
+      return !isNaN(Number(this.input.value)) ? Math.floor(((Number(this.input.value))%3600)%60) : undefined;
     default:
       return undefined;
     }
