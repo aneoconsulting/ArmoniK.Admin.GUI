@@ -1,0 +1,11 @@
+<article>
+  <ng-content select="[title]" />
+  <p>{{ count }} <span i18n>selected</span></p>
+</article>
+<section>
+  @for (column of allColumns; track $index) {
+    <mat-checkbox (change)="updateColumn($event, column)" [checked]="isSelected(column)">
+        {{ (column | customColumnPipe) ?? columnsLabels[column] }}
+    </mat-checkbox>
+  }
+</section>

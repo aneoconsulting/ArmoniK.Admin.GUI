@@ -1,0 +1,43 @@
+<h2 mat-dialog-title i18n="Dialog title">Modify Columns</h2>
+
+<mat-dialog-content>
+  <article>
+    <p i18n="Dialog description">Check box to add or remove a column</p>
+    <p>{{ selectedColumns.length }} <span i18n>selected</span></p>
+  </article>
+  
+  @if (commonColumns.length !== 0) {
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="commonColumns" (checked)="updateColumn($event)">
+      <h3 title i18n>Common Columns</h3>
+    </app-columns-modify-area>
+  }
+
+  @if (dateColumns.length !== 0) {
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="dateColumns" (checked)="updateColumn($event)">
+      <h3 title i18n>Date & Duration Columns</h3>
+    </app-columns-modify-area>
+  }
+
+  @if (objectArrayColumns.length !== 0) {
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="objectArrayColumns" (checked)="updateColumn($event)">
+      <h3 title i18n>Objets & Arrays Columns</h3>
+    </app-columns-modify-area>
+  }
+
+  @if (optionsColumns.length !== 0) {
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="optionsColumns" (checked)="updateColumn($event)">
+      <h3 title i18n>Options Columns</h3>
+    </app-columns-modify-area>
+  }
+
+  @if (customColumns.length !== 0) {
+    <app-columns-modify-area [columnsLabels]="columnsLabels" [selectedColumns]="selectedColumns" [columns]="customColumns" (checked)="updateColumn($event)">
+      <h3 title i18n>Custom Columns</h3>
+    </app-columns-modify-area>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onNoClick()" i18n="Dialog action"> Cancel </button>
+  <button mat-flat-button [mat-dialog-close]="selectedColumns" color="primary" i18n="Dialog action"> Confirm </button>
+</mat-dialog-actions>

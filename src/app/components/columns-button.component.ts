@@ -3,10 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, DataRaw } from '@app/types/data';
+import { TableColumn } from '@app/types/column.type';
+import { ColumnKey, CustomColumn, DataRaw } from '@app/types/data';
 import { ColumnsModifyDialogData, ColumnsModifyDialogResult } from '@app/types/dialog';
 import { IconsService } from '@services/icons.service';
-import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component';
+import { ColumnsModifyDialogComponent } from './dialogs/columns-modify-dialog/columns-modify-dialog.component';
 
 @Component({
   selector: 'app-columns-button',
@@ -20,7 +21,6 @@ import { ColumnsModifyDialogComponent } from './columns-modify-dialog.component'
   `],
   standalone: true,
   imports: [
-    ColumnsModifyDialogComponent,
     MatDialogModule,
     MatButtonModule,
     MatIconModule
@@ -31,7 +31,8 @@ export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | n
 
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
-  @Input({ required: true }) availableColumns: ColumnKey<T, O>[];
+  @Input({ required: true }) availableColumns: TableColumn<T, O>[];
+  @Input({ required: false }) customColumns: CustomColumn[];
   @Input({ required: true}) disabled: boolean = false;
 
   @Output() displayedColumnsChange: EventEmitter<ColumnKey<T, O>[]> = new EventEmitter<ColumnKey<T, O>[]>();
@@ -52,6 +53,7 @@ export class ColumnsButtonComponent<T extends DataRaw, O extends TaskOptions | n
         columnsLabels: this.columnsLabels,
         currentColumns: this.displayedColumns,
         availableColumns: this.availableColumns,
+        customColumns: this.customColumns ?? [],
       }
     });
 

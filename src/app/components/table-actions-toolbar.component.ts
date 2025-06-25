@@ -4,7 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TaskOptions } from '@app/tasks/types';
-import { ColumnKey, DataRaw } from '@app/types/data';
+import { TableColumn } from '@app/types/column.type';
+import { ColumnKey, CustomColumn, DataRaw } from '@app/types/data';
 import { RefreshButtonComponent } from '@components/refresh-button.component';
 import { IconsService } from '@services/icons.service';
 import { ActionsToolbarGroupComponent } from './actions-toolbar-group.component';
@@ -41,7 +42,8 @@ export class TableActionsToolbarComponent<T extends DataRaw, O extends TaskOptio
   @Input({ required: true }) intervalValue = 0;
   @Input({ required: true }) columnsLabels: Record<ColumnKey<T, O>, string>;
   @Input({ required: true }) displayedColumns: ColumnKey<T, O>[] = [];
-  @Input({ required: true }) availableColumns: ColumnKey<T, O>[] = [];
+  @Input({ required: true }) availableColumns: TableColumn<T, O>[] = [];
+  @Input({ required: false }) customColumns: CustomColumn[];
   @Input({ required: true }) lockColumns = false;
 
   @Output() refresh: EventEmitter<void> = new EventEmitter<void>();
