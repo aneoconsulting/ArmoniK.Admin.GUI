@@ -27,17 +27,17 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
     [TaskStatus.TASK_STATUS_COMPLETED]: {
       label: 'Completed',
-      color: '#006400',
+      color: '#339220',
       icon: 'success'
     },
     [TaskStatus.TASK_STATUS_ERROR]: {
       label: 'Error',
-      color: '#FF0000',
+      color: '#F20707',
       icon: 'error',
     },
     [TaskStatus.TASK_STATUS_TIMEOUT]: {
       label: 'Timeout',
-      color: '#FF0000',
+      color: '#F20707',
       icon: 'timeout',
     },
     [TaskStatus.TASK_STATUS_CANCELLING]: {
@@ -52,7 +52,7 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
     [TaskStatus.TASK_STATUS_PROCESSING]: {
       label: 'Processing',
-      color: '#008000',
+      color: '#320DE7',
       icon: 'play'
     },
     [TaskStatus.TASK_STATUS_PROCESSED]: {
@@ -62,7 +62,7 @@ export class TasksStatusesService extends StatusService<TaskStatus> {
     },
     [TaskStatus.TASK_STATUS_RETRIED]: {
       label: 'Retried',
-      color: '#FF0000',
+      color: '#F6AB09',
       icon: 'retry',
     },
     [TaskStatus.TASK_STATUS_PENDING]: {
