@@ -1,4 +1,4 @@
-import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, SessionRawEnumField, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
+import { ApplicationRawEnumField, PartitionRawEnumField, ResultRawEnumField, ResultStatus, SessionRawEnumField, SessionStatus, TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable } from '@angular/core';
 import { ApplicationRaw } from '@app/applications/types';
 import { CountLine, Line, TasksStatusesGroup } from '@app/dashboard/types';
@@ -9,6 +9,7 @@ import { TaskOptions, TaskSummary } from '@app/tasks/types';
 import { ExportedDefaultConfig, ScopeConfig } from '@app/types/config';
 import { ExternalService } from '@app/types/external-service';
 import { Sidebar } from '@app/types/navigation';
+import { StatusLabelColor } from '@app/types/status';
 import { Theme } from '@app/types/themes';
 
 @Injectable()
@@ -155,6 +156,43 @@ export class DefaultConfigService {
     showFilters: true,
   };
 
+  readonly #defaultSessionsStatuses: Record<SessionStatus, StatusLabelColor> = {
+    [SessionStatus.SESSION_STATUS_UNSPECIFIED]: {
+      label: $localize`Unspecified`,
+      color: '#696969',
+    },
+    [SessionStatus.SESSION_STATUS_RUNNING]: {
+      label: $localize`Running`,
+      color: '#008000',
+      icon: 'play',
+    },
+    [SessionStatus.SESSION_STATUS_CANCELLED]: {
+      label: $localize`Cancelled`,
+      color: '#0E4D92',
+      icon: 'cancel',
+    },
+    [SessionStatus.SESSION_STATUS_CLOSED]: {
+      label: $localize`Closed`,
+      color: '#FF0000',
+      icon: 'close',
+    },
+    [SessionStatus.SESSION_STATUS_DELETED]: {
+      label: $localize`Deleted`,
+      color: '#000000',
+      icon: 'delete',
+    },
+    [SessionStatus.SESSION_STATUS_PURGED]: {
+      label: $localize`Purged`,
+      color: '#800080',
+      icon: 'purge',
+    },
+    [SessionStatus.SESSION_STATUS_PAUSED]: {
+      label: $localize`Paused`,
+      color: '#FF8C00',
+      icon: 'pause',
+    },
+  };
+
   readonly #defaultResults: ScopeConfig<ResultRaw, ResultRawEnumField> = {
     interval: 10,
     lockColumns: false,
@@ -174,6 +212,37 @@ export class DefaultConfigService {
     },
     filters: [],
     showFilters: true,
+  };
+
+  readonly #defaultResultsStatuses: Record<ResultStatus, StatusLabelColor> = {
+    [ResultStatus.RESULT_STATUS_UNSPECIFIED]: {
+      label: $localize`Unspecified`,
+      color: '#696969',
+    },
+    [ResultStatus.RESULT_STATUS_CREATED]: {
+      label: $localize`Created`,
+      color: '#008B8B',
+      icon: 'add',
+    },
+    [ResultStatus.RESULT_STATUS_COMPLETED]: {
+      label: $localize`Completed`,
+      color: '#006400',
+      icon: 'success',
+    },
+    [ResultStatus.RESULT_STATUS_ABORTED]: {
+      label: $localize`Aborted`,
+      color: '#800080',
+      icon: 'cancel'
+    },
+    [ResultStatus.RESULT_STATUS_DELETED]: {
+      label: $localize`Deleted`,
+      color: '#000000',
+      icon: 'delete',
+    },
+    [ResultStatus.RESULT_STATUS_NOTFOUND]: {
+      label: $localize`Not found`,
+      color: '#696969'
+    },
   };
 
   readonly #defaultTasks: ScopeConfig<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> = {
@@ -204,6 +273,78 @@ export class DefaultConfigService {
     serviceName: null,
     serviceIcon: null,
     urlTemplate: null,
+  };
+
+  readonly #defaultTaskStatuses: Record<string, StatusLabelColor> = {
+    [TaskStatus.TASK_STATUS_COMPLETED]: {
+      label: 'Completed',
+      color: '#006400',
+      icon: 'success'
+    },
+    [TaskStatus.TASK_STATUS_CREATING]: {
+      label: 'Creating',
+      color: '#008B8B',
+      icon: 'creating',
+    },
+    [TaskStatus.TASK_STATUS_PROCESSING]: {
+      label: 'Processing',
+      color: '#008000',
+      icon: 'play'
+    },
+    [TaskStatus.TASK_STATUS_PROCESSED]: {
+      label: 'Processed',
+      color: '#008B8B',
+      icon: 'processed'
+    },
+    [TaskStatus.TASK_STATUS_PENDING]: {
+      label: $localize`Pending`,
+      color: '#696969',
+      icon: 'pending'
+    },
+    [TaskStatus.TASK_STATUS_SUBMITTED]: {
+      label: 'Submitted',
+      color: '#00008B',
+      icon: 'submitting',
+    },
+    [TaskStatus.TASK_STATUS_DISPATCHED]: {
+      label: 'Dispatched',
+      color: '#6495ED',
+      icon: 'dispatched',
+    },
+    [TaskStatus.TASK_STATUS_CANCELLING]: {
+      label: 'Cancelling',
+      color: '#696969',
+      icon: 'cancelling',
+    },
+    [TaskStatus.TASK_STATUS_CANCELLED]: {
+      label: 'Cancelled',
+      color: '#000000',
+      icon: 'cancel',
+    },
+    [TaskStatus.TASK_STATUS_PAUSED]: {
+      label: $localize`Paused`,
+      color: '#FF8C00',
+      icon: 'pause',
+    },
+    [TaskStatus.TASK_STATUS_ERROR]: {
+      label: 'Error',
+      color: '#FF0000',
+      icon: 'error',
+    },
+    [TaskStatus.TASK_STATUS_TIMEOUT]: {
+      label: 'Timeout',
+      color: '#FF0000',
+      icon: 'timeout',
+    },
+    [TaskStatus.TASK_STATUS_RETRIED]: {
+      label: 'Retried',
+      color: '#FF0000',
+      icon: 'retry',
+    },
+    [TaskStatus.TASK_STATUS_UNSPECIFIED]: {
+      label: 'Unspecified',
+      color: '#A9A9A9'
+    }
   };
 
   // We use getters to be able to deep copy the default config and to access the default config from the outside
@@ -297,12 +438,14 @@ export class DefaultConfigService {
     'sessions-interval': this.#defaultSessions.interval,
     'sessions-lock-columns': this.#defaultSessions.lockColumns,
     'sessions-show-filters': this.#defaultSessions.showFilters,
+    'sessions-statuses': this.#defaultSessionsStatuses,
     'results-columns': this.#defaultResults.columns,
     'results-options': this.#defaultResults.options,
     'results-filters': this.#defaultResults.filters,
     'results-interval': this.#defaultResults.interval,
     'results-lock-columns': this.#defaultResults.lockColumns,
     'results-show-filters': this.#defaultResults.showFilters,
+    'results-statuses': this.#defaultResultsStatuses,
     'tasks-columns': this.#defaultTasks.columns,
     'tasks-options': this.#defaultTasks.options,
     'tasks-filters': this.#defaultTasks.filters,
@@ -310,6 +453,7 @@ export class DefaultConfigService {
     'tasks-view-in-logs': this.#defaultTasksViewInLogs,
     'tasks-lock-columns': this.#defaultTasks.lockColumns,
     'tasks-show-filters': this.#defaultTasks.showFilters,
+    'tasks-statuses': this.#defaultTaskStatuses,
     'tasks-custom-columns': [],
     'sessions-custom-columns': [],
   };

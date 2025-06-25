@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { TaskOptions } from '@app/tasks/types';
 import { AbstractTaskByStatusTableComponent } from '@app/types/components/table';
 import { ArmonikData, SessionData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
 import { ActionTable } from '@app/types/table';
 import { TableComponent } from '@components/table/table.component';
 import { TableTasksByStatus, TasksByStatusService } from '@services/tasks-by-status.service';
@@ -30,7 +31,7 @@ import { SessionRaw } from '../types';
 })
 export class SessionsTableComponent extends AbstractTaskByStatusTableComponent<SessionRaw, SessionRawEnumField, TaskOptions, TaskOptionEnumField>
   implements OnInit {  
-  readonly statusesService = inject(SessionsStatusesService);
+  readonly statusesService = inject(StatusService) as SessionsStatusesService;
   readonly router = inject(Router);
   readonly copyService = inject(Clipboard);
 

@@ -2,6 +2,7 @@ import { TaskOptionEnumField, TaskStatus, TaskSummaryEnumField } from '@aneocons
 import { Injectable, inject } from '@angular/core';
 import { Scope } from '@app/types/config';
 import { DataFilterService, FiltersServiceOptionsInterface, FiltersServiceStatusesInterface } from '@app/types/services/data-filter.service';
+import { StatusService } from '@app/types/status';
 import { TasksStatusesService } from './tasks-statuses.service';
 import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilters } from '../types';
 
@@ -11,7 +12,7 @@ import { TaskFilterDefinition, TaskFilterField, TaskFilterFor, TaskSummaryFilter
 export class TasksFiltersService extends DataFilterService<TaskSummaryEnumField, TaskOptionEnumField>
   implements FiltersServiceOptionsInterface<TaskOptionEnumField>, FiltersServiceStatusesInterface<TaskStatus> {
   protected readonly scope: Scope = 'tasks';
-  readonly statusService = inject(TasksStatusesService);
+  readonly statusService = inject(StatusService) as TasksStatusesService;
 
   readonly rootField: Record<TaskSummaryEnumField, string> = {
     [TaskSummaryEnumField.TASK_SUMMARY_ENUM_FIELD_TASK_ID]: $localize`Task ID`,

@@ -1,0 +1,33 @@
+<h2 mat-dialog-title i18n>Statuses Colors</h2>
+
+<form [formGroup]="statusesForm" mat-dialog-content>
+  @for(status of statuses; track status) {
+  <article>
+    <section class="header">
+      @let icon = statusesRecord[status].icon;
+      @if(icon) {
+        <mat-icon [fontIcon]="getIcon(icon)" />
+      }
+      <h3>{{ statusesRecord[status].label }}</h3>
+    </section>
+    <section>
+      <input type="color" [value]="getValue(status)" [formControlName]="status.toString()" i18n-matTooltip matTooltip="Pick a color" />
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label for="color-text" i18n>Color</mat-label>
+        <input matInput id="color-text" type="text" [value]="getValue(status)" [formControlName]="status.toString()" />
+      </mat-form-field>
+      <button mat-icon-button (click)="copy(status)" i18n-matTooltip matTooltip="Copy the color value">
+        <mat-icon [fontIcon]="getIcon('copy')" />
+      </button>
+      <button mat-icon-button (click)="reset(status)" i18n-matTooltip matTooltip="Reset the color to its previous value">
+        <mat-icon [fontIcon]="getIcon('cancelling')" />
+      </button>
+    </section>
+  </article>
+}
+</form>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()" i18n>Cancel</button>
+  <button mat-flat-button (click)="submit()" color="primary" i18n>Confirm</button>
+</mat-dialog-actions>
