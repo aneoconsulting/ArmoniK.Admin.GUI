@@ -1,14 +1,14 @@
 import { GetResultRequest, GetResultResponse, ListResultsRequest, ListResultsResponse, ResultFilterField, ResultRawEnumField, ResultsClient } from '@aneoconsultingfr/armonik.api.angular';
 import { Injectable, inject } from '@angular/core';
 import { Filter, FilterType } from '@app/types/filters';
-import { GrpcGetInterface, GrpcTableService, ListDefaultSortField } from '@app/types/services/grpcService';
+import { AbstractGrpcList, GrpcGetInterface, ListDefaultSortField } from '@app/types/services/grpcService';
 import { FilterField, buildDateFilter, buildNumberFilter, buildStatusFilter, buildStringFilter } from '@services/grpc-build-request.service';
 import { Observable } from 'rxjs';
 import { ResultsFiltersService } from './results-filters.service';
 import { ResultRaw, ResultRawFieldKey, ResultRawFilters, ResultRawListOptions } from '../types';
 
 @Injectable()
-export class ResultsGrpcService extends GrpcTableService<ResultRaw, ResultRawEnumField>
+export class ResultsGrpcService extends AbstractGrpcList<ResultRaw, ResultRawEnumField>
   implements GrpcGetInterface<GetResultResponse> {
 
   readonly filterService = inject(ResultsFiltersService);

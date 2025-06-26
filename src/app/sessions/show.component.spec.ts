@@ -1,7 +1,8 @@
-import { GetSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
+import { CancelSessionResponse, CloseSessionResponse, DeleteSessionResponse, GetSessionResponse, PauseSessionResponse, PurgeSessionResponse, ResumeSessionResponse, SessionStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TasksInspectionService } from '@app/tasks/services/tasks-inspection.service';
+import { GrpcBlockedEnum } from '@app/types/data';
 import { GrpcStatusEvent } from '@ngx-grpc/common';
 import { Duration, Timestamp } from '@ngx-grpc/well-known-types';
 import { FiltersService } from '@services/filters.service';
@@ -20,6 +21,7 @@ describe('AppShowComponent', () => {
 
   const mockNotificationService = {
     success: jest.fn(),
+    warning: jest.fn(),
     error: jest.fn(),
   };
 
@@ -59,12 +61,12 @@ describe('AppShowComponent', () => {
 
   const mockSessionsGrpcService = {
     get$: jest.fn((): Observable<unknown> => of({session: returnedSession} as GetSessionResponse)),
-    cancel$: jest.fn(() => of({})),
-    purge$: jest.fn(() => of({})),
-    pause$: jest.fn(() => of({})),
-    resume$: jest.fn(() => of({})),
-    close$: jest.fn(() => of({})),
-    delete$: jest.fn(() => of({})),
+    cancel$: jest.fn((): Observable<CancelSessionResponse | GrpcBlockedEnum> => of(new CancelSessionResponse())),
+    purge$: jest.fn((): Observable<PurgeSessionResponse | GrpcBlockedEnum> => of(new PurgeSessionResponse())),
+    pause$: jest.fn((): Observable<PauseSessionResponse | GrpcBlockedEnum> => of(new PauseSessionResponse())),
+    resume$: jest.fn((): Observable<ResumeSessionResponse | GrpcBlockedEnum> => of(new ResumeSessionResponse())),
+    close$: jest.fn((): Observable<CloseSessionResponse | GrpcBlockedEnum> => of(new CloseSessionResponse())),
+    delete$: jest.fn((): Observable<DeleteSessionResponse | GrpcBlockedEnum> => of(new DeleteSessionResponse())),
     getTaskData$: jest.fn(() => of({})),
   };
 
@@ -262,8 +264,15 @@ describe('AppShowComponent', () => {
     });
 
     it('should notify on success when cancelling a session', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
       component.cancel();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session canceled');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session Cancelled.');
+    });
+
+    it('should display a message on blocked request', () => {
+      mockSessionsGrpcService.cancel$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.cancel();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
     });
 
     it('should notify on errors when cancelling a session', () => {
@@ -298,8 +307,16 @@ describe('AppShowComponent', () => {
 
     it('should notify on success when purging a session', () => {
       component.purge();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session purged');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session Purged.');
     });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.purge$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.purge();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
 
     it('should notify on errors when purging a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -325,8 +342,16 @@ describe('AppShowComponent', () => {
 
     it('should notify on success when pausing a session', () => {
       component.pause();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session paused');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session Paused.');
     });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.pause$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.pause();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
 
     it('should notify on errors when pausing a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -359,8 +384,16 @@ describe('AppShowComponent', () => {
 
     it('should notify on success when resuming a session', () => {
       component.resume();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session resumed');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session Resumed.');
     });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.resume$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.resume();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
 
     it('should notify on errors when resuming a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -386,8 +419,16 @@ describe('AppShowComponent', () => {
 
     it('should notify on success when closing a session', () => {
       component.close();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session closed');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session Closed.');
     });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.close$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.close();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
 
     it('should notify on errors when closing a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -409,13 +450,21 @@ describe('AppShowComponent', () => {
 
     it('should notify on success when deleting a session', () => {
       component.deleteSession();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Session deleted');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('Session Deleted.');
     });
 
     it('should navigate to sessions list page after succesfully deleting a session', () => {
       component.deleteSession();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/sessions']);
     });
+
+    it('should display a message on blocked request', () => {
+      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockSessionsGrpcService.delete$.mockReturnValueOnce(of(GrpcBlockedEnum.WAITING));
+      component.deleteSession();
+      expect(mockNotificationService.warning).toHaveBeenCalled();
+    });
+
 
     it('should notify on errors when deleting a session', () => {
       jest.spyOn(console, 'error').mockImplementation(() => {});

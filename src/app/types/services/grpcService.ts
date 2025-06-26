@@ -1,10 +1,11 @@
 import { ApplicationFilterField, ApplicationsClient, CancelSessionResponse, CancelTasksResponse, CountTasksByStatusResponse, GetPartitionResponse, GetResultResponse, GetSessionResponse, GetTaskResponse, PartitionFilterField, PartitionsClient, ResultFilterField, ResultsClient, SessionFilterField, SessionsClient, TaskFilterField, TasksClient } from '@aneoconsultingfr/armonik.api.angular';
 import { inject } from '@angular/core';
 import { TaskOptions } from '@app/tasks/types';
+import { GrpcMessage } from '@ngx-grpc/common';
 import { FilterField, sortDirections } from '@services/grpc-build-request.service';
 import { UtilsService } from '@services/utils.service';
-import { Observable } from 'rxjs';
-import { DataRaw, FieldKey, GrpcResponse } from '../data';
+import { Observable, finalize, of } from 'rxjs';
+import { DataRaw, FieldKey, GrpcBlockedEnum, GrpcResponse } from '../data';
 import { FilterDefinition } from '../filter-definition';
 import { Filter, FilterType, FiltersAnd, FiltersEnums, FiltersOptionsEnums, FiltersOr } from '../filters';
 import { ListOptions } from '../options';
@@ -31,22 +32,7 @@ export interface GrpcGetInterface<R extends GetResponse> {
   get$(id: string): Observable<R>;
 }
 
-export interface GrpcCancelInterface<R extends CancelResponse> {
-  readonly grpcClient: GrpcClient;
-  cancel$(id: string): Observable<R>;
-}
-
-export interface GrpcCancelManyInterface<R extends CancelResponse> {
-  readonly grpcClient: GrpcClient;
-  cancel$(ids: string[]): Observable<R>;
-}
-
-export interface GrpcCountByStatusInterface<F extends FiltersEnums, FO extends FiltersOptionsEnums | null = null> {
-  readonly grpcClient: GrpcClient;
-  countByStatus$(filters: FiltersOr<F, FO>): Observable<CountByStatusResponse>;
-}
-
-export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
+export abstract class AbstractGrpcList<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> {
   abstract readonly sortFields: Record<FieldKey<T>, F>;
   
   abstract readonly grpcClient: GrpcClient;
@@ -189,3 +175,16 @@ export abstract class GrpcTableService<T extends DataRaw, F extends FiltersEnums
   }
 }
 
+export abstract class AbstractGrpcAction<T extends DataRaw, F extends FiltersEnums, O extends TaskOptions | null = null, FO extends FiltersOptionsEnums | null = null> extends AbstractGrpcList<T, F, O, FO> {
+  private allowAction: boolean = true;
+
+  protected protectAction<T extends GrpcMessage>(action: () => Observable<T>): Observable<T | GrpcBlockedEnum> {
+    if (this.allowAction) {
+      this.allowAction = false;
+      return action().pipe(
+        finalize(() => this.allowAction = true),
+      );
+    }
+    return of(GrpcBlockedEnum.WAITING);
+  }
+}
