@@ -17,14 +17,15 @@ export abstract class StatusService<S extends Status> {
   private readonly storageService = inject(StorageService);
 
   private readonly keys: S[];
+  private readonly scope: StatusScope;
+
   readonly statuses: Record<S, StatusLabelColor>;
-  readonly scope: StatusScope;
 
   constructor(scope: StatusScope) {
     this.scope = scope;
     let statuses = this.storageService.getItem<Record<S, StatusLabelColor>>(`${scope}-statuses`, true) as Record<S, StatusLabelColor>;
     if (!statuses) {
-      statuses = structuredClone(this.defaultConfigService.exportedDefaultConfig[`${scope}-statuses`] as Record<S, StatusLabelColor>);
+      statuses = structuredClone(this.getDefault() as Record<S, StatusLabelColor>);
     }
     this.statuses = statuses;
     this.keys = Object.keys(statuses).map((status) => Number(status) as S);
