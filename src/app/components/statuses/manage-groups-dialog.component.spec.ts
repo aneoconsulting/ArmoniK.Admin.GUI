@@ -40,6 +40,10 @@ describe('ManageGroupsDialogComponent', () => {
       [TaskStatus.TASK_STATUS_PROCESSING]: {
         label: 'Processing',
         color: 'green'
+      },
+      [TaskStatus.TASK_STATUS_COMPLETED]: {
+        label: 'Completed',
+        color: 'yellow'
       }
     },
     statusToLabel: jest.fn((s: TaskStatus) => {
@@ -84,11 +88,7 @@ describe('ManageGroupsDialogComponent', () => {
   });
 
   it('should get statuses labels', () => {
-    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual({
-      color: '#006400',
-      icon: 'success',
-      label: 'Completed'
-    });
+    expect(component.statusToLabel(TaskStatus.TASK_STATUS_COMPLETED)).toEqual(mockStatusService.statuses[TaskStatus.TASK_STATUS_COMPLETED]);
   });
 
   it('should change array on drop', () => {
