@@ -25,7 +25,7 @@ export abstract class StatusService<S extends Status> {
     this.scope = scope;
     let statuses = this.storageService.getItem<Record<S, StatusLabelColor>>(`${scope}-statuses`, true) as Record<S, StatusLabelColor>;
     if (!statuses) {
-      statuses = structuredClone(this.getDefault() as Record<S, StatusLabelColor>);
+      statuses = structuredClone(this.getDefault());
     }
     this.statuses = statuses;
     this.keys = Object.keys(statuses).map((status) => Number(status) as S);
