@@ -3,10 +3,10 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { TableColumn } from '@app/types/column.type';
 import { ArmonikData, ColumnKey, TaskData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { TasksTableComponent } from './table.component';
 import TasksDataService from '../services/tasks-data.service';
-import { TasksStatusesService } from '../services/tasks-statuses.service';
 import { TaskOptions, TaskSummary } from '../types';
 
 describe('TasksTableComponent', () => {
@@ -61,11 +61,24 @@ describe('TasksTableComponent', () => {
     cancelTask: jest.fn(),
   };
 
+  const mockStatusService = {
+    statuses: {
+      [TaskStatus.TASK_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+      },
+      [TaskStatus.TASK_STATUS_COMPLETED]: {
+        label: 'Completed'
+      },
+    },
+    isRetried: jest.fn((s: TaskStatus) => s === TaskStatus.TASK_STATUS_RETRIED),
+    taskNotEnded: jest.fn((s: TaskStatus) => s !== TaskStatus.TASK_STATUS_COMPLETED)
+  };
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         TasksTableComponent,
-        TasksStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: TasksDataService, useValue: mockTasksDataService }

@@ -1,11 +1,12 @@
+import { ResultStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TestBed } from '@angular/core/testing';
 import { TableColumn } from '@app/types/column.type';
 import { ColumnKey, ResultData } from '@app/types/data';
+import { StatusService } from '@app/types/status';
 import { NotificationService } from '@services/notification.service';
 import { ResultsTableComponent } from './table.component';
 import ResultsDataService from '../services/results-data.service';
-import { ResultsStatusesService } from '../services/results-statuses.service';
 import { ResultRaw } from '../types';
 
 describe('ResultsTableComponent', () => {
@@ -59,11 +60,23 @@ describe('ResultsTableComponent', () => {
     },
   };
 
+  const mockStatusService = {
+    statuses: {
+      [ResultStatus.RESULT_STATUS_ABORTED]: {
+        label: 'Aborted',
+      },
+      [ResultStatus.RESULT_STATUS_COMPLETED]: {
+        label: 'Completed'
+      },
+    },
+  };
+
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
         ResultsTableComponent,
-        ResultsStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Clipboard, useValue: mockClipBoard },
         { provide: ResultsDataService, useValue: mockResultsDataService }
