@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { StatusColorPickerDialogData } from '@app/types/dialog';
 import { Status, StatusLabelColor } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { NotificationService } from '@services/notification.service';
@@ -37,30 +38,31 @@ export class StatusColorPickerDialogComponent<S extends Status> {
   private readonly notificationService = inject(NotificationService);
 
   readonly statuses: S[];
-  readonly statusesRecord: Record<S, StatusLabelColor>;
   readonly statusesForm: FormRecord<FormControl<string>>;
+
+  readonly statusesDefault: Record<S, StatusLabelColor>;
 
   constructor(
     private readonly dialogRef: MatDialogRef<StatusColorPickerDialogComponent<S>, Record<S, StatusLabelColor>>,
-    @Inject(MAT_DIALOG_DATA) data: Record<S, StatusLabelColor>
+    @Inject(MAT_DIALOG_DATA) data: StatusColorPickerDialogData<S>
   ) {
-    this.statuses = Object.keys(data).map((value: string) => Number(value) as S);
+    this.statuses = Object.keys(data.current).map((value: string) => Number(value) as S);
     this.statusesForm = new FormRecord(
       this.statuses.reduce((acc, status) => {
-        acc[status] = new FormControl<string>(data[status].color, { nonNullable: true });
+        acc[status] = new FormControl<string>(data.current[status].color, { nonNullable: true });
         return acc;
       },
       {} as Record<S, FormControl<string>>)
     );
-    this.statusesRecord = {...data};
+    this.statusesDefault = data.default;
   }
 
-  getValue(status: S): string | null {
-    return this.statusesForm.get(`${status}`)?.value as string || null;
+  getControl(status: S): FormControl<string> | null {
+    return this.statusesForm.get(`${status}`) as unknown as FormControl<string> | null;
   }
 
   copy(status: S) {
-    const value = this.getValue(status);
+    const value = this.getControl(status)?.value;
     if (value) {
       this.clipboard.copy(value.replace('#', ''));
       this.notificationService.success($localize`Color copied !`);
@@ -76,6 +78,15 @@ export class StatusColorPickerDialogComponent<S extends Status> {
     }
   }
 
+  resetDefault(status: S) {
+    const control = this.getControl(status);
+    const defaultColor = this.statusesDefault[status].color;
+    if (control && defaultColor) {
+      control.patchValue(defaultColor);
+      control.markAsDirty();
+    }
+  }
+
   getIcon(name: string) {
     return this.iconsService.getIcon(name);
   }
@@ -88,7 +99,7 @@ export class StatusColorPickerDialogComponent<S extends Status> {
     const record = this.statusesForm.getRawValue();
     const result = Object.keys(record).map((status) => Number(status) as S).reduce((acc, status) => {
       acc[status] = {
-        ...this.statusesRecord[status],
+        ...this.statusesDefault[status],
         color: record[status.toString()],
       };
       return acc;
