@@ -27,7 +27,7 @@
           </button>
         } @else {
           <button mat-icon-button (click)="resetDefault(status)" [disabled]="statusesDefault[status].color === control.value" i18n-matTooltip matTooltip="Reset the color to its default value">
-            <mat-icon [fontIcon]="getIcon('delete')" />
+            <mat-icon [fontIcon]="getIcon('refresh')" />
           </button>
         }
       </section>
