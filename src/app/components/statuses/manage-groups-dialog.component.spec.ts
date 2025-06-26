@@ -2,7 +2,7 @@ import { TaskStatus } from '@aneoconsultingfr/armonik.api.angular';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TasksStatusesService } from '@app/tasks/services/tasks-statuses.service';
+import { StatusService } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { Observable, of } from 'rxjs';
 import { ManageGroupsDialogComponent } from './manage-groups-dialog.component';
@@ -31,6 +31,22 @@ describe('ManageGroupsDialogComponent', () => {
     close: jest.fn()
   };
 
+  const mockStatusService = {
+    statuses: {
+      [TaskStatus.TASK_STATUS_CANCELLED]: {
+        label: 'Cancelled',
+        color: 'red'
+      },
+      [TaskStatus.TASK_STATUS_PROCESSING]: {
+        label: 'Processing',
+        color: 'green'
+      }
+    },
+    statusToLabel: jest.fn((s: TaskStatus) => {
+      return (mockStatusService.statuses[s]);
+    }),
+  } as unknown as StatusService<TaskStatus>;
+
   beforeEach(() => {
     component = TestBed.configureTestingModule({
       providers: [
@@ -38,7 +54,7 @@ describe('ManageGroupsDialogComponent', () => {
         { provide: MatDialog, useValue: mockMatDialog },
         IconsService,
         { provide: DashboardIndexService, useValue: mockDashboardIndexService },
-        TasksStatusesService,
+        { provide: StatusService, useValue: mockStatusService },
         { provide: MatDialogRef, useValue: mockMatDialogRef },
         { provide: MAT_DIALOG_DATA, useValue: {
           groups: [
