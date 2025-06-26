@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Status, StatusLabelColor, StatusService } from '@app/types/status';
 import { IconsService } from '@services/icons.service';
 import { StatusColorPickerDialogComponent } from './status-color-picker.dialog.component';
@@ -12,6 +13,7 @@ import { StatusColorPickerDialogComponent } from './status-color-picker.dialog.c
   imports: [
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
   ],
   standalone: true,
 })
