@@ -72,7 +72,7 @@ export class StatusColorPickerDialogComponent<S extends Status> {
   }
 
   reset(status: S) {
-    const control = this.statusesForm.get(`${status}`);
+    const control = this.getControl(status);
     if (control) {
       control.reset();
     }
