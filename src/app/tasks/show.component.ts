@@ -28,7 +28,6 @@ import { TaskOptions, TaskRaw } from './types';
   selector: 'app-tasks-show',
   templateUrl: 'show.component.html',
   styleUrl: '../../inspections.css',
-  standalone: true,
   providers: [
     IconsService,
     UtilsService,

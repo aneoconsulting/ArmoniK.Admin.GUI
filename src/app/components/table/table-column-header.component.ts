@@ -10,7 +10,6 @@ import { IconsService } from '@services/icons.service';
 @Component({
   selector: 'app-table-column-header',
   templateUrl: './table-column-header.component.html',
-  standalone: true,
   imports: [
     MatCheckboxModule,
     MatIconModule,

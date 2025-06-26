@@ -4,7 +4,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-clear-all-dialog',
-  standalone: true,
   templateUrl: './clear-all-dialog.component.html',
   imports: [
     MatDialogModule,

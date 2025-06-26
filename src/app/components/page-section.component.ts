@@ -9,7 +9,6 @@ import { Component } from '@angular/core';
   `,
   styles: [`
   `],
-  standalone: true,
   providers: [],
   imports: []
 })

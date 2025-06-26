@@ -22,7 +22,6 @@ import { NotificationService } from '@services/notification.service';
 @Component({
   selector: 'app-dashboard-results-line',
   templateUrl: './results-line.component.html',
-  standalone: true,
   providers: [
     MatSnackBar,
     ResultsIndexService,

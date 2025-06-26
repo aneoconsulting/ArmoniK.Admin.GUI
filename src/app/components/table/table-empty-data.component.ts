@@ -17,8 +17,7 @@ em {
   text-align: center;
 }
   `],
-  standalone: true,
   imports: [],
-  providers: [],
+  providers: []
 })
 export class TableEmptyDataComponent {}

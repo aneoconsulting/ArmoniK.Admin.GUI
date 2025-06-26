@@ -17,9 +17,7 @@ import { EditStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/t
   `,
   styles: [`
   `],
-  standalone: true,
-  providers: [
-  ],
+  providers: [],
   imports: [
     FormStatusesGroupComponent,
     MatDialogModule,

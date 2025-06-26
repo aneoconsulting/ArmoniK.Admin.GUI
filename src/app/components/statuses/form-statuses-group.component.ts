@@ -32,9 +32,7 @@ mat-dialog-content {
   gap: 1rem;
 }
   `],
-  standalone: true,
-  providers: [
-  ],
+  providers: [],
   imports: [
     MatDialogModule,
     MatButtonModule,

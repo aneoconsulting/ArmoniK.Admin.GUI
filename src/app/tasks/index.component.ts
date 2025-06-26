@@ -36,7 +36,6 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
 @Component({
   selector: 'app-tasks-index',
   templateUrl: './index.component.html',
-  standalone: true,
   imports: [
     FiltersToolbarComponent,
     TableIndexActionsToolbarComponent,
@@ -71,7 +70,7 @@ import { TaskOptions, TaskSummary, TaskSummaryFilter } from './types';
     DashboardStorageService,
     GrpcSortFieldService,
     TasksDataService,
-  ],
+  ]
 })
 export class IndexComponent extends TableHandlerCustomValues<TaskSummary, TaskSummaryEnumField, TaskOptions, TaskOptionEnumField> implements OnInit, AfterViewInit, OnDestroy {
   readonly notificationService = inject(NotificationService);

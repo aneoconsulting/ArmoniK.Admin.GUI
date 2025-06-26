@@ -29,7 +29,6 @@ mat-form-field {
   width: 100%;
 }
   `],
-  standalone: true,
   providers: [],
   imports: [
     MatInputModule,

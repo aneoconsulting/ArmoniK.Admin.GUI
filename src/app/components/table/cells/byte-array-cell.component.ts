@@ -19,7 +19,6 @@ import { NotificationService } from '@services/notification.service';
   selector: 'app-byte-array-cell',
   templateUrl: 'byte-array-cell.component.html',
   styleUrl: 'byte-array-cell.component.css',
-  standalone: true,
   imports: [
     MatButtonModule,
     MatIconModule,

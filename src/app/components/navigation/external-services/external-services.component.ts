@@ -24,7 +24,6 @@ import { ManageExternalServicesDialogComponent } from './manage-external-service
     IconsService,
     NavigationService
   ],
-  standalone: true,
   styleUrl: 'external-services.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -17,9 +17,7 @@ import { AddStatusGroupDialogData, TasksStatusesGroup } from '../../dashboard/ty
   `,
   styles: [`
   `],
-  standalone: true,
-  providers: [
-  ],
+  providers: [],
   imports: [
     FormStatusesGroupComponent,
     MatDialogModule,

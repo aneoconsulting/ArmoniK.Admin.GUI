@@ -56,7 +56,6 @@ import { Line } from '../types';
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
   `],
-  standalone: true,
   providers: [
     IconsService,
   ],
