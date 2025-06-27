@@ -16,9 +16,9 @@ export abstract class StatusService<S extends Status> {
   private readonly defaultConfigService = inject(DefaultConfigService);
   private readonly storageService = inject(StorageService);
 
-  private readonly keys: S[];
   private readonly scope: StatusScope;
 
+  readonly keys: S[];
   readonly statuses: Record<S, StatusLabelColor>;
 
   constructor(scope: StatusScope) {

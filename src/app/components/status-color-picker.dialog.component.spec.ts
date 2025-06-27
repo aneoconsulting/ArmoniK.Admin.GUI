@@ -48,6 +48,7 @@ describe('StatusColorPickerDialogComponent', () => {
         color: '#F0000F'
       },
     },
+    keys: [ResultStatus.RESULT_STATUS_ABORTED, ResultStatus.RESULT_STATUS_COMPLETED],
   };
 
   beforeEach(() => {
@@ -69,7 +70,7 @@ describe('StatusColorPickerDialogComponent', () => {
 
   describe('initialisation', () => {
     it('should set the statuses', () => {
-      expect(component.statuses).toEqual([ResultStatus.RESULT_STATUS_COMPLETED, ResultStatus.RESULT_STATUS_ABORTED]);
+      expect(component.statuses).toEqual([ResultStatus.RESULT_STATUS_ABORTED, ResultStatus.RESULT_STATUS_COMPLETED]);
     });
 
     it('should set the statusForm', () => {

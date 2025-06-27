@@ -34,6 +34,7 @@ export class StatusColorPickerComponent<S extends Status> {
         data: {
           current: this.statusService.statuses,
           default: this.statusService.getDefault(),
+          keys: this.statusService.keys,
         },
       }
     );

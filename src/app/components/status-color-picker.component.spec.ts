@@ -33,6 +33,7 @@ describe('StatusColorPickerComponent', () => {
         },
       };
     }),
+    keys: [ResultStatus.RESULT_STATUS_ABORTED, ResultStatus.RESULT_STATUS_COMPLETED],
     updateStatuses: jest.fn(),
   };
 
@@ -91,7 +92,8 @@ describe('StatusColorPickerComponent', () => {
         {
           data: {
             current: mockStatusService.statuses,
-            default: mockStatusService.getDefault()
+            default: mockStatusService.getDefault(),
+            keys: mockStatusService.keys,
           }
         }
       );

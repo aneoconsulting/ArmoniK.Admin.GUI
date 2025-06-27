@@ -46,7 +46,7 @@ export class StatusColorPickerDialogComponent<S extends Status> {
     private readonly dialogRef: MatDialogRef<StatusColorPickerDialogComponent<S>, Record<S, StatusLabelColor>>,
     @Inject(MAT_DIALOG_DATA) data: StatusColorPickerDialogData<S>
   ) {
-    this.statuses = Object.keys(data.current).map((value: string) => Number(value) as S);
+    this.statuses = data.keys;
     this.statusesForm = new FormRecord(
       this.statuses.reduce((acc, status) => {
         acc[status] = new FormControl<string>(data.current[status].color, { nonNullable: true });
@@ -97,7 +97,7 @@ export class StatusColorPickerDialogComponent<S extends Status> {
 
   submit() {
     const record = this.statusesForm.getRawValue();
-    const result = Object.keys(record).map((status) => Number(status) as S).reduce((acc, status) => {
+    const result = this.statuses.reduce((acc, status) => {
       acc[status] = {
         ...this.statusesDefault[status],
         color: record[status.toString()],

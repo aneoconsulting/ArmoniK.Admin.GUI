@@ -81,5 +81,6 @@ export type ManageViewInLogsDialogResult = {
 
 export type StatusColorPickerDialogData<S extends Status> = {
   current: Record<S, StatusLabelColor>,
-  default: Record<S, StatusLabelColor>
+  default: Record<S, StatusLabelColor>,
+  keys: S[],
 }
